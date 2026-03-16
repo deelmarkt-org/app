@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "DeelMarkt",
+    "tagline": "Tweedehands met vertrouwen"
+  },
+
+  "nav": {
+    "home": "Home",
+    "search": "Zoeken",
+    "sell": "Verkopen",
+    "messages": "Berichten",
+    "profile": "Profiel",
+    "back": "Terug"
+  },
+
+  "action": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "retry": "Probeer opnieuw",
+    "share": "Delen",
+    "edit": "Bewerken",
+    "confirm": "Bevestigen",
+    "close": "Sluiten"
+  },
+
+  "form": {
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "name": "Volledige naam",
+    "phone": "Telefoonnummer",
+    "postcode": "Postcode",
+    "price": "Prijs",
+    "title": "Titel",
+    "description": "Beschrijving"
+  },
+
+  "error": {
+    "generic": "Er is iets misgegaan",
+    "network": "Geen internetverbinding",
+    "notFound": "Pagina niet gevonden",
+    "tryAgain": "Probeer het opnieuw",
+    "sessionExpired": "Je sessie is verlopen — log opnieuw in",
+    "permissionDenied": "Je hebt geen toegang",
+    "serverError": "Serverfout — probeer het later opnieuw",
+    "validationFailed": "Controleer de ingevoerde gegevens",
+    "imageUploadFailed": "Afbeelding uploaden mislukt",
+    "paymentFailed": "Betaling mislukt"
+  },
+
+  "empty": {
+    "listings": "Nog geen advertenties",
+    "messages": "Nog geen berichten",
+    "search": "Geen resultaten gevonden",
+    "favorites": "Nog geen favorieten"
+  },
+
+  "listing": {
+    "price": "Prijs",
+    "condition": "Staat",
+    "category": "Categorie",
+    "seller": "Verkoper",
+    "sold": "Verkocht! 🎉",
+    "views": "Bekeken",
+    "favorites": "In favorieten",
+    "shipping": "Verzending"
+  },
+
+  "auth": {
+    "login": "Inloggen",
+    "register": "Account aanmaken",
+    "logout": "Uitloggen",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "verifyEmail": "Verifieer je e-mailadres",
+    "welcome": "Welkom bij DeelMarkt!"
+  },
+
+  "a11y": {
+    "skipToContent": "Ga naar inhoud",
+    "closeModal": "Sluiten",
+    "menu": "Menu openen",
+    "loading": "Laden..."
+  }
+}

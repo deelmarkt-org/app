@@ -18,6 +18,7 @@ build/
 *.freezed.dart
 *.mocks.dart
 coverage/
+.flutter-plugins-dependencies
 
 # IDE
 .idea/
@@ -45,4 +46,6 @@ lib/generated_plugin_registrant.dart
 
 # Archives — personal reference docs
 docs/archives/emre/
+
+# Private docs
 deelmarkt-email.md

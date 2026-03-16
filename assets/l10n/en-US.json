@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "DeelMarkt",
+    "tagline": "Second-hand with confidence"
+  },
+
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "sell": "Sell",
+    "messages": "Messages",
+    "profile": "Profile",
+    "back": "Back"
+  },
+
+  "action": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "retry": "Try again",
+    "share": "Share",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+
+  "form": {
+    "email": "Email address",
+    "password": "Password",
+    "name": "Full name",
+    "phone": "Phone number",
+    "postcode": "Postcode",
+    "price": "Price",
+    "title": "Title",
+    "description": "Description"
+  },
+
+  "error": {
+    "generic": "Something went wrong",
+    "network": "No internet connection",
+    "notFound": "Page not found",
+    "tryAgain": "Please try again",
+    "sessionExpired": "Your session has expired — please log in again",
+    "permissionDenied": "You don't have access",
+    "serverError": "Server error — please try again later",
+    "validationFailed": "Please check your input",
+    "imageUploadFailed": "Image upload failed",
+    "paymentFailed": "Payment failed"
+  },
+
+  "empty": {
+    "listings": "No listings yet",
+    "messages": "No messages yet",
+    "search": "No results found",
+    "favorites": "No favourites yet"
+  },
+
+  "listing": {
+    "price": "Price",
+    "condition": "Condition",
+    "category": "Category",
+    "seller": "Seller",
+    "sold": "Sold! 🎉",
+    "views": "Views",
+    "favorites": "In favourites",
+    "shipping": "Shipping"
+  },
+
+  "auth": {
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "forgotPassword": "Forgot password?",
+    "verifyEmail": "Verify your email address",
+    "welcome": "Welcome to DeelMarkt!"
+  },
+
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "closeModal": "Close",
+    "menu": "Open menu",
+    "loading": "Loading..."
+  }
+}

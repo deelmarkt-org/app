@@ -1,15 +1,26 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/design_system/theme.dart';
+import 'core/l10n/l10n.dart';
 import 'core/router/app_router.dart';
 
 /// Riverpod provider for GoRouter — single instance, testable via overrides.
 final routerProvider = Provider((ref) => createRouter());
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: DeelMarktApp()));
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: AppLocales.supportedLocales,
+      fallbackLocale: AppLocales.fallbackLocale,
+      path: AppLocales.path,
+      child: const ProviderScope(child: DeelMarktApp()),
+    ),
+  );
 }
 
 class DeelMarktApp extends ConsumerWidget {
@@ -20,11 +31,14 @@ class DeelMarktApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'DeelMarkt',
+      onGenerateTitle: (context) => 'app.name'.tr(),
       debugShowCheckedModeBanner: false,
       theme: DeelmarktTheme.light,
       darkTheme: DeelmarktTheme.dark,
       themeMode: ThemeMode.system,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       routerConfig: router,
     );
   }
