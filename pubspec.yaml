@@ -16,15 +16,30 @@ dependencies:
   # Icons — Phosphor Icons with duotone support
   phosphor_flutter: ^2.1.0
 
+  # Routing & deep linking
+  go_router: ^14.8.1
+  app_links: ^6.4.0
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  # Riverpod code generation
+  riverpod_generator: ^2.6.5
+  build_runner: ^2.4.13
+  riverpod_lint: ^2.6.5
+
 flutter:
   uses-material-design: true
 
   assets:
+    - assets/branding/logo/
+    - assets/branding/icons/
     - assets/l10n/
 
   fonts:

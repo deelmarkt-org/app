@@ -46,3 +46,6 @@ lib/generated_plugin_registrant.dart
 
 # Archives — personal reference docs (not pushed to remote)
 docs/archives/emre/
+
+# Private docs
+deelmarkt-email.md

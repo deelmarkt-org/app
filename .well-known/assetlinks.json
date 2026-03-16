@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.deelmarkt.deelmarkt",
+      "sha256_cert_fingerprints": [
+        "SIGNING_CERT_SHA256_HERE"
+      ]
+    }
+  }
+]

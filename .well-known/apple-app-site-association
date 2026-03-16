@@ -1,0 +1,24 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAM_ID.nl.deelmarkt.deelmarkt"
+        ],
+        "components": [
+          { "/": "/listings/*", "comment": "Listing detail" },
+          { "/": "/users/*", "comment": "User profile" },
+          { "/": "/transactions/*", "comment": "Transaction detail" },
+          { "/": "/shipping/*", "comment": "Shipping tracking" },
+          { "/": "/search", "comment": "Search with query params" },
+          { "/": "/sell", "comment": "Create listing" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAM_ID.nl.deelmarkt.deelmarkt"
+    ]
+  }
+}

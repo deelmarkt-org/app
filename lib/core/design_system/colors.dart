@@ -39,4 +39,21 @@ class DeelmarktColors {
   static const trustWarning = Color(0xFFDC2626);
   static const trustPending = Color(0xFFF59E0B);
   static const trustShield = Color(0xFFF0FDF4);
+
+  // Dark mode overrides (tokens.md §Dark Mode)
+  static const darkScaffold = Color(0xFF121212);
+  static const darkSurface = Color(0xFF1E1E1E);
+  static const darkSurfaceElevated = Color(0xFF2C2C2C);
+  static const darkPrimary = Color(0xFFFF7A4D);
+  static const darkSecondary = Color(0xFF5BA3D9);
+  static const darkOnPrimary = Color(0xFF1A1A1A);
+  static const darkOnSurface = Color(0xFFF2F2F2);
+  static const darkOnSurfaceSecondary = Color(0xFFA0A0A0);
+  static const darkBorder = Color(0xFF333333);
+  static const darkDivider = Color(0xFF2C2C2C);
+  static const darkSuccess = Color(0xFF4ADE80);
+  static const darkError = Color(0xFFF87171);
+  static const darkTrustShield = Color(0xFF052E16);
+  static const darkErrorSurface = Color(0xFF450A0A);
+  static const darkInfoSurface = Color(0xFF172554);
 }
