@@ -48,7 +48,7 @@
 | AI Kit               | `.agent/`                                   |
 | Documentation        | `docs/`                                     |
 | Sprint Plan          | `docs/SPRINT-PLAN.md`                       |
-| Sprint 4 Plan        | `docs/archives/sprint4-plan/PLAN-sprint4-scope-session-sync.md` |
+| Sprint 4 Plan        | `docs/archives/sprint-implementation-plans/PLAN-sprint4-scope-session-sync.md` |
 | Design System        | `docs/design-system/`                       |
 | Epics                | `docs/epics/`                               |
 | Architecture         | `docs/ARCHITECTURE.md`                      |

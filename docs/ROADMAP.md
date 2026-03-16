@@ -90,7 +90,7 @@
 ## Sprint 4 — E07 Foundation 🔄
 
 > First implementation sprint. Single-developer sequential execution.
-> See [SPRINT-PLAN.md](SPRINT-PLAN.md) for task details and [PLAN](archives/sprint4-plan/PLAN-sprint4-scope-session-sync.md) for scope rationale.
+> See [SPRINT-PLAN.md](SPRINT-PLAN.md) for task details and [PLAN](archives/sprint-implementation-plans/PLAN-sprint4-scope-session-sync.md) for scope rationale.
 
 | Phase | Task IDs | Area | Deliverable |
 |:------|:---------|:-----|:------------|
