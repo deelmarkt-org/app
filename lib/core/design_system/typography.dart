@@ -67,6 +67,7 @@ class DeelmarktTypography {
     fontSize: 20,
     fontWeight: FontWeight.w700,
     height: 1.2,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 
   static const priceSm = TextStyle(
@@ -74,5 +75,6 @@ class DeelmarktTypography {
     fontSize: 16,
     fontWeight: FontWeight.w700,
     height: 1.25,
+    fontFeatures: [FontFeature.tabularFigures()],
   );
 }

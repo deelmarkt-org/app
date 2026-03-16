@@ -5,6 +5,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 
 void main() {
   group('DeelmarktColors', () {
@@ -19,6 +20,28 @@ void main() {
     test('trust colours are distinct from semantic colours', () {
       expect(DeelmarktColors.trustVerified, isNot(DeelmarktColors.success));
       expect(DeelmarktColors.trustWarning, isNot(DeelmarktColors.error));
+    });
+  });
+
+  group('DeelmarktColors dark mode', () {
+    test('dark primary is lighter orange #FF7A4D', () {
+      expect(DeelmarktColors.darkPrimary, const Color(0xFFFF7A4D));
+    });
+
+    test('dark secondary is lighter blue #5BA3D9', () {
+      expect(DeelmarktColors.darkSecondary, const Color(0xFF5BA3D9));
+    });
+
+    test('dark scaffold is #121212', () {
+      expect(DeelmarktColors.darkScaffold, const Color(0xFF121212));
+    });
+
+    test('dark surface is #1E1E1E', () {
+      expect(DeelmarktColors.darkSurface, const Color(0xFF1E1E1E));
+    });
+
+    test('dark error is #F87171', () {
+      expect(DeelmarktColors.darkError, const Color(0xFFF87171));
     });
   });
 
@@ -60,33 +83,114 @@ void main() {
     });
   });
 
-  group('DeelmarktTheme', () {
-    test('light theme uses Material 3', () {
+  group('DeelmarktTypography', () {
+    test('price style has tabular figures', () {
+      expect(
+        DeelmarktTypography.price.fontFeatures,
+        contains(const FontFeature.tabularFigures()),
+      );
+    });
+
+    test('priceSm style has tabular figures', () {
+      expect(
+        DeelmarktTypography.priceSm.fontFeatures,
+        contains(const FontFeature.tabularFigures()),
+      );
+    });
+  });
+
+  group('DeelmarktTheme light', () {
+    test('uses Material 3', () {
       expect(DeelmarktTheme.light.useMaterial3, true);
     });
 
-    test('dark theme uses Material 3', () {
-      expect(DeelmarktTheme.dark.useMaterial3, true);
-    });
-
-    test('light theme scaffold is neutral-50', () {
+    test('scaffold is neutral-50', () {
       expect(
         DeelmarktTheme.light.scaffoldBackgroundColor,
         DeelmarktColors.neutral50,
       );
     });
 
-    test('light theme primary is DeelMarkt orange', () {
+    test('primary is DeelMarkt orange', () {
       expect(DeelmarktTheme.light.colorScheme.primary, DeelmarktColors.primary);
+    });
+
+    test('appBar uses DeelmarktColors.white', () {
+      expect(
+        DeelmarktTheme.light.appBarTheme.backgroundColor,
+        DeelmarktColors.white,
+      );
+    });
+
+    test('input padding uses Spacing tokens', () {
+      final padding =
+          DeelmarktTheme.light.inputDecorationTheme.contentPadding
+              as EdgeInsets;
+      expect(padding.left, Spacing.s4);
+      expect(padding.top, Spacing.s3);
     });
   });
 
-  group('DeelMarktApp', () {
-    testWidgets('renders without crashing', (tester) async {
+  group('DeelmarktTheme dark', () {
+    test('uses Material 3', () {
+      expect(DeelmarktTheme.dark.useMaterial3, true);
+    });
+
+    test('scaffold uses darkScaffold colour', () {
+      expect(
+        DeelmarktTheme.dark.scaffoldBackgroundColor,
+        DeelmarktColors.darkScaffold,
+      );
+    });
+
+    test('primary is darkPrimary #FF7A4D', () {
+      expect(
+        DeelmarktTheme.dark.colorScheme.primary,
+        DeelmarktColors.darkPrimary,
+      );
+    });
+
+    test('appBar uses darkSurface', () {
+      expect(
+        DeelmarktTheme.dark.appBarTheme.backgroundColor,
+        DeelmarktColors.darkSurface,
+      );
+    });
+
+    test('card uses darkBorder stroke', () {
+      final shape =
+          DeelmarktTheme.dark.cardTheme.shape as RoundedRectangleBorder;
+      expect(shape.side.color, DeelmarktColors.darkBorder);
+    });
+
+    test('has elevatedButtonTheme', () {
+      expect(DeelmarktTheme.dark.elevatedButtonTheme.style, isNotNull);
+    });
+
+    test('has inputDecorationTheme', () {
+      expect(
+        DeelmarktTheme.dark.inputDecorationTheme.fillColor,
+        DeelmarktColors.darkSurface,
+      );
+    });
+  });
+
+  group('Theme renders', () {
+    testWidgets('light theme applies to MaterialApp', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: DeelmarktTheme.light,
-          darkTheme: DeelmarktTheme.dark,
+          home: const Scaffold(body: Center(child: Text('DeelMarkt'))),
+        ),
+      );
+
+      expect(find.text('DeelMarkt'), findsOneWidget);
+    });
+
+    testWidgets('dark theme applies to MaterialApp', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: DeelmarktTheme.dark,
           home: const Scaffold(body: Center(child: Text('DeelMarkt'))),
         ),
       );
