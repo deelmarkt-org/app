@@ -31,8 +31,11 @@ void main() {
       final nlKeys = nlStrings.keys.toSet();
       final enKeys = enStrings.keys.toSet();
 
-      expect(nlKeys, equals(enKeys),
-          reason: 'Top-level keys must match between NL and EN');
+      expect(
+        nlKeys,
+        equals(enKeys),
+        reason: 'Top-level keys must match between NL and EN',
+      );
     });
 
     test('both files have identical nested keys', () {
@@ -42,22 +45,34 @@ void main() {
       final missingInEn = nlNestedKeys.difference(enNestedKeys);
       final missingInNl = enNestedKeys.difference(nlNestedKeys);
 
-      expect(missingInEn, isEmpty,
-          reason: 'Keys in NL but missing in EN: $missingInEn');
-      expect(missingInNl, isEmpty,
-          reason: 'Keys in EN but missing in NL: $missingInNl');
+      expect(
+        missingInEn,
+        isEmpty,
+        reason: 'Keys in NL but missing in EN: $missingInEn',
+      );
+      expect(
+        missingInNl,
+        isEmpty,
+        reason: 'Keys in EN but missing in NL: $missingInNl',
+      );
     });
 
     test('no empty string values in NL file', () {
       final emptyKeys = _findEmptyValues(nlStrings);
-      expect(emptyKeys, isEmpty,
-          reason: 'Empty values found in NL: $emptyKeys');
+      expect(
+        emptyKeys,
+        isEmpty,
+        reason: 'Empty values found in NL: $emptyKeys',
+      );
     });
 
     test('no empty string values in EN file', () {
       final emptyKeys = _findEmptyValues(enStrings);
-      expect(emptyKeys, isEmpty,
-          reason: 'Empty values found in EN: $emptyKeys');
+      expect(
+        emptyKeys,
+        isEmpty,
+        reason: 'Empty values found in EN: $emptyKeys',
+      );
     });
   });
 
@@ -115,8 +130,7 @@ Set<String> _flattenKeys(Map<String, dynamic> map, [String prefix = '']) {
   for (final entry in map.entries) {
     final key = prefix.isEmpty ? entry.key : '$prefix.${entry.key}';
     if (entry.value is Map<String, dynamic>) {
-      result.addAll(
-          _flattenKeys(entry.value as Map<String, dynamic>, key));
+      result.addAll(_flattenKeys(entry.value as Map<String, dynamic>, key));
     } else {
       result.add(key);
     }
@@ -130,8 +144,7 @@ List<String> _findEmptyValues(Map<String, dynamic> map, [String prefix = '']) {
   for (final entry in map.entries) {
     final key = prefix.isEmpty ? entry.key : '$prefix.${entry.key}';
     if (entry.value is Map<String, dynamic>) {
-      result.addAll(
-          _findEmptyValues(entry.value as Map<String, dynamic>, key));
+      result.addAll(_findEmptyValues(entry.value as Map<String, dynamic>, key));
     } else if (entry.value is String && (entry.value as String).isEmpty) {
       result.add(key);
     }

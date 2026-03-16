@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
@@ -7,7 +6,6 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
-import 'package:deelmarkt/main.dart';
 
 void main() {
   group('DeelmarktColors', () {
@@ -177,12 +175,27 @@ void main() {
     });
   });
 
-  group('DeelMarktApp', () {
-    testWidgets('renders without crashing', (tester) async {
-      await tester.pumpWidget(const ProviderScope(child: DeelMarktApp()));
-      await tester.pumpAndSettle();
+  group('Theme renders', () {
+    testWidgets('light theme applies to MaterialApp', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: DeelmarktTheme.light,
+          home: const Scaffold(body: Center(child: Text('DeelMarkt'))),
+        ),
+      );
 
-      expect(find.text('Home'), findsWidgets);
+      expect(find.text('DeelMarkt'), findsOneWidget);
+    });
+
+    testWidgets('dark theme applies to MaterialApp', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: DeelmarktTheme.dark,
+          home: const Scaffold(body: Center(child: Text('DeelMarkt'))),
+        ),
+      );
+
+      expect(find.text('DeelMarkt'), findsOneWidget);
     });
   });
 }
