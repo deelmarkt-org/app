@@ -1,5 +1,5 @@
 name: deelmarkt
-description: "A new Flutter project."
+description: "Trust-first Dutch P2P marketplace"
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -10,10 +10,42 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Routing & deep linking
+  go_router: ^14.8.1
+  app_links: ^6.4.0
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+  # Riverpod code generation
+  riverpod_generator: ^2.6.5
+  build_runner: ^2.4.15
+  custom_lint: ^0.7.5
+  riverpod_lint: ^2.6.5
+
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/branding/logo/
+    - assets/branding/icons/
+
+  # Download from: https://fonts.google.com/specimen/Plus+Jakarta+Sans
+  # Place .ttf files in assets/fonts/ before first release build.
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700

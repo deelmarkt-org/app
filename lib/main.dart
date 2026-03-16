@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/design_system/theme.dart';
+import 'core/router/app_router.dart';
+
+/// Riverpod provider for GoRouter — single instance, testable via overrides.
+final routerProvider = Provider((ref) => createRouter());
 
 void main() {
-  runApp(const DeelMarktApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const ProviderScope(child: DeelMarktApp()));
 }
 
-class DeelMarktApp extends StatelessWidget {
+class DeelMarktApp extends ConsumerWidget {
   const DeelMarktApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+
+    return MaterialApp.router(
       title: 'DeelMarkt',
       debugShowCheckedModeBanner: false,
       theme: DeelmarktTheme.light,
       darkTheme: DeelmarktTheme.dark,
       themeMode: ThemeMode.system,
-      home: const Scaffold(
-        body: Center(child: Text('DeelMarkt — Deel wat je hebt')),
-      ),
+      routerConfig: router,
     );
   }
 }

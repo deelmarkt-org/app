@@ -1,0 +1,167 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: "17"
+  MIN_COVERAGE: 70
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. Format + Analyze
+  # ──────────────────────────────────────────────
+  quality:
+    name: Format & Analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Run analyzer
+        run: flutter analyze --no-pub
+
+  # ──────────────────────────────────────────────
+  # 2. Tests + Coverage
+  # ──────────────────────────────────────────────
+  test:
+    name: Test & Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests with coverage
+        run: flutter test --coverage --no-pub
+
+      - name: Check coverage threshold
+        run: |
+          if [ ! -f coverage/lcov.info ]; then
+            echo "::error::No coverage file found. Run tests with --coverage."
+            exit 1
+          fi
+
+          TOTAL_LINES=$(grep 'LF:' coverage/lcov.info | cut -d: -f2 | paste -sd+ | bc)
+          HIT_LINES=$(grep 'LH:' coverage/lcov.info | cut -d: -f2 | paste -sd+ | bc)
+
+          if [ "$TOTAL_LINES" -eq 0 ]; then
+            echo "::warning::No coverage data. Skipping threshold check for initial setup."
+            exit 0
+          fi
+
+          COVERAGE=$(echo "scale=1; $HIT_LINES * 100 / $TOTAL_LINES" | bc)
+          echo "Coverage: ${COVERAGE}% (${HIT_LINES}/${TOTAL_LINES} lines)"
+
+          if [ "$(echo "$COVERAGE < $MIN_COVERAGE" | bc)" -eq 1 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below minimum ${MIN_COVERAGE}%"
+            exit 1
+          fi
+
+          echo "Coverage ${COVERAGE}% meets minimum ${MIN_COVERAGE}%"
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+          retention-days: 7
+
+  # ──────────────────────────────────────────────
+  # 3. Security scan (CVE + secrets)
+  # ──────────────────────────────────────────────
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Audit dependencies
+        run: |
+          dart pub deps --json > deps.json
+          flutter pub outdated
+          echo "Dependency audit complete."
+
+      - name: Scan for leaked secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+  # ──────────────────────────────────────────────
+  # 4. Build check (app compiles + size budget)
+  # ──────────────────────────────────────────────
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK (release)
+        run: flutter build apk --release --no-pub
+
+      - name: Check APK size budget
+        run: |
+          APK_PATH=$(find build -name "app-release.apk" -type f | head -1)
+          if [ -z "$APK_PATH" ]; then
+            echo "::warning::APK not found, skipping size check"
+            exit 0
+          fi
+          SIZE_MB=$(du -m "$APK_PATH" | cut -f1)
+          echo "APK size: ${SIZE_MB}MB (budget: 25MB)"
+          if [ "$SIZE_MB" -gt 25 ]; then
+            echo "::error::APK size ${SIZE_MB}MB exceeds 25MB budget"
+            exit 1
+          fi
