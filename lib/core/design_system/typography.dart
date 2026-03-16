@@ -63,12 +63,14 @@ class DeelmarktTypography {
 
   // Custom tokens not in Material TextTheme
   static const price = TextStyle(
+    fontFamily: fontFamily,
     fontSize: 20,
     fontWeight: FontWeight.w700,
     height: 1.2,
   );
 
   static const priceSm = TextStyle(
+    fontFamily: fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w700,
     height: 1.25,

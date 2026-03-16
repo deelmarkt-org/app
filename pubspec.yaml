@@ -1,14 +1,20 @@
 name: deelmarkt
-description: "A new Flutter project."
+description: "DeelMarkt — The trusted Dutch marketplace for second-hand goods."
 publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.12.0-198.0.dev
+  sdk: ^3.7.0
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # Localization — E07 §Localisation
+  easy_localization: ^3.0.7
+
+  # Icons — Phosphor Icons with duotone support
+  phosphor_flutter: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +23,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/l10n/
+
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Variable.ttf
+        - asset: assets/fonts/PlusJakartaSans-Italic-Variable.ttf
+          style: italic
