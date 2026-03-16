@@ -30,6 +30,23 @@ Then read [CLAUDE.md](CLAUDE.md) for development rules and start with [Epic E07]
 | [Design System](docs/design-system/) | Tokens, components, patterns, accessibility |
 | [Epics](docs/epics/README.md) | 8 development epics with acceptance criteria |
 | [ROADMAP.md](docs/ROADMAP.md) | Phased timeline with KPIs |
+| [CHANGELOG](docs/CHANGELOG.md) | Version history |
+
+## AI-Powered Development
+
+This project uses [Antigravity AI Kit](https://github.com/besync-labs/antigravity-ai-kit) for AI-assisted development. Open the project in your AI-powered IDE (VS Code + Copilot, Cursor, etc.) and use these commands:
+
+| Command | Purpose |
+|:--------|:--------|
+| `/status` | Start a session — loads context and sprint state |
+| `/plan` | Plan a feature before building |
+| `/create` | Build a new feature from scratch |
+| `/review` | Run quality gates (lint, test, security) |
+| `/help` | **Full reference** — browse all commands, agents, skills, and workflows |
+
+> **Tip**: Run `/help` anytime to explore the full AI Kit capabilities interactively.
+
+---
 
 ## Tech Stack
 
