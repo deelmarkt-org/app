@@ -33,6 +33,18 @@ The agent will:
 
 ---
 
+## Convention Rules
+
+> **All contributors** (human and AI) MUST follow these conventions:
+
+| Rule | Convention |
+|:-----|:----------|
+| **Implementation Plans** | Store ALL implementation plans in `docs/archives/sprint-implementation-plans/`. Naming: `PLAN-sprint{N}-phase-{X}.md`. Never leave plans in `docs/` root. |
+| **Audit Reports** | Store ALL audit reports in `docs/audits/`. Naming: `AUDIT-sprint{N}-phase-{X}.md`. |
+| **Branch Naming** | Follow prefix convention: `feature/{handle}-E{NN}-{area}`. |
+
+---
+
 ## Sprint 1–2 (Weeks 1–4) — E07: Foundation
 
 ### reso `[R]` — Backend Infrastructure
@@ -73,10 +85,10 @@ The agent will:
 
 **Branch:** `feature/pizmam-E07-design-system` | **Epic:** [E07](epics/E07-infrastructure.md)
 
-- [ ] `P-01` Set up Plus Jakarta Sans font — renders correctly in app
-- [ ] `P-02` Set up Phosphor Icons package — icons render, duotone works
-- [ ] `P-03` Set up easy_localization (NL/EN) — language switch works, strings from JSON
-- [ ] `P-04` Create NL + EN string files — at least 20 common keys each
+- [x] `P-01` Set up Plus Jakarta Sans font — renders correctly in app
+- [x] `P-02` Set up Phosphor Icons package — icons render, duotone works
+- [x] `P-03` Set up easy_localization (NL/EN) — language switch works, strings from JSON
+- [x] `P-04` Create NL + EN string files — at least 20 common keys each
 - [ ] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
 - [ ] `P-06` Implement `DeelInput` (text, search, price, postcode) — all variants render
 - [ ] `P-07` Implement `SkeletonLoader` (shimmer) — 1.5s sweep animation

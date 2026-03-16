@@ -87,6 +87,22 @@
 
 ---
 
+## Sprint 4 — E07 Foundation 🔄
+
+> First implementation sprint. Single-developer sequential execution.
+> See [SPRINT-PLAN.md](SPRINT-PLAN.md) for task details and [PLAN](archives/sprint-implementation-plans/PLAN-sprint4-scope-session-sync.md) for scope rationale.
+
+| Phase | Task IDs | Area | Deliverable | Status |
+|:------|:---------|:-----|:------------|:-------|
+| A — Design Foundation | `P-01` – `P-04` | Fonts, icons, i18n | Plus Jakarta Sans, Phosphor Icons, NL/EN localisation | ✅ Complete |
+| B — UI Components | `P-05` – `P-09` | Shared widgets | DeelButton, DeelInput, SkeletonLoader, EmptyState, ErrorState | ⏳ Next |
+| C — Supabase Bootstrap | `R-01` – `R-06` | Backend infra | Project, Auth, RLS, Vault, Storage, Realtime | ⏳ |
+| D — Firebase + Edge Fn | `R-07` – `R-09` | Integrations | Health check Edge Function, FCM, Crashlytics | ⏳ |
+| E — Infrastructure | `B-01` – `B-03` | DNS/CDN/Images | Cloudflare DNS+WAF, Cloudinary pipeline | ⏳ |
+| F — CI/CD Pipeline | `B-04` – `B-05` | Automation | GitHub Actions CI, Codemagic builds | ⏳ |
+
+---
+
 ## Completed
 
 - [x] **Sprint 3** (2026-03-16): Architecture docs, epics, tech stack evaluation
