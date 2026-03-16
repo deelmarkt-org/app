@@ -1,12 +1,10 @@
 # Fonts
 
-Download **Plus Jakarta Sans** from [Google Fonts](https://fonts.google.com/specimen/Plus+Jakarta+Sans).
+**Plus Jakarta Sans** — variable font (SIL OFL, free commercial use).
 
-Place these files here:
-- `PlusJakartaSans-Regular.ttf` (400)
-- `PlusJakartaSans-Medium.ttf` (500)
-- `PlusJakartaSans-SemiBold.ttf` (600)
-- `PlusJakartaSans-Bold.ttf` (700)
+| File | Type | Size |
+|:-----|:-----|:-----|
+| `PlusJakartaSans-Variable.ttf` | Variable (weight 200–800) | 176KB |
+| `PlusJakartaSans-Italic-Variable.ttf` | Variable italic | 183KB |
 
-The empty `.ttf` files are placeholders so `flutter pub get` doesn't fail.
-Replace them with real font files before first release build.
+Registered in `pubspec.yaml` under `flutter.fonts`.

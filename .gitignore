@@ -47,5 +47,9 @@ lib/generated_plugin_registrant.dart
 # Archives — personal reference docs
 docs/archives/emre/
 
+# Agent session state (changes every session, not shareable)
+.agent/session-context.md
+.agent/session-state.json
+
 # Private docs
 deelmarkt-email.md
