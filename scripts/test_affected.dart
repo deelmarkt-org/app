@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 /// test_affected.dart — Run tests only for staged Dart files.
 ///
 /// Cross-platform (macOS, Linux, Windows). Requires only Dart SDK.
@@ -24,10 +25,14 @@ const coreFiles = [
 
 void main() async {
   // Get staged .dart files
-  final result = await Process.run(
-    'git',
-    ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '--', '*.dart'],
-  );
+  final result = await Process.run('git', [
+    'diff',
+    '--cached',
+    '--name-only',
+    '--diff-filter=ACMR',
+    '--',
+    '*.dart',
+  ]);
 
   final staged =
       (result.stdout as String)
@@ -45,11 +50,10 @@ void main() async {
   for (final core in coreFiles) {
     if (staged.contains(core)) {
       print('Core file changed ($core) — running full test suite.');
-      final testResult = await Process.run(
-        'flutter',
-        ['test', '--no-pub'],
-        runInShell: true,
-      );
+      final testResult = await Process.run('flutter', [
+        'test',
+        '--no-pub',
+      ], runInShell: true);
       stdout.write(testResult.stdout);
       stderr.write(testResult.stderr);
       exit(testResult.exitCode);
@@ -99,11 +103,11 @@ void main() async {
     print('  → $f');
   }
 
-  final testResult = await Process.run(
-    'flutter',
-    ['test', '--no-pub', ...testFiles],
-    runInShell: true,
-  );
+  final testResult = await Process.run('flutter', [
+    'test',
+    '--no-pub',
+    ...testFiles,
+  ], runInShell: true);
   stdout.write(testResult.stdout);
   stderr.write(testResult.stderr);
   exit(testResult.exitCode);
