@@ -206,10 +206,10 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # ──────────────────────────────────────────────
-  # 5. Build check (app compiles + size budget)
+  # 5. Build check — mobile (APK) + web
   # ──────────────────────────────────────────────
-  build:
-    name: Build Check
+  build-mobile:
+    name: Build Check (Android)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality, test]
@@ -243,5 +243,80 @@ jobs:
           echo "APK size: ${SIZE_MB}MB (budget: 50MB)"
           if [ "$SIZE_MB" -gt 50 ]; then
             echo "::error::APK size ${SIZE_MB}MB exceeds 50MB budget"
+            exit 1
+          fi
+
+  build-web:
+    name: Build Check (Web)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build web (release)
+        run: flutter build web --release --no-pub
+
+      - name: Web security checks
+        run: |
+          WEB_DIR="build/web"
+          if [ ! -d "$WEB_DIR" ]; then
+            echo "::warning::Web build directory not found"
+            exit 0
+          fi
+
+          ISSUES=0
+
+          # Check: no source maps in production (exposes source code)
+          SOURCEMAPS=$(find "$WEB_DIR" -name "*.js.map" 2>/dev/null)
+          if [ -n "$SOURCEMAPS" ]; then
+            echo "::error::Source maps found in production build — exposes Dart source code!"
+            echo "$SOURCEMAPS"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "OK: No source maps in production"
+          fi
+
+          # Check: main.dart.js is not readable Dart (should be compiled)
+          if [ -f "$WEB_DIR/main.dart.js" ]; then
+            JS_SIZE=$(du -k "$WEB_DIR/main.dart.js" | cut -f1)
+            echo "main.dart.js: ${JS_SIZE}KB"
+            if [ "$JS_SIZE" -gt 5120 ]; then
+              echo "::warning::main.dart.js is ${JS_SIZE}KB (>5MB) — consider code splitting"
+            fi
+          fi
+
+          # Check: index.html has no inline scripts with secrets
+          if grep -q "supabaseUrl\|supabaseKey\|mollieKey\|apiKey" "$WEB_DIR/index.html" 2>/dev/null; then
+            echo "::error::Potential secrets found in index.html!"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "OK: No secrets in index.html"
+          fi
+
+          if [ "$ISSUES" -gt 0 ]; then
+            exit 1
+          fi
+          echo "Web security checks passed."
+
+      - name: Check web bundle size
+        run: |
+          WEB_DIR="build/web"
+          if [ ! -d "$WEB_DIR" ]; then
+            exit 0
+          fi
+          TOTAL_KB=$(du -sk "$WEB_DIR" | cut -f1)
+          TOTAL_MB=$((TOTAL_KB / 1024))
+          echo "Web bundle size: ${TOTAL_MB}MB (${TOTAL_KB}KB)"
+          if [ "$TOTAL_MB" -gt 20 ]; then
+            echo "::error::Web bundle ${TOTAL_MB}MB exceeds 20MB budget"
             exit 1
           fi

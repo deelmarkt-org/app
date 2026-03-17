@@ -107,7 +107,142 @@ jobs:
           echo "Android security audit complete."
 
   # ──────────────────────────────────────────────
-  # 2. Deep dependency + license audit
+  # 2. Web Security — headers, CSP, build analysis
+  # ──────────────────────────────────────────────
+  web-security:
+    name: Web Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build web (release)
+        run: flutter build web --release --no-pub
+
+      # Audit web/index.html for security headers and misconfigs
+      - name: Web index.html security audit
+        run: |
+          INDEX="web/index.html"
+          BUILD_INDEX="build/web/index.html"
+          TARGET="$INDEX"
+          [ -f "$BUILD_INDEX" ] && TARGET="$BUILD_INDEX"
+
+          echo "=== Auditing $TARGET ==="
+          ISSUES=0
+          WARNINGS=0
+
+          # CSP meta tag check
+          if ! grep -qi 'Content-Security-Policy' "$TARGET"; then
+            echo "::warning::No Content-Security-Policy meta tag — XSS risk"
+            echo "  Add: <meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'; ...\">"
+            WARNINGS=$((WARNINGS + 1))
+          else
+            echo "OK: CSP meta tag present"
+          fi
+
+          # X-Frame-Options or frame-ancestors in CSP
+          if ! grep -qi 'frame-ancestors\|X-Frame-Options' "$TARGET"; then
+            echo "::warning::No frame-ancestors/X-Frame-Options — clickjacking risk"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+
+          # Check for unsafe-inline or unsafe-eval in CSP
+          if grep -qi "unsafe-inline\|unsafe-eval" "$TARGET"; then
+            echo "::warning::CSP contains unsafe-inline or unsafe-eval — weakens XSS protection"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+
+          # Check for hardcoded API keys in HTML
+          if grep -qiE "supabase|mollie|cloudinary|apikey|api_key|secret" "$TARGET"; then
+            echo "::error::Potential secrets or API references in index.html!"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "OK: No secrets in index.html"
+          fi
+
+          # Check permissions-policy meta tag
+          if ! grep -qi 'Permissions-Policy' "$TARGET"; then
+            echo "::warning::No Permissions-Policy — browser features unrestricted"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+
+          # Check referrer policy
+          if ! grep -qi 'referrer' "$TARGET"; then
+            echo "::warning::No Referrer-Policy — may leak URLs to third parties"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+
+          echo ""
+          echo "Results: $ISSUES errors, $WARNINGS warnings"
+          if [ "$ISSUES" -gt 0 ]; then
+            exit 1
+          fi
+
+      # Check compiled JS for sensitive patterns
+      - name: Web build secrets scan
+        run: |
+          WEB_DIR="build/web"
+          if [ ! -d "$WEB_DIR" ]; then
+            echo "::warning::No web build"
+            exit 0
+          fi
+
+          echo "Scanning compiled JS for sensitive patterns..."
+          ISSUES=0
+
+          # Check for hardcoded URLs/keys in compiled JS
+          for pattern in "supabaseUrl" "supabaseKey" "supabase.co" "mollieKey" "cloudinaryApiKey" "CLOUDFLARE" "sk_live" "pk_live"; do
+            if grep -rl "$pattern" "$WEB_DIR"/*.js 2>/dev/null; then
+              echo "::error::Found '$pattern' in compiled JS — secrets exposed in client bundle!"
+              ISSUES=$((ISSUES + 1))
+            fi
+          done
+
+          # Check for source maps
+          MAPS=$(find "$WEB_DIR" -name "*.js.map" 2>/dev/null | wc -l)
+          if [ "$MAPS" -gt 0 ]; then
+            echo "::error::$MAPS source map files in production — exposes Dart source!"
+            ISSUES=$((ISSUES + 1))
+          else
+            echo "OK: No source maps in production build"
+          fi
+
+          if [ "$ISSUES" -gt 0 ]; then
+            exit 1
+          fi
+          echo "Web build secrets scan passed."
+
+      # Web bundle size analysis
+      - name: Web bundle analysis
+        run: |
+          WEB_DIR="build/web"
+          if [ ! -d "$WEB_DIR" ]; then
+            exit 0
+          fi
+
+          echo "=== Web Bundle Analysis ==="
+          TOTAL_KB=$(du -sk "$WEB_DIR" | cut -f1)
+          echo "Total bundle: $((TOTAL_KB / 1024))MB (${TOTAL_KB}KB)"
+
+          if [ -f "$WEB_DIR/main.dart.js" ]; then
+            JS_KB=$(du -k "$WEB_DIR/main.dart.js" | cut -f1)
+            echo "main.dart.js: $((JS_KB))KB"
+          fi
+
+          echo ""
+          echo "Top 10 largest files:"
+          find "$WEB_DIR" -type f -exec du -k {} \; | sort -rn | head -10
+
+  # ──────────────────────────────────────────────
+  # 3. Deep dependency + license audit
   # ──────────────────────────────────────────────
   dependency-audit:
     name: Deep Dependency Audit
