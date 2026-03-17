@@ -221,6 +221,9 @@ The agent will:
 - [ ] `B-33` Delivery → escrow release integration — end-to-end flow works
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
+- [ ] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
+- [ ] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
+- [ ] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
 
 ### pizmam `[P]` — Chat UI + Moderation + Polish
 
