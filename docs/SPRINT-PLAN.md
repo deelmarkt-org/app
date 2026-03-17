@@ -83,7 +83,7 @@ The agent will:
 
 ### pizmam `[P]` — Design System & Frontend Foundation
 
-**Branch:** `feature/pizmam-E07-deel-button` | **Epic:** [E07](epics/E07-infrastructure.md)
+**Branch:** `feature/pizmam-E07-design-system` | **Epic:** [E07](epics/E07-infrastructure.md)
 
 - [x] `P-01` Set up Plus Jakarta Sans font — renders correctly in app
 - [x] `P-02` Set up Phosphor Icons package — icons render, duotone works
