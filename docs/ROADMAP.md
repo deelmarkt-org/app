@@ -95,7 +95,7 @@
 | Phase | Task IDs | Area | Deliverable | Status |
 |:------|:---------|:-----|:------------|:-------|
 | A — Design Foundation | `P-01` – `P-04` | Fonts, icons, i18n | Plus Jakarta Sans, Phosphor Icons, NL/EN localisation | ✅ Complete |
-| B — UI Components | `P-05` – `P-09` | Shared widgets | DeelButton, DeelInput, SkeletonLoader, EmptyState, ErrorState | ⏳ Next |
+| B — UI Components | `P-05` – `P-09` | Shared widgets | DeelButton, DeelInput, SkeletonLoader, EmptyState, ErrorState | 🔄 In Progress (P-05 ✅) |
 | C — Supabase Bootstrap | `R-01` – `R-06` | Backend infra | Project, Auth, RLS, Vault, Storage, Realtime | ⏳ |
 | D — Firebase + Edge Fn | `R-07` – `R-09` | Integrations | Health check Edge Function, FCM, Crashlytics | ⏳ |
 | E — Infrastructure | `B-01` – `B-03` | DNS/CDN/Images | Cloudflare DNS+WAF, Cloudinary pipeline | ⏳ |
