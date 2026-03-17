@@ -129,7 +129,59 @@ jobs:
           extra_args: --only-verified
 
   # ──────────────────────────────────────────────
-  # 4. Build check (app compiles + size budget)
+  # 4. SAST — Static Application Security Testing
+  # ──────────────────────────────────────────────
+  sast:
+    name: SAST Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Dart static analysis (strict)
+        run: flutter analyze --no-pub --fatal-infos
+
+      - name: Download coverage for SonarCloud
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+        continue-on-error: true
+
+      - name: SonarCloud scan
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=deelmarkt_app
+            -Dsonar.organization=deelmarkt
+            -Dsonar.sources=lib/
+            -Dsonar.tests=test/
+            -Dsonar.dart.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.host.url=https://sonarcloud.io
+
+      - name: SonarCloud quality gate
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  # ──────────────────────────────────────────────
+  # 5. Build check (app compiles + size budget)
   # ──────────────────────────────────────────────
   build:
     name: Build Check

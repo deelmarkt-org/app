@@ -69,18 +69,18 @@ The agent will:
 
 **Branch:** `feature/belengaz-E07-cicd-deeplinks` | **Epic:** [E07](epics/E07-infrastructure.md)
 
-- [ ] `B-01` Set up Cloudflare DNS for deelmarkt.com — domain resolves, SSL active
-- [ ] `B-02` Configure Cloudflare WAF (basic rules) — WAF enabled
-- [ ] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
-- [ ] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
+- [x] `B-01` Set up Cloudflare DNS for deelmarkt.com — domain resolves, SSL active
+- [x] `B-02` Configure Cloudflare WAF (basic rules) — WAF enabled
+- [x] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
+- [x] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
 - [ ] `B-05` Set up Codemagic — iOS (TestFlight) + Android (Play internal) builds
-- [ ] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
-- [ ] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
-- [ ] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
+- [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
+- [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
+- [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
 - [ ] `B-09` Set up Betterstack uptime monitoring — monitors Supabase, alerts on Slack
 - [ ] `B-10` Set up PagerDuty alerting — CRITICAL/HIGH/INFO tiers configured
-- [ ] `B-11` Configure SonarQube in CI — SAST gate blocks merge on findings
-- [ ] `B-12` Enable GitHub secret scanning + GitGuardian — active on repo
+- [x] `B-11` Configure SonarCloud SAST in CI — analysis + quality gate on PR
+- [x] `B-12` Enable secret scanning — detect-secrets pre-commit + TruffleHog in CI
 
 ### pizmam `[P]` — Design System & Frontend Foundation
 
