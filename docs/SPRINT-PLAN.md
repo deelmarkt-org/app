@@ -39,7 +39,7 @@ The agent will:
 
 | Rule | Convention |
 |:-----|:----------|
-| **Document Storage** | Agent-generated docs (plans, audits, assets) go in `docs/archives/emre/` (gitignored, local-only). Subfolders: `sprint-implementation-plans/` (`PLAN-sprint{N}-phase-{X}.md`), `audits/` (`AUDIT-sprint{N}-phase-{X}.md`), `assets/`. Create new subfolders as needed. **NEVER** move or archive existing `docs/` files unless the user explicitly requests it. |
+| **Document Storage** | **Do NOT auto-store** plans, audits, or assets. Present them inline for review. Only archive to `docs/archives/emre/` (gitignored, local-only) when the user **explicitly requests it**. Subfolders: `sprint-implementation-plans/`, `audits/`, `assets/`. **NEVER** move or archive existing `docs/` files unless the user explicitly requests it. |
 | **Branch Naming** | Follow prefix convention: `feature/{handle}-E{NN}-{area}`. |
 | **Pull Requests** | Run `/pr` workflow before every PR. Local pre-flight (format, analyze, test) + sync with target branch. All 4 CI checks MUST pass before merge. |
 
