@@ -1,5 +1,5 @@
 #!/usr/bin/env dart
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, dangling_library_doc_comments
 
 /// Run tests only for staged Dart files. Cross-platform (macOS, Linux, Windows).
 ///
@@ -53,7 +53,7 @@ void main() async {
   }
 
   final staged =
-      (result.stdout as String)
+      (result.stdout.toString())
           .split('\n')
           .map((l) => l.trim())
           .where((l) => l.isNotEmpty)

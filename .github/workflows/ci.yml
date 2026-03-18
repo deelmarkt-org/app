@@ -105,6 +105,7 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: quality
     steps:
       - uses: actions/checkout@v4
         with:
@@ -127,23 +128,27 @@ jobs:
             --format=table
 
       # SCA: License compliance — scan for GPL/AGPL in commercial app
+      # Note: pana install is best-effort. If it fails, the grep fallback
+      # catches packages with "gpl"/"agpl" in their name — not all GPL-licensed
+      # packages. Run `pana` locally before each release for a full audit.
       - name: Check dependency licenses
         run: |
           dart pub global activate pana 2>/dev/null || true
           if command -v pana &> /dev/null; then
             echo "Running pana license analysis..."
             pana --no-warning . 2>/dev/null | grep -i "license" || true
+          else
+            echo "::warning::pana not available — falling back to name-based GPL check"
           fi
 
-          # Check pubspec.lock for known GPL packages
-          GPL_PACKAGES="gpl agpl"
-          for pkg in $GPL_PACKAGES; do
+          # Belt-and-suspenders: grep for known GPL package names
+          for pkg in gpl agpl; do
             if grep -qi "$pkg" pubspec.lock 2>/dev/null; then
-              echo "::error::Potential $pkg-licensed dependency found in pubspec.lock!"
+              echo "::error::Potential $pkg-licensed dependency in pubspec.lock!"
               exit 1
             fi
           done
-          echo "License check passed — no GPL/AGPL packages detected."
+          echo "License check passed."
 
       # Secrets: Scan git history for leaked credentials
       - name: TruffleHog (secret scanning)
@@ -263,10 +268,7 @@ jobs:
         run: flutter pub get
 
       - name: Enable web platform (if not configured)
-        run: |
-          if [ ! -f "web/index.html" ]; then
-            flutter create --platforms web . 2>/dev/null || true
-          fi
+        run: flutter config --enable-web
 
       - name: Build web (release)
         run: flutter build web --release --no-pub
