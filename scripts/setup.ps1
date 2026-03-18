@@ -1,4 +1,4 @@
-# DeelMarkt — Development Environment Setup (Windows PowerShell)
+# DeelMarkt - Development Environment Setup (Windows PowerShell)
 # Usage: .\scripts\setup.ps1
 
 $ErrorActionPreference = "Stop"
@@ -9,11 +9,11 @@ function Warn($msg)  { Write-Host "!  $msg" -ForegroundColor Yellow }
 function Fail($msg)  { Write-Host "x  $msg" -ForegroundColor Red; exit 1 }
 
 Write-Host ""
-Write-Host "  DeelMarkt — Development Environment Setup" -ForegroundColor Cyan
+Write-Host "  DeelMarkt - Development Environment Setup" -ForegroundColor Cyan
 Write-Host "  ==========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# ── 1. Check prerequisites ──────────────────────────────────────────────────
+# -- 1. Check prerequisites ---------------------------------------------------
 Info "Checking prerequisites..."
 
 $missing = @()
@@ -32,12 +32,12 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
 } else { $missing += "git" }
 
 if ($missing.Count -gt 0) {
-    Fail "Missing required tools: $($missing -join ', '). Install them first — see docs/SETUP.md"
+    Fail "Missing required tools: $($missing -join ', '). Install them first - see docs/SETUP.md"
 }
 
 Write-Host ""
 
-# ── 2. Install pre-commit ────────────────────────────────────────────────────
+# -- 2. Install pre-commit ----------------------------------------------------
 Info "Setting up pre-commit hooks..."
 
 if (-not (Get-Command pre-commit -ErrorAction SilentlyContinue)) {
@@ -55,7 +55,7 @@ Ok "Pre-push hooks installed"
 
 Write-Host ""
 
-# ── 3. Secrets baseline ─────────────────────────────────────────────────────
+# -- 3. Secrets baseline -------------------------------------------------------
 Info "Setting up secrets scanning..."
 
 if (-not (Get-Command detect-secrets -ErrorAction SilentlyContinue)) {
@@ -72,7 +72,7 @@ if (-not (Test-Path .secrets.baseline)) {
 
 Write-Host ""
 
-# ── 4. Git branch setup ─────────────────────────────────────────────────────
+# -- 4. Git branch setup ------------------------------------------------------
 Info "Setting up git branches..."
 
 $branches = git branch --list 2>$null
@@ -87,7 +87,7 @@ if ($branches -notmatch "dev") {
 
 Write-Host ""
 
-# ── 5. Flutter setup ────────────────────────────────────────────────────────
+# -- 5. Flutter setup ----------------------------------------------------------
 Info "Running Flutter setup..."
 
 if (Test-Path pubspec.yaml) {
@@ -100,19 +100,19 @@ if (Test-Path pubspec.yaml) {
         Ok "Code generation complete"
     }
 } else {
-    Warn "No pubspec.yaml found — Flutter project not yet created. Run 'flutter create' first."
+    Warn "No pubspec.yaml found - Flutter project not yet created. Run 'flutter create' first."
 }
 
 Write-Host ""
 
-# ── 6. Verify hooks ─────────────────────────────────────────────────────────
+# -- 6. Verify hooks -----------------------------------------------------------
 Info "Verifying pre-commit hooks..."
 
 pre-commit run --all-files 2>$null
 if ($LASTEXITCODE -eq 0) {
     Ok "All pre-commit hooks pass"
 } else {
-    Warn "Some hooks failed — this is expected before Flutter project is created"
+    Warn "Some hooks failed - this is expected before Flutter project is created"
 }
 
 Write-Host ""

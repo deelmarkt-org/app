@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
+import 'deel_button_theme.dart';
 import 'radius.dart';
 import 'spacing.dart';
 import 'typography.dart';
@@ -15,6 +16,7 @@ class DeelmarktTheme {
   static ThemeData light = ThemeData(
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
+    extensions: <ThemeExtension>[DeelButtonThemeData.light()],
     textTheme: DeelmarktTypography.textTheme,
     primaryColor: DeelmarktColors.primary,
     scaffoldBackgroundColor: DeelmarktColors.neutral50,
@@ -100,6 +102,7 @@ class DeelmarktTheme {
   static ThemeData dark = ThemeData(
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
+    extensions: <ThemeExtension>[DeelButtonThemeData.dark()],
     textTheme: DeelmarktTypography.textTheme,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: DeelmarktColors.darkScaffold,

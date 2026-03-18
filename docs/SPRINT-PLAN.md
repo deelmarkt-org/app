@@ -39,8 +39,7 @@ The agent will:
 
 | Rule | Convention |
 |:-----|:----------|
-| **Implementation Plans** | Store ALL implementation plans in `docs/archives/emre/`. Naming: `PLAN-sprint{N}-phase-{X}.md`. This folder is **gitignored** (local-only, not pushed to remote). |
-| **Audit Reports** | Store ALL audit reports in `docs/audits/`. Naming: `AUDIT-sprint{N}-phase-{X}.md`. |
+| **Document Storage** | **Do NOT auto-store** plans, audits, or assets. Present them inline for review. Only archive to `docs/archives/emre/` (gitignored, local-only) when the user **explicitly requests it**. Subfolders: `sprint-implementation-plans/`, `audits/`, `assets/`. **NEVER** move or archive existing `docs/` files unless the user explicitly requests it. |
 | **Branch Naming** | Follow prefix convention: `feature/{handle}-E{NN}-{area}`. |
 | **Pull Requests** | Run `/pr` workflow before every PR. Local pre-flight (format, analyze, test) + sync with target branch. All 4 CI checks MUST pass before merge. |
 
@@ -90,7 +89,7 @@ The agent will:
 - [x] `P-02` Set up Phosphor Icons package — icons render, duotone works
 - [x] `P-03` Set up easy_localization (NL/EN) — language switch works, strings from JSON
 - [x] `P-04` Create NL + EN string files — at least 20 common keys each
-- [ ] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
+- [x] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
 - [ ] `P-06` Implement `DeelInput` (text, search, price, postcode) — all variants render
 - [ ] `P-07` Implement `SkeletonLoader` (shimmer) — 1.5s sweep animation
 - [ ] `P-08` Implement `EmptyState` widget — illustration + message + action
