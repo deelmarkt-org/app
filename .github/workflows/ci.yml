@@ -209,7 +209,7 @@ jobs:
 
       - name: SonarCloud quality gate
         if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-quality-gate-action@v4
+        uses: SonarSource/sonarqube-quality-gate-action@v1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
