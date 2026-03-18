@@ -1,15 +1,15 @@
 #!/usr/bin/env dart
-// ignore_for_file: avoid_print, dangling_library_doc_comments
+// ignore_for_file: avoid_print
 
-/// Run tests only for staged Dart files. Cross-platform (macOS, Linux, Windows).
-///
-/// Mapping rules:
-///   lib/core/design_system/colors.dart  → test/core/design_system_test.dart
-///                                         test/core/design_system/colors_test.dart
-///   lib/features/home/data/repo.dart    → test/features/home/data/repo_test.dart
-///   test/anything_test.dart             → runs directly
-///
-/// Core files + config files trigger full suite.
+// Run tests only for staged Dart files. Cross-platform (macOS, Linux, Windows).
+//
+// Mapping rules:
+//   lib/core/design_system/colors.dart  → test/core/design_system_test.dart
+//                                         test/core/design_system/colors_test.dart
+//   lib/features/home/data/repo.dart    → test/features/home/data/repo_test.dart
+//   test/anything_test.dart             → runs directly
+//
+// Core files + config files trigger full suite.
 import 'dart:io';
 
 /// Files that affect the entire app — change triggers full suite.
@@ -22,7 +22,7 @@ const coreFiles = [
   'pubspec.lock',
 ];
 
-void main() async {
+Future<void> main() async {
   // Verify git is available
   try {
     final gitCheck = await Process.run('git', ['--version']);

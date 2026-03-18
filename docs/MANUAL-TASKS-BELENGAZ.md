@@ -134,7 +134,7 @@ export default {
 
 **Setup:**
 - [ ] Sign up at [codemagic.io](https://codemagic.io) (free tier: 500 build min/mo)
-- [ ] Connect GitHub repo: `emredursun/DeelMarkt`
+- [ ] Connect GitHub repo: `deelmarkt/app`
 - [ ] iOS workflow:
   - Build mode: Release
   - Code signing: match Apple certificates (or manual provisioning profile)
@@ -155,7 +155,7 @@ export default {
 
 ## 6. GitHub Secret Scanning (B-12) — 5 min
 
-- [x] Go to [github.com/emredursun/DeelMarkt/settings/security_analysis](https://github.com/emredursun/DeelMarkt/settings/security_analysis)
+- [x] Go to [github.com/deelmarkt/app/settings/security_analysis](https://github.com/deelmarkt/app/settings/security_analysis)
 - [x] Enable **Dependency graph**
 - [x] Enable **Dependabot alerts**
 - [x] Enable **Dependabot security updates**
