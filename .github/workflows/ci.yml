@@ -196,7 +196,7 @@ jobs:
 
       - name: SonarCloud quality gate
         if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-quality-gate-action@v1
+        uses: SonarSource/sonarqube-quality-gate-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -267,16 +267,22 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Enable web platform (if not configured)
+      - name: Check web platform exists
+        id: web-check
         run: |
           if [ ! -f "web/index.html" ]; then
-            flutter create --platforms web --no-overwrite . 2>/dev/null || flutter create --platforms web . 2>/dev/null || true
+            echo "::warning::web/ not configured — skipping web build. Run 'flutter create --platforms web .' to enable."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build web (release)
+        if: steps.web-check.outputs.skip != 'true'
         run: flutter build web --release --no-pub
 
       - name: Web security checks
+        if: steps.web-check.outputs.skip != 'true'
         run: |
           WEB_DIR="build/web"
           if [ ! -d "$WEB_DIR" ]; then
@@ -308,6 +314,7 @@ jobs:
           fi
 
       - name: Check web bundle size
+        if: steps.web-check.outputs.skip != 'true'
         run: |
           WEB_DIR="build/web"
           if [ ! -d "$WEB_DIR" ]; then

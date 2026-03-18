@@ -112,13 +112,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Enable web platform (if not configured)
+      - name: Check web platform exists
+        id: web-check
         run: |
           if [ ! -f "web/index.html" ]; then
-            flutter create --platforms web --no-overwrite . 2>/dev/null || flutter create --platforms web . 2>/dev/null || true
+            echo "::warning::web/ not configured — skipping web security audit"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build web (release)
+        if: steps.web-check.outputs.skip != 'true'
         run: flutter build web --release --no-pub
 
       - name: Web index.html security audit
@@ -135,8 +140,11 @@ jobs:
             echo "::warning::No clickjacking protection"
             WARNINGS=$((WARNINGS + 1))
           fi
-          if grep -qi "unsafe-inline\|unsafe-eval" "$TARGET"; then
-            echo "::warning::CSP contains unsafe-inline/eval"
+          # Note: Flutter web requires 'unsafe-inline' for bootstrap script + styles.
+          # This is a known framework limitation, not a project issue.
+          # Only warn on unsafe-eval (which Flutter does NOT require).
+          if grep -qi "unsafe-eval" "$TARGET"; then
+            echo "::warning::CSP contains unsafe-eval — review if necessary"
             WARNINGS=$((WARNINGS + 1))
           fi
           if grep -qiE "supabase|mollie|cloudinary|apikey|api_key|secret" "$TARGET"; then
@@ -241,6 +249,8 @@ jobs:
           scan-type: fs
           scan-ref: .
           severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
           format: table
 
       - name: Sensitive file audit
