@@ -113,7 +113,10 @@ jobs:
         run: flutter pub get
 
       - name: Enable web platform (if not configured)
-        run: flutter config --enable-web
+        run: |
+          if [ ! -f "web/index.html" ]; then
+            flutter create --platforms web --no-overwrite . 2>/dev/null || flutter create --platforms web . 2>/dev/null || true
+          fi
 
       - name: Build web (release)
         run: flutter build web --release --no-pub
