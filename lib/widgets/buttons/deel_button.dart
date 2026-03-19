@@ -121,7 +121,12 @@ class DeelButton extends StatelessWidget {
       theme: buttonTheme,
     );
     final ButtonStyle style = styleResolver.resolve();
-    final Widget child = _buildChild(reduceMotion, buttonTheme);
+    final Color variantForeground = styleResolver.foregroundFor(variant);
+    final Widget child = _buildChild(
+      reduceMotion,
+      buttonTheme,
+      variantForeground,
+    );
 
     final VoidCallback? effectiveOnPressed =
         isDisabled
@@ -164,7 +169,11 @@ class DeelButton extends StatelessWidget {
     };
   }
 
-  Widget _buildChild(bool reduceMotion, DeelButtonThemeData buttonTheme) {
+  Widget _buildChild(
+    bool reduceMotion,
+    DeelButtonThemeData buttonTheme,
+    Color variantForeground,
+  ) {
     final iconSize = DeelButtonTokens.iconSizeFor(size);
     final Duration duration =
         reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
@@ -181,9 +190,7 @@ class DeelButton extends StatelessWidget {
                 height: iconSize,
                 child: CircularProgressIndicator.adaptive(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation(
-                    buttonTheme.primaryForeground,
-                  ),
+                  valueColor: AlwaysStoppedAnimation(variantForeground),
                 ),
               )
               : _buildLabelRow(iconSize),

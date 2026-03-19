@@ -1,4 +1,4 @@
-import 'package:deelmarkt/core/design_system/spacing.dart';
+import '../../core/design_system/spacing.dart';
 
 import 'deel_button.dart';
 
