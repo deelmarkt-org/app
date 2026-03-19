@@ -291,7 +291,7 @@ class ShowcaseSectionTitle extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        borderRadius: BorderRadius.circular(DeelmarktRadius.xs),
       ),
       child: Text(
         text,
