@@ -188,11 +188,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Strict analysis — blocks on info-level issues (redundant with quality
-      # job's --fatal-infos but ensures SAST job is useful even without SonarCloud)
-      - name: Run Dart static analysis (strict)
-        run: flutter analyze --no-pub --fatal-infos
-
       - name: Download coverage for SonarCloud
         uses: actions/download-artifact@v4
         with:

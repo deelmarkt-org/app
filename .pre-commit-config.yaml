@@ -52,7 +52,7 @@ repos:
       - id: flutter-test-affected
         name: flutter test (affected only)
         language: system
-        entry: bash -c 'dart run scripts/test_affected.dart'
+        entry: bash -c 'flutter pub run scripts/test_affected.dart'
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]

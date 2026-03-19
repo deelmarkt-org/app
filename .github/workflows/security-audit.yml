@@ -127,6 +127,7 @@ jobs:
         run: flutter build web --release --no-pub
 
       - name: Web index.html security audit
+        if: steps.web-check.outputs.skip != 'true'
         run: |
           TARGET="build/web/index.html"
           [ ! -f "$TARGET" ] && TARGET="web/index.html"
