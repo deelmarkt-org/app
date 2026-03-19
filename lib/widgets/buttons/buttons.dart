@@ -14,3 +14,5 @@
 library;
 
 export 'deel_button.dart';
+export 'deel_button_style.dart';
+export 'deel_button_tokens.dart';

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/design_system/deel_button_theme.dart';
-import '../../core/design_system/radius.dart';
 import '../../core/design_system/spacing.dart';
-import '../../core/design_system/typography.dart';
+import 'deel_button_style.dart';
+import 'deel_button_tokens.dart';
 
 /// Button variants for different action types.
 /// Reference: docs/design-system/components.md §Buttons
@@ -57,11 +57,6 @@ enum DeelButtonSize {
 ///
 /// Reference: docs/design-system/components.md §Buttons
 class DeelButton extends StatelessWidget {
-  /// Creates a DeelMarkt button.
-  ///
-  /// [label] is the visible text. Should be pre-localised by the caller.
-  /// [onPressed] fires on tap. Pass `null` to disable the button.
-  /// [loadingLabel] is announced by screen readers when [isLoading] is true.
   const DeelButton({
     required this.label,
     required this.onPressed,
@@ -92,57 +87,24 @@ class DeelButton extends StatelessWidget {
   final bool isLoading;
 
   /// Screen reader text announced during loading state.
-  /// Falls back to [label] if not provided.
   final String? loadingLabel;
 
-  /// Accessibility hint for destructive variant.
-  /// Should be localised by the caller (e.g. `'Destructieve actie'`).
+  /// Accessibility hint for destructive variant (caller provides l10n string).
   final String? semanticDestructiveHint;
 
-  /// Optional Phosphor icon before the label.
+  /// Optional icon before the label.
   final IconData? leadingIcon;
 
-  /// Optional Phosphor icon after the label.
+  /// Optional icon after the label.
   final IconData? trailingIcon;
 
   /// Whether the button expands to fill its parent width.
-  /// Defaults to `true` (mobile-first).
   final bool fullWidth;
-
-  // ── Size tokens ────────────────────────────────────────────────────────
-
-  double get _minHeight => switch (size) {
-    DeelButtonSize.large => 52,
-    DeelButtonSize.medium => 44,
-    DeelButtonSize.small => 36,
-  };
-
-  double get _horizontalPadding => switch (size) {
-    DeelButtonSize.large => Spacing.s6,
-    DeelButtonSize.medium => Spacing.s4,
-    DeelButtonSize.small => Spacing.s3,
-  };
-
-  double get _fontSize => switch (size) {
-    DeelButtonSize.large => 16,
-    DeelButtonSize.medium => 14,
-    DeelButtonSize.small => 13,
-  };
-
-  double get _iconSize => switch (size) {
-    DeelButtonSize.large => 20,
-    DeelButtonSize.medium => 18,
-    DeelButtonSize.small => 16,
-  };
-
-  // ── Haptic variants ────────────────────────────────────────────────────
 
   bool get _hasHaptic =>
       variant == DeelButtonVariant.primary ||
       variant == DeelButtonVariant.destructive ||
       variant == DeelButtonVariant.success;
-
-  // ── Build ──────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +114,14 @@ class DeelButton extends StatelessWidget {
     final bool isDisabled = isLoading || onPressed == null;
     final bool reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    final ButtonStyle style = _resolveStyle(buttonTheme);
-    final Widget child = _buildChild(context, reduceMotion, buttonTheme);
+    final styleResolver = DeelButtonStyleResolver(
+      variant: variant,
+      size: size,
+      fullWidth: fullWidth,
+      theme: buttonTheme,
+    );
+    final ButtonStyle style = styleResolver.resolve();
+    final Widget child = _buildChild(reduceMotion, buttonTheme);
 
     final VoidCallback? effectiveOnPressed =
         isDisabled
@@ -163,8 +131,7 @@ class DeelButton extends StatelessWidget {
               onPressed?.call();
             };
 
-    // Wrap with Semantics for enhanced a11y.
-    final Widget button = Semantics(
+    return Semantics(
       button: true,
       label: isLoading ? (loadingLabel ?? label) : label,
       enabled: !isDisabled,
@@ -175,11 +142,7 @@ class DeelButton extends StatelessWidget {
       excludeSemantics: true,
       child: _buildButtonByVariant(style, effectiveOnPressed, child),
     );
-
-    return button;
   }
-
-  // ── Variant → native button ────────────────────────────────────────────
 
   Widget _buildButtonByVariant(
     ButtonStyle style,
@@ -201,112 +164,8 @@ class DeelButton extends StatelessWidget {
     };
   }
 
-  // ── ButtonStyle ────────────────────────────────────────────────────────
-
-  ButtonStyle _resolveStyle(DeelButtonThemeData theme) {
-    final Color background = _backgroundFor(theme);
-    final Color foreground = _foregroundFor(theme);
-
-    return ButtonStyle(
-      backgroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) {
-          return background.withValues(alpha: 0.4);
-        }
-        if (states.contains(WidgetState.pressed)) {
-          return Color.alphaBlend(
-            const Color(0x1A000000), // 10% darker
-            background,
-          );
-        }
-        return background;
-      }),
-      foregroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) {
-          return foreground.withValues(alpha: 0.4);
-        }
-        return foreground;
-      }),
-      overlayColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.pressed)) {
-          return foreground.withValues(alpha: 0.08);
-        }
-        if (states.contains(WidgetState.hovered)) {
-          return foreground.withValues(alpha: 0.04);
-        }
-        if (states.contains(WidgetState.focused)) {
-          return foreground.withValues(alpha: 0.08);
-        }
-        return Colors.transparent;
-      }),
-      minimumSize: WidgetStatePropertyAll(
-        Size(fullWidth ? double.infinity : 0, _minHeight),
-      ),
-      padding: WidgetStatePropertyAll(
-        EdgeInsets.symmetric(horizontal: _horizontalPadding),
-      ),
-      shape: WidgetStateProperty.resolveWith((states) {
-        final BorderSide focusSide =
-            states.contains(WidgetState.focused)
-                ? BorderSide(color: theme.primaryBackground, width: 2)
-                : variant == DeelButtonVariant.outline
-                ? BorderSide(color: _borderColorFor(theme), width: 1.5)
-                : BorderSide.none;
-
-        return RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          side: focusSide,
-        );
-      }),
-      textStyle: WidgetStatePropertyAll(
-        TextStyle(
-          fontFamily: DeelmarktTypography.fontFamily,
-          fontSize: _fontSize,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      elevation: const WidgetStatePropertyAll(0),
-      tapTargetSize: MaterialTapTargetSize.padded,
-    );
-  }
-
-  // ── Colour resolvers ───────────────────────────────────────────────────
-
-  Color _backgroundFor(DeelButtonThemeData theme) {
-    return switch (variant) {
-      DeelButtonVariant.primary => theme.primaryBackground,
-      DeelButtonVariant.secondary => theme.secondaryBackground,
-      DeelButtonVariant.outline => Colors.transparent,
-      DeelButtonVariant.ghost => Colors.transparent,
-      DeelButtonVariant.destructive => theme.destructiveBackground,
-      DeelButtonVariant.success => theme.successBackground,
-    };
-  }
-
-  Color _foregroundFor(DeelButtonThemeData theme) {
-    return switch (variant) {
-      DeelButtonVariant.primary => theme.primaryForeground,
-      DeelButtonVariant.secondary => theme.secondaryForeground,
-      DeelButtonVariant.outline => theme.outlineForeground,
-      DeelButtonVariant.ghost => theme.ghostForeground,
-      DeelButtonVariant.destructive => theme.destructiveForeground,
-      DeelButtonVariant.success => theme.successForeground,
-    };
-  }
-
-  Color _borderColorFor(DeelButtonThemeData theme) {
-    return switch (variant) {
-      DeelButtonVariant.outline => theme.outlineBorderColor,
-      _ => Colors.transparent,
-    };
-  }
-
-  // ── Child content ──────────────────────────────────────────────────────
-
-  Widget _buildChild(
-    BuildContext context,
-    bool reduceMotion,
-    DeelButtonThemeData buttonTheme,
-  ) {
+  Widget _buildChild(bool reduceMotion, DeelButtonThemeData buttonTheme) {
+    final iconSize = DeelButtonTokens.iconSizeFor(size);
     final Duration duration =
         reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
 
@@ -318,24 +177,24 @@ class DeelButton extends StatelessWidget {
           isLoading
               ? SizedBox(
                 key: const ValueKey('loading'),
-                width: _iconSize,
-                height: _iconSize,
+                width: iconSize,
+                height: iconSize,
                 child: CircularProgressIndicator.adaptive(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation(
-                    _foregroundFor(buttonTheme),
+                    buttonTheme.primaryForeground,
                   ),
                 ),
               )
-              : _buildLabelRow(),
+              : _buildLabelRow(iconSize),
     );
   }
 
-  Widget _buildLabelRow() {
+  Widget _buildLabelRow(double iconSize) {
     final List<Widget> children = [];
 
     if (leadingIcon != null) {
-      children.add(Icon(leadingIcon, size: _iconSize));
+      children.add(Icon(leadingIcon, size: iconSize));
       children.add(const SizedBox(width: Spacing.s2));
     }
 
@@ -347,7 +206,7 @@ class DeelButton extends StatelessWidget {
 
     if (trailingIcon != null) {
       children.add(const SizedBox(width: Spacing.s2));
-      children.add(Icon(trailingIcon, size: _iconSize));
+      children.add(Icon(trailingIcon, size: iconSize));
     }
 
     return Row(

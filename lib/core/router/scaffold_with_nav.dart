@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 /// Bottom navigation scaffold — wraps the shell routes.
 /// Extracted to its own file per CLAUDE.md §1.1 (shared UI component).
@@ -20,26 +22,35 @@ class ScaffoldWithNav extends StatelessWidget {
             initialLocation: index == navigationShell.currentIndex,
           );
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined, semanticLabel: 'Home'),
-            label: 'Home', // l10n: P-task
+            icon: Icon(PhosphorIcons.house(), semanticLabel: 'nav.home'.tr()),
+            label: 'nav.home'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.search, semanticLabel: 'Search'),
-            label: 'Search', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.magnifyingGlass(),
+              semanticLabel: 'nav.search'.tr(),
+            ),
+            label: 'nav.search'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.add_circle_outline, semanticLabel: 'Sell'),
-            label: 'Sell', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.plusCircle(),
+              semanticLabel: 'nav.sell'.tr(),
+            ),
+            label: 'nav.sell'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.chat_bubble_outline, semanticLabel: 'Messages'),
-            label: 'Messages', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.chatCircle(),
+              semanticLabel: 'nav.messages'.tr(),
+            ),
+            label: 'nav.messages'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline, semanticLabel: 'Profile'),
-            label: 'Profile', // l10n: P-task
+            icon: Icon(PhosphorIcons.user(), semanticLabel: 'nav.profile'.tr()),
+            label: 'nav.profile'.tr(),
           ),
         ],
       ),
