@@ -1,5 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import '../design_system/colors.dart';
 
 /// Bottom navigation scaffold — wraps the shell routes.
 /// Extracted to its own file per CLAUDE.md §1.1 (shared UI component).
@@ -20,26 +24,71 @@ class ScaffoldWithNav extends StatelessWidget {
             initialLocation: index == navigationShell.currentIndex,
           );
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined, semanticLabel: 'Home'),
-            label: 'Home', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.house(),
+              color: DeelmarktColors.neutral500,
+              semanticLabel: 'nav.home'.tr(),
+            ),
+            selectedIcon: Icon(
+              PhosphorIcons.house(PhosphorIconsStyle.bold),
+              color: DeelmarktColors.primary,
+              semanticLabel: 'nav.home'.tr(),
+            ),
+            label: 'nav.home'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.search, semanticLabel: 'Search'),
-            label: 'Search', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.magnifyingGlass(),
+              color: DeelmarktColors.neutral500,
+              semanticLabel: 'nav.search'.tr(),
+            ),
+            selectedIcon: Icon(
+              PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
+              color: DeelmarktColors.primary,
+              semanticLabel: 'nav.search'.tr(),
+            ),
+            label: 'nav.search'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.add_circle_outline, semanticLabel: 'Sell'),
-            label: 'Sell', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.plusCircle(),
+              color: DeelmarktColors.neutral500,
+              semanticLabel: 'nav.sell'.tr(),
+            ),
+            selectedIcon: Icon(
+              PhosphorIcons.plusCircle(PhosphorIconsStyle.bold),
+              color: DeelmarktColors.primary,
+              semanticLabel: 'nav.sell'.tr(),
+            ),
+            label: 'nav.sell'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.chat_bubble_outline, semanticLabel: 'Messages'),
-            label: 'Messages', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.chatCircle(),
+              color: DeelmarktColors.neutral500,
+              semanticLabel: 'nav.messages'.tr(),
+            ),
+            selectedIcon: Icon(
+              PhosphorIcons.chatCircle(PhosphorIconsStyle.bold),
+              color: DeelmarktColors.primary,
+              semanticLabel: 'nav.messages'.tr(),
+            ),
+            label: 'nav.messages'.tr(),
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline, semanticLabel: 'Profile'),
-            label: 'Profile', // l10n: P-task
+            icon: Icon(
+              PhosphorIcons.user(),
+              color: DeelmarktColors.neutral500,
+              semanticLabel: 'nav.profile'.tr(),
+            ),
+            selectedIcon: Icon(
+              PhosphorIcons.user(PhosphorIconsStyle.bold),
+              color: DeelmarktColors.primary,
+              semanticLabel: 'nav.profile'.tr(),
+            ),
+            label: 'nav.profile'.tr(),
           ),
         ],
       ),

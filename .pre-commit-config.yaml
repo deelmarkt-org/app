@@ -47,8 +47,19 @@ repos:
         files: \.dart$
         stages: [pre-commit]
 
+      # Targeted tests — only runs tests for changed files (cross-platform)
+      # Maps lib/X.dart → test/X_test.dart, also runs directly changed test files
+      - id: flutter-test-affected
+        name: flutter test (affected only)
+        language: system
+        entry: bash -c 'dart run scripts/test_affected.dart'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-commit]
+
+      # Full test suite on push — safety net before code reaches remote
       - id: flutter-test
-        name: flutter test
+        name: flutter test (full)
         language: system
         entry: bash -c 'flutter test --no-pub'
         pass_filenames: false

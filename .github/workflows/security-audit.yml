@@ -1,0 +1,283 @@
+name: Security Audit (Weekly)
+
+# Deep security scans — runs weekly + on-demand.
+# These are too slow for every PR but catch issues proactively.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday 06:00 UTC
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: "17"
+
+jobs:
+  # ──────────────────────────────────────────────
+  # 1. Mobile Security — OWASP MASVS checks
+  # ──────────────────────────────────────────────
+  mobile-security:
+    name: Mobile Security (APK Analysis)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: flutter build apk --release --no-pub
+
+      - name: MobSF static analysis
+        run: |
+          pip install mobsfscan
+          mobsfscan --json -o mobsf-results.json lib/ || true
+
+          if [ -f mobsf-results.json ]; then
+            python3 << 'PYEOF'
+          import json, sys
+          try:
+              with open('mobsf-results.json') as f:
+                  data = json.load(f)
+              results = data.get('results', [])
+              high = [r for r in results if r.get('severity', '').lower() in ('high', 'critical')]
+              print(f"MobSF high/critical findings: {len(high)}")
+              for r in high:
+                  print(f"  [{r.get('severity')}] {r.get('title', 'Unknown')}", file=sys.stderr)
+          except Exception as e:
+              print(f"MobSF parse error: {e}")
+          PYEOF
+          fi
+
+      - name: Upload MobSF results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobsf-results
+          path: mobsf-results.json
+          retention-days: 30
+
+      - name: Android security config audit
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+
+          if grep -q 'android:debuggable="true"' "$MANIFEST"; then
+            echo "::error::android:debuggable=true in release manifest!"
+            exit 1
+          fi
+          echo "OK: Not debuggable"
+
+          if grep -q 'android:usesCleartextTraffic="true"' "$MANIFEST"; then
+            echo "::error::Cleartext traffic allowed!"
+            exit 1
+          fi
+          echo "OK: No cleartext traffic"
+
+          if grep -q 'android:allowBackup="true"' "$MANIFEST"; then
+            echo "::warning::android:allowBackup=true — consider disabling"
+          fi
+
+          if ! grep -q 'android:networkSecurityConfig' "$MANIFEST"; then
+            echo "::warning::No networkSecurityConfig — add certificate pinning before launch"
+          fi
+
+  # ──────────────────────────────────────────────
+  # 2. Web Security — headers, CSP, build analysis
+  # ──────────────────────────────────────────────
+  web-security:
+    name: Web Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check web platform exists
+        id: web-check
+        run: |
+          if [ ! -f "web/index.html" ]; then
+            echo "::warning::web/ not configured — skipping web security audit"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build web (release)
+        if: steps.web-check.outputs.skip != 'true'
+        run: flutter build web --release --no-pub
+
+      - name: Web index.html security audit
+        if: steps.web-check.outputs.skip != 'true'
+        run: |
+          TARGET="build/web/index.html"
+          [ ! -f "$TARGET" ] && TARGET="web/index.html"
+          WARNINGS=0
+
+          if ! grep -qi 'Content-Security-Policy' "$TARGET"; then
+            echo "::warning::No CSP meta tag — XSS risk"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+          if ! grep -qi 'frame-ancestors\|X-Frame-Options' "$TARGET"; then
+            echo "::warning::No clickjacking protection"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+          # Note: Flutter web requires 'unsafe-inline' for bootstrap script + styles.
+          # This is a known framework limitation, not a project issue.
+          # Only warn on unsafe-eval (which Flutter does NOT require).
+          if grep -qi "unsafe-eval" "$TARGET"; then
+            echo "::warning::CSP contains unsafe-eval — review if necessary"
+            WARNINGS=$((WARNINGS + 1))
+          fi
+          if grep -qiE "supabase|mollie|cloudinary|apikey|api_key|secret" "$TARGET"; then
+            echo "::error::Secrets in index.html!"
+            exit 1
+          fi
+          echo "Web audit: $WARNINGS warnings"
+
+      - name: Web build secrets scan
+        run: |
+          WEB_DIR="build/web"
+          [ ! -d "$WEB_DIR" ] && exit 0
+
+          for pattern in "supabaseUrl" "supabaseKey" "mollieKey" "sk_live" "pk_live"; do
+            if grep -rl "$pattern" "$WEB_DIR"/*.js 2>/dev/null; then
+              echo "::error::Found '$pattern' in compiled JS!"
+              exit 1
+            fi
+          done
+          echo "OK: No secrets in compiled JS"
+
+      - name: Web bundle analysis
+        run: |
+          WEB_DIR="build/web"
+          [ ! -d "$WEB_DIR" ] && exit 0
+          TOTAL_KB=$(du -sk "$WEB_DIR" | cut -f1)
+          echo "Total: $((TOTAL_KB / 1024))MB"
+          if [ -f "$WEB_DIR/main.dart.js" ]; then
+            echo "App JS: $(du -k "$WEB_DIR/main.dart.js" | cut -f1)KB"
+          fi
+          echo "Top 10 largest:"
+          find "$WEB_DIR" -type f -exec du -k {} \; | sort -rn | head -10
+
+  # ──────────────────────────────────────────────
+  # 3. Deep dependency + license audit
+  # ──────────────────────────────────────────────
+  dependency-audit:
+    name: Deep Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: OSV-Scanner (full report)
+        uses: google/osv-scanner-action/osv-scanner-action@v2.0.1
+        continue-on-error: true
+        with:
+          scan-args: |-
+            --lockfile=pubspec.lock
+            --format=json
+            --output=osv-results.json
+
+      - name: Upload OSV results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: osv-results
+          path: osv-results.json
+          retention-days: 30
+
+      - name: Outdated dependency report
+        run: |
+          flutter pub outdated > outdated-report.txt 2>&1 || true
+          cat outdated-report.txt
+
+      - name: Upload outdated report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-report
+          path: outdated-report.txt
+          retention-days: 30
+
+  # ──────────────────────────────────────────────
+  # 4. Infrastructure + repo security
+  # ──────────────────────────────────────────────
+  infra-security:
+    name: Infrastructure Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog deep scan (full history)
+        uses: trufflesecurity/trufflehog@v3.88.0
+        with:
+          extra_args: --results=verified,unknown
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
+          format: table
+
+      - name: Sensitive file audit
+        run: |
+          ISSUES=0
+          for pattern in "*.pem" "*.key" "*.p12" "*.pfx" "*.keystore" "*.jks"; do
+            FOUND=$(find . -name "$pattern" -not -path "./.git/*" 2>/dev/null)
+            if [ -n "$FOUND" ]; then
+              echo "::error::Sensitive file: $FOUND"
+              ISSUES=$((ISSUES + 1))
+            fi
+          done
+          for f in .env .env.local .env.production; do
+            if git ls-files --error-unmatch "$f" 2>/dev/null; then
+              echo "::error::$f tracked by git!"
+              ISSUES=$((ISSUES + 1))
+            fi
+          done
+          [ "$ISSUES" -gt 0 ] && exit 1
+          echo "No sensitive files found."
+
+      - name: Actions supply chain audit
+        run: |
+          UNPINNED=$(grep -rn "uses:.*@main\b\|uses:.*@master\b" .github/workflows/ 2>/dev/null || echo "")
+          if [ -n "$UNPINNED" ]; then
+            echo "::warning::Unpinned Actions: $UNPINNED"
+          else
+            echo "All Actions pinned."
+          fi

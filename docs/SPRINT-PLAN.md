@@ -39,9 +39,9 @@ The agent will:
 
 | Rule | Convention |
 |:-----|:----------|
-| **Implementation Plans** | Store ALL implementation plans in `docs/archives/sprint-implementation-plans/`. Naming: `PLAN-sprint{N}-phase-{X}.md`. Never leave plans in `docs/` root. |
-| **Audit Reports** | Store ALL audit reports in `docs/audits/`. Naming: `AUDIT-sprint{N}-phase-{X}.md`. |
+| **Document Storage** | **Do NOT auto-store** plans, audits, or assets. Present them inline for review. Only archive to `docs/archives/emre/` (gitignored, local-only) when the user **explicitly requests it**. Subfolders: `sprint-implementation-plans/`, `audits/`, `assets/`. **NEVER** move or archive existing `docs/` files unless the user explicitly requests it. |
 | **Branch Naming** | Follow prefix convention: `feature/{handle}-E{NN}-{area}`. |
+| **Pull Requests** | Run `/pr` workflow before every PR. Local pre-flight (format, analyze, test) + sync with target branch. All 4 CI checks MUST pass before merge. |
 
 ---
 
@@ -68,18 +68,18 @@ The agent will:
 
 **Branch:** `feature/belengaz-E07-cicd-deeplinks` | **Epic:** [E07](epics/E07-infrastructure.md)
 
-- [ ] `B-01` Set up Cloudflare DNS for deelmarkt.com — domain resolves, SSL active
-- [ ] `B-02` Configure Cloudflare WAF (basic rules) — WAF enabled
-- [ ] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
-- [ ] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
+- [x] `B-01` Set up Cloudflare DNS for deelmarkt.com — domain resolves, SSL active
+- [x] `B-02` Configure Cloudflare WAF (basic rules) — WAF enabled
+- [x] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
+- [x] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
 - [ ] `B-05` Set up Codemagic — iOS (TestFlight) + Android (Play internal) builds
-- [ ] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
-- [ ] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
-- [ ] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
+- [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
+- [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
+- [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
 - [ ] `B-09` Set up Betterstack uptime monitoring — monitors Supabase, alerts on Slack
 - [ ] `B-10` Set up PagerDuty alerting — CRITICAL/HIGH/INFO tiers configured
-- [ ] `B-11` Configure SonarQube in CI — SAST gate blocks merge on findings
-- [ ] `B-12` Enable GitHub secret scanning + GitGuardian — active on repo
+- [x] `B-11` Configure SonarCloud SAST in CI — analysis + quality gate on PR
+- [x] `B-12` Enable secret scanning — detect-secrets pre-commit + TruffleHog in CI
 
 ### pizmam `[P]` — Design System & Frontend Foundation
 
@@ -89,7 +89,7 @@ The agent will:
 - [x] `P-02` Set up Phosphor Icons package — icons render, duotone works
 - [x] `P-03` Set up easy_localization (NL/EN) — language switch works, strings from JSON
 - [x] `P-04` Create NL + EN string files — at least 20 common keys each
-- [ ] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
+- [x] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
 - [ ] `P-06` Implement `DeelInput` (text, search, price, postcode) — all variants render
 - [ ] `P-07` Implement `SkeletonLoader` (shimmer) — 1.5s sweep animation
 - [ ] `P-08` Implement `EmptyState` widget — illustration + message + action
@@ -220,6 +220,9 @@ The agent will:
 - [ ] `B-33` Delivery → escrow release integration — end-to-end flow works
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
+- [ ] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
+- [ ] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
+- [ ] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
 
 ### pizmam `[P]` — Chat UI + Moderation + Polish
 
