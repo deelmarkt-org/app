@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../core/design_system/colors.dart';
-import '../../core/design_system/radius.dart';
-import '../../core/design_system/spacing.dart';
-import '../../core/design_system/typography.dart';
-import '../../core/utils/formatters.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import '../buttons/buttons.dart';
 import '../trust/escrow_trust_banner.dart';
 

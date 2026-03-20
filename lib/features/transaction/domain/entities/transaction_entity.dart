@@ -1,4 +1,4 @@
-import '../../../../core/models/transaction_status.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
 
 /// Represents a marketplace transaction between buyer and seller.
 ///

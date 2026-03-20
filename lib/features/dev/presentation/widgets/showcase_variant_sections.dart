@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../../core/design_system/spacing.dart';
-import '../../../../widgets/buttons/buttons.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/buttons/buttons.dart';
 
 /// Variant showcase — all 6 button variants at medium size.
 class VariantSection extends StatelessWidget {

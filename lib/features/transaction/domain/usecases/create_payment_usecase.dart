@@ -1,4 +1,4 @@
-import '../../../../core/models/transaction_status.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
 import '../entities/payment_entity.dart';
 import '../exceptions.dart';
 import '../repositories/payment_repository.dart';
@@ -19,6 +19,7 @@ class CreatePaymentUseCase {
   Future<PaymentEntity> execute({
     required String transactionId,
     required String redirectUrl,
+    String? paymentDescription,
   }) async {
     final txn = await transactionRepository.getTransaction(transactionId);
     if (txn == null) throw TransactionNotFoundException(transactionId);
@@ -34,7 +35,7 @@ class CreatePaymentUseCase {
       transactionId: transactionId,
       amountCents: txn.totalAmountCents,
       currency: txn.currency,
-      description: 'DeelMarkt order $transactionId',
+      description: paymentDescription ?? 'DeelMarkt #$transactionId',
       redirectUrl: redirectUrl,
     );
 

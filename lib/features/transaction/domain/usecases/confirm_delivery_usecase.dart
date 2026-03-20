@@ -1,4 +1,4 @@
-import '../../../../core/models/transaction_status.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
 import '../entities/ledger_entry.dart';
 import '../exceptions.dart';
 import '../repositories/ledger_repository.dart';
@@ -30,7 +30,7 @@ class ConfirmDeliveryUseCase {
       );
     }
 
-    // Escrow → seller (item minus commission)
+    // Escrow → seller (item price + shipping reimbursement)
     await ledgerRepository.recordEntry(
       transactionId: transactionId,
       idempotencyKey: 'release:seller:$transactionId',

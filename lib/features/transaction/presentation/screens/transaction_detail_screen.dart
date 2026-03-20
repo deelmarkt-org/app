@@ -2,15 +2,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../../core/design_system/colors.dart';
-import '../../../../core/design_system/radius.dart';
-import '../../../../core/design_system/spacing.dart';
-import '../../../../core/utils/formatters.dart';
-import '../../../../widgets/buttons/buttons.dart';
-import '../../../../widgets/trust/escrow_timeline.dart';
-import '../../../../widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
+import 'package:deelmarkt/widgets/buttons/buttons.dart';
+import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
+import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+
 import '../../domain/entities/transaction_entity.dart';
-import '../../../../core/models/transaction_status.dart';
 
 /// Transaction detail screen — shows escrow timeline, amounts, and actions.
 ///
@@ -29,22 +30,15 @@ class TransactionDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Trust banner
             const EscrowTrustBanner(),
             const SizedBox(height: Spacing.s6),
-
-            // Escrow timeline
             EscrowTimeline(
               currentStatus: transaction.status,
               escrowDeadline: transaction.escrowDeadline,
             ),
             const SizedBox(height: Spacing.s6),
-
-            // Amount summary
             _AmountSection(transaction: transaction),
             const SizedBox(height: Spacing.s6),
-
-            // Action buttons based on status
             _ActionSection(transaction: transaction),
           ],
         ),
@@ -60,43 +54,47 @@ class _AmountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(Spacing.s4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color ?? DeelmarktColors.white,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-        border: Border.all(color: DeelmarktColors.neutral200),
-      ),
-      child: Column(
-        children: [
-          _row(
-            context,
-            'payment.itemPrice'.tr(),
-            Formatters.euroFromCents(transaction.itemAmountCents),
-          ),
-          const SizedBox(height: Spacing.s2),
-          _row(
-            context,
-            'payment.platformFee'.tr(),
-            Formatters.euroFromCents(transaction.platformFeeCents),
-          ),
-          const SizedBox(height: Spacing.s2),
-          _row(
-            context,
-            'payment.shippingCost'.tr(),
-            Formatters.euroFromCents(transaction.shippingCostCents),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.s2),
-            child: Divider(),
-          ),
-          _row(
-            context,
-            'payment.total'.tr(),
-            Formatters.euroFromCents(transaction.totalAmountCents),
-            isBold: true,
-          ),
-        ],
+    return Semantics(
+      label:
+          '${'payment.total'.tr()} ${Formatters.euroFromCents(transaction.totalAmountCents)}',
+      child: Container(
+        padding: const EdgeInsets.all(Spacing.s4),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardTheme.color ?? DeelmarktColors.white,
+          borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+          border: Border.all(color: DeelmarktColors.neutral200),
+        ),
+        child: Column(
+          children: [
+            _row(
+              context,
+              'payment.itemPrice'.tr(),
+              Formatters.euroFromCents(transaction.itemAmountCents),
+            ),
+            const SizedBox(height: Spacing.s2),
+            _row(
+              context,
+              'payment.platformFee'.tr(),
+              Formatters.euroFromCents(transaction.platformFeeCents),
+            ),
+            const SizedBox(height: Spacing.s2),
+            _row(
+              context,
+              'payment.shippingCost'.tr(),
+              Formatters.euroFromCents(transaction.shippingCostCents),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: Spacing.s2),
+              child: Divider(),
+            ),
+            _row(
+              context,
+              'payment.total'.tr(),
+              Formatters.euroFromCents(transaction.totalAmountCents),
+              isBold: true,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -107,22 +105,26 @@ class _AmountSection extends StatelessWidget {
     String amount, {
     bool isBold = false,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: isBold ? FontWeight.bold : null,
+    return Semantics(
+      label: '$label $amount',
+      excludeSemantics: true,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: isBold ? FontWeight.bold : null,
+            ),
           ),
-        ),
-        Text(
-          amount,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: isBold ? FontWeight.bold : null,
+          Text(
+            amount,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: isBold ? FontWeight.bold : null,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -135,6 +137,18 @@ class _ActionSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (transaction.status) {
+      TransactionStatus.paid => _infoRow(
+        context,
+        PhosphorIcons.hourglass(),
+        'escrow.fundsHeld'.tr(),
+        DeelmarktColors.trustEscrow,
+      ),
+      TransactionStatus.shipped => _infoRow(
+        context,
+        PhosphorIcons.package(),
+        'escrow.shipped'.tr(),
+        DeelmarktColors.trustEscrow,
+      ),
       TransactionStatus.delivered => Column(
         children: [
           DeelButton(
@@ -142,7 +156,7 @@ class _ActionSection extends StatelessWidget {
             leadingIcon: PhosphorIcons.checkCircle(),
             variant: DeelButtonVariant.success,
             onPressed: () {
-              // TODO: Wire to ConfirmDeliveryUseCase
+              // TODO: Wire to ConfirmDeliveryUseCase via Riverpod provider
             },
           ),
           const SizedBox(height: Spacing.s3),
@@ -151,31 +165,48 @@ class _ActionSection extends StatelessWidget {
             leadingIcon: PhosphorIcons.warningCircle(),
             variant: DeelButtonVariant.destructive,
             onPressed: () {
-              // TODO: Wire to dispute flow
+              // TODO: Wire to dispute flow via Riverpod provider
             },
           ),
         ],
       ),
-      TransactionStatus.confirmed || TransactionStatus.released => Padding(
-        padding: const EdgeInsets.all(Spacing.s4),
-        child: Row(
-          children: [
-            Icon(
-              PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-              color: DeelmarktColors.trustVerified,
-            ),
-            const SizedBox(width: Spacing.s2),
-            Text(
-              'escrow.fundsReleased'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DeelmarktColors.trustVerified,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
+      TransactionStatus.confirmed || TransactionStatus.released => _infoRow(
+        context,
+        PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
+        'escrow.fundsReleased'.tr(),
+        DeelmarktColors.trustVerified,
+      ),
+      TransactionStatus.disputed => _infoRow(
+        context,
+        PhosphorIcons.warningCircle(),
+        'transaction.disputed'.tr(),
+        DeelmarktColors.trustWarning,
       ),
       _ => const SizedBox.shrink(),
     };
+  }
+
+  Widget _infoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Color color,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.s4),
+      child: Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: Spacing.s2),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

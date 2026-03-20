@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/design_system/deel_button_theme.dart';
-import '../../core/design_system/radius.dart';
-import '../../core/design_system/typography.dart';
+import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 import 'deel_button.dart';
 import 'deel_button_tokens.dart';
 

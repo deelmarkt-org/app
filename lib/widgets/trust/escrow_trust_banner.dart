@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../core/design_system/colors.dart';
-import '../../core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'escrow_step_circle.dart';
 
 /// Trust banner displayed on listing detail and transaction screens.

@@ -1,4 +1,4 @@
-import '../../../../core/models/transaction_status.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
 import '../entities/ledger_entry.dart';
 import '../exceptions.dart';
 import '../repositories/ledger_repository.dart';

@@ -42,5 +42,30 @@ void main() {
       expect(entry.amountCents, 5308);
       expect(entry.currency, 'EUR');
     });
+
+    test('equal when same id', () {
+      final a = LedgerEntry(
+        id: 'le_001',
+        transactionId: 'txn_001',
+        idempotencyKey: 'key_a',
+        debitAccount: 'buyer:usr_1',
+        creditAccount: 'escrow:txn_001',
+        amountCents: 5308,
+        currency: 'EUR',
+        createdAt: DateTime(2026, 3, 19),
+      );
+      final b = LedgerEntry(
+        id: 'le_001',
+        transactionId: 'txn_002',
+        idempotencyKey: 'key_b',
+        debitAccount: 'escrow:txn_002',
+        creditAccount: 'seller:usr_2',
+        amountCents: 9999,
+        currency: 'EUR',
+        createdAt: DateTime(2026, 3, 20),
+      );
+      expect(a, equals(b));
+      expect(a.hashCode, b.hashCode);
+    });
   });
 }

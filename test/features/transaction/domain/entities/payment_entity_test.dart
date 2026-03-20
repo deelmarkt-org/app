@@ -86,4 +86,55 @@ void main() {
       }
     });
   });
+
+  group('PaymentEntity equality', () {
+    test('equal when same id', () {
+      final a = PaymentEntity(
+        id: 'pay_001',
+        transactionId: 'txn_001',
+        molliePaymentId: 'tr_abc',
+        status: PaymentStatus.open,
+        amountCents: 5308,
+        currency: 'EUR',
+        method: 'ideal',
+        createdAt: DateTime(2026, 3, 19),
+      );
+      final b = PaymentEntity(
+        id: 'pay_001',
+        transactionId: 'txn_002',
+        molliePaymentId: 'tr_xyz',
+        status: PaymentStatus.paid,
+        amountCents: 9999,
+        currency: 'EUR',
+        method: 'creditcard',
+        createdAt: DateTime(2026, 3, 20),
+      );
+      expect(a, equals(b));
+      expect(a.hashCode, b.hashCode);
+    });
+
+    test('not equal when different id', () {
+      final a = PaymentEntity(
+        id: 'pay_001',
+        transactionId: 'txn_001',
+        molliePaymentId: 'tr_abc',
+        status: PaymentStatus.open,
+        amountCents: 5308,
+        currency: 'EUR',
+        method: 'ideal',
+        createdAt: DateTime(2026, 3, 19),
+      );
+      final b = PaymentEntity(
+        id: 'pay_002',
+        transactionId: 'txn_001',
+        molliePaymentId: 'tr_abc',
+        status: PaymentStatus.open,
+        amountCents: 5308,
+        currency: 'EUR',
+        method: 'ideal',
+        createdAt: DateTime(2026, 3, 19),
+      );
+      expect(a, isNot(equals(b)));
+    });
+  });
 }
