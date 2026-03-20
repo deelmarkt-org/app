@@ -105,6 +105,7 @@
 
 ## Completed
 
+- [x] **Infrastructure** (2026-03-20): Upgraded Antigravity AI Kit to v3.10.1
 - [x] **Sprint 3** (2026-03-16): Architecture docs, epics, tech stack evaluation
 - [x] **Sprint 2** (2026-03-15): Rebrand to DeelMarkt, domains acquired
 - [x] **Sprint 1** (2026-03-14): Git repo, AI Kit setup

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.0] - 2026-03-20
+
+### Changed
+
+- Upgraded Antigravity AI Kit to v3.10.1, preserving custom `.agent` configurations
+
 ## [0.7.0] - 2026-03-16
 
 ### Added
