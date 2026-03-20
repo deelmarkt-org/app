@@ -60,7 +60,8 @@ Only deploy when changes affect **deployed artifacts**:
 ## Steps
 
 // turbo
-1. **Pre-Flight Checks**
+1. **Pre-Flight Re-Validation**
+   These are fast re-validation checks to catch regressions between `/preflight` and `/deploy`. They are intentionally lighter than the full `/preflight` scan.
    - Code quality: `npx tsc --noEmit`, `npx eslint .` (or equivalent)
    - Tests: `npm test` (or equivalent)
    - Security: `npm audit`, no hardcoded secrets
@@ -190,6 +191,7 @@ Run `/deploy rollback` to restore [previous version].
 ## Related Resources
 
 - **Previous**: `/pr` (PR must be created and merged before deployment)
+- **Pre-requisite**: `/preflight` (production readiness must be verified before deployment)
 - **Next**: `/status` (post-deploy monitoring)
 - **Skill**: `.agent/skills/deployment-procedures/SKILL.md`
 - **Global Rule**: Production Merge Discipline (see global rules)

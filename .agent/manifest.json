@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "kitVersion": "3.6.0",
+  "kitVersion": "3.9.0",
   "lastAuditedAt": null,
   "description": "Antigravity AI Kit — Trust-Grade AI Development Framework",
   "repository": "https://github.com/besync-labs/antigravity-ai-kit",
   "capabilities": {
     "agents": {
-      "count": 19,
+      "count": 20,
       "items": [
         {
           "name": "architect",
@@ -79,6 +79,11 @@
           "domain": "Task breakdown, Socratic analysis"
         },
         {
+          "name": "pr-reviewer",
+          "file": "agents/pr-reviewer.md",
+          "domain": "PR review, branch strategy, code quality"
+        },
+        {
           "name": "refactor-cleaner",
           "file": "agents/refactor-cleaner.md",
           "domain": "Dead code cleanup"
@@ -106,11 +111,11 @@
       ]
     },
     "commands": {
-      "count": 31,
+      "count": 37,
       "directory": "commands/"
     },
     "skills": {
-      "count": 32,
+      "count": 34,
       "items": [
         {
           "name": "api-patterns",
@@ -209,6 +214,14 @@
           "directory": "skills/plan-writing/"
         },
         {
+          "name": "pr-toolkit",
+          "directory": "skills/pr-toolkit/"
+        },
+        {
+          "name": "production-readiness",
+          "directory": "skills/production-readiness/"
+        },
+        {
           "name": "security-practices",
           "directory": "skills/security-practices/"
         },
@@ -243,7 +256,7 @@
       ]
     },
     "workflows": {
-      "count": 15,
+      "count": 21,
       "items": [
         {
           "name": "brainstorm",
@@ -278,6 +291,26 @@
           "file": "workflows/pr.md"
         },
         {
+          "name": "pr-review",
+          "file": "workflows/pr-review.md"
+        },
+        {
+          "name": "pr-fix",
+          "file": "workflows/pr-fix.md"
+        },
+        {
+          "name": "pr-merge",
+          "file": "workflows/pr-merge.md"
+        },
+        {
+          "name": "pr-split",
+          "file": "workflows/pr-split.md"
+        },
+        {
+          "name": "preflight",
+          "file": "workflows/preflight.md"
+        },
+        {
           "name": "preview",
           "file": "workflows/preview.md"
         },
@@ -304,12 +337,20 @@
         {
           "name": "ui-ux-pro-max",
           "file": "workflows/ui-ux-pro-max.md"
+        },
+        {
+          "name": "upgrade",
+          "file": "workflows/upgrade.md"
         }
       ]
     },
     "rules": {
-      "count": 8,
+      "count": 9,
       "items": [
+        {
+          "name": "agent-upgrade-policy",
+          "file": "rules/agent-upgrade-policy.md"
+        },
         {
           "name": "architecture",
           "file": "rules/architecture.md"
