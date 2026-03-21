@@ -80,5 +80,59 @@
     "closeModal": "Sluiten",
     "menu": "Menu openen",
     "loading": "Laden..."
+  },
+
+  "payment": {
+    "orderSummary": "Bestelling overzicht",
+    "itemPrice": "Artikelprijs",
+    "platformFee": "Platformkosten",
+    "shippingCost": "Verzendkosten",
+    "total": "Totaal",
+    "inclBtw": "incl. BTW",
+    "payWithIdeal": "Betaal met iDEAL",
+    "paymentPending": "Betaling wordt verwerkt...",
+    "paymentSuccess": "Betaling gelukt!",
+    "paymentFailed": "Betaling mislukt",
+    "paymentExpired": "Betaling verlopen",
+    "paymentCancelled": "Betaling geannuleerd",
+    "tryAgain": "Opnieuw proberen",
+    "backToListing": "Terug naar advertentie",
+    "processing": "Bezig met verwerken..."
+  },
+
+  "escrow": {
+    "protected": "Beschermd met DeelMarkt Escrow",
+    "protectedDescription": "Je geld is veilig tot levering.",
+    "moreInfo": "Meer info",
+    "paid": "Betaald",
+    "shipped": "Verzonden",
+    "delivered": "Bezorgd",
+    "confirmed": "Bevestigd",
+    "released": "Uitbetaald",
+    "confirmDelivery": "Levering bevestigen",
+    "confirmDeliveryDescription": "Bevestig dat je het artikel hebt ontvangen",
+    "disputeOrder": "Probleem melden",
+    "countdownHint": "48 uur om te bevestigen",
+    "fundsHeld": "Geld wordt vastgehouden",
+    "fundsReleased": "Geld vrijgegeven aan verkoper"
+  },
+
+  "transaction": {
+    "status": "Status",
+    "created": "Aangemaakt",
+    "paymentPending": "Wacht op betaling",
+    "paid": "Betaald",
+    "shipped": "Verzonden",
+    "delivered": "Bezorgd",
+    "confirmed": "Bevestigd",
+    "released": "Uitbetaald",
+    "expired": "Verlopen",
+    "failed": "Mislukt",
+    "disputed": "Betwist",
+    "resolved": "Opgelost",
+    "refunded": "Terugbetaald",
+    "cancelled": "Geannuleerd",
+    "sellerPayout": "Uitbetaling verkoper",
+    "platformCommission": "Platformcommissie"
   }
 }

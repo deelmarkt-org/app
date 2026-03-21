@@ -80,5 +80,59 @@
     "closeModal": "Close",
     "menu": "Open menu",
     "loading": "Loading..."
+  },
+
+  "payment": {
+    "orderSummary": "Order summary",
+    "itemPrice": "Item price",
+    "platformFee": "Platform fee",
+    "shippingCost": "Shipping cost",
+    "total": "Total",
+    "inclBtw": "incl. VAT",
+    "payWithIdeal": "Pay with iDEAL",
+    "paymentPending": "Processing payment...",
+    "paymentSuccess": "Payment successful!",
+    "paymentFailed": "Payment failed",
+    "paymentExpired": "Payment expired",
+    "paymentCancelled": "Payment cancelled",
+    "tryAgain": "Try again",
+    "backToListing": "Back to listing",
+    "processing": "Processing..."
+  },
+
+  "escrow": {
+    "protected": "Protected by DeelMarkt Escrow",
+    "protectedDescription": "Your money is safe until delivery.",
+    "moreInfo": "More info",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "confirmed": "Confirmed",
+    "released": "Released",
+    "confirmDelivery": "Confirm delivery",
+    "confirmDeliveryDescription": "Confirm that you have received the item",
+    "disputeOrder": "Report issue",
+    "countdownHint": "48 hours to confirm",
+    "fundsHeld": "Funds held in escrow",
+    "fundsReleased": "Funds released to seller"
+  },
+
+  "transaction": {
+    "status": "Status",
+    "created": "Created",
+    "paymentPending": "Awaiting payment",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "confirmed": "Confirmed",
+    "released": "Released",
+    "expired": "Expired",
+    "failed": "Failed",
+    "disputed": "Disputed",
+    "resolved": "Resolved",
+    "refunded": "Refunded",
+    "cancelled": "Cancelled",
+    "sellerPayout": "Seller payout",
+    "platformCommission": "Platform commission"
   }
 }

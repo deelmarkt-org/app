@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../core/design_system/deel_button_theme.dart';
-import '../../core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'deel_button_style.dart';
 import 'deel_button_tokens.dart';
 

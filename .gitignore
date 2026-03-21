@@ -54,3 +54,6 @@ docs/archives/emre/
 deelmarkt-email.md
 # Claude Code local settings
 .claude/
+
+# Mollie reference docs (local only)
+mollie/
