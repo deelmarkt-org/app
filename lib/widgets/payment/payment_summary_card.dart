@@ -76,36 +76,41 @@ class PaymentSummaryCard extends StatelessWidget {
           ),
 
           // Total
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.s4,
-              vertical: Spacing.s2,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'payment.total'.tr(),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+          Semantics(
+            label:
+                '${'payment.total'.tr()} ${Formatters.euroFromCents(_totalCents)} ${'payment.inclBtw'.tr()}',
+            excludeSemantics: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.s4,
+                vertical: Spacing.s2,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'payment.total'.tr(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      Formatters.euroFromCents(_totalCents),
-                      style: DeelmarktTypography.price,
-                    ),
-                    Text(
-                      'payment.inclBtw'.tr(),
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: DeelmarktColors.neutral500,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        Formatters.euroFromCents(_totalCents),
+                        style: DeelmarktTypography.price,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        'payment.inclBtw'.tr(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: DeelmarktColors.neutral500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 

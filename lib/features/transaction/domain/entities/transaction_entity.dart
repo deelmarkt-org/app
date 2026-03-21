@@ -5,6 +5,8 @@ import 'package:deelmarkt/core/models/transaction_status.dart';
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
 /// All monetary values in cents to avoid floating-point errors.
 ///
+/// §2.1 deviation: 16-field entity requires verbose copyWith (118 lines).
+///
 /// Reference: docs/epics/E03-payments-escrow.md
 class TransactionEntity {
   const TransactionEntity({

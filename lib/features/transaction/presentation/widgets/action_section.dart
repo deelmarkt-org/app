@@ -73,20 +73,24 @@ class ActionSection extends StatelessWidget {
     String label,
     Color color,
   ) {
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.s4),
-      child: Row(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(width: Spacing.s2),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.s4),
+        child: Row(
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(width: Spacing.s2),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
