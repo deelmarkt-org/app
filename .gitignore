@@ -43,9 +43,12 @@ android/key.properties
 *.inject.summary
 *.inject.dart
 
-# Agent session state (changes every session, not shareable)
-.agent/session-context.md
-.agent/session-state.json
+# Devran AI Kit (local dev tooling)
+# Install: npx @devran-ai/kit init
+.agent/
+.codex/
+.opencode/
+.cursor/rules/kit-governance.mdc
 
 # Archives — personal reference docs (not pushed to remote)
 docs/archives/emre/
