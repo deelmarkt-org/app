@@ -5,10 +5,10 @@
  * B-16: HMAC-SHA256 signature verification
  *
  * Flow:
- * 1. Verify HMAC-SHA256 signature (reject invalid)
+ * 1. Verify HMAC-SHA256 signature (reject invalid) — skipped for DLQ retries
  * 2. Check idempotency via Redis NX (skip duplicates)
  * 3. Fetch payment status from Mollie API
- * 4. Record webhook event in DB
+ * 4. Record webhook event in DB (fail-hard if recording fails)
  * 5. Update transaction status + record ledger entries
  * 6. On failure: retry with exponential backoff, DLQ after 5th attempt
  *
@@ -114,9 +114,7 @@ async function fetchMolliePayment(
 // Transaction status mapping: Mollie status → our transaction_status
 // ---------------------------------------------------------------------------
 
-function mapMollieStatus(
-  mollieStatus: string
-): string | null {
+function mapMollieStatus(mollieStatus: string): string | null {
   switch (mollieStatus) {
     case "paid":
       return "paid";
@@ -127,7 +125,8 @@ function mapMollieStatus(
     case "canceled":
       return "cancelled";
     default:
-      // open, pending, authorized — no status change needed
+      // open, pending, authorized — transient states during payment flow.
+      // No transaction status change needed until paid/failed/expired.
       return null;
   }
 }
@@ -156,7 +155,10 @@ async function getVaultSecret(
 Deno.serve(async (req: Request): Promise<Response> => {
   // Only accept POST
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -170,14 +172,20 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const molliePaymentId = payload.id;
 
     // 2. Verify HMAC-SHA256 signature (B-16)
-    const signature = req.headers.get("x-mollie-signature");
-    const webhookSecret = await getVaultSecret(supabase, "mollie_webhook_secret");
+    // Skip for internal DLQ retries (M5) — signature was verified on first attempt
+    const isDlqRetry = req.headers.get("x-dlq-retry") === "true";
 
-    if (webhookSecret) {
+    if (!isDlqRetry) {
+      // C2: HMAC verification is mandatory for external Mollie webhooks
+      const signature = req.headers.get("x-mollie-signature");
+      const webhookSecret = await getVaultSecret(supabase, "mollie_webhook_secret");
       const isValid = await verifySignature(rawBody, signature, webhookSecret);
       if (!isValid) {
         console.error(`[mollie-webhook] Invalid signature for ${molliePaymentId}`);
-        return new Response("Invalid signature", { status: 401 });
+        return new Response(JSON.stringify({ error: "Invalid signature" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
       }
     }
 
@@ -192,6 +200,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
         console.log(`[mollie-webhook] Duplicate skipped: ${molliePaymentId}`);
         return new Response("Already processed", { status: 200 });
       }
+    } else {
+      console.warn(`[mollie-webhook] Redis not configured — idempotency check skipped`);
     }
 
     // 4. Fetch payment details from Mollie
@@ -199,12 +209,17 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const payment = await fetchMolliePayment(molliePaymentId, mollieApiKey);
     const transactionId = payment.metadata?.transaction_id;
 
+    // M3: Return 422 so Mollie retries (200 would signal success)
     if (!transactionId) {
       console.error(`[mollie-webhook] No transaction_id in metadata for ${molliePaymentId}`);
-      return new Response("Missing transaction_id", { status: 200 });
+      return new Response(JSON.stringify({ error: "Missing transaction_id in metadata" }), {
+        status: 422,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // 5. Record webhook event in DB (for reconciliation — B-18)
+    // H1: Fail hard if event recording fails — PSD2 audit trail integrity
     const { error: eventError } = await supabase
       .from("mollie_webhook_events")
       .upsert(
@@ -215,12 +230,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
           idempotency_key: idempotencyKey,
           processed: false,
           attempts: 1,
+          last_attempted_at: new Date().toISOString(),
         },
         { onConflict: "idempotency_key" }
       );
 
     if (eventError) {
-      console.error(`[mollie-webhook] Failed to record event: ${eventError.message}`);
+      throw new Error(`Failed to record webhook event: ${eventError.message}`);
     }
 
     // 6. Map Mollie status and update transaction
@@ -250,6 +266,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       }
 
       // 7. Record escrow deposit ledger entry when payment completes
+      // C3: Fail hard if ledger entry fails — double-entry integrity
       if (newStatus === "paid") {
         const { data: txn } = await supabase
           .from("transactions")
@@ -261,7 +278,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
           const totalCents =
             txn.item_amount_cents + txn.platform_fee_cents + txn.shipping_cost_cents;
 
-          await supabase.from("ledger_entries").insert({
+          const { error: ledgerError } = await supabase.from("ledger_entries").insert({
             transaction_id: txn.id,
             idempotency_key: `deposit:buyer:${txn.id}`,
             debit_account: `buyer:${txn.buyer_id}`,
@@ -269,6 +286,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
             amount_cents: totalCents,
             currency: "EUR",
           });
+
+          if (ledgerError) {
+            throw new Error(`Failed to record escrow deposit ledger: ${ledgerError.message}`);
+          }
         }
       }
     }
@@ -276,7 +297,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
     // 8. Mark webhook event as processed
     await supabase
       .from("mollie_webhook_events")
-      .update({ processed: true, processed_at: new Date().toISOString() })
+      .update({
+        processed: true,
+        processed_at: new Date().toISOString(),
+        last_attempted_at: new Date().toISOString(),
+      })
       .eq("idempotency_key", idempotencyKey);
 
     console.log(
@@ -286,30 +311,41 @@ Deno.serve(async (req: Request): Promise<Response> => {
   } catch (error) {
     console.error(`[mollie-webhook] Error: ${(error as Error).message}`);
 
-    // Record failure for DLQ monitoring (B-19)
+    // M2: Record failure for DLQ — increment existing attempts, preserve original event_type
     try {
       const bodyText = await req.clone().text().catch(() => "");
       const parsed = JSON.parse(bodyText).id ?? "unknown";
       const key = `mollie:webhook:${parsed}`;
+
+      // Check if event already exists to preserve state
+      const { data: existing } = await supabase
+        .from("mollie_webhook_events")
+        .select("attempts, event_type")
+        .eq("idempotency_key", key)
+        .single();
 
       await supabase
         .from("mollie_webhook_events")
         .upsert(
           {
             mollie_id: parsed,
-            event_type: "error",
+            event_type: existing?.event_type ?? "error",
             payload: { error: (error as Error).message },
             idempotency_key: key,
             processed: false,
-            attempts: 1,
+            attempts: (existing?.attempts ?? 0) + 1,
             last_error: (error as Error).message,
+            last_attempted_at: new Date().toISOString(),
           },
-          { onConflict: "idempotency_key", ignoreDuplicates: false }
+          { onConflict: "idempotency_key" }
         );
     } catch {
       // Best-effort error recording
     }
 
-    return new Response("Internal error", { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 });

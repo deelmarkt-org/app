@@ -146,11 +146,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonError("Only the buyer can initiate payment", 403);
     }
 
-    // 4. Validate transaction state
-    const validStates = ["created", "expired", "failed", "cancelled"];
-    if (!validStates.includes(txn.status)) {
+    // 4. Validate transaction state — only 'created' can transition to payment_pending
+    // H2: Matches Dart TransactionStatus.validTransitions (created → {paymentPending, cancelled})
+    // expired/failed/cancelled are terminal states — buyer must create a new transaction
+    if (txn.status !== "created") {
       return jsonError(
-        `Cannot create payment for transaction in '${txn.status}' state`,
+        `Cannot create payment for transaction in '${txn.status}' state. Only 'created' transactions can initiate payment.`,
         409
       );
     }

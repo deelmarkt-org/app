@@ -4,18 +4,28 @@
  * Compares ledger entry count vs Mollie webhook event count per day.
  * Any mismatch triggers a PagerDuty SEV-1 alert.
  *
- * Designed to run as a daily cron job via Supabase pg_cron or external scheduler.
+ * Designed to run as a daily cron job via pg_cron (06:00 UTC).
  *
  * Checks:
- * 1. Ledger entries vs processed webhook events (count mismatch)
- * 2. Unprocessed webhook events older than 1 hour (stuck events)
- * 3. Escrow balance validation (debits must equal credits per transaction)
+ * 1. Per-transaction ledger validation (each paid txn has deposit entry)
+ * 2. Unprocessed webhook events older than 30 minutes (stuck events)
+ * 3. Escrow balance validation (debits must equal credits per released transaction)
+ *
+ * L2: Stuck event threshold is 30 minutes — chosen to balance between
+ * alerting speed and tolerance for Mollie processing delays.
  *
  * Reference: docs/epics/E03-payments-escrow.md §Daily reconciliation
  */
 
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+// L2: Stuck event threshold — 30 minutes balances alerting speed vs tolerance
+const STUCK_EVENT_THRESHOLD_MINUTES = 30;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -35,7 +45,7 @@ interface CheckResult {
 }
 
 // ---------------------------------------------------------------------------
-// PagerDuty alert
+// PagerDuty alert (M7: log fallback if PagerDuty fails)
 // ---------------------------------------------------------------------------
 
 async function triggerPagerDuty(
@@ -44,24 +54,34 @@ async function triggerPagerDuty(
   severity: "critical" | "error" | "warning" | "info",
   details: Record<string, unknown>
 ): Promise<void> {
-  const response = await fetch("https://events.pagerduty.com/v2/enqueue", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      routing_key: routingKey,
-      event_action: "trigger",
-      payload: {
-        summary: `[DeelMarkt] ${summary}`,
-        source: "daily-reconciliation",
-        severity,
-        custom_details: details,
-      },
-    }),
-  });
+  try {
+    const response = await fetch("https://events.pagerduty.com/v2/enqueue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        routing_key: routingKey,
+        event_action: "trigger",
+        payload: {
+          summary: `[DeelMarkt] ${summary}`,
+          source: "daily-reconciliation",
+          severity,
+          custom_details: details,
+        },
+      }),
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      // M7: Fallback — log critical error so Supabase Edge Function logs capture it
+      console.error(
+        `[reconciliation] ALERT DELIVERY FAILED — PagerDuty returned ${response.status}. ` +
+          `Original alert: ${summary}. Details: ${JSON.stringify(details)}`
+      );
+    }
+  } catch (err) {
+    // M7: PagerDuty is down — log the full alert content as a fallback
     console.error(
-      `[reconciliation] PagerDuty alert failed: ${response.status} ${await response.text()}`
+      `[reconciliation] ALERT DELIVERY FAILED — PagerDuty unreachable: ${(err as Error).message}. ` +
+        `Original alert: ${summary}. Details: ${JSON.stringify(details)}`
     );
   }
 }
@@ -70,44 +90,73 @@ async function triggerPagerDuty(
 // Reconciliation checks
 // ---------------------------------------------------------------------------
 
-async function checkWebhookEventCount(
+// C1: Per-transaction validation instead of broken count comparison.
+// M4: Accounts for different event types (paid=1 entry, confirmed=2 entries).
+async function checkPerTransactionLedger(
   supabase: ReturnType<typeof createClient>
 ): Promise<CheckResult> {
   const since = new Date();
   since.setHours(since.getHours() - 24);
   const sinceISO = since.toISOString();
 
-  // Count processed webhook events in last 24h
-  const { count: webhookCount, error: webhookError } = await supabase
+  // Get all paid webhook events in last 24h
+  const { data: paidEvents, error: eventError } = await supabase
     .from("mollie_webhook_events")
-    .select("*", { count: "exact", head: true })
+    .select("mollie_id, event_type, payload")
     .eq("processed", true)
+    .eq("event_type", "paid")
     .gte("created_at", sinceISO);
 
-  // Count ledger entries created in last 24h
-  const { count: ledgerCount, error: ledgerError } = await supabase
-    .from("ledger_entries")
-    .select("*", { count: "exact", head: true })
-    .gte("created_at", sinceISO);
-
-  if (webhookError || ledgerError) {
+  if (eventError) {
     return {
-      name: "event_count_match",
+      name: "per_txn_ledger",
       passed: false,
-      details: `Query error: ${webhookError?.message ?? ledgerError?.message}`,
+      details: `Query error: ${eventError.message}`,
       severity: "SEV-2",
     };
   }
 
-  // Each paid webhook should generate exactly 1 ledger entry (deposit).
-  // Confirmed webhooks generate 2 (seller payout + platform fee).
-  // Simple count parity check — detailed per-txn check below.
-  const passed = webhookCount !== null && ledgerCount !== null;
+  if (!paidEvents || paidEvents.length === 0) {
+    return {
+      name: "per_txn_ledger",
+      passed: true,
+      details: "No paid events in last 24h — nothing to reconcile",
+      severity: "INFO",
+    };
+  }
+
+  // For each paid event, verify a deposit ledger entry exists
+  const missingDeposits: string[] = [];
+
+  for (const event of paidEvents) {
+    const txnId = (event.payload as Record<string, unknown>)?.metadata
+      ? ((event.payload as Record<string, Record<string, string>>).metadata?.transaction_id)
+      : null;
+
+    if (!txnId) {
+      missingDeposits.push(`${event.mollie_id}: no transaction_id in metadata`);
+      continue;
+    }
+
+    const { data: entry } = await supabase
+      .from("ledger_entries")
+      .select("id")
+      .eq("idempotency_key", `deposit:buyer:${txnId}`)
+      .single();
+
+    if (!entry) {
+      missingDeposits.push(`${event.mollie_id}: missing deposit for txn ${txnId}`);
+    }
+  }
+
+  const passed = missingDeposits.length === 0;
 
   return {
-    name: "event_count_match",
+    name: "per_txn_ledger",
     passed,
-    details: `Webhook events (24h): ${webhookCount}, Ledger entries (24h): ${ledgerCount}`,
+    details: passed
+      ? `${paidEvents.length} paid events — all have matching ledger deposits`
+      : `${missingDeposits.length} missing deposits: ${missingDeposits.join("; ")}`,
     severity: passed ? "INFO" : "SEV-1",
   };
 }
@@ -115,14 +164,15 @@ async function checkWebhookEventCount(
 async function checkStuckEvents(
   supabase: ReturnType<typeof createClient>
 ): Promise<CheckResult> {
-  const oneHourAgo = new Date();
-  oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+  // L2: Threshold documented — 30 minutes
+  const threshold = new Date();
+  threshold.setMinutes(threshold.getMinutes() - STUCK_EVENT_THRESHOLD_MINUTES);
 
   const { data: stuck, error } = await supabase
     .from("mollie_webhook_events")
     .select("id, mollie_id, created_at, attempts, last_error")
     .eq("processed", false)
-    .lt("created_at", oneHourAgo.toISOString())
+    .lt("created_at", threshold.toISOString())
     .order("created_at", { ascending: true })
     .limit(50);
 
@@ -142,20 +192,19 @@ async function checkStuckEvents(
     name: "stuck_events",
     passed,
     details: passed
-      ? "No stuck events"
-      : `${count} unprocessed events older than 1 hour: ${stuck!.map((e) => e.mollie_id).join(", ")}`,
+      ? `No stuck events (threshold: ${STUCK_EVENT_THRESHOLD_MINUTES}min)`
+      : `${count} unprocessed events older than ${STUCK_EVENT_THRESHOLD_MINUTES}min: ${stuck!.map((e) => e.mollie_id).join(", ")}`,
     severity: passed ? "INFO" : "SEV-1",
   };
 }
 
+// M6: Single query instead of N+1
 async function checkEscrowBalance(
   supabase: ReturnType<typeof createClient>
 ): Promise<CheckResult> {
-  // For each transaction with status 'released', verify:
-  // total debits to escrow == total credits from escrow
   const { data: released, error } = await supabase
     .from("transactions")
-    .select("id, item_amount_cents, platform_fee_cents, shipping_cost_cents")
+    .select("id")
     .eq("status", "released")
     .limit(100);
 
@@ -168,16 +217,36 @@ async function checkEscrowBalance(
     };
   }
 
+  if (!released || released.length === 0) {
+    return {
+      name: "escrow_balance",
+      passed: true,
+      details: "No released transactions to check",
+      severity: "INFO",
+    };
+  }
+
+  // Single query for all ledger entries of released transactions
+  const txnIds = released.map((t) => t.id);
+  const { data: allEntries, error: ledgerError } = await supabase
+    .from("ledger_entries")
+    .select("transaction_id, debit_account, credit_account, amount_cents")
+    .in("transaction_id", txnIds);
+
+  if (ledgerError) {
+    return {
+      name: "escrow_balance",
+      passed: false,
+      details: `Ledger query error: ${ledgerError.message}`,
+      severity: "SEV-2",
+    };
+  }
+
+  // Group entries by transaction and check balance
   const imbalanced: string[] = [];
 
-  for (const txn of released ?? []) {
-    const { data: entries } = await supabase
-      .from("ledger_entries")
-      .select("debit_account, credit_account, amount_cents")
-      .eq("transaction_id", txn.id);
-
-    if (!entries) continue;
-
+  for (const txn of released) {
+    const entries = (allEntries ?? []).filter((e) => e.transaction_id === txn.id);
     const escrowAccount = `escrow:${txn.id}`;
     let debitsToEscrow = 0;
     let creditsFromEscrow = 0;
@@ -200,7 +269,7 @@ async function checkEscrowBalance(
     name: "escrow_balance",
     passed,
     details: passed
-      ? `${released?.length ?? 0} released transactions — all balanced`
+      ? `${released.length} released transactions — all balanced`
       : `${imbalanced.length} imbalanced: ${imbalanced.join("; ")}`,
     severity: passed ? "INFO" : "SEV-1",
   };
@@ -211,9 +280,11 @@ async function checkEscrowBalance(
 // ---------------------------------------------------------------------------
 
 Deno.serve(async (req: Request): Promise<Response> => {
-  // Accept POST (cron trigger) or GET (manual check)
   if (req.method !== "POST" && req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -221,9 +292,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
   try {
-    // Run all checks
     const checks = await Promise.all([
-      checkWebhookEventCount(supabase),
+      checkPerTransactionLedger(supabase),
       checkStuckEvents(supabase),
       checkEscrowBalance(supabase),
     ]);
@@ -235,7 +305,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       timestamp: new Date().toISOString(),
     };
 
-    // Alert on any failure
     if (!allPassed) {
       const pagerdutyKey = Deno.env.get("PAGERDUTY_ROUTING_KEY");
       if (pagerdutyKey) {
