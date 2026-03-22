@@ -4,13 +4,8 @@
  * B-15: Webhook idempotency via Upstash Redis NX
  * B-16: HMAC-SHA256 signature verification
  *
- * Flow:
- * 1. Verify HMAC-SHA256 signature (reject invalid) — skipped for DLQ retries
- * 2. Check idempotency via Redis NX (skip duplicates)
- * 3. Fetch payment status from Mollie API
- * 4. Record webhook event in DB (fail-hard if recording fails)
- * 5. Update transaction status + record ledger entries
- * 6. On failure: retry with exponential backoff, DLQ after 5th attempt
+ * verify_jwt = false — Mollie sends no JWT. Security via HMAC + Redis.
+ * DLQ retries authenticate via service_role JWT (C2 fix).
  *
  * Reference: docs/epics/E03-payments-escrow.md
  */
@@ -18,6 +13,8 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { getVaultSecret } from "../_shared/vault.ts";
+import { verifyServiceRole } from "../_shared/auth.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -31,7 +28,7 @@ interface MolliePayment {
 }
 
 // ---------------------------------------------------------------------------
-// Zod input validation (§9: Edge Functions use Zod)
+// Zod input validation (§9)
 // ---------------------------------------------------------------------------
 
 const WebhookPayloadSchema = z.object({
@@ -81,7 +78,6 @@ async function checkIdempotency(
   redisToken: string,
   key: string
 ): Promise<boolean> {
-  // Atomic NX set with 24h TTL — returns "OK" only if key was newly set
   const response = await fetch(`${redisUrl}/set/${key}/1/EX/86400/NX`, {
     headers: { Authorization: `Bearer ${redisToken}` },
   });
@@ -111,7 +107,7 @@ async function fetchMolliePayment(
 }
 
 // ---------------------------------------------------------------------------
-// Transaction status mapping: Mollie status → our transaction_status
+// Transaction status mapping
 // ---------------------------------------------------------------------------
 
 function mapMollieStatus(mollieStatus: string): string | null {
@@ -125,27 +121,9 @@ function mapMollieStatus(mollieStatus: string): string | null {
     case "canceled":
       return "cancelled";
     default:
-      // open, pending, authorized — transient states during payment flow.
-      // No transaction status change needed until paid/failed/expired.
+      // open, pending, authorized — transient states, no change needed
       return null;
   }
-}
-
-// ---------------------------------------------------------------------------
-// Vault secret retrieval
-// ---------------------------------------------------------------------------
-
-async function getVaultSecret(
-  supabase: ReturnType<typeof createClient>,
-  secretName: string
-): Promise<string> {
-  const { data, error } = await supabase.rpc("vault_read_secret", {
-    p_name: secretName,
-  });
-  if (error || !data) {
-    throw new Error(`Failed to read vault secret '${secretName}': ${error?.message}`);
-  }
-  return data;
 }
 
 // ---------------------------------------------------------------------------
@@ -153,12 +131,8 @@ async function getVaultSecret(
 // ---------------------------------------------------------------------------
 
 Deno.serve(async (req: Request): Promise<Response> => {
-  // Only accept POST
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -171,37 +145,39 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const payload = WebhookPayloadSchema.parse(JSON.parse(rawBody));
     const molliePaymentId = payload.id;
 
-    // 2. Verify HMAC-SHA256 signature (B-16)
-    // Skip for internal DLQ retries (M5) — signature was verified on first attempt
+    // 2. Authentication: HMAC for external Mollie calls, service_role for DLQ retries
     const isDlqRetry = req.headers.get("x-dlq-retry") === "true";
 
-    if (!isDlqRetry) {
-      // C2: HMAC verification is mandatory for external Mollie webhooks
+    if (isDlqRetry) {
+      // C2: DLQ retries must authenticate with service_role JWT
+      if (!await verifyServiceRole(req)) {
+        return jsonResponse({ error: "Unauthorized DLQ retry" }, 401);
+      }
+    } else {
+      // External Mollie webhook — HMAC verification mandatory
       const signature = req.headers.get("x-mollie-signature");
       const webhookSecret = await getVaultSecret(supabase, "mollie_webhook_secret");
       const isValid = await verifySignature(rawBody, signature, webhookSecret);
       if (!isValid) {
         console.error(`[mollie-webhook] Invalid signature for ${molliePaymentId}`);
-        return new Response(JSON.stringify({ error: "Invalid signature" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        });
+        return jsonResponse({ error: "Invalid signature" }, 401);
       }
     }
 
-    // 3. Idempotency check via Upstash Redis NX (B-15)
+    // 3. Idempotency check via Upstash Redis NX
+    // M1: Fail hard if Redis not configured — DB UNIQUE is safety net, not primary
     const redisUrl = Deno.env.get("UPSTASH_REDIS_REST_URL");
     const redisToken = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
-    const idempotencyKey = `mollie:webhook:${molliePaymentId}`;
 
-    if (redisUrl && redisToken) {
-      const isNew = await checkIdempotency(redisUrl, redisToken, idempotencyKey);
-      if (!isNew) {
-        console.log(`[mollie-webhook] Duplicate skipped: ${molliePaymentId}`);
-        return new Response("Already processed", { status: 200 });
-      }
-    } else {
-      console.warn(`[mollie-webhook] Redis not configured — idempotency check skipped`);
+    if (!redisUrl || !redisToken) {
+      throw new Error("Upstash Redis not configured — cannot ensure idempotency");
+    }
+
+    const idempotencyKey = `mollie:webhook:${molliePaymentId}`;
+    const isNew = await checkIdempotency(redisUrl, redisToken, idempotencyKey);
+    if (!isNew) {
+      console.log(`[mollie-webhook] Duplicate skipped: ${molliePaymentId}`);
+      return new Response("Already processed", { status: 200 });
     }
 
     // 4. Fetch payment details from Mollie
@@ -209,17 +185,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const payment = await fetchMolliePayment(molliePaymentId, mollieApiKey);
     const transactionId = payment.metadata?.transaction_id;
 
-    // M3: Return 422 so Mollie retries (200 would signal success)
     if (!transactionId) {
       console.error(`[mollie-webhook] No transaction_id in metadata for ${molliePaymentId}`);
-      return new Response(JSON.stringify({ error: "Missing transaction_id in metadata" }), {
-        status: 422,
-        headers: { "Content-Type": "application/json" },
-      });
+      return jsonResponse({ error: "Missing transaction_id in metadata" }, 422);
     }
 
-    // 5. Record webhook event in DB (for reconciliation — B-18)
-    // H1: Fail hard if event recording fails — PSD2 audit trail integrity
+    // 5. Record webhook event — fail hard (PSD2 audit trail)
     const { error: eventError } = await supabase
       .from("mollie_webhook_events")
       .upsert(
@@ -243,14 +214,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const newStatus = mapMollieStatus(payment.status);
 
     if (newStatus) {
-      const timestampField = newStatus === "paid" ? "paid_at" : null;
       const updateData: Record<string, unknown> = { status: newStatus };
-      if (timestampField) {
-        updateData[timestampField] = new Date().toISOString();
-      }
 
-      // Set escrow deadline (48h) when paid
       if (newStatus === "paid") {
+        updateData.paid_at = new Date().toISOString();
         const deadline = new Date();
         deadline.setHours(deadline.getHours() + 48);
         updateData.escrow_deadline = deadline.toISOString();
@@ -265,8 +232,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
         throw new Error(`Transaction update failed: ${updateError.message}`);
       }
 
-      // 7. Record escrow deposit ledger entry when payment completes
-      // C3: Fail hard if ledger entry fails — double-entry integrity
+      // 7. Record escrow deposit ledger entry — fail hard (double-entry integrity)
       if (newStatus === "paid") {
         const { data: txn } = await supabase
           .from("transactions")
@@ -288,7 +254,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
           });
 
           if (ledgerError) {
-            throw new Error(`Failed to record escrow deposit ledger: ${ledgerError.message}`);
+            throw new Error(`Failed to record escrow deposit: ${ledgerError.message}`);
           }
         }
       }
@@ -311,13 +277,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
   } catch (error) {
     console.error(`[mollie-webhook] Error: ${(error as Error).message}`);
 
-    // M2: Record failure for DLQ — increment existing attempts, preserve original event_type
+    // Record failure for DLQ — preserve existing state
     try {
       const bodyText = await req.clone().text().catch(() => "");
       const parsed = JSON.parse(bodyText).id ?? "unknown";
       const key = `mollie:webhook:${parsed}`;
 
-      // Check if event already exists to preserve state
       const { data: existing } = await supabase
         .from("mollie_webhook_events")
         .select("attempts, event_type")
@@ -343,9 +308,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
       // Best-effort error recording
     }
 
-    return new Response(JSON.stringify({ error: "Internal error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonResponse({ error: "Internal error" }, 500);
   }
 });
+
+function jsonResponse(body: Record<string, unknown>, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}

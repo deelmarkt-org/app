@@ -385,7 +385,7 @@ s3_secret_key = "env(S3_SECRET_KEY)" # pragma: allowlist secret
 
 [functions.mollie-webhook]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/mollie-webhook/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
@@ -396,7 +396,7 @@ entrypoint = "./functions/mollie-webhook/index.ts"
 
 [functions.daily-reconciliation]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/daily-reconciliation/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
@@ -407,7 +407,7 @@ entrypoint = "./functions/daily-reconciliation/index.ts"
 
 [functions.webhook-dlq]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/webhook-dlq/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx

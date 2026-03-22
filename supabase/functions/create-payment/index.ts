@@ -2,15 +2,7 @@
  * Create Payment Edge Function (B-14)
  *
  * Called by the Flutter app to initiate a Mollie iDEAL payment.
- *
- * Flow:
- * 1. Validate input (Zod)
- * 2. Verify the transaction belongs to the authenticated buyer
- * 3. Check transaction is in valid state for payment
- * 4. Create Mollie payment via API
- * 5. Store mollie_payment_id on transaction
- * 6. Transition status to payment_pending
- * 7. Return checkout URL for WebView
+ * verify_jwt = true — requires authenticated user JWT.
  *
  * Reference: docs/epics/E03-payments-escrow.md
  */
@@ -18,6 +10,7 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { getVaultSecret } from "../_shared/vault.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -28,23 +21,6 @@ const CreatePaymentSchema = z.object({
   redirect_url: z.string().url("Invalid redirect URL"),
   description: z.string().max(140).optional(),
 });
-
-// ---------------------------------------------------------------------------
-// Vault secret retrieval
-// ---------------------------------------------------------------------------
-
-async function getVaultSecret(
-  supabase: ReturnType<typeof createClient>,
-  secretName: string
-): Promise<string> {
-  const { data, error } = await supabase.rpc("vault_read_secret", {
-    p_name: secretName,
-  });
-  if (error || !data) {
-    throw new Error(`Failed to read vault secret '${secretName}': ${error?.message}`);
-  }
-  return data;
-}
 
 // ---------------------------------------------------------------------------
 // Mollie payment creation
@@ -103,13 +79,12 @@ async function createMolliePayment(
 
 Deno.serve(async (req: Request): Promise<Response> => {
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return jsonError("Method not allowed", 405);
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-  // Use the user's JWT for auth checks, service_role for writes
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) {
     return jsonError("Missing Authorization header", 401);
@@ -121,17 +96,14 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const serviceClient = createClient(supabaseUrl, serviceRoleKey);
 
   try {
-    // 1. Validate input
     const body = await req.json();
     const input = CreatePaymentSchema.parse(body);
 
-    // 2. Get authenticated user
     const { data: { user }, error: authError } = await userClient.auth.getUser();
     if (authError || !user) {
       return jsonError("Unauthorized", 401);
     }
 
-    // 3. Fetch transaction and verify ownership
     const { data: txn, error: txnError } = await serviceClient
       .from("transactions")
       .select("*")
@@ -146,9 +118,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonError("Only the buyer can initiate payment", 403);
     }
 
-    // 4. Validate transaction state — only 'created' can transition to payment_pending
-    // H2: Matches Dart TransactionStatus.validTransitions (created → {paymentPending, cancelled})
-    // expired/failed/cancelled are terminal states — buyer must create a new transaction
+    // Only 'created' can transition to payment_pending — matches Dart TransactionStatus
     if (txn.status !== "created") {
       return jsonError(
         `Cannot create payment for transaction in '${txn.status}' state. Only 'created' transactions can initiate payment.`,
@@ -156,11 +126,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // 5. Calculate total
     const totalCents =
       txn.item_amount_cents + txn.platform_fee_cents + txn.shipping_cost_cents;
 
-    // 6. Create Mollie payment
     const mollieApiKey = await getVaultSecret(serviceClient, "mollie_test_api_key");
     const webhookUrl = `${supabaseUrl}/functions/v1/mollie-webhook`;
 
@@ -178,7 +146,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       throw new Error("Mollie did not return a checkout URL");
     }
 
-    // 7. Update transaction — status first (atomicity pattern from B-15)
     const { error: statusError } = await serviceClient
       .from("transactions")
       .update({
@@ -191,7 +158,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       throw new Error(`Failed to update transaction: ${statusError.message}`);
     }
 
-    // 8. Return checkout URL
     console.log(
       `[create-payment] Created ${molliePayment.id} for txn ${input.transaction_id}`
     );
@@ -202,10 +168,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
         checkout_url: molliePayment._links.checkout.href,
         expires_at: molliePayment.expiresAt ?? null,
       }),
-      {
-        status: 201,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 201, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -219,10 +182,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonError("Internal error", 500);
   }
 });
-
-// ---------------------------------------------------------------------------
-// Helper
-// ---------------------------------------------------------------------------
 
 function jsonError(message: string, status: number): Response {
   return new Response(JSON.stringify({ error: message }), {

@@ -26,7 +26,7 @@ CREATE TYPE transaction_status AS ENUM (
 -- =============================================================================
 CREATE TABLE transactions (
   id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  listing_id          UUID NOT NULL,
+  listing_id          UUID NOT NULL, -- TODO: Add REFERENCES listings(id) when listings table is created (E01)
   buyer_id            UUID NOT NULL REFERENCES auth.users(id),
   seller_id           UUID NOT NULL REFERENCES auth.users(id),
   status              transaction_status NOT NULL DEFAULT 'created',
