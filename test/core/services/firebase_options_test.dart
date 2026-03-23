@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/services/firebase_options.dart';
@@ -18,10 +19,15 @@ void main() {
       expect(options.iosBundleId, 'nl.deelmarkt.deelmarkt');
     });
 
-    test('currentPlatform returns a valid FirebaseOptions', () {
-      final options = DefaultFirebaseOptions.currentPlatform;
-      expect(options.projectId, isNotEmpty);
-      expect(options.apiKey, isNotEmpty);
+    test('currentPlatform throws on unsupported platform', () {
+      debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+      addTearDown(() {
+        debugDefaultTargetPlatformOverride = null;
+      });
+      expect(
+        () => DefaultFirebaseOptions.currentPlatform,
+        throwsUnsupportedError,
+      );
     });
   });
 }

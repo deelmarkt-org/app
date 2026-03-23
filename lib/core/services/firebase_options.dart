@@ -21,7 +21,11 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       default:
-        return android;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions has not been configured for '
+          '$defaultTargetPlatform. Run `flutterfire configure` to generate '
+          'platform-specific options.',
+        );
     }
   }
 
