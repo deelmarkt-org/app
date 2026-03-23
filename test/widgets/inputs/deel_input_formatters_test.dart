@@ -97,6 +97,38 @@ void main() {
     test('parseToCents: invalid -> null', () {
       expect(formatter.parseToCents('abc'), isNull);
     });
+
+    test('preserves cursor position when editing in middle', () {
+      // User inserts '3' at position 1 of '1,50' → '13,50', cursor at 2.
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(
+          text: '1,50',
+          selection: TextSelection.collapsed(offset: 1),
+        ),
+        const TextEditingValue(
+          text: '13,50',
+          selection: TextSelection.collapsed(offset: 2),
+        ),
+      );
+      expect(result.text, '13,50');
+      expect(result.selection.baseOffset, 2);
+    });
+
+    test('cursor at end stays at end after append', () {
+      // User types '5' at end of '12,' → '12,5', cursor at 4.
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(
+          text: '12,',
+          selection: TextSelection.collapsed(offset: 3),
+        ),
+        const TextEditingValue(
+          text: '12,5',
+          selection: TextSelection.collapsed(offset: 4),
+        ),
+      );
+      expect(result.text, '12,5');
+      expect(result.selection.baseOffset, 4);
+    });
   });
 
   group('PriceInputFormatter (EN dot)', () {
@@ -180,6 +212,38 @@ void main() {
     test('allows valid pair AB at formatter level', () {
       final result = applyFormat(formatter, '1234 A', '1234 AB');
       expect(result.text, '1234 AB');
+    });
+
+    test('preserves cursor position when editing digit in middle', () {
+      // User inserts '2' at position 2 of '103 AB' → '1023 AB', cursor at 3.
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(
+          text: '103 AB',
+          selection: TextSelection.collapsed(offset: 2),
+        ),
+        const TextEditingValue(
+          text: '1023 AB',
+          selection: TextSelection.collapsed(offset: 3),
+        ),
+      );
+      expect(result.text, '1023 AB');
+      expect(result.selection.baseOffset, 3);
+    });
+
+    test('cursor at end stays at end after append', () {
+      // User types 'B' at end of '1234 A' → '1234 AB', cursor at 7.
+      final result = formatter.formatEditUpdate(
+        const TextEditingValue(
+          text: '1234 A',
+          selection: TextSelection.collapsed(offset: 6),
+        ),
+        const TextEditingValue(
+          text: '1234 AB',
+          selection: TextSelection.collapsed(offset: 7),
+        ),
+      );
+      expect(result.text, '1234 AB');
+      expect(result.selection.baseOffset, 7);
     });
   });
 

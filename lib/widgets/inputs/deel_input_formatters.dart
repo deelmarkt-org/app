@@ -41,9 +41,14 @@ class PriceInputFormatter extends TextInputFormatter {
       if (parts[1].length > 2) return oldValue;
     }
 
+    // Preserve cursor position relative to surviving characters.
+    final cursorPos = newValue.selection.baseOffset.clamp(0, raw.length);
+    final cleanedBeforeCursor = _clean(raw.substring(0, cursorPos));
+    final newCursorPos = cleanedBeforeCursor.length.clamp(0, cleaned.length);
+
     return TextEditingValue(
       text: cleaned,
-      selection: TextSelection.collapsed(offset: cleaned.length),
+      selection: TextSelection.collapsed(offset: newCursorPos),
     );
   }
 
@@ -123,17 +128,25 @@ class PostcodeInputFormatter extends TextInputFormatter {
     final raw = newValue.text.toUpperCase();
     if (raw.isEmpty) return newValue.copyWith(text: '');
 
+    final cursorPos = newValue.selection.baseOffset.clamp(0, raw.length);
     final buffer = StringBuffer();
-    var cursorOffset = 0;
+    var newCursorOffset = 0;
+    var cursorSet = false;
 
     for (var i = 0; i < raw.length; i++) {
       final char = raw[i];
+
+      // Track cursor: when we've consumed chars up to the original cursor,
+      // record the current buffer position.
+      if (!cursorSet && i >= cursorPos) {
+        newCursorOffset = buffer.length;
+        cursorSet = true;
+      }
 
       // Position 0: must be 1-9.
       if (buffer.length == 0) {
         if (!_digit19.hasMatch(char)) continue;
         buffer.write(char);
-        cursorOffset = buffer.length;
         continue;
       }
 
@@ -145,7 +158,6 @@ class PostcodeInputFormatter extends TextInputFormatter {
         if (buffer.length == 4) {
           buffer.write(' ');
         }
-        cursorOffset = buffer.length;
         continue;
       }
 
@@ -156,13 +168,15 @@ class PostcodeInputFormatter extends TextInputFormatter {
       if (buffer.length >= 5 && buffer.length <= 6) {
         if (!_letterAZ.hasMatch(char)) continue;
         buffer.write(char);
-        cursorOffset = buffer.length;
         continue;
       }
 
       // Max 7 chars (4 digits + space + 2 letters).
       if (buffer.length >= 7) break;
     }
+
+    // If cursor was at or past the end of input, put it at end of buffer.
+    if (!cursorSet) newCursorOffset = buffer.length;
 
     // Reject forbidden letter pairs at formatter level (defense-in-depth).
     final result = buffer.toString();
@@ -172,14 +186,18 @@ class PostcodeInputFormatter extends TextInputFormatter {
         // Remove the second forbidden letter, keep first.
         return TextEditingValue(
           text: result.substring(0, 6),
-          selection: const TextSelection.collapsed(offset: 6),
+          selection: TextSelection.collapsed(
+            offset: newCursorOffset.clamp(0, 6),
+          ),
         );
       }
     }
 
     return TextEditingValue(
       text: result,
-      selection: TextSelection.collapsed(offset: cursorOffset),
+      selection: TextSelection.collapsed(
+        offset: newCursorOffset.clamp(0, result.length),
+      ),
     );
   }
 }
