@@ -40,9 +40,7 @@ void main() {
       expect(constrainedBox.constraints.minHeight, greaterThanOrEqualTo(44));
     });
 
-    testWidgets('error text is in a live region for screen readers', (
-      tester,
-    ) async {
+    testWidgets('error text is displayed via InputDecoration', (tester) async {
       await tester.pumpWidget(
         buildInputApp(
           child: const DeelInput(
@@ -52,16 +50,8 @@ void main() {
         ),
       );
 
-      final errorTextFinder = find.text('Ongeldig e-mailadres');
-      expect(errorTextFinder, findsOneWidget);
-
-      final semanticsFinder = find.ancestor(
-        of: errorTextFinder,
-        matching: find.byWidgetPredicate(
-          (w) => w is Semantics && w.properties.liveRegion == true,
-        ),
-      );
-      expect(semanticsFinder, findsOneWidget);
+      // Error text rendered by InputDecoration (native Flutter a11y).
+      expect(find.text('Ongeldig e-mailadres'), findsOneWidget);
     });
 
     testWidgets('disabled state has reduced opacity', (tester) async {

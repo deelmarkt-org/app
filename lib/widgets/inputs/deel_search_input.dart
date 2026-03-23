@@ -76,6 +76,7 @@ class _DeelSearchInputState extends State<DeelSearchInput> {
     super.initState();
     if (widget.controller != null) {
       _controller = widget.controller!;
+      _ownsController = false;
     } else {
       _controller = TextEditingController();
       _ownsController = true;
@@ -128,9 +129,6 @@ class _DeelSearchInputState extends State<DeelSearchInput> {
 
   void _handleClear() {
     _controller.clear();
-    widget.onChanged?.call('');
-    widget.onDebouncedChanged?.call('');
-    _debounceTimer?.cancel();
   }
 
   @override

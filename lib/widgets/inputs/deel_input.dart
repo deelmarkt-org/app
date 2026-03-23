@@ -173,6 +173,7 @@ class _DeelInputState extends State<DeelInput> {
                 style: widget.textStyle,
                 decoration: InputDecoration(
                   hintText: widget.hint,
+                  errorText: widget.errorText,
                   prefixIcon: widget.prefixIcon,
                   suffixIcon: widget.suffixIcon,
                   fillColor:
@@ -180,18 +181,6 @@ class _DeelInputState extends State<DeelInput> {
                 ),
               ),
             ),
-            if (widget.errorText != null) ...[
-              const SizedBox(height: Spacing.s1),
-              Semantics(
-                liveRegion: true,
-                child: Text(
-                  widget.errorText!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-              ),
-            ],
           ],
         ),
       ),
