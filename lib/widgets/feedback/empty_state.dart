@@ -106,7 +106,9 @@ class EmptyState extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(_resolvedIcon, size: 32, color: iconColor),
+              ExcludeSemantics(
+                child: Icon(_resolvedIcon, size: 32, color: iconColor),
+              ),
               const SizedBox(height: Spacing.s4),
               Text(
                 message,

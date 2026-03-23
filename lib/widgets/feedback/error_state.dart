@@ -59,9 +59,11 @@ class ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Semantics(
-              label: 'a11y.errorIcon'.tr(),
-              child: Icon(PhosphorIcons.warning(), size: 32, color: errorColor),
+            Icon(
+              PhosphorIcons.warning(),
+              size: 32,
+              color: errorColor,
+              semanticLabel: 'a11y.errorIcon'.tr(),
             ),
             const SizedBox(height: Spacing.s4),
             _buildErrorBody(context, fallbackKey: 'error.generic', maxLines: 3),
@@ -87,13 +89,15 @@ class ErrorState extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.s3),
           child: Row(
             children: [
-              Icon(
-                PhosphorIcons.wifiSlash(),
-                size: 20,
-                color:
-                    isDark
-                        ? DeelmarktColors.darkOnSurface
-                        : DeelmarktColors.neutral700,
+              ExcludeSemantics(
+                child: Icon(
+                  PhosphorIcons.wifiSlash(),
+                  size: 20,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurface
+                          : DeelmarktColors.neutral700,
+                ),
               ),
               const SizedBox(width: Spacing.s2),
               Expanded(
