@@ -88,6 +88,7 @@
     "closeModal": "Sluiten",
     "currentLanguage": "Huidige taal: {}",
     "emptyState": "Lege weergave: {}",
+    "errorIcon": "Fout",
     "errorState": "Fout: {}",
     "languageSwitch": "Taal wisselen",
     "loading": "Laden...",

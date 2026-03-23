@@ -60,4 +60,7 @@ class DeelmarktColors {
   static const darkTrustShield = Color(0xFF052E16);
   static const darkErrorSurface = Color(0xFF450A0A);
   static const darkInfoSurface = Color(0xFF172554);
+
+  /// Shimmer highlight in dark mode (tokens.md §Dark Mode).
+  static const darkShimmerHighlight = Color(0xFF3C3C3C);
 }

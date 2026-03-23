@@ -46,7 +46,7 @@
     "offline_with_cache": "You are offline — showing previously loaded data"
   },
   "empty": {
-    "favorites": "No favourites yet",
+    "favorites": "No favorites yet",
     "favorites_action": "Discover items",
     "listings": "No listings yet",
     "messages": "No messages yet",
@@ -65,7 +65,7 @@
     "seller": "Seller",
     "sold": "Sold! 🎉",
     "views": "Views",
-    "favorites": "In favourites",
+    "favorites": "In favorites",
     "shipping": "Shipping"
   },
   "auth": {
@@ -88,6 +88,7 @@
     "closeModal": "Close",
     "currentLanguage": "Current language: {}",
     "emptyState": "Empty view: {}",
+    "errorIcon": "Error",
     "errorState": "Error: {}",
     "languageSwitch": "Switch language",
     "loading": "Loading...",
