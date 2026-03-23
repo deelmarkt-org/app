@@ -218,9 +218,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
       if (newStatus === "paid") {
         updateData.paid_at = new Date().toISOString();
-        const deadline = new Date();
-        deadline.setHours(deadline.getHours() + 48);
-        updateData.escrow_deadline = deadline.toISOString();
+        // B-21: escrow_deadline is set on delivery (48h buyer window),
+        // not on payment. See release-escrow function.
       }
 
       const { error: updateError } = await supabase
