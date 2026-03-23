@@ -24,9 +24,6 @@ coverage/
 .idea/
 *.iml
 .vscode/
-.cursor/
-.codex/
-.opencode/
 *.swp
 *.swo
 
@@ -52,9 +49,6 @@ android/key.properties
 .codex/
 .opencode/
 .cursor/rules/kit-governance.mdc
-
-# Agent engine / MCP server configs (local-only)
-.agent/engine/
 
 # Archives — personal reference docs (not pushed to remote)
 docs/archives/emre/
