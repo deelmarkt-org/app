@@ -133,62 +133,55 @@ class PostcodeInputFormatter extends TextInputFormatter {
     var newCursorOffset = 0;
     var cursorSet = false;
 
-    for (var i = 0; i < raw.length; i++) {
-      final char = raw[i];
-
-      // Track cursor: when we've consumed chars up to the original cursor,
-      // record the current buffer position.
+    for (var i = 0; i < raw.length && buffer.length < 7; i++) {
       if (!cursorSet && i >= cursorPos) {
         newCursorOffset = buffer.length;
         cursorSet = true;
       }
-
-      // Position 0: must be 1-9.
-      if (buffer.length == 0) {
-        if (!_digit19.hasMatch(char)) continue;
-        buffer.write(char);
-        continue;
-      }
-
-      // Positions 1-3: digits only.
-      if (buffer.length >= 1 && buffer.length <= 3) {
-        if (!_digit09.hasMatch(char)) continue;
-        buffer.write(char);
-        // Auto-insert space after 4th digit.
-        if (buffer.length == 4) {
-          buffer.write(' ');
-        }
-        continue;
-      }
-
-      // Position 4 in buffer is the space — skip input spaces.
-      if (buffer.length == 4 && char == ' ') continue;
-
-      // Positions 5-6 (after space): letters only.
-      if (buffer.length >= 5 && buffer.length <= 6) {
-        if (!_letterAZ.hasMatch(char)) continue;
-        buffer.write(char);
-        continue;
-      }
-
-      // Max 7 chars (4 digits + space + 2 letters).
-      if (buffer.length >= 7) break;
+      _appendChar(buffer, raw[i]);
     }
 
-    // If cursor was at or past the end of input, put it at end of buffer.
     if (!cursorSet) newCursorOffset = buffer.length;
 
-    // Reject forbidden letter pairs at formatter level (defense-in-depth).
     final result = buffer.toString();
+    return _rejectForbiddenPairs(result, newCursorOffset);
+  }
+
+  /// Appends [char] to [buffer] if it's valid for the current position.
+  void _appendChar(StringBuffer buffer, String char) {
+    final pos = buffer.length;
+
+    // Position 0: must be 1-9.
+    if (pos == 0) {
+      if (_digit19.hasMatch(char)) buffer.write(char);
+      return;
+    }
+
+    // Positions 1-3: digits only, auto-space after 4th digit.
+    if (pos >= 1 && pos <= 3) {
+      if (!_digit09.hasMatch(char)) return;
+      buffer.write(char);
+      if (buffer.length == 4) buffer.write(' ');
+      return;
+    }
+
+    // Position 4 is the auto-inserted space — skip input spaces.
+    if (pos == 4 && char == ' ') return;
+
+    // Positions 5-6: letters only.
+    if (pos >= 5 && pos <= 6) {
+      if (_letterAZ.hasMatch(char)) buffer.write(char);
+    }
+  }
+
+  /// Rejects forbidden letter pairs (SA, SD, SS) at formatter level.
+  TextEditingValue _rejectForbiddenPairs(String result, int cursorOffset) {
     if (result.length == 7) {
       final letters = result.substring(5, 7);
       if (const {'SA', 'SD', 'SS'}.contains(letters)) {
-        // Remove the second forbidden letter, keep first.
         return TextEditingValue(
           text: result.substring(0, 6),
-          selection: TextSelection.collapsed(
-            offset: newCursorOffset.clamp(0, 6),
-          ),
+          selection: TextSelection.collapsed(offset: cursorOffset.clamp(0, 6)),
         );
       }
     }
@@ -196,7 +189,7 @@ class PostcodeInputFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: result,
       selection: TextSelection.collapsed(
-        offset: newCursorOffset.clamp(0, result.length),
+        offset: cursorOffset.clamp(0, result.length),
       ),
     );
   }
