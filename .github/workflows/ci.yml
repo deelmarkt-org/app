@@ -29,13 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: Check formatting
         run: dart format --set-exit-if-changed .
@@ -54,13 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: Run tests with coverage
         run: flutter test --coverage --no-pub
@@ -230,13 +218,10 @@ jobs:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
-      - uses: subosito/flutter-action@v2
+      - uses: ./.github/actions/setup-flutter
         with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+          supabase-project-id: ${{ secrets.SUPABASE_PROJECT_ID }}
+          supabase-anon-public: ${{ secrets.SUPABASE_ANON_PUBLIC }}
 
       - name: Build APK (release)
         run: flutter build apk --release --no-pub
@@ -266,13 +251,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
+      - uses: ./.github/actions/setup-flutter
         with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+          supabase-project-id: ${{ secrets.SUPABASE_PROJECT_ID }}
+          supabase-anon-public: ${{ secrets.SUPABASE_ANON_PUBLIC }}
 
       - name: Check web platform exists
         id: web-check
