@@ -193,19 +193,21 @@ async function releaseToSeller(
   // H1: Status update first — ledger entries are idempotent (UNIQUE key)
   // so they can be safely retried if status succeeds but ledger fails.
   // This prevents orphaned ledger entries with mismatched status.
-  const { error: updateError } = await supabase
+  const { data: updated, error: updateError } = await supabase
     .from("transactions")
     .update({ status: "released", released_at: new Date().toISOString() })
     .eq("id", txn.id)
-    .neq("status", "released"); // Skip if already released
+    .neq("status", "released")
+    .select("id");
 
-  // Already released — nothing to do
-  if (updateError?.code === "PGRST116") {
-    console.log(`[release-escrow] Already released: ${txn.id}`);
-    return;
-  }
   if (updateError) {
     throw new Error(`Status update failed for ${txn.id}: ${updateError.message}`);
+  }
+
+  // 0 rows matched — already released
+  if (!updated || updated.length === 0) {
+    console.log(`[release-escrow] Already released: ${txn.id}`);
+    return;
   }
 
   // Ledger entry: escrow → seller (idempotent via UNIQUE key)
