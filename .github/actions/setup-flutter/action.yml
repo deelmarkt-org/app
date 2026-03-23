@@ -1,0 +1,36 @@
+name: Setup Flutter with code generation
+description: Install Flutter, fetch deps, create .env, and run build_runner
+
+inputs:
+  supabase-project-id:
+    description: Supabase project ID (use placeholder for non-build jobs)
+    required: false
+    default: ci-placeholder
+  supabase-anon-public:
+    description: Supabase anon public key (use placeholder for non-build jobs)
+    required: false
+    default: ci-placeholder-key
+
+runs:
+  using: composite
+  steps:
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+
+    - name: Install dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: Create .env for code generation
+      shell: bash
+      run: |
+        cat > .env << EOF
+        SUPABASE_PROJECT_ID=${{ inputs.supabase-project-id }}
+        SUPABASE_ANON_PUBLIC=${{ inputs.supabase-anon-public }}
+        EOF
+
+    - name: Run code generation (envied)
+      shell: bash
+      run: dart run build_runner build --delete-conflicting-outputs
