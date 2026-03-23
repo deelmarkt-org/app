@@ -52,7 +52,6 @@ class ErrorState extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final errorColor =
         isDark ? DeelmarktColors.darkError : DeelmarktColors.error;
-    final resolvedMessage = message ?? 'error.generic'.tr();
 
     return Center(
       child: ConstrainedBox(
@@ -62,24 +61,7 @@ class ErrorState extends StatelessWidget {
           children: [
             Icon(PhosphorIcons.warning(), size: 32, color: errorColor),
             const SizedBox(height: Spacing.s4),
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                resolvedMessage,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(height: Spacing.s6),
-            DeelButton(
-              label: 'action.retry'.tr(),
-              onPressed: onRetry,
-              variant: DeelButtonVariant.primary,
-              size: DeelButtonSize.medium,
-              fullWidth: false,
-            ),
+            _buildErrorBody(context, fallbackKey: 'error.generic', maxLines: 3),
           ],
         ),
       ),
@@ -133,39 +115,48 @@ class ErrorState extends StatelessWidget {
             ),
           ),
         ] else
-          Expanded(child: _buildStandardErrorBody(context)),
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 280),
+                child: _buildErrorBody(context, fallbackKey: 'error.network'),
+              ),
+            ),
+          ),
       ],
     );
   }
 
-  Widget _buildStandardErrorBody(BuildContext context) {
-    final resolvedMessage = message ?? 'error.network'.tr();
+  /// Shared error message + retry button. Used by both standard and offline layouts.
+  Widget _buildErrorBody(
+    BuildContext context, {
+    required String fallbackKey,
+    int? maxLines,
+  }) {
+    final resolvedMessage = message ?? fallbackKey.tr();
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 280),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                resolvedMessage,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: Spacing.s6),
-            DeelButton(
-              label: 'action.retry'.tr(),
-              onPressed: onRetry,
-              variant: DeelButtonVariant.primary,
-              size: DeelButtonSize.medium,
-              fullWidth: false,
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Semantics(
+          liveRegion: true,
+          child: Text(
+            resolvedMessage,
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+            maxLines: maxLines,
+            overflow: maxLines != null ? TextOverflow.ellipsis : null,
+          ),
         ),
-      ),
+        const SizedBox(height: Spacing.s6),
+        DeelButton(
+          label: 'action.retry'.tr(),
+          onPressed: onRetry,
+          variant: DeelButtonVariant.primary,
+          size: DeelButtonSize.medium,
+          fullWidth: false,
+        ),
+      ],
     );
   }
 }
