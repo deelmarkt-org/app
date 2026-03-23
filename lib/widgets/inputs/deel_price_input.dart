@@ -26,14 +26,14 @@ class DeelPriceController extends TextEditingController {
   /// Maximum allowed value in cents (default: 10000000 = €100,000.00).
   final int maxCents;
 
-  late final _formatter = PriceInputFormatter(
+  late final formatter = PriceInputFormatter(
     decimalSeparator: decimalSeparator,
   );
 
   /// Current value as integer cents. Clamped to 0..[maxCents].
   int get valueInCents {
     if (text.isEmpty) return 0;
-    final cents = _formatter.parseToCents(text) ?? 0;
+    final cents = formatter.parseToCents(text) ?? 0;
     return cents.clamp(0, maxCents);
   }
 
@@ -53,7 +53,7 @@ class DeelPriceController extends TextEditingController {
       super.text = newText;
       return;
     }
-    final cleaned = _formatter.formatEditUpdate(
+    final cleaned = formatter.formatEditUpdate(
       TextEditingValue.empty,
       TextEditingValue(text: newText),
     );
@@ -64,7 +64,7 @@ class DeelPriceController extends TextEditingController {
   /// Uses raw (unclamped) value for accurate bounds checking.
   bool get isWithinBounds {
     if (text.isEmpty) return false;
-    final rawCents = _formatter.parseToCents(text) ?? 0;
+    final rawCents = formatter.parseToCents(text) ?? 0;
     return rawCents >= minCents && rawCents <= maxCents;
   }
 }
@@ -117,9 +117,7 @@ class DeelPriceInput extends StatelessWidget {
       maxLength: 10,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       textInputAction: TextInputAction.done,
-      inputFormatters: [
-        PriceInputFormatter(decimalSeparator: controller.decimalSeparator),
-      ],
+      inputFormatters: [controller.formatter],
       textStyle: DeelmarktTypography.priceInput,
       prefixIcon: Container(
         padding: const EdgeInsets.only(left: Spacing.s4, right: Spacing.s2),
