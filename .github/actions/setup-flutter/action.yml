@@ -31,6 +31,18 @@ runs:
         SUPABASE_ANON_PUBLIC=${{ inputs.supabase-anon-public }}
         EOF
 
-    - name: Run code generation (envied)
+    - name: Run code generation (envied + riverpod)
       shell: bash
       run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Create dummy google-services.json for Android builds
+      shell: bash
+      run: |
+        mkdir -p android/app
+        cat > android/app/google-services.json << 'GSEOF'
+        {
+          "project_info": { "project_number": "000000000000", "project_id": "deelmarkt-ci", "storage_bucket": "deelmarkt-ci.appspot.com" },
+          "client": [{ "client_info": { "mobilesdk_app_id": "1:000000000000:android:0000000000000000", "android_client_info": { "package_name": "nl.deelmarkt.deelmarkt" } }, "api_key": [{ "current_key": "ci-placeholder" }] }],
+          "configuration_version": "1"
+        }
+        GSEOF

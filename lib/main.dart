@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/design_system/theme.dart';
 import 'core/l10n/l10n.dart';
 import 'core/router/app_router.dart';
+import 'core/services/firebase_service.dart';
 import 'core/services/supabase_service.dart';
 
 /// Riverpod provider for GoRouter — single instance, testable via overrides.
@@ -13,7 +14,11 @@ final routerProvider = Provider((ref) => createRouter());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Future.wait([EasyLocalization.ensureInitialized(), initSupabase()]);
+  await Future.wait([
+    EasyLocalization.ensureInitialized(),
+    initSupabase(),
+    initFirebase(),
+  ]);
 
   runApp(
     EasyLocalization(
