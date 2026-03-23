@@ -158,6 +158,15 @@ GoRouter createRouter() {
               return _Placeholder('Tracking $id');
             },
           ),
+          GoRoute(
+            path: 'parcel-shops',
+            name: 'parcel-shop-selector',
+            builder: (context, state) {
+              // TODO: Replace with ParcelShopSelectorScreen when ViewModel + data layer exists
+              final id = state.pathParameters['id']!;
+              return _Placeholder('Parcel Shops $id');
+            },
+          ),
         ],
       ),
     ],
