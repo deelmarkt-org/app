@@ -182,7 +182,7 @@ class PostcodeInputFormatter extends TextInputFormatter {
     final result = buffer.toString();
     if (result.length == 7) {
       final letters = result.substring(5, 7);
-      if (letters == 'SA' || letters == 'SD' || letters == 'SS') {
+      if (const {'SA', 'SD', 'SS'}.contains(letters)) {
         // Remove the second forbidden letter, keep first.
         return TextEditingValue(
           text: result.substring(0, 6),
