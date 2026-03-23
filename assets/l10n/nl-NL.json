@@ -117,6 +117,18 @@
     "fundsReleased": "Geld vrijgegeven aan verkoper"
   },
 
+  "shipping": {
+    "sendPackage": "Verzend je pakket",
+    "scanAtServicePoint": "Scan deze QR-code bij een PostNL- of DHL-servicepunt",
+    "findServicePoint": "Zoek servicepunt",
+    "trackingNumber": "Trackingnummer",
+    "shipByDeadline": "Verzend voor: {}",
+    "qrCode": "Verzend QR-code",
+    "instructions": "Verzendinstructies",
+    "carrierPostnl": "PostNL",
+    "carrierDhl": "DHL"
+  },
+
   "transaction": {
     "status": "Status",
     "created": "Aangemaakt",

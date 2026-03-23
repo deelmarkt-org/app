@@ -27,6 +27,9 @@ dependencies:
   # Payment — Mollie WebView checkout
   webview_flutter: ^4.10.0
 
+  # Shipping — QR code display for label-free shipping
+  qr_flutter: ^4.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
