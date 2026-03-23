@@ -145,7 +145,37 @@ class _DeelSearchInputState extends State<DeelSearchInput>
   }
 
   Widget? _buildSuffixIcon() {
-    if (widget.showClearButton && _hasContent) {
+    final showClear = widget.showClearButton && _hasContent;
+    final showFilter = widget.onFilterTap != null;
+
+    if (!showClear && !showFilter) return null;
+
+    // Show both clear + filter when content is present and filter exists.
+    // Per components.md §Inputs (Search): 🔍 left, ⚙️ filter right.
+    if (showClear && showFilter) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: _handleClear,
+            icon: const PhosphorIcon(PhosphorIconsRegular.x, size: 20),
+            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            tooltip: widget.clearTooltip ?? 'input.clear'.tr(),
+          ),
+          IconButton(
+            onPressed: widget.onFilterTap,
+            icon: const PhosphorIcon(
+              PhosphorIconsRegular.funnelSimple,
+              size: 20,
+            ),
+            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            tooltip: widget.filterTooltip ?? 'input.search_filter'.tr(),
+          ),
+        ],
+      );
+    }
+
+    if (showClear) {
       return IconButton(
         onPressed: _handleClear,
         icon: const PhosphorIcon(PhosphorIconsRegular.x, size: 20),
@@ -153,14 +183,12 @@ class _DeelSearchInputState extends State<DeelSearchInput>
         tooltip: widget.clearTooltip ?? 'input.clear'.tr(),
       );
     }
-    if (widget.onFilterTap != null) {
-      return IconButton(
-        onPressed: widget.onFilterTap,
-        icon: const PhosphorIcon(PhosphorIconsRegular.funnelSimple, size: 20),
-        constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-        tooltip: widget.filterTooltip ?? 'input.search_filter'.tr(),
-      );
-    }
-    return null;
+
+    return IconButton(
+      onPressed: widget.onFilterTap,
+      icon: const PhosphorIcon(PhosphorIconsRegular.funnelSimple, size: 20),
+      constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+      tooltip: widget.filterTooltip ?? 'input.search_filter'.tr(),
+    );
   }
 }

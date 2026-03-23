@@ -141,7 +141,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
 
   Widget _buildError(BuildContext context) {
     return Semantics(
-      label: 'error.paymentFailed'.tr(),
+      label: 'error.payment_failed'.tr(),
       liveRegion: true,
       child: Center(
         child: Padding(
@@ -156,7 +156,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
               ),
               const SizedBox(height: Spacing.s4),
               Text(
-                'error.paymentFailed'.tr(),
+                'error.payment_failed'.tr(),
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),

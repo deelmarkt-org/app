@@ -38,25 +38,25 @@
     "tryAgain": "Please try again",
     "sessionExpired": "Your session has expired — please log in again",
     "permissionDenied": "You don't have access",
-    "serverError": "Server error — please try again later",
-    "validationFailed": "Please check your input",
-    "imageUploadFailed": "Image upload failed",
-    "paymentFailed": "Payment failed",
+    "server_error": "Server error — please try again later",
+    "validation_failed": "Please check your input",
+    "image_upload_failed": "Image upload failed",
+    "payment_failed": "Payment failed",
     "offline": "You are offline",
-    "offlineWithCache": "You are offline — showing previously loaded data"
+    "offline_with_cache": "You are offline — showing previously loaded data"
   },
   "empty": {
     "favorites": "No favourites yet",
-    "favoritesAction": "Discover items",
+    "favorites_action": "Discover items",
     "listings": "No listings yet",
     "messages": "No messages yet",
-    "messagesAction": "Start searching",
-    "myListings": "You haven't listed anything yet",
-    "myListingsAction": "Place your first listing",
+    "messages_action": "Start searching",
+    "my_listings": "You haven't listed anything yet",
+    "my_listings_action": "Place your first listing",
     "orders": "No orders yet",
-    "ordersAction": "Search items",
+    "orders_action": "Search items",
     "search": "No results found",
-    "searchAction": "Save search"
+    "search_action": "Save search"
   },
   "listing": {
     "price": "Price",
@@ -80,7 +80,7 @@
     "search_hint": "Search on DeelMarkt...",
     "search_filter": "Filter",
     "price_hint": "0.00",
-    "price_prefix": "EUR",
+    "price_prefix": "\u20ac",
     "postcode_hint": "1234 AB",
     "clear": "Clear"
   },

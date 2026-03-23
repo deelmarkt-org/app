@@ -38,25 +38,25 @@
     "tryAgain": "Probeer het opnieuw",
     "sessionExpired": "Je sessie is verlopen — log opnieuw in",
     "permissionDenied": "Je hebt geen toegang",
-    "serverError": "Serverfout — probeer het later opnieuw",
-    "validationFailed": "Controleer de ingevoerde gegevens",
-    "imageUploadFailed": "Afbeelding uploaden mislukt",
-    "paymentFailed": "Betaling mislukt",
+    "server_error": "Serverfout — probeer het later opnieuw",
+    "validation_failed": "Controleer de ingevoerde gegevens",
+    "image_upload_failed": "Afbeelding uploaden mislukt",
+    "payment_failed": "Betaling mislukt",
     "offline": "Je bent offline",
-    "offlineWithCache": "Je bent offline — eerder geladen gegevens worden getoond"
+    "offline_with_cache": "Je bent offline — eerder geladen gegevens worden getoond"
   },
   "empty": {
     "favorites": "Nog geen favorieten",
-    "favoritesAction": "Ontdek items",
+    "favorites_action": "Ontdek items",
     "listings": "Nog geen advertenties",
     "messages": "Nog geen berichten",
-    "messagesAction": "Start met zoeken",
-    "myListings": "Je hebt nog niets te koop",
-    "myListingsAction": "Plaats je eerste advertentie",
+    "messages_action": "Start met zoeken",
+    "my_listings": "Je hebt nog niets te koop",
+    "my_listings_action": "Plaats je eerste advertentie",
     "orders": "Nog geen bestellingen",
-    "ordersAction": "Zoek items",
+    "orders_action": "Zoek items",
     "search": "Geen resultaten gevonden",
-    "searchAction": "Bewaar zoekopdracht"
+    "search_action": "Bewaar zoekopdracht"
   },
   "listing": {
     "price": "Prijs",
@@ -80,7 +80,7 @@
     "search_hint": "Zoek op DeelMarkt...",
     "search_filter": "Filter",
     "price_hint": "0,00",
-    "price_prefix": "EUR",
+    "price_prefix": "\u20ac",
     "postcode_hint": "1234 AB",
     "clear": "Wissen"
   },
