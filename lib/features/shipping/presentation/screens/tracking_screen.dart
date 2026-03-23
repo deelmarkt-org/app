@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 import '../../domain/entities/shipping_label.dart';
 import '../../domain/entities/tracking_event.dart';
@@ -27,16 +28,18 @@ class TrackingScreen extends StatelessWidget {
       appBar: AppBar(title: Text('tracking.title'.tr())),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Spacing.s4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _carrierHeader(context),
-              const SizedBox(height: Spacing.s4),
-              _trackingNumberCard(context),
-              const SizedBox(height: Spacing.s6),
-              _timelineSection(context),
-            ],
+          padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
+          child: ResponsiveBody(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _carrierHeader(context),
+                const SizedBox(height: Spacing.s4),
+                _trackingNumberCard(context),
+                const SizedBox(height: Spacing.s6),
+                _timelineSection(context),
+              ],
+            ),
           ),
         ),
       ),

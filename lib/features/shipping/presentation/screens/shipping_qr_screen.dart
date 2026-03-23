@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
 import '../../domain/entities/shipping_label.dart';
@@ -25,18 +26,20 @@ class ShippingQrScreen extends StatelessWidget {
       appBar: AppBar(title: Text('shipping.sendPackage'.tr())),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(Spacing.s4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const EscrowTrustBanner(),
-              const SizedBox(height: Spacing.s4),
-              ShippingQrCard(label: label),
-              const SizedBox(height: Spacing.s4),
-              _instructionCard(context),
-              const SizedBox(height: Spacing.s6),
-              _findServicePointButton(),
-            ],
+          padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
+          child: ResponsiveBody(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const EscrowTrustBanner(),
+                const SizedBox(height: Spacing.s4),
+                ShippingQrCard(label: label),
+                const SizedBox(height: Spacing.s4),
+                _instructionCard(context),
+                const SizedBox(height: Spacing.s6),
+                _findServicePointButton(),
+              ],
+            ),
           ),
         ),
       ),
