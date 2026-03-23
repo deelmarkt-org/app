@@ -33,26 +33,26 @@ class SkeletonListingCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
         ),
-        child: Column(
+        child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             // Image placeholder.
-            const SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
+            SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
             Padding(
-              padding: const EdgeInsets.all(Spacing.s3),
+              padding: EdgeInsets.all(Spacing.s3),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Price placeholder.
-                  const SkeletonLine(width: 80, height: 20),
-                  const SizedBox(height: Spacing.s2),
+                  SkeletonLine(width: 80, height: 20),
+                  SizedBox(height: Spacing.s2),
                   // Title placeholder.
-                  const SkeletonLine(width: 200),
-                  const SizedBox(height: Spacing.s3),
+                  SkeletonLine(width: 200),
+                  SizedBox(height: Spacing.s3),
                   // Seller avatar + name placeholder.
                   Row(
-                    children: const [
+                    children: [
                       SkeletonCircle(size: 24),
                       SizedBox(width: Spacing.s2),
                       SkeletonLine(width: 100, height: 12),
