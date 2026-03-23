@@ -7,6 +7,7 @@
 library;
 
 export 'deel_input.dart';
+export 'deel_input_controller_mixin.dart';
 export 'deel_input_formatters.dart';
 export 'deel_postcode_input.dart';
 export 'deel_price_input.dart';

@@ -6,13 +6,14 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
 import 'deel_input.dart';
+import 'deel_input_controller_mixin.dart';
 
 /// Search input with debounce, clear button, and optional filter action.
 ///
 /// Composes [DeelInput] with search-specific behaviour:
 /// - Magnifying glass prefix icon
 /// - Built-in debounce on [onDebouncedChanged]
-/// - Clear (X) button when field has content (44×44px touch target)
+/// - Clear (X) button when field has content (44x44px touch target)
 /// - Optional filter suffix icon
 ///
 /// Reference: docs/design-system/components.md §Inputs (Search)
@@ -65,53 +66,42 @@ class DeelSearchInput extends StatefulWidget {
   State<DeelSearchInput> createState() => _DeelSearchInputState();
 }
 
-class _DeelSearchInputState extends State<DeelSearchInput> {
-  late TextEditingController _controller;
-  bool _ownsController = false;
+class _DeelSearchInputState extends State<DeelSearchInput>
+    with DeelInputControllerMixin<DeelSearchInput> {
   Timer? _debounceTimer;
   bool _hasContent = false;
 
   @override
+  TextEditingController? get externalController => widget.controller;
+
+  @override
   void initState() {
     super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
-    _hasContent = _controller.text.isNotEmpty;
-    _controller.addListener(_onControllerChanged);
+    initInputController();
+    _hasContent = inputController.text.isNotEmpty;
+    inputController.addListener(_onControllerChanged);
   }
 
   @override
   void didUpdateWidget(DeelSearchInput oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      _controller.removeListener(_onControllerChanged);
-      if (_ownsController) _controller.dispose();
-      if (widget.controller != null) {
-        _controller = widget.controller!;
-        _ownsController = false;
-      } else {
-        _controller = TextEditingController();
-        _ownsController = true;
-      }
-      _controller.addListener(_onControllerChanged);
+      inputController.removeListener(_onControllerChanged);
+      updateInputController(oldWidget.controller);
+      inputController.addListener(_onControllerChanged);
     }
   }
 
   @override
   void dispose() {
     _debounceTimer?.cancel();
-    _controller.removeListener(_onControllerChanged);
-    if (_ownsController) _controller.dispose();
+    inputController.removeListener(_onControllerChanged);
+    disposeInputController();
     super.dispose();
   }
 
   void _onControllerChanged() {
-    final hasContent = _controller.text.isNotEmpty;
+    final hasContent = inputController.text.isNotEmpty;
     if (hasContent != _hasContent) {
       setState(() => _hasContent = hasContent);
     }
@@ -128,7 +118,7 @@ class _DeelSearchInputState extends State<DeelSearchInput> {
   }
 
   void _handleClear() {
-    _controller.clear();
+    inputController.clear();
   }
 
   @override
@@ -136,7 +126,7 @@ class _DeelSearchInputState extends State<DeelSearchInput> {
     return DeelInput(
       label: widget.label,
       hint: widget.hint,
-      controller: _controller,
+      controller: inputController,
       focusNode: widget.focusNode,
       onChanged: _handleChanged,
       enabled: widget.enabled,

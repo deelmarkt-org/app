@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
+import 'deel_input_controller_mixin.dart';
+
 /// Base input widget wrapping [TextFormField] with design tokens, WCAG 2.2 AA,
 /// and [Form] integration. Composed by [DeelSearchInput], [DeelPriceInput],
 /// and [DeelPostcodeInput]. Reference: docs/design-system/components.md §Inputs
@@ -82,26 +84,25 @@ class DeelInput extends StatefulWidget {
   State<DeelInput> createState() => _DeelInputState();
 }
 
-class _DeelInputState extends State<DeelInput> {
-  late TextEditingController _controller;
+class _DeelInputState extends State<DeelInput>
+    with DeelInputControllerMixin<DeelInput> {
   late FocusNode _focusNode;
-  bool _ownsController = false;
   bool _ownsFocusNode = false;
+
+  @override
+  TextEditingController? get externalController => widget.controller;
 
   @override
   void initState() {
     super.initState();
-    _initController();
+    initInputController();
     _initFocusNode();
   }
 
   @override
   void didUpdateWidget(DeelInput oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.controller != oldWidget.controller) {
-      if (_ownsController) _controller.dispose();
-      _initController();
-    }
+    updateInputController(oldWidget.controller);
     if (widget.focusNode != oldWidget.focusNode) {
       if (_ownsFocusNode) _focusNode.dispose();
       _initFocusNode();
@@ -110,19 +111,9 @@ class _DeelInputState extends State<DeelInput> {
 
   @override
   void dispose() {
-    if (_ownsController) _controller.dispose();
+    disposeInputController();
     if (_ownsFocusNode) _focusNode.dispose();
     super.dispose();
-  }
-
-  void _initController() {
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      _controller = TextEditingController();
-      _ownsController = true;
-    }
   }
 
   void _initFocusNode() {
@@ -155,7 +146,7 @@ class _DeelInputState extends State<DeelInput> {
             ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 52),
               child: TextFormField(
-                controller: _controller,
+                controller: inputController,
                 focusNode: _focusNode,
                 enabled: widget.enabled,
                 readOnly: widget.readOnly,
