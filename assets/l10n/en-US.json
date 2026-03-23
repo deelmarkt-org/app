@@ -129,6 +129,21 @@
     "carrierDhl": "DHL"
   },
 
+  "tracking": {
+    "title": "Track shipment",
+    "shipment": "shipment",
+    "updates": "Tracking updates",
+    "noUpdates": "No tracking updates yet",
+    "labelCreated": "Label created",
+    "droppedOff": "Dropped off at service point",
+    "pickedUp": "Picked up by carrier",
+    "inTransit": "In transit",
+    "outForDelivery": "Out for delivery",
+    "delivered": "Delivered",
+    "deliveryFailed": "Delivery attempt failed",
+    "returned": "Returned to sender"
+  },
+
   "transaction": {
     "status": "Status",
     "created": "Created",

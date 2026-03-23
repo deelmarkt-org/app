@@ -129,6 +129,21 @@
     "carrierDhl": "DHL"
   },
 
+  "tracking": {
+    "title": "Zending volgen",
+    "shipment": "zending",
+    "updates": "Trackingupdates",
+    "noUpdates": "Nog geen trackingupdates",
+    "labelCreated": "Label aangemaakt",
+    "droppedOff": "Afgegeven bij servicepunt",
+    "pickedUp": "Opgehaald door bezorger",
+    "inTransit": "Onderweg",
+    "outForDelivery": "In bezorging",
+    "delivered": "Bezorgd",
+    "deliveryFailed": "Bezorgpoging mislukt",
+    "returned": "Retour naar afzender"
+  },
+
   "transaction": {
     "status": "Status",
     "created": "Aangemaakt",
