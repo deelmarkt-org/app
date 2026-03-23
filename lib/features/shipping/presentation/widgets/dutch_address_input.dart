@@ -169,6 +169,25 @@ class DutchAddressInput extends StatelessWidget {
     final hasValue = value != null && value.isNotEmpty;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final helperColor =
+        isDark ? DeelmarktColors.darkSuccess : DeelmarktColors.success;
+
+    Color filledColor;
+    Color textColor;
+    if (hasValue && isDark) {
+      filledColor = DeelmarktColors.darkTrustShield;
+      textColor = DeelmarktColors.darkOnSurface;
+    } else if (hasValue) {
+      filledColor = DeelmarktColors.successSurface;
+      textColor = DeelmarktColors.neutral900;
+    } else if (isDark) {
+      filledColor = DeelmarktColors.darkSurfaceElevated;
+      textColor = DeelmarktColors.darkOnSurfaceSecondary;
+    } else {
+      filledColor = DeelmarktColors.neutral100;
+      textColor = DeelmarktColors.neutral500;
+    }
+
     return Semantics(
       textField: true,
       label: label,
@@ -177,19 +196,9 @@ class DutchAddressInput extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           helperText: hasValue ? 'address.autoFilled'.tr() : null,
-          helperStyle: TextStyle(
-            color:
-                isDark ? DeelmarktColors.darkSuccess : DeelmarktColors.success,
-          ),
+          helperStyle: TextStyle(color: helperColor),
           filled: true,
-          fillColor:
-              hasValue
-                  ? (isDark
-                      ? DeelmarktColors.darkTrustShield
-                      : DeelmarktColors.successSurface)
-                  : (isDark
-                      ? DeelmarktColors.darkSurfaceElevated
-                      : DeelmarktColors.neutral100),
+          fillColor: filledColor,
           suffixIcon:
               showSpinner
                   ? const Padding(
@@ -204,16 +213,9 @@ class DutchAddressInput extends StatelessWidget {
         ),
         child: Text(
           value ?? '',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color:
-                hasValue
-                    ? (isDark
-                        ? DeelmarktColors.darkOnSurface
-                        : DeelmarktColors.neutral900)
-                    : (isDark
-                        ? DeelmarktColors.darkOnSurfaceSecondary
-                        : DeelmarktColors.neutral500),
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: textColor),
         ),
       ),
     );
