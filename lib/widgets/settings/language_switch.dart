@@ -48,9 +48,15 @@ class _LanguageSwitchBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SegmentedButton<Locale>(
-      segments: const [
-        ButtonSegment(value: AppLocales.nl, label: Text('NL')),
-        ButtonSegment(value: AppLocales.en, label: Text('EN')),
+      segments: [
+        ButtonSegment(
+          value: AppLocales.nl,
+          label: Text('settings.languageNl'.tr()),
+        ),
+        ButtonSegment(
+          value: AppLocales.en,
+          label: Text('settings.languageEn'.tr()),
+        ),
       ],
       selected: {currentLocale},
       onSelectionChanged: (selected) {
