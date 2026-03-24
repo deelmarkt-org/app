@@ -23,13 +23,13 @@
   },
   "form": {
     "email": "Email address",
-    "password": "Password",
     "name": "Full name",
     "phone": "Phone number",
     "postcode": "Postcode",
     "price": "Price",
     "title": "Title",
-    "description": "Description"
+    "description": "Description",
+    "pass_field": "Password"
   },
   "error": {
     "generic": "Something went wrong",
@@ -80,7 +80,7 @@
     "search_hint": "Search on DeelMarkt...",
     "search_filter": "Filter",
     "price_hint": "0.00",
-    "price_prefix": "\u20ac",
+    "price_prefix": "€",
     "postcode_hint": "1234 AB",
     "clear": "Clear"
   },

@@ -23,13 +23,13 @@
   },
   "form": {
     "email": "E-mailadres",
-    "password": "Wachtwoord",
     "name": "Volledige naam",
     "phone": "Telefoonnummer",
     "postcode": "Postcode",
     "price": "Prijs",
     "title": "Titel",
-    "description": "Beschrijving"
+    "description": "Beschrijving",
+    "pass_field": "Wachtwoord"
   },
   "error": {
     "generic": "Er is iets misgegaan",
@@ -80,7 +80,7 @@
     "search_hint": "Zoek op DeelMarkt...",
     "search_filter": "Filter",
     "price_hint": "0,00",
-    "price_prefix": "\u20ac",
+    "price_prefix": "€",
     "postcode_hint": "1234 AB",
     "clear": "Wissen"
   },
