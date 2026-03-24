@@ -128,6 +128,22 @@
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller"
   },
+  "address": {
+    "postcode": "Postcode",
+    "postcodePlaceholder": "1012 AB",
+    "postcodeInvalid": "Enter a valid postcode (e.g. 1012 AB)",
+    "houseNumber": "House number",
+    "houseNumberPlaceholder": "42",
+    "houseNumberInvalid": "Enter a valid house number",
+    "addition": "Addition",
+    "additionPlaceholder": "A",
+    "street": "Street",
+    "city": "City",
+    "autoFilled": "Auto-filled",
+    "lookingUp": "Looking up address...",
+    "notFound": "Address not found"
+  },
+
   "shipping": {
     "sendPackage": "Send your package",
     "scanAtServicePoint": "Scan this QR code at a PostNL or DHL service point",
@@ -137,7 +153,16 @@
     "qrCode": "Shipping QR code",
     "instructions": "Shipping instructions",
     "carrierPostnl": "PostNL",
-    "carrierDhl": "DHL"
+    "carrierDhl": "DHL",
+    "selectParcelShop": "Select service point",
+    "nearestShops": "Nearest service points",
+    "distanceKm": "km away",
+    "openUntil": "Open until {}",
+    "today": "Today",
+    "closed": "Closed",
+    "selectThisShop": "Select this point",
+    "selectFromList": "Select a service point from the list",
+    "noShopsFound": "No service points found nearby"
   },
   "tracking": {
     "title": "Track shipment",
