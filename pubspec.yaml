@@ -48,11 +48,13 @@ dependencies:
   # Loading — Shimmer effect for skeleton placeholders (P-07)
   shimmer: ^3.0.0
 
+  # Local persistence — consent record, user preferences
+  shared_preferences: ^2.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  shared_preferences: ^2.3.0  # For EasyLocalization test mocking
 
   # Riverpod code generation
   riverpod_generator: ^2.6.5

@@ -93,7 +93,8 @@
     "languageSwitch": "Switch language",
     "loading": "Loading...",
     "menu": "Open menu",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "consent_banner": "Privacy consent"
   },
   "payment": {
     "orderSummary": "Order summary",
@@ -200,5 +201,12 @@
     "language": "Language",
     "languageEn": "EN",
     "languageNl": "NL"
+  },
+  "consent": {
+    "title": "We respect your privacy",
+    "body": "DeelMarkt uses cookies and similar technologies to improve your experience. You can accept all cookies or only the strictly necessary ones.",
+    "accept_all": "Accept all",
+    "necessary_only": "Necessary only",
+    "privacy_policy": "Read our privacy policy"
   }
 }

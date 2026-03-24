@@ -93,7 +93,8 @@
     "languageSwitch": "Taal wisselen",
     "loading": "Laden...",
     "menu": "Menu openen",
-    "skipToContent": "Ga naar inhoud"
+    "skipToContent": "Ga naar inhoud",
+    "consent_banner": "Privacytoestemming"
   },
   "settings": {
     "language": "Taal",
@@ -200,5 +201,12 @@
     "cancelled": "Geannuleerd",
     "sellerPayout": "Uitbetaling verkoper",
     "platformCommission": "Platformcommissie"
+  },
+  "consent": {
+    "title": "Wij respecteren je privacy",
+    "body": "DeelMarkt gebruikt cookies en vergelijkbare technologieën om je ervaring te verbeteren. Je kunt alle cookies accepteren of alleen de strikt noodzakelijke.",
+    "accept_all": "Alles accepteren",
+    "necessary_only": "Alleen noodzakelijk",
+    "privacy_policy": "Lees ons privacybeleid"
   }
 }
