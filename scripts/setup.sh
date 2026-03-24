@@ -11,10 +11,29 @@ RED='\033[0;31m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-info()  { echo -e "${CYAN}ℹ${NC}  $1"; }
-ok()    { echo -e "${GREEN}✓${NC}  $1"; }
-warn()  { echo -e "${YELLOW}⚠${NC}  $1"; }
-fail()  { echo -e "${RED}✗${NC}  $1"; exit 1; }
+info() {
+  local msg="$1"
+  echo -e "${CYAN}ℹ${NC}  ${msg}"
+  return 0
+}
+
+ok() {
+  local msg="$1"
+  echo -e "${GREEN}✓${NC}  ${msg}"
+  return 0
+}
+
+warn() {
+  local msg="$1"
+  echo -e "${YELLOW}⚠${NC}  ${msg}"
+  return 0
+}
+
+fail() {
+  local msg="$1"
+  echo -e "${RED}✗${NC}  ${msg}"
+  exit 1
+}
 
 echo ""
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -26,8 +45,11 @@ echo ""
 info "Checking prerequisites..."
 
 check_cmd() {
-  if command -v "$1" &> /dev/null; then
-    ok "$1 found: $(command -v "$1")"
+  local cmd="$1"
+  if command -v "${cmd}" &> /dev/null; then
+    local cmd_path
+    cmd_path="$(command -v "${cmd}")"
+    ok "${cmd} found: ${cmd_path}"
     return 0
   else
     return 1
@@ -40,7 +62,7 @@ if ! check_cmd flutter; then MISSING+=("flutter"); fi
 if ! check_cmd dart; then MISSING+=("dart"); fi
 if ! check_cmd git; then MISSING+=("git"); fi
 
-if [ ${#MISSING[@]} -gt 0 ]; then
+if [[ ${#MISSING[@]} -gt 0 ]]; then
   fail "Missing required tools: ${MISSING[*]}. Install them first — see docs/SETUP.md"
 fi
 
@@ -88,7 +110,7 @@ if ! check_cmd detect-secrets; then
   fi
 fi
 
-if [ ! -f .secrets.baseline ]; then
+if [[ ! -f .secrets.baseline ]]; then
   detect-secrets scan > .secrets.baseline
   ok "Secrets baseline created (.secrets.baseline)"
 else
@@ -115,7 +137,7 @@ echo ""
 # ── 5. Flutter setup ────────────────────────────────────────────────────────
 info "Running Flutter setup..."
 
-if [ -f pubspec.yaml ]; then
+if [[ -f pubspec.yaml ]]; then
   flutter pub get
   ok "Flutter dependencies installed"
 

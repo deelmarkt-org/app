@@ -87,12 +87,41 @@ class DeelmarktTheme {
         borderRadius: BorderRadius.circular(DeelmarktRadius.md),
         borderSide: const BorderSide(color: DeelmarktColors.error),
       ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.md),
+        borderSide: const BorderSide(color: DeelmarktColors.error, width: 2),
+      ),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: DeelmarktColors.white,
       indicatorColor: DeelmarktColors.primarySurface,
       labelTextStyle: WidgetStatePropertyAll(
         DeelmarktTypography.textTheme.bodySmall,
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return DeelmarktColors.primary;
+          }
+          return Colors.transparent;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return DeelmarktColors.white;
+          }
+          return DeelmarktColors.neutral700;
+        }),
+        minimumSize: const WidgetStatePropertyAll(Size(0, 44)),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+          ),
+        ),
+        side: const WidgetStatePropertyAll(
+          BorderSide(color: DeelmarktColors.neutral300),
+        ),
       ),
     ),
   );
@@ -175,12 +204,44 @@ class DeelmarktTheme {
         borderRadius: BorderRadius.circular(DeelmarktRadius.md),
         borderSide: const BorderSide(color: DeelmarktColors.darkError),
       ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.md),
+        borderSide: const BorderSide(
+          color: DeelmarktColors.darkError,
+          width: 2,
+        ),
+      ),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: DeelmarktColors.darkSurface,
       indicatorColor: DeelmarktColors.darkSurfaceElevated,
       labelTextStyle: WidgetStatePropertyAll(
         DeelmarktTypography.textTheme.bodySmall,
+      ),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return DeelmarktColors.darkPrimary;
+          }
+          return Colors.transparent;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return DeelmarktColors.darkOnPrimary;
+          }
+          return DeelmarktColors.darkOnSurfaceSecondary;
+        }),
+        minimumSize: const WidgetStatePropertyAll(Size(0, 44)),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+          ),
+        ),
+        side: const WidgetStatePropertyAll(
+          BorderSide(color: DeelmarktColors.darkBorder),
+        ),
       ),
     ),
   );

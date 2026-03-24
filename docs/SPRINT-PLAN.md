@@ -52,12 +52,12 @@ The agent will:
 **Branch:** `feature/reso-E07-supabase-firebase` | **Epic:** [E07](epics/E07-infrastructure.md)
 
 - [ ] `R-01` Create Supabase project (Pro plan) — project live, dashboard accessible
-- [ ] `R-02` Configure Supabase Auth (email + phone OTP) — registration works in dashboard
+- [x] `R-02` Configure Supabase Auth (email + phone OTP) — registration works in dashboard
 - [ ] `R-03` Enable RLS on all default tables — verified via SQL
 - [ ] `R-04` Set up Supabase Vault — one secret stored and retrievable
-- [ ] `R-05` Set up Supabase Storage — `listings-images` bucket with RLS
+- [x] `R-05` Set up Supabase Storage — `listings-images` bucket with RLS
 - [ ] `R-06` Enable Supabase Realtime — enabled on messages table (placeholder)
-- [ ] `R-07` Deploy first Edge Function (health check) — `/functions/v1/health` returns 200
+- [x] `R-07` Deploy first Edge Function (health check) — `/functions/v1/health` returns 200
 - [ ] `R-08` Set up Firebase project — FCM, Crashlytics, Analytics, Remote Config configured
 - [ ] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
 - [ ] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
@@ -90,11 +90,11 @@ The agent will:
 - [x] `P-03` Set up easy_localization (NL/EN) — language switch works, strings from JSON
 - [x] `P-04` Create NL + EN string files — at least 20 common keys each
 - [x] `P-05` Implement `DeelButton` (6 variants + 3 sizes) — visual matches spec, 5 states
-- [ ] `P-06` Implement `DeelInput` (text, search, price, postcode) — all variants render
-- [ ] `P-07` Implement `SkeletonLoader` (shimmer) — 1.5s sweep animation
-- [ ] `P-08` Implement `EmptyState` widget — illustration + message + action
-- [ ] `P-09` Implement `ErrorState` widget — error message + retry button
-- [ ] `P-10` Implement `LanguageSwitch` (NL/EN toggle) — segmented control, instant
+- [x] `P-06` Implement `DeelInput` (text, search, price, postcode) — all variants render
+- [x] `P-07` Implement `SkeletonLoader` (shimmer) — 1.5s sweep animation
+- [x] `P-08` Implement `EmptyState` widget — illustration + message + action
+- [x] `P-09` Implement `ErrorState` widget — error message + retry button
+- [x] `P-10` Implement `LanguageSwitch` (NL/EN toggle) — segmented control, instant
 - [ ] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
 - [ ] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
 - [ ] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
@@ -121,13 +121,13 @@ The agent will:
 
 **Branch:** `feature/belengaz-E03-mollie-setup` | **Epic:** [E03](epics/E03-payments-escrow.md)
 
-- [ ] `B-13` Mollie Connect merchant account setup — API keys in Vault
-- [ ] `B-14` iDEAL payment flow (WebView) — test payment completes end-to-end
-- [ ] `B-15` Webhook Edge Function with idempotency — Redis NX, duplicates blocked
-- [ ] `B-16` HMAC-SHA256 webhook signature verification — invalid sigs rejected
-- [ ] `B-17` Double-entry ledger schema — `ledger_entries` table, RLS append-only
-- [ ] `B-18` Daily reconciliation Edge Function (cron) — ledger vs Mollie events
-- [ ] `B-19` DLQ + PagerDuty SEV-1 on webhook failure — alert on 5th retry
+- [x] `B-13` Mollie Connect merchant account setup — API keys in Vault
+- [x] `B-14` iDEAL payment flow (WebView) — test payment completes end-to-end
+- [x] `B-15` Webhook Edge Function with idempotency — Redis NX, duplicates blocked
+- [x] `B-16` HMAC-SHA256 webhook signature verification — invalid sigs rejected
+- [x] `B-17` Double-entry ledger schema — `ledger_entries` table, RLS append-only
+- [x] `B-18` Daily reconciliation Edge Function (cron) — ledger vs Mollie events
+- [x] `B-19` DLQ + PagerDuty SEV-1 on webhook failure — alert on 5th retry
 
 ### pizmam `[P]` — Auth Screens + Trust Components
 
@@ -166,11 +166,11 @@ The agent will:
 
 **Branch:** `feature/belengaz-E03-escrow-flow` | **Epics:** [E03](epics/E03-payments-escrow.md) + [E05](epics/E05-shipping-logistics.md)
 
-- [ ] `B-20` Split payment flow (buyer → escrow → seller) — commission split correct
-- [ ] `B-21` 90-day escrow hold logic — funds held until confirmation or timeout
-- [ ] `B-22` Escrow release on delivery confirmation — tracking event triggers release
-- [ ] `B-23` 48-hour buyer confirmation window — auto-release after timeout
-- [ ] `B-24` Transaction status state machine — all states work
+- [x] `B-20` Split payment flow (buyer → escrow → seller) — commission split correct
+- [x] `B-21` 90-day escrow hold logic — funds held until confirmation or timeout
+- [x] `B-22` Escrow release on delivery confirmation — tracking event triggers release
+- [x] `B-23` 48-hour buyer confirmation window — auto-release after timeout
+- [x] `B-24` Transaction status state machine — all states work
 - [ ] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
 - [ ] `B-26` DHL QR Service integration — DHL alternative works
 - [ ] `B-27` PostNL tracking webhook — real-time tracking events received
@@ -213,8 +213,8 @@ The agent will:
 
 **Branch:** `feature/belengaz-E05-shipping` | **Epic:** [E05](epics/E05-shipping-logistics.md)
 
-- [ ] `B-29` QR code display screen (seller) — QR generated and displayed
-- [ ] `B-30` Tracking timeline screen (buyer + seller) — vertical stepper, live updates
+- [x] `B-29` QR code display screen (seller) — QR generated and displayed
+- [x] `B-30` Tracking timeline screen (buyer + seller) — vertical stepper, live updates
 - [ ] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
 - [ ] `B-32` Dutch address input widget integration — 3-field auto-fill works
 - [ ] `B-33` Delivery → escrow release integration — end-to-end flow works

@@ -3,7 +3,6 @@
     "name": "DeelMarkt",
     "tagline": "Tweedehands met vertrouwen"
   },
-
   "nav": {
     "home": "Home",
     "search": "Zoeken",
@@ -12,7 +11,6 @@
     "profile": "Profiel",
     "back": "Terug"
   },
-
   "action": {
     "save": "Opslaan",
     "cancel": "Annuleren",
@@ -23,18 +21,16 @@
     "confirm": "Bevestigen",
     "close": "Sluiten"
   },
-
   "form": {
     "email": "E-mailadres",
-    "password": "Wachtwoord",
     "name": "Volledige naam",
     "phone": "Telefoonnummer",
     "postcode": "Postcode",
     "price": "Prijs",
     "title": "Titel",
-    "description": "Beschrijving"
+    "description": "Beschrijving",
+    "pass_field": "Wachtwoord"
   },
-
   "error": {
     "generic": "Er is iets misgegaan",
     "network": "Geen internetverbinding",
@@ -42,19 +38,26 @@
     "tryAgain": "Probeer het opnieuw",
     "sessionExpired": "Je sessie is verlopen — log opnieuw in",
     "permissionDenied": "Je hebt geen toegang",
-    "serverError": "Serverfout — probeer het later opnieuw",
-    "validationFailed": "Controleer de ingevoerde gegevens",
-    "imageUploadFailed": "Afbeelding uploaden mislukt",
-    "paymentFailed": "Betaling mislukt"
+    "server_error": "Serverfout — probeer het later opnieuw",
+    "validation_failed": "Controleer de ingevoerde gegevens",
+    "image_upload_failed": "Afbeelding uploaden mislukt",
+    "payment_failed": "Betaling mislukt",
+    "offline": "Je bent offline",
+    "offline_with_cache": "Je bent offline — eerder geladen gegevens worden getoond"
   },
-
   "empty": {
+    "favorites": "Nog geen favorieten",
+    "favorites_action": "Ontdek items",
     "listings": "Nog geen advertenties",
     "messages": "Nog geen berichten",
+    "messages_action": "Start met zoeken",
+    "my_listings": "Je hebt nog niets te koop",
+    "my_listings_action": "Plaats je eerste advertentie",
+    "orders": "Nog geen bestellingen",
+    "orders_action": "Zoek items",
     "search": "Geen resultaten gevonden",
-    "favorites": "Nog geen favorieten"
+    "search_action": "Bewaar zoekopdracht"
   },
-
   "listing": {
     "price": "Prijs",
     "condition": "Staat",
@@ -65,7 +68,6 @@
     "favorites": "In favorieten",
     "shipping": "Verzending"
   },
-
   "auth": {
     "login": "Inloggen",
     "register": "Account aanmaken",
@@ -74,11 +76,137 @@
     "verifyEmail": "Verifieer je e-mailadres",
     "welcome": "Welkom bij DeelMarkt!"
   },
-
+  "input": {
+    "search_hint": "Zoek op DeelMarkt...",
+    "search_filter": "Filter",
+    "price_hint": "0,00",
+    "price_prefix": "€",
+    "postcode_hint": "1234 AB",
+    "clear": "Wissen"
+  },
   "a11y": {
-    "skipToContent": "Ga naar inhoud",
     "closeModal": "Sluiten",
+    "currentLanguage": "Huidige taal: {}",
+    "emptyState": "Lege weergave: {}",
+    "errorIcon": "Fout",
+    "errorState": "Fout: {}",
+    "languageSwitch": "Taal wisselen",
+    "loading": "Laden...",
     "menu": "Menu openen",
-    "loading": "Laden..."
+    "skipToContent": "Ga naar inhoud",
+    "consent_banner": "Privacytoestemming"
+  },
+  "settings": {
+    "language": "Taal",
+    "languageEn": "EN",
+    "languageNl": "NL"
+  },
+  "payment": {
+    "orderSummary": "Bestelling overzicht",
+    "itemPrice": "Artikelprijs",
+    "platformFee": "Platformkosten",
+    "shippingCost": "Verzendkosten",
+    "total": "Totaal",
+    "inclBtw": "incl. BTW",
+    "payWithIdeal": "Betaal met iDEAL",
+    "paymentPending": "Betaling wordt verwerkt...",
+    "paymentSuccess": "Betaling gelukt!",
+    "paymentFailed": "Betaling mislukt",
+    "paymentExpired": "Betaling verlopen",
+    "paymentCancelled": "Betaling geannuleerd",
+    "tryAgain": "Opnieuw proberen",
+    "backToListing": "Terug naar advertentie",
+    "processing": "Bezig met verwerken..."
+  },
+  "escrow": {
+    "protected": "Beschermd met DeelMarkt Escrow",
+    "protectedDescription": "Je geld is veilig tot levering.",
+    "moreInfo": "Meer info",
+    "paid": "Betaald",
+    "shipped": "Verzonden",
+    "delivered": "Bezorgd",
+    "confirmed": "Bevestigd",
+    "released": "Uitbetaald",
+    "confirmDelivery": "Levering bevestigen",
+    "confirmDeliveryDescription": "Bevestig dat je het artikel hebt ontvangen",
+    "disputeOrder": "Probleem melden",
+    "countdownHint": "48 uur om te bevestigen",
+    "fundsHeld": "Geld wordt vastgehouden",
+    "fundsReleased": "Geld vrijgegeven aan verkoper"
+  },
+  "address": {
+    "postcode": "Postcode",
+    "postcodePlaceholder": "1012 AB",
+    "postcodeInvalid": "Voer een geldige postcode in (bijv. 1012 AB)",
+    "houseNumber": "Huisnummer",
+    "houseNumberPlaceholder": "42",
+    "houseNumberInvalid": "Voer een geldig huisnummer in",
+    "addition": "Toevoeging",
+    "additionPlaceholder": "A",
+    "street": "Straat",
+    "city": "Plaats",
+    "autoFilled": "Automatisch ingevuld",
+    "lookingUp": "Adres opzoeken...",
+    "notFound": "Adres niet gevonden"
+  },
+
+  "shipping": {
+    "sendPackage": "Verzend je pakket",
+    "scanAtServicePoint": "Scan deze QR-code bij een PostNL- of DHL-servicepunt",
+    "findServicePoint": "Zoek servicepunt",
+    "trackingNumber": "Trackingnummer",
+    "shipByDeadline": "Verzend voor: {}",
+    "qrCode": "Verzend QR-code",
+    "instructions": "Verzendinstructies",
+    "carrierPostnl": "PostNL",
+    "carrierDhl": "DHL",
+    "selectParcelShop": "Servicepunt selecteren",
+    "nearestShops": "Dichtstbijzijnde servicepunten",
+    "distanceKm": "km verderop",
+    "openUntil": "Open tot {}",
+    "today": "Vandaag",
+    "closed": "Gesloten",
+    "selectThisShop": "Dit punt selecteren",
+    "selectFromList": "Selecteer een servicepunt uit de lijst",
+    "noShopsFound": "Geen servicepunten in de buurt gevonden"
+  },
+  "tracking": {
+    "title": "Zending volgen",
+    "shipment": "zending",
+    "updates": "Trackingupdates",
+    "noUpdates": "Nog geen trackingupdates",
+    "labelCreated": "Label aangemaakt",
+    "droppedOff": "Afgegeven bij servicepunt",
+    "pickedUp": "Opgehaald door bezorger",
+    "inTransit": "Onderweg",
+    "outForDelivery": "In bezorging",
+    "delivered": "Bezorgd",
+    "deliveryFailed": "Bezorgpoging mislukt",
+    "returned": "Retour naar afzender"
+  },
+  "transaction": {
+    "status": "Status",
+    "created": "Aangemaakt",
+    "paymentPending": "Wacht op betaling",
+    "paid": "Betaald",
+    "shipped": "Verzonden",
+    "delivered": "Bezorgd",
+    "confirmed": "Bevestigd",
+    "released": "Uitbetaald",
+    "expired": "Verlopen",
+    "failed": "Mislukt",
+    "disputed": "Betwist",
+    "resolved": "Opgelost",
+    "refunded": "Terugbetaald",
+    "cancelled": "Geannuleerd",
+    "sellerPayout": "Uitbetaling verkoper",
+    "platformCommission": "Platformcommissie"
+  },
+  "consent": {
+    "title": "Wij respecteren je privacy",
+    "body": "DeelMarkt gebruikt cookies en vergelijkbare technologieën om je ervaring te verbeteren. Je kunt alle cookies accepteren of alleen de strikt noodzakelijke.",
+    "accept_all": "Alles accepteren",
+    "necessary_only": "Alleen noodzakelijk",
+    "privacy_policy": "Lees ons privacybeleid"
   }
 }

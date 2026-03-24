@@ -77,4 +77,20 @@ class DeelmarktTypography {
     height: 1.25,
     fontFeatures: [FontFeature.tabularFigures()],
   );
+
+  /// Price input field value — regular weight, tabular figures.
+  static const priceInput = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+
+  /// Price input prefix (€) — semi-bold, tabular figures.
+  static const pricePrefix = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
 }

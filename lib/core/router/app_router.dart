@@ -139,6 +139,35 @@ GoRouter createRouter() {
           final id = state.pathParameters['id']!;
           return _Placeholder('Shipping $id');
         },
+        routes: [
+          GoRoute(
+            path: 'qr',
+            name: 'shipping-qr',
+            builder: (context, state) {
+              // Phase 2 (belengaz): replace with ShippingQrScreen when ViewModel + data layer exists.
+              final id = state.pathParameters['id']!;
+              return _Placeholder('Shipping QR $id');
+            },
+          ),
+          GoRoute(
+            path: 'tracking',
+            name: 'shipping-tracking',
+            builder: (context, state) {
+              // Phase 2 (belengaz): replace with TrackingScreen when ViewModel + data layer exists.
+              final id = state.pathParameters['id']!;
+              return _Placeholder('Tracking $id');
+            },
+          ),
+          GoRoute(
+            path: 'parcel-shops',
+            name: 'parcel-shop-selector',
+            builder: (context, state) {
+              // Wire to ParcelShopSelectorScreen when ViewModel + data layer exist (E05 Phase 2)
+              final id = state.pathParameters['id']!;
+              return _Placeholder('Parcel Shops $id');
+            },
+          ),
+        ],
       ),
     ],
     errorBuilder:

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../core/design_system/deel_button_theme.dart';
-import '../../core/design_system/radius.dart';
-import '../../core/design_system/typography.dart';
+import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 import 'deel_button.dart';
 import 'deel_button_tokens.dart';
 
@@ -24,59 +24,17 @@ class DeelButtonStyleResolver {
 
   /// Resolve the full [ButtonStyle] for the current variant/size/theme.
   ButtonStyle resolve() {
-    final Color background = backgroundFor(variant);
-    final Color foreground = foregroundFor(variant);
-
     return ButtonStyle(
-      backgroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) {
-          return background.withValues(alpha: 0.4);
-        }
-        if (states.contains(WidgetState.pressed)) {
-          return Color.alphaBlend(
-            const Color(0x1A000000), // 10% darker overlay
-            background,
-          );
-        }
-        return background;
-      }),
-      foregroundColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.disabled)) {
-          return foreground.withValues(alpha: 0.4);
-        }
-        return foreground;
-      }),
-      overlayColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.pressed)) {
-          return foreground.withValues(alpha: 0.08);
-        }
-        if (states.contains(WidgetState.hovered)) {
-          return foreground.withValues(alpha: 0.04);
-        }
-        if (states.contains(WidgetState.focused)) {
-          return foreground.withValues(alpha: 0.08);
-        }
-        return Colors.transparent;
-      }),
+      backgroundColor: _resolveBackground(),
+      foregroundColor: _resolveForeground(),
+      overlayColor: _resolveOverlay(),
       minimumSize: WidgetStatePropertyAll(
         Size(fullWidth ? double.infinity : 0, DeelButtonTokens.heightFor(size)),
       ),
       padding: WidgetStatePropertyAll(
         EdgeInsets.symmetric(horizontal: DeelButtonTokens.paddingFor(size)),
       ),
-      shape: WidgetStateProperty.resolveWith((states) {
-        final BorderSide focusSide =
-            states.contains(WidgetState.focused)
-                ? BorderSide(color: theme.primaryBackground, width: 2)
-                : variant == DeelButtonVariant.outline
-                ? BorderSide(color: borderColorFor(variant), width: 1.5)
-                : BorderSide.none;
-
-        return RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          side: focusSide,
-        );
-      }),
+      shape: _resolveShape(),
       textStyle: WidgetStatePropertyAll(
         TextStyle(
           fontFamily: DeelmarktTypography.fontFamily,
@@ -87,6 +45,72 @@ class DeelButtonStyleResolver {
       elevation: const WidgetStatePropertyAll(0),
       tapTargetSize: MaterialTapTargetSize.padded,
     );
+  }
+
+  // ── Style constants ─────────────────────────────────────────────────
+
+  static const double _kDisabledAlpha = 0.4;
+  static const Color _kPressedBgOverlay = Color(0x1A000000); // 10% black
+  static const double _kPressedFocusedAlpha = 0.08;
+  static const double _kHoveredAlpha = 0.04;
+
+  // ── State resolvers (extracted to reduce cognitive complexity) ────────
+
+  WidgetStateProperty<Color?> _resolveBackground() {
+    final Color bg = backgroundFor(variant);
+    return WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return bg.withValues(alpha: _kDisabledAlpha);
+      }
+      if (states.contains(WidgetState.pressed)) {
+        return Color.alphaBlend(_kPressedBgOverlay, bg);
+      }
+      return bg;
+    });
+  }
+
+  WidgetStateProperty<Color?> _resolveForeground() {
+    final Color fg = foregroundFor(variant);
+    return WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.disabled)) {
+        return fg.withValues(alpha: _kDisabledAlpha);
+      }
+      return fg;
+    });
+  }
+
+  WidgetStateProperty<Color?> _resolveOverlay() {
+    final Color fg = foregroundFor(variant);
+    return WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.pressed)) {
+        return fg.withValues(alpha: _kPressedFocusedAlpha);
+      }
+      if (states.contains(WidgetState.hovered)) {
+        return fg.withValues(alpha: _kHoveredAlpha);
+      }
+      if (states.contains(WidgetState.focused)) {
+        return fg.withValues(alpha: _kPressedFocusedAlpha);
+      }
+      return Colors.transparent;
+    });
+  }
+
+  WidgetStateProperty<OutlinedBorder?> _resolveShape() {
+    final borderRadius = BorderRadius.circular(DeelmarktRadius.lg);
+    return WidgetStateProperty.resolveWith((states) {
+      final BorderSide side = _resolveBorderSide(states);
+      return RoundedRectangleBorder(borderRadius: borderRadius, side: side);
+    });
+  }
+
+  BorderSide _resolveBorderSide(Set<WidgetState> states) {
+    if (states.contains(WidgetState.focused)) {
+      return BorderSide(color: theme.primaryBackground, width: 2);
+    }
+    if (variant == DeelButtonVariant.outline) {
+      return BorderSide(color: borderColorFor(variant), width: 1.5);
+    }
+    return BorderSide.none;
   }
 
   // ── Colour resolvers ───────────────────────────────────────────────────

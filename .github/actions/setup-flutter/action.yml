@@ -1,0 +1,48 @@
+name: Setup Flutter with code generation
+description: Install Flutter, fetch deps, create .env, and run build_runner
+
+inputs:
+  supabase-project-id:
+    description: Supabase project ID (use placeholder for non-build jobs)
+    required: false
+    default: ci-placeholder
+  supabase-anon-public:
+    description: Supabase anon public key (use placeholder for non-build jobs)
+    required: false
+    default: ci-placeholder-key
+
+runs:
+  using: composite
+  steps:
+    - uses: subosito/flutter-action@0ca7a949e71ae44c8e688a51c5e7e93b2c87e295 # v2
+      with:
+        channel: stable
+        cache: true
+
+    - name: Install dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: Create .env for code generation
+      shell: bash
+      run: |
+        cat > .env << EOF
+        SUPABASE_PROJECT_ID=${{ inputs.supabase-project-id }}
+        SUPABASE_ANON_PUBLIC=${{ inputs.supabase-anon-public }}
+        EOF
+
+    - name: Run code generation (envied + riverpod)
+      shell: bash
+      run: dart run build_runner build --delete-conflicting-outputs
+
+    - name: Create dummy google-services.json for Android builds
+      shell: bash
+      run: |
+        mkdir -p android/app
+        cat > android/app/google-services.json << 'GSEOF'
+        {
+          "project_info": { "project_number": "000000000000", "project_id": "deelmarkt-ci", "storage_bucket": "deelmarkt-ci.appspot.com" },
+          "client": [{ "client_info": { "mobilesdk_app_id": "1:000000000000:android:0000000000000000", "android_client_info": { "package_name": "nl.deelmarkt.deelmarkt" } }, "api_key": [{ "current_key": "ci-placeholder" }] }],
+          "configuration_version": "1"
+        }
+        GSEOF

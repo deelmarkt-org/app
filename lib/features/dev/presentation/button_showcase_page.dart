@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'widgets/showcase_state_sections.dart';
 import 'widgets/showcase_variant_sections.dart';
 

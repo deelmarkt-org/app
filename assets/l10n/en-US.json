@@ -3,7 +3,6 @@
     "name": "DeelMarkt",
     "tagline": "Second-hand with confidence"
   },
-
   "nav": {
     "home": "Home",
     "search": "Search",
@@ -12,7 +11,6 @@
     "profile": "Profile",
     "back": "Back"
   },
-
   "action": {
     "save": "Save",
     "cancel": "Cancel",
@@ -23,18 +21,16 @@
     "confirm": "Confirm",
     "close": "Close"
   },
-
   "form": {
     "email": "Email address",
-    "password": "Password",
     "name": "Full name",
     "phone": "Phone number",
     "postcode": "Postcode",
     "price": "Price",
     "title": "Title",
-    "description": "Description"
+    "description": "Description",
+    "pass_field": "Password"
   },
-
   "error": {
     "generic": "Something went wrong",
     "network": "No internet connection",
@@ -42,19 +38,26 @@
     "tryAgain": "Please try again",
     "sessionExpired": "Your session has expired — please log in again",
     "permissionDenied": "You don't have access",
-    "serverError": "Server error — please try again later",
-    "validationFailed": "Please check your input",
-    "imageUploadFailed": "Image upload failed",
-    "paymentFailed": "Payment failed"
+    "server_error": "Server error — please try again later",
+    "validation_failed": "Please check your input",
+    "image_upload_failed": "Image upload failed",
+    "payment_failed": "Payment failed",
+    "offline": "You are offline",
+    "offline_with_cache": "You are offline — showing previously loaded data"
   },
-
   "empty": {
+    "favorites": "No favorites yet",
+    "favorites_action": "Discover items",
     "listings": "No listings yet",
     "messages": "No messages yet",
+    "messages_action": "Start searching",
+    "my_listings": "You haven't listed anything yet",
+    "my_listings_action": "Place your first listing",
+    "orders": "No orders yet",
+    "orders_action": "Search items",
     "search": "No results found",
-    "favorites": "No favourites yet"
+    "search_action": "Save search"
   },
-
   "listing": {
     "price": "Price",
     "condition": "Condition",
@@ -62,10 +65,9 @@
     "seller": "Seller",
     "sold": "Sold! 🎉",
     "views": "Views",
-    "favorites": "In favourites",
+    "favorites": "In favorites",
     "shipping": "Shipping"
   },
-
   "auth": {
     "login": "Log in",
     "register": "Create account",
@@ -74,11 +76,137 @@
     "verifyEmail": "Verify your email address",
     "welcome": "Welcome to DeelMarkt!"
   },
-
+  "input": {
+    "search_hint": "Search on DeelMarkt...",
+    "search_filter": "Filter",
+    "price_hint": "0.00",
+    "price_prefix": "€",
+    "postcode_hint": "1234 AB",
+    "clear": "Clear"
+  },
   "a11y": {
-    "skipToContent": "Skip to content",
     "closeModal": "Close",
+    "currentLanguage": "Current language: {}",
+    "emptyState": "Empty view: {}",
+    "errorIcon": "Error",
+    "errorState": "Error: {}",
+    "languageSwitch": "Switch language",
+    "loading": "Loading...",
     "menu": "Open menu",
-    "loading": "Loading..."
+    "skipToContent": "Skip to content",
+    "consent_banner": "Privacy consent"
+  },
+  "payment": {
+    "orderSummary": "Order summary",
+    "itemPrice": "Item price",
+    "platformFee": "Platform fee",
+    "shippingCost": "Shipping cost",
+    "total": "Total",
+    "inclBtw": "incl. VAT",
+    "payWithIdeal": "Pay with iDEAL",
+    "paymentPending": "Processing payment...",
+    "paymentSuccess": "Payment successful!",
+    "paymentFailed": "Payment failed",
+    "paymentExpired": "Payment expired",
+    "paymentCancelled": "Payment cancelled",
+    "tryAgain": "Try again",
+    "backToListing": "Back to listing",
+    "processing": "Processing..."
+  },
+  "escrow": {
+    "protected": "Protected by DeelMarkt Escrow",
+    "protectedDescription": "Your money is safe until delivery.",
+    "moreInfo": "More info",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "confirmed": "Confirmed",
+    "released": "Released",
+    "confirmDelivery": "Confirm delivery",
+    "confirmDeliveryDescription": "Confirm that you have received the item",
+    "disputeOrder": "Report issue",
+    "countdownHint": "48 hours to confirm",
+    "fundsHeld": "Funds held in escrow",
+    "fundsReleased": "Funds released to seller"
+  },
+  "address": {
+    "postcode": "Postcode",
+    "postcodePlaceholder": "1012 AB",
+    "postcodeInvalid": "Enter a valid postcode (e.g. 1012 AB)",
+    "houseNumber": "House number",
+    "houseNumberPlaceholder": "42",
+    "houseNumberInvalid": "Enter a valid house number",
+    "addition": "Addition",
+    "additionPlaceholder": "A",
+    "street": "Street",
+    "city": "City",
+    "autoFilled": "Auto-filled",
+    "lookingUp": "Looking up address...",
+    "notFound": "Address not found"
+  },
+
+  "shipping": {
+    "sendPackage": "Send your package",
+    "scanAtServicePoint": "Scan this QR code at a PostNL or DHL service point",
+    "findServicePoint": "Find service point",
+    "trackingNumber": "Tracking number",
+    "shipByDeadline": "Ship by: {}",
+    "qrCode": "Shipping QR code",
+    "instructions": "Shipping instructions",
+    "carrierPostnl": "PostNL",
+    "carrierDhl": "DHL",
+    "selectParcelShop": "Select service point",
+    "nearestShops": "Nearest service points",
+    "distanceKm": "km away",
+    "openUntil": "Open until {}",
+    "today": "Today",
+    "closed": "Closed",
+    "selectThisShop": "Select this point",
+    "selectFromList": "Select a service point from the list",
+    "noShopsFound": "No service points found nearby"
+  },
+  "tracking": {
+    "title": "Track shipment",
+    "shipment": "shipment",
+    "updates": "Tracking updates",
+    "noUpdates": "No tracking updates yet",
+    "labelCreated": "Label created",
+    "droppedOff": "Dropped off at service point",
+    "pickedUp": "Picked up by carrier",
+    "inTransit": "In transit",
+    "outForDelivery": "Out for delivery",
+    "delivered": "Delivered",
+    "deliveryFailed": "Delivery attempt failed",
+    "returned": "Returned to sender"
+  },
+  "transaction": {
+    "status": "Status",
+    "created": "Created",
+    "paymentPending": "Awaiting payment",
+    "paid": "Paid",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "confirmed": "Confirmed",
+    "released": "Released",
+    "expired": "Expired",
+    "failed": "Failed",
+    "disputed": "Disputed",
+    "resolved": "Resolved",
+    "refunded": "Refunded",
+    "cancelled": "Cancelled",
+    "sellerPayout": "Seller payout",
+    "platformCommission": "Platform commission"
+  },
+  "settings": {
+    "language": "Language",
+    "languageEn": "EN",
+    "languageNl": "NL"
+  },
+  "consent": {
+    "title": "We respect your privacy",
+    "body": "DeelMarkt uses cookies and similar technologies to improve your experience. You can accept all cookies or only the strictly necessary ones.",
+    "accept_all": "Accept all",
+    "necessary_only": "Necessary only",
+    "privacy_policy": "Read our privacy policy"
   }
 }

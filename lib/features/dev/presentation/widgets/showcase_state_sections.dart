@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/design_system/radius.dart';
-import '../../../../core/design_system/spacing.dart';
-import '../../../../widgets/buttons/buttons.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/buttons/buttons.dart';
 
 /// State showcase — enabled, disabled, loading.
 class StateSection extends StatelessWidget {
