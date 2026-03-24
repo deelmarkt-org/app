@@ -31,6 +31,14 @@ dependencies:
   # Environment variables — compile-time safe, no secrets in source
   envied: ^1.1.1
 
+  # Firebase — push notifications, crash reporting, analytics, remote config
+  firebase_core: ^4.6.0
+  firebase_analytics: ^12.2.0
+  firebase_crashlytics: ^5.1.0
+  firebase_messaging: ^16.1.3
+  firebase_remote_config: ^6.3.0
+  firebase_performance: ^0.11.2
+
   # Payment — Mollie WebView checkout
   webview_flutter: ^4.10.0
 
