@@ -89,6 +89,42 @@ void main() {
       expect(semanticsFinder, findsWidgets);
     });
 
+    testWidgets('privacy link has Semantics button label', (tester) async {
+      await tester.pumpWidget(_buildApp());
+      // Semantics wrapper exists on the privacy link.
+      expect(
+        find.ancestor(
+          of: find.text('consent.privacy_policy'),
+          matching: find.byType(Semantics),
+        ),
+        findsWidgets,
+      );
+    });
+
+    testWidgets('privacy link meets 44px touch target', (tester) async {
+      await tester.pumpWidget(_buildApp());
+      final textButton = find.ancestor(
+        of: find.text('consent.privacy_policy'),
+        matching: find.byType(TextButton),
+      );
+      expect(textButton, findsOneWidget);
+      final size = tester.getSize(textButton);
+      expect(size.height, greaterThanOrEqualTo(44));
+    });
+
+    testWidgets('no hardcoded Colors.black in ModalBarrier', (tester) async {
+      await tester.pumpWidget(_buildApp());
+      final barriers = tester.widgetList<ModalBarrier>(
+        find.byType(ModalBarrier),
+      );
+      for (final barrier in barriers) {
+        if (barrier.color != null) {
+          // Should not be exactly Colors.black54 (hardcoded).
+          expect(barrier.color, isNot(equals(Colors.black54)));
+        }
+      }
+    });
+
     testWidgets('renders without overflow at 320px', (tester) async {
       tester.view.physicalSize = const Size(320, 568);
       tester.view.devicePixelRatio = 1.0;

@@ -37,7 +37,10 @@ class GdprConsentBanner extends StatelessWidget {
         liveRegion: true,
         child: Stack(
           children: [
-            const ModalBarrier(dismissible: false, color: Colors.black54),
+            ModalBarrier(
+              dismissible: false,
+              color: DeelmarktColors.neutral900.withValues(alpha: 0.54),
+            ),
             Positioned(
               left: 0,
               right: 0,
@@ -64,7 +67,7 @@ class GdprConsentBanner extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: DeelmarktColors.neutral900.withValues(alpha: 0.15),
               blurRadius: 16,
               offset: const Offset(0, -4),
             ),
@@ -123,16 +126,28 @@ class GdprConsentBanner extends StatelessWidget {
   }
 
   Widget _buildPrivacyLink(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Phase 2: open privacy policy in-app or external URL.
-      },
-      child: Text(
-        'consent.privacy_policy'.tr(),
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: DeelmarktColors.primary,
-          decoration: TextDecoration.underline,
-          decorationColor: DeelmarktColors.primary,
+    return Semantics(
+      button: true,
+      label: 'consent.privacy_policy'.tr(),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: TextButton(
+          onPressed: () {
+            // Phase 2: open privacy policy in-app or external URL.
+          },
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(0, 44),
+            tapTargetSize: MaterialTapTargetSize.padded,
+          ),
+          child: Text(
+            'consent.privacy_policy'.tr(),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: DeelmarktColors.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: DeelmarktColors.primary,
+            ),
+          ),
         ),
       ),
     );
