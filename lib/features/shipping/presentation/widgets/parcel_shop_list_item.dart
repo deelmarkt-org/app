@@ -27,6 +27,14 @@ class ParcelShopListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor =
+        isSelected
+            ? DeelmarktColors.primary
+            : (isDark
+                ? DeelmarktColors.darkBorder
+                : DeelmarktColors.neutral200);
+
     return Semantics(
       label:
           '${shop.name}, ${shop.distanceKm.toStringAsFixed(1)} '
@@ -41,21 +49,15 @@ class ParcelShopListItem extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.s4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-            border: Border.all(
-              color:
-                  isSelected
-                      ? DeelmarktColors.primary
-                      : DeelmarktColors.neutral200,
-              width: isSelected ? 2 : 1,
-            ),
+            border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
             color: isSelected ? DeelmarktColors.primarySurface : null,
           ),
           child: Row(
             children: [
               _carrierIcon(),
               const SizedBox(width: Spacing.s3),
-              Expanded(child: _details(context)),
-              _distance(context),
+              Expanded(child: _details(context, isDark)),
+              _distance(context, isDark),
             ],
           ),
         ),
@@ -85,7 +87,7 @@ class ParcelShopListItem extends StatelessWidget {
     );
   }
 
-  Widget _details(BuildContext context) {
+  Widget _details(BuildContext context, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,9 +102,12 @@ class ParcelShopListItem extends StatelessWidget {
         const SizedBox(height: Spacing.s1),
         Text(
           shop.fullAddress,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral500),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color:
+                isDark
+                    ? DeelmarktColors.darkOnSurfaceSecondary
+                    : DeelmarktColors.neutral500,
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -132,7 +137,7 @@ class ParcelShopListItem extends StatelessWidget {
     );
   }
 
-  Widget _distance(BuildContext context) {
+  Widget _distance(BuildContext context, bool isDark) {
     return Column(
       children: [
         Text(
@@ -143,9 +148,12 @@ class ParcelShopListItem extends StatelessWidget {
         ),
         Text(
           'shipping.distanceKm'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral500),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color:
+                isDark
+                    ? DeelmarktColors.darkOnSurfaceSecondary
+                    : DeelmarktColors.neutral500,
+          ),
         ),
       ],
     );

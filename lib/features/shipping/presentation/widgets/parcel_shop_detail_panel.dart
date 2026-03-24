@@ -63,18 +63,29 @@ class ParcelShopDetailPanel extends StatelessWidget {
   }
 
   Widget _detailRow(BuildContext context, IconData icon, String text) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: text,
       excludeSemantics: true,
       child: Row(
         children: [
-          Icon(icon, size: 16, color: DeelmarktColors.neutral500),
+          Icon(
+            icon,
+            size: 16,
+            color:
+                isDark
+                    ? DeelmarktColors.darkOnSurfaceSecondary
+                    : DeelmarktColors.neutral500,
+          ),
           const SizedBox(width: Spacing.s2),
           Flexible(
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DeelmarktColors.neutral700,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkOnSurface
+                        : DeelmarktColors.neutral700,
               ),
             ),
           ),
