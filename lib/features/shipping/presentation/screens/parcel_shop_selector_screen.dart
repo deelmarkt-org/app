@@ -121,6 +121,7 @@ class _ParcelShopSelectorScreenState extends State<ParcelShopSelectorScreen> {
   }
 
   Widget _buildEmptyDetail(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -128,14 +129,20 @@ class _ParcelShopSelectorScreenState extends State<ParcelShopSelectorScreen> {
           Icon(
             PhosphorIcons.storefront(),
             size: 48,
-            color: DeelmarktColors.neutral300,
+            color:
+                isDark
+                    ? DeelmarktColors.darkOnSurfaceSecondary
+                    : DeelmarktColors.neutral300,
           ),
           const SizedBox(height: Spacing.s3),
           Text(
             'shipping.selectFromList'.tr(),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: DeelmarktColors.neutral500),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurfaceSecondary
+                      : DeelmarktColors.neutral500,
+            ),
           ),
         ],
       ),
@@ -143,6 +150,7 @@ class _ParcelShopSelectorScreenState extends State<ParcelShopSelectorScreen> {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Center(
       child: ResponsiveBody(
         child: Column(
@@ -151,13 +159,19 @@ class _ParcelShopSelectorScreenState extends State<ParcelShopSelectorScreen> {
             Icon(
               PhosphorIcons.mapPinArea(),
               size: 48,
-              color: DeelmarktColors.neutral300,
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurfaceSecondary
+                      : DeelmarktColors.neutral300,
             ),
             const SizedBox(height: Spacing.s3),
             Text(
               'shipping.noShopsFound'.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DeelmarktColors.neutral500,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkOnSurfaceSecondary
+                        : DeelmarktColors.neutral500,
               ),
               textAlign: TextAlign.center,
             ),

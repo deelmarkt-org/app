@@ -28,12 +28,14 @@ class ParcelShopListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor =
-        isSelected
-            ? DeelmarktColors.primary
-            : (isDark
-                ? DeelmarktColors.darkBorder
-                : DeelmarktColors.neutral200);
+    final Color borderColor;
+    if (isSelected) {
+      borderColor = DeelmarktColors.primary;
+    } else if (isDark) {
+      borderColor = DeelmarktColors.darkBorder;
+    } else {
+      borderColor = DeelmarktColors.neutral200;
+    }
 
     return Semantics(
       label:
@@ -50,7 +52,12 @@ class ParcelShopListItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
             border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
-            color: isSelected ? DeelmarktColors.primarySurface : null,
+            color:
+                isSelected
+                    ? (isDark
+                        ? DeelmarktColors.darkSurfaceElevated
+                        : DeelmarktColors.primarySurface)
+                    : null,
           ),
           child: Row(
             children: [
