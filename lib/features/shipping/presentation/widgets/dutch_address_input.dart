@@ -172,22 +172,27 @@ class DutchAddressInput extends StatelessWidget {
     final helperColor =
         isDark ? DeelmarktColors.darkSuccess : DeelmarktColors.success;
 
-    final filledColor =
-        hasValue
-            ? (isDark
-                ? DeelmarktColors.darkTrustShield
-                : DeelmarktColors.successSurface)
-            : (isDark
-                ? DeelmarktColors.darkSurfaceElevated
-                : DeelmarktColors.neutral100);
-    final textColor =
-        hasValue
-            ? (isDark
-                ? DeelmarktColors.darkOnSurface
-                : DeelmarktColors.neutral900)
-            : (isDark
-                ? DeelmarktColors.darkOnSurfaceSecondary
-                : DeelmarktColors.neutral500);
+    final Color filledColor;
+    if (hasValue && isDark) {
+      filledColor = DeelmarktColors.darkTrustShield;
+    } else if (hasValue) {
+      filledColor = DeelmarktColors.successSurface;
+    } else if (isDark) {
+      filledColor = DeelmarktColors.darkSurfaceElevated;
+    } else {
+      filledColor = DeelmarktColors.neutral100;
+    }
+
+    final Color textColor;
+    if (hasValue && isDark) {
+      textColor = DeelmarktColors.darkOnSurface;
+    } else if (hasValue) {
+      textColor = DeelmarktColors.neutral900;
+    } else if (isDark) {
+      textColor = DeelmarktColors.darkOnSurfaceSecondary;
+    } else {
+      textColor = DeelmarktColors.neutral500;
+    }
 
     return Semantics(
       textField: true,

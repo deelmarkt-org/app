@@ -52,12 +52,7 @@ class ParcelShopListItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
             border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
-            color:
-                isSelected
-                    ? (isDark
-                        ? DeelmarktColors.darkSurfaceElevated
-                        : DeelmarktColors.primarySurface)
-                    : null,
+            color: _selectedBackground(isDark),
           ),
           child: Row(
             children: [
@@ -70,6 +65,13 @@ class ParcelShopListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color? _selectedBackground(bool isDark) {
+    if (!isSelected) return null;
+    return isDark
+        ? DeelmarktColors.darkSurfaceElevated
+        : DeelmarktColors.primarySurface;
   }
 
   Widget _carrierIcon() {
