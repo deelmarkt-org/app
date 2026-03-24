@@ -47,16 +47,23 @@ class DeelButtonStyleResolver {
     );
   }
 
+  // ── Style constants ─────────────────────────────────────────────────
+
+  static const double _kDisabledAlpha = 0.4;
+  static const Color _kPressedBgOverlay = Color(0x1A000000); // 10% black
+  static const double _kPressedFocusedAlpha = 0.08;
+  static const double _kHoveredAlpha = 0.04;
+
   // ── State resolvers (extracted to reduce cognitive complexity) ────────
 
   WidgetStateProperty<Color?> _resolveBackground() {
     final Color bg = backgroundFor(variant);
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.disabled)) {
-        return bg.withValues(alpha: 0.4);
+        return bg.withValues(alpha: _kDisabledAlpha);
       }
       if (states.contains(WidgetState.pressed)) {
-        return Color.alphaBlend(const Color(0x1A000000), bg);
+        return Color.alphaBlend(_kPressedBgOverlay, bg);
       }
       return bg;
     });
@@ -66,7 +73,7 @@ class DeelButtonStyleResolver {
     final Color fg = foregroundFor(variant);
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.disabled)) {
-        return fg.withValues(alpha: 0.4);
+        return fg.withValues(alpha: _kDisabledAlpha);
       }
       return fg;
     });
@@ -76,13 +83,13 @@ class DeelButtonStyleResolver {
     final Color fg = foregroundFor(variant);
     return WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.pressed)) {
-        return fg.withValues(alpha: 0.08);
+        return fg.withValues(alpha: _kPressedFocusedAlpha);
       }
       if (states.contains(WidgetState.hovered)) {
-        return fg.withValues(alpha: 0.04);
+        return fg.withValues(alpha: _kHoveredAlpha);
       }
       if (states.contains(WidgetState.focused)) {
-        return fg.withValues(alpha: 0.08);
+        return fg.withValues(alpha: _kPressedFocusedAlpha);
       }
       return Colors.transparent;
     });
