@@ -268,7 +268,7 @@ jobs:
 
       - name: Build web (release)
         if: steps.web-check.outputs.skip != 'true'
-        run: flutter build web --release --no-pub
+        run: flutter build web --release --no-pub --csp
 
       - name: Web security checks
         if: steps.web-check.outputs.skip != 'true'

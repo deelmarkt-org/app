@@ -15,6 +15,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { getRedisCredentials, checkIdempotency } from "../_shared/redis.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -67,22 +68,6 @@ async function verifySignature(
     mismatch |= computed.charCodeAt(i) ^ signature.charCodeAt(i);
   }
   return mismatch === 0;
-}
-
-// ---------------------------------------------------------------------------
-// Upstash Redis idempotency (B-15)
-// ---------------------------------------------------------------------------
-
-async function checkIdempotency(
-  redisUrl: string,
-  redisToken: string,
-  key: string
-): Promise<boolean> {
-  const response = await fetch(`${redisUrl}/set/${key}/1/EX/86400/NX`, {
-    headers: { Authorization: `Bearer ${redisToken}` },
-  });
-  const data = await response.json();
-  return data.result === "OK";
 }
 
 // ---------------------------------------------------------------------------
@@ -164,17 +149,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
       }
     }
 
-    // 3. Idempotency check via Upstash Redis NX
-    // M1: Fail hard if Redis not configured — DB UNIQUE is safety net, not primary
-    const redisUrl = Deno.env.get("UPSTASH_REDIS_REST_URL");
-    const redisToken = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
-
-    if (!redisUrl || !redisToken) {
-      throw new Error("Upstash Redis not configured — cannot ensure idempotency");
-    }
-
+    // 3. Idempotency check via Upstash Redis NX (R-11: shared redis.ts)
+    const redisCreds = getRedisCredentials();
     const idempotencyKey = `mollie:webhook:${molliePaymentId}`;
-    const isNew = await checkIdempotency(redisUrl, redisToken, idempotencyKey);
+    const isNew = await checkIdempotency(redisCreds, idempotencyKey);
     if (!isNew) {
       console.log(`[mollie-webhook] Duplicate skipped: ${molliePaymentId}`);
       return new Response("Already processed", { status: 200 });
