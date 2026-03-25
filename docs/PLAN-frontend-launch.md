@@ -22,9 +22,11 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 
 **✅ COMPLETED (Sprint 1–2)**
 - `P-01`–`P-10` Design system foundation (fonts, icons, i18n, core widgets)
-- `P-11` GDPR consent banner
-- `P-12` WCAG 2.2 AA audit tooling
-- `P-13` Widget tests ≥70% coverage
+
+**⚠️ OPEN — Previously assumed complete, still unchecked in SPRINT-PLAN.md**
+- `P-11` GDPR consent banner — `[ ]` in sprint plan, added to Phase 1
+- `P-12` WCAG 2.2 AA audit tooling — `[ ]` in sprint plan, added to Phase 1
+- `P-13` Widget tests ≥70% coverage — `[ ]` in sprint plan, added to Phase 1
 
 **CRITICAL Priority (MVP Blockers)**
 - `P-14`–`P-16` Onboarding, Registration, Login (Est: 24h) — *Depends: R-13 (Supabase Auth)*
@@ -44,12 +46,12 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 - `P-38`–`P-40` Ratings, seller profile, Admin panel
 - `P-42`, `P-43` Final accessibility audit, ASO metadata
 
-**NEW TASKS (from Quality Gate research)**
-- `P-NEW-01` Social login (Google + Apple Sign-In) — Est: 8h
-- `P-NEW-02` Flutter Web performance budget & CanvasKit strategy — Est: 4h
-- `P-NEW-03` Dynamic OG meta tags via Cloudflare Workers (SEO) — Est: 6h
-- `P-NEW-04` Dark mode implementation & validation — Est: 12h (spread across phases)
-- `P-NEW-05` Responsive layout shell (4 breakpoints) — Est: 8h
+**PROPOSED NEW TASKS** (from Quality Gate research — require team approval + SPRINT-PLAN.md registration)
+- `P-44` Social login (Google + Apple Sign-In) — Est: 8h — ⚠️ Requires E02 epic update + reso backend OAuth setup. Scope expansion — needs PO approval.
+- `P-45` Flutter Web performance budget & CanvasKit strategy — Est: 4h
+- `P-46` Dynamic OG meta tags + crawler pre-rendering — Est: 6h — ⚠️ **Owner: belengaz** (Cloudflare domain). Coordinate, do NOT implement as pizmam.
+- `P-47` Dark mode implementation & validation — Est: 12h (spread across phases)
+- ~~`P-NEW-05` Responsive layout shell~~ — Already implemented as `ResponsiveBody` in PR #23. Only auth guard addition needed (~2h).
 
 ---
 
@@ -59,7 +61,7 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 - Flutter Web compilation pipeline with CanvasKit
 - CanvasKit strategy: Accept 2MB+ WASM with aggressive Service Worker caching (cache-first for return visits). Document trade-off vs HTML renderer.
 - Path URL strategy (no `#` hashes) via `usePathUrlStrategy()`
-- CSP headers configured for CanvasKit (`wasm-unsafe-eval` for WASM) — coordinate with B-36 (already completed)
+- CSP headers configured for CanvasKit (`wasm-unsafe-eval` for WASM) — ⚠️ `B-36` still `[ ]` in sprint plan. **Blocker**: coordinate with belengaz to complete B-36 before Phase 1 web build testing.
 - PWA manifest + Service Worker for offline shell
 
 **SEO Strategy** (Flutter Web has NO SSR):
@@ -119,7 +121,7 @@ Screen → ViewModel (@riverpod AsyncNotifier)
 // domain/entities/listing_entity.dart — pure Dart, no dependencies
 class ListingEntity {
   final String id, title, description;
-  final double price;
+  final int priceInCents; // cents-based (per PR #24 DeelPriceController, Mollie API compatible)
   final String sellerId, location;
   final List<String> imageUrls;
   final ListingCondition condition;
@@ -134,7 +136,9 @@ This allows widget development (P-19 to P-34) to proceed with mock data while ba
 
 ---
 
-### 4. Deep Design Thinking (per frontend-specialist)
+### 4. Deep Design Thinking (per frontend-specialist agent)
+
+> **Note**: The "Maestro Auditor", "Emotion Mapping", and "FORBIDDEN" rules below are proposals from the frontend-specialist agent. They should be formally added to `docs/design-system/` if the team approves them. Until then, they serve as guidelines for pizmam's implementation.
 
 **Context**: Dutch P2P marketplace. Users feel UNSAFE on Marktplaats (scams, no protection). They want trust, simplicity, and speed. Target audience: 18-45 Dutch adults, tech-comfortable, price-conscious but safety-aware.
 
@@ -185,15 +189,18 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 |:-----|:----|:------|:---------------|
 | Flutter Web build pipeline + CanvasKit caching strategy | 6h | pizmam | Build success, Service Worker caching, WASM load time |
 | `P-NEW-02` Performance budget definition + baseline measurement | 4h | pizmam | First frame time, bundle size, Lighthouse audit |
-| `P-NEW-05` Responsive layout shell (4 breakpoints + adaptive navigation) | 8h | pizmam | compact/medium/expanded/large, bottom nav ↔ side rail |
-| GoRouter setup with path URL strategy + auth guards (stub) | 4h | pizmam | All routes resolve, back/forward work, 404 fallback |
+| Responsive shell validation (ResponsiveBody already in PR #23) | 2h | pizmam | Verify compact/medium/expanded/large, bottom nav ↔ side rail on web |
+| GoRouter auth guards addition (router already in `app_router.dart`) | 2h | pizmam | Auth redirect works, back/forward work, 404 fallback |
+| `P-11` GDPR consent banner | 4h | pizmam | Shown on first launch, preference saved, blocking overlay on web |
+| `P-12` WCAG 2.2 AA audit tooling pipeline in CI | 4h | pizmam | Contrast + touch target checks in test pipeline |
+| `P-13` Widget tests for existing shared components | 8h | pizmam | ≥70% coverage on `lib/widgets/` |
 | Mock data contracts (Dart interfaces + mock implementations) | 6h | pizmam | All entities: Listing, User, Transaction, Message, Category |
 | PWA manifest + web/index.html meta tags | 2h | pizmam | Installable PWA, correct OG defaults |
 | Dark mode ThemeData wiring (`P-NEW-04` part 1) | 4h | pizmam | Light/dark switch, all token colors map correctly |
 
-**Phase total: ~34h**
+**Phase total: ~46h (includes P-11, P-12, P-13 carried over)**
 
-**Dependencies**: `B-01` (Cloudflare DNS ✅), `B-36` (CSP ✅)
+**Dependencies**: `B-01` (Cloudflare DNS ✅), `B-36` (CSP — ⚠️ still open, coordinate with belengaz)
 **Risk Mitigation**: CanvasKit WASM + CSP conflict — test immediately. If `wasm-unsafe-eval` is blocked, coordinate with belengaz to update CSP.
 **Quality Gate**: `flutter analyze` clean, responsive shell renders at all 4 breakpoints, performance baseline documented.
 
@@ -213,9 +220,9 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | Task | Est | Depends | States | Responsive | Accessibility |
 |:-----|:----|:--------|:-------|:-----------|:-------------|
 | `P-14` Onboarding (language + value prop) | 6h | None | Loading, 3 pages, complete | All 4 breakpoints | Focus order, reduced motion |
-| `P-15` Registration (email + phone + social) | 8h | R-13 | Form validation, OTP input, success, error | All 4 | Form labels, error announce, auto-fill |
-| `P-16` Login (email + biometric + social) | 6h | R-13 | Loading, error, biometric prompt, success | All 4 | Focus, error announce |
-| `P-NEW-01` Social login (Google + Apple) | 8h | R-13 | OAuth redirect, success, failure, account link | All 4 | Button labels |
+| `P-15` Registration (email + phone) | 8h | R-13 | Form validation, OTP input, success, error | All 4 | Form labels, error announce, auto-fill |
+| `P-16` Login (email + biometric) | 6h | R-13 | Loading, error, biometric prompt, success | All 4 | Focus, error announce |
+| `P-44` Social login (Google + Apple) — if approved | 8h | R-13 + PO approval | OAuth redirect, success, failure, account link | All 4 | Button labels |
 
 **Track B — Trust Widgets** (mock data, NO backend dependency):
 | Task | Est | Component Brief | States | Responsive |
@@ -286,7 +293,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | `P-24` Listing creation (photo-first) | 12h | `CreateListingViewModel` | `UploadImages`, `CreateListing`, `GetQualityScore` | R-22, R-26, R-27 |
 | `P-25` Listing detail | 10h | `ListingDetailViewModel` | `GetListing`, `ToggleFavourite`, `GetSellerProfile` | R-22, R-24 |
 | `P-28` Favourites screen | 4h | `FavouritesViewModel` | `GetFavourites`, `RemoveFavourite` | R-24 |
-| `P-NEW-03` Dynamic OG meta tags (Cloudflare Workers) | 6h | — | — | B-01 |
+| `P-46` Dynamic OG meta tags + crawler pre-rendering | 6h | — | — | B-01 — ⚠️ **Owner: belengaz** |
 | Micro-animations integration (Hero, favourite burst, shimmer) | 6h | — | — | Lottie assets |
 
 **Phase total: ~68h (2 weeks)**
@@ -332,33 +339,35 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 
 | Phase | Duration | Hours | Key Deliverable |
 |:------|:---------|:------|:---------------|
-| Phase 1 | Week 1 | ~34h | Web compiles, responsive shell, mock data layer |
-| Phase 2 | Week 2–3 | ~72h | Auth flows + all trust widgets |
-| Phase 3 | Week 4 | ~30h | Profile, settings, KYC screens |
-| Phase 4 | Week 5–6 | ~68h | Home, search, listings, creation |
-| Phase 5 | Week 8 | ~42h | Polish, dark mode, accessibility, perf |
-| Contingency | Week 7 | — | Buffer between Phase 4 and 5 for overflow |
-| **TOTAL** | **8 weeks** | **~246h** | **Production-ready web frontend** |
+| Phase 1 | Week 1–2 | ~46h | Web compiles, responsive shell, mock data, P-11/P-12/P-13 |
+| Phase 2 | Week 3–5 | ~72h | Auth flows + all trust widgets |
+| Phase 3 | Week 6 | ~30h | Profile, settings, KYC screens |
+| Phase 4 | Week 7–8 | ~62h | Home, search, listings, creation |
+| Contingency | Week 9 | — | Buffer for overflow / rework |
+| Phase 5 | Week 10 | ~42h | Polish, dark mode, accessibility, perf |
+| **TOTAL** | **10 weeks** | **~252h** | **Production-ready web frontend** |
 
-*Estimates include 30% testing overhead per task (embedded, not separate). Week 7 is contingency buffer for single-developer velocity risk.*
+*Estimates assume ~25h/week effective development time (accounts for code review, coordination, context switching, standups). Week 9 is contingency buffer.*
 
 ---
 
 ### 7. Dependency Timeline
 
 ```
-Week 1: pizmam (Phase 1) — NO backend dependency
-Week 2: pizmam (Phase 2A auth) ← NEEDS R-13 from reso
-        pizmam (Phase 2B widgets) — mock data, parallel
-Week 3: pizmam (Phase 2 cont.) — reso builds R-17, R-19
-Week 4: pizmam (Phase 3) ← NEEDS R-13, R-17, R-19
-        reso starts R-22 to R-27 (listings backend)
-Week 5: pizmam (Phase 4) ← NEEDS R-22 to R-27
-Week 6: pizmam (Phase 4 cont.) — integration testing
-Week 7: pizmam (Phase 5) — polish, no new backend deps
+Week 1-2:  pizmam (Phase 1) — NO backend dependency. B-36 (CSP) needed from belengaz.
+Week 3:    pizmam (Phase 2B widgets) — mock data, NO backend dependency
+Week 4:    pizmam (Phase 2A auth) ← NEEDS R-13 from reso (Sprint 3-4)
+Week 5:    pizmam (Phase 2 cont.) — reso builds R-17, R-19
+Week 6:    pizmam (Phase 3) ← NEEDS R-13, R-17, R-19
+           reso starts R-22 to R-27 (Sprint 5-8)
+Week 7-8:  pizmam (Phase 4) ← NEEDS R-22 to R-27
+Week 9:    Contingency / rework
+Week 10:   pizmam (Phase 5) — polish, no new backend deps
 ```
 
-**Critical Path**: `R-13` (Supabase Auth) must be ready by Week 2. `R-22`–`R-27` (Listings) must be ready by Week 5.
+**Critical Path**: `B-36` (CSP) must be ready by Week 1. `R-13` (Supabase Auth) must be ready by Week 4. `R-22`–`R-27` (Listings) must be ready by Week 7.
+
+> **Note**: This timeline is aligned with SPRINT-PLAN.md sequencing: R-13 is in Sprint 3-4 (Weeks 5-8), R-22-R-27 in Sprint 5-8 (Weeks 9-16). Phase 2A auth screens are sequenced AFTER R-13 is expected from reso's sprint. If reso delivers R-13 earlier, Phase 2A can start sooner.
 
 ---
 
