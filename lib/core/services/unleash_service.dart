@@ -49,13 +49,33 @@ UnleashClient? unleashClient(UnleashClientRef ref) {
   return _unleashClient;
 }
 
+/// Triggers re-evaluation when the Unleash SDK fetches updated toggles.
+@Riverpod(keepAlive: true)
+Object? unleashUpdates(UnleashUpdatesRef ref) {
+  final client = ref.watch(unleashClientProvider);
+
+  void listener(dynamic _) {
+    ref.invalidateSelf();
+  }
+
+  client?.on('update', listener);
+  client?.on('ready', listener);
+
+  ref.onDispose(() {
+    client?.off(type: 'update', callback: listener);
+    client?.off(type: 'ready', callback: listener);
+  });
+
+  return Object();
+}
+
 /// Check whether a feature flag is enabled.
 ///
 /// Returns `false` if Unleash is unavailable or the flag does not exist.
-/// Not cached (`keepAlive: false`) so it reads the latest SDK state on each
-/// widget rebuild — the SDK polls toggles in the background.
+/// Reactive: re-evaluates when the SDK receives updated toggles.
 @riverpod
 bool isFeatureEnabled(IsFeatureEnabledRef ref, String flagName) {
-  final client = ref.watch(unleashClientProvider);
+  ref.watch(unleashUpdatesProvider);
+  final client = ref.read(unleashClientProvider);
   return client?.isEnabled(flagName) ?? false;
 }
