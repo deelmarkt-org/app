@@ -51,15 +51,17 @@ The agent will:
 
 **Branch:** `feature/reso-E07-supabase-firebase` | **Epic:** [E07](epics/E07-infrastructure.md)
 
-- [ ] `R-01` Create Supabase project (Pro plan) — project live, dashboard accessible
+- [x] `R-01` Create Supabase project (Pro plan) — project live, dashboard accessible
 - [x] `R-02` Configure Supabase Auth (email + phone OTP) — registration works in dashboard
-- [ ] `R-03` Enable RLS on all default tables — verified via SQL
-- [ ] `R-04` Set up Supabase Vault — one secret stored and retrievable
+- [x] `R-03` Enable RLS on all default tables — verified via SQL
+  <!-- RLS applied to storage bucket (only existing table). User/listing tables will get RLS in their own tasks (R-17, R-22). -->
+- [x] `R-04` Set up Supabase Vault — one secret stored and retrievable
 - [x] `R-05` Set up Supabase Storage — `listings-images` bucket with RLS
-- [ ] `R-06` Enable Supabase Realtime — enabled on messages table (placeholder)
+- [x] `R-06` Enable Supabase Realtime — enabled on messages table (placeholder)
+  <!-- Realtime is enabled at project level. Messages table deferred to E04 (R-31) per PR #22 review. -->
 - [x] `R-07` Deploy first Edge Function (health check) — `/functions/v1/health` returns 200
-- [ ] `R-08` Set up Firebase project — FCM, Crashlytics, Analytics, Remote Config configured
-- [ ] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
+- [x] `R-08` Set up Firebase project — FCM, Crashlytics, Analytics, Remote Config configured
+- [x] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
 - [ ] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
 - [ ] `R-11` Set up Upstash Redis — connection working from Edge Function
 - [ ] `R-12` Set up Sentry — error tracking receiving test events

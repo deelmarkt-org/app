@@ -10,6 +10,14 @@ inputs:
     description: Supabase anon public key (use placeholder for non-build jobs)
     required: false
     default: ci-placeholder-key
+  unleash-url:
+    description: Unleash Frontend API URL (use placeholder for non-build jobs)
+    required: false
+    default: https://ci-placeholder/api/frontend
+  unleash-client-key:
+    description: Unleash frontend client key (use placeholder for non-build jobs)
+    required: false
+    default: ci-placeholder-key
 
 runs:
   using: composite
@@ -29,6 +37,8 @@ runs:
         cat > .env << EOF
         SUPABASE_PROJECT_ID=${{ inputs.supabase-project-id }}
         SUPABASE_ANON_PUBLIC=${{ inputs.supabase-anon-public }}
+        UNLEASH_URL=${{ inputs.unleash-url }}
+        UNLEASH_CLIENT_KEY=${{ inputs.unleash-client-key }}
         EOF
 
     - name: Run code generation (envied + riverpod)
