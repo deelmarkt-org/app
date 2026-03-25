@@ -20,13 +20,11 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 
 ### 1. Task Inventory & Status Assessment
 
-**✅ COMPLETED (Sprint 1–2)**
+**✅ COMPLETED (Sprint 1–2)** — verified against `origin/dev` SPRINT-PLAN.md
 - `P-01`–`P-10` Design system foundation (fonts, icons, i18n, core widgets)
-
-**⚠️ OPEN — Previously assumed complete, still unchecked in SPRINT-PLAN.md**
-- `P-11` GDPR consent banner — `[ ]` in sprint plan, added to Phase 1
-- `P-12` WCAG 2.2 AA audit tooling — `[ ]` in sprint plan, added to Phase 1
-- `P-13` Widget tests ≥70% coverage — `[ ]` in sprint plan, added to Phase 1
+- `P-11` GDPR consent banner — `[x]` in sprint plan
+- `P-12` WCAG 2.2 AA audit tooling — `[x]` in sprint plan
+- `P-13` Widget tests ≥70% coverage — `[x]` in sprint plan
 
 **CRITICAL Priority (MVP Blockers)**
 - `P-14`–`P-16` Onboarding, Registration, Login (Est: 24h) — *Depends: R-13 (Supabase Auth)*
@@ -61,7 +59,7 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 - Flutter Web compilation pipeline with CanvasKit
 - CanvasKit strategy: Accept 2MB+ WASM with aggressive Service Worker caching (cache-first for return visits). Document trade-off vs HTML renderer.
 - Path URL strategy (no `#` hashes) via `usePathUrlStrategy()`
-- CSP headers configured for CanvasKit (`wasm-unsafe-eval` for WASM) — ⚠️ `B-36` still `[ ]` in sprint plan. **Blocker**: coordinate with belengaz to complete B-36 before Phase 1 web build testing.
+- CSP headers configured for CanvasKit (`wasm-unsafe-eval` for WASM) — `B-36` `[x]` completed. May need update for CanvasKit WASM-specific directives.
 - PWA manifest + Service Worker for offline shell
 
 **SEO Strategy** (Flutter Web has NO SSR):
@@ -191,16 +189,13 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | `P-NEW-02` Performance budget definition + baseline measurement | 4h | pizmam | First frame time, bundle size, Lighthouse audit |
 | Responsive shell validation (ResponsiveBody already in PR #23) | 2h | pizmam | Verify compact/medium/expanded/large, bottom nav ↔ side rail on web |
 | GoRouter auth guards addition (router already in `app_router.dart`) | 2h | pizmam | Auth redirect works, back/forward work, 404 fallback |
-| `P-11` GDPR consent banner | 4h | pizmam | Shown on first launch, preference saved, blocking overlay on web |
-| `P-12` WCAG 2.2 AA audit tooling pipeline in CI | 4h | pizmam | Contrast + touch target checks in test pipeline |
-| `P-13` Widget tests for existing shared components | 8h | pizmam | ≥70% coverage on `lib/widgets/` |
 | Mock data contracts (Dart interfaces + mock implementations) | 6h | pizmam | All entities: Listing, User, Transaction, Message, Category |
 | PWA manifest + web/index.html meta tags | 2h | pizmam | Installable PWA, correct OG defaults |
 | Dark mode ThemeData wiring (`P-NEW-04` part 1) | 4h | pizmam | Light/dark switch, all token colors map correctly |
 
-**Phase total: ~46h (includes P-11, P-12, P-13 carried over)**
+**Phase total: ~30h**
 
-**Dependencies**: `B-01` (Cloudflare DNS ✅), `B-36` (CSP — ⚠️ still open, coordinate with belengaz)
+**Dependencies**: `B-01` (Cloudflare DNS ✅), `B-36` (CSP ✅ — may need CanvasKit WASM update)
 **Risk Mitigation**: CanvasKit WASM + CSP conflict — test immediately. If `wasm-unsafe-eval` is blocked, coordinate with belengaz to update CSP.
 **Quality Gate**: `flutter analyze` clean, responsive shell renders at all 4 breakpoints, performance baseline documented.
 
@@ -339,13 +334,13 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 
 | Phase | Duration | Hours | Key Deliverable |
 |:------|:---------|:------|:---------------|
-| Phase 1 | Week 1–2 | ~46h | Web compiles, responsive shell, mock data, P-11/P-12/P-13 |
+| Phase 1 | Week 1–2 | ~30h | Web compiles, responsive shell, mock data layer |
 | Phase 2 | Week 3–5 | ~72h | Auth flows + all trust widgets |
 | Phase 3 | Week 6 | ~30h | Profile, settings, KYC screens |
 | Phase 4 | Week 7–8 | ~62h | Home, search, listings, creation |
 | Contingency | Week 9 | — | Buffer for overflow / rework |
 | Phase 5 | Week 10 | ~42h | Polish, dark mode, accessibility, perf |
-| **TOTAL** | **10 weeks** | **~252h** | **Production-ready web frontend** |
+| **TOTAL** | **10 weeks** | **~236h** | **Production-ready web frontend** |
 
 *Estimates assume ~25h/week effective development time (accounts for code review, coordination, context switching, standups). Week 9 is contingency buffer.*
 
@@ -354,7 +349,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 ### 7. Dependency Timeline
 
 ```
-Week 1-2:  pizmam (Phase 1) — NO backend dependency. B-36 (CSP) needed from belengaz.
+Week 1-2:  pizmam (Phase 1) — NO backend dependency
 Week 3:    pizmam (Phase 2B widgets) — mock data, NO backend dependency
 Week 4:    pizmam (Phase 2A auth) ← NEEDS R-13 from reso (Sprint 3-4)
 Week 5:    pizmam (Phase 2 cont.) — reso builds R-17, R-19
@@ -365,9 +360,9 @@ Week 9:    Contingency / rework
 Week 10:   pizmam (Phase 5) — polish, no new backend deps
 ```
 
-**Critical Path**: `B-36` (CSP) must be ready by Week 1. `R-13` (Supabase Auth) must be ready by Week 4. `R-22`–`R-27` (Listings) must be ready by Week 7.
+**Critical Path**: `R-13` (Supabase Auth) must be ready by Week 4. `R-22`–`R-27` (Listings) must be ready by Week 7.
 
-> **Note**: This timeline is aligned with SPRINT-PLAN.md sequencing: R-13 is in Sprint 3-4 (Weeks 5-8), R-22-R-27 in Sprint 5-8 (Weeks 9-16). Phase 2A auth screens are sequenced AFTER R-13 is expected from reso's sprint. If reso delivers R-13 earlier, Phase 2A can start sooner.
+> **Note**: R-13 is in Sprint 3-4 (Weeks 5-8), R-22-R-27 in Sprint 5-8 (Weeks 9-16). Phase 2A auth screens are sequenced AFTER R-13 is expected. If reso delivers earlier, Phase 2A can start sooner. Note: R-02 (Supabase Auth email + phone OTP) is already `[x]` — verify if R-13 is a separate task or if R-02 covers the requirement.
 
 ---
 
