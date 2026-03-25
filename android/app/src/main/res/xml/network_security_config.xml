@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   B-37: Network security config with certificate pinning.
-  Pins Supabase and Mollie TLS certificates to prevent MITM attacks.
+  Pins Supabase, Mollie, and Cloudinary TLS certificates to prevent MITM attacks.
 
+  All three services currently use Google Trust Services as their CA.
+  Pins are set on the intermediate CA (most stable) + root CA (backup).
   Pin expiry: 2027-06-01 — rotate before this date.
+
+  Verified 2026-03-25 via: openssl s_client -showcerts -connect <domain>:443
   See: docs/ARCHITECTURE.md §Security, CLAUDE.md §9
+
+  Note: usesCleartextTraffic in AndroidManifest.xml is redundant when
+  networkSecurityConfig is present — Android uses this config instead.
+  Both are kept for defense-in-depth.
+
+  TODO: Add PostNL/DHL domain pins when B-25/B-26 ship.
+  TODO: iOS cert pinning requires TrustKit or custom URLSession delegate (future task).
 -->
 <network-security-config>
     <!-- Block cleartext (HTTP) traffic globally -->
@@ -14,25 +25,36 @@
         </trust-anchors>
     </base-config>
 
-    <!-- Supabase API + Realtime -->
+    <!-- Supabase API + Realtime (*.supabase.co) -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">supabase.co</domain>
         <pin-set expiration="2027-06-01">
-            <!-- Amazon Root CA 1 (Supabase uses AWS) -->
-            <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
-            <!-- Backup: Amazon Root CA 2 -->
-            <pin digest="SHA-256">f0KW/FtqTjs108NpYj42SrGvOB2PpxIVM8nWxjPqJGE=</pin>
+            <!-- GTS Root R4 (root CA — Supabase chain) -->
+            <pin digest="SHA-256">mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=</pin>
+            <!-- WE1 intermediate (Google Trust Services — Supabase issuer) -->
+            <pin digest="SHA-256">kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=</pin>
         </pin-set>
     </domain-config>
 
-    <!-- Mollie Payments API -->
+    <!-- Mollie Payments API (*.mollie.com) -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">mollie.com</domain>
         <pin-set expiration="2027-06-01">
-            <!-- DigiCert Global Root G2 (Mollie uses DigiCert) -->
-            <pin digest="SHA-256">i7WTqTvh0OioIruIfFR4kMPnBqrS2rdiVPl/s2uC/CY=</pin>
-            <!-- Backup: DigiCert Global Root CA -->
-            <pin digest="SHA-256">r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=</pin>
+            <!-- GTS Root R1 (root CA — Mollie chain) -->
+            <pin digest="SHA-256">hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</pin>
+            <!-- WR3 intermediate (Google Trust Services — Mollie issuer) -->
+            <pin digest="SHA-256">OdSlmQD9NWJh4EbcOHBxkhygPwNSwA9Q91eounfbcoE=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Cloudinary CDN (res.cloudinary.com — user images) -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">cloudinary.com</domain>
+        <pin-set expiration="2027-06-01">
+            <!-- GTS Root R1 (root CA — shared with Mollie) -->
+            <pin digest="SHA-256">hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</pin>
+            <!-- GTS Root R4 (backup root CA) -->
+            <pin digest="SHA-256">mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=</pin>
         </pin-set>
     </domain-config>
 </network-security-config>

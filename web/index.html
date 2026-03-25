@@ -21,13 +21,13 @@
   <meta name="description" content="DeelMarkt — De eerlijke marktplaats van Nederland">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Security headers -->
-  <!-- B-36: CSP whitelist — default-src 'self', specific domains for Supabase, Mollie, Cloudinary -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com https://*.upstash.io https://events.pagerduty.com; font-src 'self'; frame-src https://*.mollie.com; object-src 'none'; base-uri 'self';">
-  <meta http-equiv="X-Frame-Options" content="DENY">
+  <!-- Security headers (B-36)
+       'unsafe-inline' + 'unsafe-eval' in script-src required by Flutter web (Dart-to-JS compiler).
+       Permissions-Policy and X-Frame-Options as meta tags are ignored by browsers;
+       set as HTTP headers via Cloudflare Workers/Page Rules for enforcement. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; media-src 'self' https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com https://*.upstash.io https://events.pagerduty.com; font-src 'self'; frame-src https://*.mollie.com; frame-ancestors 'none'; worker-src 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
