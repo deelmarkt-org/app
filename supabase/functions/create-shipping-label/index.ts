@@ -138,6 +138,7 @@ async function createViaPostNL(
   input: CreateLabelInput,
   apiKey: string,
 ): Promise<LabelResult> {
+  // TODO: Replace with real PostNL contract values from Vault after contract approval
   const payload = {
     Customer: {
       CustomerCode: "DEVC",
