@@ -10,6 +10,12 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { jsonResponse as baseJsonResponse } from "../_shared/response.ts";
+
+// Postcode responses get 24h cache — postcodes don't change often
+function jsonResponse(body: Record<string, unknown>, status = 200): Response {
+  return baseJsonResponse(body, status, { "Cache-Control": "public, max-age=86400" });
+}
 
 // --- Zod Schema ---
 
@@ -18,18 +24,6 @@ const QuerySchema = z.object({
   houseNumber: z.string().min(1, "House number is required"),
   addition: z.string().optional(),
 });
-
-// --- Helpers ---
-
-function jsonResponse(body: Record<string, unknown>, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "public, max-age=86400", // 24h — postcodes don't change often
-    },
-  });
-}
 
 // --- Main Handler ---
 
@@ -40,7 +34,7 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL(req.url);
   const params = {
-    postcode: url.searchParams.get("postcode") ?? "",
+    postcode: (url.searchParams.get("postcode") ?? "").toUpperCase(),
     houseNumber: url.searchParams.get("houseNumber") ?? "",
     addition: url.searchParams.get("addition") ?? undefined,
   };

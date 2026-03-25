@@ -14,6 +14,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { jsonResponse } from "../_shared/response.ts";
 
 // --- Types ---
 
@@ -49,13 +50,6 @@ const CreateLabelSchema = z.object({
 type CreateLabelInput = z.infer<typeof CreateLabelSchema>;
 
 // --- Helpers ---
-
-function jsonResponse(body: Record<string, unknown>, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
 
 function buildTrackingUrl(carrier: string, trackingNumber: string): string {
   if (carrier === "postnl") {
