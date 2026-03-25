@@ -103,6 +103,15 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+  // H2: Rate limiting is handled by Cloudflare edge layer (WAF rules B-02).
+  // Edge Functions don't implement app-level rate limiting — Cloudflare
+  // drops abusive IPs before requests reach Supabase.
+
+  // Hoisted for Redis key rollback in catch block (C1)
+  const redisUrl = Deno.env.get("UPSTASH_REDIS_REST_URL");
+  const redisToken = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
+  let idempotencyKey = "";
+
   try {
     // 1. Read and validate body
     const rawBody = await req.text();
@@ -129,13 +138,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     // 3. C1: Redis NX idempotency check (§9 mandatory)
-    const redisUrl = Deno.env.get("UPSTASH_REDIS_REST_URL");
-    const redisToken = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
     if (!redisUrl || !redisToken) {
       throw new Error("Upstash Redis not configured — cannot ensure idempotency");
     }
 
-    const idempotencyKey = `tracking:webhook:${payload.event_id}`;
+    idempotencyKey = `tracking:webhook:${payload.event_id}`;
     const isNew = await checkIdempotency(redisUrl, redisToken, idempotencyKey);
     if (!isNew) {
       console.log(`[tracking-webhook] Duplicate skipped (Redis): ${payload.event_id}`);
@@ -192,6 +199,14 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonResponse({
         error: `Validation: ${error.errors.map((e) => e.message).join(", ")}`,
       }, 400);
+    }
+
+    // C1: Rollback Redis idempotency key on failure so carrier retry succeeds.
+    // Without this, a failed event is "consumed" for 24h and never processed.
+    if (redisUrl && redisToken && idempotencyKey) {
+      await fetch(`${redisUrl}/del/${idempotencyKey}`, {
+        headers: { Authorization: `Bearer ${redisToken}` },
+      }).catch(() => {});
     }
 
     console.error(`[tracking-webhook] Error: ${(error as Error).message}`);

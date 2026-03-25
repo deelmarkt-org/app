@@ -42,6 +42,8 @@ CREATE TABLE tracking_events (
 
 CREATE INDEX idx_tracking_txn ON tracking_events (transaction_id);
 CREATE INDEX idx_tracking_status ON tracking_events (status);
+-- M4: Index for tracking timeline queries by shipping label
+CREATE INDEX idx_tracking_label ON tracking_events (shipping_label_id);
 
 -- =============================================================================
 -- 3. RLS policies
@@ -64,6 +66,9 @@ CREATE POLICY shipping_labels_service_insert ON shipping_labels
 
 CREATE POLICY shipping_labels_service_update ON shipping_labels
   FOR UPDATE USING (auth.jwt() ->> 'role' = 'service_role');
+
+-- M3: Shipping labels are part of escrow audit trail — no deletes
+CREATE POLICY shipping_labels_no_delete ON shipping_labels FOR DELETE USING (false);
 
 -- Tracking events
 ALTER TABLE tracking_events ENABLE ROW LEVEL SECURITY;
