@@ -95,9 +95,9 @@ The agent will:
 - [x] `P-08` Implement `EmptyState` widget — illustration + message + action
 - [x] `P-09` Implement `ErrorState` widget — error message + retry button
 - [x] `P-10` Implement `LanguageSwitch` (NL/EN toggle) — segmented control, instant
-- [ ] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
-- [ ] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
-- [ ] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
+- [x] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
+- [x] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
+- [x] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
 
 ---
 
@@ -215,14 +215,14 @@ The agent will:
 
 - [x] `B-29` QR code display screen (seller) — QR generated and displayed
 - [x] `B-30` Tracking timeline screen (buyer + seller) — vertical stepper, live updates
-- [ ] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
-- [ ] `B-32` Dutch address input widget integration — 3-field auto-fill works
+- [x] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
+- [x] `B-32` Dutch address input widget integration — 3-field auto-fill works
 - [ ] `B-33` Delivery → escrow release integration — end-to-end flow works
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
 - [ ] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
 - [ ] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
-- [ ] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
+- [x] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
 
 ### pizmam `[P]` — Chat UI + Moderation + Polish
 
