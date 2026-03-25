@@ -171,10 +171,10 @@ The agent will:
 - [x] `B-22` Escrow release on delivery confirmation — tracking event triggers release
 - [x] `B-23` 48-hour buyer confirmation window — auto-release after timeout
 - [x] `B-24` Transaction status state machine — all states work
-- [ ] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
-- [ ] `B-26` DHL QR Service integration — DHL alternative works
+- [x] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
+- [x] `B-26` DHL QR Service integration — DHL alternative works
 - [ ] `B-27` PostNL tracking webhook — real-time tracking events received
-- [ ] `B-28` PostNL postcode API (address auto-fill) — postcode → street + city
+- [x] `B-28` PostNL postcode API (address auto-fill) — postcode → street + city
 
 ### pizmam `[P]` — Listing Screens + Widgets
 

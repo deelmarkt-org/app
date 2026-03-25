@@ -444,3 +444,27 @@ entrypoint = "./functions/release-escrow/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/release-escrow/*.html" ]
+
+# B-25/B-26: Label creation — service_role auth verified in handler
+[functions.create-shipping-label]
+enabled = true
+verify_jwt = false
+import_map = "./functions/create-shipping-label/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/create-shipping-label/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/create-shipping-label/*.html" ]
+
+# B-28: Postcode lookup — public endpoint for address auto-fill (anon key)
+[functions.postcode-lookup]
+enabled = true
+verify_jwt = true
+import_map = "./functions/postcode-lookup/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/postcode-lookup/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/postcode-lookup/*.html" ]
