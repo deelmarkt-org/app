@@ -64,8 +64,10 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 
 **SEO Strategy** (Flutter Web has NO SSR):
 - Pre-rendered HTML shell in `web/index.html` with structured data
-- Cloudflare Workers for dynamic OG meta tags per listing (`/listing/:id` → title, image, price)
+- Cloudflare Workers for **crawler-aware pre-rendering**: detect crawler user-agents (Googlebot, Bingbot, etc.) and inject listing-specific content (title, description, price, images) directly into HTML before serving. This ensures crawlers receive unique, fully-formed HTML per listing URL — critical for marketplace SEO.
+- Same Workers serve dynamic OG meta tags for social sharing (`/listing/:id` → title, image, price)
 - Sitemap generation via Edge Function for crawlable listing URLs
+- Non-crawler requests receive the standard Flutter SPA shell
 
 **Design System Foundation** (Already implemented ✅):
 - Plus Jakarta Sans, Phosphor Icons, NL/EN localization
@@ -82,7 +84,7 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 **Auth Flow**:
 - Social login: Google + Apple Sign-In (NEW — every competitor offers this)
 - Email + phone OTP via Supabase Auth
-- Session persistence: `flutter_secure_storage` (mobile), secure cookies (web)
+- Session persistence: `flutter_secure_storage` (mobile), `HttpOnly` secure cookies via backend (web) — NOT `localStorage`, which is vulnerable to XSS. Requires custom web session handler that sets `HttpOnly; Secure; SameSite=Strict` cookies via Supabase Edge Function.
 - Biometric auth (mobile only): Face ID / Fingerprint
 
 **Performance Budget** (Flutter Web specific):
@@ -230,7 +232,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 
 **Phase total: ~72h (2 weeks)**
 
-**Risk Mitigation**: Primary orange `#F15A24` on white = 3.4:1 contrast — FAILS WCAG for normal text. Strategy: white text ON orange for CTAs, secondary blue for small text links. Validate every component.
+**Risk Mitigation**: Primary orange `#F15A24` on white = 3.4:1 contrast — FAILS WCAG for normal text. White-on-orange also fails at 3.4:1 for normal text. **Strict enforcement**: orange+white combination ONLY permitted for large text (≥ 18.66px bold / ≥ 24px regular). For normal-sized button labels (14-16px), use **dark text (`neutral-900`) on orange background** (16.8:1) or **white text on `secondary` blue** (8.1:1). All components must be validated against this rule during implementation.
 **Maestro Auditor**: Review every widget against "glass trap", "glow trap", "bento trap". Each widget must pass the "could this be a generic template?" test.
 **Quality Gate**: `flutter analyze` clean, ≥70% test coverage on new widgets, accessibility audit per widget (Semantics, contrast, touch targets).
 
@@ -322,7 +324,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 
 **Phase total: ~42h**
 
-**Quality Gate**: `flutter analyze` zero warnings. `flutter test` all passing. Coverage ≥70%. Lighthouse performance ≥ 60 (Flutter Web benchmark). WCAG 2.2 AA validated. Dark mode validated. All 4 breakpoints validated.
+**Quality Gate**: `flutter analyze` zero warnings. `flutter test` all passing. Coverage ≥70%. Lighthouse performance ≥ 80 (target for web-first product; ≥ 60 absolute minimum for CanvasKit baseline — if below 80, create performance improvement roadmap item for post-launch). WCAG 2.2 AA validated. Dark mode validated. All 4 breakpoints validated.
 
 ---
 
@@ -334,10 +336,11 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | Phase 2 | Week 2–3 | ~72h | Auth flows + all trust widgets |
 | Phase 3 | Week 4 | ~30h | Profile, settings, KYC screens |
 | Phase 4 | Week 5–6 | ~68h | Home, search, listings, creation |
-| Phase 5 | Week 7 | ~42h | Polish, dark mode, accessibility, perf |
-| **TOTAL** | **7 weeks** | **~246h** | **Production-ready web frontend** |
+| Phase 5 | Week 8 | ~42h | Polish, dark mode, accessibility, perf |
+| Contingency | Week 7 | — | Buffer between Phase 4 and 5 for overflow |
+| **TOTAL** | **8 weeks** | **~246h** | **Production-ready web frontend** |
 
-*Estimates include 30% testing overhead per task (embedded, not separate).*
+*Estimates include 30% testing overhead per task (embedded, not separate). Week 7 is contingency buffer for single-developer velocity risk.*
 
 ---
 
@@ -367,7 +370,7 @@ Week 7: pizmam (Phase 5) — polish, no new backend deps
 | R-13 (Auth) not ready by Week 2 | HIGH | Phase 2 Track A uses mock auth; real integration deferred to Phase 3 |
 | Primary orange contrast failure | MEDIUM | White-on-orange for CTAs; secondary blue for small text. Documented in Phase 2 |
 | Flutter Web image gallery jank | MEDIUM | Cloudinary resize + lazy load + virtualization. Test with 12 images in Phase 4 |
-| Single-developer velocity risk | HIGH | Mock data layer enables parallel widget development. Phase 2 is most parallelizable |
+| Single-developer velocity risk | HIGH | Mock data layer enables parallel widget development. Phase 2 is most parallelizable. **Bus factor mitigation**: `reso` designated as frontend backup — schedule 1h knowledge-sharing per phase. **MVP scope cut order**: if delayed, cut P-28 (Favourites) → P-27 (Category browse) → P-41 (Seller mode) → P-23 (KYC prompt) in that order. **Contingency buffer**: 1 week buffer between Phase 4 and 5 for overflow |
 | GoRouter deep link edge cases | MEDIUM | Test email OTP callback URLs on 3+ browsers in Phase 1 |
 
 ---
