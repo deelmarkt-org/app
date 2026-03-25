@@ -17,6 +17,11 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import {
+  getRedisCredentials,
+  checkIdempotency,
+  rollbackIdempotency,
+} from "../_shared/redis.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -69,22 +74,6 @@ async function verifyCarrierSignature(
 }
 
 // ---------------------------------------------------------------------------
-// Upstash Redis idempotency (C1: §9 mandatory)
-// ---------------------------------------------------------------------------
-
-async function checkIdempotency(
-  redisUrl: string,
-  redisToken: string,
-  key: string
-): Promise<boolean> {
-  const response = await fetch(`${redisUrl}/set/${key}/1/EX/86400/NX`, {
-    headers: { Authorization: `Bearer ${redisToken}` },
-  });
-  const data = await response.json();
-  return data.result === "OK";
-}
-
-// ---------------------------------------------------------------------------
 // Main handler
 // ---------------------------------------------------------------------------
 
@@ -108,8 +97,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
   // drops abusive IPs before requests reach Supabase.
 
   // Hoisted for Redis key rollback in catch block (C1)
-  const redisUrl = Deno.env.get("UPSTASH_REDIS_REST_URL");
-  const redisToken = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
+  let redisCreds: ReturnType<typeof getRedisCredentials> | null = null;
   let idempotencyKey = "";
 
   try {
@@ -137,13 +125,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonResponse({ error: "Invalid signature" }, 401);
     }
 
-    // 3. C1: Redis NX idempotency check (§9 mandatory)
-    if (!redisUrl || !redisToken) {
-      throw new Error("Upstash Redis not configured — cannot ensure idempotency");
-    }
-
+    // 3. C1: Redis NX idempotency check (§9 mandatory, R-11: shared redis.ts)
+    redisCreds = getRedisCredentials();
     idempotencyKey = `tracking:webhook:${payload.event_id}`;
-    const isNew = await checkIdempotency(redisUrl, redisToken, idempotencyKey);
+    const isNew = await checkIdempotency(redisCreds, idempotencyKey);
     if (!isNew) {
       console.log(`[tracking-webhook] Duplicate skipped (Redis): ${payload.event_id}`);
       return new Response("Already processed", { status: 200 });
@@ -203,10 +188,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     // C1: Rollback Redis idempotency key on failure so carrier retry succeeds.
     // Without this, a failed event is "consumed" for 24h and never processed.
-    if (redisUrl && redisToken && idempotencyKey) {
-      await fetch(`${redisUrl}/del/${idempotencyKey}`, {
-        headers: { Authorization: `Bearer ${redisToken}` },
-      }).catch(() => {});
+    if (redisCreds && idempotencyKey) {
+      await rollbackIdempotency(redisCreds, idempotencyKey);
     }
 
     console.error(`[tracking-webhook] Error: ${(error as Error).message}`);
