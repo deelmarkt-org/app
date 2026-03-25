@@ -237,6 +237,10 @@ The agent will:
 - [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
+- [ ] `P-44` Social login (Google + Apple Sign-In) — 8h — ⚠️ Requires E02 epic update + reso OAuth backend
+- [ ] `P-45` Flutter Web performance budget & CanvasKit strategy — 4h
+- [ ] `P-46` Dynamic OG meta tags + crawler pre-rendering — 6h — ⚠️ Owner: belengaz (Cloudflare)
+- [ ] `P-47` Dark mode implementation & validation — 12h (spread across phases)
 
 ---
 

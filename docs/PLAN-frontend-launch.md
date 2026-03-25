@@ -186,12 +186,12 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | Task | Est | Owner | States to Test |
 |:-----|:----|:------|:---------------|
 | Flutter Web build pipeline + CanvasKit caching strategy | 6h | pizmam | Build success, Service Worker caching, WASM load time |
-| `P-NEW-02` Performance budget definition + baseline measurement | 4h | pizmam | First frame time, bundle size, Lighthouse audit |
+| `P-45` Performance budget definition + baseline measurement | 4h | pizmam | First frame time, bundle size, Lighthouse audit |
 | Responsive shell validation (ResponsiveBody already in PR #23) | 2h | pizmam | Verify compact/medium/expanded/large, bottom nav ↔ side rail on web |
 | GoRouter auth guards addition (router already in `app_router.dart`) | 2h | pizmam | Auth redirect works, back/forward work, 404 fallback |
 | Mock data contracts (Dart interfaces + mock implementations) | 6h | pizmam | All entities: Listing, User, Transaction, Message, Category |
 | PWA manifest + web/index.html meta tags | 2h | pizmam | Installable PWA, correct OG defaults |
-| Dark mode ThemeData wiring (`P-NEW-04` part 1) | 4h | pizmam | Light/dark switch, all token colors map correctly |
+| Dark mode ThemeData wiring (`P-47` part 1) | 4h | pizmam | Light/dark switch, all token colors map correctly |
 
 **Phase total: ~30h**
 
@@ -234,7 +234,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 
 **Phase total: ~72h (2 weeks)**
 
-**Risk Mitigation**: Primary orange `#F15A24` on white = 3.4:1 contrast — FAILS WCAG for normal text. White-on-orange also fails at 3.4:1 for normal text. **Strict enforcement**: orange+white combination ONLY permitted for large text (≥ 18.66px bold / ≥ 24px regular). For normal-sized button labels (14-16px), use **dark text (`neutral-900`) on orange background** (16.8:1) or **white text on `secondary` blue** (8.1:1). All components must be validated against this rule during implementation.
+**Risk Mitigation**: Primary orange `#F15A24` on white = 3.4:1 contrast — FAILS WCAG for normal text. White-on-orange also fails at 3.4:1 for normal text. **Strict enforcement**: orange+white combination ONLY permitted for large text (≥ 18.66px bold / ≥ 24px regular). For normal-sized button labels (14-16px), use **dark text (`neutral-900`) on orange background** (16.8:1) or **white text on `secondary` blue** (8.1:1). All components must be validated against this rule during implementation. See also: `docs/design-system/tokens.md` §Colours and `docs/design-system/accessibility.md` §Contrast Ratios for the canonical colour pairing rules.
 **Maestro Auditor**: Review every widget against "glass trap", "glow trap", "bento trap". Each widget must pass the "could this be a generic template?" test.
 **Quality Gate**: `flutter analyze` clean, ≥70% test coverage on new widgets, accessibility audit per widget (Semantics, contrast, touch targets).
 
@@ -256,7 +256,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | `P-17` Profile screen (public view) | 8h | `ProfileViewModel` | `GetUserProfile`, `GetUserBadges` | `UserRepository` | Loading, loaded, error, own vs other |
 | `P-18` Settings screen | 8h | `SettingsViewModel` | `UpdateLanguage`, `UpdateNotifications`, `UpdateAddresses` | `SettingsRepository` | Loading, each section, save success/fail |
 | `P-23` KYC prompt (contextual) | 6h | `KycViewModel` | `GetKycLevel`, `TriggerKycFlow` | `KycRepository` | Level 0→1 banner, Level 1→2 bottom sheet |
-| Dark mode validation pass (`P-NEW-04` part 2) | 4h | — | — | — | Every screen light + dark |
+| Dark mode validation pass (`P-47` part 2) | 4h | — | — | — | Every screen light + dark |
 | Responsive validation pass | 4h | — | — | — | Every screen × 4 breakpoints |
 
 **Phase total: ~30h**
@@ -315,7 +315,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | Task | Est |
 |:-----|:----|
 | `P-42` Full WCAG 2.2 AA accessibility audit | 8h |
-| `P-NEW-04` Dark mode final validation (part 3) | 6h |
+| `P-47` Dark mode final validation (part 3) | 6h |
 | Performance optimization pass (image caching, lazy loading, tree shaking) | 6h |
 | Responsive final validation (all screens × 4 breakpoints) | 4h |
 | L10n completeness check (all NL + EN strings) | 4h |
@@ -362,7 +362,9 @@ Week 10:   pizmam (Phase 5) — polish, no new backend deps
 
 **Critical Path**: `R-13` (Supabase Auth) must be ready by Week 4. `R-22`–`R-27` (Listings) must be ready by Week 7.
 
-> **Note**: R-13 is in Sprint 3-4 (Weeks 5-8), R-22-R-27 in Sprint 5-8 (Weeks 9-16). Phase 2A auth screens are sequenced AFTER R-13 is expected. If reso delivers earlier, Phase 2A can start sooner. Note: R-02 (Supabase Auth email + phone OTP) is already `[x]` — verify if R-13 is a separate task or if R-02 covers the requirement.
+> **Note on R-13 vs R-02**: `R-02` (Supabase Auth email + phone OTP) is already `[x]` — this covers basic email/phone authentication which may satisfy Phase 2A auth screen needs. `R-13` adds KYC-level verification (BRP/DigiD). **If R-02 is sufficient for login/register screens, Phase 2A is unblocked today.** Verify with reso whether R-13 adds new capabilities needed for P-15/P-16 or if R-02's OTP flow is enough.
+>
+> R-22-R-27 are in Sprint 5-8 (Weeks 9-16). Phase 4 is sequenced at Week 7-8 to align. If reso delivers earlier, Phase 4 can start sooner.
 
 ---
 
