@@ -390,6 +390,13 @@ verify_jwt = false
 import_map = "./functions/health/deno.json"
 entrypoint = "./functions/health/index.ts"
 
+# R-11: Redis health check — service_role auth required (internal monitoring)
+[functions.redis-health]
+enabled = true
+verify_jwt = false
+import_map = "./functions/redis-health/deno.json"
+entrypoint = "./functions/redis-health/index.ts"
+
 [functions.mollie-webhook]
 enabled = true
 verify_jwt = false
