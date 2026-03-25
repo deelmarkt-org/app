@@ -217,11 +217,11 @@ The agent will:
 - [x] `B-30` Tracking timeline screen (buyer + seller) — vertical stepper, live updates
 - [x] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
 - [x] `B-32` Dutch address input widget integration — 3-field auto-fill works
-- [ ] `B-33` Delivery → escrow release integration — end-to-end flow works
+- [x] `B-33` Delivery → escrow release integration — end-to-end flow works
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
-- [ ] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
-- [ ] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
+- [x] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
+- [x] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
 - [x] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
 
 ### pizmam `[P]` — Chat UI + Moderation + Polish
