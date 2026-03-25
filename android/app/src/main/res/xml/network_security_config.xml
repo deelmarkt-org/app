@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  B-37: Network security config with certificate pinning.
+  Pins Supabase and Mollie TLS certificates to prevent MITM attacks.
+
+  Pin expiry: 2027-06-01 — rotate before this date.
+  See: docs/ARCHITECTURE.md §Security, CLAUDE.md §9
+-->
+<network-security-config>
+    <!-- Block cleartext (HTTP) traffic globally -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <!-- Supabase API + Realtime -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">supabase.co</domain>
+        <pin-set expiration="2027-06-01">
+            <!-- Amazon Root CA 1 (Supabase uses AWS) -->
+            <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
+            <!-- Backup: Amazon Root CA 2 -->
+            <pin digest="SHA-256">f0KW/FtqTjs108NpYj42SrGvOB2PpxIVM8nWxjPqJGE=</pin>
+        </pin-set>
+    </domain-config>
+
+    <!-- Mollie Payments API -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">mollie.com</domain>
+        <pin-set expiration="2027-06-01">
+            <!-- DigiCert Global Root G2 (Mollie uses DigiCert) -->
+            <pin digest="SHA-256">i7WTqTvh0OioIruIfFR4kMPnBqrS2rdiVPl/s2uC/CY=</pin>
+            <!-- Backup: DigiCert Global Root CA -->
+            <pin digest="SHA-256">r/mIkG3eEpVdm+u/ko/cwxzOMo1bk4TyHIlByibiA5E=</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

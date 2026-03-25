@@ -22,7 +22,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Security headers -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:; font-src 'self' https:;">
+  <!-- B-36: CSP whitelist — default-src 'self', specific domains for Supabase, Mollie, Cloudinary -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com https://*.upstash.io https://events.pagerduty.com; font-src 'self'; frame-src https://*.mollie.com; object-src 'none'; base-uri 'self';">
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
