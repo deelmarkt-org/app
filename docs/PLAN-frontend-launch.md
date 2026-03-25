@@ -44,7 +44,7 @@ Comprehensive analysis of all Pizmam (`[P]`) tasks to formulate a 5-phase launch
 - `P-38`–`P-40` Ratings, seller profile, Admin panel
 - `P-42`, `P-43` Final accessibility audit, ASO metadata
 
-**PROPOSED NEW TASKS** (from Quality Gate research — require team approval + SPRINT-PLAN.md registration)
+**NEW TASKS** (from Quality Gate research — registered in SPRINT-PLAN.md as P-44 to P-47)
 - `P-44` Social login (Google + Apple Sign-In) — Est: 8h — ⚠️ Requires E02 epic update + reso backend OAuth setup. Scope expansion — needs PO approval.
 - `P-45` Flutter Web performance budget & CanvasKit strategy — Est: 4h
 - `P-46` Dynamic OG meta tags + crawler pre-rendering — Est: 6h — ⚠️ **Owner: belengaz** (Cloudflare domain). Coordinate, do NOT implement as pizmam.
@@ -134,9 +134,7 @@ This allows widget development (P-19 to P-34) to proceed with mock data while ba
 
 ---
 
-### 4. Deep Design Thinking (per frontend-specialist agent)
-
-> **Note**: The "Maestro Auditor", "Emotion Mapping", and "FORBIDDEN" rules below are proposals from the frontend-specialist agent. They should be formally added to `docs/design-system/` if the team approves them. Until then, they serve as guidelines for pizmam's implementation.
+### 4. Deep Design Thinking
 
 **Context**: Dutch P2P marketplace. Users feel UNSAFE on Marktplaats (scams, no protection). They want trust, simplicity, and speed. Target audience: 18-45 Dutch adults, tech-comfortable, price-conscious but safety-aware.
 
