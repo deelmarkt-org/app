@@ -145,6 +145,54 @@ void main() {
     });
   });
 
+  group('initUnleash', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    setUp(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('plugins.flutter.io/shared_preferences'),
+            (call) async {
+              if (call.method == 'getAll') return <String, dynamic>{};
+              if (call.method == 'setBool') return true;
+              if (call.method == 'setString') return true;
+              return null;
+            },
+          );
+    });
+
+    tearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(
+            const MethodChannel('plugins.flutter.io/shared_preferences'),
+            null,
+          );
+    });
+
+    test(
+      'completes without throwing when server is unreachable',
+      () async {
+        // initUnleash catches all errors and times out after 5s.
+        await expectLater(initUnleash(), completes);
+      },
+      timeout: const Timeout(Duration(seconds: 10)),
+    );
+
+    test(
+      'provider returns client after init (timeout path)',
+      () async {
+        await initUnleash();
+
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        // Even on timeout, the client object is created (it retries polling).
+        expect(container.read(unleashClientProvider), isNotNull);
+      },
+      timeout: const Timeout(Duration(seconds: 10)),
+    );
+  });
+
   group('FeatureFlags constants', () {
     test('flag names are non-empty snake_case strings', () {
       final flags = [
