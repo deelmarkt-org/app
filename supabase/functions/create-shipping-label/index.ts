@@ -13,6 +13,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { getVaultSecret } from "../_shared/vault.ts";
 
 // --- Types ---
 
@@ -215,9 +216,8 @@ async function createViaPostNL(
 async function registerPostNLTracking(
   barcode: string,
   supabaseUrl: string,
+  postnlKey: string,
 ): Promise<void> {
-  const postnlKey = Deno.env.get("POSTNL_API_KEY");
-  if (!postnlKey) return;
 
   const baseUrl = postnlKey.startsWith("test_")
     ? "https://api-sandbox.postnl.nl"
@@ -290,13 +290,13 @@ Deno.serve(async (req: Request) => {
     // Idempotency: check for existing label
     const { data: existing } = await supabase
       .from("shipping_labels")
-      .select("tracking_number, qr_data, carrier")
+      .select("barcode, qr_data, carrier")
       .eq("transaction_id", input.transactionId)
       .maybeSingle();
 
     if (existing) {
       return jsonResponse({
-        trackingNumber: existing.tracking_number,
+        trackingNumber: existing.barcode,
         qrData: existing.qr_data,
         carrier: existing.carrier,
         message: "Label already exists",
@@ -308,8 +308,7 @@ Deno.serve(async (req: Request) => {
     let provider: string;
 
     try {
-      const ectaroKey = Deno.env.get("ECTARO_API_KEY");
-      if (!ectaroKey) throw new Error("ECTARO_API_KEY not configured");
+      const ectaroKey = await getVaultSecret(supabase, "ECTARO_API_KEY");
       result = await createViaEctaro(input, ectaroKey);
       provider = "ectaro";
     } catch (ectaroError) {
@@ -318,10 +317,7 @@ Deno.serve(async (req: Request) => {
       );
 
       if (input.carrier === "postnl") {
-        const postnlKey = Deno.env.get("POSTNL_API_KEY");
-        if (!postnlKey) {
-          throw new Error("POSTNL_API_KEY not configured for failover");
-        }
+        const postnlKey = await getVaultSecret(supabase, "POSTNL_API_KEY");
         result = await createViaPostNL(input, postnlKey);
         provider = "postnl-direct";
       } else {
@@ -341,7 +337,7 @@ Deno.serve(async (req: Request) => {
       .insert({
         transaction_id: input.transactionId,
         carrier: input.carrier,
-        tracking_number: result.trackingNumber,
+        barcode: result.trackingNumber,
         qr_data: result.qrData,
         tracking_url: result.trackingUrl,
         label_pdf: result.labelPdf ?? null,
@@ -354,12 +350,12 @@ Deno.serve(async (req: Request) => {
         // Race condition — label created between check and insert
         const { data: raceLabel } = await supabase
           .from("shipping_labels")
-          .select("tracking_number, qr_data, carrier")
+          .select("barcode, qr_data, carrier")
           .eq("transaction_id", input.transactionId)
           .single();
 
         return jsonResponse({
-          trackingNumber: raceLabel?.tracking_number,
+          trackingNumber: raceLabel?.barcode,
           qrData: raceLabel?.qr_data,
           carrier: raceLabel?.carrier,
           message: "Label already exists (concurrent request)",
@@ -368,17 +364,18 @@ Deno.serve(async (req: Request) => {
       throw new Error(`Failed to store label: ${insertError.message}`);
     }
 
-    // Transition: paid → shipped
+    // Transition: paid → shipped (shipped_at set by DB trigger)
     await supabase
       .from("transactions")
-      .update({ status: "shipped", shipped_at: new Date().toISOString() })
+      .update({ status: "shipped" })
       .eq("id", input.transactionId)
       .eq("status", "paid");
 
     // B-27: Register for PostNL tracking notifications (best-effort)
     if (input.carrier === "postnl") {
       try {
-        await registerPostNLTracking(result.trackingNumber, supabaseUrl);
+        const postnlKeyForTracking = await getVaultSecret(supabase, "POSTNL_API_KEY");
+        await registerPostNLTracking(result.trackingNumber, supabaseUrl, postnlKeyForTracking);
       } catch (trackErr) {
         console.warn(
           `[create-shipping-label] PostNL tracking registration failed (non-blocking): ${(trackErr as Error).message}`,

@@ -7,7 +7,9 @@
  * GET /functions/v1/postcode-lookup?postcode=1234AB&houseNumber=10
  * Auth: anon key (public, user-facing for address auto-fill)
  */
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+import { getVaultSecret } from "../_shared/vault.ts";
 
 // --- Zod Schema ---
 
@@ -46,9 +48,19 @@ Deno.serve(async (req: Request) => {
   try {
     const input = QuerySchema.parse(params);
 
-    const postnlKey = Deno.env.get("POSTNL_API_KEY");
-    if (!postnlKey) {
-      console.error("[postcode-lookup] Missing POSTNL_API_KEY");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("[postcode-lookup] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+      return jsonResponse({ error: "Internal configuration error" }, 500);
+    }
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+    let postnlKey: string;
+    try {
+      postnlKey = await getVaultSecret(supabase, "POSTNL_API_KEY");
+    } catch (err) {
+      console.error(`[postcode-lookup] Vault error: ${(err as Error).message}`);
       return jsonResponse({ error: "Internal configuration error" }, 500);
     }
 
