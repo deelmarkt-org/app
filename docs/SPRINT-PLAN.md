@@ -173,7 +173,7 @@ The agent will:
 - [x] `B-24` Transaction status state machine — all states work
 - [x] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
 - [x] `B-26` DHL QR Service integration — DHL alternative works
-- [ ] `B-27` PostNL tracking webhook — real-time tracking events received
+- [x] `B-27` PostNL tracking webhook — real-time tracking events received
 - [x] `B-28` PostNL postcode API (address auto-fill) — postcode → street + city
 
 ### pizmam `[P]` — Listing Screens + Widgets

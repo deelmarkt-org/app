@@ -210,6 +210,42 @@ async function createViaPostNL(
   };
 }
 
+// --- B-27: PostNL Track & Trace Subscription ---
+
+async function registerPostNLTracking(
+  barcode: string,
+  supabaseUrl: string,
+): Promise<void> {
+  const postnlKey = Deno.env.get("POSTNL_API_KEY");
+  if (!postnlKey) return;
+
+  const baseUrl = postnlKey.startsWith("test_")
+    ? "https://api-sandbox.postnl.nl"
+    : "https://api.postnl.nl";
+
+  // Webhook URL where PostNL sends tracking events
+  const webhookUrl =
+    `${supabaseUrl}/functions/v1/tracking-webhook`;
+
+  const resp = await fetch(`${baseUrl}/v2/notification`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": postnlKey,
+    },
+    body: JSON.stringify({
+      Barcode: barcode,
+      NotificationType: "shipment_status",
+      WebhookUrl: webhookUrl,
+    }),
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`PostNL notification registration failed (${resp.status}): ${text}`);
+  }
+}
+
 // --- Main Handler ---
 
 Deno.serve(async (req: Request) => {
@@ -338,6 +374,17 @@ Deno.serve(async (req: Request) => {
       .update({ status: "shipped", shipped_at: new Date().toISOString() })
       .eq("id", input.transactionId)
       .eq("status", "paid");
+
+    // B-27: Register for PostNL tracking notifications (best-effort)
+    if (input.carrier === "postnl") {
+      try {
+        await registerPostNLTracking(result.trackingNumber, supabaseUrl);
+      } catch (trackErr) {
+        console.warn(
+          `[create-shipping-label] PostNL tracking registration failed (non-blocking): ${(trackErr as Error).message}`,
+        );
+      }
+    }
 
     console.log(
       `[create-shipping-label] ${provider} | ${input.carrier} | ${result.trackingNumber} | txn:${input.transactionId}`,
