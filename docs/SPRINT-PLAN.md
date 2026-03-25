@@ -95,9 +95,9 @@ The agent will:
 - [x] `P-08` Implement `EmptyState` widget — illustration + message + action
 - [x] `P-09` Implement `ErrorState` widget — error message + retry button
 - [x] `P-10` Implement `LanguageSwitch` (NL/EN toggle) — segmented control, instant
-- [ ] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
-- [ ] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
-- [ ] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
+- [x] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
+- [x] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
+- [x] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
 
 ---
 
