@@ -44,9 +44,11 @@ class OnboardingScreen extends StatelessWidget {
               ),
               const SizedBox(height: Spacing.s8),
               // P-14: Replace with full onboarding flow (language + value prop pages)
-              const Text(
+              Text(
                 'Onboarding — coming in Phase 2',
-                style: TextStyle(color: DeelmarktColors.neutral500),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: DeelmarktColors.neutral500,
+                ),
               ),
             ],
           ),

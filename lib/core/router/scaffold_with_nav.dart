@@ -136,10 +136,15 @@ final _barDestinations = [
 
 final _railDestinations = [
   NavigationRailDestination(
-    icon: Icon(PhosphorIcons.house(), color: DeelmarktColors.neutral500),
+    icon: Icon(
+      PhosphorIcons.house(),
+      color: DeelmarktColors.neutral500,
+      semanticLabel: 'nav.home'.tr(),
+    ),
     selectedIcon: Icon(
       PhosphorIcons.house(PhosphorIconsStyle.bold),
       color: DeelmarktColors.primary,
+      semanticLabel: 'nav.home'.tr(),
     ),
     label: Text('nav.home'.tr()),
   ),
@@ -147,34 +152,51 @@ final _railDestinations = [
     icon: Icon(
       PhosphorIcons.magnifyingGlass(),
       color: DeelmarktColors.neutral500,
+      semanticLabel: 'nav.search'.tr(),
     ),
     selectedIcon: Icon(
       PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
       color: DeelmarktColors.primary,
+      semanticLabel: 'nav.search'.tr(),
     ),
     label: Text('nav.search'.tr()),
   ),
   NavigationRailDestination(
-    icon: Icon(PhosphorIcons.plusCircle(), color: DeelmarktColors.neutral500),
+    icon: Icon(
+      PhosphorIcons.plusCircle(),
+      color: DeelmarktColors.neutral500,
+      semanticLabel: 'nav.sell'.tr(),
+    ),
     selectedIcon: Icon(
       PhosphorIcons.plusCircle(PhosphorIconsStyle.bold),
       color: DeelmarktColors.primary,
+      semanticLabel: 'nav.sell'.tr(),
     ),
     label: Text('nav.sell'.tr()),
   ),
   NavigationRailDestination(
-    icon: Icon(PhosphorIcons.chatCircle(), color: DeelmarktColors.neutral500),
+    icon: Icon(
+      PhosphorIcons.chatCircle(),
+      color: DeelmarktColors.neutral500,
+      semanticLabel: 'nav.messages'.tr(),
+    ),
     selectedIcon: Icon(
       PhosphorIcons.chatCircle(PhosphorIconsStyle.bold),
       color: DeelmarktColors.primary,
+      semanticLabel: 'nav.messages'.tr(),
     ),
     label: Text('nav.messages'.tr()),
   ),
   NavigationRailDestination(
-    icon: Icon(PhosphorIcons.user(), color: DeelmarktColors.neutral500),
+    icon: Icon(
+      PhosphorIcons.user(),
+      color: DeelmarktColors.neutral500,
+      semanticLabel: 'nav.profile'.tr(),
+    ),
     selectedIcon: Icon(
       PhosphorIcons.user(PhosphorIconsStyle.bold),
       color: DeelmarktColors.primary,
+      semanticLabel: 'nav.profile'.tr(),
     ),
     label: Text('nav.profile'.tr()),
   ),

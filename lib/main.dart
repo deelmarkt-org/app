@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'core/design_system/spacing.dart';
 import 'core/design_system/theme.dart';
 import 'core/l10n/l10n.dart';
 import 'core/router/app_router.dart';
@@ -12,12 +13,14 @@ import 'core/services/firebase_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/services/unleash_service.dart';
 
-/// Riverpod provider for GoRouter — reactive to auth state changes.
+/// Riverpod provider for GoRouter — single instance, auth-aware.
 ///
-/// Uses [GoRouterRefreshStream] to re-evaluate redirect on every auth event.
-/// This prevents flash of unauthenticated content (FOUC) on app start.
+/// Uses `ref.read` (not `ref.watch`) to avoid rebuilding the router on every
+/// auth event — GoRouterRefreshStream already handles re-evaluating redirects.
+/// Using ref.watch would create a new GoRouter instance on each auth emission,
+/// resetting the entire navigation stack.
 final routerProvider = Provider((ref) {
-  final authState = ref.watch(authStateChangesProvider);
+  final authState = ref.read(authStateChangesProvider);
   final authStream = ref.read(supabaseClientProvider).auth.onAuthStateChange;
   return createRouter(authState: authState, authStream: authStream);
 });
@@ -50,16 +53,18 @@ void main() async {
   ]);
 
   // Production error widget — user-friendly instead of white screen.
+  // Note: ErrorWidget fires before MaterialApp/localization, so l10n is
+  // unavailable here. A minimal NL fallback is acceptable (§3.3 exception).
   if (!kDebugMode) {
     ErrorWidget.builder = (FlutterErrorDetails details) {
-      return MaterialApp(
+      return const MaterialApp(
         home: Scaffold(
           body: Center(
             child: Padding(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.all(Spacing.s6),
               child: Text(
-                'Er ging iets mis. Start de app opnieuw.',
-                style: const TextStyle(fontSize: 16),
+                'Er ging iets mis. Start de app opnieuw.\n'
+                'Something went wrong. Please restart the app.',
                 textAlign: TextAlign.center,
               ),
             ),

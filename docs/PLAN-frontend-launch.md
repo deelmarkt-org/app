@@ -556,8 +556,6 @@ Week 10:   pizmam (Phase 5) — polish, no new backend deps
 
 | Risk | Severity | Mitigation |
 |:-----|:---------|:-----------|
-| Risk | Severity | Mitigation |
-|:-----|:---------|:-----------|
 | **CSP blocks CanvasKit WASM** | **CRITICAL** | **Phase 1, Day 1 blocker.** Current CSP lacks `wasm-unsafe-eval`. Test immediately — if blocked, belengaz updates CSP. **Fallback**: `--web-renderer html` (no WASM) keeps other work unblocked while CSP is fixed. |
 | **Missing `usePathUrlStrategy()`** | **CRITICAL** | Without this, all URLs contain `/#/` — breaks SEO, deep links, social sharing, OG meta tags. One-line fix in `main.dart`, must be Day 1. No fallback — must be fixed. |
 | **Auth guard race condition** | **HIGH** | Supabase auth state loads async — router may redirect before state resolves, causing flash of unauthenticated content. Fix: `GoRouterRefreshStream` + `/splash` route while auth loads. **Fallback**: simple `currentUser != null` check (no stream) as placeholder. |
