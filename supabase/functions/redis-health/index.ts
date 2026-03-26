@@ -10,6 +10,7 @@
 
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 import {
   getRedisCredentials,
   redisSet,
@@ -70,10 +71,3 @@ Deno.serve(async (req: Request): Promise<Response> => {
     allOk ? 200 : 503,
   );
 });
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
