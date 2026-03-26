@@ -1,15 +1,15 @@
 /**
  * B-28: Dutch Postcode Lookup Edge Function
  *
- * Resolves Dutch postcode + house number → street + city
- * via PostNL Adrescheck Nederland v4 API.
+ * Resolves Dutch postcode + house number → street + city.
+ *
+ * Primary: postcode.tech (free, 10k requests/month)
+ * Fallback: PostcodeAPI.nu (free, 1k requests/day)
  *
  * GET /functions/v1/postcode-lookup?postcode=1234AB&houseNumber=10
- * Auth: anon key (public, user-facing for address auto-fill)
+ * Auth: anon key (JWT required via verify_jwt = true)
  */
-import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
-import { getVaultSecret } from "../_shared/vault.ts";
 import { jsonResponse as baseJsonResponse } from "../_shared/response.ts";
 
 // Postcode responses get 24h cache — postcodes don't change often
@@ -24,6 +24,70 @@ const QuerySchema = z.object({
   houseNumber: z.string().min(1, "House number is required"),
   addition: z.string().optional(),
 });
+
+// --- Postcode Providers ---
+
+interface AddressResult {
+  street: string;
+  city: string;
+  houseNumber: string;
+  houseNumberAddition: string;
+  postcode: string;
+}
+
+/**
+ * Primary: postcode.tech — free tier 10,000 requests/month.
+ * No API key required for basic usage.
+ * GET https://postcode.tech/api/v1/postcode/full?postcode=1234AB&number=10
+ */
+async function lookupViaPostcodeTech(
+  postcode: string,
+  houseNumber: string,
+): Promise<AddressResult | null> {
+  const resp = await fetch(
+    `https://postcode.tech/api/v1/postcode/full?postcode=${postcode}&number=${houseNumber}`,
+  );
+
+  if (!resp.ok) return null;
+
+  const data = await resp.json();
+  if (!data.street) return null;
+
+  return {
+    street: data.street,
+    city: data.city,
+    houseNumber,
+    houseNumberAddition: data.letter ?? "",
+    postcode,
+  };
+}
+
+/**
+ * Fallback: PostcodeAPI.nu — free tier 1,000 requests/day.
+ * Requires API key stored in env (not a secret, free tier key).
+ * GET https://json.api-postcode.nl?postcode=1234AB&number=10
+ */
+async function lookupViaApiPostcode(
+  postcode: string,
+  houseNumber: string,
+): Promise<AddressResult | null> {
+  const resp = await fetch(
+    `https://json.api-postcode.nl?postcode=${postcode}&number=${houseNumber}`,
+  );
+
+  if (!resp.ok) return null;
+
+  const data = await resp.json();
+  if (!data.street) return null;
+
+  return {
+    street: data.street,
+    city: data.city,
+    houseNumber,
+    houseNumberAddition: data.house_number_addition ?? "",
+    postcode,
+  };
+}
 
 // --- Main Handler ---
 
@@ -42,65 +106,33 @@ Deno.serve(async (req: Request) => {
   try {
     const input = QuerySchema.parse(params);
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!supabaseUrl || !serviceRoleKey) {
-      console.error("[postcode-lookup] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-      return jsonResponse({ error: "Internal configuration error" }, 500);
-    }
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    // Primary: postcode.tech → Fallback: api-postcode.nl
+    let result: AddressResult | null = null;
 
-    let postnlKey: string;
     try {
-      postnlKey = await getVaultSecret(supabase, "POSTNL_API_KEY");
+      result = await lookupViaPostcodeTech(input.postcode, input.houseNumber);
     } catch (err) {
-      console.error(`[postcode-lookup] Vault error: ${(err as Error).message}`);
-      return jsonResponse({ error: "Internal configuration error" }, 500);
+      console.warn(`[postcode-lookup] postcode.tech failed: ${(err as Error).message}`);
     }
 
-    const baseUrl = postnlKey.startsWith("test_")
-      ? "https://api-sandbox.postnl.nl"
-      : "https://api.postnl.nl";
-
-    const queryParams = new URLSearchParams({
-      postalCode: input.postcode,
-      houseNumber: input.houseNumber,
-    });
-    if (input.addition) {
-      queryParams.set("houseNumberAddition", input.addition);
-    }
-
-    const resp = await fetch(
-      `${baseUrl}/v4/address/netherlands?${queryParams}`,
-      {
-        headers: { "apikey": postnlKey },
-      },
-    );
-
-    if (!resp.ok) {
-      if (resp.status === 404) {
-        return jsonResponse({ error: "Address not found" }, 404);
+    if (!result) {
+      try {
+        result = await lookupViaApiPostcode(input.postcode, input.houseNumber);
+      } catch (err) {
+        console.warn(`[postcode-lookup] api-postcode.nl failed: ${(err as Error).message}`);
       }
-      const text = await resp.text();
-      console.error(`[postcode-lookup] PostNL API error (${resp.status}): ${text}`);
-      return jsonResponse({ error: "Address lookup failed" }, 502);
     }
 
-    const data = await resp.json();
-    const addresses = data.Addresses ?? data.addresses ?? [];
-
-    if (addresses.length === 0) {
+    if (!result) {
       return jsonResponse({ error: "Address not found" }, 404);
     }
 
-    // Return first match (most specific)
-    const addr = addresses[0];
     return jsonResponse({
-      street: addr.Street ?? addr.street ?? "",
-      city: addr.City ?? addr.city ?? "",
-      houseNumber: addr.HouseNumber ?? addr.houseNumber ?? input.houseNumber,
-      houseNumberAddition: addr.HouseNumberAddition ?? addr.houseNumberAddition ?? "",
-      postcode: input.postcode,
+      street: result.street,
+      city: result.city,
+      houseNumber: result.houseNumber,
+      houseNumberAddition: result.houseNumberAddition,
+      postcode: result.postcode,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
