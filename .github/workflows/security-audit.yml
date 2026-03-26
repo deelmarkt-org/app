@@ -30,13 +30,7 @@ jobs:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: Build release APK
         run: flutter build apk --release --no-pub
@@ -104,13 +98,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: Check web platform exists
         id: web-check
@@ -189,13 +177,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: OSV-Scanner (full report)
         uses: google/osv-scanner-action/osv-scanner-action@v2.0.1

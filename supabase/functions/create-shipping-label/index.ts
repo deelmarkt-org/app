@@ -132,11 +132,12 @@ async function createViaPostNL(
   input: CreateLabelInput,
   apiKey: string,
 ): Promise<LabelResult> {
-  // TODO: Replace with real PostNL contract values from Vault after contract approval
+  // PostNL account: Piwas (10959299) — Customer code RMUZ, BLS 100548
   const payload = {
     Customer: {
-      CustomerCode: "DEVC",
-      CustomerNumber: "11223344",
+      CustomerCode: "RMUZ",
+      CustomerNumber: "10959299",
+      CollectionLocation: "100548",
     },
     Message: {
       MessageID: crypto.randomUUID(),
@@ -171,11 +172,15 @@ async function createViaPostNL(
     }],
   };
 
-  const baseUrl = apiKey.startsWith("test_")
+  // PostNL sandbox keys are UUIDs (e.g. d063c78c-...), production keys differ
+  // Use POSTNL_ENV env var to explicitly control environment
+  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  const baseUrl = isSandbox
     ? "https://api-sandbox.postnl.nl"
     : "https://api.postnl.nl";
 
-  const resp = await fetch(`${baseUrl}/v4/shipment`, {
+  // PostNL v4 not yet available — use v2 per PostNL support (2026-03-26)
+  const resp = await fetch(`${baseUrl}/v2/shipment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -214,7 +219,8 @@ async function registerPostNLTracking(
   postnlKey: string,
 ): Promise<void> {
 
-  const baseUrl = postnlKey.startsWith("test_")
+  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  const baseUrl = isSandbox
     ? "https://api-sandbox.postnl.nl"
     : "https://api.postnl.nl";
 
