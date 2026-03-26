@@ -4,7 +4,7 @@
  * Resolves Dutch postcode + house number → street + city.
  *
  * Primary: postcode.tech (free, 10k requests/month)
- * Fallback: PostcodeAPI.nu (free, 1k requests/day)
+ * Fallback: api-postcode.nl (free, 1k requests/day)
  *
  * GET /functions/v1/postcode-lookup?postcode=1234AB&houseNumber=10
  * Auth: anon key (JWT required via verify_jwt = true)
@@ -43,9 +43,12 @@ interface AddressResult {
 async function lookupViaPostcodeTech(
   postcode: string,
   houseNumber: string,
+  addition?: string,
 ): Promise<AddressResult | null> {
+  const params = new URLSearchParams({ postcode, number: houseNumber });
+  if (addition) params.set("addition", addition);
   const resp = await fetch(
-    `https://postcode.tech/api/v1/postcode/full?postcode=${postcode}&number=${houseNumber}`,
+    `https://postcode.tech/api/v1/postcode/full?${params}`,
   );
 
   if (!resp.ok) return null;
@@ -70,9 +73,12 @@ async function lookupViaPostcodeTech(
 async function lookupViaApiPostcode(
   postcode: string,
   houseNumber: string,
+  addition?: string,
 ): Promise<AddressResult | null> {
+  const params = new URLSearchParams({ postcode, number: houseNumber });
+  if (addition) params.set("addition", addition);
   const resp = await fetch(
-    `https://json.api-postcode.nl?postcode=${postcode}&number=${houseNumber}`,
+    `https://json.api-postcode.nl?${params}`,
   );
 
   if (!resp.ok) return null;
@@ -110,14 +116,14 @@ Deno.serve(async (req: Request) => {
     let result: AddressResult | null = null;
 
     try {
-      result = await lookupViaPostcodeTech(input.postcode, input.houseNumber);
+      result = await lookupViaPostcodeTech(input.postcode, input.houseNumber, input.addition);
     } catch (err) {
       console.warn(`[postcode-lookup] postcode.tech failed: ${(err as Error).message}`);
     }
 
     if (!result) {
       try {
-        result = await lookupViaApiPostcode(input.postcode, input.houseNumber);
+        result = await lookupViaApiPostcode(input.postcode, input.houseNumber, input.addition);
       } catch (err) {
         console.warn(`[postcode-lookup] api-postcode.nl failed: ${(err as Error).message}`);
       }

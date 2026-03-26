@@ -172,11 +172,15 @@ async function createViaPostNL(
     }],
   };
 
-  const baseUrl = apiKey.startsWith("test_")
+  // PostNL sandbox keys are UUIDs (e.g. d063c78c-...), production keys differ
+  // Use POSTNL_ENV env var to explicitly control environment
+  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  const baseUrl = isSandbox
     ? "https://api-sandbox.postnl.nl"
     : "https://api.postnl.nl";
 
-  const resp = await fetch(`${baseUrl}/v4/shipment`, {
+  // PostNL v4 not yet available — use v2 per PostNL support (2026-03-26)
+  const resp = await fetch(`${baseUrl}/v2/shipment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -215,7 +219,8 @@ async function registerPostNLTracking(
   postnlKey: string,
 ): Promise<void> {
 
-  const baseUrl = postnlKey.startsWith("test_")
+  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  const baseUrl = isSandbox
     ? "https://api-sandbox.postnl.nl"
     : "https://api.postnl.nl";
 
