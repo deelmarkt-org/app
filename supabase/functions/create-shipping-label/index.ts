@@ -33,7 +33,7 @@ const AddressSchema = z.object({
   street: z.string().min(1),
   houseNumber: z.string().min(1),
   houseNumberAddition: z.string().optional(),
-  postcode: z.string().regex(/^\d{4}[A-Z]{2}$/),
+  postcode: z.string().transform((v) => v.toUpperCase()).pipe(z.string().regex(/^\d{4}[A-Z]{2}$/)),
   city: z.string().min(1),
   countryCode: z.string().length(2).default("NL"),
 });

@@ -17,6 +17,7 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { jsonResponse } from "../_shared/response.ts";
 import {
   getRedisCredentials,
   checkIdempotency,
@@ -196,10 +197,3 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Internal error" }, 500);
   }
 });
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
