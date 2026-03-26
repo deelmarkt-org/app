@@ -16,4 +16,10 @@ abstract class Env {
 
   /// Supabase URL derived from project ID.
   static String get supabaseUrl => 'https://$supabaseProjectId.supabase.co';
+
+  @EnviedField(varName: 'UNLEASH_URL', obfuscate: true)
+  static final String unleashUrl = _Env.unleashUrl;
+
+  @EnviedField(varName: 'UNLEASH_CLIENT_KEY', obfuscate: true)
+  static final String unleashClientKey = _Env.unleashClientKey;
 }

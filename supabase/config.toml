@@ -390,6 +390,13 @@ verify_jwt = false
 import_map = "./functions/health/deno.json"
 entrypoint = "./functions/health/index.ts"
 
+# R-11: Redis health check — service_role auth required (internal monitoring)
+[functions.redis-health]
+enabled = true
+verify_jwt = false
+import_map = "./functions/redis-health/deno.json"
+entrypoint = "./functions/redis-health/index.ts"
+
 [functions.mollie-webhook]
 enabled = true
 verify_jwt = false
@@ -444,3 +451,24 @@ entrypoint = "./functions/release-escrow/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/release-escrow/*.html" ]
+
+# B-25/B-26: Label creation — service_role auth verified in handler
+[functions.create-shipping-label]
+enabled = true
+verify_jwt = false
+import_map = "./functions/create-shipping-label/deno.json"
+entrypoint = "./functions/create-shipping-label/index.ts"
+
+# B-28: Postcode lookup — public endpoint for address auto-fill (anon key)
+[functions.postcode-lookup]
+enabled = true
+verify_jwt = true
+import_map = "./functions/postcode-lookup/deno.json"
+entrypoint = "./functions/postcode-lookup/index.ts"
+
+# B-33: Tracking webhook — carrier sends no JWT, security via HMAC
+[functions.tracking-webhook]
+enabled = true
+verify_jwt = false
+import_map = "./functions/tracking-webhook/deno.json"
+entrypoint = "./functions/tracking-webhook/index.ts"

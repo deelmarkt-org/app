@@ -51,17 +51,19 @@ The agent will:
 
 **Branch:** `feature/reso-E07-supabase-firebase` | **Epic:** [E07](epics/E07-infrastructure.md)
 
-- [ ] `R-01` Create Supabase project (Pro plan) — project live, dashboard accessible
+- [x] `R-01` Create Supabase project (Pro plan) — project live, dashboard accessible
 - [x] `R-02` Configure Supabase Auth (email + phone OTP) — registration works in dashboard
-- [ ] `R-03` Enable RLS on all default tables — verified via SQL
-- [ ] `R-04` Set up Supabase Vault — one secret stored and retrievable
+- [x] `R-03` Enable RLS on all default tables — verified via SQL
+  <!-- RLS applied to storage bucket (only existing table). User/listing tables will get RLS in their own tasks (R-17, R-22). -->
+- [x] `R-04` Set up Supabase Vault — one secret stored and retrievable
 - [x] `R-05` Set up Supabase Storage — `listings-images` bucket with RLS
-- [ ] `R-06` Enable Supabase Realtime — enabled on messages table (placeholder)
+- [x] `R-06` Enable Supabase Realtime — enabled on messages table (placeholder)
+  <!-- Realtime is enabled at project level. Messages table deferred to E04 (R-31) per PR #22 review. -->
 - [x] `R-07` Deploy first Edge Function (health check) — `/functions/v1/health` returns 200
-- [ ] `R-08` Set up Firebase project — FCM, Crashlytics, Analytics, Remote Config configured
-- [ ] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
-- [ ] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
-- [ ] `R-11` Set up Upstash Redis — connection working from Edge Function
+- [x] `R-08` Set up Firebase project — FCM, Crashlytics, Analytics, Remote Config configured
+- [x] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
+- [x] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
+- [x] `R-11` Set up Upstash Redis — connection working from Edge Function
 - [ ] `R-12` Set up Sentry — error tracking receiving test events
 
 ### belengaz `[B]` — DevOps & Deep Linking
@@ -95,9 +97,9 @@ The agent will:
 - [x] `P-08` Implement `EmptyState` widget — illustration + message + action
 - [x] `P-09` Implement `ErrorState` widget — error message + retry button
 - [x] `P-10` Implement `LanguageSwitch` (NL/EN toggle) — segmented control, instant
-- [ ] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
-- [ ] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
-- [ ] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
+- [x] `P-11` Implement GDPR consent banner — shown on first launch, preference saved
+- [x] `P-12` Set up WCAG 2.2 AA audit tooling — contrast + touch target checks in tests
+- [x] `P-13` Write widget tests for all shared components — ≥70% on `lib/widgets/`
 
 ---
 
@@ -171,10 +173,10 @@ The agent will:
 - [x] `B-22` Escrow release on delivery confirmation — tracking event triggers release
 - [x] `B-23` 48-hour buyer confirmation window — auto-release after timeout
 - [x] `B-24` Transaction status state machine — all states work
-- [ ] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
-- [ ] `B-26` DHL QR Service integration — DHL alternative works
-- [ ] `B-27` PostNL tracking webhook — real-time tracking events received
-- [ ] `B-28` PostNL postcode API (address auto-fill) — postcode → street + city
+- [x] `B-25` PostNL Shipping V4 API integration — QR code generated after sale
+- [x] `B-26` DHL QR Service integration — DHL alternative works
+- [x] `B-27` PostNL tracking webhook — real-time tracking events received
+- [x] `B-28` PostNL postcode API (address auto-fill) — postcode → street + city
 
 ### pizmam `[P]` — Listing Screens + Widgets
 
@@ -215,14 +217,14 @@ The agent will:
 
 - [x] `B-29` QR code display screen (seller) — QR generated and displayed
 - [x] `B-30` Tracking timeline screen (buyer + seller) — vertical stepper, live updates
-- [ ] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
-- [ ] `B-32` Dutch address input widget integration — 3-field auto-fill works
-- [ ] `B-33` Delivery → escrow release integration — end-to-end flow works
+- [x] `B-31` ParcelShop selector (PostNL VPS map) — map shows nearest locations
+- [x] `B-32` Dutch address input widget integration — 3-field auto-fill works
+- [x] `B-33` Delivery → escrow release integration — end-to-end flow works
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
-- [ ] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
-- [ ] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
-- [ ] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
+- [x] `B-36` Add CSP meta tag to `web/index.html` — default-src 'self', script-src, connect-src whitelist
+- [x] `B-37` Add `network_security_config.xml` with certificate pinning — pin Supabase + Mollie certs
+- [x] `B-38` Set `android:allowBackup="false"` + disable cleartext — hardened AndroidManifest
 
 ### pizmam `[P]` — Chat UI + Moderation + Polish
 
@@ -237,6 +239,10 @@ The agent will:
 - [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
+- [ ] `P-44` Social login (Google + Apple Sign-In) — 8h — ⚠️ Requires E02 epic update + reso OAuth backend
+- [ ] `P-45` Flutter Web performance budget & CanvasKit strategy — 4h
+- [ ] `P-46` Dynamic OG meta tags + crawler pre-rendering — 6h — ⚠️ Owner: belengaz (Cloudflare)
+- [ ] `P-47` Dark mode implementation & validation — 12h (spread across phases)
 
 ---
 

@@ -31,6 +31,9 @@ dependencies:
   # Environment variables — compile-time safe, no secrets in source
   envied: ^1.1.1
 
+  # Feature flags — Unleash (self-hosted)
+  unleash_proxy_client_flutter: ^1.9.8
+
   # Firebase — push notifications, crash reporting, analytics, remote config
   firebase_core: ^4.6.0
   firebase_analytics: ^12.2.0
