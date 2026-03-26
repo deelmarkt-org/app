@@ -47,13 +47,6 @@
         </pin-set>
     </domain-config>
 
-    <!-- Debug builds only: allow user-installed CA certs for proxy tools (Charles, mitmproxy) -->
-    <debug-overrides>
-        <trust-anchors>
-            <certificates src="user" />
-        </trust-anchors>
-    </debug-overrides>
-
     <!-- Cloudinary CDN (res.cloudinary.com — user images) -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">cloudinary.com</domain>
@@ -64,4 +57,11 @@
             <pin digest="SHA-256">cGuxAXyFXFkWm61cF4HPWX8S0srS9j0aSqN0k4AP+4A=</pin>
         </pin-set>
     </domain-config>
+
+    <!-- Debug builds only: allow user-installed CA certs for proxy tools (Charles, mitmproxy) -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
 </network-security-config>
