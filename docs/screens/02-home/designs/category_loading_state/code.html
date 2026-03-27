@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-dim": "#dcd9d9",
+              "surface-container-high": "#ebe7e7",
+              "on-background": "#1c1b1b",
+              "surface-container-low": "#f6f3f2",
+              "background": "#fcf9f8",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-bright": "#fcf9f8",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed": "#82fc8e",
+              "inverse-surface": "#313030",
+              "surface-container": "#f0edec",
+              "on-secondary-fixed": "#001d35",
+              "surface": "#fcf9f8",
+              "secondary-fixed": "#d0e4ff",
+              "primary-fixed-dim": "#ffb59e",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "surface-container-highest": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "secondary-container": "#a1cdff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "outline": "#8e7067",
+              "on-primary-fixed": "#3a0b00",
+              "primary": "#a93200",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "on-primary-fixed-variant": "#842500",
+              "on-surface": "#1c1b1b",
+              "secondary": "#34618d",
+              "tertiary": "#006b24",
+              "outline-variant": "#e2bfb4",
+              "tertiary-fixed-dim": "#65df75"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #f6f3f2 25%, #ffffff 50%, #f6f3f2 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 active:scale-95 duration-200 transition-colors">
+<span class="material-symbols-outlined text-[#F15A24]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 active:scale-95 duration-200 transition-colors">
+<span class="material-symbols-outlined text-[#4a4a4a]" data-icon="search">search</span>
+</button>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 active:scale-95 duration-200 transition-colors">
+<span class="material-symbols-outlined text-[#4a4a4a]" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col py-8 px-4 fixed left-0 top-0 h-screen w-64 bg-[#f6f3f2] z-40">
+<div class="text-lg font-black text-[#F15A24] mb-8 font-['Plus_Jakarta_Sans']">The Honest Exchange</div>
+<div class="space-y-2">
+<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-[#F15A24] hover:bg-white/50 rounded-xl transition-all duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-medium text-sm">Home</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#F15A24] border-r-4 border-[#F15A24] bg-white rounded-l-xl transition-all duration-300">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-medium text-sm">Ontdekken</span>
+</div>
+<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-[#F15A24] hover:bg-white/50 rounded-xl transition-all duration-300">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-medium text-sm">Verkopen</span>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-28 px-6 min-h-screen max-w-2xl mx-auto">
+<!-- Editorial Section Header Skeleton -->
+<div class="mb-8">
+<div class="h-10 w-48 skeleton-shimmer rounded-lg mb-2"></div>
+<div class="h-5 w-64 skeleton-shimmer rounded-md opacity-60"></div>
+</div>
+<!-- Bento Grid Category Skeleton -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Large Feature Category Skeleton -->
+<div class="col-span-2 h-48 skeleton-shimmer rounded-3xl relative overflow-hidden">
+<div class="absolute bottom-6 left-6 space-y-2">
+<div class="h-6 w-32 bg-white/40 rounded-md"></div>
+<div class="h-4 w-24 bg-white/30 rounded-md"></div>
+</div>
+</div>
+<!-- Standard Category Skeleton Cards -->
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-2/3 bg-white/40 rounded-md"></div>
+</div>
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-3/4 bg-white/40 rounded-md"></div>
+</div>
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-1/2 bg-white/40 rounded-md"></div>
+</div>
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-2/3 bg-white/40 rounded-md"></div>
+</div>
+<!-- Horizontal Wide Card Skeleton -->
+<div class="col-span-2 h-32 skeleton-shimmer rounded-3xl flex items-center px-8 gap-6">
+<div class="w-16 h-16 rounded-2xl bg-white/40 shrink-0"></div>
+<div class="space-y-2 w-full">
+<div class="h-5 w-1/3 bg-white/40 rounded-md"></div>
+<div class="h-4 w-1/2 bg-white/30 rounded-md"></div>
+</div>
+</div>
+<!-- More grid items -->
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-2/3 bg-white/40 rounded-md"></div>
+</div>
+<div class="aspect-square skeleton-shimmer rounded-3xl p-6 flex flex-col justify-end gap-3">
+<div class="w-10 h-10 rounded-2xl bg-white/40"></div>
+<div class="h-5 w-3/4 bg-white/40 rounded-md"></div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-[#fcf9f8]/80 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
+<div class="flex flex-col items-center justify-center text-[#4a4a4a] transition-all">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-xl px-4 py-2 transition-all">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Zoeken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a]">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Plaatsen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a]">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a]">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Account</span>
+</div>
+</nav>
+<!-- Content Separation Tonal Gradient for Bottom Nav -->
+<div class="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#f6f3f2] to-transparent pointer-events-none z-40 md:hidden"></div>
+</body></html>

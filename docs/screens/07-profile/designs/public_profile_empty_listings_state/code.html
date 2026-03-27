@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-variant": "#e5e2e1",
+              "on-surface": "#1c1b1b",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-low": "#f6f3f2",
+              "on-tertiary-container": "#f7fff2",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#ffb59e",
+              "error-container": "#ffdad6",
+              "secondary": "#34618d",
+              "on-tertiary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error": "#ffffff",
+              "surface-dim": "#dcd9d9",
+              "secondary-fixed": "#d0e4ff",
+              "tertiary": "#006b24",
+              "inverse-surface": "#313030",
+              "primary-fixed": "#ffdbd0",
+              "surface-container-high": "#ebe7e7",
+              "on-surface-variant": "#5a4139",
+              "background": "#fcf9f8",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-container": "#008730",
+              "outline-variant": "#e2bfb4",
+              "surface-container": "#f0edec",
+              "inverse-on-surface": "#f3f0ef",
+              "outline": "#8e7067",
+              "primary-container": "#d1430a",
+              "on-secondary": "#ffffff",
+              "primary": "#a93200",
+              "tertiary-fixed": "#82fc8e",
+              "on-background": "#1c1b1b",
+              "on-secondary-container": "#285782",
+              "on-primary-fixed": "#3a0b00",
+              "on-primary-container": "#fffbff",
+              "secondary-container": "#a1cdff",
+              "on-secondary-fixed": "#001d35",
+              "surface-container-highest": "#e5e2e1",
+              "surface": "#fcf9f8",
+              "error": "#ba1a1a",
+              "surface-tint": "#ad3300",
+              "on-primary-fixed-variant": "#842500"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-header {
+            background: rgba(252, 249, 248, 0.8);
+            backdrop-filter: blur(24px);
+        }
+        .cubic-bezier {
+            transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- iPhone 15 Pro Frame Simulation (Mobile Focus) -->
+<div class="max-w-[393px] mx-auto min-h-screen bg-surface relative shadow-2xl overflow-hidden flex flex-col">
+<!-- TopAppBar (Shared Component Logic) -->
+<nav class="glass-header sticky top-0 z-50 w-full px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant transition-transform active:scale-95">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-black tracking-tighter text-[#F15A24]">DeelMarkt</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant">favorite</span>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-grow pb-32">
+<!-- Profile Header Section -->
+<section class="px-6 pt-8 pb-6 flex flex-col items-center">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-sm">
+<img class="w-full h-full object-cover" data-alt="portrait of a friendly smiling middle-aged dutch man with short brown hair and casual clothing against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBES110866rLvr9_aD8LfSplnroWNlwdPWvAF8IKmFTFSuroHyBnslgSujmdnHuK1kZK08saQiaRhFXOSVh6c8tfpqcuPrVxc5RXZyOux7zrfSsIn2MpzjZ4Yxf9xQ_lnS03z0hlDPvtbcR4vE4jYwhuevD2sSnJVhV68NvtlrOoRo2DXwUGfEzEZzPc_BCFA7X3eA6jrN50QdwpZC3G9aekpzsSJ3DfT59-znIMMLzDmBdz36XbTDbc_Ggsrbuy4vtlppVfIIxesD9"/>
+</div>
+<!-- Trust Badge -->
+<div class="absolute -bottom-1 -right-1 bg-tertiary-container/20 text-tertiary px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-md">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Geverifieerd</span>
+</div>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface mb-1">Bram van Dijk</h2>
+<p class="text-sm text-on-surface-variant mb-6">Lid sinds apr 2026</p>
+<!-- Action Button -->
+<button class="w-full py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 cubic-bezier transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">chat_bubble</span>
+                    Bericht sturen
+                </button>
+</section>
+<!-- Tabs Section (No Border Rule) -->
+<div class="px-6 mb-8 flex gap-6 overflow-x-auto no-scrollbar">
+<button class="flex-shrink-0 relative py-2">
+<span class="text-[#F15A24] font-bold text-sm">Advertenties (0)</span>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-[#F15A24] rounded-full"></div>
+</button>
+<button class="flex-shrink-0 py-2">
+<span class="text-on-surface-variant font-medium text-sm">Beoordelingen (4)</span>
+</button>
+</div>
+<!-- Empty State Canvas (Editorial Bento/Glassmorphism feel) -->
+<section class="px-6">
+<div class="bg-surface-container-low rounded-3xl p-10 flex flex-col items-center text-center">
+<div class="w-48 h-48 mb-8 relative">
+<!-- Abstract "Empty Store" Editorial Illustration -->
+<div class="absolute inset-0 bg-gradient-to-tr from-surface-variant to-transparent rounded-full opacity-50 blur-2xl"></div>
+<div class="relative flex items-center justify-center h-full">
+<span class="material-symbols-outlined text-8xl text-outline-variant/40" style="font-variation-settings: 'wght' 200;">storefront</span>
+<div class="absolute -top-2 -right-2 bg-surface-container-lowest p-3 rounded-2xl shadow-sm rotate-12">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">search_off</span>
+</div>
+</div>
+</div>
+<h3 class="text-xl font-bold text-on-surface mb-3 tracking-tight">Nog geen advertenties</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-8 max-w-[240px]">
+                        Bram heeft op dit moment geen actieve advertenties online staan.
+                    </p>
+<button class="px-6 py-3 bg-surface-container-high text-on-secondary-container font-bold rounded-xl flex items-center gap-2 cubic-bezier transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">star</span>
+                        Bekijk reviews
+                    </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Shared Component Execution) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-1px_10px_rgba(0,0,0,0.05)] md:hidden">
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2 cubic-bezier duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2 cubic-bezier duration-300">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Zoeken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2 cubic-bezier duration-300">
+<span class="material-symbols-outlined">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Plaatsen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2 cubic-bezier duration-300">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Berichten</span>
+</div>
+<!-- Active State: Profiel -->
+<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-2 cubic-bezier duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Profiel</span>
+</div>
+</nav>
+<!-- Visual Safe Area for iPhone 15 Pro -->
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-on-surface/10 rounded-full z-[60]"></div>
+</div>
+</body></html>

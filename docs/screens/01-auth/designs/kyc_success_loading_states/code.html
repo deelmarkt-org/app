@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #f0edec 25%, #fcf9f8 50%, #f0edec 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#34618d",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#285782",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed": "#d0e4ff",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#006b24",
+                        "on-tertiary-fixed": "#002106",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-tint": "#ad3300",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-container": "#a1cdff",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-surface": "#1c1b1b",
+                        "surface-dim": "#dcd9d9",
+                        "on-background": "#1c1b1b",
+                        "inverse-primary": "#ffb59e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "primary-container": "#d1430a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-fixed": "#82fc8e",
+                        "tertiary-container": "#008730",
+                        "primary": "#a93200",
+                        "outline": "#8e7067"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-high min-h-screen flex items-center justify-center p-8 gap-12 overflow-x-auto">
+<!-- State 1: Loading / iDIN Redirect -->
+<div class="relative w-[393px] h-[852px] bg-background rounded-[55px] shadow-[0_0_0_12px_#1c1b1b] overflow-hidden flex flex-col shrink-0 border-[8px] border-black">
+<!-- Top Status Bar -->
+<div class="px-8 pt-12 pb-4 flex justify-between items-center w-full">
+<span class="text-sm font-bold">9:41</span>
+<div class="flex gap-1.5">
+<div class="w-4 h-4 rounded-full bg-on-surface"></div>
+<div class="w-4 h-4 rounded-full bg-on-surface"></div>
+</div>
+</div>
+<!-- Header -->
+<header class="fixed top-12 left-0 w-full z-50 px-6 py-4 flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold tracking-tighter text-on-surface">Honest Exchange</h1>
+</header>
+<!-- Main Content (Loading) -->
+<main class="flex-1 px-8 pt-32 flex flex-col items-center">
+<div class="w-full space-y-8">
+<!-- Skeleton Branding -->
+<div class="flex flex-col items-center gap-4">
+<div class="w-20 h-20 rounded-2xl skeleton-shimmer"></div>
+<div class="h-6 w-48 rounded-md skeleton-shimmer"></div>
+</div>
+<!-- Skeleton Cards -->
+<div class="space-y-4">
+<div class="p-6 bg-surface-container-lowest rounded-2xl space-y-4">
+<div class="h-4 w-3/4 rounded skeleton-shimmer"></div>
+<div class="h-4 w-1/2 rounded skeleton-shimmer"></div>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-2xl space-y-4">
+<div class="h-4 w-5/6 rounded skeleton-shimmer"></div>
+<div class="h-4 w-2/3 rounded skeleton-shimmer"></div>
+</div>
+</div>
+<div class="text-center space-y-2">
+<p class="text-on-surface-variant text-sm font-medium">Bezig met doorsturen naar iDIN...</p>
+<p class="text-outline text-xs">Een moment geduld alstublieft</p>
+</div>
+</div>
+</main>
+<!-- Footer Action -->
+<div class="p-8 pb-12">
+<button class="w-full py-4 bg-primary-container rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-primary/20">
+<svg class="animate-spin h-5 w-5 text-on-primary-container" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<span class="text-on-primary-container font-bold">Verifiëren via iDIN</span>
+</button>
+</div>
+</div>
+<!-- State 2: Success State -->
+<div class="relative w-[393px] h-[852px] bg-background rounded-[55px] shadow-[0_0_0_12px_#1c1b1b] overflow-hidden flex flex-col shrink-0 border-[8px] border-black">
+<!-- Top Status Bar -->
+<div class="px-8 pt-12 pb-4 flex justify-between items-center w-full">
+<span class="text-sm font-bold">9:41</span>
+<div class="flex gap-1.5">
+<div class="w-4 h-4 rounded-full bg-on-surface"></div>
+<div class="w-4 h-4 rounded-full bg-on-surface"></div>
+</div>
+</div>
+<!-- Main Content (Success) -->
+<main class="flex-1 px-8 flex flex-col items-center justify-center text-center">
+<!-- Animated Success Mark Container -->
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-tertiary/10 rounded-full scale-150 blur-2xl"></div>
+<div class="w-32 h-32 bg-tertiary-container rounded-full flex items-center justify-center relative z-10">
+<span class="material-symbols-outlined text-6xl text-on-tertiary-container" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="space-y-4">
+<h2 class="text-3xl font-black tracking-tight text-on-surface leading-tight">Verificatie geslaagd!</h2>
+<p class="text-lg text-on-surface-variant font-medium leading-relaxed px-4">Je identiteit is succesvol bevestigd via iDIN. Je account is nu volledig geverifieerd.</p>
+</div>
+<!-- Trust Badge Bento Card -->
+<div class="mt-12 w-full p-6 bg-surface-container-lowest rounded-3xl border border-tertiary/10 flex items-center gap-4">
+<div class="w-12 h-12 bg-tertiary/10 rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-on-surface">Vertrouwd verkoper</p>
+<p class="text-sm text-on-surface-variant">Badge toegevoegd aan profiel</p>
+</div>
+</div>
+<!-- Additional Detail Card (Asymmetric Layout Hint) -->
+<div class="mt-4 w-full grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-low rounded-2xl text-left">
+<p class="text-[10px] font-bold uppercase tracking-widest text-outline mb-1">Status</p>
+<p class="text-sm font-bold text-tertiary">Actief</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-2xl text-left">
+<p class="text-[10px] font-bold uppercase tracking-widest text-outline mb-1">Limiet</p>
+<p class="text-sm font-bold text-on-surface">Onbeperkt</p>
+</div>
+</div>
+</main>
+<!-- Footer Action -->
+<div class="p-8 pb-12">
+<button class="w-full py-5 bg-gradient-to-br from-primary to-primary-container rounded-2xl shadow-xl shadow-primary/30 flex items-center justify-center group">
+<span class="text-on-primary font-extrabold text-lg">Doorgaan</span>
+<span class="material-symbols-outlined ml-2 group-active:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

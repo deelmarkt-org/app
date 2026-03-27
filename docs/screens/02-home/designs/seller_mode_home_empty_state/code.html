@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-header {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .cta-gradient {
+            background: linear-gradient(135deg, #a93200 0%, #d1430a 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "primary-container": "#d1430a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "surface-dim": "#dcd9d9",
+                        "on-background": "#1c1b1b",
+                        "inverse-primary": "#ffb59e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-surface": "#1c1b1b",
+                        "tertiary-container": "#008730",
+                        "primary": "#a93200",
+                        "outline": "#8e7067",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-fixed": "#82fc8e",
+                        "tertiary": "#006b24",
+                        "on-tertiary-fixed": "#002106",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#285782",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed": "#d0e4ff",
+                        "secondary": "#34618d",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-container": "#a1cdff",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-tint": "#ad3300"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.875rem", "xl": "1.25rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center p-4">
+<!-- iPhone 15 Pro Frame Mockup -->
+<div class="relative mx-auto border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[852px] w-[393px] shadow-2xl overflow-hidden">
+<div class="w-[148px] h-[34px] bg-gray-800 top-0 left-1/2 -translate-x-1/2 absolute z-50 rounded-b-3xl"></div>
+<div class="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
+<div class="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[178px] rounded-l-lg"></div>
+<div class="h-[64px] w-[3px] bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
+<!-- App Canvas -->
+<div class="bg-surface h-full w-full overflow-y-auto relative pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center w-full px-6 py-5 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="text-2xl font-extrabold tracking-tighter text-[#F15A24]">DeelMarkt</span>
+</div>
+<!-- Seller Toggle Interaction -->
+<div class="flex bg-surface-container-high rounded-full p-1 items-center">
+<div class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider text-slate-500">KOPER</div>
+<div class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider bg-white shadow-sm text-primary">VERKOPER</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-600 hover:opacity-80 transition-opacity cursor-pointer">help_outline</span>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 space-y-12">
+<!-- Greeting -->
+<div class="space-y-1">
+<h1 class="text-3xl font-extrabold tracking-tight text-on-surface">Hallo, Mahmut</h1>
+<p class="text-on-surface-variant font-medium">Klaar om iets nieuws te delen?</p>
+</div>
+<!-- Empty State Widget - Bento Style Card -->
+<div class="relative group">
+<div class="bg-surface-container-lowest rounded-xl p-8 flex flex-col items-center text-center space-y-8 shadow-sm transition-all duration-300 hover:shadow-md">
+<!-- Minimal Illustration Area -->
+<div class="relative w-full max-w-[240px] aspect-square flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-90 blur-2xl"></div>
+<!-- Styled Empty Shelf/Box Graphic using subtle DIVs and icons -->
+<div class="relative z-10 flex flex-col items-center">
+<span class="material-symbols-outlined text-8xl text-outline-variant/40 select-none" style="font-variation-settings: 'wght' 100;">inventory_2</span>
+<div class="w-24 h-1 bg-surface-variant rounded-full mt-2 opacity-50"></div>
+</div>
+</div>
+<div class="space-y-3">
+<h2 class="text-xl font-bold tracking-tight text-on-surface">Je hebt nog geen advertenties</h2>
+<p class="text-on-surface-variant text-sm leading-relaxed px-4">Begin met het verkopen van spullen die je niet meer gebruikt en geef ze een tweede leven.</p>
+</div>
+<!-- CTA Button -->
+<button class="cta-gradient w-full py-4 rounded-lg text-white font-bold tracking-tight flex items-center justify-center gap-2 active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                            Start met verkopen
+                        </button>
+</div>
+</div>
+<!-- Secondary Info Section (Trust / How it works) -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-5 rounded-xl space-y-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h3 class="text-sm font-bold text-on-surface">Veilig Handelen</h3>
+<p class="text-xs text-on-surface-variant leading-tight">Geverifieerde kopers en verkopers.</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-xl space-y-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">payments</span>
+<h3 class="text-sm font-bold text-on-surface">Direct Betaald</h3>
+<p class="text-xs text-on-surface-variant leading-tight">Geld direct op je rekening na verkoop.</p>
+</div>
+</div>
+<!-- Decorative Content / Tip -->
+<div class="p-6 bg-secondary-container/20 rounded-xl border border-secondary-container/30 flex gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden">
+<img alt="Interior design" class="w-full h-full object-cover" data-alt="Modern minimalist living room interior with warm lighting, cozy furniture and artistic plants in a high-end photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNsmiTDVkoT2OlRhJswSnnYSOPaBOKgFB8zUtMjuSoiTsxIL1CpnLkWEvBSDV9JUYE6H6WF7xJ4YD0djJqQrlQC9lyhJdmily1VE4_LPNy2Qcurp8LNUNUzxf9WT1XrOErcQuY4gP-PfdB5BXIqPr-xjOXichIG8N_367MCtkmwBhuY1KpXpMZxivJo5CfXnCpVF3Iud42B6vNf7AWJ8usGb2dSjFm1Gu9eCJDMYbdVDCmnYUAijiSze8X2Eqe5BbQ1pQI0jKe-9F3"/>
+</div>
+<div>
+<h4 class="text-sm font-bold text-on-secondary-container">Tip voor succes</h4>
+<p class="text-xs text-on-secondary-container/80 mt-1">Goede foto's met daglicht zorgen voor 3x snellere verkoop van je items.</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-[#fcf9f8]/90 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] z-50 rounded-t-3xl">
+<!-- Home Active -->
+<a class="flex flex-col items-center justify-center text-[#F15A24] scale-110 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#F15A24] transition-colors" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Ontdekken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#F15A24] transition-colors" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Plaatsen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#F15A24] transition-colors" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-[#F15A24] transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Profiel</span>
+</a>
+</nav>
+<!-- iPhone Home Indicator -->
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-on-surface/20 rounded-full z-[60]"></div>
+</div>
+</div>
+</body></html>

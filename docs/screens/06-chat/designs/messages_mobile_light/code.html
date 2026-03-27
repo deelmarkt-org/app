@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#8e7067",
+              "on-primary-container": "#fffbff",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#a93200",
+              "outline-variant": "#e2bfb4",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "surface": "#fcf9f8",
+              "on-secondary-fixed": "#001d35",
+              "on-secondary-container": "#285782",
+              "secondary": "#34618d",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-high": "#ebe7e7",
+              "on-error-container": "#93000a",
+              "on-primary-fixed-variant": "#842500",
+              "on-primary-fixed": "#3a0b00",
+              "surface-variant": "#e5e2e1",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "tertiary-fixed": "#82fc8e",
+              "on-surface": "#1c1b1b",
+              "surface-tint": "#ad3300",
+              "surface-bright": "#fcf9f8",
+              "inverse-surface": "#313030",
+              "tertiary-fixed-dim": "#65df75",
+              "surface-container": "#f0edec",
+              "surface-container-highest": "#e5e2e1",
+              "primary-container": "#d1430a",
+              "tertiary-container": "#008730",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-tertiary-fixed": "#002106",
+              "on-background": "#1c1b1b",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "inverse-on-surface": "#f3f0ef",
+              "on-surface-variant": "#5a4139",
+              "on-tertiary-fixed-variant": "#00531a",
+              "tertiary": "#006b24",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-primary": "#ffb59e",
+              "surface-dim": "#dcd9d9",
+              "background": "#fcf9f8",
+              "surface-container-low": "#f6f3f2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-extrabold text-[#F15A24] tracking-tighter">The Honest Exchange</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 hover:text-[#F15A24] transition-colors" href="#">Ontdekken</a>
+<a class="text-slate-600 hover:text-[#F15A24] transition-colors" href="#">Verkopen</a>
+<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] pb-1" href="#">Berichten</a>
+<a class="text-slate-600 hover:text-[#F15A24] transition-colors" href="#">Favorieten</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden ml-2 ring-2 ring-surface-container-high">
+<img alt="Gebruikersprofiel" data-alt="Close up portrait of a friendly man with a neat beard and professional appearance in soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7mhzZ8Q7n5AeKY9As30eDY9IB4SWYsqW5MxhZpaq0Gz_diop8CxBNGDQ2YjsL4f5UXntTk-8GOvS3VfCMeqKK7S29gnPOGuEGsjht6AhMtglEEUBAyY3R6ksRopqtpZAptMvqCr3fshvqROPaajGLj9oj2ztHgAYQ4QHmFuFgsa7zKAhu3pfWEsW9z9bEkc7X3L2jYCeShf0QR98yRZ3Po3egplQCcCadayQclLu5PENUru-4XqC6czdHGwC4EsQEe6ft3WIlXvUP"/>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-28 pb-32 px-4 max-w-4xl mx-auto">
+<!-- Editorial Header -->
+<div class="mb-10 px-4">
+<h1 class="text-5xl font-extrabold tracking-tight text-on-surface mb-2">Berichten</h1>
+<p class="text-on-surface-variant text-lg">Beheer je gesprekken en biedingen.</p>
+</div>
+<!-- Conversation List -->
+<div class="space-y-4">
+<!-- Item 1: Jan de Vries -->
+<div class="group relative flex items-center gap-4 p-5 bg-surface-container-lowest rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:shadow-primary/5 cursor-pointer ring-1 ring-transparent hover:ring-primary/10">
+<div class="relative flex-shrink-0">
+<img alt="Jan de Vries" class="w-16 h-16 rounded-full object-cover" data-alt="Portrait of a middle-aged man with short hair and a warm smile, outdoor natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhUvWgtjCLoJVRBUZoIfdSYhe-s9Cugg4UdAXns0JW48myPBHems_WcgD9mk53WIVqWGtGVjC5hFHy7HpWTDKFsMOt_jBThGw4dP5tpw9bMmlB-8oxJxSaKmWXjdRm9hpqwPyA3SZ9DxDUefu8uwz9g7aZGwEN6qb_us2jr2ZrSOqiq76plhgQy9dX98aOGHZF1OKaE9g4IFSpEDjVfBjdI2Vqx7s-QdLrpHL6U4RQKrNJFas-_TYqUB9KQoeHKlT9YcnKGDNzh5yi"/>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-tertiary-container border-2 border-white rounded-full"></span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Jan de Vries</h3>
+<span class="text-xs font-semibold text-[#F15A24]">14:32</span>
+</div>
+<p class="text-primary font-semibold text-sm truncate mb-1">Is de fiets nog beschikbaar?</p>
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Gazelle bike</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3 flex-shrink-0 ml-4">
+<div class="bg-[#F15A24] text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center">2</div>
+<img alt="Gazelle bike" class="w-12 h-12 rounded-xl object-cover ring-1 ring-surface-variant" data-alt="Detailed close up of a classic black Gazelle bicycle frame with chrome details against a minimalist urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAERbc41P7QvpvXTb5iq1hXYg0BSQlk_hxSZ4O_PBeIvlkbRC0bwq3vrpzgxJaTCCWp805JNsfEpzQRvRDkbpCTOyPXjwhGgQeqKiMz_bAb2VLOK_o6O5IUi4AM2P2dyJDAhw34pePY6AjfOvrUI77glLyBLHSYpjckkKWsoniazx9Z1VCajswRfiuBU6MHrqMMtv7DoyWoMKQfrcls5OVbHmke0WZHVILpLOrJ9j1K1XVSHuBCopzfAsd4RV9CkT4mBFMj1OI_VMmZ"/>
+</div>
+</div>
+<!-- Item 2: Lisa Bakker -->
+<div class="group relative flex items-center gap-4 p-5 bg-surface-container-lowest rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:shadow-primary/5 cursor-pointer">
+<div class="relative flex-shrink-0 opacity-80">
+<img alt="Lisa Bakker" class="w-16 h-16 rounded-full object-cover" data-alt="Portrait of a young woman with long dark hair, professional headshot style with soft neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpjhsK2KkiLJno8bBgtOkekxp54ZfyAn4yhYS1tS6uUkfaR_sfVXh8afF0yhLiQ1-tvGRLfq3DNjMItr05J3aPSoKFlt9TaFgRHZkqSIVe-o9pbZTFqf6W5cby6pGLFDN-1JtLMH58eAsxmItSZSRuwHlg2HpfyYkql1gMFBgrmWEZVZO1odx5DOjdDZ_lVODtx7TLqaNr6Z9xVHlJGSuLlko3LcuCHahINUwbzOt3L5Obf3ZrcttIbVf9-scHbt3pd7YQ_Yq_HqbC"/>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-slate-300 border-2 border-white rounded-full"></span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Lisa Bakker</h3>
+<span class="text-xs text-on-surface-variant">Gisteren</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate mb-1">Bod: € 120,00</p>
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">iPhone 14</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3 flex-shrink-0 ml-4">
+<img alt="iPhone 14" class="w-12 h-12 rounded-xl object-cover ring-1 ring-surface-variant grayscale-[0.2]" data-alt="Close up of a sleek purple smartphone on a wooden surface with soft reflections and shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiWGo6tndK8TNoWg0V1VRhgsv-sq_qoDYMfSVo8hbweWnx6Kn3i9R_J3w940tTJOkThP55AcdxX3JiMe0szYuTlEyqFoKjuPoh8rfl_yCynZilZb1ZanUlQgg-88BvaG5UYm39UTn5Lq8LcronI1IjEVQHK3CNyCqfVwvIb-I86LQMol3u2-2xuYqZcGpwRgJyQyu3DGqvEp5W4XU6Q7NlsMRKtaX8v6vf50G-Usgyvt8UCK90cAHaVDNBpUaGt0u_9YL8JltOLkw2"/>
+</div>
+</div>
+<!-- Item 3: Mark Sanders -->
+<div class="group relative flex items-center gap-4 p-5 bg-surface-container-lowest rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:shadow-primary/5 cursor-pointer">
+<div class="relative flex-shrink-0">
+<img alt="Mark Sanders" class="w-16 h-16 rounded-full object-cover" data-alt="Headshot of a man with glasses and a friendly expression in an office environment with soft bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2ABTTmVWTR8gAPgTzmAyIL-EydAf6dpTcpZ9CyUMSnDa_onIuqbmnGPY7x6wMX8Gdh7jwN1CHId3oezMke0NvUgiUxIpwLfig7KUL1UZV3idjJrXECBh8G7uPYLFLpYKuX-daDtjtHqUttBBvNmE51q8XHbKVz4besC725gZ8i_rS4kvgQnD3623V5hFQY11ZK5mF6nW3nDI2TPzlOttbI-o9ucHwqWlfUkQQ-OFVOHVI7a8Vp5garmCMRIjl5wSWSTALt7dVM9Td"/>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-tertiary-container border-2 border-white rounded-full"></span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Mark Sanders</h3>
+<span class="text-xs text-on-surface-variant">Maandag</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate mb-1">Ik kom hem morgen ophalen.</p>
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">IKEA bank</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3 flex-shrink-0 ml-4">
+<img alt="IKEA bank" class="w-12 h-12 rounded-xl object-cover ring-1 ring-surface-variant" data-alt="Modern green fabric sofa in a bright living room with minimalist scandinavian interior design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8H6cYq-NxyJObCBVs5aXZ7V9KpaRizqcIVutRMNNZVwDhqRYxa1aKGG2whlMl17qbICuXDNz61IueBcWUouLcBOf9jOXZPczW9vWVn_2WSA-XbVYwvXKL4jWtQXivXn9T8vIK6uzxXI2afFyTEExs6ePQBP7NfFWgy0ctfP5j0g2bNv-EA9k8zqvgoS4DKSpFG0y-Tx6C_XUV22xw5a5qrYOjcgeX8p-5CD0SXHw5VaJDfMJ8odz_UxQipE-gaSA2fI6ZMNFdxv6p"/>
+</div>
+</div>
+<!-- Item 4: Sophie de Jong -->
+<div class="group relative flex items-center gap-4 p-5 bg-surface-container-lowest rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:shadow-primary/5 cursor-pointer ring-1 ring-transparent hover:ring-primary/10">
+<div class="relative flex-shrink-0 opacity-80">
+<img alt="Sophie de Jong" class="w-16 h-16 rounded-full object-cover" data-alt="Portrait of a young woman with freckles and wavy hair, looking directly at the camera with a calm expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU2RbNctfPXjPRYG99VRLWCwSLn8T9tu8GyMiuv7pUlG5xt0ywGddH7BVSWt0pnZoJAhRiVmsYNFcHXH84O3Nr5DVl5Q0ZdUFiVFpa0bMrZmF8SqDx9n8G6kBX7GJDaD2zIcUxGnYtNll1Av2o-TIIOsm8SOLB6VgZ6Bhj3dgJbZtT1FHsfIxHDFNIpzigOdIFrfYliziXA-rKv2qVVKObrtHuvcmsOcFmcH1ptLOGe3MsH80Oxr0eNzpbR-rpeKQR1pZWCQ69Lpw3"/>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-slate-300 border-2 border-white rounded-full"></span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Sophie de Jong</h3>
+<span class="text-xs font-semibold text-[#F15A24]">Vrijdag</span>
+</div>
+<p class="text-primary font-semibold text-sm truncate mb-1">Dankjewel voor de snelle reactie!</p>
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Dr. Martens</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3 flex-shrink-0 ml-4">
+<div class="bg-[#F15A24] text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center">1</div>
+<img alt="Dr. Martens" class="w-12 h-12 rounded-xl object-cover ring-1 ring-surface-variant" data-alt="Close up shot of black leather combat boots with yellow stitching on a grey concrete floor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfvdADGWipsHU3hFTlqxvNiOBLhBW4VjTlpYo5SsjJtDFsJvrCeKEHXk7mKzfb_vzJVyJ735voNwrT1oqP41E9AnhVZOnmTAonKVMP2J2wnl7ss936NJgds4UD87d4Y9Ha-6Xs1zYN8vI568G-m6Q9u-HVOW4hRhFuCCtUlpikAQc9sG_zourtT09Q4v-viHJWczqyx0h3_KFnlgvRmPaH_tHj75Va03HMJKxJzVrCRp8Za31ELLun0r_V3_XdfvQrRniKzf3JEVA5"/>
+</div>
+</div>
+<!-- Item 5: Bram v/d Meer -->
+<div class="group relative flex items-center gap-4 p-5 bg-surface-container-lowest rounded-2xl transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-xl hover:shadow-primary/5 cursor-pointer">
+<div class="relative flex-shrink-0">
+<img alt="Bram v/d Meer" class="w-16 h-16 rounded-full object-cover" data-alt="Cheerful man in casual clothing, smiling broadly with natural outdoor sunlight on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPAyns_cy3_OQCEEVMtBzWgMC81m9wpBDl_JLdD3bXbpFFlt6yrKzI_niNnRmTCkQLTVSrovJzT4JonvklXHRYjAJBePa8MlPsKpR3i49V3WY-umf7h10mf5FQ1-_Gs9XAyCDydKgbnVUHyGV1-GcbyDv6RfZHEBz1XxH-S4FQQvSNwluhXohvfT3qclWof1C62Q8uwNWq3vnNiTI8w8FfemikgmiXO1s_pYO1nudgvBceRJWwglRCL-Fc3CFgp-DOLXpoiinue4Z3"/>
+<span class="absolute bottom-1 right-1 w-4 h-4 bg-tertiary-container border-2 border-white rounded-full"></span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Bram v/d Meer</h3>
+<span class="text-xs text-on-surface-variant">12 okt</span>
+</div>
+<p class="text-on-surface-variant text-sm truncate mb-1">Is € 50 ook goed?</p>
+<div class="flex items-center gap-2">
+<span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Laptop</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-3 flex-shrink-0 ml-4">
+<img alt="Laptop" class="w-12 h-12 rounded-xl object-cover ring-1 ring-surface-variant" data-alt="Open silver laptop computer on a clean white desk with soft overhead lighting and minimal office supplies" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEBiISAAvK3pUhj2tadrhSY-fTe-l5N6JS9hZ3JZzYwSUwToa-y0JOoVQfjOMFLX7xHA0LiUrVdM6AMOnVZEJOgWAcmygi4SqA9bwc0pSyh__lQ04wabWTrt4ewqR0_KGbM0ZeMJKVCE7-tse8KHKdj9y7ca6VQnwrBWx1LPB6ZIzSQvigbgHl2BY4NBF8WKNO7zBZwDg-6TzHT6Jc4zPmI-vBZlUsNHPkXZXhMC8u9KI6dp-WGZii_n_mtWX6PVBxkOWHkK8UIbzZ"/>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/90 dark:bg-[#121212]/90 backdrop-blur-2xl rounded-t-3xl border-t border-slate-200/10 md:hidden">
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined text-3xl text-[#F15A24]" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Verkopen</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold mt-1">Profiel</span>
+</a>
+</nav>
+</body></html>

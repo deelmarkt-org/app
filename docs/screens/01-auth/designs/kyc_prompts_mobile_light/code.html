@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#34618d",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#285782",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed": "#d0e4ff",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#006b24",
+                        "on-tertiary-fixed": "#002106",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-tint": "#ad3300",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-container": "#a1cdff",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-surface": "#1c1b1b",
+                        "surface-dim": "#dcd9d9",
+                        "on-background": "#1c1b1b",
+                        "inverse-primary": "#ffb59e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "primary-container": "#d1430a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-fixed": "#82fc8e",
+                        "tertiary-container": "#008730",
+                        "primary": "#a93200",
+                        "outline": "#8e7067"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            border: 12px solid #1c1b1b;
+            border-radius: 54px;
+            position: relative;
+            overflow: hidden;
+            background: #fcf9f8;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 35px;
+            background: #1c1b1b;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            z-index: 100;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-slate-200 flex items-center justify-center min-h-screen p-8 gap-12 flex-wrap">
+<!-- STATE 1: Listing Detail with Inline Banner -->
+<div class="iphone-frame">
+<div class="notch"></div>
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+<button class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<div class="flex gap-2">
+<button class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">share</span>
+</button>
+<button class="w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">favorite</span>
+</button>
+</div>
+</header>
+<main class="h-full overflow-y-auto hide-scrollbar pt-20 pb-24">
+<!-- Product Image -->
+<div class="px-4 mb-6">
+<div class="aspect-square rounded-[32px] overflow-hidden bg-surface-container-low">
+<img alt="Vintage Camera" class="w-full h-full object-cover" data-alt="high-end vintage film camera on a minimalist light wood surface with soft morning sunlight casting elegant shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9m-DQLJd-3mIMoOI6svcEaZptAt8JI8GmyCy9Sh7C2S3Eh0L7v8l6WIC0A-uKF2beq19L7ekAcjqDIbdBAjN2YthDal8xRrmJQRNs0umPb5ri-QN4f-Np50q3l-Qln1985DRoQ3Ev3L-2-CUt0JoIpURmb96cAzpB9pPqi9snzkDC7g7IsfoT45B3vDJQYwD8pdGNhHYXuD-R400C1LNvqITbG0yShGolV24jMPaEXsdiHN9SS0X41H9oB7OnZlDWzLWRfIzMXugP"/>
+</div>
+</div>
+<!-- Trust Header & Identity Section -->
+<div class="px-6 space-y-4">
+<div class="flex justify-between items-start">
+<div>
+<h1 class="text-2xl font-black text-on-surface tracking-tight">Leica M6 Classic</h1>
+<p class="text-secondary font-semibold text-lg">€ 2.850,00</p>
+</div>
+<div class="bg-tertiary-container/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-tertiary text-xs font-bold uppercase tracking-wider">Top Verkoper</span>
+</div>
+</div>
+<!-- KYC INLINE BANNER (Variant 1) -->
+<div class="bg-primary-container/5 rounded-2xl p-4 flex items-center justify-between group cursor-pointer hover:bg-primary-container/10 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">shield_person</span>
+</div>
+<p class="text-on-surface font-semibold text-sm">Verifieer je account om te kopen</p>
+</div>
+<span class="text-primary font-bold text-sm flex items-center gap-1">
+                        Verifieer nu <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</span>
+</div>
+<!-- Description -->
+<div class="space-y-2">
+<h2 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 pt-4">Omschrijving</h2>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                        In uitstekende staat verkerende Leica M6 Classic. Onlangs geserviced door professionele technicus. Geen krassen op de body, zoeker is helder en accuraat. Inclusief originele lederen tas.
+                    </p>
+</div>
+<!-- Seller Info -->
+<div class="bg-surface-container-low rounded-2xl p-4 flex items-center gap-4 mt-4">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Seller Profile" class="w-full h-full object-cover" data-alt="portrait of a professional looking man in his 40s with a kind expression and neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCBf2Mxqvz7VlqVjDab6EgtMW2oBzVZVWd7dYnSI9EW479EcM54KsV57yT3t-HfpvnGsy_tDVpbnexx78dU2w2cMwab-Y7leQXDbwwqN3-4I5OM1EQPAQaoTSOsTz-B5j6lymFV0442PnGFid_z5Swt8VIx6P4Bz8VFOu0CgC3vx8H9OZhkYk4Eux4xaG8WlR7nS0-VPAqLbXsBfAWc8Hrzd25UxMezwsNpxct2RDiiqdCiG2JbAb97ohRBSI8FxAPVV0438j-Lqhw"/>
+</div>
+<div class="flex-1">
+<p class="font-bold text-on-surface">Jan van der Meer</p>
+<p class="text-xs text-on-surface-variant">Lid sinds 2018 • 48 reviews</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-2xl z-50">
+<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-2">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Shop</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Trust</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Profile</span>
+</div>
+</nav>
+</div>
+<!-- STATE 2: Listing Detail with Bottom Sheet Modal Overlay -->
+<div class="iphone-frame">
+<div class="notch"></div>
+<!-- Underlying Content (Same as State 1 but slightly dimmed) -->
+<div class="opacity-40">
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex justify-between items-center px-6 py-4">
+<button class="w-11 h-11 flex items-center justify-center rounded-full"><span class="material-symbols-outlined">arrow_back</span></button>
+<div class="flex gap-2">
+<button class="w-11 h-11 flex items-center justify-center rounded-full"><span class="material-symbols-outlined">share</span></button>
+<button class="w-11 h-11 flex items-center justify-center rounded-full"><span class="material-symbols-outlined">favorite</span></button>
+</div>
+</header>
+<main class="h-full pt-20 pb-24 px-4">
+<div class="aspect-square rounded-[32px] bg-surface-container-low mb-6"></div>
+<div class="px-2 space-y-4">
+<h1 class="text-2xl font-black">Leica M6 Classic</h1>
+<p class="text-secondary font-semibold text-lg">€ 2.850,00</p>
+</div>
+</main>
+</div>
+<!-- BOTTOM SHEET OVERLAY (Variant 2) -->
+<div class="absolute inset-0 bg-on-surface/20 backdrop-blur-[2px] z-[60] flex flex-col justify-end">
+<div class="bg-surface-bright rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.15)] px-6 pt-3 pb-8 animate-slide-up">
+<!-- Drag Handle -->
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full mx-auto mb-8"></div>
+<div class="text-center space-y-4 mb-8">
+<div class="w-20 h-20 bg-tertiary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+<span class="material-symbols-outlined text-4xl text-tertiary" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<h2 class="text-2xl font-black text-on-surface tracking-tight">Extra verificatie vereist</h2>
+<p class="text-on-surface-variant font-medium px-4">Voor transacties boven €500 is iDIN-verificatie nodig om de veiligheid te garanderen.</p>
+</div>
+<!-- FAQ Expandable -->
+<div class="bg-surface-container-low rounded-2xl p-4 mb-8">
+<div class="flex justify-between items-center group cursor-pointer">
+<span class="font-bold text-on-surface">Wat is iDIN?</span>
+<span class="material-symbols-outlined text-secondary">expand_more</span>
+</div>
+</div>
+<!-- Progress Section -->
+<div class="space-y-3 mb-8">
+<div class="flex justify-between items-center">
+<span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60">Stap 1 van 2</span>
+<span class="text-xs font-bold text-primary">Identiteit</span>
+</div>
+<div class="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full w-1/2 bg-primary rounded-full"></div>
+</div>
+</div>
+<!-- Actions -->
+<div class="space-y-3">
+<button class="w-full h-[56px] bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<span>Verifieer met iDIN</span>
+<div class="flex items-center gap-1 opacity-80">
+<span class="w-5 h-3 bg-white/20 rounded-sm"></span>
+<span class="w-5 h-3 bg-white/20 rounded-sm"></span>
+</div>
+</button>
+<button class="w-full h-[56px] text-on-surface font-bold rounded-2xl flex items-center justify-center active:bg-surface-container-low transition-colors">
+                        Later
+                    </button>
+</div>
+<!-- Trust Footer -->
+<div class="mt-8 flex items-center justify-center gap-2 text-on-surface-variant/60 text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span>Beveiligd door Honest Exchange &amp; iDIN</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

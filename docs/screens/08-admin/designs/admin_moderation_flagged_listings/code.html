@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeelMarkt Admin - Flagged Listings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#d0e4ff",
+                        "tertiary": "#006b24",
+                        "tertiary-container": "#008730",
+                        "inverse-primary": "#ffb59e",
+                        "primary-container": "#d1430a",
+                        "surface-tint": "#ad3300",
+                        "surface-bright": "#fcf9f8",
+                        "surface": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#164974",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e5e2e1",
+                        "secondary-container": "#a1cdff",
+                        "on-surface-variant": "#5a4139",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-container-high": "#ebe7e7",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#82fc8e",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-error-container": "#93000a",
+                        "secondary": "#34618d",
+                        "outline": "#8e7067",
+                        "on-surface": "#1c1b1b",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container": "#f0edec",
+                        "primary": "#a93200",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "surface-container-low": "#f6f3f2",
+                        "on-secondary-container": "#285782",
+                        "on-background": "#1c1b1b",
+                        "tertiary-fixed-dim": "#65df75",
+                        "inverse-surface": "#313030",
+                        "primary-fixed": "#ffdbd0",
+                        "outline-variant": "#e2bfb4",
+                        "on-primary-container": "#fffbff",
+                        "on-tertiary-fixed": "#002106",
+                        "on-secondary-fixed": "#001d35"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .tonal-shift { transition: background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-neutral-50 dark:bg-neutral-950 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<div class="flex items-center gap-3 px-2 mb-8">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<div>
+<h2 class="text-lg font-extrabold text-orange-600 dark:text-orange-500 leading-none">Moderation Hub</h2>
+<p class="text-[10px] text-neutral-500 uppercase tracking-widest mt-1">Admin Control Panel</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm rounded-lg py-2.5 px-4 mb-1 transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">flag</span>
+<span>Flagged Listings</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined">person_off</span>
+<span>Reported Users</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span>Disputes</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined">policy</span>
+<span>DSA Notices</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all cubic-bezier(0.23, 1, 0.32, 1) duration-300" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span>Appeals</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-neutral-200/50 dark:border-neutral-800/50 space-y-1">
+<button class="w-full flex items-center justify-between bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white rounded-lg py-2.5 px-4 mb-4 font-bold active:scale-95 transition-transform">
+<span>View Global Logs</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 py-2 px-4 hover:bg-neutral-200/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 text-error py-2 px-4 hover:bg-error/10 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl flex justify-between items-center h-16 px-6 ml-64 shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-orange-600 transition-colors">search</span>
+<input class="w-full bg-neutral-100 dark:bg-neutral-800 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-orange-500/20 transition-all" placeholder="Search flagged content, users, or report IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-neutral-200 dark:bg-neutral-800 mx-1"></div>
+<div class="flex items-center gap-3 pl-2 cursor-pointer group">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-semibold text-neutral-900 dark:text-white leading-none">Admin User</p>
+<p class="text-[10px] text-orange-600 font-bold uppercase mt-1">Senior Moderator</p>
+</div>
+<img alt="Admin Profile Avatar" class="w-10 h-10 rounded-full border-2 border-white dark:border-neutral-800 shadow-sm" data-alt="professional headshot of a middle-aged male administrator in a modern office setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC73HG78FT0Rnu9NPZ3z-3KSq55YtoCEU5T51_BYHru6cG4Zi2ODwOaKnmAWP_BABWrFQ2eKJtSZXd539ymo2a-UIW2FOu-weQ-CcbGdAq_9tjI7QPlOPvTvrGq3fSAfg4fSpDlHyb0vR61bAOLeXHVqa-ad6XHWta33fJuyiyxUBB_j7EYrYjzR7Cu3khP6JWTWsSPKXAqjZcSStG1R0unjfmKZW8AGxMkc5RQVhq6KtnIuhBhTtZ2i15X1xBagIDjmW6NYfOOHv-5"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="p-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div class="max-w-2xl">
+<nav class="flex items-center gap-2 text-xs text-neutral-500 mb-2">
+<span>Moderation</span>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="text-orange-600 font-medium">Flagged Listings</span>
+</nav>
+<h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">Gemelde advertenties</h1>
+<p class="text-lg text-neutral-500 leading-relaxed">Review and moderate listings flagged by the community or automated safety filters for DSA compliance.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high text-on-secondary-container px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
+<span class="material-symbols-outlined">download</span>
+                        Export Report
+                    </button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all active:scale-95">
+<span class="material-symbols-outlined">bolt</span>
+                        Quick Action Mode
+                    </button>
+</div>
+</div>
+<!-- Filter Tray -->
+<div class="bg-surface-container-low rounded-2xl p-6 mb-8 flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2 pr-4 border-r border-outline-variant/30">
+<span class="text-xs font-bold text-neutral-400 uppercase tracking-widest mr-2">Filters</span>
+<button class="px-4 py-2 bg-white dark:bg-neutral-800 rounded-full text-xs font-bold border border-orange-500/20 text-orange-600 shadow-sm flex items-center gap-2">
+                        Ernst: High
+                        <span class="material-symbols-outlined text-sm">close</span>
+</button>
+<button class="px-4 py-2 bg-neutral-200/50 hover:bg-neutral-200 text-neutral-600 rounded-full text-xs font-bold transition-colors">Mid</button>
+<button class="px-4 py-2 bg-neutral-200/50 hover:bg-neutral-200 text-neutral-600 rounded-full text-xs font-bold transition-colors">Low</button>
+</div>
+<div class="flex gap-3">
+<select class="bg-transparent border-none text-sm font-semibold focus:ring-0 cursor-pointer text-neutral-700">
+<option>Status: Pending Review</option>
+<option>Status: Under Investigation</option>
+<option>Status: On Hold</option>
+</select>
+<select class="bg-transparent border-none text-sm font-semibold focus:ring-0 cursor-pointer text-neutral-700">
+<option>Category: All Categories</option>
+<option>Category: Electronics</option>
+<option>Category: Fashion</option>
+<option>Category: Home &amp; Garden</option>
+</select>
+</div>
+<button class="ml-auto text-sm font-bold text-orange-600 hover:underline">Clear all filters</button>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface-container-lowest rounded-3xl shadow-sm overflow-hidden border border-outline-variant/10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-neutral-50/50 dark:bg-neutral-900/50 border-b border-neutral-100 dark:border-neutral-800">
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400">Listing</th>
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400">Verkoper</th>
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400">Reden</th>
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400">Datum</th>
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400 text-center">Ernst</th>
+<th class="px-6 py-5 text-xs font-extrabold uppercase tracking-widest text-neutral-400 text-right">Actie</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-neutral-100/50 dark:divide-neutral-800/50">
+<!-- Row 1 -->
+<tr class="hover:bg-neutral-50/80 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="high-quality puffer jacket lying on a neutral grey background in studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOeQ1j_0AJXM6WJipWMUmWPpYmc-2LjQyZ8tX77npthESpTMHQmnuL3fb7NM-J3EPRCfYeuCnL1t0ukTgTY2tawmDq4sy8iXcHd2OvTPfJmh1cNMyQ7DVogyr2fpGGhVQqMkXB8r4V-SAVxgcJzIyuiYY7bm2kt6jWOuQIsbudcqKwZng1jzY_4K5rg7NIdOadLRPj12z1qjtUx1zrGlxcgkxALsBQwLAAnpLC5IZEHsLvtd6pAr1FDoegazsXd1orXEOKeLqoxi_f"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl"></div>
+</div>
+<div>
+<h3 class="font-bold text-neutral-900 group-hover:text-primary transition-colors">Vintage North Face Nuptse</h3>
+<p class="text-xs text-neutral-500">ID: #DLM-88294</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="casual avatar of a young woman with smiling face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc2F6SqGDY-NjOtX9NQH3uW6JRiWJjfRdO9BVc_N6qu2d9nAqf5q8pim9yjRV0jZOStabWfCa-22Ajmq5L-TyY-SIFNNe1QYq7NDdA_EQa_KU2HG8lOB2agWLeVJ4tOqnDW_fAeWkOawQpJYlUKJSX5JIt31Gp8rZSsNpkglxqMbVqAMopLpumzd8DzCvkoMRCSC80Fm5iGf0-AEGi9faq8-QY8BlgvPYTcsRrEcizH10VEd6q6NgTW87cipr7ngXi-MoDsz9lTTV_"/>
+<span class="text-sm font-semibold text-neutral-700">Lars de Vries</span>
+<span class="bg-tertiary/10 text-tertiary text-[10px] font-bold px-1.5 py-0.5 rounded">TRUSTED</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-neutral-800">Possible Counterfeit</span>
+<span class="text-xs text-neutral-400 italic">User report: "Logo looks off"</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-neutral-600">Vandaag, 14:20</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-error/10 text-error text-[11px] font-bold uppercase tracking-wider border border-error/20">High</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Approve"><span class="material-symbols-outlined">check_circle</span></button>
+<button class="p-2 text-secondary hover:bg-secondary/10 rounded-lg transition-colors" title="Warn"><span class="material-symbols-outlined">warning</span></button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Remove"><span class="material-symbols-outlined">delete_forever</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-neutral-50/80 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close-up of a high-end smartphone on a white reflective surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu8zfn8Q_ukBfzMqr15ptccFptVDKUI7ySfQtAtu-2PZF0APUKuE9y0GSBl1KkFmo1LcM5Euq5rSSPr7TYj_rRgytIgbOAofETD5F0OFffwR1QunmApGenFcKGU8XQXWXFtFgFNoibu9K4LywyHVrmB_HQNLm-AtKyHA2H9JKu3e36cIbsYlXIhBjtckNayGCQE3vqSvvOwoyLXCEN8NnoiVqnLBDvv7ujEWEbQcgnjFeprry51Ywvzp0FOr2dtaJf3VCGZfpUWCfW"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl"></div>
+</div>
+<div>
+<h3 class="font-bold text-neutral-900 group-hover:text-primary transition-colors">iPhone 15 Pro Max - Unopened</h3>
+<p class="text-xs text-neutral-500">ID: #DLM-10293</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="professional avatar of a man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnvJm-34vT8dm-cK-C-VbL-krkAOEGzpizKWwB1jG4sKkkSsKAEUBpiUkGGYRwhW05fzYlYUP9oq8mf8t3__X2ot3PkBoCJKzFhhMCM0MZ97CsHJRxGchPWKh2dONaZ-_bZJJQy3CzjfpNF9PBhwyS2rDHaGKZxU9toQSvZwzpRqq35w7NG1i5s1Nfq6sf8Xqt9rnIP6yaFHiPFgdAXJ1DpG3zAe5X65TfAirYmeYMWxsFrJhmz9imFi9vMuTJ4g0yHnehJWK1ok3z"/>
+<span class="text-sm font-semibold text-neutral-700">Emma Janssen</span>
+<span class="bg-neutral-200 text-neutral-500 text-[10px] font-bold px-1.5 py-0.5 rounded">NEW</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-neutral-800">Scam suspected</span>
+<span class="text-xs text-neutral-400 italic">Automated flag: Price outlier (-60%)</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-neutral-600">Gisteren, 09:15</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-[11px] font-bold uppercase tracking-wider border border-orange-200">Medium</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Approve"><span class="material-symbols-outlined">check_circle</span></button>
+<button class="p-2 text-secondary hover:bg-secondary/10 rounded-lg transition-colors" title="Warn"><span class="material-symbols-outlined">warning</span></button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Remove"><span class="material-symbols-outlined">delete_forever</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-neutral-50/80 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="red running sneaker showcased on a dark minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm73s3sigvbzMNqyR3Mgb74TwPfBhnCY6R_otGmQXGUUTja5kCcgAgFotMUT8Aj9iOliTLmcqr3dm3KtDcj2Kp7fNOKq6vGfZGkqYrwpOBg2Nsq9oZhbdfGURN6oBZus8mzaAj_iKZfVkHoVHiwP6-GOyMf4m4LX3zyvYJ_Q7XU22vLHIEi1XV0tIybM6jm5U4k6kSSvYIjPZ5UK797g6k5jVv-il_nf5lVOlJ4T5yLZq7GnBsDzN9iiPbdqhwwgP9P4Xd5cnT-GF_"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl"></div>
+</div>
+<div>
+<h3 class="font-bold text-neutral-900 group-hover:text-primary transition-colors">Nike Air Max (Lightly Used)</h3>
+<p class="text-xs text-neutral-500">ID: #DLM-22910</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="friendly avatar of an older man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGIF4VurgB7nBJso5nzEsPQuAiEChJ42JCW7KQZMw7D0rkzlAMXbSAL50hAh50wObPsaY6ZRF0Z0ccy7zHGp8LpSy6hs2bdgRgM0M4PAenw87OYu-Q3G-_Joe3s9qFrTD4QqGXXcW1kPQde4NvxiScJRbsPAOppPOUOUzwuBlzd-JERy713fHfrQERV_uDMS8LSKq6BmYs3s98rq4xzoRkKbFB8m-hfBULDpSsJ0m_1iUfOGSJm1ZSAUxw0_6FCGgryKBbMihQmMls"/>
+<span class="text-sm font-semibold text-neutral-700">Pieter Smit</span>
+<span class="bg-error/10 text-error text-[10px] font-bold px-1.5 py-0.5 rounded">WARNED</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-neutral-800">Duplicate Listing</span>
+<span class="text-xs text-neutral-400 italic">System match: 94% similarity</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-neutral-600">01 Apr, 22:45</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-container text-[11px] font-bold uppercase tracking-wider border border-secondary-container">Low</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Approve"><span class="material-symbols-outlined">check_circle</span></button>
+<button class="p-2 text-secondary hover:bg-secondary/10 rounded-lg transition-colors" title="Warn"><span class="material-symbols-outlined">warning</span></button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Remove"><span class="material-symbols-outlined">delete_forever</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-neutral-50/80 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shadow-inner flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="modern minimalist white watch on a grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSnYuPlN5odzIOG5KmoRYudq1K_TrhIkpLZ4iEbYQ9OVuN5lGqxU1UTNASa-5NqM0AVE0yDyvNfGav4RRu1zihbEJG7K-ylEbneXzQvNc9Ll0BxhyVcvawNuMuQAfo66fx5NC4e1C-DlbrMh7ly5tjp6VNqJqGd7Qum7ict-Gt115owwm6MEYA-AS2MQByTSNgBPTc21JcqBKtpyvc_E_2WYiCRknJhnrRyYR4bBXlWQ50MoTuLiEZuZzD6kWLBps86J_3rkY_6G8C"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-xl"></div>
+</div>
+<div>
+<h3 class="font-bold text-neutral-900 group-hover:text-primary transition-colors">Designer Watch Collection</h3>
+<p class="text-xs text-neutral-500">ID: #DLM-55312</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="smiling female avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNlr0Wk3_TS1PSFD_iVYdTgEDaQbbV8ku-1UeDQP7Dg-7dF0qNyd_XGsWjSNu5ca0zHNvMFjroNvQF7Rj20QWr3WcusVUBF5VArxG02Ob5NCoCzdSALZQZeBUXolYs6TwqcYMC8ZMxzqJpBfJdTVFNtN4q1MPJw2l2aXEatvd9W4_LxdpnVLR9F9JNJxUSt1Fcprd438L0fW3I54fZ1Anc0TTj7WBr-87ziFle1rzYKSVgjHtUe5mMbh4cjr067NHBR7MvCddZ8dga"/>
+<span class="text-sm font-semibold text-neutral-700">Sofie Bakker</span>
+<span class="bg-tertiary/10 text-tertiary text-[10px] font-bold px-1.5 py-0.5 rounded">TRUSTED</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-neutral-800">Prohibited Item</span>
+<span class="text-xs text-neutral-400 italic">Keyword trigger: "Replica"</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-sm text-neutral-600">30 Mar, 11:30</span>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-error/10 text-error text-[11px] font-bold uppercase tracking-wider border border-error/20">High</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Approve"><span class="material-symbols-outlined">check_circle</span></button>
+<button class="p-2 text-secondary hover:bg-secondary/10 rounded-lg transition-colors" title="Warn"><span class="material-symbols-outlined">warning</span></button>
+<button class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Remove"><span class="material-symbols-outlined">delete_forever</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="bg-neutral-50 dark:bg-neutral-900 px-6 py-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+<p class="text-xs font-medium text-neutral-500">Showing <span class="text-neutral-900 font-bold">1-4</span> of <span class="text-neutral-900 font-bold">1,240</span> flagged items</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-400 hover:text-neutral-900 transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-orange-600 text-white flex items-center justify-center font-bold">1</button>
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:text-orange-600 transition-colors">2</button>
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:text-orange-600 transition-colors">3</button>
+<button class="w-10 h-10 rounded-lg bg-white border border-neutral-200 flex items-center justify-center text-neutral-600 hover:text-orange-600 transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Dashboard Stats Summary (Bento Style) -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant/5">
+<div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Avg. Response Time</p>
+<p class="text-2xl font-extrabold text-neutral-900 mt-1">14m 22s</p>
+<div class="mt-4 flex items-center gap-2 text-tertiary text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>-4m from yesterday</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant/5">
+<div class="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Accuracy Rate</p>
+<p class="text-2xl font-extrabold text-neutral-900 mt-1">98.4%</p>
+<div class="mt-4 flex items-center gap-2 text-tertiary text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+0.2% improvement</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant/5">
+<div class="w-10 h-10 rounded-xl bg-error/10 text-error flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">block</span>
+</div>
+<p class="text-neutral-500 text-xs font-bold uppercase tracking-widest">Removals (24h)</p>
+<p class="text-2xl font-extrabold text-neutral-900 mt-1">142</p>
+<div class="mt-4 flex items-center gap-2 text-neutral-400 text-xs font-bold">
+<span>Consistent with average</span>
+</div>
+</div>
+<div class="bg-gradient-to-br from-neutral-900 to-neutral-800 p-6 rounded-3xl shadow-xl">
+<div class="w-10 h-10 rounded-xl bg-white/10 text-white flex items-center justify-center mb-4 backdrop-blur-md">
+<span class="material-symbols-outlined">policy</span>
+</div>
+<p class="text-neutral-400 text-xs font-bold uppercase tracking-widest">DSA Critical Queue</p>
+<p class="text-2xl font-extrabold text-white mt-1">12 Pending</p>
+<button class="mt-4 w-full py-2 bg-orange-600 text-white rounded-xl text-xs font-bold hover:bg-orange-500 transition-colors">Prioritize DSA</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

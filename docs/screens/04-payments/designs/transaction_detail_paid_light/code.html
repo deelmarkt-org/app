@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transactiestatus - DeelMarkt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#a93200",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "on-background": "#1c1b1b",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e5e2e1",
+              "tertiary": "#006b24",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "on-tertiary-fixed": "#002106",
+              "tertiary-fixed": "#82fc8e",
+              "surface-bright": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "background": "#fcf9f8",
+              "tertiary-container": "#008730",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-container": "#285782",
+              "outline": "#8e7067",
+              "surface-container-high": "#ebe7e7",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "surface": "#fcf9f8",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-container": "#f0edec",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed-variant": "#842500",
+              "outline-variant": "#e2bfb4",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-surface": "#313030",
+              "secondary": "#34618d",
+              "on-surface-variant": "#5a4139",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary": "#ffffff",
+              "surface-container-low": "#f6f3f2",
+              "on-surface": "#1c1b1b",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-on-surface">Transactiestatus</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-600" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-600 ml-4" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-md mx-auto">
+<!-- Status Hero -->
+<div class="flex flex-col items-center text-center mb-10">
+<div class="w-20 h-20 bg-primary-container/10 rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-2">Betaald</h2>
+<p class="text-slate-500 font-medium">Wachten op verzending</p>
+</div>
+<!-- Escrow Timeline -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-8 mb-8 shadow-sm">
+<h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8">Bestelproces</h3>
+<div class="relative space-y-10">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-2 bottom-2 w-[2px] bg-surface-container-high"></div>
+<!-- Step 1: Completed -->
+<div class="relative flex items-start gap-6">
+<div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-white shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div>
+<p class="font-bold text-on-surface leading-none mb-1">Bod geaccepteerd</p>
+<p class="text-xs text-slate-400">12 Okt, 14:20</p>
+</div>
+</div>
+<!-- Step 2: Active (Betaald) -->
+<div class="relative flex items-start gap-6">
+<div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-primary-container text-white border-4 border-white ring-4 ring-primary-container/10">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div>
+<p class="font-bold text-primary-container leading-none mb-1">Betaald</p>
+<p class="text-xs text-primary/60 font-medium">Geld veilig in escrow</p>
+</div>
+<!-- Indicator that this is the active state -->
+<div class="absolute -left-1 w-10 h-10 bg-primary/5 rounded-full blur-xl"></div>
+</div>
+<!-- Step 3: Pending (Verzending) -->
+<div class="relative flex items-start gap-6">
+<div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-surface-container-high text-slate-400">
+<span class="material-symbols-outlined text-sm">local_shipping</span>
+</div>
+<div class="opacity-40">
+<p class="font-bold text-on-surface leading-none mb-1">Verzending</p>
+<p class="text-xs text-slate-500">In afwachting van verkoper</p>
+</div>
+</div>
+<!-- Step 4: Pending (Ontvangst) -->
+<div class="relative flex items-start gap-6">
+<div class="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-surface-container-high text-slate-400">
+<span class="material-symbols-outlined text-sm">charging_station</span>
+</div>
+<div class="opacity-40">
+<p class="font-bold text-on-surface leading-none mb-1">Ontvangst bevestigen</p>
+<p class="text-xs text-slate-500">Zodra pakket is aangekomen</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Summary Card -->
+<div class="bg-surface-container-low rounded-3xl p-6 flex items-center gap-5">
+<div class="w-20 h-20 rounded-2xl overflow-hidden bg-white shrink-0">
+<img alt="Product" class="w-full h-full object-cover" data-alt="Modern high-end sneaker in bright red with sleek design on a clean minimalist studio background with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAfjxz18SF6yR5ZtQtKrBv9QJvMBWam89jynAuwqc3K05k4aKL2Peu6fiQ0NGIyDIKIMxtO-8Cm3IcmM8aw3C2N3kMVDtCIqlfjp0oeTaFpnVHKK0FmlBjnBxv1OdiadOV-AUtw4y5-pQAO2oC8r6hDkAxZfX0YsQ_xrR_Y1ZUoBycMi0wiO0kJnbJcgl32kBK-tcjHmH7ehaDUadzgCYeXxGM_SMMQcqrR4AxpCbbleZIW8pPIbQFItGlT9abTmbQGJNLGc4XO9yM"/>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-secondary tracking-wide uppercase mb-1">Referentie: #TR-9902</p>
+<h4 class="font-bold text-on-surface line-clamp-1">Limited Edition Red Racer</h4>
+<div class="flex items-center justify-between mt-2">
+<span class="text-lg font-extrabold text-on-surface">€ 145,00</span>
+<span class="text-[10px] px-2 py-1 bg-white rounded-full font-bold text-slate-500 shadow-sm">Incl. Kopersbescherming</span>
+</div>
+</div>
+</div>
+<!-- Info Section (Bento Style) -->
+<div class="grid grid-cols-2 gap-4 mt-8">
+<div class="col-span-2 bg-surface-container-lowest p-6 rounded-3xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary">security</span>
+<p class="text-sm font-bold">Kopersbescherming Actief</p>
+</div>
+<p class="text-sm text-slate-500 leading-relaxed">Je betaling wordt veilig vastgehouden door <span class="font-bold text-on-surface">DeelMarkt Escrow</span>. De verkoper ontvangt het geld pas nadat jij de ontvangst hebt bevestigd.</p>
+</div>
+<div class="bg-surface-container-low p-5 rounded-3xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2">Verkoper</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-fixed flex items-center justify-center text-[10px] font-bold text-secondary">JD</div>
+<p class="text-xs font-bold truncate">Jan de Vries</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 rounded-3xl">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2">Verzendmethode</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-slate-600">inventory_2</span>
+<p class="text-xs font-bold truncate">PostNL Track &amp; Trace</p>
+</div>
+</div>
+</div>
+<!-- Help Link -->
+<div class="mt-10 text-center">
+<button class="text-sm font-bold text-slate-400 flex items-center justify-center gap-2 mx-auto hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">help_outline</span>
+                Hulp nodig bij deze transactie?
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#fcf9f8]/80 backdrop-blur-xl z-50 rounded-t-3xl shadow-[0_-4px_40px_rgba(0,0,0,0.06)]">
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="swap_horiz">swap_horiz</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profile</span>
+</a>
+</nav>
+</body></html>

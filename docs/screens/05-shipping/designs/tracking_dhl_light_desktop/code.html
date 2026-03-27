@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#001d35",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "surface-container-highest": "#e5e2e1",
+              "secondary": "#34618d",
+              "error-container": "#ffdad6",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "surface-container": "#f0edec",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "tertiary-container": "#008730",
+              "primary-fixed-dim": "#ffb59e",
+              "outline-variant": "#e2bfb4",
+              "on-surface-variant": "#5a4139",
+              "on-secondary-fixed-variant": "#164974",
+              "on-primary-fixed-variant": "#842500",
+              "secondary-container": "#a1cdff",
+              "primary": "#a93200",
+              "surface": "#fcf9f8",
+              "primary-fixed": "#ffdbd0",
+              "tertiary-fixed-dim": "#65df75",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary-container": "#f7fff2",
+              "on-primary-fixed": "#3a0b00",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-primary-container": "#fffbff",
+              "inverse-on-surface": "#f3f0ef",
+              "outline": "#8e7067",
+              "background": "#fcf9f8",
+              "surface-variant": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "tertiary": "#006b24",
+              "on-secondary-container": "#285782",
+              "surface-container-high": "#ebe7e7",
+              "surface-container-low": "#f6f3f2",
+              "on-tertiary-fixed": "#002106",
+              "on-background": "#1c1b1b",
+              "surface-dim": "#dcd9d9",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed": "#d0e4ff",
+              "on-tertiary": "#ffffff",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 w-full bg-[#fcf9f8]/80 backdrop-blur-xl flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-low rounded-full transition-colors">arrow_back</button>
+<h1 class="text-xl font-bold text-[#121212] tracking-tight font-headline">Tracking</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant p-2 cursor-pointer hover:bg-surface-container-low rounded-full transition-colors" data-icon="help">help</span>
+<span class="material-symbols-outlined text-on-surface-variant p-2 cursor-pointer hover:bg-surface-container-low rounded-full transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<main class="max-w-[600px] mx-auto px-6 pt-8">
+<!-- Carrier Branding Header -->
+<div class="flex items-center gap-4 mb-8">
+<div class="w-14 h-14 rounded-2xl bg-[#FFCC00] flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[#D40511] text-3xl font-bold" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div>
+<p class="text-on-surface-variant text-sm font-medium tracking-wide uppercase opacity-70">Vervoerder</p>
+<h2 class="text-2xl font-extrabold text-on-surface tracking-tight">DHL Express Zending</h2>
+</div>
+</div>
+<!-- Tracking Number Card -->
+<div class="bg-surface-container-lowest rounded-[24px] p-6 mb-10 transition-all hover:shadow-lg">
+<div class="flex flex-col gap-1">
+<label class="text-xs font-bold text-primary tracking-widest uppercase">Tracking Nummer</label>
+<div class="flex items-center justify-between">
+<span class="text-2xl font-mono font-medium tracking-tighter text-on-surface">JVGL123456789</span>
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high text-on-secondary-container text-sm font-bold transition-all hover:bg-secondary-container/30">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                        Kopieer
+                    </button>
+</div>
+</div>
+</div>
+<!-- Timeline Section -->
+<div class="relative">
+<h3 class="text-lg font-bold mb-8 text-on-surface flex items-center gap-2">
+<span class="w-1 h-6 bg-primary rounded-full"></span>
+                Statusoverzicht
+            </h3>
+<div class="relative space-y-0 pl-4">
+<!-- Vertical Line -->
+<div class="absolute left-[27px] top-2 bottom-2 w-0.5 bg-surface-container-highest"></div>
+<!-- Timeline Item: Current -->
+<div class="relative pl-12 pb-10">
+<div class="absolute left-0 top-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center ring-4 ring-primary-fixed">
+<span class="material-symbols-outlined text-white text-base" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold text-primary tracking-wide">VANDAAG — 14:20</span>
+<h4 class="text-lg font-bold text-on-surface leading-tight">Onderweg naar sorteercentrum</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Pakket is opgehaald door de koerier en wordt momenteel verwerkt in de regio Amsterdam.</p>
+</div>
+</div>
+<!-- Timeline Item: Completed -->
+<div class="relative pl-12 pb-10">
+<div class="absolute left-0 top-1 w-7 h-7 bg-surface-container-highest rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-base">package_2</span>
+</div>
+<div class="flex flex-col gap-1 opacity-70">
+<span class="text-xs font-medium text-on-surface-variant">GISTEREN — 18:45</span>
+<h4 class="text-md font-bold text-on-surface leading-tight">Zending aangemeld</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">De verzender heeft de verzendgegevens online ingediend bij DHL Express.</p>
+</div>
+</div>
+<!-- Timeline Item: Completed -->
+<div class="relative pl-12 pb-10">
+<div class="absolute left-0 top-1 w-7 h-7 bg-surface-container-highest rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-base">inventory_2</span>
+</div>
+<div class="flex flex-col gap-1 opacity-70">
+<span class="text-xs font-medium text-on-surface-variant">24 OKT — 09:12</span>
+<h4 class="text-md font-bold text-on-surface leading-tight">Bestelling geplaatst</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Transactie voltooid op DeelMarkt. Wachten op bevestiging van de verkoper.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Delivery Estimate Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div class="bg-primary/5 rounded-[24px] p-6 flex flex-col justify-between border border-primary/10">
+<span class="material-symbols-outlined text-primary mb-4 text-3xl">calendar_today</span>
+<div>
+<p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">Verwachte Levering</p>
+<p class="text-xl font-extrabold text-on-surface">Vrijdag, 27 Okt</p>
+</div>
+</div>
+<div class="bg-secondary/5 rounded-[24px] p-6 flex flex-col justify-between border border-secondary/10">
+<span class="material-symbols-outlined text-secondary mb-4 text-3xl">location_on</span>
+<div>
+<p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Bestemming</p>
+<p class="text-xl font-extrabold text-on-surface">Utrecht, NL</p>
+</div>
+</div>
+</div>
+<!-- Help Section -->
+<div class="mt-12 mb-8 p-8 rounded-[32px] bg-surface-container-low text-center">
+<h5 class="text-lg font-bold text-on-surface mb-2">Problemen met je zending?</h5>
+<p class="text-on-surface-variant text-sm mb-6 max-w-xs mx-auto">Onze klantenservice staat 24/7 klaar om je te helpen met je DHL Express pakket.</p>
+<button class="w-full bg-surface-container-lowest text-on-surface font-bold py-4 rounded-2xl transition-all hover:bg-white hover:shadow-md">
+                Neem Contact Op
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#fcf9f8]/80 backdrop-blur-xl no-border shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-[#121212]/40 dark:text-[#fcf9f8]/40 px-4 py-2 hover:text-[#F15A24] transition-colors">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase mt-1">Shop</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#121212]/40 dark:text-[#fcf9f8]/40 px-4 py-2 hover:text-[#F15A24] transition-colors">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase mt-1">Bids</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-4 py-2">
+<span class="material-symbols-outlined" data-icon="local_shipping" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase mt-1">Tracking</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#121212]/40 dark:text-[#fcf9f8]/40 px-4 py-2 hover:text-[#F15A24] transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase mt-1">Profile</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#f3f0ef",
+              "on-background": "#1c1b1b",
+              "surface-container-high": "#ebe7e7",
+              "on-surface": "#1c1b1b",
+              "surface": "#fcf9f8",
+              "primary": "#a93200",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-highest": "#e5e2e1",
+              "surface-container-low": "#f6f3f2",
+              "primary-fixed": "#ffdbd0",
+              "outline": "#8e7067",
+              "surface-dim": "#dcd9d9",
+              "surface-variant": "#e5e2e1",
+              "outline-variant": "#e2bfb4",
+              "error": "#ba1a1a",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-container": "#f0edec",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "tertiary": "#006b24",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "on-primary-fixed-variant": "#842500",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#285782",
+              "background": "#fcf9f8",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error-container": "#93000a",
+              "on-tertiary-fixed": "#002106",
+              "tertiary-container": "#008730",
+              "on-primary-fixed": "#3a0b00",
+              "surface-bright": "#fcf9f8",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "surface-tint": "#ad3300",
+              "primary-container": "#d1430a",
+              "secondary": "#34618d",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar Navigation Shell -->
+<header class="sticky top-0 z-50 w-full bg-[#fcf9f8]/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] tracking-[-0.02em] font-bold text-2xl text-on-surface">Favorieten</h1>
+</div>
+<button class="text-[#4a4a4a] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas: Empty State -->
+<main class="flex-grow flex flex-col items-center justify-center px-8 text-center">
+<!-- Illustration Container -->
+<div class="relative w-64 h-64 mb-12 flex items-center justify-center">
+<!-- Background Decorative Elements -->
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-110 blur-3xl"></div>
+<!-- Principal Illustration Meta-Component -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-48 h-48 bg-surface-container-lowest rounded-[40px] shadow-2xl shadow-primary/10 flex items-center justify-center border border-outline-variant/15">
+<span class="material-symbols-outlined text-[100px] text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 0;">favorite</span>
+<!-- Floating Plus Badge -->
+<div class="absolute -top-4 -right-4 w-16 h-16 bg-primary-container rounded-full flex items-center justify-center shadow-lg transform rotate-12">
+<span class="material-symbols-outlined text-on-primary-container text-3xl font-bold" data-icon="add">add</span>
+</div>
+</div>
+<!-- Supporting Decorative Shapes -->
+<div class="absolute -bottom-6 -left-8 w-12 h-12 bg-secondary/10 rounded-xl rotate-45"></div>
+<div class="absolute top-4 -left-12 w-8 h-8 bg-tertiary/10 rounded-full"></div>
+</div>
+</div>
+<!-- Typography Stack -->
+<div class="max-w-xs space-y-4">
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface leading-tight">
+                Nog geen favorieten
+            </h2>
+<p class="text-on-surface-variant text-lg leading-relaxed font-medium">
+                Tik op het hartje bij een advertentie om deze hier te bewaren.
+            </p>
+</div>
+<!-- Call to Action -->
+<div class="mt-12 w-full max-w-sm">
+<button class="w-full py-5 px-8 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-lg rounded-xl shadow-xl shadow-primary/20 hover:opacity-90 transition-all scale-100 active:scale-95 ease-[cubic-bezier(0.23,1,0.32,1)] flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                Start met ontdekken
+            </button>
+</div>
+<!-- Featured Categories (Editorial Layout) -->
+<div class="mt-16 w-full overflow-hidden">
+<p class="text-left text-xs font-bold uppercase tracking-widest text-outline mb-6 px-2">Inspiratie voor jou</p>
+<div class="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar">
+<div class="flex-shrink-0 w-32 snap-center">
+<div class="w-32 h-32 rounded-3xl bg-surface-container-high overflow-hidden relative">
+<img alt="Interieur" class="w-full h-full object-cover grayscale opacity-60" data-alt="Modern minimalist velvet sofa in a sunlit living room with neutral tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3pL0fBeTHLjIkTZzMStBShyV7gPxuhVQ3TW_oPiSa_OgXUP9_l0r3a7wW1Jmt-d7aKOPIV-K5PvyRDH-CnShpbJcN3duGO76obGN6ABSTVhFQxpDUYM62f_1-Am7qglfcpTYRCX4lKyXCqq82yGeYcvtvOGi2BHZGsme7YDdAPXAhYYGonB3V6y_CWcDsxZAEtXuM9ObOohtgVztSYG078rxWb3csVzeIgDV--Vdj6jhlYLyYe41ApAS006vnNFwXjP1T8iDelMxz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<span class="absolute bottom-3 left-3 text-white text-[10px] font-bold uppercase">Wonen</span>
+</div>
+</div>
+<div class="flex-shrink-0 w-32 snap-center">
+<div class="w-32 h-32 rounded-3xl bg-surface-container-high overflow-hidden relative">
+<img alt="Tech" class="w-full h-full object-cover grayscale opacity-60" data-alt="Elegant smartphone and wireless headphones on a wooden desk surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHFyJ3fRhYbj5Re-P6XXI5SLC4gX5SwRiwgWGw0VbGj-yjHGSKq3srehYidPhcw3fMH1q-1cg-d7SnZ8O1hmbAIJeEkfK-wgQUZA5QXCqVGULJBVn_2PUSoauAQ0BY2RMIxQ_F7tYoMfAfrUQw4LG8UvXkyMKGmA-gLWk8wxqZu2dmB7VQBYTzNWRsQBzDF1hCFBWA_fYG29j4-n86caXLfsok9xSyCFH44Aq9dgON_l6Sz3dxH5QqCvhZ3ZhLxRx3_81W6-fWmXvv"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<span class="absolute bottom-3 left-3 text-white text-[10px] font-bold uppercase">Tech</span>
+</div>
+</div>
+<div class="flex-shrink-0 w-32 snap-center">
+<div class="w-32 h-32 rounded-3xl bg-surface-container-high overflow-hidden relative">
+<img alt="Hobby" class="w-full h-full object-cover grayscale opacity-60" data-alt="Artisanal ceramic coffee mugs stacked in a warm cafe environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAioUceglswQd-haozaGEZxGsThWa4nJmSDsYGp4D2G9tAlHGwtUy10jx_q5oAgnz0i-aBnrZZVFj7Q9XW1JtyqtiGRY2wc6IsuWjGm-2rlRVmCNt8XrMtMeB5k6_RNJjK_3f8FiuMS5A4lfXRVns9T6unMZc7PVeM48RpsdDa0x5qS2HvjPkXH_-cw-sV4IdWHIJy4hU0eSmh1V-7ceiE8DMVAe742n9KBTmosP8h-sU1-upB3WTiV2Ki-3UJoKAeWiOaUoxoJytUo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<span class="absolute bottom-3 left-3 text-white text-[10px] font-bold uppercase">Hobby</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<!-- Ontdekken -->
+<button class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Ontdekken</span>
+</button>
+<!-- Favorieten (ACTIVE) -->
+<button class="flex flex-col items-center justify-center text-[#F15A24] scale-110 transition-transform active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Favorieten</span>
+</button>
+<!-- Plaatsen -->
+<button class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Plaatsen</span>
+</button>
+<!-- Berichten -->
+<button class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="mail">mail</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Berichten</span>
+</button>
+<!-- Profiel -->
+<button class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profiel</span>
+</button>
+</nav>
+</body></html>

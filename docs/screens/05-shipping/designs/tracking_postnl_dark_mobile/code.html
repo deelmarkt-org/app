@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#001d35",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "surface-container-highest": "#e5e2e1",
+              "secondary": "#34618d",
+              "error-container": "#ffdad6",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "surface-container": "#f0edec",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "tertiary-container": "#008730",
+              "primary-fixed-dim": "#ffb59e",
+              "outline-variant": "#e2bfb4",
+              "on-surface-variant": "#5a4139",
+              "on-secondary-fixed-variant": "#164974",
+              "on-primary-fixed-variant": "#842500",
+              "secondary-container": "#a1cdff",
+              "primary": "#F15A24",
+              "surface": "#121212",
+              "primary-fixed": "#ffdbd0",
+              "tertiary-fixed-dim": "#65df75",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary-container": "#f7fff2",
+              "on-primary-fixed": "#3a0b00",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-primary-container": "#fffbff",
+              "inverse-on-surface": "#f3f0ef",
+              "outline": "#8e7067",
+              "background": "#121212",
+              "surface-variant": "#1E1E1E",
+              "surface-tint": "#ad3300",
+              "tertiary": "#006b24",
+              "on-secondary-container": "#285782",
+              "surface-container-high": "#2c2c2c",
+              "surface-container-low": "#181818",
+              "on-tertiary-fixed": "#002106",
+              "on-background": "#fcf9f8",
+              "surface-dim": "#dcd9d9",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-lowest": "#1E1E1E",
+              "secondary-fixed": "#d0e4ff",
+              "on-tertiary": "#ffffff",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"],
+              "mono": ["JetBrains Mono"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5xl", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121212;
+            color: #fcf9f8;
+        }
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #F15A24 0%, #F15A24 25%, #34618d 25%, #34618d 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 w-full bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-5 w-full">
+<div class="flex items-center gap-4">
+<button class="text-[#fcf9f8]/60 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-['Plus_Jakarta_Sans'] tracking-tight font-bold text-[#fcf9f8]">Tracking</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#fcf9f8]/60">help</span>
+<span class="material-symbols-outlined text-[#fcf9f8]/60">more_vert</span>
+</div>
+</div>
+</header>
+<main class="px-6 pt-4 space-y-6">
+<!-- Carrier Header Section -->
+<div class="flex items-center gap-4 p-1">
+<div class="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl" style="font-variation-settings: 'FILL' 1;">package_2</span>
+</div>
+<div>
+<h2 class="text-sm font-semibold text-secondary uppercase tracking-widest">PostNL Zending</h2>
+<p class="text-2xl font-bold text-[#fcf9f8]">In afwachting</p>
+</div>
+</div>
+<!-- Main Tracking Card -->
+<div class="bg-[#1E1E1E] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+<!-- Decorative Gradient Blobs -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[#fcf9f8]/40 text-xs font-semibold uppercase tracking-wider mb-1">Track &amp; Trace Code</p>
+<p class="font-mono text-lg text-primary tracking-tight">3SDEVC1234567</p>
+</div>
+<button class="bg-[#fcf9f8]/5 p-2 rounded-xl text-[#fcf9f8]/60">
+<span class="material-symbols-outlined text-xl">content_copy</span>
+</button>
+</div>
+<!-- Estimated Delivery Bento Segment -->
+<div class="grid grid-cols-2 gap-3 mt-4">
+<div class="bg-[#121212]/40 rounded-2xl p-4 border border-[#fcf9f8]/5">
+<p class="text-[#fcf9f8]/40 text-[10px] font-bold uppercase mb-1">Bezorgdatum</p>
+<p class="text-sm font-bold">Vandaag</p>
+<p class="text-xs text-[#fcf9f8]/60">14:30 - 17:00</p>
+</div>
+<div class="bg-[#121212]/40 rounded-2xl p-4 border border-[#fcf9f8]/5">
+<p class="text-[#fcf9f8]/40 text-[10px] font-bold uppercase mb-1">Status</p>
+<p class="text-sm font-bold text-tertiary-fixed">Onderweg</p>
+<p class="text-xs text-[#fcf9f8]/60 text-ellipsis overflow-hidden">Sorteercentrum</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Vertical Timeline Section -->
+<div class="mt-8 space-y-0 relative">
+<h3 class="text-lg font-bold mb-6 px-1">Verzendgeschiedenis</h3>
+<!-- Timeline Container -->
+<div class="relative pl-10 space-y-10 pb-4">
+<!-- Vertical Line -->
+<div class="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-primary via-secondary/40 to-[#1E1E1E]"></div>
+<!-- Event 1: Delivered (Future/Target) -->
+<div class="relative group">
+<div class="absolute -left-[32px] top-0 w-8 h-8 rounded-full bg-surface border-4 border-[#1E1E1E] flex items-center justify-center transition-all group-hover:scale-110">
+<div class="w-2.5 h-2.5 rounded-full bg-[#fcf9f8]/20"></div>
+</div>
+<div class="opacity-40">
+<p class="text-xs font-bold text-primary/60 uppercase tracking-widest mb-1">Verwacht</p>
+<h4 class="text-base font-bold text-[#fcf9f8]">Bezorgd</h4>
+<p class="text-sm text-[#fcf9f8]/60">Je pakket wordt vandaag bezorgd op jouw adres.</p>
+</div>
+</div>
+<!-- Event 2: In Transit (Current) -->
+<div class="relative group">
+<div class="absolute -left-[32px] top-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center z-10 shadow-[0_0_20px_rgba(241,90,36,0.4)]">
+<span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'wght' 700;">local_shipping</span>
+</div>
+<div class="bg-[#1E1E1E] p-4 rounded-2xl border-l-4 border-primary shadow-lg">
+<p class="text-xs font-bold text-primary uppercase tracking-widest mb-1">Vandaag • 09:12</p>
+<h4 class="text-base font-bold text-[#fcf9f8]">In de bezorgwagen</h4>
+<p class="text-sm text-[#fcf9f8]/70">De bezorger is onderweg naar je toe.</p>
+</div>
+</div>
+<!-- Event 3: Dropped Off -->
+<div class="relative group">
+<div class="absolute -left-[32px] top-0 w-8 h-8 rounded-full bg-secondary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-sm">inventory_2</span>
+</div>
+<div class="">
+<p class="text-xs font-bold text-[#fcf9f8]/40 uppercase tracking-widest mb-1">Gisteren • 18:45</p>
+<h4 class="text-base font-bold text-[#fcf9f8]">Pakket gesorteerd</h4>
+<p class="text-sm text-[#fcf9f8]/60">Verwerkt in het PostNL Sorteercentrum, Nieuwegein.</p>
+</div>
+</div>
+<!-- Event 4: Label Created -->
+<div class="relative group">
+<div class="absolute -left-[32px] top-0 w-8 h-8 rounded-full bg-secondary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-sm">description</span>
+</div>
+<div class="">
+<p class="text-xs font-bold text-[#fcf9f8]/40 uppercase tracking-widest mb-1">24 Okt • 14:20</p>
+<h4 class="text-base font-bold text-[#fcf9f8]">Zending aangemeld</h4>
+<p class="text-sm text-[#fcf9f8]/60">De verzender heeft de zending aangemeld bij PostNL.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Snippet (Asymmetric Editorial Style) -->
+<div class="relative h-48 rounded-[32px] overflow-hidden group">
+<img alt="Detailed map view of city streets in dark mode with glowing orange transit paths" class="w-full h-full object-cover grayscale opacity-50 contrast-125 transition-transform duration-700 group-hover:scale-105" data-location="Amsterdam" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfU4S5wdhkuT1jc4kyv29Juxz7hZ0x5L5GRL-UbxIdb2Wt-bOS1LK7UraMhvuTTi_rPKejs9bxihAKUea9IdfNKzXkLGx9vMjqJw5tME5278DgOaOP_OvJhE0UoHxDqciFtsADwt7laxSBSbfGaKdO2JDOQcFInISh14aiEF093xe3BAop5xFcsCEiRUStL3KNYylpQRF_nwicdMAm9Xn6p05HlwN9u3Pz6jBBY6oe8RumiRIjDkcAxSiDtV1jiBwYxKTWFRFmAOrw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+<div class="bg-surface/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-[#fcf9f8]/10">
+<p class="text-[10px] font-bold text-[#fcf9f8]/40 uppercase mb-0.5">Bestemming</p>
+<p class="text-xs font-bold">1011 AB, Amsterdam</p>
+</div>
+<button class="bg-primary text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#121212]/80 backdrop-blur-xl flex justify-around items-center px-4 pb-8 pt-4 rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.4)]">
+<div class="flex flex-col items-center justify-center text-[#fcf9f8]/40 px-4 py-2 transition-colors hover:text-[#F15A24]">
+<span class="material-symbols-outlined mb-1">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Shop</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#fcf9f8]/40 px-4 py-2 transition-colors hover:text-[#F15A24]">
+<span class="material-symbols-outlined mb-1">gavel</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Bids</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 scale-105">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold tracking-wide uppercase">Tracking</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#fcf9f8]/40 px-4 py-2 transition-colors hover:text-[#F15A24]">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Profile</span>
+</div>
+</nav>
+</body></html>

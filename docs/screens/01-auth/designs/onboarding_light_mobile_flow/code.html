@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#d1430a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-surface": "#1c1b1b",
+                        "surface-dim": "#dcd9d9",
+                        "on-background": "#1c1b1b",
+                        "inverse-primary": "#ffb59e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "tertiary-container": "#008730",
+                        "primary": "#a93200",
+                        "outline": "#8e7067",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-fixed": "#82fc8e",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#006b24",
+                        "on-tertiary-fixed": "#002106",
+                        "secondary": "#34618d",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#285782",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed": "#d0e4ff",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-container": "#a1cdff",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-tint": "#ad3300",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f3f4f6; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            border-radius: 54px;
+            border: 12px solid #1c1b1b;
+            position: relative;
+            overflow: hidden;
+            background-color: #fcf9f8;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .status-bar {
+            height: 44px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            font-size: 14px;
+            font-weight: 600;
+            position: absolute;
+            top: 0;
+            z-index: 60;
+        }
+        .dynamic-island {
+            width: 120px;
+            height: 35px;
+            background: black;
+            border-radius: 20px;
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 70;
+        }
+        .home-indicator {
+            width: 134px;
+            height: 5px;
+            background: black;
+            border-radius: 100px;
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 60;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="p-10 flex flex-wrap justify-center gap-12">
+<!-- SCREEN 1: BRAND INTRODUCTION -->
+<div class="iphone-frame flex flex-col">
+<div class="dynamic-island"></div>
+<div class="status-bar">
+<span>9:41</span>
+<div class="flex gap-1.5">
+<span class="material-symbols-outlined text-sm">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+<span class="material-symbols-outlined text-sm">battery_full</span>
+</div>
+</div>
+<header class="flex justify-between items-center px-8 pt-16 pb-4">
+<div class="flex items-center gap-1 bg-surface-container-high px-3 py-1.5 rounded-full">
+<span class="text-[11px] font-bold text-primary">NL</span>
+<div class="w-px h-3 bg-outline-variant/30"></div>
+<span class="text-[11px] font-medium text-on-surface-variant">EN</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+</header>
+<main class="flex-1 flex flex-col items-center px-8 text-center justify-between py-12">
+<div class="w-full">
+<div class="mb-12 flex justify-center">
+<span class="text-3xl font-extrabold tracking-tighter text-[#F15A24]">DeelMarkt</span>
+</div>
+<div class="relative w-full aspect-square mb-12 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-90 blur-3xl"></div>
+<img class="w-full h-auto object-contain relative z-10" data-alt="Modern flat illustration of two people standing next to a large orange package, smiling and shaking hands, using a palette of soft teal, orange and neutral cream" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtBzg8n_ynoCPJ28lKxjL73BFjjUPFc2RX2SKPt287tWjx4Kt8rwl2_0lEhnfGz0LmzaF8-Fkldl4IOt2P_IFBIxZI-Ox_ETRbtjHylL5SZKicvX2egE-OAoYXjbfW8AxdQYvjZ_BPXjFQXmPKkrvOHnX2OBq8Yf_bGam4XtavpO0KHkLutO7acHwlq9DKAmNon3OBQ94HDn3uVAZviEq97DyU8h5UxSAy-HKVm1bFY7F5BiQjnCKZn3hceXZ7mjAJsAlUVJJ3vYMp"/>
+</div>
+<h1 class="text-display-sm font-bold text-on-surface leading-tight tracking-tight mb-3">
+                    De eerlijke marktplaats van Nederland
+                </h1>
+<p class="text-body-lg text-on-surface-variant leading-relaxed px-4">
+                    Ontdek een veilige plek om spullen te delen, huren en kopen met mensen uit jouw buurt.
+                </p>
+</div>
+<!-- Page Indicators (Dot 1 Active) -->
+<div class="flex justify-center items-center gap-2 mb-8">
+<div class="w-2.5 h-2.5 rounded-full bg-[#F15A24]"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+</div>
+</main>
+<div class="home-indicator"></div>
+</div>
+<!-- SCREEN 2: SECURITY FEATURES -->
+<div class="iphone-frame flex flex-col">
+<div class="dynamic-island"></div>
+<div class="status-bar">
+<span>9:41</span>
+<div class="flex gap-1.5">
+<span class="material-symbols-outlined text-sm">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+<span class="material-symbols-outlined text-sm">battery_full</span>
+</div>
+</div>
+<main class="flex-1 flex flex-col px-8 py-20 justify-between">
+<div>
+<div class="flex justify-center mb-10">
+<div class="w-24 h-24 bg-tertiary/10 rounded-3xl flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-6xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+</div>
+<h2 class="text-display-sm font-bold text-on-surface text-center mb-10">
+                    Veilig kopen en verkopen
+                </h2>
+<div class="space-y-6">
+<!-- Row 1 -->
+<div class="flex items-start gap-5 p-5 bg-surface-container-low rounded-2xl">
+<div class="mt-1 w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+</div>
+<div>
+<p class="font-bold text-on-surface text-lg">Escrow bescherming</p>
+<p class="text-on-surface-variant text-sm mt-1 leading-snug">Je geld is veilig tot levering. Wij houden de betaling vast tot alles akkoord is.</p>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex items-start gap-5 p-5 bg-surface-container-low rounded-2xl">
+<div class="mt-1 w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">check_circle</span>
+</div>
+<div>
+<p class="font-bold text-on-surface text-lg">Geverifieerde verkopers</p>
+<p class="text-on-surface-variant text-sm mt-1 leading-snug">E-mail, telefoon en iDIN verificatie voor maximale betrouwbaarheid.</p>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex items-start gap-5 p-5 bg-surface-container-low rounded-2xl">
+<div class="mt-1 w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary">keyboard_return</span>
+</div>
+<div>
+<p class="font-bold text-on-surface text-lg">Eenvoudig retourneren</p>
+<p class="text-on-surface-variant text-sm mt-1 leading-snug">Geen gedoe bij problemen. Onze klantenservice staat 24/7 voor je klaar.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Page Indicators (Dot 2 Active) -->
+<div class="flex justify-center items-center gap-2 mb-8">
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-[#F15A24]"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+</div>
+</main>
+<div class="home-indicator"></div>
+</div>
+<!-- SCREEN 3: CALL TO ACTION -->
+<div class="iphone-frame flex flex-col">
+<div class="dynamic-island"></div>
+<div class="status-bar">
+<span>9:41</span>
+<div class="flex gap-1.5">
+<span class="material-symbols-outlined text-sm">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+<span class="material-symbols-outlined text-sm">battery_full</span>
+</div>
+</div>
+<main class="flex-1 flex flex-col items-center px-8 py-20 justify-between text-center">
+<div class="w-full">
+<div class="relative w-full aspect-square mb-8 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/10 rounded-full scale-110 blur-3xl opacity-50"></div>
+<img class="w-full h-auto object-contain relative z-10" data-alt="Stylized close-up illustration of two hands meeting in a firm handshake with abstract orange and blue circular shapes in the background, clean editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQAzqYsQ3Pdg6SWDfQDQaicNWQ2fs3Nyp0E0PvgYOblqLlvOJiz4XnZ_gtdGCOxdeWl4wHmBbMY7-6Rwot4to0hl-jN355qhoUkcXxUjAvu3cdfToyHM0V0EzibjA1eA4ubOSuajPmujNv3Xd2kdsk-Sq6vvi-25FochpGNCm6aB1UDJY5XmwXKJSCjseSGMR74fdbgjp8K_iwmaipRrIzIeakjgUN5HtRgBgEwFpso0aXM0ELkgL9CqbAM1t0FTGKx7bS0jRCHX8f"/>
+</div>
+<h2 class="text-display-sm font-extrabold text-on-surface leading-tight tracking-tight mb-4">
+                    Klaar om te beginnen?
+                </h2>
+<p class="text-body-lg text-on-surface-variant leading-relaxed px-6">
+                    Sluit je aan bij de community en begin vandaag nog met eerlijk handelen.
+                </p>
+</div>
+<div class="w-full space-y-4">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 px-8 rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform duration-200">
+                    Account aanmaken
+                </button>
+<a class="block w-full py-4 text-[#F15A24] font-bold text-lg" href="#">
+                    Ik heb al een account
+                </a>
+<!-- Page Indicators (Dot 3 Active) -->
+<div class="flex justify-center items-center gap-2 pt-8 mb-4">
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-high"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-[#F15A24]"></div>
+</div>
+</div>
+</main>
+<div class="home-indicator"></div>
+</div>
+</body></html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "primary-container": "#d1430a",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#313030",
+                        "surface-dim": "#dcd9d9",
+                        "on-background": "#1c1b1b",
+                        "inverse-primary": "#ffb59e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-surface": "#1c1b1b",
+                        "tertiary-container": "#008730",
+                        "primary": "#a93200",
+                        "outline": "#8e7067",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-fixed": "#82fc8e",
+                        "tertiary": "#006b24",
+                        "on-tertiary-fixed": "#002106",
+                        "background": "#fcf9f8",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#285782",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed": "#d0e4ff",
+                        "secondary": "#34618d",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-container": "#a1cdff",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-tint": "#ad3300"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121212; color: #F2F2F2; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-header { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(24px); }
+        .card-dark { background-color: #1E1E1E; border: 1px solid #333333; }
+        .primary-gradient { background: linear-gradient(135deg, #FF7A4D 0%, #D1430A 100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="dark bg-[#121212] text-[#F2F2F2] min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 glass-header">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#FF7A4D]">arrow_back</span>
+<span class="text-2xl font-extrabold tracking-tighter text-[#FF7A4D] font-headline">DeelMarkt</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-[#1E1E1E] border border-[#333333] px-3 py-1 rounded-full flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Verkoper</span>
+</div>
+<span class="material-symbols-outlined text-slate-400">help_outline</span>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 space-y-8">
+<!-- Dashboard Header -->
+<section class="space-y-1">
+<h1 class="text-[32px] font-extrabold tracking-tight leading-none font-headline">Goedenavond, Marco</h1>
+<p class="text-slate-400 font-medium">Je hebt 3 nieuwe aanvragen voor je listings.</p>
+</section>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="card-dark p-5 rounded-2xl flex flex-col justify-between aspect-square">
+<div class="w-10 h-10 rounded-xl bg-[#FF7A4D]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FF7A4D]">payments</span>
+</div>
+<div>
+<span class="text-3xl font-bold tracking-tight">€428,50</span>
+<p class="text-xs text-slate-500 font-semibold uppercase tracking-widest mt-1">Omzet deze maand</p>
+</div>
+</div>
+<div class="card-dark p-5 rounded-2xl flex flex-col justify-between aspect-square">
+<div class="w-10 h-10 rounded-xl bg-[#5BA3D9]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#5BA3D9]">visibility</span>
+</div>
+<div>
+<span class="text-3xl font-bold tracking-tight">1.2k</span>
+<p class="text-xs text-slate-500 font-semibold uppercase tracking-widest mt-1">Listing weergaven</p>
+</div>
+</div>
+</div>
+<!-- Active Requests (Asymmetric Scroll) -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h2 class="text-xl font-bold tracking-tight">Actieve Aanvragen</h2>
+<span class="text-[#FF7A4D] text-sm font-bold">Alles bekijken</span>
+</div>
+<div class="space-y-3">
+<!-- Request Item 1 -->
+<div class="card-dark p-4 rounded-2xl flex items-center gap-4">
+<div class="relative">
+<img class="w-16 h-16 rounded-xl object-cover" data-alt="close-up of a high-end black drone on a minimalist dark surface with dramatic tech lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYeUcuhuxKoajD1iwZkYq5OBSm8d7vlL948cMn7QwxaP0mYyz72_xpBCFlkoazA-UQrSTc8-EDIrhLHPB_oaIBuhJapChhL50R6rabdcWhibOqOTZQCSALgeT3ffbPT9PBIdmt9nnmHTqwKPp46RsFNod9KJ-DMDiuS2WV5ZditGaY06Ioq52DTtGp4muI3lgXa5CO4ge1lJfRTEu0JnuTNpCw7c04mTgMj_S08z0n6Okq5I0HwDbgVbSKQMhfVMuR79m-DJ2P42be"/>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 border-2 border-[#1E1E1E] rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a young smiling man in casual attire for user profile icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0jNRilnkrshi-zpZSlq5894RzbIJ18T63vMZ9AA4mY9R2F-g5e-quByfm17GWVxjemAqoRptlISODmB3LhlQNdhytYyjsgsem5WLS4c8OYEO_d4VYbuISMOSzX3H_0urFkq7ygYfHbl2XQiCUD602V0lZZN8HQcKFG7T3v3RXZZmbNBo_rpNs2NjOgZlAa6Z558nQ9mjn336N2KKJhi9ZQIo29f1O5F1DaUr4TyzyCQ6YpcTa9xIaFckDVW5pB5d5KYfEPxcbkRW6"/>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-[#F2F2F2]">DJI Mavic 3 Pro</h3>
+<span class="text-xs font-bold text-[#FF7A4D]">€45/dag</span>
+</div>
+<p class="text-sm text-slate-400">Aanvraag door Thomas • 2 dagen</p>
+</div>
+</div>
+<!-- Request Item 2 -->
+<div class="card-dark p-4 rounded-2xl flex items-center gap-4 opacity-80">
+<div class="relative">
+<img class="w-16 h-16 rounded-xl object-cover" data-alt="professional kitchen equipment espresso machine on a dark luxury countertop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeeM1MuIFwEpQgumt4pQgG5VlANneC2E2nCfO7SNy0Yq3RuPogmtUUznwZaJRwMSDjTe16IKV0BJRaDQ9w3irJEKidxe7JyCHrU3EPXBPBSwboOAFCVe5DaHP6fa_FPjDk8AWGVBG6m-MwWc5Ia78Ynu5emsSmcsNud5AIBIav79lEVMwV0uVCtzGHT9_F-PpFaJLIP4_X9qtrduWQnoLtKzDXgz-Smz8hJeaRkEmvG1NZsvck2BKX2RUINbW6CarjV1tHP0GzPeWD"/>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 border-2 border-[#1E1E1E] rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a confident woman in a modern workspace environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGTmx6yDb8aNwpFfkE0a3K1e7zsROfFNxjpUyw-TFle9904eDt1lTKRI9DvUW672B66df2YX6keDjSjP4vjTD6bimLML824W-pQ1z13T-f3bHV4hH56VXKLKnuubppCJxo0ZAZ-sQTTNoC4OU6qXzRV6WEmZ5m6fNOo85OUpoKL9SWNpyHAiWNptkRZ900wf8fFXvHV5rVEhvPJC4f9283PUaduCZ305Wwd5py-VLs_Bu4fe3qJescIvBviJuVwz41GBL7IJN0SW3g"/>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-[#F2F2F2]">Sage Barista Pro</h3>
+<span class="text-xs font-bold text-[#FF7A4D]">€15/dag</span>
+</div>
+<p class="text-sm text-slate-400">Aanvraag door Sophie • 1 dag</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section class="grid grid-cols-1 gap-4">
+<button class="primary-gradient w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-white shadow-lg shadow-[#FF7A4D]/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+                Nieuwe Advertentie Plaatsen
+            </button>
+<button class="bg-[#1E1E1E] border border-[#333333] w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-[#F2F2F2] active:scale-95 transition-transform">
+<span class="material-symbols-outlined">analytics</span>
+                Bekijk Uitgebreide Rapporten
+            </button>
+</section>
+<!-- Your Listings (Horizontal Card Layout) -->
+<section class="space-y-4 pb-12">
+<div class="flex justify-between items-end">
+<h2 class="text-xl font-bold tracking-tight">Jouw Listings</h2>
+<span class="text-[#FF7A4D] text-sm font-bold">Manage</span>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 snap-x no-scrollbar">
+<div class="snap-start flex-shrink-0 w-64 card-dark rounded-3xl overflow-hidden">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" data-alt="industrial designer work lamp on a minimalist wooden desk with soft dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ926hQd6JpEtjyGrgVHqPvaHvmV0ybmqsmPRpf5EGRrRS8v9jx6_5RIRVvPzL9-LYXe-RMQeS4tTRK0eWQXLdI4bEBA0m6Hgwq5WvK_3BAB1t1kebeZ2qISuMS_wbi_ALT_FjdPQg2mCPMyKee3BDx5JKDRxBy0FP4bijUUvfC5bx6RGP5gxpLwpuhVWKqWgGpkCDoiW8_sZFyEbPp2auBHGvfiROP28To-3nK1pnskA9skgpJUfUlxYO4z6Gsbq96fDGFfRdLfW5"/>
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold uppercase text-white">Actief</div>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-bold">Designer Bureaulamp</h4>
+<div class="flex items-center gap-2">
+<span class="text-xs text-[#5BA3D9] font-bold px-2 py-0.5 bg-[#5BA3D9]/10 rounded">Interieur</span>
+<span class="text-xs text-slate-500">24 weergaven</span>
+</div>
+</div>
+</div>
+<div class="snap-start flex-shrink-0 w-64 card-dark rounded-3xl overflow-hidden">
+<div class="relative h-40">
+<img class="w-full h-full object-cover" data-alt="high performance hiking boots on a textured stone surface with mountain gear background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLL0k3gICe0w6qH5_JnKMwX6hSNsXuxRGecnjpCJEwHOSO2MOWL5UOgc1cwdlqBZv_UpEiS1te_SNndQavDWAMKSYbqwWAPNMaKh06Odkzean0fQ4VvGe2rf2QpXeHmyxBPt27l7zLt5faFI-HJe5tFttlvOhfWMXTkGeYNIA_ErL38QkCmiLS8FATY4MyEry9pFj77VB-miTUrHl2y1vxmQLFyDsdZEzaBvQAbEFj0gjeXbBGmBVQ-8wEgt3f3aLVc4KITttS8asT"/>
+<div class="absolute top-3 right-3 bg-[#FF7A4D] px-2 py-1 rounded-lg text-[10px] font-bold uppercase text-white">Gereserveerd</div>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-bold">North Face Tent</h4>
+<div class="flex items-center gap-2">
+<span class="text-xs text-[#5BA3D9] font-bold px-2 py-0.5 bg-[#5BA3D9]/10 rounded">Outdoor</span>
+<span class="text-xs text-slate-500">142 weergaven</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-4 bg-[#121212]/90 backdrop-blur-2xl z-50 rounded-t-[32px] shadow-[0_-8px_32px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col items-center justify-center text-[#FF7A4D] scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-bold font-['Plus_Jakarta_Sans'] mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Ontdekken</span>
+</div>
+<div class="flex flex-col items-center justify-center -mt-8">
+<div class="w-14 h-14 primary-gradient rounded-full flex items-center justify-center shadow-xl shadow-[#FF7A4D]/40 active:scale-90 transition-all border-4 border-[#121212]">
+<span class="material-symbols-outlined text-white text-3xl">add</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 relative">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Berichten</span>
+<div class="absolute top-0 right-0 w-2 h-2 bg-[#FF7A4D] rounded-full"></div>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Profiel</span>
+</div>
+</nav>
+<!-- Style Support for no-scrollbar -->
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</body></html>

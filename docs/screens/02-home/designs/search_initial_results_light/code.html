@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeelMarkt Search Experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tonal-shift { background-color: #f6f3f2; }
+        .tonal-layering { background-color: #fcf9f8; }
+        .no-border { border: none !important; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#d0e4ff",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#006b24",
+                        "outline": "#8e7067",
+                        "on-tertiary-fixed": "#002106",
+                        "inverse-surface": "#313030",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#ad3300",
+                        "on-tertiary-container": "#f7fff2",
+                        "primary-fixed-dim": "#ffb59e",
+                        "background": "#fcf9f8",
+                        "inverse-primary": "#ffb59e",
+                        "inverse-on-surface": "#f3f0ef",
+                        "secondary-container": "#a1cdff",
+                        "on-surface-variant": "#5a4139",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#ffdbd0",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "surface-container-highest": "#e5e2e1",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#dcd9d9",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#82fc8e",
+                        "surface": "#fcf9f8",
+                        "surface-bright": "#fcf9f8",
+                        "primary": "#a93200",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e5e2e1",
+                        "on-secondary-fixed": "#001d35",
+                        "on-secondary-fixed-variant": "#164974",
+                        "tertiary-fixed-dim": "#65df75",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-background": "#1c1b1b",
+                        "surface-container": "#f0edec",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-container-high": "#ebe7e7",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "primary-container": "#d1430a",
+                        "outline-variant": "#e2bfb4",
+                        "on-secondary-container": "#285782",
+                        "secondary": "#34618d",
+                        "tertiary-container": "#008730",
+                        "brand-orange": "#F15A24",
+                        "brand-blue": "#1E4F7A"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<main class="flex flex-col md:flex-row justify-center gap-8 p-4 md:p-12 max-w-7xl mx-auto">
+<!-- SCREEN 1: INITIAL SEARCH -->
+<section class="w-full max-w-[390px] h-[844px] bg-background border-outline-variant/15 border-[1px] rounded-[48px] overflow-hidden relative shadow-2xl flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full no-border tonal-shift">
+<div class="flex items-center gap-3 w-full">
+<button class="text-brand-orange hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex-1 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-brand-orange/20 placeholder:text-on-surface-variant/50" placeholder="Zoek op trefwoord..." type="text"/>
+</div>
+</div>
+</header>
+<div class="mt-20 px-6 overflow-y-auto flex-1 pb-24">
+<!-- Recent Searches -->
+<div class="mb-8">
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-headline font-bold text-lg tracking-tight">Recente zoekopdrachten</h2>
+<button class="text-brand-blue font-semibold text-xs hover:underline">Alles wissen</button>
+</div>
+<ul class="space-y-1">
+<li class="flex items-center justify-between py-3 group cursor-pointer border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm" data-icon="schedule">schedule</span>
+<span class="text-on-surface font-medium">mountainbike</span>
+</div>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</li>
+<li class="flex items-center justify-between py-3 group cursor-pointer border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm" data-icon="schedule">schedule</span>
+<span class="text-on-surface font-medium">iphone 14</span>
+</div>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</li>
+<li class="flex items-center justify-between py-3 group cursor-pointer border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm" data-icon="schedule">schedule</span>
+<span class="text-on-surface font-medium">bank</span>
+</div>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</li>
+<li class="flex items-center justify-between py-3 group cursor-pointer border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant/40 text-sm" data-icon="schedule">schedule</span>
+<span class="text-on-surface font-medium">kinderwagen</span>
+</div>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</li>
+</ul>
+</div>
+<!-- Popular Categories -->
+<div>
+<h2 class="font-headline font-bold text-lg tracking-tight mb-4">Populaire categorieën</h2>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="devices">devices</span>
+<span class="text-sm font-bold text-on-surface">Elektronica</span>
+</button>
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="apparel">apparel</span>
+<span class="text-sm font-bold text-on-surface">Mode</span>
+</button>
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="pedal_bike">pedal_bike</span>
+<span class="text-sm font-bold text-on-surface">Fietsen</span>
+</button>
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="chair">chair</span>
+<span class="text-sm font-bold text-on-surface">Meubels</span>
+</button>
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="smartphone">smartphone</span>
+<span class="text-sm font-bold text-on-surface">Telefoons</span>
+</button>
+<button class="flex items-center gap-3 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-4 hover:bg-surface-container-low transition-colors text-left group">
+<span class="material-symbols-outlined text-brand-orange" data-icon="fitness_center">fitness_center</span>
+<span class="text-sm font-bold text-on-surface">Sport</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_40px_rgba(0,0,0,0.06)] no-border tonal-layering">
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-2xl px-4 py-2 transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="search" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="mail">mail</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Profile</span>
+</div>
+</nav>
+</section>
+<!-- SCREEN 2: SEARCH RESULTS -->
+<section class="w-full max-w-[390px] h-[844px] bg-background border-outline-variant/15 border-[1px] rounded-[48px] overflow-hidden relative shadow-2xl flex flex-col">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl no-border tonal-shift">
+<div class="flex items-center gap-3 px-6 py-4">
+<button class="text-brand-orange hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex-1 bg-surface-container-high rounded-xl py-2.5 px-4 flex items-center justify-between">
+<span class="text-sm font-bold text-on-surface">fiets</span>
+<button class="text-on-surface-variant/40">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Filters -->
+<div class="flex gap-2 overflow-x-auto px-6 pb-4 no-scrollbar">
+<button class="flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-on-surface transition-all active:scale-95">
+                        Prijs <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-1.5 whitespace-nowrap bg-[#FFF3EE] border border-brand-orange/30 px-4 py-2 rounded-full text-xs font-bold text-brand-orange transition-all active:scale-95">
+                        Conditie <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-on-surface transition-all active:scale-95">
+                        Afstand <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-on-surface transition-all active:scale-95">
+                        Categorie <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+<button class="flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest border border-outline-variant/20 px-4 py-2 rounded-full text-xs font-bold text-on-surface transition-all active:scale-95">
+                        Sorteer <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+</header>
+<div class="px-6 py-4 flex-1 overflow-y-auto pb-24">
+<div class="flex justify-between items-center mb-4">
+<span class="text-xs font-medium text-on-surface-variant/60 uppercase tracking-widest">24 resultaten</span>
+</div>
+<!-- 2-Column Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+<div class="aspect-[4/3] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="high-end canyon speedmax triathlon bike leaning against a modern glass building in soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCLkPnIrHQboXbx8a04AbWnYIuEE0L1Rsd9hLyn1VYTH0WOQrGv8RuFrU3nExJ-iYR6Tn-DkuzCRSI_31ySRahHJ6giFke0jODU2ED3NWILn9GnuvSNwc9ie5rhac1H2hIoCHixb1dlQdd_FDvCsFibgcvdYJnHFgP_6JaWqu3QUiPp07NDxf8SF1UcIrXY8MMwltow06TveO8aGA1zAjXEy28NvUBdXcVjkpuuqTE9n-Q6bRXBueydX76kQqgyY6wSJ8JDWkx4cxu"/>
+<button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-3">
+<p class="text-brand-orange font-extrabold text-base mb-1">€ 2.450,00</p>
+<h3 class="text-sm font-bold text-on-surface leading-snug mb-2 line-clamp-1">Canyon Speedmax CF 8</h3>
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant/70 font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                Amsterdam, 1.2 km
+                            </div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+<div class="aspect-[4/3] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="classic blue gazelle city bicycle parked in front of a rustic brick wall with flowers in the basket" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIe93lNaJzwvWLUvRqgEWXSNCzJ_05qfnd-ldHcYr0JdTKC4FLxn1vMC4hv_uAgJfOrOnT9eKuL45PZ5N3OTwFCT8VciiAfULtAVmloC-QuMzixTKCD6Jj-9GiNM_6OzProOFUlNmL9iIEMps0Y7rUB64UwMHq0HqCpTWUYh4Ax7cvpPLHl9rHnGzQ_Qg0ZtELMs5qf4cr7M07d1hB-mo50qc54_UVBavbhRvH3gi0-vsc3kquG3jsNEVrJS7qped942yoMLmoXQHR"/>
+<button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-brand-orange shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3">
+<p class="text-brand-orange font-extrabold text-base mb-1">€ 149,00</p>
+<h3 class="text-sm font-bold text-on-surface leading-snug mb-2 line-clamp-1">Gazelle HeavyDuty NL</h3>
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant/70 font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                Utrecht, 5.8 km
+                            </div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+<div class="aspect-[4/3] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="sleek professional carbon fiber mountain bike on a forest trail with dappled sunlight through trees" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIyGaFjTK3AXfVtE4AEyAJ7-OlWel7OeWJKSrxxocg3bCx9eIfH63MGQi9MkD5UXiRV7WKr8f2d16wPLpCE4PTwLu9cPgKkdc8G9pNU06gsEPwoV45X47yRFJ0Guuunwe_RMbW1UgV-EX78yJf1DVQqdj-BFxUk8C9p-D1NwMipvsJCsGVTI_QKy_6125lmNJ0y4Q4Bx7Q1hZXn-VNfcolkhPOITzagEtuHYDj1E8U8sO9eYn6VR3ixR_aXw_6et72dOmTs75B1lTZ"/>
+<button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-3">
+<p class="text-brand-orange font-extrabold text-base mb-1">€ 895,00</p>
+<h3 class="text-sm font-bold text-on-surface leading-snug mb-2 line-clamp-1">Specialized Rockhopper</h3>
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant/70 font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                Rotterdam, 12 km
+                            </div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+<div class="aspect-[4/3] relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="electric vanmoof bicycle standing in a bright minimalist urban setting with clean architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3B7n8iDMGGpahE9J0SSbePTepmfQu_MKwixuEsc2DV1LKzFe11CxgTJybwrA6bqrKGjp4pLw_RaTFJ8xNba4BsXdRiTUACREJtLwE08N3jnBr5Vuk6pChul49Igiwduq_GsBX1gflJhEoS97DMjQ6oqYJ612esV0yNHLmjsL5QLfsC9FadKU5Cv5hUI2kHWmyEyMhDybq6YG4nrU93IYZp4_OYcjIgVp5J4zM-QtHY-hgJtq4aBCjg3BaIChZPR6B3qnSGfDM0r8u"/>
+<button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center text-on-surface shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="favorite">favorite</span>
+</button>
+</div>
+<div class="p-3">
+<p class="text-brand-orange font-extrabold text-base mb-1">€ 1.200,00</p>
+<h3 class="text-sm font-bold text-on-surface leading-snug mb-2 line-clamp-1">VanMoof S3 Black</h3>
+<div class="flex items-center gap-1 text-[11px] text-on-surface-variant/70 font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span>
+                                Haarlem, 2.4 km
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_40px_rgba(0,0,0,0.06)] no-border tonal-layering">
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-2xl px-4 py-2 transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="search" data-weight="fill" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="mail">mail</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2 hover:text-[#F15A24] transition-colors active:scale-90">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label text-[11px] font-semibold uppercase tracking-wider">Profile</span>
+</div>
+</nav>
+</section>
+</main>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</body></html>

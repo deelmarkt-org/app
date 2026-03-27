@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#fcf9f8",
+              "surface-variant": "#e5e2e1",
+              "on-tertiary-fixed": "#002106",
+              "tertiary": "#006b24",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed": "#82fc8e",
+              "surface-bright": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "on-background": "#1c1b1b",
+              "surface-container-highest": "#e5e2e1",
+              "primary": "#a93200",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "primary-fixed-dim": "#ffb59e",
+              "surface": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "outline": "#8e7067",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed": "#d0e4ff",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "error-container": "#ffdad6",
+              "surface-container": "#f0edec",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-dim": "#dcd9d9",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "on-surface": "#1c1b1b",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "on-primary": "#ffffff",
+              "secondary": "#34618d",
+              "on-surface-variant": "#5a4139",
+              "on-primary-fixed-variant": "#842500",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-surface": "#313030",
+              "outline-variant": "#e2bfb4"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex justify-center items-start md:items-center">
+<!-- Mobile Viewport Placeholder (iPhone 15 Pro Ratio) -->
+<main class="w-full max-w-[393px] h-[852px] bg-surface relative overflow-hidden flex flex-col shadow-2xl md:rounded-[3rem] md:border-[8px] md:border-on-surface">
+<!-- Status Bar Mockup -->
+<div class="h-12 flex justify-between items-center px-8 w-full z-50">
+<span class="text-sm font-bold">9:41</span>
+<div class="flex gap-1.5">
+<span class="material-symbols-outlined text-sm">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-sm">wifi</span>
+<span class="material-symbols-outlined text-sm">battery_full</span>
+</div>
+</div>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 w-full z-40 bg-[#fcf9f8]/80 backdrop-blur-xl transition-colors duration-200">
+<div class="flex justify-between items-center px-6 py-4 max-w-[393px] mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary cursor-pointer">arrow_back</span>
+<h1 class="text-xl font-bold text-primary tracking-tight">Service Points</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-secondary">notifications</span>
+<span class="material-symbols-outlined text-secondary">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area (Canvas) -->
+<section class="flex-1 flex flex-col items-center justify-center px-8 pt-20 pb-24 text-center">
+<!-- Asymmetric Illustration Area -->
+<div class="relative w-full aspect-square flex items-center justify-center mb-12">
+<!-- Decorative Abstract Shapes for Depth -->
+<div class="absolute inset-0 bg-surface-container-low rounded-full scale-75 blur-3xl opacity-60"></div>
+<div class="absolute top-10 right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+<!-- Main Empty State Graphic -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-64 h-64 bg-surface-container-lowest rounded-[2rem] shadow-sm flex items-center justify-center relative overflow-hidden">
+<!-- Abstract Map Grid -->
+<div class="absolute inset-0 grid grid-cols-4 grid-rows-4 opacity-[0.03]">
+<div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div>
+<div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div>
+<div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div>
+<div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div><div class="border border-on-surface"></div>
+</div>
+<!-- Search & No Result Visual -->
+<div class="relative">
+<div class="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-6xl text-outline-variant/40">location_off</span>
+</div>
+<!-- Floating Dots indicating empty scan -->
+<div class="absolute -top-4 -right-2 w-3 h-3 bg-secondary/20 rounded-full"></div>
+<div class="absolute top-12 -left-6 w-2 h-2 bg-primary/20 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Typography Content -->
+<div class="space-y-4 max-w-xs">
+<h2 class="text-2xl font-extrabold text-on-surface tracking-tight leading-tight">
+                    Geen servicepunten gevonden
+                </h2>
+<p class="text-on-surface-variant text-lg leading-relaxed">
+                    Probeer een andere postcode of zoekterm
+                </p>
+</div>
+<!-- Call to Action -->
+<div class="mt-12 w-full space-y-4">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 px-8 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition-transform">
+                    Opnieuw proberen
+                </button>
+<button class="w-full text-primary font-semibold py-2">
+                    Locatievoorzieningen aanzetten
+                </button>
+</div>
+</section>
+<!-- BottomNavBar (Shared Component) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-50 max-w-[393px] mx-auto">
+<div class="flex flex-col items-center justify-center text-[#34618d]">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#34618d]">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Ship</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-1.5">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Points</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#34618d]">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Profile</span>
+</div>
+</nav>
+<!-- Home Indicator -->
+<div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-on-surface/10 rounded-full z-[60]"></div>
+</main>
+</body></html>

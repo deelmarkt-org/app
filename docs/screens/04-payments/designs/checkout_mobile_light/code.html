@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#65df75",
+                        "primary-fixed-dim": "#ffb59e",
+                        "tertiary": "#006b24",
+                        "outline": "#8e7067",
+                        "on-secondary-container": "#285782",
+                        "tertiary-fixed": "#82fc8e",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "outline-variant": "#e2bfb4",
+                        "on-tertiary-fixed": "#002106",
+                        "on-error": "#ffffff",
+                        "background": "#fcf9f8",
+                        "primary-fixed": "#ffdbd0",
+                        "on-secondary-fixed": "#001d35",
+                        "secondary": "#34618d",
+                        "on-primary-fixed-variant": "#842500",
+                        "surface-dim": "#dcd9d9",
+                        "secondary-fixed": "#d0e4ff",
+                        "surface-bright": "#fcf9f8",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-surface-variant": "#5a4139",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1c1b1b",
+                        "surface-container": "#f0edec",
+                        "on-surface": "#1c1b1b",
+                        "primary-container": "#d1430a",
+                        "secondary-container": "#a1cdff",
+                        "primary": "#a93200",
+                        "surface-container-high": "#ebe7e7",
+                        "tertiary-container": "#008730",
+                        "surface-container-low": "#f6f3f2",
+                        "inverse-on-surface": "#f3f0ef",
+                        "inverse-surface": "#313030",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "surface-tint": "#ad3300",
+                        "inverse-primary": "#ffb59e",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-secondary-fixed-variant": "#164974",
+                        "surface-variant": "#e5e2e1",
+                        "on-primary-fixed": "#3a0b00"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased pb-32">
+<!-- Top Navigation Anchor -->
+<header class="bg-[#fcf9f8]/80 backdrop-blur-xl fixed top-0 w-full z-50">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface cursor-pointer">arrow_back</span>
+<span class="font-headline tracking-tight font-bold text-lg text-on-surface">Bestelling afronden</span>
+</div>
+<div class="text-xl font-extrabold text-[#F15A24]">The Honest Exchange</div>
+</div>
+<div class="h-[1px] w-full bg-gradient-to-r from-transparent via-outline-variant/20 to-transparent"></div>
+</header>
+<main class="mt-20 px-4 space-y-6">
+<!-- Trust Callout -->
+<div class="bg-tertiary-container/10 border border-tertiary/10 rounded-xl p-4 flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div>
+<p class="font-headline font-bold text-sm text-on-tertiary-fixed-variant">Kopersbescherming actief</p>
+<p class="font-body text-xs text-on-tertiary-fixed-variant/80 mt-1 leading-relaxed">Je geld wordt veilig vastgehouden totdat je de ontvangst van je iPhone 15 Pro bevestigt.</p>
+</div>
+</div>
+<!-- Listing Summary Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/10">
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close-up of a titanium blue iPhone 15 Pro showing the triple camera lens system on a clean minimalist desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl48FpF46m8GoZZCh30xnaf31mUkFqJDnZayKq__z_nH2qhPMWiiQCetYqmV1naiE4XBESg3H-Zt1zuqNAD-Nnx3OGyU-2ghsltoCYPhw6XC_ro_G54lxo-nKS8zoIZ_fXj8a62-AGgBCWqDX6fUcdXnPlgOCbGLMmVEPmgMxvYEKGqKJ_9amsgpp5qKfqWLPqrhA1TXGbsIuwtU7Obhjy8HBtgaeHwqIixDQK8gTSBoQaOr1rlnos5WResuZpLraRe9GHT_Dm0FvA"/>
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h2 class="font-headline font-bold text-base text-on-surface leading-tight">iPhone 15 Pro - 256GB - Blue Titanium</h2>
+<p class="font-body text-xs text-on-surface-variant mt-1">Verkoper: Mark V. • 5 sterren</p>
+</div>
+<div class="font-headline font-extrabold text-secondary text-lg">€ 945,00</div>
+</div>
+</div>
+</div>
+<!-- Delivery Address -->
+<div class="space-y-3">
+<div class="flex justify-between items-center px-1">
+<h3 class="font-headline font-bold text-sm uppercase tracking-wider text-on-surface-variant">Bezorgadres</h3>
+<button class="text-primary font-bold text-xs">Wijzig</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/20">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<div>
+<p class="font-headline font-bold text-sm text-on-surface">Jan de Vries</p>
+<p class="font-body text-sm text-on-surface-variant">Keizersgracht 123-H</p>
+<p class="font-body text-sm text-on-surface-variant">1015 CJ Amsterdam</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Shipping Selection -->
+<div class="space-y-3">
+<h3 class="font-headline font-bold text-sm uppercase tracking-wider text-on-surface-variant px-1">Verzendmethode</h3>
+<div class="space-y-2">
+<!-- Option 1 -->
+<label class="relative flex items-center p-4 bg-surface-container-lowest rounded-xl border-2 border-primary-container/20 cursor-pointer">
+<input checked="" class="w-5 h-5 text-primary border-outline-variant focus:ring-primary" name="shipping" type="radio"/>
+<div class="ml-4 flex-grow">
+<div class="flex justify-between">
+<span class="font-headline font-bold text-sm text-on-surface">PostNL Thuisbezorgd</span>
+<span class="font-headline font-bold text-sm text-on-surface">€ 6,95</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-1">Morgen in huis • Track &amp; Trace</p>
+</div>
+</label>
+<!-- Option 2 -->
+<label class="relative flex items-center p-4 bg-surface-container-low/50 rounded-xl border border-outline-variant/10 cursor-pointer">
+<input class="w-5 h-5 text-primary border-outline-variant focus:ring-primary" name="shipping" type="radio"/>
+<div class="ml-4 flex-grow">
+<div class="flex justify-between">
+<span class="font-headline font-bold text-sm text-on-surface">DHL Pakketpunt</span>
+<span class="font-headline font-bold text-sm text-on-surface">€ 4,50</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-1">2-3 werkdagen • Kies een punt</p>
+</div>
+</label>
+</div>
+</div>
+<!-- Price Breakdown Card -->
+<div class="bg-surface-container-highest/30 rounded-2xl p-6 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-sm mb-4">Overzicht</h3>
+<div class="space-y-3">
+<div class="flex justify-between text-sm font-body text-on-surface-variant">
+<span>Subtotaal</span>
+<span>€ 945,00</span>
+</div>
+<div class="flex justify-between text-sm font-body text-on-surface-variant">
+<span>Verzendkosten</span>
+<span>€ 6,95</span>
+</div>
+<div class="flex justify-between text-sm font-body text-on-surface-variant">
+<span>Servicekosten</span>
+<span>€ 12,50</span>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant/30 flex justify-between items-baseline">
+<span class="font-headline font-extrabold text-lg text-on-surface">Totaal</span>
+<span class="font-headline font-extrabold text-2xl text-secondary">€ 964,45</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Payment CTA -->
+<nav class="fixed bottom-0 left-0 w-full p-4 flex flex-col justify-center items-center bg-[#fcf9f8] dark:bg-[#121212] rounded-t-[16px] z-50 shadow-[0_-4px_40px_rgba(0,0,0,0.06)] border-t-[1px] border-[#ebe7e7]/15">
+<button class="flex items-center justify-center gap-3 w-full h-14 bg-gradient-to-tr from-[#a93200] to-[#d1430a] text-white rounded-xl active:scale-[0.98] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:brightness-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-base">Betalen met iDEAL</span>
+</button>
+<div class="mt-3 flex items-center gap-1.5 opacity-60">
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Powered by</span>
+<span class="font-black text-xs text-on-surface">iDEAL</span>
+</div>
+</nav>
+</body></html>

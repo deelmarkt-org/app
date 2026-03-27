@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed": "#001d35",
+                        "inverse-surface": "#313030",
+                        "tertiary-fixed": "#82fc8e",
+                        "surface-container-highest": "#e5e2e1",
+                        "secondary": "#34618d",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#d1430a",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1c1b1b",
+                        "surface-container": "#f0edec",
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb59e",
+                        "tertiary-container": "#008730",
+                        "primary-fixed-dim": "#ffb59e",
+                        "outline-variant": "#e2bfb4",
+                        "on-surface-variant": "#5a4139",
+                        "on-secondary-fixed-variant": "#164974",
+                        "on-primary-fixed-variant": "#842500",
+                        "secondary-container": "#a1cdff",
+                        "primary": "#a93200",
+                        "surface": "#fcf9f8",
+                        "primary-fixed": "#ffdbd0",
+                        "tertiary-fixed-dim": "#65df75",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-primary-fixed": "#3a0b00",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "on-primary-container": "#fffbff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "outline": "#8e7067",
+                        "background": "#fcf9f8",
+                        "surface-variant": "#e5e2e1",
+                        "surface-tint": "#ad3300",
+                        "tertiary": "#006b24",
+                        "on-secondary-container": "#285782",
+                        "surface-container-high": "#ebe7e7",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-fixed": "#002106",
+                        "on-background": "#1c1b1b",
+                        "surface-dim": "#dcd9d9",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d0e4ff",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 32px;
+            bottom: 0;
+            width: 2px;
+            background: #e5e2e1;
+        }
+        .timeline-item:last-child .timeline-line::before {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 w-full bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity">arrow_back</button>
+<h1 class="text-xl font-bold text-[#121212] font-['Plus_Jakarta_Sans'] tracking-tight">Tracking</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">help</span>
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</div>
+</div>
+</header>
+<main class="px-6 pt-4 max-w-md mx-auto">
+<!-- Carrier Header -->
+<div class="flex items-center gap-3 mb-6 p-4 bg-secondary-container/10 rounded-xl">
+<div class="w-12 h-12 flex items-center justify-center bg-secondary rounded-xl text-on-secondary shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">package_2</span>
+</div>
+<div>
+<p class="text-secondary font-bold text-sm tracking-wide uppercase">Vervoerder</p>
+<h2 class="text-on-surface font-extrabold text-lg">PostNL Zending</h2>
+</div>
+</div>
+<!-- Tracking Number Card -->
+<div class="bg-[#F8F9FB] border border-outline-variant/20 rounded-lg p-5 mb-10 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-5">
+<span class="material-symbols-outlined text-6xl">barcode_scanner</span>
+</div>
+<p class="text-on-surface-variant text-xs font-semibold mb-2 uppercase tracking-widest">Tracking Nummer</p>
+<div class="flex justify-between items-center">
+<span class="font-mono text-xl text-on-surface font-medium tracking-tight">3SDEVC1234567</span>
+<button class="text-primary material-symbols-outlined text-xl">content_copy</button>
+</div>
+</div>
+<!-- Timeline Section -->
+<div class="relative space-y-0">
+<!-- Event 1: Delivered -->
+<div class="timeline-item relative pl-12 pb-10">
+<div class="timeline-line absolute left-0 top-0 h-full w-6">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-tertiary flex items-center justify-center z-10 shadow-md">
+<span class="material-symbols-outlined text-white text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-on-surface font-bold text-lg leading-tight">Bezorgd</h3>
+<span class="bg-tertiary-container/20 text-tertiary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Afgerond</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-1">Amsterdam</p>
+<time class="text-on-surface-variant/60 text-xs font-medium">25 mrt 2026 • 14:32</time>
+</div>
+</div>
+<!-- Event 2: In Transit -->
+<div class="timeline-item relative pl-12 pb-10">
+<div class="timeline-line absolute left-0 top-0 h-full w-6">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary flex items-center justify-center z-10 shadow-sm">
+<span class="material-symbols-outlined text-white text-sm">local_shipping</span>
+</div>
+</div>
+<div class="flex flex-col">
+<h3 class="text-on-surface font-bold text-lg leading-tight">Onderweg</h3>
+<p class="text-on-surface-variant text-sm mb-1">Sorteerdepot Nieuwegein</p>
+<time class="text-on-surface-variant/60 text-xs font-medium">24 mrt 2026 • 22:10</time>
+</div>
+</div>
+<!-- Event 3: Dropped Off -->
+<div class="timeline-item relative pl-12 pb-10">
+<div class="timeline-line absolute left-0 top-0 h-full w-6">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary-container flex items-center justify-center z-10 shadow-sm">
+<span class="material-symbols-outlined text-white text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+<div class="flex flex-col">
+<h3 class="text-on-surface font-bold text-lg leading-tight">Afgeleverd bij punt</h3>
+<p class="text-on-surface-variant text-sm mb-1">PostNL Punt</p>
+<time class="text-on-surface-variant/60 text-xs font-medium">24 mrt 2026 • 11:05</time>
+</div>
+</div>
+<!-- Event 4: Label Created -->
+<div class="timeline-item relative pl-12">
+<div class="timeline-line absolute left-0 top-0 h-full w-6">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">sell</span>
+</div>
+</div>
+<div class="flex flex-col">
+<h3 class="text-on-surface font-bold text-lg leading-tight">Verzendlabel aangemaakt</h3>
+<p class="text-on-surface-variant text-sm mb-1">In afwachting van pakket</p>
+<time class="text-on-surface-variant/60 text-xs font-medium">23 mrt 2026 • 18:45</time>
+</div>
+</div>
+</div>
+<!-- Featured Listing Mini Card (Asymmetric Layout Example) -->
+<div class="mt-12 bg-surface-container-low rounded-3xl p-6 relative overflow-hidden group">
+<div class="flex gap-4">
+<div class="w-24 h-24 flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover rounded-2xl rotate-3 shadow-lg group-hover:rotate-0 transition-transform duration-500" data-alt="Modern high-performance red sneakers on a clean white background with soft studio lighting and crisp details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbXIVesaJ_14xoLyFUQdaFt0LVPa-zMH7xNmAQVGHTPmR7MtN9O6HhShC1aXclb8nMEl5ZnocbcZT-AfW0THogeLT4VoOY9Blb0dJW9oLb0KYrnrvulkSktvWoSFRGmcx91xKrgbT0Uf3i9-rupQ92wKVX6_GExbSSWkvz9IbxjnGRkLKliRc622DESdTEVNP3OEreT4ZdeSKj2-ZeLhyFsyWutnC-gtmZHdlV3GDI2JQW2cUWkHSyphsY6wPM3tGj-UIj2BOqpFRZ"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Gekocht item</span>
+<h4 class="text-on-surface font-bold leading-tight">Nike Air Max Premium Edition</h4>
+<p class="text-secondary font-bold text-lg">€145,00</p>
+</div>
+</div>
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-tertiary-container/10 text-tertiary text-[10px] font-bold px-2 py-1 rounded-full uppercase">Geverifieerd</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#121212]/40 px-4 py-2 transition-all hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#121212]/40 px-4 py-2 transition-all hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">gavel</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Bids</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 scale-105" href="#">
+<span class="material-symbols-outlined mb-1" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Tracking</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#121212]/40 px-4 py-2 transition-all hover:text-primary" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Profile</span>
+</a>
+</nav>
+</body></html>

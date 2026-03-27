@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .star-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-variant": "#e5e2e1",
+              "background": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary-container": "#f7fff2",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#ffb59e",
+              "on-background": "#1c1b1b",
+              "on-secondary-container": "#285782",
+              "tertiary-fixed-dim": "#65df75",
+              "error-container": "#ffdad6",
+              "on-secondary": "#ffffff",
+              "primary": "#a93200",
+              "error": "#ba1a1a",
+              "surface-container": "#f0edec",
+              "surface": "#fcf9f8",
+              "primary-container": "#d1430a",
+              "tertiary-container": "#008730",
+              "on-primary": "#ffffff",
+              "tertiary": "#006b24",
+              "surface-container-highest": "#e5e2e1",
+              "tertiary-fixed": "#82fc8e",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#842500",
+              "surface-dim": "#dcd9d9",
+              "on-primary-container": "#fffbff",
+              "outline-variant": "#e2bfb4",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "secondary-fixed-dim": "#9fcafc",
+              "secondary-fixed": "#d0e4ff",
+              "outline": "#8e7067",
+              "inverse-surface": "#313030",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-surface-variant": "#5a4139",
+              "on-surface": "#1c1b1b",
+              "on-primary-fixed": "#3a0b00",
+              "surface-tint": "#ad3300",
+              "on-error": "#ffffff",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-container": "#a1cdff",
+              "on-tertiary-fixed": "#002106",
+              "surface-container-low": "#f6f3f2",
+              "secondary": "#34618d",
+              "on-secondary-fixed": "#001d35"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.8rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- SideNavBar (Desktop Shell) -->
+<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-screen p-6 w-64 bg-surface dark:bg-[#121212] border-r-0 z-50">
+<div class="text-2xl font-black text-[#F15A24] mb-8">Marktplaats</div>
+<nav class="flex flex-col space-y-2 flex-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors text-[#4a4a4a] dark:text-[#a1a1a1] opacity-70 hover:text-[#F15A24] hover:bg-[#f6f3f2]" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-medium">Home</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors text-[#4a4a4a] dark:text-[#a1a1a1] opacity-70 hover:text-[#F15A24] hover:bg-[#f6f3f2]" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-medium">Berichten</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors text-[#F15A24] font-bold border-r-4 border-[#F15A24] bg-[#f6f3f2] dark:bg-[#1e1e1e]" href="#">
+<span class="material-symbols-outlined" data-icon="local_mall">local_mall</span>
+<span class="font-medium">Mijn Listings</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors text-[#4a4a4a] dark:text-[#a1a1a1] opacity-70 hover:text-[#F15A24] hover:bg-[#f6f3f2]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-medium">Instellingen</span>
+</a>
+</nav>
+<div class="mt-auto flex items-center gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold overflow-hidden">
+<img alt="Gebruiker profiel" class="w-full h-full object-cover" data-alt="close up professional headshot of a smiling man with a neat beard in soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTN8HDHMGJgN2E5W7g1_ykFdB2mNknAzLjH4iW1YiGVLLWecVqF-Mt1cQo7zdDZ3xKEKIB_pSwDjmRiJiVBfFdn-O-dxp2e4HkRq9ayYUnVBWcaYm6pvu7a2010fY4RSpPJybbGpDKZO3pnjKprxv7bk7p5U8ohVwcBWxGBO8Vc3UVrh12uTeUevugh8KU9cUkhXqXW976d20hEB8LGgGGJa8Qha6qZPXxP4fotQyrfed4pCe5pV3WSAxvFk7h2JmLRMQ27VbZRULU"/>
+</div>
+<div>
+<p class="text-sm font-bold">Gebruiker</p>
+<p class="text-xs text-on-surface-variant/70">Premium Account</p>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="lg:ml-64 min-h-screen flex items-center justify-center p-4 md:p-8">
+<!-- Post-Transaction Rating Modal -->
+<div class="w-full max-w-[500px] bg-surface-container-lowest rounded-xl shadow-2xl shadow-on-surface/5 overflow-hidden flex flex-col transform transition-all">
+<!-- Header -->
+<header class="flex justify-between items-center px-6 h-16 w-full bg-[#fcf9f8]/80 backdrop-blur-xl z-10 sticky top-0">
+<h1 class="text-xl font-bold tracking-tight text-[#F15A24] font-headline">Beoordeling</h1>
+<button class="p-2 hover:bg-[#f6f3f2] rounded-full transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined text-[#4a4a4a]" data-icon="close">close</span>
+</button>
+</header>
+<div class="p-6 space-y-8">
+<!-- Listing Card -->
+<section class="flex gap-4 p-4 bg-surface-container-low rounded-xl items-center">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Gazelle Herenfiets Classic" class="w-full h-full object-cover" data-alt="studio photograph of a vintage black gazelle mens bicycle against a clean neutral background with elegant lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsvYAanCJRPkQmsH2uXG5cueNNVcBut8E102cSBwB6quG5rtErPUKCcHROCUpmQgNEajTdG5Hs1l_oecjCxhgaBs_DOKlit5lRpYueyUoGk9s5r6lodtbmYrm8MlYnaqWCTfrEzkd9B8nJm9e8WCEnNTd8M2ECXkW5tNXePwk1V6x1aR9lIrQMGgCnvfNbXQZLFnXpH-hjuiJRm7e65SiAzP3YswbqlHtfA92nxLs8WwVyOv-JFTncxIS5-P67fhftkSx1ZJAXg7C3"/>
+</div>
+<div class="flex flex-col">
+<h3 class="font-bold text-on-surface">Gazelle Herenfiets Classic</h3>
+<p class="text-secondary font-bold text-lg">€ 245,00</p>
+<p class="text-sm text-on-surface-variant">Verkoper: <span class="font-medium">Mahmut Kaya</span></p>
+</div>
+</section>
+<!-- Rating Section -->
+<section class="text-center space-y-4">
+<h2 class="text-xl font-bold font-headline text-on-surface">Hoe was je ervaring met Mahmut?</h2>
+<div class="flex justify-center gap-2">
+<!-- 4 Stars Filled, 1 Empty -->
+<span class="material-symbols-outlined text-primary-container text-[48px] cursor-pointer star-filled" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-[48px] cursor-pointer star-filled" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-[48px] cursor-pointer star-filled" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-[48px] cursor-pointer star-filled" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-outline-variant text-[48px] cursor-pointer" data-icon="star">star</span>
+</div>
+</section>
+<!-- Review Input -->
+<section class="space-y-2">
+<div class="relative">
+<textarea class="w-full h-32 p-4 bg-surface-container-lowest border-none focus:ring-2 focus:ring-primary/40 rounded-xl text-on-surface placeholder:text-on-surface-variant/50 resize-none shadow-sm" placeholder="Vertel over je ervaring..."></textarea>
+<div class="absolute bottom-3 right-4 text-xs font-medium text-on-surface-variant/60">
+                            0/500
+                        </div>
+</div>
+</section>
+<!-- Trust Info Callout -->
+<section class="flex gap-4 p-4 bg-secondary-container/20 rounded-xl items-start">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+<p class="text-sm text-on-secondary-container leading-relaxed">
+<span class="font-bold">Blinde beoordeling</span> — de ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling.
+                    </p>
+</section>
+<!-- Action Button -->
+<section class="pt-2">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all duration-300">
+                        Beoordeling plaatsen
+                    </button>
+</section>
+</div>
+</div>
+</main>
+</body></html>

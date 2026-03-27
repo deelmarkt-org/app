@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#65df75",
+              "surface-container": "#f0edec",
+              "surface-container-highest": "#e5e2e1",
+              "secondary-fixed": "#d0e4ff",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-bright": "#fcf9f8",
+              "tertiary-container": "#008730",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#fcf9f8",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-secondary-container": "#285782",
+              "tertiary": "#006b24",
+              "on-surface": "#1c1b1b",
+              "outline": "#8e7067",
+              "tertiary-fixed": "#82fc8e",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed": "#001d35",
+              "on-tertiary-fixed": "#002106",
+              "surface-dim": "#dcd9d9",
+              "surface-container-low": "#f6f3f2",
+              "on-primary-fixed-variant": "#842500",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-surface": "#313030",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#3a0b00",
+              "on-error": "#ffffff",
+              "background": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "on-secondary": "#ffffff",
+              "error-container": "#ffdad6",
+              "primary": "#a93200",
+              "surface-variant": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error-container": "#93000a",
+              "on-tertiary-container": "#f7fff2",
+              "on-background": "#1c1b1b",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "primary-container": "#d1430a",
+              "outline-variant": "#e2bfb4",
+              "secondary": "#34618d",
+              "inverse-primary": "#ffb59e",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl no-border bg-gradient-to-b from-[#f6f3f2] to-transparent">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-4">
+<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-black text-[#F15A24] tracking-[-0.02em]">DeelMarkt</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 text-sm font-bold tracking-tight">
+<a class="text-[#4e4644] hover:opacity-80 transition-opacity" href="#">Explore</a>
+<a class="text-[#4e4644] hover:opacity-80 transition-opacity" href="#">Sell</a>
+<a class="text-[#4e4644] hover:opacity-80 transition-opacity" href="#">My Items</a>
+</nav>
+<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-[1440px] mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-10 gap-12">
+<!-- Left Column: Image Gallery (60%) -->
+<div class="lg:col-span-6 space-y-6">
+<div class="aspect-[4/3] rounded-[24px] overflow-hidden bg-surface-container-low">
+<img alt="Canyon Speedmax CF SLX" class="w-full h-full object-cover" data-alt="Professional triathlon bicycle Canyon Speedmax in matte black, side profile in a sunlit minimalist studio with dramatic shadows and high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOmOEHoA86oTiEtqluJM1dAcGiybVftkDdBDGNuhDIJTNwCcI_0BUtBai6I5RcjIoI2MqYn372YczjNoyXqGPMBfjoZNTy3T1wRC8rDpAgDpGmSEodUoQ3NXOqn6vSiDCxAnBtKQtdK8qXqItgSgd8m6GsizrvtgG1IcKKnryr_HA55I-odJPe25dlEQznztsalMbFy68DKnElhgOyk8ueS8KLqDzqYLMdxHSAvwv4_seSfaYk7HyF50f2P0rq70Ja1xQIbo4JSzSF"/>
+</div>
+<div class="grid grid-cols-3 gap-6">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low">
+<img alt="Detail 1" class="w-full h-full object-cover" data-alt="Close-up of high-end carbon fiber bicycle frame joints and derailleur with precise engineering detail and soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl5tfkPkIyvUl8ae0twF2V7w0FF5MVBYxeKuTH5p5dXJ3yfiSdOZh-lx-ntIBErUxmte4fKGyFtEZtwgr3ztsrjC7SFszeQlops6A3Xraz57N1vEO8gXlYS6duE-bvTLVvlIooVQHX9f1epr1k0VjCC_f2JjdwAIEjui_lnUbevqOHlRBzYb6hqUMLx0earrYjfT5C3MPgO4XP_0JWBntK-iXU8v_Pd5hbtRfAc6FMzifhahnMTm4KzBxqMRX-5a9Wk4Q3j-ZaXttB"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low">
+<img alt="Detail 2" class="w-full h-full object-cover" data-alt="Aerodynamic deep-section carbon wheel of a racing bike against a clean neutral background with studio lighting highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzfmhzalM2tLSLHHi2iIKj_8sMhBTwWya7SYqg3cO311jR6eAIpKaYbKTlVBvssj_XOPHGENq_VKfv_LfIB9fVXNqIeX4dhvkKeJ3qjan_EWPuBdpF2PaC7S-kdtrfYZpwKAZL-CXeTRs6sajgjkji8vwHajDyojmRNcG-dv3-50yjO_u_AN_9wZjvXVmvVFCbjPmPvxTghmr5WAwui3kTWMqn1CKJkh4altta92Sofnrun0kVLB6kETgSnvAUaryOuaWEkakPzqAm"/>
+</div>
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low relative group cursor-pointer">
+<img alt="Detail 3" class="w-full h-full object-cover blur-[2px] group-hover:blur-0 transition-all" data-alt="Top view of integrated triathlon handlebars and cockpit with sleek electronic shifters and streamlined aerodynamic design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJwpyr9ES7ai68xOjUj2W7mB2oIOZUCApdZ_ikfSitOWJtGzMDW9he22gp9GY64yV01N15W2uZ1iM-mZUDvITaKdEaHqmZfDt38tndww4afdM3cGgbtcudgEdLcRH7rOhGJ3eD7i3Dmh2eW1ElTyeMc_T8e3PkRmDzUQFS3OUUDfemI-P3bUZcEL2dcs2OuPu6UbxIA5UYwS08zSbRbW2ZKj4IKhZdorUfd7z3WyqDGvTsnxkusuzeSOrzAmUk5Q0sRudU3_OGwTAN"/>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-lg">
+                            +4 Photos
+                        </div>
+</div>
+</div>
+<!-- Editorial Layout Addition: Specifications Bento -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8">
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-outline">Weight</span>
+<span class="text-xl font-bold">8.2 kg</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-outline">Groupset</span>
+<span class="text-xl font-bold">Dura-Ace</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-outline">Frame</span>
+<span class="text-xl font-bold">Carbon</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-outline">Year</span>
+<span class="text-xl font-bold">2023</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Product Info (40%) -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Trust Banner -->
+<div class="bg-tertiary-container/10 border border-tertiary-container/20 p-4 rounded-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div>
+<p class="text-sm font-bold text-tertiary">Verified Premium Listing</p>
+<p class="text-xs text-on-surface-variant">Authenticated and inspected for quality assurance.</p>
+</div>
+</div>
+<!-- Title & Price -->
+<div class="space-y-2">
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface leading-tight">Canyon Speedmax CF SLX</h2>
+<div class="flex items-baseline gap-4">
+<span class="text-3xl font-bold text-secondary">€7,499</span>
+<span class="text-on-surface-variant line-through text-lg">€8,900</span>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-[0.1em] text-outline">Description</h3>
+<p class="text-lg leading-relaxed text-on-surface-variant font-medium">
+                        Elevate your triathlon performance with the 2023 Canyon Speedmax CF SLX. This aerodynamic masterpiece has been meticulously maintained and features the top-tier Shimano Dura-Ace Di2 groupset. Designed for speed, comfort, and uncompromising efficiency on the road.
+                    </p>
+</div>
+<!-- Seller Card -->
+<div class="bg-surface-container-lowest p-6 rounded-[24px] shadow-[0_4px_24px_rgba(0,0,0,0.04)] space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-surface-container overflow-hidden">
+<img alt="Seller Profile" class="w-full h-full object-cover" data-alt="Portrait of a friendly professional man in his 40s with a clean background and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8OgEXLFz8j2BFJp4veBD35WflCGlzHmSjobDuVmC4vtWl2wCcZbne_tqFE7F8pVFxHBv42rG-R90q-fXU6t26sZ5TTIOr4qR-v_14vqkWQppDaUybeY2Sm4PE_pRAFE5_pHfweZUwbi837YL6GqfyJWWQddMCHaYdJUyKUCrmqIEp_CY3L_Hxb3GXFmy7R2JrrvAaLtVk2Y3_dVnsZMEkbj0wVTozkWY0EQ0MexhwMnm2ZwO6PH1YSH7YZqxaXHdSC8m92MSi615t"/>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Mark van der Meer</h4>
+<div class="flex items-center gap-1 text-amber-500">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold text-on-surface-variant">4.9 (124 reviews)</span>
+</div>
+</div>
+</div>
+<button class="bg-surface-container-high px-4 py-2 rounded-xl text-sm font-bold hover:brightness-105 transition-all">
+                            View Profile
+                        </button>
+</div>
+</div>
+<!-- Location Map -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h3 class="text-sm font-bold uppercase tracking-[0.1em] text-outline">Location</h3>
+<span class="text-sm font-bold text-primary">Utrecht, Netherlands</span>
+</div>
+<div class="h-48 rounded-[24px] overflow-hidden bg-surface-container relative">
+<!-- Placeholder for a map with data-location -->
+<div class="absolute inset-0 bg-[#e0e0e0]" data-location="Utrecht, Netherlands" style="">
+<img alt="Map location" class="w-full h-full object-cover opacity-60 grayscale" data-alt="Clean minimal map view of a city center with soft grey and blue tones and subtle street highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfZbaq-e_gkjmd1cBwde--b7HK6H5eCMKW8uwt1JHnjGw2U2xJMn3wSFtyo-DRGMQRAGnJE-43WCq2f6fXpi7fU-B_Y6FK5m2KoxUngEMSDm996kbN2Bm3jPw1hT63wydV2Xf5jZUjr5Y7JFJ0TpSC1Wb5eaD9yh79Rb5FEnlDj-GlD-ggr6GCNg8tS9e6eCF8EP-DBlUMz7PpGlYYFdAcvgx9WTSxbq6fBjKFHN7CrIdi-4eAuYCn2qW_WaUuwE25Hq9tpdD558hN"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-10 h-10 bg-primary rounded-full border-4 border-white flex items-center justify-center text-white shadow-xl">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mandatory Component) -->
+<footer class="fixed bottom-0 left-0 w-full px-4 pb-8 pt-4 flex justify-between gap-4 bg-white/90 backdrop-blur-2xl rounded-t-[24px] z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<button class="flex flex-1 items-center justify-center gap-2 bg-[#f6f3f2] text-[#4e4644] rounded-xl py-4 mx-2 hover:brightness-110 transition-all cubic-bezier(0.23,1,0.32,1) active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Message</span>
+</button>
+<button class="flex flex-1 items-center justify-center gap-2 bg-gradient-to-br from-[#a93200] to-[#d1430a] text-white rounded-xl py-4 mx-2 hover:brightness-110 transition-all cubic-bezier(0.23,1,0.32,1) active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Buy Now</span>
+</button>
+</footer>
+</body></html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(24px); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#164974",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb59e",
+                        "outline": "#8e7067",
+                        "surface-container": "#f0edec",
+                        "secondary-container": "#a1cdff",
+                        "tertiary-fixed": "#82fc8e",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-bright": "#fcf9f8",
+                        "primary-fixed": "#ffdbd0",
+                        "tertiary-fixed-dim": "#65df75",
+                        "inverse-surface": "#313030",
+                        "on-primary-fixed-variant": "#842500",
+                        "surface-variant": "#e5e2e1",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "surface-container-high": "#ebe7e7",
+                        "primary-container": "#d1430a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "tertiary": "#006b24",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-tint": "#ad3300",
+                        "on-secondary-container": "#285782",
+                        "primary": "#F15A24", /* Updated to Brand Primary */
+                        "on-background": "#1c1b1b",
+                        "tertiary-container": "#008730",
+                        "outline-variant": "#e2bfb4",
+                        "background": "#fcf9f8",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-secondary-fixed": "#001d35",
+                        "on-primary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#002106",
+                        "secondary-fixed": "#d0e4ff",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1c1b1b",
+                        "surface": "#fcf9f8",
+                        "secondary": "#34618d"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl shadow-sm md:hidden">
+<div class="flex justify-between items-center px-6 h-16 w-full">
+<h1 class="text-2xl font-bold text-[#F15A24] tracking-tight font-['Plus_Jakarta_Sans']">Mijn Profiel</h1>
+<div class="flex gap-4">
+<button class="text-stone-600 transition-all duration-300 hover:opacity-80">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="text-stone-600 transition-all duration-300 hover:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 px-4 max-w-lg mx-auto">
+<!-- Profile Header Section -->
+<section class="flex flex-col items-center mb-8">
+<div class="relative mb-4 group">
+<div class="w-20 h-20 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-sm">
+<img alt="Mahmut Kaya" class="w-full h-full object-cover" data-alt="Close-up portrait of a friendly man with a short beard and dark hair, smiling warmly in soft natural daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCStr-1o1n21Xd0qj2fzYnVyGxzCh4Qwm1j5YodjH3BiMeo63CdbcRIAMJtezm_fAN-58kakTheCVqvL6K_0oi6D3xZGRs6Giy-HPxzzQFRonCSoATH6vTnOtLValYjLA4b8ENjCWNUY-7QMay3DMfSBykIR8tBA4SSOCm77POOagVn-5HJU8nWd_brQTnc69l77InZM4IWQ8-f3GX1iWeVMTBBwhus7CLQwGsKv27ZsnWKiKZyTrSh3Y0jSff5b3w8LTsALToG-Bm3"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full shadow-lg border-2 border-surface transform transition-transform active:scale-90">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface">Mahmut Kaya</h2>
+<p class="text-sm text-on-surface-variant font-medium">Lid sinds maart 2026</p>
+</section>
+<!-- Verification Badges -->
+<section class="bg-surface-container-low rounded-2xl p-5 mb-6">
+<div class="flex flex-wrap gap-3 mb-4">
+<div class="flex items-center gap-1.5 bg-tertiary/10 px-3 py-1.5 rounded-full border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-[18px]" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold text-tertiary">Email</span>
+</div>
+<div class="flex items-center gap-1.5 bg-tertiary/10 px-3 py-1.5 rounded-full border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-[18px]" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold text-tertiary">Telefoon</span>
+</div>
+<div class="flex items-center gap-1.5 bg-stone-200 px-3 py-1.5 rounded-full border border-stone-300">
+<span class="material-symbols-outlined text-stone-500 text-[18px]" data-icon="cancel">cancel</span>
+<span class="text-xs font-bold text-stone-500">iDIN</span>
+</div>
+</div>
+<a class="text-primary text-sm font-bold flex items-center gap-1 hover:underline" href="#">
+                Verifieer je identiteit
+                <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</section>
+<!-- Stats Row -->
+<section class="grid grid-cols-3 gap-4 mb-8">
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center shadow-sm">
+<div class="text-lg font-black text-primary">12</div>
+<div class="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant">Lijsten</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center shadow-sm">
+<div class="text-lg font-black text-primary">4.8</div>
+<div class="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant">Score</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl text-center shadow-sm">
+<div class="text-lg font-black text-primary">150+</div>
+<div class="text-[10px] uppercase tracking-wider font-bold text-on-surface-variant">Deals</div>
+</div>
+</section>
+<!-- Tabs -->
+<nav class="flex gap-8 border-b-0 mb-6">
+<button class="pb-3 text-primary font-bold border-b-2 border-primary text-sm">Advertenties (12)</button>
+<button class="pb-3 text-on-surface-variant font-medium text-sm hover:text-primary transition-colors">Beoordelingen</button>
+</nav>
+<!-- DeelCards Grid (2-column) -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="group cursor-pointer">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-high mb-3 relative">
+<img alt="Camping gear" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional camping tent and gear set up in a forest during a misty morning with soft ambient light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBttsFrRI1_WpazF4f4hL1vaA_6mbhSK8kOIfwrwoDWFklk6yY7bfYgl283QtrXkuI0f3zJU5Xs4AZ6aL74g_NpWj_9s8wDo_A1IdG-kY3EMZcsbqz70aliZO9DbKrK9BRp9xEVHz9g_zSBfWvOsPUX6snSBjpvrE1YSIypHI-Z72GUVS0W2O4HmwOuvePO4hq89PpQVqJ-QIRw1RVrYygi3HTlv4ajhtGndYLLUd9OETA6EzlS7U7rgvUYsSaw2wxxwwVhRhFi06LQ"/>
+<div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg shadow-sm">
+<span class="text-[10px] font-bold text-secondary">€25/dag</span>
+</div>
+</div>
+<h3 class="text-xs font-bold text-on-surface truncate px-1">Gezinstent 4-persoons</h3>
+<p class="text-[10px] text-on-surface-variant px-1">Amsterdam • 1.2km</p>
+</div>
+<!-- Card 2 -->
+<div class="group cursor-pointer">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-high mb-3 relative">
+<img alt="Headphones" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Premium high-fidelity wireless headphones resting on a minimalist oak wooden desk with soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBChNJkvcZS3hdnYruEe6XUZnW0tCJyd9BeDA857tLIf1kQepaboYJiTQ6zMfjI4sZTAg2ksTWFcOr_QD-M05EMz6uzb0v15WPz-BuaPGzv0kKO-j_y2N2p7cViTl8PZQeOmadNGbQWv-ATKmbr8qgrLwKR2_UOUdcFGYqVon_8zqEoCZOsQwPlrBStbt7uY1bRBDcQ8FkkNPmAvIdUufqq8mFfyBfljTJshL6zyemsOA9ybkW2wVEf-yAUYsqORwvzmYkUrtPj7vwD"/>
+<div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg shadow-sm">
+<span class="text-[10px] font-bold text-secondary">€15/dag</span>
+</div>
+</div>
+<h3 class="text-xs font-bold text-on-surface truncate px-1">Sony Noise Cancelling</h3>
+<p class="text-[10px] text-on-surface-variant px-1">Amsterdam • 0.8km</p>
+</div>
+<!-- Card 3 -->
+<div class="group cursor-pointer">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-high mb-3 relative">
+<img alt="Smartphone" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Elegant smartphone held by a professional hand in a modern workspace setting with shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApc7L4-zAPcDNKzFeXzszVvr2KCDv3fe2dws7OE7uczHnV_LDt5v_5Xm9W59Zp1WvYqRkGZVDXflZBRW8tGJCmwpOjstfJPOrlfCbxQpcM5XKU8VMvF3RCrEW1llmWIGMxg7HwtiAmNg0FzrMKDdO8JIhUpWdC4UPVfklPYtGUcSjuzf6lW8K_9koC6LTj7McCc_W4OqhRULBTZsBl4oEZyucpRwgq5dqamhrHyfwrlZalEmfmMy18oVOFF7giyO4l1yBActos-Ll2"/>
+<div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg shadow-sm">
+<span class="text-[10px] font-bold text-secondary">€40/dag</span>
+</div>
+</div>
+<h3 class="text-xs font-bold text-on-surface truncate px-1">iPhone 15 Pro Max</h3>
+<p class="text-[10px] text-on-surface-variant px-1">Amstelveen • 3.5km</p>
+</div>
+<!-- Card 4 -->
+<div class="group cursor-pointer">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-high mb-3 relative">
+<img alt="Bicycle" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="High-performance road bike leaning against a brick wall in an urban setting at sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcw-x2PYUVThlXw9YQL5lEgeXLUAQfycGrwIBACJ9vqZeLGrFck3p9Nvng3cSLPihuTcgyTMiBS0b8MlwhIRUqUaw7-qKBGmPWibfWFxwJhf44qT6AqGUZyywvB1cBIgD7DgwPzxIuTR7QbLS7w1ZzcN0CTi-lrRPrqkeo8UL-09narEYx4j1yiij4jZdo_vswXt-yDKjpJne6pom0cWx8qx0wp9XcfwrDSaFC8B3IPJSMD0_ixA1E4cJ3BKwCwITCE4_JhUepezpU"/>
+<div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg shadow-sm">
+<span class="text-[10px] font-bold text-secondary">€20/dag</span>
+</div>
+</div>
+<h3 class="text-xs font-bold text-on-surface truncate px-1">Wielrenfiets Specialized</h3>
+<p class="text-[10px] text-on-surface-variant px-1">Amsterdam • 2.1km</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-stone-900/80 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)] rounded-t-3xl">
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 p-2 hover:text-[#F15A24]" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 p-2 hover:text-[#F15A24]" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 p-2 hover:text-[#F15A24]" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Sell</span>
+</a>
+<!-- ACTIVE TAB: Profile -->
+<a class="flex flex-col items-center justify-center bg-[#F15A24] text-white rounded-2xl p-2 min-w-[64px] scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Profiel</span>
+</a>
+</nav>
+</body></html>

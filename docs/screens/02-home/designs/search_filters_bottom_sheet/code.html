@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d0e4ff",
+              "on-surface": "#1c1b1b",
+              "on-tertiary": "#ffffff",
+              "tertiary": "#006b24",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "inverse-surface": "#313030",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-secondary": "#ffffff",
+              "surface-tint": "#ad3300",
+              "on-tertiary-container": "#f7fff2",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "inverse-primary": "#ffb59e",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-container": "#a1cdff",
+              "on-surface-variant": "#5a4139",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#ffdbd0",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-highest": "#e5e2e1",
+              "error": "#ba1a1a",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#82fc8e",
+              "surface": "#fcf9f8",
+              "surface-bright": "#fcf9f8",
+              "primary": "#a93200",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "on-secondary-fixed-variant": "#164974",
+              "tertiary-fixed-dim": "#65df75",
+              "on-primary-fixed-variant": "#842500",
+              "on-background": "#1c1b1b",
+              "surface-container": "#f0edec",
+              "surface-container-low": "#f6f3f2",
+              "surface-container-high": "#ebe7e7",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "primary-container": "#d1430a",
+              "outline-variant": "#e2bfb4",
+              "on-secondary-container": "#285782",
+              "secondary": "#34618d",
+              "tertiary-container": "#008730"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-shift { background: linear-gradient(180deg, rgba(252, 249, 248, 0.8) 0%, rgba(246, 243, 242, 0.8) 100%); }
+        .glass-blur { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #a93200;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(169, 50, 0, 0.3);
+        }
+        .custom-range::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #a93200;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(169, 50, 0, 0.3);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full tonal-shift">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#F15A24] cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-['Plus_Jakarta_Sans'] tracking-tight font-bold text-lg text-[#F15A24]">Search</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#5a5a5a] cursor-pointer" data-icon="close">close</span>
+</div>
+</header>
+<!-- Main Content (Search Grid - Background) -->
+<main class="pt-20 pb-24 px-4 overflow-y-auto h-screen">
+<!-- Search Bar Context -->
+<div class="mb-6">
+<div class="bg-surface-container-high rounded-xl p-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+<span class="text-on-surface-variant font-medium">Design furniture...</span>
+</div>
+</div>
+<!-- Asymmetric Bento Grid Mockup -->
+<div class="grid grid-cols-2 gap-4 opacity-40">
+<div class="col-span-1 bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="h-40 bg-surface-container" data-alt="minimalist wooden lounge chair with leather cushions in a bright sunlit studio apartment" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAFpoRTYwWCp0tkHOVIyUYLHd3nUNxFhr1oYDwv_vJJwkMIQBz0xTdL3sfn4SdpbgOSIerm5xh8cJdEH4CkyLZ8ElyviUDMpM4P7s6ElhJR4QTlXUPI2lWLBb_KiE2W9wKNxzv5IeB3QZwc9AvRjntiL_r9MGma3SMTWmyvunqgi3HTAkKsb3_KAkgln_ZdLY6YDsra2Cg_8CJbuLBMAzJrS_nRXUrod-wKRDSkEiXPt5LwEiHhQS6gLmSuDVfKn39isZZDAGt5n0E3'); background-size: cover; background-position: center;"></div>
+<div class="p-3">
+<div class="text-secondary font-bold text-lg">€ 850</div>
+<div class="text-sm font-semibold truncate">Vintage Eames Chair</div>
+</div>
+</div>
+<div class="col-span-1 bg-surface-container-lowest rounded-xl overflow-hidden mt-6">
+<div class="h-48 bg-surface-container" data-alt="mid-century modern walnut sideboard with brass handles on a neutral textured wall background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBghIGFS-hRfcCxtlYCJeduIAzyPyXUpm8IhMcnmgLhI-_0PGPk4bJr7IABPEkgeglpHZievlKifjrZbjykWKA97MB8sJBFj9PvJX3eUCLh-ELNi8M2TgjU9Qsmkqy9XJ501_b_6V-I8NU5uk8cA1Da7nZIZiETRf_TvQcp9NGm5gRn0oDezU1Lv5XQUe6TE_NH3OLLzqtAYqfX98HRbgXr52Zj1Jo3om54bejVBvk6RmPEJzdAAhPEAUvuYH-VSotJXloFzqyfuEic'); background-size: cover; background-position: center;"></div>
+<div class="p-3">
+<div class="text-secondary font-bold text-lg">€ 1.200</div>
+<div class="text-sm font-semibold truncate">Walnut Sideboard</div>
+</div>
+</div>
+<div class="col-span-2 bg-surface-container-lowest rounded-xl overflow-hidden flex">
+<div class="w-1/2 h-32 bg-surface-container" data-alt="contemporary ceramic vase collection with matte finish on a minimalist stone shelf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDOR2AZnbXFTqbLpIi6o2nFM2QNSnwm9LFb7XFgHhJw0Xwcwk9t1pdBfi76JzUSl3nKJbnyyvKsi-UNp-UKuC_G-Rjvpzfb8Z8ACBzITqNzgsowoiRIRfeYxleH7ezBb8xGM7KKZhYpgkWq-mXP3_xnGJ5gIxMhxBjLwWtzEjui1xh4G7SlV6enk0aLRDLqbyeXM08BMA8_YIhyFJsZN4uMKJS3tccPgO0PfGWWYwi7FE6N2wkzfVWKDZNnO3dcncCADI5mWcl1c85P'); background-size: cover; background-position: center;"></div>
+<div class="w-1/2 p-4 flex flex-col justify-center">
+<div class="text-secondary font-bold text-lg">€ 45</div>
+<div class="text-sm font-semibold">Handmade Ceramic Vase</div>
+<div class="mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] text-tertiary font-bold uppercase tracking-wider">Verified</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay Backwash -->
+<div class="fixed inset-0 bg-on-surface/40 z-[60] backdrop-blur-[2px]"></div>
+<!-- Filter Bottom Sheet -->
+<div class="fixed bottom-0 left-0 w-full z-[70] bg-surface-container-lowest rounded-t-[32px] shadow-[0_-8px_40px_rgba(0,0,0,0.15)] flex flex-col max-h-[795px]">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center py-4">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="px-6 pb-4 flex justify-between items-center">
+<h2 class="font-headline text-2xl font-extrabold tracking-tight">Filters</h2>
+<button class="text-primary font-bold text-sm tracking-wide">Filters wissen</button>
+</div>
+<!-- Scrollable Content -->
+<div class="px-6 py-2 overflow-y-auto space-y-8 pb-32">
+<!-- Price Section -->
+<section>
+<h3 class="font-headline text-lg font-bold mb-4">Prijs</h3>
+<div class="flex justify-between mb-2">
+<span class="text-on-surface-variant font-medium">€ 0</span>
+<span class="text-primary font-bold">€ 5000+</span>
+</div>
+<div class="relative h-6 flex items-center">
+<div class="absolute w-full h-1.5 bg-surface-container-high rounded-full"></div>
+<div class="absolute left-0 w-3/4 h-1.5 bg-primary-container rounded-full"></div>
+<input class="absolute w-full appearance-none bg-transparent custom-range z-10 pointer-events-auto" max="5000" min="0" type="range" value="3500"/>
+</div>
+<div class="mt-4 grid grid-cols-2 gap-3">
+<div class="bg-surface-container-low p-3 rounded-xl">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant block mb-1">Minimum</span>
+<span class="text-base font-semibold">€ 0</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl border-2 border-primary-container/20">
+<span class="text-[10px] uppercase font-bold text-primary block mb-1">Maximum</span>
+<span class="text-base font-semibold">€ 3.500</span>
+</div>
+</div>
+</section>
+<!-- Condition Section -->
+<section>
+<h3 class="font-headline text-lg font-bold mb-4">Conditie</h3>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
+<span class="font-semibold">Nieuw</span>
+<div class="w-6 h-6 rounded-lg border-2 border-primary-container flex items-center justify-center bg-primary-container">
+<span class="material-symbols-outlined text-white text-sm" data-icon="check">check</span>
+</div>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
+<span class="font-semibold">Zo goed als nieuw</span>
+<div class="w-6 h-6 rounded-lg border-2 border-outline-variant"></div>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
+<span class="font-semibold">Gebruikt</span>
+<div class="w-6 h-6 rounded-lg border-2 border-outline-variant"></div>
+</label>
+</div>
+</section>
+<!-- Distance Section -->
+<section>
+<h3 class="font-headline text-lg font-bold mb-4">Afstand</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full bg-primary-container text-white font-bold text-sm">Binnen 5 km</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold text-sm">Binnen 10 km</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold text-sm">Binnen 25 km</button>
+<button class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface-variant font-bold text-sm">Heel Nederland</button>
+</div>
+</section>
+</div>
+<!-- Footer Actions -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-surface-container-lowest/80 backdrop-blur-md">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                Resultaten tonen (24)
+            </button>
+</div>
+</div>
+<!-- Bottom Nav Bar (Suppressed because focused task is open, but kept for shell reference as per rules if user moves away) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl z-40 md:flex hidden">
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-2xl px-4 py-2">
+<span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profile</span>
+</div>
+</nav>
+</body></html>

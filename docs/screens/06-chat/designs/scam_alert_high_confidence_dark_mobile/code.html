@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-container": "#008730",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-high": "#ebe7e7",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-on-surface": "#f3f0ef",
+              "primary-container": "#d1430a",
+              "on-primary-container": "#fffbff",
+              "secondary-container": "#a1cdff",
+              "on-secondary-container": "#285782",
+              "surface": "#fcf9f8",
+              "surface-tint": "#ad3300",
+              "primary": "#a93200",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "outline-variant": "#e2bfb4",
+              "on-primary-fixed": "#3a0b00",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "on-secondary": "#ffffff",
+              "tertiary": "#006b24",
+              "primary-fixed": "#ffdbd0",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "outline": "#8e7067",
+              "surface-variant": "#e5e2e1",
+              "surface-container": "#f0edec",
+              "on-tertiary-fixed": "#002106",
+              "inverse-primary": "#ffb59e",
+              "surface-dim": "#dcd9d9",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "on-error": "#ffffff",
+              "surface-bright": "#fcf9f8",
+              "secondary": "#34618d",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#5a4139",
+              "on-background": "#1c1b1b",
+              "tertiary-fixed": "#82fc8e",
+              "on-error-container": "#93000a",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary-fixed-variant": "#164974"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121212;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased text-inverse-on-surface">
+<!-- Top Navigation Bar (Context: DeelMarkt Brand) -->
+<nav class="sticky top-0 w-full z-50 bg-[#121212]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full max-w-none shadow-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a friendly seller with a soft blurred background of an urban apartment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVZpj1RVvMXjwdm-QM1LuI9t4iy2xHzVMIJajeUmiOW9ugfTnVUSZW9vTve27Fd98HB0Db5pM4hveX98nWY5yD4LYohW3b2bB--5PJQ4WTh-i53SvlPBE8iWCj1RJZu-ONpH0fPcH8UC_Lcm03l9px8_mfREWJUdSKste-UVf-tAT2elzXyaLq_sQhISGgyBCJLzZdYJDI3N7hConEtF6CP96QFnCE6qc5M_6nJrylInsQzl4W474Y-Synr8PX_z0RIT-t8lM9mWkr"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold tracking-tight text-[#d1430a]">Mark J.</span>
+<span class="text-[10px] text-on-surface-variant opacity-70 uppercase tracking-widest font-semibold">Geverifieerde Verkoper</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 text-[#c4c7c5]">
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#2a2a2a] p-2 rounded-full transition-colors" data-icon="flag">flag</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#2a2a2a] p-2 rounded-full transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+</nav>
+<!-- Main Content Canvas (Focused Journey: Chat Thread) -->
+<main class="max-w-2xl mx-auto px-4 pt-4 pb-32">
+<!-- SCAM ALERT BANNER (High-Confidence) -->
+<section class="mb-8 overflow-hidden rounded-xl bg-[#1c1b1b] border-l-4 border-error shadow-2xl">
+<div class="p-4 flex gap-4 items-start">
+<div class="flex-shrink-0 bg-error/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-error scale-110" data-icon="report" style="font-variation-settings: 'FILL' 1;">report</span>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="text-sm font-bold text-on-error-container">Veiligheidswaarschuwing</h2>
+<p class="text-[13px] leading-relaxed text-on-surface-variant font-medium">
+                        Dit bericht bevat mogelijk oplichting. Deel nooit uw bankgegevens of persoonlijke informatie buiten het platform van DeelMarkt.
+                    </p>
+<div class="mt-3 flex gap-4">
+<button class="text-[12px] font-bold text-error uppercase tracking-wider hover:opacity-80 transition-opacity">Rapporteer gebruiker</button>
+<button class="text-[12px] font-bold text-on-surface-variant opacity-60 uppercase tracking-wider hover:opacity-100 transition-opacity">Meer info</button>
+</div>
+</div>
+<button class="ml-auto text-on-surface-variant/40 hover:text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="close">close</span>
+</button>
+</div>
+</section>
+<!-- Chat Bubbles Placeholder (Contextual) -->
+<div class="flex flex-col gap-6">
+<!-- Timestamp -->
+<div class="text-center">
+<span class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em]">Vandaag • 14:22</span>
+</div>
+<!-- Left Bubble (The Suspicious One) -->
+<div class="flex flex-col gap-2 max-w-[85%] items-start">
+<div class="bg-surface-container-high/20 text-inverse-on-surface p-4 rounded-2xl rounded-tl-none backdrop-blur-sm">
+<p class="text-sm leading-relaxed">Hallo, ik ben geïnteresseerd in de iPhone. Kunt u mij uw e-mailadres sturen zodat ik u een betaalverzoek kan sturen via een andere koerierdienst? Het is veiliger voor ons allebei.</p>
+</div>
+<span class="text-[10px] text-on-surface-variant/50 ml-1">14:24</span>
+</div>
+<!-- System Message -->
+<div class="bg-surface-container-low/5 py-3 px-6 rounded-full self-center border border-outline-variant/10">
+<p class="text-[11px] text-on-surface-variant/60 font-medium italic">Systeem: Mark J. vraagt om contactgegevens buiten DeelMarkt.</p>
+</div>
+</div>
+</main>
+<!-- Chat Input Area (Task-Focused: Suppresses FAB and Main Nav) -->
+<div class="fixed bottom-0 left-0 w-full bg-[#121212]/90 backdrop-blur-2xl px-4 py-4 pb-8">
+<div class="max-w-2xl mx-auto flex items-end gap-3">
+<div class="flex-shrink-0 pb-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high/20 text-on-surface-variant transition-transform active:scale-90">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<div class="flex-grow relative">
+<textarea class="w-full bg-surface-container-lowest/5 border-none focus:ring-1 focus:ring-primary/40 rounded-2xl text-sm py-3 px-4 text-inverse-on-surface placeholder-on-surface-variant/40 resize-none min-h-[44px]" placeholder="Typ een bericht..." rows="1"></textarea>
+</div>
+<div class="flex-shrink-0 pb-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-on-primary transition-transform active:scale-90 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

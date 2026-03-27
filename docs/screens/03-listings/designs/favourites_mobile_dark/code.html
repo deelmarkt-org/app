@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#f3f0ef",
+              "on-background": "#1c1b1b",
+              "surface-container-high": "#ebe7e7",
+              "on-surface": "#1c1b1b",
+              "surface": "#fcf9f8",
+              "primary": "#a93200",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-highest": "#e5e2e1",
+              "surface-container-low": "#f6f3f2",
+              "primary-fixed": "#ffdbd0",
+              "outline": "#8e7067",
+              "surface-dim": "#dcd9d9",
+              "surface-variant": "#e5e2e1",
+              "outline-variant": "#e2bfb4",
+              "error": "#ba1a1a",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-container": "#f0edec",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "tertiary": "#006b24",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "on-primary-fixed-variant": "#842500",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#285782",
+              "background": "#fcf9f8",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error-container": "#93000a",
+              "on-tertiary-fixed": "#002106",
+              "tertiary-container": "#008730",
+              "on-primary-fixed": "#3a0b00",
+              "surface-bright": "#fcf9f8",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "surface-tint": "#ad3300",
+              "primary-container": "#d1430a",
+              "secondary": "#34618d",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #121212;
+            color: #F2F2F2;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        /* Custom scrollbar for clean dark look */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#121212] min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 w-full bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-[#FF7A4D] hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] tracking-[-0.02em] font-bold text-2xl text-[#F2F2F2]">Favorieten</h1>
+</div>
+<button class="text-[#A0A0A0] hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<main class="px-6 pt-4">
+<!-- Editorial Section Header -->
+<div class="mb-8">
+<p class="text-[#A0A0A0] text-sm font-medium tracking-wide uppercase mb-2">Jouw Collectie</p>
+<h2 class="text-3xl font-extrabold tracking-tight text-[#F2F2F2]">Blijf geïnspireerd door je opgeslagen items.</h2>
+</div>
+<!-- Bento/Grid Layout for DeelCards -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="bg-[#1E1E1E] rounded-2xl overflow-hidden border border-[#333333] flex flex-col group">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="luxury modern emerald green velvet sofa in a dimly lit designer living room with warm ambient mood lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFKkvZcGr-fatPrBkhuKN7YlCl1j9rwo6bXAi3-P7ZOT1lLtPr0_I-_P-Y87UEzdYtFBD0Yl4IfHM4DqIRdGRGMQQcUTonyW5UG8vr1b6keg2b_Ms0v9O61CE-YiZc8Zc2IUEOXVv3xvCOigQooVs1ep1AZR_5a0pJXHzfQQEbbuJ-1ZItdKo3wf8Sksfb9RwP39O7wXIsmmcz3GE3CZD3UN1qoWzD0OL0rusmqd7_C1R_ZHSWeDJTAPqKNu0jdaotKFLVJQZPtGzJ"/>
+<button class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2 text-red-500">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-[#052E16]/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[#65df75] text-[14px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[#65df75] text-[10px] font-bold uppercase tracking-wider">Trusted</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<p class="text-[#A0A0A0] text-[10px] font-bold uppercase tracking-widest mb-1">Interieur</p>
+<h3 class="text-[#F2F2F2] font-bold text-sm leading-tight mb-2 line-clamp-2">Designer Fluwelen Bank - Emerald</h3>
+<div class="mt-auto flex items-baseline gap-1">
+<span class="text-[#FF7A4D] font-extrabold text-lg">€45</span>
+<span class="text-[#A0A0A0] text-[10px]">/dag</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#1E1E1E] rounded-2xl overflow-hidden border border-[#333333] flex flex-col group">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="professional cinematic camera rig with high-end lens on a tripod in a dark studio setting with blue rim light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAkct3QTsSJ57EY5syVzDAkq9OIim61wfatA9OcGWLm1Az9ea926LEAw12ZnDi5U3uHo8HBLyRRFLK7NGzFrpaX_ww8tHA-gHvKeUAypQS3pLxAHcPyGT6sfE-MGwzUNnQbzldBM7G-vr1bdeww_fujR588O6d3Y5jYXDPWMAesBBwXwrCvM4ZxSWQxkoCtz1Znh9Q4t2q_RbIQNwib7Bl8pnH09apVZDL_HhuP8Ws1ZQtYQg3ED6qAD7QzyTVrVWCvX3ou6X-LrDy"/>
+<button class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2 text-red-500">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<p class="text-[#A0A0A0] text-[10px] font-bold uppercase tracking-widest mb-1">Electronica</p>
+<h3 class="text-[#F2F2F2] font-bold text-sm leading-tight mb-2 line-clamp-2">Sony Alpha Cinema Kit 4K</h3>
+<div class="mt-auto flex items-baseline gap-1">
+<span class="text-[#FF7A4D] font-extrabold text-lg">€120</span>
+<span class="text-[#A0A0A0] text-[10px]">/dag</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#1E1E1E] rounded-2xl overflow-hidden border border-[#333333] flex flex-col group">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="vintage black road bicycle leaning against a textured dark concrete wall in urban twilight setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNdvi57D8EngaxvVCKmduq62CqRie2EB_g3KQyJBSjZpZ3qIG7y7NsxZZbdbbfU4fegRXS5OZn3UanXwc5QibSCha6V7fg0FpGaK7fGYz2D1JbK1ViLPEbMzmeQr67lJf9QxIoxvRUQrgq4kaAh7XME_2sWPhn4w4nCDdyuGnEE8hHEWXctiF25NYCFVVCpnzBIxEiZ5yz3yafH8uFej_wGjJupcTIgSvxP-6S8HoNf-7zoXuFhJjnmdZxPOqzJl61yB2XLH8mRXQZ"/>
+<button class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2 text-red-500">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 bg-[#052E16]/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[#65df75] text-[14px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[#65df75] text-[10px] font-bold uppercase tracking-wider">Trusted</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<p class="text-[#A0A0A0] text-[10px] font-bold uppercase tracking-widest mb-1">Vervoer</p>
+<h3 class="text-[#F2F2F2] font-bold text-sm leading-tight mb-2 line-clamp-2">VanMoof S3 - Matte Black Edition</h3>
+<div class="mt-auto flex items-baseline gap-1">
+<span class="text-[#FF7A4D] font-extrabold text-lg">€15</span>
+<span class="text-[#A0A0A0] text-[10px]">/dag</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-[#1E1E1E] rounded-2xl overflow-hidden border border-[#333333] flex flex-col group">
+<div class="relative aspect-[4/5] overflow-hidden">
+<img class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="high-tech professional drones flying over a dark landscape with glowing led lights in the night sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtUn4CuJz-EmP8I2MqxzXhpR3FJ24kA2Ex0vPU_HfbpsqjCljTswRApFR5Z0dKjHAlk5lhgUhyz6OrB3Ru_6Ozb2Nc0uJuFl-p0E9bJrcqYuDizdCorEnlNumozy9Q3Z7ueb2NAtyJI1K3Tf5tA9GvpRbOhNiQhyiHMGGKxwlSDDn53StarQV7D6Q66PVCgf9IhFb7xYXBk5c_2kGCJ7B4EIENsxoAxHfh5GuDSq6xYdtEXmtPStcL8BRVReuKvHj4tfRo_JYxv3s_"/>
+<button class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2 text-red-500">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<p class="text-[#A0A0A0] text-[10px] font-bold uppercase tracking-widest mb-1">Hobby</p>
+<h3 class="text-[#F2F2F2] font-bold text-sm leading-tight mb-2 line-clamp-2">DJI Mavic 3 Pro - Drone Set</h3>
+<div class="mt-auto flex items-baseline gap-1">
+<span class="text-[#FF7A4D] font-extrabold text-lg">€85</span>
+<span class="text-[#A0A0A0] text-[10px]">/dag</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Editorial "End of List" message -->
+<div class="py-16 text-center">
+<h3 class="text-[#4a4a4a] font-['Plus_Jakarta_Sans'] font-extrabold text-4xl mb-2 opacity-50">Klaar.</h3>
+<p class="text-[#A0A0A0] text-sm italic">Meer ontdekken voor je volgende project?</p>
+<button class="mt-6 px-8 py-3 bg-gradient-to-br from-[#a93200] to-[#d1430a] text-white font-bold rounded-xl shadow-lg active:scale-95 transition-transform">
+                Blader door alles
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-[#121212]/80 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0_-4px_24px_rgba(0,0,0,0.3)]">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3">
+<!-- Ontdekken -->
+<div class="flex flex-col items-center justify-center text-[#a0a0a0] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Ontdekken</span>
+</div>
+<!-- Favorieten (ACTIVE) -->
+<div class="flex flex-col items-center justify-center text-[#FF7A4D] scale-110 transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Favorieten</span>
+</div>
+<!-- Plaatsen -->
+<div class="flex flex-col items-center justify-center text-[#a0a0a0] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1 text-3xl text-[#FF7A4D]" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Plaatsen</span>
+</div>
+<!-- Berichten -->
+<div class="flex flex-col items-center justify-center text-[#a0a0a0] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="mail">mail</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Berichten</span>
+</div>
+<!-- Profiel -->
+<div class="flex flex-col items-center justify-center text-[#a0a0a0] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profiel</span>
+</div>
+</div>
+</nav>
+</body></html>

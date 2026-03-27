@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary": "#34618d",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "background": "#fcf9f8",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "on-surface-variant": "#5a4139",
+              "surface-tint": "#ad3300",
+              "surface-container-lowest": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-highest": "#e5e2e1",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#a93200",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary": "#006b24",
+              "secondary-fixed": "#d0e4ff",
+              "surface": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container": "#f0edec",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "tertiary-container": "#008730",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed-dim": "#9fcafc",
+              "secondary-container": "#a1cdff",
+              "on-secondary-fixed": "#001d35",
+              "surface-bright": "#fcf9f8",
+              "on-primary-container": "#fffbff",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "on-tertiary-container": "#f7fff2",
+              "surface-dim": "#dcd9d9",
+              "surface-container-low": "#f6f3f2",
+              "on-background": "#1c1b1b",
+              "primary-container": "#d1430a",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-container": "#285782",
+              "surface-container-high": "#ebe7e7",
+              "tertiary-fixed": "#82fc8e"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .snappy-spring { transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="bg-[#fcf9f8]/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-40">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
+<span class="text-2xl font-black tracking-tighter text-[#F15A24] font-['Plus_Jakarta_Sans']">DeelMarkt</span>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-stone-600">notifications</span>
+<span class="material-symbols-outlined text-stone-600">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content (Background Content for Settings) -->
+<main class="flex-grow pt-24 pb-32 px-6">
+<h1 class="text-3xl font-extrabold tracking-tight mb-8">Instellingen</h1>
+<div class="space-y-6">
+<!-- Profile Section -->
+<section class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a friendly smiling dutch woman in her 30s with soft natural lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCH2OWCVBkIiiYGJOM8QnGPA2pk3q0Uxw11SbblK-gk2PGK-vql-4EZKwtFFcv8kHqK5t1EhcwbKQdJTVpCJoZiIztbkYuZmLiGnjj3i5sMPDTaHt6sc-6y4c_VlXdM1vRMn3QzyLPSKAJ0ZXwLCjCcz04Q-n5doYdKZM2SYVTG2G6YrUe8vtfp1Zoh9Re8YOV9kMDJmYYV7t3Kqx7p06hZI9KrB0r1uPW9hIvhXItF31EEigLGWkFQloJnVxEpEKS-JqwMsye5hf"/>
+</div>
+<div>
+<h2 class="font-bold text-lg">Anouk van der Meer</h2>
+<p class="text-on-surface-variant text-sm">anouk.vdm@example.nl</p>
+</div>
+</div>
+</section>
+<!-- Address Section -->
+<section class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant px-1">Mijn Adressen</h3>
+<div class="bg-surface-container-lowest rounded-xl divide-y divide-outline-variant/10 overflow-hidden shadow-sm">
+<div class="p-4 flex justify-between items-center">
+<div class="flex gap-3 items-center">
+<span class="material-symbols-outlined text-secondary">home</span>
+<div>
+<p class="font-semibold">Thuis</p>
+<p class="text-sm text-on-surface-variant">Prinsengracht 123, Amsterdam</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-400">chevron_right</span>
+</div>
+<button class="w-full p-4 flex items-center gap-3 text-primary font-bold hover:bg-stone-50 transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+<span>Adres toevoegen</span>
+</button>
+</div>
+</section>
+<!-- Account Settings -->
+<section class="space-y-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant px-1">Account</h3>
+<div class="bg-surface-container-lowest rounded-xl divide-y divide-outline-variant/10 overflow-hidden shadow-sm">
+<div class="p-4 flex justify-between items-center">
+<div class="flex gap-3 items-center">
+<span class="material-symbols-outlined text-stone-500">lock</span>
+<span class="font-medium">Wachtwoord &amp; Beveiliging</span>
+</div>
+<span class="material-symbols-outlined text-stone-400">chevron_right</span>
+</div>
+<div class="p-4 flex justify-between items-center">
+<div class="flex gap-3 items-center">
+<span class="material-symbols-outlined text-stone-500">notifications</span>
+<span class="font-medium">Meldingen</span>
+</div>
+<span class="material-symbols-outlined text-stone-400">chevron_right</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- DIM OVERLAY (Active state for the modal) -->
+<div class="fixed inset-0 bg-on-surface/40 backdrop-blur-[2px] z-50 transition-opacity duration-300"></div>
+<!-- BOTTOM SHEET MODAL (Adres toevoegen) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-[16px] shadow-2xl flex flex-col max-h-[795px] snappy-spring animate-slide-up">
+<!-- Handlebar -->
+<div class="w-12 h-1.5 bg-outline-variant/40 rounded-full mx-auto my-4"></div>
+<div class="px-6 pb-4 flex justify-between items-center">
+<h2 class="text-xl font-extrabold tracking-tight">Adres toevoegen</h2>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<div class="px-6 pb-10 overflow-y-auto">
+<p class="text-on-surface-variant text-sm mb-6">Voer je postcode en huisnummer in om je adres automatisch op te halen.</p>
+<!-- DutchAddressInput Widget -->
+<form class="space-y-5">
+<div class="grid grid-cols-2 gap-4">
+<!-- Postcode -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1">Postcode</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/40 focus:outline-none shadow-sm placeholder:text-stone-300 font-medium" placeholder="1234 AB" type="text" value="1017 JR"/>
+</div>
+<!-- Huisnummer -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1">Huisnummer</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/40 focus:outline-none shadow-sm placeholder:text-stone-300 font-medium" placeholder="bv. 12" type="text" value="123"/>
+</div>
+</div>
+<!-- Auto-filled Straatnaam -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1">Straatnaam</label>
+<div class="flex items-center w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface-variant shadow-inner">
+<span class="font-medium">Prinsengracht</span>
+<span class="material-symbols-outlined ml-auto text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Auto-filled Woonplaats -->
+<div class="space-y-1.5">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1">Woonplaats</label>
+<div class="flex items-center w-full bg-surface-container-low border-none rounded-xl px-4 py-3.5 text-on-surface-variant shadow-inner">
+<span class="font-medium">Amsterdam</span>
+<span class="material-symbols-outlined ml-auto text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<!-- Adres Label (Optional but useful for UX) -->
+<div class="space-y-1.5 pt-2">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant ml-1">Naam van adres (optioneel)</label>
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3.5 text-on-surface focus:ring-2 focus:ring-primary/40 focus:outline-none shadow-sm placeholder:text-stone-300 font-medium" placeholder="bv. Werk of Tweede huis" type="text"/>
+</div>
+<!-- Submit Button -->
+<button class="w-full mt-6 py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-transform duration-200" type="submit">
+                    Adres opslaan
+                </button>
+</form>
+<!-- Trust Badge -->
+<div class="mt-8 flex items-center justify-center gap-2 py-3 px-4 bg-tertiary-container/10 rounded-full border border-tertiary/10">
+<span class="material-symbols-outlined text-tertiary text-lg">verified_user</span>
+<span class="text-xs font-bold text-on-tertiary-fixed-variant">Veilig &amp; geverifieerd door DeelMarkt</span>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Hidden when modal active is standard, but keeping as per shell mandate) -->
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-[#fcf9f8]/90 backdrop-blur-2xl">
+<div class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdekken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Berichten</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+</div>
+<div class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favorieten</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-orange-100/50 text-[#F15A24] rounded-xl px-4 py-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instellingen</span>
+</div>
+</nav>
+</body></html>
