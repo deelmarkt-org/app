@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
@@ -22,21 +23,23 @@ class TransactionDetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('transaction.status'.tr())),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(Spacing.s4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const EscrowTrustBanner(),
-            const SizedBox(height: Spacing.s6),
-            EscrowTimeline(
-              currentStatus: transaction.status,
-              escrowDeadline: transaction.escrowDeadline,
-            ),
-            const SizedBox(height: Spacing.s6),
-            AmountSection(transaction: transaction),
-            const SizedBox(height: Spacing.s6),
-            ActionSection(transaction: transaction),
-          ],
+        padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
+        child: ResponsiveBody(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const EscrowTrustBanner(),
+              const SizedBox(height: Spacing.s6),
+              EscrowTimeline(
+                currentStatus: transaction.status,
+                escrowDeadline: transaction.escrowDeadline,
+              ),
+              const SizedBox(height: Spacing.s6),
+              AmountSection(transaction: transaction),
+              const SizedBox(height: Spacing.s6),
+              ActionSection(transaction: transaction),
+            ],
+          ),
         ),
       ),
     );
