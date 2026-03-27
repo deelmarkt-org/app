@@ -49,12 +49,12 @@ LAYOUT:
 - Price breakdown in a bordered card:
   Artikelprijs          € 149,00
   Platformkosten        €   1,50
-  Verzendkosten (DHL)   €   7,45
+  Verzendkosten (PostNL) €   6,95
   ─────────────────────────────
-  Totaal                € 157,95  (bold, 20px)
+  Totaal                € 157,45  (bold, 20px)
 - Trust callout: green background surface, shield icon,
   "Veilig betalen — je geld wordt pas vrijgegeven na ontvangst"
-- Sticky bottom: "Betalen met iDEAL — € 157,95" large orange button
+- Sticky bottom: "Betalen met iDEAL — € 157,45" large orange button
   with small iDEAL bank logo to the left of text
 
 CONTENT: Use tabular/monospaced figures for prices. Price breakdown

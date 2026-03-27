@@ -241,4 +241,4 @@ Per the frontend launch plan, DeelMarkt targets Tier-1 design quality:
 
 ---
 
-*This file is local only — not committed to git.*
+*See `docs/screens/` for design prompts and `docs/design-system/` for token specs.*

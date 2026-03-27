@@ -67,7 +67,7 @@ PAGE 2 — TRUST:
 PAGE 3 — GET STARTED:
 - Handshake or gift box illustration (friendly, minimal)
 - Title: "Klaar om te beginnen?"
-- Large orange button: "Account aanmaken" (full width, rounded 12px, 56px height)
+- Large orange button: "Account aanmaken" (full width, rounded 12px, 52px height — DeelButton.large)
 - Below: "Ik heb al een account" text link in primary orange
 - Page dots (dot 3 active)
 
