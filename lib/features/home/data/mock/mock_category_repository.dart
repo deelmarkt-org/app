@@ -25,7 +25,7 @@ const _l1Categories = [
     listingCount: 234,
   ),
   CategoryEntity(
-    id: 'cat-electronics',
+    id: _catElectronics,
     name: 'Elektronica',
     icon: 'device-mobile',
     listingCount: 567,
@@ -43,7 +43,7 @@ const _l1Categories = [
     listingCount: 891,
   ),
   CategoryEntity(
-    id: 'cat-sport',
+    id: _catSport,
     name: 'Sport & Vrije tijd',
     icon: 'bicycle',
     listingCount: 123,
@@ -68,35 +68,39 @@ const _l1Categories = [
   ),
 ];
 
+/// L1 category IDs referenced by L2 subcategories.
+const _catElectronics = 'cat-electronics';
+const _catSport = 'cat-sport';
+
 const _l2Categories = [
   CategoryEntity(
     id: 'cat-phones',
     name: 'Telefoons',
     icon: 'phone',
-    parentId: 'cat-electronics',
+    parentId: _catElectronics,
   ),
   CategoryEntity(
     id: 'cat-laptops',
     name: 'Laptops',
     icon: 'laptop',
-    parentId: 'cat-electronics',
+    parentId: _catElectronics,
   ),
   CategoryEntity(
     id: 'cat-gaming',
     name: 'Gaming',
     icon: 'game-controller',
-    parentId: 'cat-electronics',
+    parentId: _catElectronics,
   ),
   CategoryEntity(
     id: 'cat-bikes',
     name: 'Fietsen',
     icon: 'bicycle',
-    parentId: 'cat-sport',
+    parentId: _catSport,
   ),
   CategoryEntity(
     id: 'cat-fitness',
     name: 'Fitness',
     icon: 'barbell',
-    parentId: 'cat-sport',
+    parentId: _catSport,
   ),
 ];

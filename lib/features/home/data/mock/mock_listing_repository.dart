@@ -95,6 +95,9 @@ class MockListingRepository implements ListingRepository {
   }
 }
 
+const _sampleImageUrl =
+    'https://res.cloudinary.com/demo/image/upload/sample.jpg';
+
 final _mockListings = [
   ListingEntity(
     id: 'listing-001',
@@ -106,7 +109,7 @@ final _mockListings = [
     sellerName: 'Jan de Vries',
     condition: ListingCondition.good,
     categoryId: 'cat-sport',
-    imageUrls: ['https://res.cloudinary.com/demo/image/upload/sample.jpg'],
+    imageUrls: const [_sampleImageUrl],
     location: 'Amsterdam',
     distanceKm: 3.2,
     createdAt: DateTime(2026, 3, 20),
@@ -120,7 +123,7 @@ final _mockListings = [
     sellerName: 'Maria Jansen',
     condition: ListingCondition.likeNew,
     categoryId: 'cat-electronics',
-    imageUrls: ['https://res.cloudinary.com/demo/image/upload/sample.jpg'],
+    imageUrls: const [_sampleImageUrl],
     location: 'Rotterdam',
     distanceKm: 12.5,
     createdAt: DateTime(2026, 3, 22),
@@ -134,7 +137,7 @@ final _mockListings = [
     sellerName: 'Pieter Bakker',
     condition: ListingCondition.fair,
     categoryId: 'cat-home',
-    imageUrls: ['https://res.cloudinary.com/demo/image/upload/sample.jpg'],
+    imageUrls: const [_sampleImageUrl],
     location: 'Utrecht',
     distanceKm: 8.0,
     createdAt: DateTime(2026, 3, 24),
@@ -149,7 +152,7 @@ final _mockListings = [
     sellerName: 'Sophie Visser',
     condition: ListingCondition.newWithTags,
     categoryId: 'cat-clothing',
-    imageUrls: ['https://res.cloudinary.com/demo/image/upload/sample.jpg'],
+    imageUrls: const [_sampleImageUrl],
     location: 'Den Haag',
     distanceKm: 5.1,
     createdAt: DateTime(2026, 3, 25),

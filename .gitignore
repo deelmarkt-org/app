@@ -61,6 +61,9 @@ firebase.json
 .opencode/
 .cursor/rules/kit-governance.mdc
 
+# Node.js (Devran AI Kit tooling dependency)
+node_modules/
+
 # Archives — personal reference docs (not pushed to remote)
 docs/archives/emre/
 

@@ -1,6 +1,10 @@
 import '../../domain/entities/conversation_entity.dart';
 import '../../domain/repositories/message_repository.dart';
 
+/// Mock data constants to avoid duplicate literals.
+const _currentUserId = 'user-001';
+const _convId001 = 'conv-001';
+
 /// Mock message repository — returns static data for Phase 1-2 widget development.
 class MockMessageRepository implements MessageRepository {
   @override
@@ -27,7 +31,7 @@ class MockMessageRepository implements MessageRepository {
     return MessageEntity(
       id: 'msg-${DateTime.now().millisecondsSinceEpoch}',
       conversationId: conversationId,
-      senderId: 'user-001',
+      senderId: _currentUserId,
       text: text,
       type: type,
       createdAt: DateTime.now(),
@@ -37,7 +41,7 @@ class MockMessageRepository implements MessageRepository {
 
 final _mockConversations = [
   ConversationEntity(
-    id: 'conv-001',
+    id: _convId001,
     listingId: 'listing-002',
     listingTitle: 'iPhone 15 Pro 256GB',
     listingImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
@@ -63,15 +67,15 @@ final _mockConversations = [
 final _mockMessages = [
   MessageEntity(
     id: 'msg-001',
-    conversationId: 'conv-001',
-    senderId: 'user-001',
+    conversationId: _convId001,
+    senderId: _currentUserId,
     text: 'Hoi, ik heb interesse in de iPhone. Is deze nog beschikbaar?',
     createdAt: DateTime(2026, 3, 25, 14, 0),
     isRead: true,
   ),
   MessageEntity(
     id: 'msg-002',
-    conversationId: 'conv-001',
+    conversationId: _convId001,
     senderId: 'user-002',
     text: 'Ja, nog beschikbaar! Wil je hem zien?',
     createdAt: DateTime(2026, 3, 25, 14, 15),
@@ -79,8 +83,8 @@ final _mockMessages = [
   ),
   MessageEntity(
     id: 'msg-003',
-    conversationId: 'conv-001',
-    senderId: 'user-001',
+    conversationId: _convId001,
+    senderId: _currentUserId,
     text: 'Is de prijs bespreekbaar?',
     createdAt: DateTime(2026, 3, 25, 14, 30),
     isRead: false,
