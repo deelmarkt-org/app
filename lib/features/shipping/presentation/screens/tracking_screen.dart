@@ -48,6 +48,7 @@ class TrackingScreen extends StatelessWidget {
   }
 
   Widget _carrierHeader(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: '${label.carrier.localizedName} ${'tracking.shipment'.tr()}',
       excludeSemantics: true,
@@ -55,15 +56,16 @@ class TrackingScreen extends StatelessWidget {
         children: [
           Icon(
             PhosphorIcons.package(PhosphorIconsStyle.fill),
-            color: DeelmarktColors.secondary,
+            color:
+                isDark
+                    ? DeelmarktColors.darkSecondary
+                    : DeelmarktColors.secondary,
           ),
           const SizedBox(width: Spacing.s2),
           Flexible(
             child: Text(
               '${label.carrier.localizedName} ${'tracking.shipment'.tr()}',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.headlineMedium,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -73,19 +75,34 @@ class TrackingScreen extends StatelessWidget {
   }
 
   Widget _trackingNumberCard(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: '${'shipping.trackingNumber'.tr()} ${label.trackingNumber}',
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.all(Spacing.s4),
         decoration: BoxDecoration(
-          color: DeelmarktColors.neutral50,
+          color:
+              isDark
+                  ? DeelmarktColors.darkSurfaceElevated
+                  : DeelmarktColors.neutral50,
           borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          border: Border.all(color: DeelmarktColors.neutral200),
+          border: Border.all(
+            color:
+                isDark
+                    ? DeelmarktColors.darkBorder
+                    : DeelmarktColors.neutral200,
+          ),
         ),
         child: Row(
           children: [
-            Icon(PhosphorIcons.barcode(), color: DeelmarktColors.neutral700),
+            Icon(
+              PhosphorIcons.barcode(),
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurface
+                      : DeelmarktColors.neutral700,
+            ),
             const SizedBox(width: Spacing.s3),
             Expanded(
               child: Column(
@@ -94,7 +111,10 @@ class TrackingScreen extends StatelessWidget {
                   Text(
                     'shipping.trackingNumber'.tr(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: DeelmarktColors.neutral500,
+                      color:
+                          isDark
+                              ? DeelmarktColors.darkOnSurfaceSecondary
+                              : DeelmarktColors.neutral500,
                     ),
                   ),
                   const SizedBox(height: Spacing.s1),
@@ -121,9 +141,7 @@ class TrackingScreen extends StatelessWidget {
       children: [
         Text(
           'tracking.updates'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: Spacing.s4),
         if (events.isEmpty)
@@ -135,6 +153,7 @@ class TrackingScreen extends StatelessWidget {
   }
 
   Widget _emptyState(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: 'tracking.noUpdates'.tr(),
       child: Container(
@@ -145,13 +164,19 @@ class TrackingScreen extends StatelessWidget {
             Icon(
               PhosphorIcons.clockCountdown(),
               size: 48,
-              color: DeelmarktColors.neutral300,
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurfaceSecondary
+                      : DeelmarktColors.neutral300,
             ),
             const SizedBox(height: Spacing.s3),
             Text(
               'tracking.noUpdates'.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DeelmarktColors.neutral500,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkOnSurfaceSecondary
+                        : DeelmarktColors.neutral500,
               ),
             ),
           ],
