@@ -43,7 +43,12 @@ String? authRedirect({
 /// Supabase auth.onAuthStateChange to react to login/logout.
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+    _subscription = stream.asBroadcastStream().listen(
+      (_) => notifyListeners(),
+      onError: (Object error) {
+        debugPrint('Auth stream error: $error');
+      },
+    );
   }
 
   late final StreamSubscription<dynamic> _subscription;

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../design_system/colors.dart';
@@ -16,7 +17,12 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor:
           isDark ? DeelmarktColors.darkScaffold : DeelmarktColors.white,
-      body: const Center(child: CircularProgressIndicator.adaptive()),
+      body: Center(
+        child: Semantics(
+          label: 'a11y.loading'.tr(),
+          child: const CircularProgressIndicator.adaptive(),
+        ),
+      ),
     );
   }
 }

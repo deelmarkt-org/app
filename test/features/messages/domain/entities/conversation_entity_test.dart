@@ -4,7 +4,7 @@ import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.
 
 void main() {
   group('ConversationEntity', () {
-    test('equality by id', () {
+    test('equality when all fields match', () {
       final a = ConversationEntity(
         id: 'c1',
         listingId: 'l1',
@@ -17,16 +17,42 @@ void main() {
       );
       final b = ConversationEntity(
         id: 'c1',
-        listingId: 'l2',
-        listingTitle: 'B',
+        listingId: 'l1',
+        listingTitle: 'A',
         listingImageUrl: null,
-        otherUserId: 'u2',
-        otherUserName: 'Bob',
-        lastMessageText: 'Bye',
-        lastMessageAt: DateTime(2026, 6, 1),
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026, 1, 1),
       );
 
       expect(a, equals(b));
+    });
+
+    test('inequality when fields differ (Riverpod state diffing)', () {
+      final a = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'A',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026, 1, 1),
+      );
+      final b = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'A',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026, 1, 1),
+        unreadCount: 3,
+      );
+
+      expect(a, isNot(equals(b)));
     });
 
     test('default unreadCount is 0', () {
@@ -46,7 +72,7 @@ void main() {
   });
 
   group('MessageEntity', () {
-    test('equality by id', () {
+    test('equality when all fields match', () {
       final a = MessageEntity(
         id: 'm1',
         conversationId: 'c1',
@@ -56,13 +82,33 @@ void main() {
       );
       final b = MessageEntity(
         id: 'm1',
-        conversationId: 'c2',
-        senderId: 'u2',
-        text: 'Different',
-        createdAt: DateTime(2026, 6, 1),
+        conversationId: 'c1',
+        senderId: 'u1',
+        text: 'Hello',
+        createdAt: DateTime(2026, 1, 1),
       );
 
       expect(a, equals(b));
+    });
+
+    test('inequality when fields differ', () {
+      final a = MessageEntity(
+        id: 'm1',
+        conversationId: 'c1',
+        senderId: 'u1',
+        text: 'Hello',
+        createdAt: DateTime(2026, 1, 1),
+      );
+      final b = MessageEntity(
+        id: 'm1',
+        conversationId: 'c1',
+        senderId: 'u1',
+        text: 'Hello',
+        createdAt: DateTime(2026, 1, 1),
+        isRead: true,
+      );
+
+      expect(a, isNot(equals(b)));
     });
 
     test('default type is text', () {

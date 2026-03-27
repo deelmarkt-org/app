@@ -4,7 +4,7 @@ import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 
 void main() {
   group('UserEntity', () {
-    test('equality by id', () {
+    test('equality when all fields match', () {
       final a = UserEntity(
         id: 'u1',
         displayName: 'Alice',
@@ -13,13 +13,30 @@ void main() {
       );
       final b = UserEntity(
         id: 'u1',
-        displayName: 'Bob',
-        kycLevel: KycLevel.level2,
-        createdAt: DateTime(2026, 6, 1),
+        displayName: 'Alice',
+        kycLevel: KycLevel.level0,
+        createdAt: DateTime(2026, 1, 1),
       );
 
       expect(a, equals(b));
       expect(a.hashCode, equals(b.hashCode));
+    });
+
+    test('inequality when fields differ (Riverpod state diffing)', () {
+      final a = UserEntity(
+        id: 'u1',
+        displayName: 'Alice',
+        kycLevel: KycLevel.level0,
+        createdAt: DateTime(2026, 1, 1),
+      );
+      final b = UserEntity(
+        id: 'u1',
+        displayName: 'Alice',
+        kycLevel: KycLevel.level2,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      expect(a, isNot(equals(b)));
     });
 
     test('inequality by different id', () {

@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 import '../entities/listing_entity.dart';
 
 /// Listing repository interface — domain layer.
@@ -38,7 +40,7 @@ abstract class ListingRepository {
 }
 
 /// Search result with pagination metadata.
-class ListingSearchResult {
+class ListingSearchResult extends Equatable {
   const ListingSearchResult({
     required this.listings,
     required this.total,
@@ -52,4 +54,7 @@ class ListingSearchResult {
   final int limit;
 
   bool get hasMore => offset + listings.length < total;
+
+  @override
+  List<Object?> get props => [listings, total, offset, limit];
 }

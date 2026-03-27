@@ -1,10 +1,13 @@
+import 'package:equatable/equatable.dart';
+
 /// Marketplace listing — a second-hand item for sale.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
 /// All monetary values in cents to avoid floating-point errors.
+/// Extends [Equatable] for Riverpod state diffing (ADR-21).
 ///
 /// Reference: docs/epics/E01-listing-management.md
-class ListingEntity {
+class ListingEntity extends Equatable {
   const ListingEntity({
     required this.id,
     required this.title,
@@ -78,11 +81,22 @@ class ListingEntity {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is ListingEntity && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+    id,
+    title,
+    description,
+    priceInCents,
+    sellerId,
+    sellerName,
+    condition,
+    categoryId,
+    imageUrls,
+    location,
+    distanceKm,
+    isFavourited,
+    qualityScore,
+    createdAt,
+  ];
 }
 
 /// Item condition — matches design system badge types.

@@ -217,7 +217,10 @@ void main() {
       router.go('/sell');
       await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       await tester.pumpAndSettle();
-      expect(find.text('DeelMarkt'), findsWidgets); // onboarding screen
+      expect(
+        find.text('app.name'),
+        findsWidgets,
+      ); // onboarding screen (l10n key)
       router.dispose();
     });
 

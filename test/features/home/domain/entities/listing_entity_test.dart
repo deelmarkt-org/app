@@ -19,22 +19,43 @@ void main() {
   );
 
   group('ListingEntity', () {
-    test('equality by id', () {
+    test('equality when all fields match', () {
       final same = ListingEntity(
         id: 'test-1',
-        title: 'Different Title',
-        description: 'Different',
-        priceInCents: 9999,
-        sellerId: 'user-2',
-        sellerName: 'Other',
-        condition: ListingCondition.fair,
-        categoryId: 'cat-2',
-        imageUrls: const [],
-        createdAt: DateTime(2026, 3, 1),
+        title: 'Test Listing',
+        description: 'A test listing',
+        priceInCents: 5000,
+        sellerId: 'user-1',
+        sellerName: 'Test User',
+        condition: ListingCondition.good,
+        categoryId: 'cat-1',
+        imageUrls: const ['https://example.com/img.jpg'],
+        createdAt: DateTime(2026, 1, 1),
+        location: 'Amsterdam',
+        distanceKm: 5.0,
       );
 
       expect(listing, equals(same));
       expect(listing.hashCode, equals(same.hashCode));
+    });
+
+    test('inequality when fields differ (Riverpod state diffing)', () {
+      final differentTitle = ListingEntity(
+        id: 'test-1',
+        title: 'Different Title',
+        description: 'A test listing',
+        priceInCents: 5000,
+        sellerId: 'user-1',
+        sellerName: 'Test User',
+        condition: ListingCondition.good,
+        categoryId: 'cat-1',
+        imageUrls: const ['https://example.com/img.jpg'],
+        createdAt: DateTime(2026, 1, 1),
+        location: 'Amsterdam',
+        distanceKm: 5.0,
+      );
+
+      expect(listing, isNot(equals(differentTitle)));
     });
 
     test('inequality by different id', () {

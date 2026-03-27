@@ -1,9 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 /// DeelMarkt user profile.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
+/// Extends [Equatable] for Riverpod state diffing (ADR-21).
 ///
 /// Reference: docs/epics/E02-user-auth-kyc.md
-class UserEntity {
+class UserEntity extends Equatable {
   const UserEntity({
     required this.id,
     required this.displayName,
@@ -32,11 +35,18 @@ class UserEntity {
   final DateTime createdAt;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is UserEntity && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+    id,
+    displayName,
+    avatarUrl,
+    location,
+    kycLevel,
+    badges,
+    averageRating,
+    reviewCount,
+    responseTimeMinutes,
+    createdAt,
+  ];
 }
 
 /// Progressive KYC levels — per E02 epic.

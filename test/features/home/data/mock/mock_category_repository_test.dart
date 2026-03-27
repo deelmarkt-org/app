@@ -48,11 +48,18 @@ void main() {
   });
 
   group('CategoryEntity', () {
-    test('equality by id', () {
+    test('equality when all fields match', () {
+      const a = CategoryEntity(id: 'c1', name: 'A', icon: 'a');
+      const b = CategoryEntity(id: 'c1', name: 'A', icon: 'a');
+
+      expect(a, equals(b));
+    });
+
+    test('inequality when fields differ (Riverpod state diffing)', () {
       const a = CategoryEntity(id: 'c1', name: 'A', icon: 'a');
       const b = CategoryEntity(id: 'c1', name: 'B', icon: 'b');
 
-      expect(a, equals(b));
+      expect(a, isNot(equals(b)));
     });
 
     test('isTopLevel when parentId is null', () {

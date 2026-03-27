@@ -1,9 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 /// Chat conversation between buyer and seller about a listing.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
+/// Extends [Equatable] for Riverpod state diffing (ADR-21).
 ///
 /// Reference: docs/epics/E04-messaging.md
-class ConversationEntity {
+class ConversationEntity extends Equatable {
   const ConversationEntity({
     required this.id,
     required this.listingId,
@@ -29,15 +32,22 @@ class ConversationEntity {
   final int unreadCount;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is ConversationEntity && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+    id,
+    listingId,
+    listingTitle,
+    listingImageUrl,
+    otherUserId,
+    otherUserName,
+    otherUserAvatarUrl,
+    lastMessageText,
+    lastMessageAt,
+    unreadCount,
+  ];
 }
 
 /// Single message in a conversation.
-class MessageEntity {
+class MessageEntity extends Equatable {
   const MessageEntity({
     required this.id,
     required this.conversationId,
@@ -57,11 +67,15 @@ class MessageEntity {
   final DateTime createdAt;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is MessageEntity && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+    id,
+    conversationId,
+    senderId,
+    text,
+    type,
+    isRead,
+    createdAt,
+  ];
 }
 
 /// Message types — per design system patterns.md §Chat.

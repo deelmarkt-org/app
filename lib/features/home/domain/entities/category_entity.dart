@@ -30,5 +30,5 @@ class CategoryEntity extends Equatable {
   bool get isTopLevel => parentId == null;
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, name, icon, parentId, listingCount];
 }

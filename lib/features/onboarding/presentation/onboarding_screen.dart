@@ -25,10 +25,11 @@ class OnboardingScreen extends StatelessWidget {
                 PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
                 size: 80,
                 color: DeelmarktColors.primary,
+                semanticLabel: 'onboarding.trust_icon_label'.tr(),
               ),
               const SizedBox(height: Spacing.s6),
               Text(
-                'DeelMarkt',
+                'app.name'.tr(),
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: DeelmarktColors.primary,
@@ -45,7 +46,7 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: Spacing.s8),
               // P-14: Replace with full onboarding flow (language + value prop pages)
               Text(
-                'Onboarding — coming in Phase 2',
+                'onboarding.placeholder'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: DeelmarktColors.neutral500,
                 ),
