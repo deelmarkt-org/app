@@ -4,8 +4,9 @@ import '../../domain/repositories/listing_repository.dart';
 /// Mock listing repository — returns static data for Phase 1-2 widget development.
 ///
 /// Swapped for SupabaseListingRepository in Phase 4 via Riverpod override.
+/// Note: not thread-safe — single-isolate mock use only.
 class MockListingRepository implements ListingRepository {
-  final _favouriteIds = <String>{};
+  Set<String> _favouriteIds = const <String>{};
 
   @override
   Future<List<ListingEntity>> getRecent({int limit = 20}) async {
@@ -79,9 +80,9 @@ class MockListingRepository implements ListingRepository {
   Future<ListingEntity> toggleFavourite(String listingId) async {
     await Future<void>.delayed(const Duration(milliseconds: 100));
     if (_favouriteIds.contains(listingId)) {
-      _favouriteIds.remove(listingId);
+      _favouriteIds = {..._favouriteIds}..remove(listingId);
     } else {
-      _favouriteIds.add(listingId);
+      _favouriteIds = {..._favouriteIds, listingId};
     }
     final listing = _mockListings.firstWhere((l) => l.id == listingId);
     return listing.copyWith(isFavourited: _favouriteIds.contains(listingId));

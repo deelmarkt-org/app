@@ -1,9 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 /// Product category — 8 L1 categories per design system.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
+/// Extends [Equatable] for consistent equality semantics (ADR-21).
 ///
 /// Reference: docs/design-system/components.md §Categories
-class CategoryEntity {
+class CategoryEntity extends Equatable {
   const CategoryEntity({
     required this.id,
     required this.name,
@@ -27,9 +30,5 @@ class CategoryEntity {
   bool get isTopLevel => parentId == null;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is CategoryEntity && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [id];
 }

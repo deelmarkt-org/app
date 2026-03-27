@@ -6,6 +6,40 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../design_system/breakpoints.dart';
 import '../design_system/colors.dart';
 
+/// Shared navigation item data — single source of truth for both bar and rail.
+class _NavItem {
+  const _NavItem({required this.iconData, required this.labelKey});
+
+  final PhosphorIconData Function([PhosphorIconsStyle]) iconData;
+  final String labelKey;
+
+  Icon _icon({bool selected = false}) => Icon(
+    selected ? iconData(PhosphorIconsStyle.bold) : iconData(),
+    color: selected ? DeelmarktColors.primary : DeelmarktColors.neutral500,
+    semanticLabel: labelKey.tr(),
+  );
+
+  NavigationDestination toBarDestination() => NavigationDestination(
+    icon: _icon(),
+    selectedIcon: _icon(selected: true),
+    label: labelKey.tr(),
+  );
+
+  NavigationRailDestination toRailDestination() => NavigationRailDestination(
+    icon: _icon(),
+    selectedIcon: _icon(selected: true),
+    label: Text(labelKey.tr()),
+  );
+}
+
+const _navItems = [
+  _NavItem(iconData: PhosphorIcons.house, labelKey: 'nav.home'),
+  _NavItem(iconData: PhosphorIcons.magnifyingGlass, labelKey: 'nav.search'),
+  _NavItem(iconData: PhosphorIcons.plusCircle, labelKey: 'nav.sell'),
+  _NavItem(iconData: PhosphorIcons.chatCircle, labelKey: 'nav.messages'),
+  _NavItem(iconData: PhosphorIcons.user, labelKey: 'nav.profile'),
+];
+
 /// Adaptive navigation scaffold — bottom nav on mobile, side rail on desktop.
 ///
 /// Breakpoint behaviour (per docs/design-system/tokens.md):
@@ -46,7 +80,8 @@ class ScaffoldWithNav extends StatelessWidget {
                   Theme.of(context).brightness == Brightness.dark
                       ? DeelmarktColors.darkSurfaceElevated
                       : DeelmarktColors.primarySurface,
-              destinations: _railDestinations,
+              destinations:
+                  _navItems.map((item) => item.toRailDestination()).toList(),
             ),
             const VerticalDivider(thickness: 1, width: 1),
             Expanded(child: navigationShell),
@@ -60,144 +95,8 @@ class ScaffoldWithNav extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: _onDestinationSelected,
-        destinations: _barDestinations,
+        destinations: _navItems.map((item) => item.toBarDestination()).toList(),
       ),
     );
   }
 }
-
-final _barDestinations = [
-  NavigationDestination(
-    icon: Icon(
-      PhosphorIcons.house(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.home'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.house(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.home'.tr(),
-    ),
-    label: 'nav.home'.tr(),
-  ),
-  NavigationDestination(
-    icon: Icon(
-      PhosphorIcons.magnifyingGlass(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.search'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.search'.tr(),
-    ),
-    label: 'nav.search'.tr(),
-  ),
-  NavigationDestination(
-    icon: Icon(
-      PhosphorIcons.plusCircle(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.sell'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.plusCircle(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.sell'.tr(),
-    ),
-    label: 'nav.sell'.tr(),
-  ),
-  NavigationDestination(
-    icon: Icon(
-      PhosphorIcons.chatCircle(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.messages'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.chatCircle(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.messages'.tr(),
-    ),
-    label: 'nav.messages'.tr(),
-  ),
-  NavigationDestination(
-    icon: Icon(
-      PhosphorIcons.user(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.profile'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.user(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.profile'.tr(),
-    ),
-    label: 'nav.profile'.tr(),
-  ),
-];
-
-final _railDestinations = [
-  NavigationRailDestination(
-    icon: Icon(
-      PhosphorIcons.house(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.home'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.house(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.home'.tr(),
-    ),
-    label: Text('nav.home'.tr()),
-  ),
-  NavigationRailDestination(
-    icon: Icon(
-      PhosphorIcons.magnifyingGlass(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.search'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.search'.tr(),
-    ),
-    label: Text('nav.search'.tr()),
-  ),
-  NavigationRailDestination(
-    icon: Icon(
-      PhosphorIcons.plusCircle(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.sell'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.plusCircle(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.sell'.tr(),
-    ),
-    label: Text('nav.sell'.tr()),
-  ),
-  NavigationRailDestination(
-    icon: Icon(
-      PhosphorIcons.chatCircle(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.messages'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.chatCircle(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.messages'.tr(),
-    ),
-    label: Text('nav.messages'.tr()),
-  ),
-  NavigationRailDestination(
-    icon: Icon(
-      PhosphorIcons.user(),
-      color: DeelmarktColors.neutral500,
-      semanticLabel: 'nav.profile'.tr(),
-    ),
-    selectedIcon: Icon(
-      PhosphorIcons.user(PhosphorIconsStyle.bold),
-      color: DeelmarktColors.primary,
-      semanticLabel: 'nav.profile'.tr(),
-    ),
-    label: Text('nav.profile'.tr()),
-  ),
-];

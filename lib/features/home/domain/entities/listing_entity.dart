@@ -43,22 +43,37 @@ class ListingEntity {
 
   final DateTime createdAt;
 
-  ListingEntity copyWith({bool? isFavourited, int? qualityScore}) {
+  ListingEntity copyWith({
+    String? id,
+    String? title,
+    String? description,
+    int? priceInCents,
+    String? sellerId,
+    String? sellerName,
+    ListingCondition? condition,
+    String? categoryId,
+    List<String>? imageUrls,
+    String? location,
+    double? distanceKm,
+    bool? isFavourited,
+    int? qualityScore,
+    DateTime? createdAt,
+  }) {
     return ListingEntity(
-      id: id,
-      title: title,
-      description: description,
-      priceInCents: priceInCents,
-      sellerId: sellerId,
-      sellerName: sellerName,
-      condition: condition,
-      categoryId: categoryId,
-      imageUrls: imageUrls,
-      location: location,
-      distanceKm: distanceKm,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      priceInCents: priceInCents ?? this.priceInCents,
+      sellerId: sellerId ?? this.sellerId,
+      sellerName: sellerName ?? this.sellerName,
+      condition: condition ?? this.condition,
+      categoryId: categoryId ?? this.categoryId,
+      imageUrls: imageUrls ?? this.imageUrls,
+      location: location ?? this.location,
+      distanceKm: distanceKm ?? this.distanceKm,
       isFavourited: isFavourited ?? this.isFavourited,
       qualityScore: qualityScore ?? this.qualityScore,
-      createdAt: createdAt,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
