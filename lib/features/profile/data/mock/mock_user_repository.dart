@@ -37,7 +37,7 @@ final _mockUsers = [
     kycLevel: KycLevel.level1,
     avatarUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
     location: 'Amsterdam',
-    badges: [
+    badges: const [
       BadgeType.emailVerified,
       BadgeType.phoneVerified,
       BadgeType.fastResponder,
@@ -52,7 +52,7 @@ final _mockUsers = [
     displayName: 'Maria Jansen',
     kycLevel: KycLevel.level2,
     location: 'Rotterdam',
-    badges: [
+    badges: const [
       BadgeType.emailVerified,
       BadgeType.phoneVerified,
       BadgeType.idVerified,
