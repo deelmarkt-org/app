@@ -9,6 +9,8 @@ const _protectedRoutes = [
   AppRoutes.sell,
   AppRoutes.messages,
   AppRoutes.profile,
+  '/transactions',
+  '/shipping',
 ];
 
 /// Routes shown only to unauthenticated users — redirect to home if logged in.

@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+export 'message_entity.dart';
+
 /// Chat conversation between buyer and seller about a listing.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
@@ -45,38 +47,3 @@ class ConversationEntity extends Equatable {
     unreadCount,
   ];
 }
-
-/// Single message in a conversation.
-class MessageEntity extends Equatable {
-  const MessageEntity({
-    required this.id,
-    required this.conversationId,
-    required this.senderId,
-    required this.text,
-    required this.createdAt,
-    this.type = MessageType.text,
-    this.isRead = false,
-  });
-
-  final String id;
-  final String conversationId;
-  final String senderId;
-  final String text;
-  final MessageType type;
-  final bool isRead;
-  final DateTime createdAt;
-
-  @override
-  List<Object?> get props => [
-    id,
-    conversationId,
-    senderId,
-    text,
-    type,
-    isRead,
-    createdAt,
-  ];
-}
-
-/// Message types — per design system patterns.md §Chat.
-enum MessageType { text, offer, systemAlert, scamWarning }

@@ -15,14 +15,12 @@ import 'core/services/unleash_service.dart';
 
 /// Riverpod provider for GoRouter — single instance, auth-aware.
 ///
-/// Uses `ref.read` (not `ref.watch`) to avoid rebuilding the router on every
-/// auth event — GoRouterRefreshStream already handles re-evaluating redirects.
-/// Using ref.watch would create a new GoRouter instance on each auth emission,
-/// resetting the entire navigation stack.
+/// Passes `ref` to the router so the redirect function reads auth state
+/// at redirect-time (not router-creation-time). GoRouterRefreshStream
+/// triggers re-evaluation on every auth event without rebuilding the router.
 final routerProvider = Provider((ref) {
-  final authState = ref.read(authStateChangesProvider);
   final authStream = ref.read(supabaseClientProvider).auth.onAuthStateChange;
-  return createRouter(authState: authState, authStream: authStream);
+  return createRouter(ref: ref, authStream: authStream);
 });
 
 void main() async {

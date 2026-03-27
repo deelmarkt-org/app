@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
@@ -12,31 +8,13 @@ import 'package:deelmarkt/core/router/routes.dart';
 
 /// Creates a test router with pre-set auth state (no real Supabase).
 GoRouter _createTestRouter({bool isLoggedIn = false, bool isLoading = false}) {
-  final authState =
-      isLoading
-          ? const AsyncValue<AuthState>.loading()
-          : AsyncValue<AuthState>.data(
-            AuthState(
-              AuthChangeEvent.initialSession,
-              isLoggedIn
-                  ? Session(
-                    accessToken: 'test',
-                    tokenType: 'bearer',
-                    user: const User(
-                      id: 'test-user',
-                      appMetadata: {},
-                      userMetadata: {},
-                      aud: 'authenticated',
-                      createdAt: '2026-01-01T00:00:00Z',
-                    ),
-                  )
-                  : null,
-            ),
-          );
-
-  return createRouter(
-    authState: authState,
-    authStream: const Stream<AuthState>.empty(),
+  return createTestRouter(
+    redirect:
+        (context, state) => authRedirect(
+          isLoading: isLoading,
+          isLoggedIn: isLoggedIn,
+          currentPath: state.matchedLocation,
+        ),
   );
 }
 
@@ -68,84 +46,7 @@ void main() {
     });
   });
 
-  group('authRedirect', () {
-    test('redirects to splash while loading', () {
-      final result = authRedirect(
-        isLoading: true,
-        isLoggedIn: false,
-        currentPath: '/',
-      );
-      expect(result, '/splash');
-    });
-
-    test('redirects protected routes to onboarding when not logged in', () {
-      expect(
-        authRedirect(isLoading: false, isLoggedIn: false, currentPath: '/sell'),
-        '/onboarding',
-      );
-      expect(
-        authRedirect(
-          isLoading: false,
-          isLoggedIn: false,
-          currentPath: '/messages',
-        ),
-        '/onboarding',
-      );
-      expect(
-        authRedirect(
-          isLoading: false,
-          isLoggedIn: false,
-          currentPath: '/profile',
-        ),
-        '/onboarding',
-      );
-    });
-
-    test('allows public routes when not logged in', () {
-      expect(
-        authRedirect(isLoading: false, isLoggedIn: false, currentPath: '/'),
-        isNull,
-      );
-      expect(
-        authRedirect(
-          isLoading: false,
-          isLoggedIn: false,
-          currentPath: '/search',
-        ),
-        isNull,
-      );
-    });
-
-    test('redirects auth routes to home when logged in', () {
-      expect(
-        authRedirect(
-          isLoading: false,
-          isLoggedIn: true,
-          currentPath: '/onboarding',
-        ),
-        '/',
-      );
-      expect(
-        authRedirect(isLoading: false, isLoggedIn: true, currentPath: '/login'),
-        '/',
-      );
-    });
-
-    test('allows all routes when logged in', () {
-      expect(
-        authRedirect(isLoading: false, isLoggedIn: true, currentPath: '/sell'),
-        isNull,
-      );
-      expect(
-        authRedirect(
-          isLoading: false,
-          isLoggedIn: true,
-          currentPath: '/messages',
-        ),
-        isNull,
-      );
-    });
-  });
+  // authRedirect tests are in test/core/router/auth_guard_test.dart
 
   group('GoRouter navigation', () {
     late GoRouter router;
@@ -178,20 +79,27 @@ void main() {
       expect(find.text('User user-456'), findsWidgets);
     });
 
-    testWidgets('navigates to transaction detail via deep link', (
+    testWidgets(
+      'navigates to transaction detail via deep link (auth required)',
+      (tester) async {
+        final authedRouter = _createTestRouter(isLoggedIn: true);
+        authedRouter.go('/transactions/tx-789');
+        await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+        await tester.pumpAndSettle();
+        expect(find.text('Transaction tx-789'), findsWidgets);
+        authedRouter.dispose();
+      },
+    );
+
+    testWidgets('navigates to shipping detail via deep link (auth required)', (
       tester,
     ) async {
-      router.go('/transactions/tx-789');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-      await tester.pumpAndSettle();
-      expect(find.text('Transaction tx-789'), findsWidgets);
-    });
-
-    testWidgets('navigates to shipping detail via deep link', (tester) async {
-      router.go('/shipping/ship-012');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-012');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
       await tester.pumpAndSettle();
       expect(find.text('Shipping ship-012'), findsWidgets);
+      authedRouter.dispose();
     });
 
     testWidgets('search route receives query param', (tester) async {
