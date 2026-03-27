@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_screen.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
@@ -99,6 +101,27 @@ void main() {
 
       // Semantics wrappers should exist
       expect(find.byType(Semantics), findsWidgets);
+    });
+
+    testWidgets('wraps content in ResponsiveBody', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TransactionDetailScreen(transaction: _txn()),
+      );
+
+      expect(find.byType(ResponsiveBody), findsOneWidget);
+    });
+
+    testWidgets('renders correctly in dark mode', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TransactionDetailScreen(transaction: _txn()),
+        theme: DeelmarktTheme.dark,
+      );
+
+      expect(find.byType(EscrowTrustBanner), findsOneWidget);
+      expect(find.byType(EscrowTimeline), findsOneWidget);
+      expect(find.byType(ResponsiveBody), findsOneWidget);
     });
   });
 }

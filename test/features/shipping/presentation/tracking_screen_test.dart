@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
 import 'package:deelmarkt/features/shipping/domain/entities/tracking_event.dart';
 import 'package:deelmarkt/features/shipping/presentation/screens/tracking_screen.dart';
@@ -81,6 +82,28 @@ void main() {
       );
 
       expect(find.byType(AppBar), findsOneWidget);
+    });
+
+    testWidgets('renders correctly in dark mode', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TrackingScreen(label: _label(), events: _events()),
+        theme: DeelmarktTheme.dark,
+      );
+
+      expect(find.byType(TrackingTimeline), findsOneWidget);
+      expect(find.text('3SDEVC1234567'), findsOneWidget);
+    });
+
+    testWidgets('dark mode empty state renders correctly', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TrackingScreen(label: _label(), events: const []),
+        theme: DeelmarktTheme.dark,
+      );
+
+      expect(find.textContaining('tracking.noUpdates'), findsWidgets);
+      expect(find.byType(TrackingTimeline), findsNothing);
     });
   });
 }
