@@ -227,13 +227,13 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | 1 | **⚠️ DAY 1 BLOCKER:** CSP + CanvasKit WASM validation | 2h | pizmam + belengaz | 1 | If `wasm-unsafe-eval` needed and belengaz unavailable: temporary fallback to `--web-renderer html` (no WASM). Create follow-up ticket for CSP fix. | ✅ PR #14 |
 | 1b | **⚠️ CRITICAL:** Add `usePathUrlStrategy()` to `main.dart` | 0.5h | pizmam | 1 | None — this is a one-line change. Without it all URLs break. Add `flutter_web_plugins` import. Must be called BEFORE `WidgetsFlutterBinding.ensureInitialized()`. | ✅ PR #14 |
 | 2 | Flutter Web build pipeline — validate Flutter's default Service Worker | 4h | pizmam | 1-2 | Flutter generates `flutter_service_worker.js` automatically. Do NOT write custom SW — it conflicts with Flutter's built-in. Validate cache behaviour only. Custom Workbox optimization deferred to Phase 5. | ✅ PR #14 |
-| 3 | ADR-019: PWA strategy document | 1h | pizmam | 2 | — | ✅ PR #14 |
+| 3 | `P-48` ADR-019: PWA strategy document | 1h | pizmam | 2 | — | ✅ PR #14 |
 | 4 | `P-45` Performance budget + Lighthouse baseline | 4h | pizmam | 2-3 | If Lighthouse < 60 (CanvasKit floor), document and create Phase 5 optimization ticket | ⏳ Baseline not yet measured |
-| 5 | Responsive shell validation (4 breakpoints) | 2h | pizmam | 3 | — | ✅ PR #14 |
-| 6 | GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). | ✅ PR #14 |
-| 7 | Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. | ✅ PR #14 |
+| 5 | `P-49` Responsive shell validation (4 breakpoints) | 2h | pizmam | 3 | — | ✅ PR #14 |
+| 6 | `P-50` GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). | ✅ PR #14 |
+| 7 | `P-51` Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. | ✅ PR #14 |
 | 8 | Dark mode validation (`P-47` part 1) | 4h | pizmam | 7 | — | ✅ PR #14 |
-| 9 | Web error boundary + font loading strategy | 2h | pizmam | 7 | — | ✅ Error boundary done, font FOUT TBD |
+| 9 | `P-52` Web error boundary + font loading strategy | 2h | pizmam | 7 | — | ✅ Error boundary done, font FOUT TBD |
 | 10 | Final validation + quality gate | 4h | pizmam | 8 | — | ✅ PR #14 (557 tests, 0 warnings) |
 
 **Phase total: ~37h** / 8 working days (2 weeks at ~25h/week pace)
