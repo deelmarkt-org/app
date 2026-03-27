@@ -84,6 +84,10 @@
     "postcode_hint": "1234 AB",
     "clear": "Clear"
   },
+  "onboarding": {
+    "trust_icon_label": "Trust shield",
+    "placeholder": "Onboarding — coming in Phase 2"
+  },
   "a11y": {
     "closeModal": "Close",
     "currentLanguage": "Current language: {}",

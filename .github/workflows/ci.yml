@@ -224,7 +224,7 @@ jobs:
           supabase-anon-public: ${{ secrets.SUPABASE_ANON_PUBLIC }}
 
       - name: Build APK (release)
-        run: flutter build apk --release --no-pub
+        run: flutter build apk --release --no-pub --split-debug-info=build/debug-info --obfuscate
 
       - name: Check APK size budget
         run: |

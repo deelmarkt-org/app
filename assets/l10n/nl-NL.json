@@ -84,6 +84,10 @@
     "postcode_hint": "1234 AB",
     "clear": "Wissen"
   },
+  "onboarding": {
+    "trust_icon_label": "Vertrouwensschild",
+    "placeholder": "Onboarding — komt in Fase 2"
+  },
   "a11y": {
     "closeModal": "Sluiten",
     "currentLanguage": "Huidige taal: {}",

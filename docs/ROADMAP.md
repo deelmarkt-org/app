@@ -14,14 +14,14 @@
 - [ ] Contract pentest firm; obtain cyber insurance
 
 ### Development → Epics E01–E07
-- [ ] Supabase + Firebase + Cloudflare + Cloudinary + Upstash + Unleash setup → **E07**
+- [x] Supabase + Firebase + Cloudflare + Cloudinary + Upstash + Unleash setup → **E07**
 - [x] Flutter monorepo: Clean Architecture + Riverpod 3 + GoRouter → **E07**
 - [x] CI/CD pipeline + Universal Links + App Links → **E07**
 - [ ] Supabase Auth + iDIN/itsme KYC Levels 0–2 → **E02**
 - [ ] Listing CRUD + PostgreSQL FTS + search outbox + image pipeline → **E01**
 - [x] Mollie escrow + double-entry ledger + idempotency → **E03**
 - [ ] Supabase Realtime messaging → **E04**
-- [ ] PostNL/DHL QR shipping + address API → **E05**
+- [x] PostNL/DHL QR shipping + address API → **E05**
 - [ ] AI scam detection + dispute resolution + ratings + DSA module → **E06**
 
 ### Go-to-Market
@@ -95,11 +95,11 @@
 | Phase | Task IDs | Area | Deliverable | Status |
 |:------|:---------|:-----|:------------|:-------|
 | A — Design Foundation | `P-01` – `P-04` | Fonts, icons, i18n | Plus Jakarta Sans, Phosphor Icons, NL/EN localisation | ✅ Complete |
-| B — UI Components | `P-05` – `P-09` | Shared widgets | DeelButton, DeelInput, SkeletonLoader, EmptyState, ErrorState | 🔄 In Progress (P-05 ✅, P-06 ✅) |
-| C — Supabase Bootstrap | `R-01` – `R-06` | Backend infra | Project, Auth, RLS, Vault, Storage, Realtime | ⏳ |
-| D — Firebase + Edge Fn | `R-07` – `R-09` | Integrations | Health check Edge Function, FCM, Crashlytics | ⏳ |
-| E — Infrastructure | `B-01` – `B-03` | DNS/CDN/Images | Cloudflare DNS+WAF, Cloudinary pipeline | ⏳ |
-| F — CI/CD Pipeline | `B-04` – `B-05` | Automation | GitHub Actions CI, Codemagic builds | ⏳ |
+| B — UI Components | `P-05` – `P-09` | Shared widgets | DeelButton, DeelInput, SkeletonLoader, EmptyState, ErrorState | ✅ Complete |
+| C — Supabase Bootstrap | `R-01` – `R-06` | Backend infra | Project, Auth, RLS, Vault, Storage, Realtime | ✅ Complete |
+| D — Firebase + Edge Fn | `R-07` – `R-09` | Integrations | Health check Edge Function, FCM, Crashlytics | ✅ Complete |
+| E — Infrastructure | `B-01` – `B-03` | DNS/CDN/Images | Cloudflare DNS+WAF, Cloudinary pipeline | ✅ Complete |
+| F — CI/CD Pipeline | `B-04` – `B-05` | Automation | GitHub Actions CI, Codemagic builds | 🔄 B-04 ✅, B-05 pending |
 
 ---
 

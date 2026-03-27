@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -21,12 +21,14 @@
   <meta name="description" content="DeelMarkt — De eerlijke marktplaats van Nederland">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Security headers (B-36)
-       'unsafe-inline' in script-src required by Flutter web bootstrap. Build with --csp to avoid unsafe-eval.
+  <!-- CSP (B-36 + Phase 1 WASM fix)
+       'wasm-unsafe-eval' required for CanvasKit WASM (WebAssembly.compileStreaming).
+       'unsafe-inline' required by Flutter web bootstrap (flutter_bootstrap.js).
+       worker-src 'blob:' required for CanvasKit worker threads.
+       Permissions-Policy and X-Frame-Options must be HTTP headers (Cloudflare), not meta tags.
        TODO Sprint 3: replace 'unsafe-inline' with 'sha256-<hash>' of flutter_bootstrap.js.
-       TODO Sprint 3: add report-uri for CSP violation monitoring.
-       Permissions-Policy and X-Frame-Options must be HTTP headers (Cloudflare), not meta tags. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; media-src 'self' https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com; font-src 'self'; frame-src https://*.mollie.com; frame-ancestors 'none'; worker-src 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;">
+       TODO Sprint 3: add report-uri for CSP violation monitoring. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; media-src 'self' https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com; font-src 'self'; frame-src https://*.mollie.com; frame-ancestors 'none'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 

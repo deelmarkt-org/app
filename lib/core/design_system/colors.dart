@@ -56,9 +56,20 @@ class DeelmarktColors {
   static const darkShimmerHighlight = Color(0xFF3C3C3C);
 
   static const darkSuccess = Color(0xFF4ADE80);
+  static const darkWarning = Color(0xFFFBBF24);
   static const darkError = Color(0xFFF87171);
+  static const darkInfo = Color(0xFF60A5FA);
+
+  // Dark mode surfaces
   static const darkTrustShield = Color(0xFF052E16);
+  static const darkSuccessSurface = Color(0xFF052E16);
   static const darkErrorSurface = Color(0xFF450A0A);
-  static const darkInfoSurface = Color(0xFF172554);
   static const darkWarningSurface = Color(0xFF422006);
+  static const darkInfoSurface = Color(0xFF172554);
+
+  // Dark mode trust (dedicated — never for general UI)
+  static const darkTrustVerified = Color(0xFF4ADE80);
+  static const darkTrustEscrow = Color(0xFF60A5FA);
+  static const darkTrustWarning = Color(0xFFF87171);
+  static const darkTrustPending = Color(0xFFFBBF24);
 }
