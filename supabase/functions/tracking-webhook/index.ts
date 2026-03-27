@@ -18,11 +18,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { jsonResponse } from "../_shared/response.ts";
-import {
-  getRedisCredentials,
-  checkIdempotency,
-  rollbackIdempotency,
-} from "../_shared/redis.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
+import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)

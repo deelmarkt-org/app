@@ -15,7 +15,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
-import { getRedisCredentials, checkIdempotency } from "../_shared/redis.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
+import { checkIdempotency } from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Types
