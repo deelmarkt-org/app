@@ -5,9 +5,11 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/shipping_label.dart';
 import '../widgets/shipping_qr_card.dart';
@@ -38,7 +40,7 @@ class ShippingQrScreen extends StatelessWidget {
                 const SizedBox(height: Spacing.s4),
                 _instructionCard(context),
                 const SizedBox(height: Spacing.s6),
-                _findServicePointButton(),
+                _findServicePointButton(context),
               ],
             ),
           ),
@@ -78,13 +80,23 @@ class ShippingQrScreen extends StatelessWidget {
     );
   }
 
-  Widget _findServicePointButton() {
+  Widget _findServicePointButton(BuildContext context) {
     return DeelButton(
       label: 'shipping.findServicePoint'.tr(),
       leadingIcon: PhosphorIcons.mapPin(),
       variant: DeelButtonVariant.primary,
-      onPressed:
-          null, // Phase 2 (belengaz): wire to ParcelShop selector (B-31).
+      onPressed: () {
+        assert(label.id.isNotEmpty, 'ShippingLabel.id must not be empty');
+        final route = AppRoutes.parcelShopSelector.replaceFirst(
+          ':id',
+          label.id,
+        );
+        assert(
+          route != AppRoutes.parcelShopSelector,
+          'Route interpolation failed — :id segment not found',
+        );
+        context.push(route);
+      },
     );
   }
 }

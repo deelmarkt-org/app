@@ -111,6 +111,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   }
 
   Widget _buildWebView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       children: [
         WebViewWidget(controller: _controller),
@@ -119,7 +120,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
             label: 'payment.processing'.tr(),
             liveRegion: true,
             child: Container(
-              color: DeelmarktColors.white.withValues(alpha: 0.8),
+              color:
+                  isDark
+                      ? DeelmarktColors.darkScaffold.withValues(alpha: 0.8)
+                      : DeelmarktColors.white.withValues(alpha: 0.8),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -140,6 +144,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   }
 
   Widget _buildError(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: 'error.payment_failed'.tr(),
       liveRegion: true,
@@ -152,19 +157,23 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
               Icon(
                 PhosphorIcons.warningCircle(),
                 size: 48,
-                color: DeelmarktColors.error,
+                color:
+                    isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
               ),
               const SizedBox(height: Spacing.s4),
               Text(
                 'error.payment_failed'.tr(),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: Spacing.s2),
               Text(
                 'error.network'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: DeelmarktColors.neutral500,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
                 textAlign: TextAlign.center,
               ),
