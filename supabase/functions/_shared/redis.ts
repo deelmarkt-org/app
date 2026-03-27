@@ -74,6 +74,9 @@ export async function redisGet(
     `${creds.url}/get/${encodeURIComponent(key)}`,
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
+  if (!response.ok) {
+    throw new Error(`Redis GET failed (HTTP ${response.status}): ${await response.text()}`);
+  }
   const data = await response.json();
   return data.result ?? null;
 }
@@ -89,9 +92,9 @@ export async function redisDel(
     `${creds.url}/del/${encodeURIComponent(key)}`,
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
+  if (!response.ok) {
+    throw new Error(`Redis DEL failed (HTTP ${response.status}): ${await response.text()}`);
+  }
   const data = await response.json();
   return data.result ?? 0;
 }
-
-// Idempotency helpers — re-exported from dedicated module (§2.1 split by concern)
-export { checkIdempotency, rollbackIdempotency } from "./idempotency.ts";
