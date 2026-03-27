@@ -27,6 +27,9 @@ const QuerySchema = z.object({
 
 // --- Postcode Providers ---
 
+/** Number of provider implementations — used for all-failed detection. */
+const PROVIDER_COUNT = 2;
+
 interface AddressResult {
   street: string;
   city: string;
@@ -152,8 +155,8 @@ Deno.serve(async (req: Request) => {
     }
 
     if (!result) {
-      // Both providers had server errors → 502, not 404
-      if (providersFailed >= 2) {
+      // All providers had server errors → 502, not 404
+      if (providersFailed >= PROVIDER_COUNT) {
         return jsonResponse({ error: "All postcode providers unavailable" }, 502);
       }
       return jsonResponse({ error: "Address not found" }, 404);
