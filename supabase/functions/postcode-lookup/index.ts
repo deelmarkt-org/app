@@ -4,10 +4,10 @@
  * Resolves Dutch postcode + house number → street + city.
  *
  * Primary: postcode.tech (free, 10k requests/month)
- * Fallback: api-postcode.nl (free, 1k requests/day)
+ * Fallback: api-postcode.nl (requires API key, free 1k requests/day)
  *
  * GET /functions/v1/postcode-lookup?postcode=1234AB&houseNumber=10
- * Auth: anon key (JWT required via verify_jwt = true)
+ * Auth: anon key (JWT required via verify_jwt = true in config.toml)
  */
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { jsonResponse as baseJsonResponse } from "../_shared/response.ts";
@@ -35,6 +35,14 @@ interface AddressResult {
   postcode: string;
 }
 
+/** Thrown when a provider has a server error (5xx) vs address not found. */
+class ProviderError extends Error {
+  constructor(provider: string, status: number) {
+    super(`${provider} returned ${status}`);
+    this.name = "ProviderError";
+  }
+}
+
 /**
  * Primary: postcode.tech — free tier 10,000 requests/month.
  * No API key required for basic usage.
@@ -51,6 +59,7 @@ async function lookupViaPostcodeTech(
     `https://postcode.tech/api/v1/postcode/full?${params}`,
   );
 
+  if (resp.status >= 500) throw new ProviderError("postcode.tech", resp.status);
   if (!resp.ok) return null;
 
   const data = await resp.json();
@@ -66,8 +75,8 @@ async function lookupViaPostcodeTech(
 }
 
 /**
- * Fallback: PostcodeAPI.nu — free tier 1,000 requests/day.
- * Requires API key stored in env (not a secret, free tier key).
+ * Fallback: api-postcode.nl — free tier 1,000 requests/day.
+ * Requires API key via POSTCODE_API_KEY env var.
  * GET https://json.api-postcode.nl?postcode=1234AB&number=10
  */
 async function lookupViaApiPostcode(
@@ -75,12 +84,22 @@ async function lookupViaApiPostcode(
   houseNumber: string,
   addition?: string,
 ): Promise<AddressResult | null> {
+  const apiKey = Deno.env.get("POSTCODE_API_KEY");
+  if (!apiKey) {
+    console.warn("[postcode-lookup] POSTCODE_API_KEY not configured — skipping fallback");
+    return null;
+  }
+
   const params = new URLSearchParams({ postcode, number: houseNumber });
   if (addition) params.set("addition", addition);
   const resp = await fetch(
     `https://json.api-postcode.nl?${params}`,
+    {
+      headers: { "X-Api-Key": apiKey },
+    },
   );
 
+  if (resp.status >= 500) throw new ProviderError("api-postcode.nl", resp.status);
   if (!resp.ok) return null;
 
   const data = await resp.json();
@@ -114,10 +133,12 @@ Deno.serve(async (req: Request) => {
 
     // Primary: postcode.tech → Fallback: api-postcode.nl
     let result: AddressResult | null = null;
+    let providersFailed = 0;
 
     try {
       result = await lookupViaPostcodeTech(input.postcode, input.houseNumber, input.addition);
     } catch (err) {
+      providersFailed++;
       console.warn(`[postcode-lookup] postcode.tech failed: ${(err as Error).message}`);
     }
 
@@ -125,11 +146,16 @@ Deno.serve(async (req: Request) => {
       try {
         result = await lookupViaApiPostcode(input.postcode, input.houseNumber, input.addition);
       } catch (err) {
+        providersFailed++;
         console.warn(`[postcode-lookup] api-postcode.nl failed: ${(err as Error).message}`);
       }
     }
 
     if (!result) {
+      // Both providers had server errors → 502, not 404
+      if (providersFailed >= 2) {
+        return jsonResponse({ error: "All postcode providers unavailable" }, 502);
+      }
       return jsonResponse({ error: "Address not found" }, 404);
     }
 

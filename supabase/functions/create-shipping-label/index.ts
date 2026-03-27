@@ -2,7 +2,7 @@
  * B-25 + B-26: Create Shipping Label Edge Function
  *
  * Creates a shipping label via Ectaro Partner API (primary, cheaper rates)
- * with direct PostNL Shipment V4 as failover.
+ * with direct PostNL Shipment v2 as failover.
  *
  * POST /functions/v1/create-shipping-label
  * Auth: service_role (called from app via authenticated endpoint)
@@ -128,16 +128,31 @@ async function createViaEctaro(
 
 // --- PostNL Shipment V4 API (failover for PostNL labels) ---
 
+/** PostNL base URL — sandbox or production based on POSTNL_ENV. */
+function getPostNLBaseUrl(): string {
+  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  return isSandbox
+    ? "https://api-sandbox.postnl.nl"
+    : "https://api.postnl.nl";
+}
+
 async function createViaPostNL(
   input: CreateLabelInput,
   apiKey: string,
 ): Promise<LabelResult> {
-  // PostNL account: Piwas (10959299) — Customer code RMUZ, BLS 100548
+  // PostNL account details from env — never hardcoded (§9)
+  const customerCode = Deno.env.get("POSTNL_CUSTOMER_CODE");
+  const customerNumber = Deno.env.get("POSTNL_CUSTOMER_NUMBER");
+  const collectionLocation = Deno.env.get("POSTNL_COLLECTION_LOCATION");
+  if (!customerCode || !customerNumber || !collectionLocation) {
+    throw new Error("Missing PostNL account config: POSTNL_CUSTOMER_CODE, POSTNL_CUSTOMER_NUMBER, POSTNL_COLLECTION_LOCATION");
+  }
+
   const payload = {
     Customer: {
-      CustomerCode: "RMUZ",
-      CustomerNumber: "10959299",
-      CollectionLocation: "100548",
+      CustomerCode: customerCode,
+      CustomerNumber: customerNumber,
+      CollectionLocation: collectionLocation,
     },
     Message: {
       MessageID: crypto.randomUUID(),
@@ -172,12 +187,7 @@ async function createViaPostNL(
     }],
   };
 
-  // PostNL sandbox keys are UUIDs (e.g. d063c78c-...), production keys differ
-  // Use POSTNL_ENV env var to explicitly control environment
-  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
-  const baseUrl = isSandbox
-    ? "https://api-sandbox.postnl.nl"
-    : "https://api.postnl.nl";
+  const baseUrl = getPostNLBaseUrl();
 
   // PostNL v4 not yet available — use v2 per PostNL support (2026-03-26)
   const resp = await fetch(`${baseUrl}/v2/shipment`, {
@@ -191,7 +201,7 @@ async function createViaPostNL(
 
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`PostNL Shipment V4 failed (${resp.status}): ${text}`);
+    throw new Error(`PostNL Shipment v2 failed (${resp.status}): ${text}`);
   }
 
   const data = await resp.json();
@@ -219,10 +229,7 @@ async function registerPostNLTracking(
   postnlKey: string,
 ): Promise<void> {
 
-  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
-  const baseUrl = isSandbox
-    ? "https://api-sandbox.postnl.nl"
-    : "https://api.postnl.nl";
+  const baseUrl = getPostNLBaseUrl();
 
   // Webhook URL where PostNL sends tracking events
   const webhookUrl =
