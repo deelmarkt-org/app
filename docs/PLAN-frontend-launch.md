@@ -601,8 +601,6 @@ Each phase MUST pass before the next begins:
 
 ---
 
----
-
 ### 11. Architecture Alignment (v3.0)
 
 **Reference documents validated against:**
