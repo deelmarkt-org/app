@@ -208,33 +208,33 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 **Objectives**: Flutter Web compiles, routes work, responsive shell ready, mock data enables parallel development.
 
 **Success Criteria**:
-- [ ] `flutter build web --csp` produces working CanvasKit build with zero CSP violations
-- [ ] `usePathUrlStrategy()` active — URLs have no `#` hashes
-- [ ] All 4 breakpoints render correctly with shell layout
-- [ ] GoRouter auth guard works with splash screen (no flash of unauthenticated content)
-- [ ] `/onboarding` route renders, auth redirect `/home` ↔ `/onboarding` works
-- [ ] Mock data layer provides all entity interfaces with immutable entities
+- [x] `flutter build web --csp` produces working CanvasKit build with zero CSP violations ✅ PR #14
+- [x] `usePathUrlStrategy()` active — URLs have no `#` hashes ✅ PR #14
+- [x] All 4 breakpoints render correctly with shell layout ✅ PR #14
+- [x] GoRouter auth guard works with splash screen (no flash of unauthenticated content) ✅ PR #14
+- [x] `/onboarding` route renders, auth redirect `/home` ↔ `/onboarding` works ✅ PR #14
+- [x] Mock data layer provides all entity interfaces with immutable entities ✅ PR #14
 - [ ] Performance baseline measured and documented
-- [ ] Web error boundary catches unhandled errors gracefully
+- [x] Web error boundary catches unhandled errors gracefully ✅ PR #14
 - [ ] Font loading has no FOUT (Flash of Unstyled Text)
-- [ ] Dark mode toggle works with all semantic tokens wired
+- [x] Dark mode toggle works with all semantic tokens wired ✅ PR #14
 
 **Tasks** (ordered by execution day — 8 working days):
 
-| # | Task | Est | Owner | Day | Fallback |
-|:--|:-----|:----|:------|:----|:---------|
-| 0 | **PRE-REQ:** Merge PR #9 to dev, create `feature/pizmam-P45-web-infrastructure` from dev | 0.5h | pizmam | 1 | If PR #9 not mergeable, cherry-pick Unleash service commits only |
-| 1 | **⚠️ DAY 1 BLOCKER:** CSP + CanvasKit WASM validation | 2h | pizmam + belengaz | 1 | If `wasm-unsafe-eval` needed and belengaz unavailable: temporary fallback to `--web-renderer html` (no WASM). Create follow-up ticket for CSP fix. |
-| 1b | **⚠️ CRITICAL:** Add `usePathUrlStrategy()` to `main.dart` | 0.5h | pizmam | 1 | None — this is a one-line change. Without it all URLs break. Add `flutter_web_plugins` import. Must be called BEFORE `WidgetsFlutterBinding.ensureInitialized()`. |
-| 2 | Flutter Web build pipeline — validate Flutter's default Service Worker | 4h | pizmam | 1-2 | Flutter generates `flutter_service_worker.js` automatically. Do NOT write custom SW — it conflicts with Flutter's built-in. Validate cache behaviour only. Custom Workbox optimization deferred to Phase 5. |
-| 3 | ADR-019: PWA strategy document | 1h | pizmam | 2 | — |
-| 4 | `P-45` Performance budget + Lighthouse baseline | 4h | pizmam | 2-3 | If Lighthouse < 60 (CanvasKit floor), document and create Phase 5 optimization ticket |
-| 5 | Responsive shell validation (4 breakpoints) | 2h | pizmam | 3 | — |
-| 6 | GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). |
-| 7 | Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. |
-| 8 | Dark mode validation (`P-47` part 1) | 4h | pizmam | 7 | — |
-| 9 | Web error boundary + font loading strategy | 2h | pizmam | 7 | — |
-| 10 | Final validation + quality gate | 4h | pizmam | 8 | — |
+| # | Task | Est | Owner | Day | Fallback | Status |
+|:--|:-----|:----|:------|:----|:---------|:-------|
+| 0 | **PRE-REQ:** Merge PR #9 to dev, create `feature/pizmam-P45-web-infrastructure` from dev | 0.5h | pizmam | 1 | If PR #9 not mergeable, cherry-pick Unleash service commits only | ✅ Done |
+| 1 | **⚠️ DAY 1 BLOCKER:** CSP + CanvasKit WASM validation | 2h | pizmam + belengaz | 1 | If `wasm-unsafe-eval` needed and belengaz unavailable: temporary fallback to `--web-renderer html` (no WASM). Create follow-up ticket for CSP fix. | ✅ PR #14 |
+| 1b | **⚠️ CRITICAL:** Add `usePathUrlStrategy()` to `main.dart` | 0.5h | pizmam | 1 | None — this is a one-line change. Without it all URLs break. Add `flutter_web_plugins` import. Must be called BEFORE `WidgetsFlutterBinding.ensureInitialized()`. | ✅ PR #14 |
+| 2 | Flutter Web build pipeline — validate Flutter's default Service Worker | 4h | pizmam | 1-2 | Flutter generates `flutter_service_worker.js` automatically. Do NOT write custom SW — it conflicts with Flutter's built-in. Validate cache behaviour only. Custom Workbox optimization deferred to Phase 5. | ✅ PR #14 |
+| 3 | ADR-019: PWA strategy document | 1h | pizmam | 2 | — | ✅ PR #14 |
+| 4 | `P-45` Performance budget + Lighthouse baseline | 4h | pizmam | 2-3 | If Lighthouse < 60 (CanvasKit floor), document and create Phase 5 optimization ticket | ⏳ Baseline not yet measured |
+| 5 | Responsive shell validation (4 breakpoints) | 2h | pizmam | 3 | — | ✅ PR #14 |
+| 6 | GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). | ✅ PR #14 |
+| 7 | Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. | ✅ PR #14 |
+| 8 | Dark mode validation (`P-47` part 1) | 4h | pizmam | 7 | — | ✅ PR #14 |
+| 9 | Web error boundary + font loading strategy | 2h | pizmam | 7 | — | ✅ Error boundary done, font FOUT TBD |
+| 10 | Final validation + quality gate | 4h | pizmam | 8 | — | ✅ PR #14 (557 tests, 0 warnings) |
 
 **Phase total: ~37h** / 8 working days (2 weeks at ~25h/week pace)
 
