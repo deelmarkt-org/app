@@ -85,10 +85,18 @@ class ShippingQrScreen extends StatelessWidget {
       label: 'shipping.findServicePoint'.tr(),
       leadingIcon: PhosphorIcons.mapPin(),
       variant: DeelButtonVariant.primary,
-      onPressed:
-          () => context.push(
-            AppRoutes.parcelShopSelector.replaceFirst(':id', label.id),
-          ),
+      onPressed: () {
+        assert(label.id.isNotEmpty, 'ShippingLabel.id must not be empty');
+        final route = AppRoutes.parcelShopSelector.replaceFirst(
+          ':id',
+          label.id,
+        );
+        assert(
+          route != AppRoutes.parcelShopSelector,
+          'Route interpolation failed — :id segment not found',
+        );
+        context.push(route);
+      },
     );
   }
 }

@@ -25,6 +25,7 @@ class TrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(title: Text('tracking.title'.tr())),
       body: SafeArea(
@@ -34,11 +35,11 @@ class TrackingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _carrierHeader(context),
+                _carrierHeader(context, isDark: isDark),
                 const SizedBox(height: Spacing.s4),
-                _trackingNumberCard(context),
+                _trackingNumberCard(context, isDark: isDark),
                 const SizedBox(height: Spacing.s6),
-                _timelineSection(context),
+                _timelineSection(context, isDark: isDark),
               ],
             ),
           ),
@@ -47,8 +48,7 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _carrierHeader(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _carrierHeader(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: '${label.carrier.localizedName} ${'tracking.shipment'.tr()}',
       excludeSemantics: true,
@@ -74,8 +74,7 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _trackingNumberCard(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _trackingNumberCard(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: '${'shipping.trackingNumber'.tr()} ${label.trackingNumber}',
       excludeSemantics: true,
@@ -135,7 +134,7 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _timelineSection(BuildContext context) {
+  Widget _timelineSection(BuildContext context, {required bool isDark}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -145,15 +144,14 @@ class TrackingScreen extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.s4),
         if (events.isEmpty)
-          _emptyState(context)
+          _emptyState(context, isDark: isDark)
         else
           TrackingTimeline(events: events),
       ],
     );
   }
 
-  Widget _emptyState(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _emptyState(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: 'tracking.noUpdates'.tr(),
       child: Container(
