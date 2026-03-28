@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,20 +33,6 @@ void main() async {
   usePathUrlStrategy();
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Web error boundary — catch unhandled errors, report to Crashlytics.
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    if (!kDebugMode) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-    }
-  };
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (!kDebugMode) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    }
-    return true;
-  };
 
   await Future.wait([
     EasyLocalization.ensureInitialized(),
