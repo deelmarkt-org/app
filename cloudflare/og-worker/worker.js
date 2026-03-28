@@ -25,19 +25,20 @@
  * Reference: CLAUDE.md §9, docs/SPRINT-PLAN.md P-46
  */
 
+// Pre-lowercased for single-pass UA comparison
 const CRAWLER_UA_PATTERNS = [
   'facebookexternalhit',
-  'Facebot',
-  'Twitterbot',
-  'WhatsApp',
-  'LinkedInBot',
-  'Googlebot',
+  'facebot',
+  'twitterbot',
+  'whatsapp',
+  'linkedinbot',
+  'googlebot',
   'bingbot',
-  'Slackbot',
-  'TelegramBot',
-  'Discordbot',
-  'Pinterest',
-  'Applebot',
+  'slackbot',
+  'telegrambot',
+  'discordbot',
+  'pinterest',
+  'applebot',
 ];
 
 const DEFAULT_OG = {
@@ -60,39 +61,41 @@ export default {
     const ua = request.headers.get('user-agent') || '';
 
     // Only intercept crawlers — pass everything else through
+    const uaLower = ua.toLowerCase();
     const isCrawler = CRAWLER_UA_PATTERNS.some(
-      (pattern) => ua.toLowerCase().includes(pattern.toLowerCase())
+      (pattern) => uaLower.includes(pattern)
     );
 
     if (!isCrawler) {
       return fetch(request);
     }
 
-    // Route to appropriate OG handler
+    // Route to appropriate OG handler — regex capture groups extract IDs
     const path = url.pathname;
     const defaultFallback = { ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' };
+    let match;
 
-    if (path.match(/^\/listings\/[\w-]+$/)) {
-      return handleListing(path, url, env);
+    if ((match = path.match(/^\/listings\/([\w-]+)$/))) {
+      return handleListing(match[1], url, env);
     }
 
-    if (path.match(/^\/users\/[\w-]+$/)) {
-      return handleUser(path, url, env);
+    if ((match = path.match(/^\/users\/([\w-]+)$/))) {
+      return handleUser(match[1], url, env);
     }
 
-    if (path.match(/^\/transactions\/[\w-]+$/)) {
-      return handleTransaction(path, url, env);
+    if ((match = path.match(/^\/transactions\/([\w-]+)$/))) {
+      return handleTransaction(match[1], url, env);
     }
 
-    if (path.match(/^\/shipping\/[\w-]+(\/.*)?$/)) {
-      return handleShipping(path, url, env);
+    if ((match = path.match(/^\/shipping\/([\w-]+)(\/[\w-]*)?$/))) {
+      return handleShipping(match[1], match[2], url, env);
     }
 
-    if (path.match(/^\/messages\/[\w-]+$/)) {
-      return handleMessages(path, url, env);
+    if ((match = path.match(/^\/messages\/([\w-]+)$/))) {
+      return handleMessages(match[1], url, env);
     }
 
-    if (path === '/search' || path.startsWith('/search?')) {
+    if (path === '/search' || path === '/') {
       return handleSearch(url, env);
     }
 
@@ -105,13 +108,35 @@ export default {
 // Supabase fetch helper
 // ---------------------------------------------------------------------------
 
+const FETCH_TIMEOUT_MS = 3000;
+const ID_PATTERN = /^[\w-]{1,128}$/;
+
+/**
+ * Validate route parameter — UUID or slug format only.
+ * Prevents PostgREST query manipulation via crafted IDs.
+ */
+function isValidId(id) {
+  return id && ID_PATTERN.test(id);
+}
+
+/**
+ * Fetch from Supabase REST API with 3s timeout.
+ * Fails fast on Supabase outage instead of consuming Worker CPU budget.
+ */
 async function supabaseFetch(env, query) {
-  return fetch(`${env.SUPABASE_URL}/rest/v1/${query}`, {
-    headers: {
-      apikey: env.SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
-    },
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(`${env.SUPABASE_URL}/rest/v1/${query}`, {
+      headers: {
+        apikey: env.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+      },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -121,8 +146,10 @@ async function supabaseFetch(env, query) {
 /**
  * Fetch listing from Supabase and return OG tags.
  */
-async function handleListing(path, url, env) {
-  const id = path.split('/').pop();
+async function handleListing(id, url, env) {
+  if (!isValidId(id)) {
+    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
+  }
 
   try {
     const resp = await supabaseFetch(
@@ -171,8 +198,10 @@ async function handleListing(path, url, env) {
 /**
  * Fetch user profile from Supabase and return OG tags.
  */
-async function handleUser(path, url, env) {
-  const id = path.split('/').pop();
+async function handleUser(id, url, env) {
+  if (!isValidId(id)) {
+    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
+  }
 
   try {
     const resp = await supabaseFetch(
@@ -212,8 +241,10 @@ async function handleUser(path, url, env) {
 /**
  * Fetch transaction from Supabase and return OG tags.
  */
-async function handleTransaction(path, url, env) {
-  const id = path.split('/').pop();
+async function handleTransaction(id, url, env) {
+  if (!isValidId(id)) {
+    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
+  }
 
   try {
     const resp = await supabaseFetch(
@@ -266,13 +297,12 @@ async function handleTransaction(path, url, env) {
  * Fetch shipping info from Supabase and return OG tags.
  * Handles /shipping/:id, /shipping/:id/qr, /shipping/:id/tracking, /shipping/:id/parcel-shops
  */
-async function handleShipping(path, url, env) {
-  const segments = path.split('/').filter(Boolean);
-  const id = segments[1]; // /shipping/:id/...
-
-  if (!id) {
+async function handleShipping(id, subpath, url, env) {
+  if (!isValidId(id)) {
     return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
   }
+
+  const subpage = (subpath || '').replace(/^\//, '');
 
   try {
     const resp = await supabaseFetch(
@@ -301,7 +331,6 @@ async function handleShipping(path, url, env) {
     const carrier = (label.carrier || '').toUpperCase();
     const listingTitle = label.transaction?.listing?.title || 'Pakket';
     const image = label.transaction?.listing?.images?.[0] || DEFAULT_OG.image;
-    const subpage = segments[2] || '';
     const subpageNl = {
       qr: 'QR-code',
       tracking: 'Tracking',
@@ -327,8 +356,10 @@ async function handleShipping(path, url, env) {
 /**
  * Fetch conversation context from Supabase and return OG tags.
  */
-async function handleMessages(path, url, env) {
-  const id = path.split('/').pop();
+async function handleMessages(id, url, env) {
+  if (!isValidId(id)) {
+    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
+  }
 
   try {
     const resp = await supabaseFetch(
@@ -436,6 +467,7 @@ function renderOgHtml(og, env) {
     <!-- WhatsApp / Telegram -->
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="${escapedTitle}" />
 
     ${extraTags}
 

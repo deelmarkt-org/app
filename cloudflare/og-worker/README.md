@@ -37,7 +37,7 @@ cd cloudflare/og-worker
 
 # Set secrets (one-time)
 wrangler secret put SUPABASE_URL
-# Enter: https://ehxrhyqhtngwqkguwdiv.supabase.co
+# Enter: your Supabase project URL (from .env SUPABASE_PROJECT_ID → https://{id}.supabase.co)
 
 wrangler secret put SUPABASE_ANON_KEY
 # Enter: your Supabase anon key (from .env SUPABASE_ANON_PUBLIC)

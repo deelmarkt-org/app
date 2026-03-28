@@ -6,9 +6,10 @@ name = "deelmarkt-og"
 main = "worker.js"
 compatibility_date = "2024-01-01"
 
-# Routes: intercept all shareable DeelMarkt URLs
+# Routes: intercept specific deelmarkt.com paths for OG tag generation
 # Worker passes non-crawler requests through via fetch(request)
 routes = [
+  { pattern = "deelmarkt.com/", zone_name = "deelmarkt.com" },
   { pattern = "deelmarkt.com/listings/*", zone_name = "deelmarkt.com" },
   { pattern = "deelmarkt.com/users/*", zone_name = "deelmarkt.com" },
   { pattern = "deelmarkt.com/transactions/*", zone_name = "deelmarkt.com" },
@@ -22,5 +23,5 @@ routes = [
 SITE_URL = "https://deelmarkt.com"
 
 # Secrets (set via wrangler secret put, NOT committed):
-# SUPABASE_URL       = https://ehxrhyqhtngwqkguwdiv.supabase.co
-# SUPABASE_ANON_KEY  = <your anon key from .env SUPABASE_ANON_PUBLIC>
+# SUPABASE_URL       = <your Supabase project URL>
+# SUPABASE_ANON_KEY  = <your Supabase anon key from .env>
