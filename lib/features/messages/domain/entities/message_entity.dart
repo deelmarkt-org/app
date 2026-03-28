@@ -35,6 +35,26 @@ class MessageEntity extends Equatable {
     isRead,
     createdAt,
   ];
+
+  MessageEntity copyWith({
+    String? id,
+    String? conversationId,
+    String? senderId,
+    String? text,
+    MessageType? type,
+    bool? isRead,
+    DateTime? createdAt,
+  }) {
+    return MessageEntity(
+      id: id ?? this.id,
+      conversationId: conversationId ?? this.conversationId,
+      senderId: senderId ?? this.senderId,
+      text: text ?? this.text,
+      type: type ?? this.type,
+      isRead: isRead ?? this.isRead,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }
 
 /// Message types — per design system patterns.md §Chat.
