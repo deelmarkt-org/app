@@ -34,7 +34,7 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: Spacing.s6),
               Text(
                 'app.name'.tr(),
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark
                       ? DeelmarktColors.darkPrimary
