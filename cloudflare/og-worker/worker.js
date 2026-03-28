@@ -270,6 +270,10 @@ async function handleShipping(path, url, env) {
   const segments = path.split('/').filter(Boolean);
   const id = segments[1]; // /shipping/:id/...
 
+  if (!id) {
+    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
+  }
+
   try {
     const resp = await supabaseFetch(
       env,
@@ -370,7 +374,7 @@ async function handleMessages(path, url, env) {
  * Return OG tags for search results page.
  */
 async function handleSearch(url, env) {
-  const query = url.searchParams.get('q') || '';
+  const query = escapeHtml(url.searchParams.get('q') || '');
   const title = query
     ? `"${query}" — Zoekresultaten op DeelMarkt`
     : 'Zoeken op DeelMarkt';
@@ -418,9 +422,9 @@ function renderOgHtml(og, env) {
     <meta property="og:description" content="${escapedDesc}" />
     <meta property="og:image" content="${escapedImage}" />
     <meta property="og:url" content="${escapedUrl}" />
-    <meta property="og:type" content="${og.type || 'website'}" />
-    <meta property="og:site_name" content="${og.siteName || 'DeelMarkt'}" />
-    <meta property="og:locale" content="${og.locale || 'nl_NL'}" />
+    <meta property="og:type" content="${escapeHtml(og.type || 'website')}" />
+    <meta property="og:site_name" content="${escapeHtml(og.siteName || 'DeelMarkt')}" />
+    <meta property="og:locale" content="${escapeHtml(og.locale || 'nl_NL')}" />
     <meta property="og:locale:alternate" content="en_US" />
 
     <!-- Twitter Card -->
