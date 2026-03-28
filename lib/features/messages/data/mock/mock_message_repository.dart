@@ -1,4 +1,5 @@
 import '../../domain/entities/conversation_entity.dart';
+import '../../domain/entities/message_entity.dart';
 import '../../domain/repositories/message_repository.dart';
 
 /// Mock data constants to avoid duplicate literals.
