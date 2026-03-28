@@ -341,8 +341,9 @@ Deno.serve(async (req: Request) => {
     }
 
     // Store label
-    const shipByDeadline = new Date();
-    shipByDeadline.setDate(shipByDeadline.getDate() + 5);
+    // UTC is acceptable — PostNL API expects UTC timestamps. Dutch timezone offset
+    // (CET/CEST +1/+2h) does not affect the 5-day shipping window significantly.
+    const shipByDeadline = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
 
     const { error: insertError } = await supabase
       .from("shipping_labels")
