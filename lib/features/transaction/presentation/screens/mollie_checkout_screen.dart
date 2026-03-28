@@ -62,43 +62,44 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
       _trustedHosts.any((h) => Uri.parse(widget.checkoutUrl).host.endsWith(h)),
       'Checkout URL must be a Mollie domain',
     );
-    _controller = WebViewController()
-      // JavaScript required for Mollie iDEAL bank selection + 3D-Secure.
-      // URL is validated against _trustedHosts above.
-      ..setJavaScriptMode(JavaScriptMode.unrestricted) // NOSONAR
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (_) {
-            if (mounted) setState(() => _isLoading = true);
-          },
-          onPageFinished: (_) {
-            if (mounted) setState(() => _isLoading = false);
-          },
-          onWebResourceError: (_) {
-            if (mounted) {
-              setState(() {
-                _hasError = true;
-                _isLoading = false;
-              });
-            }
-          },
-          onNavigationRequest: (request) {
-            // Detect redirect back to our app (payment complete)
-            if (request.url.startsWith(widget.redirectUrl)) {
-              if (mounted) context.pop(MollieCheckoutResult.completed);
-              return NavigationDecision.prevent;
-            }
-            // Only allow HTTPS to trusted hosts (Mollie + iDEAL banks).
-            final host = Uri.parse(request.url).host;
-            final isTrusted = _trustedHosts.any((h) => host.endsWith(h));
-            if (request.url.startsWith('https://') && isTrusted) {
-              return NavigationDecision.navigate;
-            }
-            return NavigationDecision.prevent;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.checkoutUrl));
+    _controller =
+        WebViewController()
+          // JavaScript required for Mollie iDEAL bank selection + 3D-Secure.
+          // URL is validated against _trustedHosts above.
+          ..setJavaScriptMode(JavaScriptMode.unrestricted) // NOSONAR
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onPageStarted: (_) {
+                if (mounted) setState(() => _isLoading = true);
+              },
+              onPageFinished: (_) {
+                if (mounted) setState(() => _isLoading = false);
+              },
+              onWebResourceError: (_) {
+                if (mounted) {
+                  setState(() {
+                    _hasError = true;
+                    _isLoading = false;
+                  });
+                }
+              },
+              onNavigationRequest: (request) {
+                // Detect redirect back to our app (payment complete)
+                if (request.url.startsWith(widget.redirectUrl)) {
+                  if (mounted) context.pop(MollieCheckoutResult.completed);
+                  return NavigationDecision.prevent;
+                }
+                // Only allow HTTPS to trusted hosts (Mollie + iDEAL banks).
+                final host = Uri.parse(request.url).host;
+                final isTrusted = _trustedHosts.any((h) => host.endsWith(h));
+                if (request.url.startsWith('https://') && isTrusted) {
+                  return NavigationDecision.navigate;
+                }
+                return NavigationDecision.prevent;
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse(widget.checkoutUrl));
   }
 
   void _retry() {
@@ -134,9 +135,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
             label: 'payment.processing'.tr(),
             liveRegion: true,
             child: Container(
-              color: isDark
-                  ? DeelmarktColors.darkScaffold.withValues(alpha: 0.8)
-                  : DeelmarktColors.white.withValues(alpha: 0.8),
+              color:
+                  isDark
+                      ? DeelmarktColors.darkScaffold.withValues(alpha: 0.8)
+                      : DeelmarktColors.white.withValues(alpha: 0.8),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -170,9 +172,8 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
               Icon(
                 PhosphorIcons.warningCircle(),
                 size: 48,
-                color: isDark
-                    ? DeelmarktColors.darkError
-                    : DeelmarktColors.error,
+                color:
+                    isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
               ),
               const SizedBox(height: Spacing.s4),
               Text(
@@ -184,9 +185,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
               Text(
                 'error.network'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isDark
-                      ? DeelmarktColors.darkOnSurfaceSecondary
-                      : DeelmarktColors.neutral500,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
                 textAlign: TextAlign.center,
               ),

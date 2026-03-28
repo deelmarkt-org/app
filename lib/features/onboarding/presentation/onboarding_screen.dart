@@ -26,9 +26,10 @@ class OnboardingScreen extends StatelessWidget {
               Icon(
                 PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
                 size: 80,
-                color: isDark
-                    ? DeelmarktColors.darkPrimary
-                    : DeelmarktColors.primary,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkPrimary
+                        : DeelmarktColors.primary,
                 semanticLabel: 'onboarding.trust_icon_label'.tr(),
               ),
               const SizedBox(height: Spacing.s6),
@@ -36,18 +37,20 @@ class OnboardingScreen extends StatelessWidget {
                 'app.name'.tr(),
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isDark
-                      ? DeelmarktColors.darkPrimary
-                      : DeelmarktColors.primary,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkPrimary
+                          : DeelmarktColors.primary,
                 ),
               ),
               const SizedBox(height: Spacing.s3),
               Text(
                 'app.tagline'.tr(),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: isDark
-                      ? DeelmarktColors.darkOnSurfaceSecondary
-                      : DeelmarktColors.neutral700,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -56,9 +59,10 @@ class OnboardingScreen extends StatelessWidget {
               Text(
                 'onboarding.placeholder'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isDark
-                      ? DeelmarktColors.darkOnSurfaceSecondary
-                      : DeelmarktColors.neutral500,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
               ),
             ],
