@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -25,7 +24,7 @@
               "on-primary-fixed-variant": "#842500",
               "on-surface": "#1c1b1b",
               "tertiary-container": "#008730",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "outline": "#8e7067",
               "tertiary-fixed-dim": "#65df75",
               "tertiary-fixed": "#82fc8e",
@@ -89,16 +88,16 @@
 <!-- iPhone 15 Pro Frame -->
 <div class="relative w-[393px] h-[852px] bg-surface rounded-[55px] shadow-2xl overflow-hidden border-[8px] border-slate-800">
 <!-- Top App Bar -->
-<header class="fixed top-0 w-[377px] z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<header class="fixed top-0 w-[377px] z-50 bg-surface/80 backdrop-blur-xl">
 <div class="flex justify-between items-center w-full px-6 py-4">
-<div class="text-2xl font-extrabold tracking-tighter text-[#F15A24]">DeelMarkt</div>
+<div class="text-2xl font-extrabold tracking-tighter text-primary">DeelMarkt</div>
 <!-- Buyer/Seller Toggle -->
 <div class="flex bg-surface-container-high p-1 rounded-full items-center">
-<button class="px-3 py-1 text-xs font-bold text-slate-500">Koper</button>
+<button class="px-3 py-1 text-xs font-bold text-on-surface-variant">Koper</button>
 <button class="px-4 py-1 text-xs font-bold bg-primary text-on-primary rounded-full shadow-sm">Verkoper</button>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-slate-600">help_outline</span>
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
 </div>
 </div>
 </header>
@@ -116,19 +115,19 @@
 <div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
 <span class="material-symbols-outlined text-primary mb-3">payments</span>
 <div class="text-2xl font-bold text-on-surface">€428,50</div>
-<div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Verkoop</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Verkoop</div>
 </div>
 <!-- Listings Card -->
 <div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
 <span class="material-symbols-outlined text-secondary mb-3">inventory_2</span>
 <div class="text-2xl font-bold text-on-surface">12</div>
-<div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Advertenties</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Advertenties</div>
 </div>
 <!-- Messages Card -->
 <div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
 <span class="material-symbols-outlined text-tertiary mb-3">chat_bubble</span>
 <div class="text-2xl font-bold text-on-surface text-primary">3</div>
-<div class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Nieuw</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Nieuw</div>
 </div>
 </div>
 </section>
@@ -175,7 +174,7 @@
 <!-- Ad Item 1 -->
 <div class="flex gap-4 group">
 <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
-<img class="w-full h-full object-cover" data-alt="Modern smartphone against a minimalist clean background with cinematic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG9SpHcMYCezACLJJitUnZysSX7MM-Ac50L5mq-Zm8reZ0jK_LS11g95CXmteKD8FWHVVZ2xHJg2muFqz4UJBRucUi6cYcVuoQkKI2a64IX3tdkfaLOdCF3fArAHmqVB2TG-tB4H-TP8xLzT2uSnX-5OyQB2CwLUYNJeUs9nfQBFE4EyYG1clS699vl_voUukVaKsj8tUU04t1IMG_95_E69MsABTuGrO6pvGoxTCjSaaCNOAdTLDdfE9to5v6ZMwCF_EzZVhPdxjk"/>
+<img class="w-full h-full object-cover" alt="Modern smartphone against a minimalist clean background with cinematic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG9SpHcMYCezACLJJitUnZysSX7MM-Ac50L5mq-Zm8reZ0jK_LS11g95CXmteKD8FWHVVZ2xHJg2muFqz4UJBRucUi6cYcVuoQkKI2a64IX3tdkfaLOdCF3fArAHmqVB2TG-tB4H-TP8xLzT2uSnX-5OyQB2CwLUYNJeUs9nfQBFE4EyYG1clS699vl_voUukVaKsj8tUU04t1IMG_95_E69MsABTuGrO6pvGoxTCjSaaCNOAdTLDdfE9to5v6ZMwCF_EzZVhPdxjk"/>
 </div>
 <div class="flex flex-col justify-center flex-1">
 <div class="flex justify-between items-start">
@@ -192,7 +191,7 @@
 <!-- Ad Item 2 -->
 <div class="flex gap-4 group">
 <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
-<img class="w-full h-full object-cover" data-alt="Luxury black leather sneakers on a stone pedestal with soft directional lighting and premium textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf3W6Mlb9zz1AWa-mdhRp1BZMmCw4ZFi6aaGCripRSZ4UXYyYy6YFY5W_Qgf09uC34g-jqBdDOucCZGi67AQ9hh84sxYdBELwhcDxWluQV4o2fCmkjC8ArovPUMlVdi3XvKgc5_dG18N3_igWIsGSWBwMJ2qhRiIGzwv-4EkLx0uTV2hLNIXAYpMeTVG-MGSsARUAIwcuQLYnDzZEhFxbFaMaQnGMG4WjcPiDt8JmIOlIgLF6wThCFvZidBt_IDIHZCUrqK4GeZ9jc"/>
+<img class="w-full h-full object-cover" alt="Luxury black leather sneakers on a stone pedestal with soft directional lighting and premium textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf3W6Mlb9zz1AWa-mdhRp1BZMmCw4ZFi6aaGCripRSZ4UXYyYy6YFY5W_Qgf09uC34g-jqBdDOucCZGi67AQ9hh84sxYdBELwhcDxWluQV4o2fCmkjC8ArovPUMlVdi3XvKgc5_dG18N3_igWIsGSWBwMJ2qhRiIGzwv-4EkLx0uTV2hLNIXAYpMeTVG-MGSsARUAIwcuQLYnDzZEhFxbFaMaQnGMG4WjcPiDt8JmIOlIgLF6wThCFvZidBt_IDIHZCUrqK4GeZ9jc"/>
 </div>
 <div class="flex flex-col justify-center flex-1">
 <div class="flex justify-between items-start">
@@ -209,7 +208,7 @@
 <!-- Ad Item 3 -->
 <div class="flex gap-4 group">
 <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
-<img class="w-full h-full object-cover" data-alt="Classic analog watch with leather strap on a rustic wooden surface with warm soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAISy6ioW-yuWDg0R8ObEvWPbpzoqy53WQDoR_3NFMcspR6-Vg6mZHksoaeppLA4y_TagDho1ePoF-tQanTfVESN8bFvRQxyKfiL27xR77-xdVOaLjJshjII9p6a9OMgYDAcEYn5CMiy9LpEN2P6FIY5ahqlCXkcZ10F9ClJfMzCaysVYPaU6bJniLjWu47Yssz7Pfq8M5Vq7x7jt6et-aGU0plgDhx8ND_IPokiwOyGjTOkipSGbbQhgrxCvbn9X1DHJns2riHpkyj"/>
+<img class="w-full h-full object-cover" alt="Classic analog watch with leather strap on a rustic wooden surface with warm soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAISy6ioW-yuWDg0R8ObEvWPbpzoqy53WQDoR_3NFMcspR6-Vg6mZHksoaeppLA4y_TagDho1ePoF-tQanTfVESN8bFvRQxyKfiL27xR77-xdVOaLjJshjII9p6a9OMgYDAcEYn5CMiy9LpEN2P6FIY5ahqlCXkcZ10F9ClJfMzCaysVYPaU6bJniLjWu47Yssz7Pfq8M5Vq7x7jt6et-aGU0plgDhx8ND_IPokiwOyGjTOkipSGbbQhgrxCvbn9X1DHJns2riHpkyj"/>
 </div>
 <div class="flex flex-col justify-center flex-1">
 <div class="flex justify-between items-start">
@@ -232,30 +231,30 @@
 <span class="font-bold">Nieuwe advertentie</span>
 </button>
 <!-- Bottom Navigation -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-10 pt-4 bg-[#fcf9f8]/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] z-50">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-10 pt-4 bg-surface/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] z-50">
 <!-- Home (Active) -->
-<div class="flex flex-col items-center justify-center text-[#F15A24] scale-110 transition-transform">
+<div class="flex flex-col items-center justify-center text-primary scale-110 transition-transform">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Home</span>
 </div>
 <!-- Search -->
-<div class="flex flex-col items-center justify-center text-slate-400">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
 <span class="material-symbols-outlined">search</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Ontdekken</span>
 </div>
 <!-- Sell -->
-<div class="flex flex-col items-center justify-center text-slate-400">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
 <span class="material-symbols-outlined">add_circle</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Plaatsen</span>
 </div>
 <!-- Messages -->
-<div class="flex flex-col items-center justify-center text-slate-400 relative">
+<div class="flex flex-col items-center justify-center text-on-surface-variant relative">
 <span class="material-symbols-outlined">chat_bubble</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Berichten</span>
 <div class="absolute top-0 right-1 w-2 h-2 bg-primary rounded-full"></div>
 </div>
 <!-- Profile -->
-<div class="flex flex-col items-center justify-center text-slate-400">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
 <span class="material-symbols-outlined">person</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Profiel</span>
 </div>

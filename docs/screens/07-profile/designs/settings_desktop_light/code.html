@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -30,7 +29,7 @@
               "primary-fixed-dim": "#ffb59e",
               "surface-container-highest": "#e5e2e1",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary": "#ffffff",
               "surface-variant": "#e5e2e1",
               "tertiary-fixed-dim": "#65df75",
@@ -79,29 +78,29 @@
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
 <!-- Desktop Sidebar (SideNavBar) -->
-<nav class="hidden md:flex flex-col h-screen p-6 fixed left-0 top-0 bg-[#fcf9f8] dark:bg-zinc-950 w-64 z-40">
-<div class="text-xl font-black text-[#F15A24] mb-8">
+<nav class="hidden md:flex flex-col h-screen p-6 fixed left-0 top-0 bg-surface dark:bg-zinc-950 w-64 z-40">
+<div class="text-xl font-black text-primary mb-8">
             DeelMarkt
             <span class="block text-[10px] font-medium tracking-widest text-stone-400 uppercase">Premium P2P</span>
 </div>
 <div class="flex flex-col space-y-2">
-<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-[#F15A24] hover:translate-x-1 transition-all group" href="#">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
 <span class="material-symbols-outlined group-hover:fill-current">explore</span>
 <span class="font-medium text-sm">Ontdekken</span>
 </a>
-<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-[#F15A24] hover:translate-x-1 transition-all group" href="#">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
 <span class="material-symbols-outlined group-hover:fill-current">chat</span>
 <span class="font-medium text-sm">Berichten</span>
 </a>
-<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-[#F15A24] hover:translate-x-1 transition-all group" href="#">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
 <span class="material-symbols-outlined group-hover:fill-current">add_box</span>
 <span class="font-medium text-sm">Verkopen</span>
 </a>
-<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-[#F15A24] hover:translate-x-1 transition-all group" href="#">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
 <span class="material-symbols-outlined group-hover:fill-current">favorite</span>
 <span class="font-medium text-sm">Favorieten</span>
 </a>
-<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-[#F15A24] font-bold border-r-4 border-[#F15A24] bg-stone-100/50" href="#">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-[#F15A24] bg-stone-100/50" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
 <span class="font-medium text-sm">Instellingen</span>
 </a>
@@ -119,7 +118,7 @@
 <!-- Main Content Area -->
 <main class="md:ml-64 min-h-screen bg-surface-container-low pb-24">
 <!-- Sticky Header (TopAppBar logic) -->
-<header class="sticky top-0 z-30 flex items-center justify-between w-full px-8 py-6 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-8 py-6 bg-surface/80 backdrop-blur-xl">
 <div class="flex items-center space-x-6">
 <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
 <span class="material-symbols-outlined text-on-surface">arrow_back</span>
@@ -275,7 +274,7 @@
 </div>
 </main>
 <!-- Mobile Bottom NavBar (Suppressed on large screen, visible on mobile) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-[#fcf9f8]/90 backdrop-blur-2xl rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-surface/90 backdrop-blur-2xl rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
 <button class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
 <span class="material-symbols-outlined">explore</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdek</span>
@@ -291,7 +290,7 @@
 <span class="material-symbols-outlined">favorite</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favoriet</span>
 </button>
-<button class="flex flex-col items-center justify-center bg-orange-100/50 text-[#F15A24] rounded-xl px-4 py-2">
+<button class="flex flex-col items-center justify-center bg-primary/10/50 text-primary rounded-xl px-4 py-2">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instel</span>
 </button>

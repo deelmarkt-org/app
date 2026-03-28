@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -17,7 +16,7 @@
               "on-primary-container": "#fffbff",
               "on-error": "#ffffff",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "outline-variant": "#e2bfb4",
               "on-primary": "#ffffff",
               "error": "#ba1a1a",
@@ -95,20 +94,20 @@
 <!-- Top AppBar -->
 <header class="fixed top-0 w-full z-50 bg-[#121212]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 w-full">
 <div class="flex items-center gap-4">
-<h1 class="text-xl font-extrabold text-[#F15A24] tracking-tighter">The Honest Exchange</h1>
+<h1 class="text-xl font-extrabold text-primary tracking-tighter">DeelMarkt</h1>
 </div>
 <nav class="hidden md:flex items-center gap-8">
-<a class="text-slate-400 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Ontdekken</a>
-<a class="text-slate-400 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Verkopen</a>
-<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Berichten</a>
-<a class="text-slate-400 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Favorieten</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Ontdekken</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Verkopen</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Berichten</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Favorieten</a>
 </nav>
 <div class="flex items-center gap-4">
 <button class="p-2 hover:bg-slate-800 rounded-full transition-colors duration-300">
 <span class="material-symbols-outlined text-on-surface">notifications</span>
 </button>
 <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20">
-<img alt="Gebruikersprofiel" class="w-full h-full object-cover" data-alt="Close-up portrait of a smiling man with a neat beard in a professional studio setting with soft warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALaCBdv-oRQ790ltoCaJEuS-Vl_0SA0jzC-9zlH_Ohp3PXdfJc_kVFzmKstVH8orTel9i7jdRYssOSq2M7qVdMJ6EWBy3QwFGZW5f90l_X403HLS8T_PPQGjXhaKEuXWOOjU0tf-ntBdkpuiTpxC-QGV5tbubmGzkcgtTFze0pEOuT4C-tsLSvFlFZhMeohJOxadlfE1Kf0eNiHK-jMLBUnlRqPV2GhJrGm_J5JcuibH75cy4Q-M546uRiE6dgGvH8kiBYhsJ3_asH"/>
+<img alt="Gebruikersprofiel" class="w-full h-full object-cover" alt="Close-up portrait of a smiling man with a neat beard in a professional studio setting with soft warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALaCBdv-oRQ790ltoCaJEuS-Vl_0SA0jzC-9zlH_Ohp3PXdfJc_kVFzmKstVH8orTel9i7jdRYssOSq2M7qVdMJ6EWBy3QwFGZW5f90l_X403HLS8T_PPQGjXhaKEuXWOOjU0tf-ntBdkpuiTpxC-QGV5tbubmGzkcgtTFze0pEOuT4C-tsLSvFlFZhMeohJOxadlfE1Kf0eNiHK-jMLBUnlRqPV2GhJrGm_J5JcuibH75cy4Q-M546uRiE6dgGvH8kiBYhsJ3_asH"/>
 </div>
 </div>
 </header>
@@ -136,7 +135,7 @@
 <div class="bg-[#1E1E1E] p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer relative overflow-hidden group">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
 <div class="relative flex-shrink-0">
-<img class="w-14 h-14 rounded-full object-cover" data-alt="Profile photo of a young woman with curly hair looking directly at the camera with a confident smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBOynZCfZVI8wN0o5SIkih5ZT0J_1ivuiVVhUPy8LcOCDmkf2PJn4p7CGj6jIK4Zan0F9j8NATjNM8ST2pQLJ7PIgJcekpqXtao8etfMPmV4QPfxgVf7OudPtF45qpuLx4X6fXxaGGRumere91dFyIn8Awx_063ZN5E6jKYvEFJWC4rlKqeBXBiPrFN8eHZ-pr_aZvWlPHtL1P8CkIj8AaLOIyfyMnyYYsvd-AabDqAAW6PLpbqBAZvmEEAziBv0WbqXftNqOGzLkS"/>
+<img class="w-14 h-14 rounded-full object-cover" alt="Profile photo of a young woman with curly hair looking directly at the camera with a confident smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBOynZCfZVI8wN0o5SIkih5ZT0J_1ivuiVVhUPy8LcOCDmkf2PJn4p7CGj6jIK4Zan0F9j8NATjNM8ST2pQLJ7PIgJcekpqXtao8etfMPmV4QPfxgVf7OudPtF45qpuLx4X6fXxaGGRumere91dFyIn8Awx_063ZN5E6jKYvEFJWC4rlKqeBXBiPrFN8eHZ-pr_aZvWlPHtL1P8CkIj8AaLOIyfyMnyYYsvd-AabDqAAW6PLpbqBAZvmEEAziBv0WbqXftNqOGzLkS"/>
 <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-[#1E1E1E] rounded-full"></div>
 </div>
 <div class="flex-grow min-w-0">
@@ -146,19 +145,19 @@
 </div>
 <p class="text-on-surface font-bold truncate pr-8">Is de prijs van €450 nog steeds onderhandelbaar voor de camera?</p>
 <div class="flex items-center mt-2">
-<span class="bg-primary-container/20 text-[#F15A24] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Bieden</span>
+<span class="bg-primary-container/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Bieden</span>
 </div>
 </div>
 <div class="flex-shrink-0 flex flex-col items-end gap-2">
-<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" data-alt="High-end mirrorless digital camera with a professional lens on a clean minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhTEBPEFRs2asXHzr6dlZfX9V2g9D4RFqVYh_poR6GZMQt0Cuf9VY1qQ9DU-S94EGoHqKKIKxgJzarQ7Qvrl3-SOz7smkgBU8b5I1X1W5v24eYxm15Sf7ve6Wc9tSylws-lb7PIMA0WIKE_n_zkQP5moWUEQR28p0l02aSzmQWG39Cn38I_eXxoBRyLs040j9BxkNomt83rUtC8YpO2jxLEPBBY-3yleSzWOiJtqpt-oBO0w2I4v904EFKKM4D2qMKyxVwcA1-uLu6"/>
-<div class="bg-[#F15A24] text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">2</div>
+<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" alt="High-end mirrorless digital camera with a professional lens on a clean minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhTEBPEFRs2asXHzr6dlZfX9V2g9D4RFqVYh_poR6GZMQt0Cuf9VY1qQ9DU-S94EGoHqKKIKxgJzarQ7Qvrl3-SOz7smkgBU8b5I1X1W5v24eYxm15Sf7ve6Wc9tSylws-lb7PIMA0WIKE_n_zkQP5moWUEQR28p0l02aSzmQWG39Cn38I_eXxoBRyLs040j9BxkNomt83rUtC8YpO2jxLEPBBY-3yleSzWOiJtqpt-oBO0w2I4v904EFKKM4D2qMKyxVwcA1-uLu6"/>
+<div class="bg-primary text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">2</div>
 </div>
 </div>
 <!-- Unread Conversation 2 -->
 <div class="bg-[#1E1E1E] p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer relative overflow-hidden group">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
 <div class="flex-shrink-0">
-<img class="w-14 h-14 rounded-full object-cover" data-alt="Close-up of a smiling young man in a denim jacket with soft natural sunlight on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlAxbv7yq8OTxfwN1tD9gQUzhYmJ6wR9zlX4-jUKwYtV7RxSc-Fps-AzrPDIk8Gls9hcYZ7v6tLftwUssBKzSZ0bzSpkadmL7cPT5P2telFfr___jBINPAlA451icY0oJ-rKtPkdEWOa8fBhLMpaqr35rOwa9k_hoJ8_2zWiiP00eF9_QE3lQ5soWdB1Nikb4EkCFNefddJLU3dXC35iw4ptTCoOpFUSP1Z8OTSGVyFPLrmri1Lay4Nr4e3LUHTubuWmMXqgMJbL0u"/>
+<img class="w-14 h-14 rounded-full object-cover" alt="Close-up of a smiling young man in a denim jacket with soft natural sunlight on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlAxbv7yq8OTxfwN1tD9gQUzhYmJ6wR9zlX4-jUKwYtV7RxSc-Fps-AzrPDIk8Gls9hcYZ7v6tLftwUssBKzSZ0bzSpkadmL7cPT5P2telFfr___jBINPAlA451icY0oJ-rKtPkdEWOa8fBhLMpaqr35rOwa9k_hoJ8_2zWiiP00eF9_QE3lQ5soWdB1Nikb4EkCFNefddJLU3dXC35iw4ptTCoOpFUSP1Z8OTSGVyFPLrmri1Lay4Nr4e3LUHTubuWmMXqgMJbL0u"/>
 </div>
 <div class="flex-grow min-w-0">
 <div class="flex justify-between items-baseline mb-1">
@@ -168,14 +167,14 @@
 <p class="text-on-surface font-bold truncate pr-8">Top! Ik kom hem morgenavond rond 19:00 uur ophalen.</p>
 </div>
 <div class="flex-shrink-0 flex flex-col items-end gap-2">
-<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" data-alt="Modern dark green velvet sofa with gold legs in a bright minimalist living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTHGDywdBUf46uOOZzxTBI2pj2NhM3_Jx9DuYBoP21-maMvNsUJ2IHGyEc9HVZKvUuyAnVmM5GLQIwCUfCLO9SPxOzSUoPeIgVKeLl5eMhxMVaTPPUgiOZUfmLvUYS4jtnxMUX3-GZHEWy3aQzI4_o0zkCvKNIizUKFx4hiYMvf2SayQs1JALGStjMiGfoA0RWBSA7P9U8o1ZXwipRdwVk2-1oB3b2Sz0nX6HIU2ILP2hThfw9TZ_n1Y_CHlD9htO5YacGT2Eq-uJC"/>
-<div class="bg-[#F15A24] text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">1</div>
+<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" alt="Modern dark green velvet sofa with gold legs in a bright minimalist living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTHGDywdBUf46uOOZzxTBI2pj2NhM3_Jx9DuYBoP21-maMvNsUJ2IHGyEc9HVZKvUuyAnVmM5GLQIwCUfCLO9SPxOzSUoPeIgVKeLl5eMhxMVaTPPUgiOZUfmLvUYS4jtnxMUX3-GZHEWy3aQzI4_o0zkCvKNIizUKFx4hiYMvf2SayQs1JALGStjMiGfoA0RWBSA7P9U8o1ZXwipRdwVk2-1oB3b2Sz0nX6HIU2ILP2hThfw9TZ_n1Y_CHlD9htO5YacGT2Eq-uJC"/>
+<div class="bg-primary text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">1</div>
 </div>
 </div>
 <!-- Read Conversation 3 -->
 <div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
 <div class="flex-shrink-0">
-<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" data-alt="Professional portrait of a woman with blond hair and glasses against a soft grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdkP_SKZXKZPDgXMViY-wosTA96Asx0vhehexovfjPtRG1pv9nGBhmgXh65YLhAkXz-4ZryJv6X1jUIhVH-5oG7Koi4SofAErfdHmdbm0vNJToH06ov8BqK9Y-cZXPsX2aMbp59-xxZLjGVzo8POYfZB562dQTmCw_dW7NIfY1qtyUfQuMb22gLao-JR33PyDxR34MnkRStqqLmb7Gzs8nr7LYtvRj2aWs9ciosR108Tn2Ki3DY6LTmVqCH06_7czNB8OtO2v3PAan"/>
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Professional portrait of a woman with blond hair and glasses against a soft grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdkP_SKZXKZPDgXMViY-wosTA96Asx0vhehexovfjPtRG1pv9nGBhmgXh65YLhAkXz-4ZryJv6X1jUIhVH-5oG7Koi4SofAErfdHmdbm0vNJToH06ov8BqK9Y-cZXPsX2aMbp59-xxZLjGVzo8POYfZB562dQTmCw_dW7NIfY1qtyUfQuMb22gLao-JR33PyDxR34MnkRStqqLmb7Gzs8nr7LYtvRj2aWs9ciosR108Tn2Ki3DY6LTmVqCH06_7czNB8OtO2v3PAan"/>
 </div>
 <div class="flex-grow min-w-0">
 <div class="flex justify-between items-baseline mb-1">
@@ -185,13 +184,13 @@
 <p class="text-on-surface-variant truncate pr-8">Bedankt voor de snelle verzending! De schoenen passen perfect.</p>
 </div>
 <div class="flex-shrink-0">
-<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Vibrant red athletic running shoe displayed on a pedestal with cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-5WoTs8aoY2l_wZTxWveOhnAMnCDYGd3uGnzY9oDBOtigbACO_PCA0w9-lF4Ej42yUEGVNgE756WRvu1QQC7bYGIhYRHLuWUy0dX61kI-NPTEcLbGiB4l1Mel-mE0y0ZbK7w8vRON6TwMAzNrEnV6tlBfTTsTushfGJF3vYcxC6TQDc8xwlPi8Tsbw22hlAPda0aHYPJKvKQ8OgnBhWxyoTKUGh6sVIZw92AEkKMPv1IBm6hKQFQpGDjkqIB10VAEOghh96HSUKt1"/>
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Vibrant red athletic running shoe displayed on a pedestal with cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-5WoTs8aoY2l_wZTxWveOhnAMnCDYGd3uGnzY9oDBOtigbACO_PCA0w9-lF4Ej42yUEGVNgE756WRvu1QQC7bYGIhYRHLuWUy0dX61kI-NPTEcLbGiB4l1Mel-mE0y0ZbK7w8vRON6TwMAzNrEnV6tlBfTTsTushfGJF3vYcxC6TQDc8xwlPi8Tsbw22hlAPda0aHYPJKvKQ8OgnBhWxyoTKUGh6sVIZw92AEkKMPv1IBm6hKQFQpGDjkqIB10VAEOghh96HSUKt1"/>
 </div>
 </div>
 <!-- Read Conversation 4 -->
 <div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
 <div class="flex-shrink-0">
-<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" data-alt="Headshot of a middle-aged man with salt and pepper hair in a casual blue shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmdu4GTZawhjLW6LlQwk_dwYSSFlt83cNvAei5safLiWXuWJh5TFoN1rOVnNhq67KjDI0hGHltc_0RjExTF176kdk4wknqUVBaSMyaus3N0sitTi3KksoOcVXOXoSbTcP_ZK9KW0QxxlG3o7LPp5v6uMAiPzv_8orE75kvzhk9BxPd1cwljzr4a7e8pI2dR5DQFK54XmlhKTzTVSOXorabmZwB7OgFHPF7hk3d00PKfm_wNrjt5ymGW5SymQLKhLwl8FVE7UMxGHvI"/>
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Headshot of a middle-aged man with salt and pepper hair in a casual blue shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmdu4GTZawhjLW6LlQwk_dwYSSFlt83cNvAei5safLiWXuWJh5TFoN1rOVnNhq67KjDI0hGHltc_0RjExTF176kdk4wknqUVBaSMyaus3N0sitTi3KksoOcVXOXoSbTcP_ZK9KW0QxxlG3o7LPp5v6uMAiPzv_8orE75kvzhk9BxPd1cwljzr4a7e8pI2dR5DQFK54XmlhKTzTVSOXorabmZwB7OgFHPF7hk3d00PKfm_wNrjt5ymGW5SymQLKhLwl8FVE7UMxGHvI"/>
 </div>
 <div class="flex-grow min-w-0">
 <div class="flex justify-between items-baseline mb-1">
@@ -201,13 +200,13 @@
 <p class="text-on-surface-variant truncate pr-8">Is het boek nog beschikbaar of al verkocht?</p>
 </div>
 <div class="flex-shrink-0">
-<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Stack of vintage hardcover books on a rustic wooden table with soft candle light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQZIdKuxl91VDsyNQDuyNI-xXqeGbBOvVZ91YWrPTd1HZu1rUGKImul-T9EHCVGxkHVxF31C34D6TDGE4ZW4vzaFXawP2u788qsrJgMbpThGjRn9gdAUsskDhMeFc7oJfCFsPgubmynkLsEgwXGa8eSbxTyYpVq5y5llLF1HwxF410hoM9EZUzXsNi6KiRe5eiTeBNTmhPk4XMTkNYZH6gEElGTh8hrn_jYYXzIn9J0VVWHnAz7yQVU0z3sD7v86ZEIl6o6zAcJjLF"/>
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Stack of vintage hardcover books on a rustic wooden table with soft candle light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQZIdKuxl91VDsyNQDuyNI-xXqeGbBOvVZ91YWrPTd1HZu1rUGKImul-T9EHCVGxkHVxF31C34D6TDGE4ZW4vzaFXawP2u788qsrJgMbpThGjRn9gdAUsskDhMeFc7oJfCFsPgubmynkLsEgwXGa8eSbxTyYpVq5y5llLF1HwxF410hoM9EZUzXsNi6KiRe5eiTeBNTmhPk4XMTkNYZH6gEElGTh8hrn_jYYXzIn9J0VVWHnAz7yQVU0z3sD7v86ZEIl6o6zAcJjLF"/>
 </div>
 </div>
 <!-- Read Conversation 5 -->
 <div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
 <div class="flex-shrink-0">
-<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" data-alt="Artistic portrait of a woman looking away with dramatic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCnEvZXHsOq3_SoQfQ17EIP0iRA8965PsSaozo8hKM-fTFCCmvmM8mBz6VCeNVHyHYkDZYmBTxgDGZ_C-ksVuUG8Gkw9ckmRcyKA77vYMmCcBvzMRBua1U8HCVwVZAHaU-5PtIgi-tWKZAaGgn48RvFnsc8xEF_OyHaEqXKFo5TRBktbnWkwfYOlnU057_TEQzUFMEQvOiIRWHeUbmX0HnDP5zofT9Xd6mmnol0Cp5J8hcn80V_oihBRXh9sLdQEmhATa-utirvYw7"/>
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Artistic portrait of a woman looking away with dramatic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCnEvZXHsOq3_SoQfQ17EIP0iRA8965PsSaozo8hKM-fTFCCmvmM8mBz6VCeNVHyHYkDZYmBTxgDGZ_C-ksVuUG8Gkw9ckmRcyKA77vYMmCcBvzMRBua1U8HCVwVZAHaU-5PtIgi-tWKZAaGgn48RvFnsc8xEF_OyHaEqXKFo5TRBktbnWkwfYOlnU057_TEQzUFMEQvOiIRWHeUbmX0HnDP5zofT9Xd6mmnol0Cp5J8hcn80V_oihBRXh9sLdQEmhATa-utirvYw7"/>
 </div>
 <div class="flex-grow min-w-0">
 <div class="flex justify-between items-baseline mb-1">
@@ -217,30 +216,30 @@
 <p class="text-on-surface-variant truncate pr-8">Verstuur je ook naar België? Ik hoor het graag.</p>
 </div>
 <div class="flex-shrink-0">
-<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Minimalist white luxury watch on a clean studio background with soft directional light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOPu_vJvZ_zGcTnO4FHbykm4tQVsfFYrCgxHUGMlffSPlMSaMfoBRyHCeB8anSI_QBkShRHNUS9HssByI1qMg6WcVGnOSZINT4T4HI1nwPCB8J09H0ROtvLlRAOG5tRvfPENIbg3_55Xq-RNJ1A_aUmQm78rD2_l7qaQshTbvfpJiCXXmvJJ4uw3MFCK7UI2dIfftRAg2K45iBguCNs3EKXzQRPYR_WPWqyPdvRsMhM8nDOkfQOTMdZsLzl75mTLwVLeTur4X2sY8Q"/>
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Minimalist white luxury watch on a clean studio background with soft directional light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOPu_vJvZ_zGcTnO4FHbykm4tQVsfFYrCgxHUGMlffSPlMSaMfoBRyHCeB8anSI_QBkShRHNUS9HssByI1qMg6WcVGnOSZINT4T4HI1nwPCB8J09H0ROtvLlRAOG5tRvfPENIbg3_55Xq-RNJ1A_aUmQm78rD2_l7qaQshTbvfpJiCXXmvJJ4uw3MFCK7UI2dIfftRAg2K45iBguCNs3EKXzQRPYR_WPWqyPdvRsMhM8nDOkfQOTMdZsLzl75mTLwVLeTur4X2sY8Q"/>
 </div>
 </div>
 </div>
 </main>
 <!-- Bottom Navigation Bar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#121212]/90 backdrop-blur-2xl border-t border-slate-800/10 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
-<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined mb-1">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined mb-1">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Zoeken</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
-<span class="material-symbols-outlined mb-1 text-3xl text-[#F15A24]">add_circle</span>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1 text-3xl text-primary">add_circle</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Verkopen</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Berichten</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined mb-1">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profiel</span>
 </a>

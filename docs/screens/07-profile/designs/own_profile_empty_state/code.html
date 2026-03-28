@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -43,7 +42,7 @@
               "surface-container-low": "#f6f3f2",
               "surface-tint": "#ad3300",
               "on-secondary-container": "#285782",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-background": "#1c1b1b",
               "tertiary-container": "#008730",
               "outline-variant": "#e2bfb4",
@@ -86,7 +85,7 @@
 <body class="bg-surface text-on-surface antialiased">
 <!-- TopAppBar (Shared Component Logic) -->
 <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
-<div class="text-2xl font-bold text-[#F15A24] tracking-tight">DeelMarkt</div>
+<div class="text-2xl font-bold text-primary tracking-tight">DeelMarkt</div>
 <div class="flex gap-4 items-center">
 <span class="material-symbols-outlined text-stone-600">notifications</span>
 <span class="material-symbols-outlined text-stone-600">settings</span>
@@ -120,7 +119,7 @@
 <!-- Editorial Tab System -->
 <div class="w-full">
 <div class="flex gap-8 mb-8 overflow-x-auto no-scrollbar border-b border-outline-variant/15">
-<button class="pb-4 text-[#F15A24] font-bold border-b-2 border-[#F15A24] whitespace-nowrap">Advertenties</button>
+<button class="pb-4 text-primary font-bold border-b-2 border-[#F15A24] whitespace-nowrap">Advertenties</button>
 <button class="pb-4 text-stone-500 font-medium whitespace-nowrap">Favorieten</button>
 <button class="pb-4 text-stone-500 font-medium whitespace-nowrap">Reviews</button>
 </div>
@@ -128,7 +127,7 @@
 <div class="bg-surface-container-lowest rounded-[2rem] p-10 flex flex-col items-center text-center shadow-sm">
 <div class="w-32 h-32 bg-primary/5 rounded-full flex items-center justify-center mb-6 relative">
 <div class="absolute inset-0 bg-primary/5 rounded-full animate-pulse"></div>
-<span class="material-symbols-outlined text-6xl text-[#F15A24]/40" style="font-variation-settings: 'FILL' 0;">favorite</span>
+<span class="material-symbols-outlined text-6xl text-primary/40" style="font-variation-settings: 'FILL' 0;">favorite</span>
 </div>
 <h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-3 leading-tight">
                     Tijd voor je eerste stap
@@ -170,7 +169,7 @@
 <span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Sell</span>
 </a>
 <!-- ACTIVE STATE: Profile -->
-<a class="flex flex-col items-center justify-center bg-[#F15A24] text-white rounded-2xl p-2 min-w-[64px]" href="#">
+<a class="flex flex-col items-center justify-center bg-primary text-white rounded-2xl p-2 min-w-[64px]" href="#">
 <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
 <span class="text-[10px] font-bold font-['Plus_Jakarta_Sans']">Profiel</span>
 </a>

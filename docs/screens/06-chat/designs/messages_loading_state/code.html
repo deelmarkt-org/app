@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -17,7 +16,7 @@
               "on-primary-container": "#fffbff",
               "on-error": "#ffffff",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "outline-variant": "#e2bfb4",
               "on-primary": "#ffffff",
               "error": "#ba1a1a",
@@ -93,26 +92,26 @@
   </head>
 <body class="bg-surface font-body text-on-surface antialiased">
 <!-- TopAppBar Shell -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-md">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md">
 <div class="flex justify-between items-center px-8 h-20 w-full">
 <div class="flex items-center gap-8">
-<span class="text-xl font-extrabold text-[#F15A24] tracking-tighter">The Honest Exchange</span>
+<span class="text-xl font-extrabold text-primary tracking-tighter">DeelMarkt</span>
 <nav class="hidden md:flex items-center gap-6">
-<a class="text-slate-600 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Ontdekken</a>
-<a class="text-slate-600 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Verkopen</a>
-<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Berichten</a>
-<a class="text-slate-600 hover:text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Favorieten</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Ontdekken</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Verkopen</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Berichten</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors" href="#">Favorieten</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
-<button class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors">
 <span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
 </button>
-<button class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors">
 <span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
 </button>
 <div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-surface">
-<img alt="Gebruikersprofiel" data-alt="close-up portrait of a professional looking individual with a friendly expression and natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3tDo01sDGfHazXmd_keroG10aZnKShmRy2Sm3Yz4qeZKPRBMF6n8uExbEwRknWiK7Z7osWrLlyBV9t5GKK18oKx8aJwu90jM4pNt2ilmTsasET8JYGCK8Mu0clGXeoQpzEl9JorKKF_zxZGVl2kOVrQjqcwaYwp-NPFoMLkJLxCDUadYgPKL4h_3jzRbJyaBToH3gxl6VTdTgevpnoGXcfQsT8gb3Bn6fP_QTM9CQ8xHsNO4NfDMXECpJzFJeiFnsiUqvwHQ0Fel8"/>
+<img alt="Gebruikersprofiel" alt="close-up portrait of a professional looking individual with a friendly expression and natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3tDo01sDGfHazXmd_keroG10aZnKShmRy2Sm3Yz4qeZKPRBMF6n8uExbEwRknWiK7Z7osWrLlyBV9t5GKK18oKx8aJwu90jM4pNt2ilmTsasET8JYGCK8Mu0clGXeoQpzEl9JorKKF_zxZGVl2kOVrQjqcwaYwp-NPFoMLkJLxCDUadYgPKL4h_3jzRbJyaBToH3gxl6VTdTgevpnoGXcfQsT8gb3Bn6fP_QTM9CQ8xHsNO4NfDMXECpJzFJeiFnsiUqvwHQ0Fel8"/>
 </div>
 </div>
 </div>
@@ -206,24 +205,24 @@
 </div>
 </main>
 <!-- BottomNavBar Shell -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/90 backdrop-blur-2xl border-t border-slate-200/10 rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
-<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/90 backdrop-blur-2xl border-t border-slate-200/10 rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="search">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Zoeken</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Verkopen</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Berichten</span>
 </a>
-<a class="flex flex-col items-center justify-center text-slate-500 px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
 <span class="material-symbols-outlined" data-icon="person">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profiel</span>
 </a>

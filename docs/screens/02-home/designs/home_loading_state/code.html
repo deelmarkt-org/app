@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -23,7 +22,7 @@
               "on-tertiary": "#ffffff",
               "on-surface-variant": "#5a4139",
               "surface-container-lowest": "#ffffff",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-primary-container": "#fffbff",
               "on-secondary": "#ffffff",
               "surface-dim": "#dcd9d9",
@@ -93,13 +92,13 @@
   </head>
 <body class="bg-surface font-body text-on-surface antialiased">
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl">
 <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
-<div class="text-2xl font-extrabold tracking-tighter text-[#F15A24] font-['Plus_Jakarta_Sans']">
+<div class="text-2xl font-extrabold tracking-tighter text-primary font-['Plus_Jakarta_Sans']">
                 DeelMarkt
             </div>
 <div class="flex items-center gap-4">
-<button class="text-slate-600 active:scale-95 transition-transform duration-200">
+<button class="text-on-surface-variant active:scale-95 transition-transform duration-200">
 <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
 </button>
 </div>
@@ -201,29 +200,29 @@
 </div>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/90 backdrop-blur-2xl z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/90 backdrop-blur-2xl z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
 <!-- Home Active -->
-<a class="flex flex-col items-center justify-center text-[#F15A24] scale-110 transition-transform" href="#">
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-transform" href="#">
 <span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Home</span>
 </a>
 <!-- Ontdekken -->
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#F15A24] transition-colors" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="search">search</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Ontdekken</span>
 </a>
 <!-- Plaatsen -->
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#F15A24] transition-colors" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Plaatsen</span>
 </a>
 <!-- Berichten -->
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#F15A24] transition-colors" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Berichten</span>
 </a>
 <!-- Profiel -->
-<a class="flex flex-col items-center justify-center text-slate-400 hover:text-[#F15A24] transition-colors" href="#">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
 <span class="material-symbols-outlined" data-icon="person">person</span>
 <span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Profiel</span>
 </a>

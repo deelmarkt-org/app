@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
+<html class="light" lang="nl"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
@@ -44,7 +43,7 @@
               "surface-container-high": "#ebe7e7",
               "on-secondary": "#ffffff",
               "error-container": "#ffdad6",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "surface-variant": "#e5e2e1",
               "surface-tint": "#ad3300",
               "secondary-container": "#a1cdff",
@@ -80,13 +79,13 @@
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- Top Navigation Shell -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl no-border bg-gradient-to-b from-[#f6f3f2] to-transparent">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl no-border bg-gradient-to-b from-[#f6f3f2] to-transparent">
 <div class="flex items-center justify-between px-6 h-16 w-full max-w-[1440px] mx-auto">
 <div class="flex items-center gap-4">
-<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<button class="text-primary hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
 <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
 </button>
-<h1 class="text-xl font-black text-[#F15A24] tracking-[-0.02em]">DeelMarkt</h1>
+<h1 class="text-xl font-black text-primary tracking-[-0.02em]">DeelMarkt</h1>
 </div>
 <div class="flex items-center gap-6">
 <nav class="hidden md:flex gap-8 text-sm font-bold tracking-tight">
@@ -94,7 +93,7 @@
 <a class="text-[#4e4644] hover:opacity-80 transition-opacity" href="#">Sell</a>
 <a class="text-[#4e4644] hover:opacity-80 transition-opacity" href="#">My Items</a>
 </nav>
-<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<button class="text-primary hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
 <span class="material-symbols-outlined" data-icon="share">share</span>
 </button>
 </div>
@@ -105,17 +104,17 @@
 <!-- Left Column: Image Gallery (60%) -->
 <div class="lg:col-span-6 space-y-6">
 <div class="aspect-[4/3] rounded-[24px] overflow-hidden bg-surface-container-low">
-<img alt="Canyon Speedmax CF SLX" class="w-full h-full object-cover" data-alt="Professional triathlon bicycle Canyon Speedmax in matte black, side profile in a sunlit minimalist studio with dramatic shadows and high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOmOEHoA86oTiEtqluJM1dAcGiybVftkDdBDGNuhDIJTNwCcI_0BUtBai6I5RcjIoI2MqYn372YczjNoyXqGPMBfjoZNTy3T1wRC8rDpAgDpGmSEodUoQ3NXOqn6vSiDCxAnBtKQtdK8qXqItgSgd8m6GsizrvtgG1IcKKnryr_HA55I-odJPe25dlEQznztsalMbFy68DKnElhgOyk8ueS8KLqDzqYLMdxHSAvwv4_seSfaYk7HyF50f2P0rq70Ja1xQIbo4JSzSF"/>
+<img alt="Canyon Speedmax CF SLX" class="w-full h-full object-cover" alt="Professional triathlon bicycle Canyon Speedmax in matte black, side profile in a sunlit minimalist studio with dramatic shadows and high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOmOEHoA86oTiEtqluJM1dAcGiybVftkDdBDGNuhDIJTNwCcI_0BUtBai6I5RcjIoI2MqYn372YczjNoyXqGPMBfjoZNTy3T1wRC8rDpAgDpGmSEodUoQ3NXOqn6vSiDCxAnBtKQtdK8qXqItgSgd8m6GsizrvtgG1IcKKnryr_HA55I-odJPe25dlEQznztsalMbFy68DKnElhgOyk8ueS8KLqDzqYLMdxHSAvwv4_seSfaYk7HyF50f2P0rq70Ja1xQIbo4JSzSF"/>
 </div>
 <div class="grid grid-cols-3 gap-6">
 <div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low">
-<img alt="Detail 1" class="w-full h-full object-cover" data-alt="Close-up of high-end carbon fiber bicycle frame joints and derailleur with precise engineering detail and soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl5tfkPkIyvUl8ae0twF2V7w0FF5MVBYxeKuTH5p5dXJ3yfiSdOZh-lx-ntIBErUxmte4fKGyFtEZtwgr3ztsrjC7SFszeQlops6A3Xraz57N1vEO8gXlYS6duE-bvTLVvlIooVQHX9f1epr1k0VjCC_f2JjdwAIEjui_lnUbevqOHlRBzYb6hqUMLx0earrYjfT5C3MPgO4XP_0JWBntK-iXU8v_Pd5hbtRfAc6FMzifhahnMTm4KzBxqMRX-5a9Wk4Q3j-ZaXttB"/>
+<img alt="Detail 1" class="w-full h-full object-cover" alt="Close-up of high-end carbon fiber bicycle frame joints and derailleur with precise engineering detail and soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl5tfkPkIyvUl8ae0twF2V7w0FF5MVBYxeKuTH5p5dXJ3yfiSdOZh-lx-ntIBErUxmte4fKGyFtEZtwgr3ztsrjC7SFszeQlops6A3Xraz57N1vEO8gXlYS6duE-bvTLVvlIooVQHX9f1epr1k0VjCC_f2JjdwAIEjui_lnUbevqOHlRBzYb6hqUMLx0earrYjfT5C3MPgO4XP_0JWBntK-iXU8v_Pd5hbtRfAc6FMzifhahnMTm4KzBxqMRX-5a9Wk4Q3j-ZaXttB"/>
 </div>
 <div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low">
-<img alt="Detail 2" class="w-full h-full object-cover" data-alt="Aerodynamic deep-section carbon wheel of a racing bike against a clean neutral background with studio lighting highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzfmhzalM2tLSLHHi2iIKj_8sMhBTwWya7SYqg3cO311jR6eAIpKaYbKTlVBvssj_XOPHGENq_VKfv_LfIB9fVXNqIeX4dhvkKeJ3qjan_EWPuBdpF2PaC7S-kdtrfYZpwKAZL-CXeTRs6sajgjkji8vwHajDyojmRNcG-dv3-50yjO_u_AN_9wZjvXVmvVFCbjPmPvxTghmr5WAwui3kTWMqn1CKJkh4altta92Sofnrun0kVLB6kETgSnvAUaryOuaWEkakPzqAm"/>
+<img alt="Detail 2" class="w-full h-full object-cover" alt="Aerodynamic deep-section carbon wheel of a racing bike against a clean neutral background with studio lighting highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzfmhzalM2tLSLHHi2iIKj_8sMhBTwWya7SYqg3cO311jR6eAIpKaYbKTlVBvssj_XOPHGENq_VKfv_LfIB9fVXNqIeX4dhvkKeJ3qjan_EWPuBdpF2PaC7S-kdtrfYZpwKAZL-CXeTRs6sajgjkji8vwHajDyojmRNcG-dv3-50yjO_u_AN_9wZjvXVmvVFCbjPmPvxTghmr5WAwui3kTWMqn1CKJkh4altta92Sofnrun0kVLB6kETgSnvAUaryOuaWEkakPzqAm"/>
 </div>
 <div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low relative group cursor-pointer">
-<img alt="Detail 3" class="w-full h-full object-cover blur-[2px] group-hover:blur-0 transition-all" data-alt="Top view of integrated triathlon handlebars and cockpit with sleek electronic shifters and streamlined aerodynamic design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJwpyr9ES7ai68xOjUj2W7mB2oIOZUCApdZ_ikfSitOWJtGzMDW9he22gp9GY64yV01N15W2uZ1iM-mZUDvITaKdEaHqmZfDt38tndww4afdM3cGgbtcudgEdLcRH7rOhGJ3eD7i3Dmh2eW1ElTyeMc_T8e3PkRmDzUQFS3OUUDfemI-P3bUZcEL2dcs2OuPu6UbxIA5UYwS08zSbRbW2ZKj4IKhZdorUfd7z3WyqDGvTsnxkusuzeSOrzAmUk5Q0sRudU3_OGwTAN"/>
+<img alt="Detail 3" class="w-full h-full object-cover blur-[2px] group-hover:blur-0 transition-all" alt="Top view of integrated triathlon handlebars and cockpit with sleek electronic shifters and streamlined aerodynamic design" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJwpyr9ES7ai68xOjUj2W7mB2oIOZUCApdZ_ikfSitOWJtGzMDW9he22gp9GY64yV01N15W2uZ1iM-mZUDvITaKdEaHqmZfDt38tndww4afdM3cGgbtcudgEdLcRH7rOhGJ3eD7i3Dmh2eW1ElTyeMc_T8e3PkRmDzUQFS3OUUDfemI-P3bUZcEL2dcs2OuPu6UbxIA5UYwS08zSbRbW2ZKj4IKhZdorUfd7z3WyqDGvTsnxkusuzeSOrzAmUk5Q0sRudU3_OGwTAN"/>
 <div class="absolute inset-0 flex items-center justify-center bg-black/20 text-white font-bold text-lg">
                             +4 Photos
                         </div>
@@ -171,7 +170,7 @@
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 rounded-full bg-surface-container overflow-hidden">
-<img alt="Seller Profile" class="w-full h-full object-cover" data-alt="Portrait of a friendly professional man in his 40s with a clean background and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8OgEXLFz8j2BFJp4veBD35WflCGlzHmSjobDuVmC4vtWl2wCcZbne_tqFE7F8pVFxHBv42rG-R90q-fXU6t26sZ5TTIOr4qR-v_14vqkWQppDaUybeY2Sm4PE_pRAFE5_pHfweZUwbi837YL6GqfyJWWQddMCHaYdJUyKUCrmqIEp_CY3L_Hxb3GXFmy7R2JrrvAaLtVk2Y3_dVnsZMEkbj0wVTozkWY0EQ0MexhwMnm2ZwO6PH1YSH7YZqxaXHdSC8m92MSi615t"/>
+<img alt="Seller Profile" class="w-full h-full object-cover" alt="Portrait of a friendly professional man in his 40s with a clean background and soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8OgEXLFz8j2BFJp4veBD35WflCGlzHmSjobDuVmC4vtWl2wCcZbne_tqFE7F8pVFxHBv42rG-R90q-fXU6t26sZ5TTIOr4qR-v_14vqkWQppDaUybeY2Sm4PE_pRAFE5_pHfweZUwbi837YL6GqfyJWWQddMCHaYdJUyKUCrmqIEp_CY3L_Hxb3GXFmy7R2JrrvAaLtVk2Y3_dVnsZMEkbj0wVTozkWY0EQ0MexhwMnm2ZwO6PH1YSH7YZqxaXHdSC8m92MSi615t"/>
 </div>
 <div>
 <h4 class="font-bold text-on-surface">Mark van der Meer</h4>
@@ -195,7 +194,7 @@
 <div class="h-48 rounded-[24px] overflow-hidden bg-surface-container relative">
 <!-- Placeholder for a map with data-location -->
 <div class="absolute inset-0 bg-[#e0e0e0]" data-location="Utrecht, Netherlands" style="">
-<img alt="Map location" class="w-full h-full object-cover opacity-60 grayscale" data-alt="Clean minimal map view of a city center with soft grey and blue tones and subtle street highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfZbaq-e_gkjmd1cBwde--b7HK6H5eCMKW8uwt1JHnjGw2U2xJMn3wSFtyo-DRGMQRAGnJE-43WCq2f6fXpi7fU-B_Y6FK5m2KoxUngEMSDm996kbN2Bm3jPw1hT63wydV2Xf5jZUjr5Y7JFJ0TpSC1Wb5eaD9yh79Rb5FEnlDj-GlD-ggr6GCNg8tS9e6eCF8EP-DBlUMz7PpGlYYFdAcvgx9WTSxbq6fBjKFHN7CrIdi-4eAuYCn2qW_WaUuwE25Hq9tpdD558hN"/>
+<img alt="Map location" class="w-full h-full object-cover opacity-60 grayscale" alt="Clean minimal map view of a city center with soft grey and blue tones and subtle street highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfZbaq-e_gkjmd1cBwde--b7HK6H5eCMKW8uwt1JHnjGw2U2xJMn3wSFtyo-DRGMQRAGnJE-43WCq2f6fXpi7fU-B_Y6FK5m2KoxUngEMSDm996kbN2Bm3jPw1hT63wydV2Xf5jZUjr5Y7JFJ0TpSC1Wb5eaD9yh79Rb5FEnlDj-GlD-ggr6GCNg8tS9e6eCF8EP-DBlUMz7PpGlYYFdAcvgx9WTSxbq6fBjKFHN7CrIdi-4eAuYCn2qW_WaUuwE25Hq9tpdD558hN"/>
 </div>
 <div class="absolute inset-0 flex items-center justify-center">
 <div class="w-10 h-10 bg-primary rounded-full border-4 border-white flex items-center justify-center text-white shadow-xl">
@@ -213,7 +212,7 @@
 <span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
 <span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Message</span>
 </button>
-<button class="flex flex-1 items-center justify-center gap-2 bg-gradient-to-br from-[#a93200] to-[#d1430a] text-white rounded-xl py-4 mx-2 hover:brightness-110 transition-all cubic-bezier(0.23,1,0.32,1) active:scale-[0.98]">
+<button class="flex flex-1 items-center justify-center gap-2 bg-gradient-to-br from-[#F15A24] to-[#d1430a] text-white rounded-xl py-4 mx-2 hover:brightness-110 transition-all cubic-bezier(0.23,1,0.32,1) active:scale-[0.98]">
 <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
 <span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Buy Now</span>
 </button>

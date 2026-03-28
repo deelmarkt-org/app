@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -30,7 +29,7 @@
               "primary-fixed-dim": "#ffb59e",
               "surface-container-highest": "#e5e2e1",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary": "#ffffff",
               "surface-variant": "#e5e2e1",
               "tertiary-fixed-dim": "#65df75",
@@ -86,9 +85,9 @@
   </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col">
 <!-- Top App Bar -->
-<header class="bg-[#fcf9f8]/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-40">
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-40">
 <div class="flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
-<span class="text-2xl font-black tracking-tighter text-[#F15A24] font-['Plus_Jakarta_Sans']">DeelMarkt</span>
+<span class="text-2xl font-black tracking-tighter text-primary font-['Plus_Jakarta_Sans']">DeelMarkt</span>
 <div class="flex gap-4">
 <span class="material-symbols-outlined text-stone-600">notifications</span>
 <span class="material-symbols-outlined text-stone-600">account_circle</span>
@@ -103,7 +102,7 @@
 <section class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
 <div class="flex items-center gap-4 mb-4">
 <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container-high">
-<img class="w-full h-full object-cover" data-alt="professional portrait of a friendly smiling dutch woman in her 30s with soft natural lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCH2OWCVBkIiiYGJOM8QnGPA2pk3q0Uxw11SbblK-gk2PGK-vql-4EZKwtFFcv8kHqK5t1EhcwbKQdJTVpCJoZiIztbkYuZmLiGnjj3i5sMPDTaHt6sc-6y4c_VlXdM1vRMn3QzyLPSKAJ0ZXwLCjCcz04Q-n5doYdKZM2SYVTG2G6YrUe8vtfp1Zoh9Re8YOV9kMDJmYYV7t3Kqx7p06hZI9KrB0r1uPW9hIvhXItF31EEigLGWkFQloJnVxEpEKS-JqwMsye5hf"/>
+<img class="w-full h-full object-cover" alt="professional portrait of a friendly smiling dutch woman in her 30s with soft natural lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJCH2OWCVBkIiiYGJOM8QnGPA2pk3q0Uxw11SbblK-gk2PGK-vql-4EZKwtFFcv8kHqK5t1EhcwbKQdJTVpCJoZiIztbkYuZmLiGnjj3i5sMPDTaHt6sc-6y4c_VlXdM1vRMn3QzyLPSKAJ0ZXwLCjCcz04Q-n5doYdKZM2SYVTG2G6YrUe8vtfp1Zoh9Re8YOV9kMDJmYYV7t3Kqx7p06hZI9KrB0r1uPW9hIvhXItF31EEigLGWkFQloJnVxEpEKS-JqwMsye5hf"/>
 </div>
 <div>
 <h2 class="font-bold text-lg">Anouk van der Meer</h2>
@@ -215,7 +214,7 @@
 </div>
 </div>
 <!-- Bottom Navigation Bar (Hidden when modal active is standard, but keeping as per shell mandate) -->
-<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-[#fcf9f8]/90 backdrop-blur-2xl">
+<nav class="fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-surface/90 backdrop-blur-2xl">
 <div class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
 <span class="material-symbols-outlined">explore</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdekken</span>
@@ -231,7 +230,7 @@
 <span class="material-symbols-outlined">favorite</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favorieten</span>
 </div>
-<div class="flex flex-col items-center justify-center bg-orange-100/50 text-[#F15A24] rounded-xl px-4 py-2">
+<div class="flex flex-col items-center justify-center bg-primary/10/50 text-primary rounded-xl px-4 py-2">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instellingen</span>
 </div>

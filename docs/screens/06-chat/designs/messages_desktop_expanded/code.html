@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -17,7 +16,7 @@
               "on-primary-container": "#fffbff",
               "on-error": "#ffffff",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "outline-variant": "#e2bfb4",
               "on-primary": "#ffffff",
               "error": "#ba1a1a",
@@ -80,24 +79,24 @@
 </head>
 <body class="bg-surface text-on-surface h-screen overflow-hidden">
 <!-- Top Navigation Bar (Shared Component Strategy) -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 w-full shadow-none">
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 w-full shadow-none">
 <div class="flex items-center gap-8">
-<span class="text-xl font-extrabold text-[#F15A24] tracking-tighter">The Honest Exchange</span>
+<span class="text-xl font-extrabold text-primary tracking-tighter">DeelMarkt</span>
 <nav class="hidden md:flex items-center gap-6 font-['Plus_Jakarta_Sans'] tracking-tight">
-<a class="text-slate-600 dark:text-slate-400 hover:text-[#F15A24] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Ontdekken</a>
-<a class="text-slate-600 dark:text-slate-400 hover:text-[#F15A24] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Verkopen</a>
-<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] pb-1 duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Berichten</a>
-<a class="text-slate-600 dark:text-slate-400 hover:text-[#F15A24] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Favorieten</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Ontdekken</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Verkopen</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Berichten</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Favorieten</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
-<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<button class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-slate-800 transition-colors">
 <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
 </button>
-<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<button class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-slate-800 transition-colors">
 <span class="material-symbols-outlined text-on-surface-variant">settings</span>
 </button>
-<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover border-2 border-primary/10" data-alt="Professional studio portrait of a friendly man with short hair and a warm smile, high-end commercial lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY8IKGm1IRKRw8vtjT6UDTZxQRtWtbVapfC8Y4ODIbYcAlDjUW5v0FsKHp7RKuQZBUqlKNNGqpidgd-nm9KiTCLtFml89CPSHLPl9k7Ng63mfnKic7UrQONDZbyjuKdM31dFfG16VVZVnQbgIk4byCxmAay5bE8qTKCfAeGKZYAe2CWNwU-u1TDAIL0vImG8N54ifuKMNcrlmXz84UK4dDs_FoSsuhj62307IrGsviEW0o6-BOOhClkG3Rx3mIXKsLpUlWSxzu1y7R"/>
+<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover border-2 border-primary/10" alt="Professional studio portrait of a friendly man with short hair and a warm smile, high-end commercial lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY8IKGm1IRKRw8vtjT6UDTZxQRtWtbVapfC8Y4ODIbYcAlDjUW5v0FsKHp7RKuQZBUqlKNNGqpidgd-nm9KiTCLtFml89CPSHLPl9k7Ng63mfnKic7UrQONDZbyjuKdM31dFfG16VVZVnQbgIk4byCxmAay5bE8qTKCfAeGKZYAe2CWNwU-u1TDAIL0vImG8N54ifuKMNcrlmXz84UK4dDs_FoSsuhj62307IrGsviEW0o6-BOOhClkG3Rx3mIXKsLpUlWSxzu1y7R"/>
 </div>
 </header>
 <!-- Main Content Wrapper (Max-width 1200px constraint) -->
@@ -130,7 +129,7 @@
 <div class="flex-1 overflow-y-auto space-y-1 px-3">
 <!-- Active Conversation -->
 <div class="group cursor-pointer p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex gap-4 border-l-4 border-primary">
-<img class="w-12 h-12 rounded-full object-cover" data-alt="Close-up portrait of Jan, a middle-aged Dutch man with kind eyes and a friendly demeanor, soft natural outdoor light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArLawO8E8ZGL4A8h6GOf9dkkCgVIo-PDOqhg7Iy7z5kqpZpI2a_10lHp7gBH3gitMppQXhUEh6sPAvYTKtWu-RLeNXZXgv3zgS3EPgR9vnAnBhmj2rKvmfJNFmIWi-QTDbzwA5Sx13MOjuSYlTxTxCFxd4FCYS4j62IfgRSzg-fAfae4NB8KLLdSNZ4-XbGtcZCgyXm8HwZLE8l0mH3twpIJe6MFWelf-N5iIg8oIIruR8eJnt28UriP3D_dnqleq0H52BY-Pj_jG3"/>
+<img class="w-12 h-12 rounded-full object-cover" alt="Close-up portrait of Jan, a middle-aged Dutch man with kind eyes and a friendly demeanor, soft natural outdoor light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArLawO8E8ZGL4A8h6GOf9dkkCgVIo-PDOqhg7Iy7z5kqpZpI2a_10lHp7gBH3gitMppQXhUEh6sPAvYTKtWu-RLeNXZXgv3zgS3EPgR9vnAnBhmj2rKvmfJNFmIWi-QTDbzwA5Sx13MOjuSYlTxTxCFxd4FCYS4j62IfgRSzg-fAfae4NB8KLLdSNZ4-XbGtcZCgyXm8HwZLE8l0mH3twpIJe6MFWelf-N5iIg8oIIruR8eJnt28UriP3D_dnqleq0H52BY-Pj_jG3"/>
 <div class="flex-1 min-w-0">
 <div class="flex justify-between items-baseline mb-1">
 <h3 class="font-bold text-on-surface truncate">Jan de Vries</h3>
@@ -142,7 +141,7 @@
 </div>
 <!-- Inactive Conversation 1 -->
 <div class="group cursor-pointer p-4 rounded-2xl hover:bg-surface-container-high transition-colors flex gap-4">
-<img class="w-12 h-12 rounded-full object-cover" data-alt="Portrait of a woman with curly hair smiling, warm afternoon sun hitting her face, professional lifestyle photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZnry2ZJV0-54mNMYzY0HeSLZXhxFE51huc2AusCLP-HzAmG5bgr8oRVt0BwoHFSwzqx_XC1vsUuO7DNNa8GbQz7SjUocTPqP-tMm6obktLUbYqmgeJ63_bI0fNcqlrYUNqYUr5Jhy2XK07ObV8BX-5FWYZ8xW7UGDT9HYAzORN2_ZoDv4XB5NQap7Q_QQ7CZb8_qc22x2Z1utfkm4zN0IaFUClsZDbpUYl5I864whKl6K37917xBiB4pxwP3dVuk4tHNOBaVg9bBj"/>
+<img class="w-12 h-12 rounded-full object-cover" alt="Portrait of a woman with curly hair smiling, warm afternoon sun hitting her face, professional lifestyle photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZnry2ZJV0-54mNMYzY0HeSLZXhxFE51huc2AusCLP-HzAmG5bgr8oRVt0BwoHFSwzqx_XC1vsUuO7DNNa8GbQz7SjUocTPqP-tMm6obktLUbYqmgeJ63_bI0fNcqlrYUNqYUr5Jhy2XK07ObV8BX-5FWYZ8xW7UGDT9HYAzORN2_ZoDv4XB5NQap7Q_QQ7CZb8_qc22x2Z1utfkm4zN0IaFUClsZDbpUYl5I864whKl6K37917xBiB4pxwP3dVuk4tHNOBaVg9bBj"/>
 <div class="flex-1 min-w-0">
 <div class="flex justify-between items-baseline mb-1">
 <h3 class="font-semibold text-on-surface truncate">Anouk Bakker</h3>
@@ -174,7 +173,7 @@
 <header class="h-20 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-10 border-b border-outline-variant/5">
 <div class="flex items-center gap-4">
 <div class="relative">
-<img class="w-10 h-10 rounded-full object-cover" data-alt="Jan de Vries, friendly seller avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLWiMDWM_g3OVaQikkTPGHMr7cHDtj6c8bkbuNuGA7IJV-WBGYV7xLJzYGc6QcSimvIGP2oDbdeilKiEPWnblTg7fqaSx8CB4PwkVBUcKk-cRQd8lkMUNHhry2n05ufqe3cQiHz5Ki4lJzL9FW5EdttN1jTbRRV27-23vyjhn4WzcqTaIrmOPOOpY807G2OoEMmNpua-H2nAFOqwupaDvYEYPchxlt5kJUV_3J1a53WYeDDZ5R-gKUIicqqcVHmcSbePy3pkKcSXbR"/>
+<img class="w-10 h-10 rounded-full object-cover" alt="Jan de Vries, friendly seller avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLWiMDWM_g3OVaQikkTPGHMr7cHDtj6c8bkbuNuGA7IJV-WBGYV7xLJzYGc6QcSimvIGP2oDbdeilKiEPWnblTg7fqaSx8CB4PwkVBUcKk-cRQd8lkMUNHhry2n05ufqe3cQiHz5Ki4lJzL9FW5EdttN1jTbRRV27-23vyjhn4WzcqTaIrmOPOOpY807G2OoEMmNpua-H2nAFOqwupaDvYEYPchxlt5kJUV_3J1a53WYeDDZ5R-gKUIicqqcVHmcSbePy3pkKcSXbR"/>
 <div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary border-2 border-surface rounded-full"></div>
 </div>
 <div>
@@ -197,7 +196,7 @@
 <!-- Listing Context Card -->
 <div class="px-8 py-4">
 <div class="bg-surface-container-lowest rounded-2xl p-4 flex items-center gap-4 shadow-sm group hover:shadow-md transition-shadow cursor-pointer">
-<img class="w-20 h-20 rounded-xl object-cover" data-alt="Elegant classic Gazelle men's bicycle in black with leather saddle, shot in a minimalist urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJysGcXAQrBjCwjcKkf-6CHm0GPNBqOz2Tx68l0JF8NI-7u-RzPOo3iYo5pQdBJWK9FRP4jyhIhpg02xTST2r-zz0AUH78Eo27n7wRuVGGaG1ookXIs-DTS1lYvpqmISMvpYzHeqanDP63KYi1NVKF2FBf03FFD10Fi5lWSk5YBnxEj9d2qjeM2Qf644gITFc2Yk1regv7MN3z87y2adrk2aHWNU-gb1Zfq3G4akqZZqiANNoT7QRfPCLvvPpevsetOCKNex4lNp37"/>
+<img class="w-20 h-20 rounded-xl object-cover" alt="Elegant classic Gazelle men's bicycle in black with leather saddle, shot in a minimalist urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJysGcXAQrBjCwjcKkf-6CHm0GPNBqOz2Tx68l0JF8NI-7u-RzPOo3iYo5pQdBJWK9FRP4jyhIhpg02xTST2r-zz0AUH78Eo27n7wRuVGGaG1ookXIs-DTS1lYvpqmISMvpYzHeqanDP63KYi1NVKF2FBf03FFD10Fi5lWSk5YBnxEj9d2qjeM2Qf644gITFc2Yk1regv7MN3z87y2adrk2aHWNU-gb1Zfq3G4akqZZqiANNoT7QRfPCLvvPpevsetOCKNex4lNp37"/>
 <div class="flex-1">
 <div class="flex justify-between items-start">
 <div>
@@ -221,7 +220,7 @@
 </div>
 <!-- Message Received -->
 <div class="flex gap-3 max-w-[80%]">
-<img class="w-8 h-8 rounded-full self-end" data-alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu4r6eRFkWaY3CrSXlZ1KgtzRxCug_Dr1WXTWhrADJJu4HcG2JBdi38a3aII-BMKc1ZbDpfQ5n-tYXJtPoXhtw4CKRL08k74H0j6UOd5tVQiZEwOU3ftVCWcR-FAod-MJIdp1FOhXnNcm6BoXBWpw7dp3Ca9yw6Sb2-Ty073MITrcBwDRsd30cLwVtbxFA_PXHqA1ovyQolCFgrPqHdBYRuIQ4-jtqKwvhlJTSI1VudZQTKf54N0f7fE6X0kKWNoNGY4FBU6jYiGIi"/>
+<img class="w-8 h-8 rounded-full self-end" alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu4r6eRFkWaY3CrSXlZ1KgtzRxCug_Dr1WXTWhrADJJu4HcG2JBdi38a3aII-BMKc1ZbDpfQ5n-tYXJtPoXhtw4CKRL08k74H0j6UOd5tVQiZEwOU3ftVCWcR-FAod-MJIdp1FOhXnNcm6BoXBWpw7dp3Ca9yw6Sb2-Ty073MITrcBwDRsd30cLwVtbxFA_PXHqA1ovyQolCFgrPqHdBYRuIQ4-jtqKwvhlJTSI1VudZQTKf54N0f7fE6X0kKWNoNGY4FBU6jYiGIi"/>
 <div class="relative">
 <div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm">
 <p class="text-sm">Hoi! Ik heb erg veel interesse in je Gazelle. Is de staat van de banden nog goed?</p>
@@ -243,7 +242,7 @@
 </div>
 <!-- Message Received (The offer) -->
 <div class="flex gap-3 max-w-[80%]">
-<img class="w-8 h-8 rounded-full self-end" data-alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCADq_N9V9MDSnNcC_DN_23QEqvCI_fjjcQV7F4xoaL_xC7OzlfnG6j7g9LbsNlmvcKDzr_45QgjSdvo2UWLcK5zJ-9Tm3LPBDTbEe83EMGX0VOEhW_lBM-K2AswIMqnypM10BgUEQYwUdJwq_e9l8-kD-g9vqP7nyxEdpNmQJzbZPnfO1TXoXMhnrEyCyuiwxjY1kx87P1V1AyKqsOoR8Msd_NZt7TqQx1QK8uupGS3bjWhPYoEJyRSgmX7M9gjRdTuv51C1YPxhD"/>
+<img class="w-8 h-8 rounded-full self-end" alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCADq_N9V9MDSnNcC_DN_23QEqvCI_fjjcQV7F4xoaL_xC7OzlfnG6j7g9LbsNlmvcKDzr_45QgjSdvo2UWLcK5zJ-9Tm3LPBDTbEe83EMGX0VOEhW_lBM-K2AswIMqnypM10BgUEQYwUdJwq_e9l8-kD-g9vqP7nyxEdpNmQJzbZPnfO1TXoXMhnrEyCyuiwxjY1kx87P1V1AyKqsOoR8Msd_NZt7TqQx1QK8uupGS3bjWhPYoEJyRSgmX7M9gjRdTuv51C1YPxhD"/>
 <div class="relative">
 <div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm">
 <p class="text-sm">Klinkt goed. Is €250 ook goed voor je? Dan kan ik hem vanavond nog komen ophalen.</p>
@@ -268,24 +267,24 @@
 </div>
 </main>
 <!-- Shared Bottom Nav for Mobile (Hidden on Desktop) -->
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/90 dark:bg-[#121212]/90 backdrop-blur-2xl border-t border-slate-200/10 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
-<div class="flex flex-col items-center justify-center text-slate-500 px-5 py-2">
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/90 dark:bg-[#121212]/90 backdrop-blur-2xl border-t border-slate-200/10 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
 <span class="material-symbols-outlined">home</span>
 <span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Home</span>
 </div>
-<div class="flex flex-col items-center justify-center text-slate-500 px-5 py-2">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
 <span class="material-symbols-outlined">search</span>
 <span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Zoeken</span>
 </div>
-<div class="flex flex-col items-center justify-center text-slate-500 px-5 py-2">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
 <span class="material-symbols-outlined">add_circle</span>
 <span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Verkopen</span>
 </div>
-<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2">
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
 <span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Berichten</span>
 </div>
-<div class="flex flex-col items-center justify-center text-slate-500 px-5 py-2">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
 <span class="material-symbols-outlined">person</span>
 <span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Profiel</span>
 </div>

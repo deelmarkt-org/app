@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -30,7 +29,7 @@
               "primary-fixed-dim": "#ffb59e",
               "surface-container-highest": "#e5e2e1",
               "primary-fixed": "#ffdbd0",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary": "#ffffff",
               "surface-variant": "#e5e2e1",
               "tertiary-fixed-dim": "#65df75",
@@ -85,12 +84,12 @@
   </head>
 <body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
 <!-- Top App Bar -->
-<header class="bg-[#fcf9f8]/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
 <div class="flex items-center gap-4">
 <button class="active:scale-95 transition-transform duration-200 text-stone-600">
 <span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
 </button>
-<h1 class="text-xl font-black tracking-tight text-[#F15A24] font-['Plus_Jakarta_Sans']">Instellingen</h1>
+<h1 class="text-xl font-black tracking-tight text-primary font-['Plus_Jakarta_Sans']">Instellingen</h1>
 </div>
 <div class="flex gap-4">
 <span class="material-symbols-outlined text-stone-600" data-icon="notifications">notifications</span>
@@ -102,7 +101,7 @@
 <!-- Profile Summary -->
 <section class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
 <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="portrait of a friendly middle-aged man with short hair and a warm smile against a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCOgsm1dDTlD9MjWQ1NbTKsHnm-AOlOUiybvfaBkHzP2MK45ZUGi4JEh0QvxEIbgM7zxmfmcxhtxgga7NQcs-ltav26PwX-UHk4yF1XP-U5ZndnPf_ANq5bdVtbwCbNz4ziV2fwrIg3f22aWvvSCBFzINeqFTdQDjIuDz7JUGWNuqyk_Mpk8b1RUN9SN47Cf7y_cE9oKZyR_s6PGU669Fz9iyN34gbIDodh1EV4kVFOWFpKzeiTWuAoR_vfMCtO1eTq7b0OiUungGN"/>
+<img class="w-full h-full object-cover" alt="portrait of a friendly middle-aged man with short hair and a warm smile against a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCOgsm1dDTlD9MjWQ1NbTKsHnm-AOlOUiybvfaBkHzP2MK45ZUGi4JEh0QvxEIbgM7zxmfmcxhtxgga7NQcs-ltav26PwX-UHk4yF1XP-U5ZndnPf_ANq5bdVtbwCbNz4ziV2fwrIg3f22aWvvSCBFzINeqFTdQDjIuDz7JUGWNuqyk_Mpk8b1RUN9SN47Cf7y_cE9oKZyR_s6PGU669Fz9iyN34gbIDodh1EV4kVFOWFpKzeiTWuAoR_vfMCtO1eTq7b0OiUungGN"/>
 </div>
 <div>
 <h2 class="text-lg font-bold leading-tight">Jasper de Vries</h2>
@@ -231,7 +230,7 @@
 </section>
 </main>
 <!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-[#fcf9f8]/90 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)] rounded-t-2xl">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-surface/90 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)] rounded-t-2xl">
 <a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 active:scale-90 transition-transform" href="#">
 <span class="material-symbols-outlined" data-icon="explore">explore</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdekken</span>
@@ -248,7 +247,7 @@
 <span class="material-symbols-outlined" data-icon="favorite">favorite</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favorieten</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-orange-100/50 text-[#F15A24] rounded-xl px-4 py-2 active:scale-90 transition-transform" href="#">
+<a class="flex flex-col items-center justify-center bg-primary/10/50 text-primary rounded-xl px-4 py-2 active:scale-90 transition-transform" href="#">
 <span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instellingen</span>
 </a>

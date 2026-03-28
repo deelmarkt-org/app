@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -44,7 +43,7 @@
               "on-surface": "#1c1b1b",
               "primary-container": "#d1430a",
               "secondary-container": "#a1cdff",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "surface-container-high": "#ebe7e7",
               "tertiary-container": "#008730",
               "surface-container-low": "#f6f3f2",
@@ -93,15 +92,15 @@
   </head>
 <body class="bg-surface font-body text-on-surface min-h-screen pb-32">
 <!-- Top Navigation -->
-<header class="bg-[#fcf9f8]/80 backdrop-blur-xl fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full max-none">
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full max-none">
 <div class="flex items-center gap-4">
-<button class="text-[#F15A24] scale-95 active:duration-100 transition-opacity hover:opacity-80">
+<button class="text-primary scale-95 active:duration-100 transition-opacity hover:opacity-80">
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
-<h1 class="text-xl font-extrabold text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight">The Honest Exchange</h1>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">DeelMarkt</h1>
 </div>
 <div class="flex items-center gap-4">
-<button class="text-[#F15A24] scale-95 active:duration-100 transition-opacity hover:opacity-80">
+<button class="text-primary scale-95 active:duration-100 transition-opacity hover:opacity-80">
 <span class="material-symbols-outlined">shopping_bag</span>
 </button>
 </div>
@@ -196,8 +195,8 @@
 </div>
 </main>
 <!-- Fixed Bottom Action Bar -->
-<nav class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center bg-[#fcf9f8] border-t-[1px] border-[#ebe7e7]/15 shadow-[0_-4px_40px_rgba(0,0,0,0.06)] z-50 rounded-t-[16px]">
-<button class="flex items-center justify-center w-full h-14 bg-gradient-to-tr from-[#a93200] to-[#d1430a] text-white rounded-xl mx-4 my-2 hover:brightness-110 transition-all active:scale-[0.98] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<nav class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center bg-surface border-t-[1px] border-[#ebe7e7]/15 shadow-[0_-4px_40px_rgba(0,0,0,0.06)] z-50 rounded-t-[16px]">
+<button class="flex items-center justify-center w-full h-14 bg-gradient-to-tr from-[#F15A24] to-[#d1430a] text-white rounded-xl mx-4 my-2 hover:brightness-110 transition-all active:scale-[0.98] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
 <span class="font-['Plus_Jakarta_Sans'] font-bold text-base mr-2">Bestelling bevestigen</span>
 <span class="material-symbols-outlined" data-icon="payments">payments</span>
 </button>

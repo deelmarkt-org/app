@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -18,7 +17,7 @@
               "surface-container-high": "#ebe7e7",
               "on-surface": "#1c1b1b",
               "surface": "#fcf9f8",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed-variant": "#00531a",
               "on-tertiary": "#ffffff",
               "on-surface-variant": "#5a4139",
@@ -93,10 +92,10 @@
   </head>
 <body class="bg-surface font-body text-on-surface antialiased min-h-screen">
 <!-- TopAppBar (As defined in JSON) -->
-<header class="sticky top-0 z-50 w-full bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl">
+<header class="sticky top-0 z-50 w-full bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl">
 <div class="flex items-center justify-between px-6 py-4 w-full">
 <div class="flex items-center gap-4">
-<button class="text-[#F15A24] hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<button class="text-primary hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
 <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
 </button>
 <h1 class="font-['Plus_Jakarta_Sans'] tracking-[-0.02em] font-bold text-2xl text-on-surface">Favorieten</h1>
@@ -192,14 +191,14 @@
 </div>
 </main>
 <!-- BottomNavBar (As defined in JSON) -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl z-50 rounded-t-[24px] shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
 <!-- Ontdekken -->
 <a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">
 <span class="material-symbols-outlined" data-icon="explore">explore</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Ontdekken</span>
 </a>
 <!-- Favorieten (ACTIVE) -->
-<a class="flex flex-col items-center justify-center text-[#F15A24] scale-110 transition-transform hover:opacity-100 transition-all active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-transform hover:opacity-100 transition-all active:duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">
 <span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider mt-1">Favorieten</span>
 </a>

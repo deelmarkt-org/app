@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
+<html class="light" lang="nl"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>DeelMarkt Admin - Dashboard Loading</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
         @keyframes shimmer {
@@ -64,7 +63,7 @@
                         "on-surface": "#1c1b1b",
                         "on-primary-fixed": "#3a0b00",
                         "surface-container": "#f0edec",
-                        "primary": "#a93200",
+                        "primary": "#F15A24",
                         "on-tertiary-fixed-variant": "#00531a",
                         "surface-container-low": "#f6f3f2",
                         "on-secondary-container": "#285782",
@@ -90,21 +89,21 @@
 </head>
 <body class="bg-surface font-body text-on-surface">
 <!-- SideNavBar Shell -->
-<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-neutral-50 dark:bg-neutral-950 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-surface dark:bg-surface flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
 <div class="mb-8 px-4">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-orange-600/10 flex items-center justify-center">
-<span class="material-symbols-outlined text-orange-600" data-icon="dashboard">dashboard</span>
+<div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="dashboard">dashboard</span>
 </div>
 <div>
-<h1 class="text-lg font-extrabold text-orange-600 dark:text-orange-500 leading-tight">Moderation Hub</h1>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary leading-tight">Moderation Hub</h1>
 <p class="text-xs text-neutral-500 dark:text-neutral-400">Admin Control Panel</p>
 </div>
 </div>
 </div>
 <nav class="flex-1 space-y-1">
 <!-- Active State: Dashboard -->
-<div class="bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm rounded-lg py-2.5 px-4 mb-1 flex items-center gap-3">
+<div class="bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 flex items-center gap-3">
 <span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
 <span>Dashboard</span>
 </div>
@@ -142,7 +141,7 @@
 </div>
 </aside>
 <!-- TopNavBar Shell -->
-<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl flex justify-between items-center h-16 px-6 ml-64 font-['Plus_Jakarta_Sans'] antialiased tracking-tight shadow-sm dark:shadow-none">
+<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-surface/80 backdrop-blur-xl flex justify-between items-center h-16 px-6 ml-64 font-['Plus_Jakarta_Sans'] antialiased tracking-tight shadow-sm dark:shadow-none">
 <div class="flex items-center gap-4 flex-1">
 <div class="bg-neutral-100 dark:bg-neutral-800 h-10 w-64 rounded-xl flex items-center px-4 gap-2">
 <span class="material-symbols-outlined text-neutral-400 text-[18px]" data-icon="search">search</span>
@@ -157,7 +156,7 @@
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
 <div class="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 shimmer overflow-hidden">
-<img alt="Admin Profile Avatar" class="opacity-0" data-alt="close-up of a professional modern profile avatar placeholder in minimalist corporate style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKVcR7NZCsoOvDMs67rPqa_3ZJK5TZIfLeq3v1T0oZm1EvSM8uljJpscLN7KWuWpqPv6lRK2skPPJhXiWE2RtIo3mMyXuf0J7GCfZGvB7HYcuppZDGvyQSYd5UCfnJ504VVqjsDyeydWFQKi0Eg4Vpts4ZmC_vEJWe4kREO6q_bobxVEMlM7NC_o-52La3zHcIPMdK2nTPUyEKXb6Tr74Hh28PYzxsp7s65BWYxCxYGgbW6WUf_A_92lcM5lgYGY3KZivMwhWVb5i6"/>
+<img alt="Admin Profile Avatar" class="opacity-0" alt="close-up of a professional modern profile avatar placeholder in minimalist corporate style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKVcR7NZCsoOvDMs67rPqa_3ZJK5TZIfLeq3v1T0oZm1EvSM8uljJpscLN7KWuWpqPv6lRK2skPPJhXiWE2RtIo3mMyXuf0J7GCfZGvB7HYcuppZDGvyQSYd5UCfnJ504VVqjsDyeydWFQKi0Eg4Vpts4ZmC_vEJWe4kREO6q_bobxVEMlM7NC_o-52La3zHcIPMdK2nTPUyEKXb6Tr74Hh28PYzxsp7s65BWYxCxYGgbW6WUf_A_92lcM5lgYGY3KZivMwhWVb5i6"/>
 </div>
 </div>
 </header>

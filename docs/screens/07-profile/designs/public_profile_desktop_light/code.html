@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -47,7 +46,7 @@
                         "outline": "#8e7067",
                         "primary-container": "#d1430a",
                         "on-secondary": "#ffffff",
-                        "primary": "#a93200",
+                        "primary": "#F15A24",
                         "tertiary-fixed": "#82fc8e",
                         "on-background": "#1c1b1b",
                         "on-secondary-container": "#285782",
@@ -84,16 +83,16 @@
 <!-- TopAppBar -->
 <header class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl docked full-width top-0 z-50 no-border shadow-none bg-zinc-50 dark:bg-zinc-800/50">
 <div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
-<div class="text-2xl font-black tracking-tighter text-[#F15A24]">DeelMarkt</div>
+<div class="text-2xl font-black tracking-tighter text-primary">DeelMarkt</div>
 <nav class="hidden md:flex items-center gap-8">
-<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Ontdekken</a>
-<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#F15A24] transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Verkopen</a>
-<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-[#F15A24] transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Hulp</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Ontdekken</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-primary transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Verkopen</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-primary transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Hulp</a>
 </nav>
 <div class="flex items-center gap-6">
 <span class="material-symbols-outlined text-zinc-600">notifications</span>
 <span class="material-symbols-outlined text-zinc-600">favorite</span>
-<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover ring-2 ring-surface-container" data-alt="Close-up of a friendly professional man with short dark hair in a bright modern office setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOwI6viEnoy9YT-u_OFo2iZLb_JmiIs34HSEsv0nm9Oi2EEWlQdigEC-4e3Py_0Q_yseeXHx8rba_PYLcU7yKXTV8fY5b_Z-xAOeFDwUJc0JP0q5ipXnaPVPsOYCORPuWL7XJ0JwnN2JXO2E8-lXxieLEYxJlx6bBpbsysrMYdJEQ0qZHYTzjhkeQ0BqT-6mpjjps1nh7IQcB39JwOhZA0y-W0KpG7PWWEzggjBCFQ75_B5H2JQ9xyLuHvIV2PzDLGd1G5_NE_DjZL"/>
+<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover ring-2 ring-surface-container" alt="Close-up of a friendly professional man with short dark hair in a bright modern office setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOwI6viEnoy9YT-u_OFo2iZLb_JmiIs34HSEsv0nm9Oi2EEWlQdigEC-4e3Py_0Q_yseeXHx8rba_PYLcU7yKXTV8fY5b_Z-xAOeFDwUJc0JP0q5ipXnaPVPsOYCORPuWL7XJ0JwnN2JXO2E8-lXxieLEYxJlx6bBpbsysrMYdJEQ0qZHYTzjhkeQ0BqT-6mpjjps1nh7IQcB39JwOhZA0y-W0KpG7PWWEzggjBCFQ75_B5H2JQ9xyLuHvIV2PzDLGd1G5_NE_DjZL"/>
 </div>
 </div>
 </header>
@@ -101,7 +100,7 @@
 <!-- SideNavBar / NavigationRail -->
 <aside class="hidden md:flex flex-col h-screen sticky left-0 top-0 p-6 bg-zinc-50 dark:bg-zinc-950 w-64 border-r-0 bg-zinc-100 dark:bg-zinc-900">
 <div class="flex items-center gap-3 mb-12">
-<img alt="Verkoper profielafbeelding" class="w-12 h-12 rounded-xl object-cover" data-alt="Professional profile photo of a smiling man with a beard, wearing a casual denim shirt against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbW7BxJxv2-MK_Wd02OCFO0TLA0ntkg6nfzowxXN0bqGq4cXoMqRPDbTmpSCrkSyu3i8Im0Bdc8V8CPu86mtEHVg6ZE9MThVb9qYEHrGcaAp-skyPy2dWka_7qJiQkAnONAu3ioXR5j7VI9Ck6YITfmOgovRdZycB_PYukD3-hBjh1lfYMe8iPxilbYkxMm2Tz2GL5eHmtdfST32e0p6eEOASB9pYf9JXhObYmcmdZFdMO96SwBBCgzES7rksfiftzGJKMiMqyONty"/>
+<img alt="Verkoper profielafbeelding" class="w-12 h-12 rounded-xl object-cover" alt="Professional profile photo of a smiling man with a beard, wearing a casual denim shirt against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbW7BxJxv2-MK_Wd02OCFO0TLA0ntkg6nfzowxXN0bqGq4cXoMqRPDbTmpSCrkSyu3i8Im0Bdc8V8CPu86mtEHVg6ZE9MThVb9qYEHrGcaAp-skyPy2dWka_7qJiQkAnONAu3ioXR5j7VI9Ck6YITfmOgovRdZycB_PYukD3-hBjh1lfYMe8iPxilbYkxMm2Tz2GL5eHmtdfST32e0p6eEOASB9pYf9JXhObYmcmdZFdMO96SwBBCgzES7rksfiftzGJKMiMqyONty"/>
 <div>
 <p class="font-black text-on-surface leading-tight">Mijn DeelMarkt</p>
 <p class="text-xs text-secondary font-semibold">Premium Verkoper</p>
@@ -112,7 +111,7 @@
 <span class="material-symbols-outlined">dashboard</span>
                     Dashboard
                 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#F15A24] font-bold border-r-4 border-[#F15A24] bg-[#F15A24]/5 font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-4 border-[#F15A24] bg-primary/5 font-['Plus_Jakarta_Sans'] text-sm" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
                     Mijn Advertenties
                 </a>
@@ -140,7 +139,7 @@
 <section class="bg-surface-container-lowest rounded-3xl p-8 mb-12 shadow-sm border border-zinc-100">
 <div class="flex flex-col md:flex-row gap-8 items-start">
 <div class="relative">
-<img alt="Jan de Vries" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md" data-alt="Clear portrait of a man with friendly eyes and a gentle smile, natural daylight, soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmAvy5sfWumWxD6yg4Ybi1tECvKaa295Ob4dLHsBvobryFR9WTxM9mzxJCpPdgXr4vmoik9dbGLizkqJ6CQz8A59tvyYvTHWvKm8yvxDBDH5JTRVTIWosQF7fSUV7nDIqRpzu328g_4duG5NIs1ZAs1ezYvs0t3JcjSjbIRcgN6XJdxybc6EtDq-74dc1b0H4hez0u0mJ0eyNxdrVD3PH94hJpPRVl2jdv619a_qPUb3lkkgfiSOJM1lcSvErEBUovUAbKEXcUApFn"/>
+<img alt="Jan de Vries" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md" alt="Clear portrait of a man with friendly eyes and a gentle smile, natural daylight, soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmAvy5sfWumWxD6yg4Ybi1tECvKaa295Ob4dLHsBvobryFR9WTxM9mzxJCpPdgXr4vmoik9dbGLizkqJ6CQz8A59tvyYvTHWvKm8yvxDBDH5JTRVTIWosQF7fSUV7nDIqRpzu328g_4duG5NIs1ZAs1ezYvs0t3JcjSjbIRcgN6XJdxybc6EtDq-74dc1b0H4hez0u0mJ0eyNxdrVD3PH94hJpPRVl2jdv619a_qPUb3lkkgfiSOJM1lcSvErEBUovUAbKEXcUApFn"/>
 <div class="absolute -bottom-1 -right-1 bg-tertiary text-white p-1 rounded-full border-2 border-white">
 <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">verified</span>
 </div>
@@ -207,7 +206,7 @@
 <!-- Card 1 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="Canyon Bike" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Sleek black Canyon road bike leaning against a minimalist white wall in a bright studio, high contrast lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq3LuLL570sv5qao9S7SLeAnwnG3PH__9ANRzr9YTzQEwCIfaBj0LBmtKocLAVmBfPmQb7YcwyHmSjm61dTcvWXr4xAs6SCz7D_dMQZCcOa7Y8a9s7ZVCtaA7gwEhbf7cvfaCjx7DhVgJm8ybVORt9gmon98llC8n14tlBiBOHbQbNzifldyzNVVK4Ly02HyGha1GlEqbvSDcLjwjLUBWg5rP_6NIEFa1Eq_BrHn0Pmrfbw78b0o6iM13xzxcoF4_l9SBpOVJkspqy"/>
+<img alt="Canyon Bike" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Sleek black Canyon road bike leaning against a minimalist white wall in a bright studio, high contrast lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq3LuLL570sv5qao9S7SLeAnwnG3PH__9ANRzr9YTzQEwCIfaBj0LBmtKocLAVmBfPmQb7YcwyHmSjm61dTcvWXr4xAs6SCz7D_dMQZCcOa7Y8a9s7ZVCtaA7gwEhbf7cvfaCjx7DhVgJm8ybVORt9gmon98llC8n14tlBiBOHbQbNzifldyzNVVK4Ly02HyGha1GlEqbvSDcLjwjLUBWg5rP_6NIEFa1Eq_BrHn0Pmrfbw78b0o6iM13xzxcoF4_l9SBpOVJkspqy"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-primary text-sm">favorite</span>
 </div>
@@ -224,7 +223,7 @@
 <!-- Card 2 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="IKEA Table" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Modern minimalist IKEA wooden dining table in a sunlit scandinavian style room with light floor, soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Y9fBwflKWkEuy1hSfEERrp8YhO-t2GJogqwym4rMwvJldrl0T463mgm9FCnJZWKW6BEecVue37jkmoMUU86QcDel4ACMT2mFKWvjIh5HUVDq-95q372DxjSj4X8h2vGJ0ub4Zz-YPLQl5PjTMDp79yQtl3JrfHKayWD05PW6MhYAW2tTpiI3aFjTig_e06dJT8XTdg9ZPYOacs_f5ScqNHoQSjZmlm8epyo9R0VAEjzawO_mpDj09W8q-2NcHuROczQkcEkYF3pl"/>
+<img alt="IKEA Table" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Modern minimalist IKEA wooden dining table in a sunlit scandinavian style room with light floor, soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Y9fBwflKWkEuy1hSfEERrp8YhO-t2GJogqwym4rMwvJldrl0T463mgm9FCnJZWKW6BEecVue37jkmoMUU86QcDel4ACMT2mFKWvjIh5HUVDq-95q372DxjSj4X8h2vGJ0ub4Zz-YPLQl5PjTMDp79yQtl3JrfHKayWD05PW6MhYAW2tTpiI3aFjTig_e06dJT8XTdg9ZPYOacs_f5ScqNHoQSjZmlm8epyo9R0VAEjzawO_mpDj09W8q-2NcHuROczQkcEkYF3pl"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
 </div>
@@ -241,7 +240,7 @@
 <!-- Card 3 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="Bose Headphones" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Premium Bose wireless headphones on a wooden table with soft focused indoor lighting, cozy atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbYYBM-fkSY7FJhd4rkjzI39C8aPjj1jNQhp4-GD5hslNBz4Eb2P4R5UTpcGekf4ozAQJlRH1gY12uvos0i_DDlcyF3LBzQPP1REmP03gon0oI90GnPk1uxaKCPOjJfIxzRqI98fv44rERcXCTXrSqAj69axm9fMDFkezFJZr_FolDWAftDS-KxY4_TKKMi7qZ7L_LUnQw37He_M8ihQ89Pa51zBP1I_G5aIivEatfwgUtxRdGgMSclT-lHZA82fmfV_sPI1aX7JS2"/>
+<img alt="Bose Headphones" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Premium Bose wireless headphones on a wooden table with soft focused indoor lighting, cozy atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbYYBM-fkSY7FJhd4rkjzI39C8aPjj1jNQhp4-GD5hslNBz4Eb2P4R5UTpcGekf4ozAQJlRH1gY12uvos0i_DDlcyF3LBzQPP1REmP03gon0oI90GnPk1uxaKCPOjJfIxzRqI98fv44rERcXCTXrSqAj69axm9fMDFkezFJZr_FolDWAftDS-KxY4_TKKMi7qZ7L_LUnQw37He_M8ihQ89Pa51zBP1I_G5aIivEatfwgUtxRdGgMSclT-lHZA82fmfV_sPI1aX7JS2"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
 </div>
@@ -258,7 +257,7 @@
 <!-- Card 4 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="Modern Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close-up of a stylish minimalist silver watch with a white face on a neutral textile background, clean elegant aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi6RedjqLhjPgmdtcqqhs7NRf9kVdmVXLjSZ0N6894BUIi3FfdITU4HxPgCXTa7fYC_O4iFnlPxxj2sUyXIPpts3CxTKG0HDjEsfrFwX4feI7EfTxO8SCiIhuNpsmwGbtOzyT7GO8esoGAOgZ81YCEbillVEKQnkKJDTXTV92myhP6OM8pHtF75QfgR7YvgBLMT1wEMN8S8mXpoE23vgnj5uka35h4TF6OJDEtOBMpUK5feqFtrzwzRAAtwuQwn6ZJdbvRbDRIa7A"/>
+<img alt="Modern Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Close-up of a stylish minimalist silver watch with a white face on a neutral textile background, clean elegant aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi6RedjqLhjPgmdtcqqhs7NRf9kVdmVXLjSZ0N6894BUIi3FfdITU4HxPgCXTa7fYC_O4iFnlPxxj2sUyXIPpts3CxTKG0HDjEsfrFwX4feI7EfTxO8SCiIhuNpsmwGbtOzyT7GO8esoGAOgZ81YCEbillVEKQnkKJDTXTV92myhP6OM8pHtF75QfgR7YvgBLMT1wEMN8S8mXpoE23vgnj5uka35h4TF6OJDEtOBMpUK5feqFtrzwzRAAtwuQwn6ZJdbvRbDRIa7A"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
 </div>
@@ -275,7 +274,7 @@
 <!-- Card 5 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="Nike Sneakers" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Pair of bright red Nike running shoes floating against a soft gradient grey background, commercial studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiiMQ9QuNvMp9dPIcVAYZFzXE2WDk22tuj_uv_v-PfYiNYEfGwyD_KjKIq0uiZcELqpB3sRnqSBeW5Hzg8t4F3a7hcx2ZIF1L0EX1ilru--ewOQgM2dco3EmH1BD5Mgd1RaaxXXaMjn6hso413i4qRCg3PoUvTfjT5jTVWpko8Y-cDgnclkFUGkfR_IRmSAEVfLWnmy_SPTCv03KNdSHU-6vn8bEmnrmGaxyNC53EF2-us155pji5c1Wk6CFqq8ndPNiiajcQpl7FV"/>
+<img alt="Nike Sneakers" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Pair of bright red Nike running shoes floating against a soft gradient grey background, commercial studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiiMQ9QuNvMp9dPIcVAYZFzXE2WDk22tuj_uv_v-PfYiNYEfGwyD_KjKIq0uiZcELqpB3sRnqSBeW5Hzg8t4F3a7hcx2ZIF1L0EX1ilru--ewOQgM2dco3EmH1BD5Mgd1RaaxXXaMjn6hso413i4qRCg3PoUvTfjT5jTVWpko8Y-cDgnclkFUGkfR_IRmSAEVfLWnmy_SPTCv03KNdSHU-6vn8bEmnrmGaxyNC53EF2-us155pji5c1Wk6CFqq8ndPNiiajcQpl7FV"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
 </div>
@@ -292,7 +291,7 @@
 <!-- Card 6 -->
 <div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img alt="Polaroid Camera" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Vintage style white polaroid camera on a bright yellow surface, fun pop-art aesthetic with sharp shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZDTddYHAgJ98_-9ZymqxevTrY1qD7l01J14K4Ne9G-bHCAJJDSkLOF9otlhS3BJXvpxhzBKp7pOf-m3T1FhkL7-MR0YtVhNIik_09U9pksSpmXtTZKrRAO1tLML-30TUJQmQnDCejrVX2q4oRyNaJDyZwP80AVPseuzUzWq2b10tbNOCOjwGNhpR1rMUY0zdNKm0DqZAZ3dIoDjbxwl0n2ZmUeT6IHq98DEEuqV3l-ywn9yBNReOuIZgqsINCnKCAh2gDcxrZeStr"/>
+<img alt="Polaroid Camera" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Vintage style white polaroid camera on a bright yellow surface, fun pop-art aesthetic with sharp shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZDTddYHAgJ98_-9ZymqxevTrY1qD7l01J14K4Ne9G-bHCAJJDSkLOF9otlhS3BJXvpxhzBKp7pOf-m3T1FhkL7-MR0YtVhNIik_09U9pksSpmXtTZKrRAO1tLML-30TUJQmQnDCejrVX2q4oRyNaJDyZwP80AVPseuzUzWq2b10tbNOCOjwGNhpR1rMUY0zdNKm0DqZAZ3dIoDjbxwl0n2ZmUeT6IHq98DEEuqV3l-ywn9yBNReOuIZgqsINCnKCAh2gDcxrZeStr"/>
 <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
 <span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
 </div>
@@ -347,7 +346,7 @@
 <span class="material-symbols-outlined">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Zoeken</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-2" href="#">
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-2" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_box</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Plaatsen</span>
 </a>

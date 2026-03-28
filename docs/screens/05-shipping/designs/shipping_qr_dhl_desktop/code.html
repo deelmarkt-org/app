@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -38,7 +37,7 @@
               "on-error": "#ffffff",
               "outline-variant": "#e2bfb4",
               "surface-tint": "#ad3300",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-primary-fixed-variant": "#842500",
               "inverse-surface": "#313030",
               "tertiary": "#006b24",
@@ -83,11 +82,11 @@
 </head>
 <body class="bg-surface text-on-surface min-h-screen">
 <!-- Top Navigation (Shell) -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl">
 <div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
 <div class="flex items-center gap-4">
 <button class="active:scale-95 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined text-[#F15A24]">arrow_back</span>
+<span class="material-symbols-outlined text-primary">arrow_back</span>
 </button>
 <h1 class="text-xl font-bold text-[#1b1b1b] font-['Plus_Jakarta_Sans'] tracking-[-0.02em]">Shipping Label</h1>
 </div>
@@ -142,7 +141,7 @@
 </div>
 <!-- QR Code Container -->
 <div class="bg-white p-4 rounded-2xl inline-block mb-6 border border-outline-variant/20 shadow-sm">
-<img alt="QR Code for shipping" class="w-[200px] h-[200px]" data-alt="Digital QR code on a clean white background for shipping tracking and logistics verification" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH3pdVQmwrAmoHK2fQ22MCoMf4jPtxXs3hzg9GGfKg2caBSbkyiyGpQs3GLFQmgq8tr2IgT4AwVHEUEW6OnlzD3lVx_M2qkZVqHrqvuzTgvin4mq-ITZK5DANKojQTBuPjm83cH_FoQ0xIMDyT50tiu7r_crWSgncq7kvu38gIR3Ik4SL_v98Ero-yzmhlYEFSPaICwyUsiHoYHBSuHuYHUbXSrckUEtgbjs_HKw4qXnx64UPcWJNkwrCU3sd1bofrELrPk9zgeWyX"/>
+<img alt="QR Code for shipping" class="w-[200px] h-[200px]" alt="Digital QR code on a clean white background for shipping tracking and logistics verification" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH3pdVQmwrAmoHK2fQ22MCoMf4jPtxXs3hzg9GGfKg2caBSbkyiyGpQs3GLFQmgq8tr2IgT4AwVHEUEW6OnlzD3lVx_M2qkZVqHrqvuzTgvin4mq-ITZK5DANKojQTBuPjm83cH_FoQ0xIMDyT50tiu7r_crWSgncq7kvu38gIR3Ik4SL_v98Ero-yzmhlYEFSPaICwyUsiHoYHBSuHuYHUbXSrckUEtgbjs_HKw4qXnx64UPcWJNkwrCU3sd1bofrELrPk9zgeWyX"/>
 </div>
 <!-- Tracking Info -->
 <div class="space-y-1">
@@ -186,7 +185,7 @@
 </div>
 </main>
 <!-- Bottom Navigation (Shell) -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
 <div class="flex flex-col items-center justify-center text-[#1b1b1b]/40">
 <span class="material-symbols-outlined mb-1">storefront</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Market</span>
@@ -196,7 +195,7 @@
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Inbox</span>
 </div>
 <!-- Active Tab: Shipping -->
-<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200">
+<div class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200">
 <span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Shipping</span>
 </div>

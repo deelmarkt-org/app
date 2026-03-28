@@ -10,7 +10,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
 <!-- Material Symbols Outlined -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -53,7 +52,7 @@
               "on-surface": "#1c1b1b",
               "on-primary-fixed": "#3a0b00",
               "surface-container": "#f0edec",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed-variant": "#00531a",
               "surface-container-low": "#f6f3f2",
               "on-secondary-container": "#285782",
@@ -92,21 +91,21 @@
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- SideNavBar (Authority: JSON & Design System) -->
-<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 bg-neutral-50 dark:bg-neutral-950 font-['Plus_Jakarta_Sans'] text-sm font-medium cubic-bezier(0.23, 1, 0.32, 1) duration-300">
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 bg-surface dark:bg-surface font-['Plus_Jakarta_Sans'] text-sm font-medium cubic-bezier(0.23, 1, 0.32, 1) duration-300">
 <div class="mb-8 px-4 py-2">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
 <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">security</span>
 </div>
 <div>
-<h1 class="text-lg font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">Moderation Hub</h1>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary tracking-tighter">Moderation Hub</h1>
 <p class="text-[10px] text-neutral-500 uppercase tracking-widest">Admin Control Panel</p>
 </div>
 </div>
 </div>
 <nav class="flex-1 space-y-1">
 <!-- Active State: Dashboard -->
-<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm rounded-lg py-2.5 px-4 mb-1 transition-all" href="#">
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 transition-all" href="#">
 <span class="material-symbols-outlined">dashboard</span>
 <span>Dashboard</span>
 </a>
@@ -143,7 +142,7 @@
 </div>
 </aside>
 <!-- TopNavBar (Authority: JSON & Design System) -->
-<header class="fixed top-0 right-0 left-0 z-40 flex justify-between items-center h-16 px-6 ml-64 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<header class="fixed top-0 right-0 left-0 z-40 flex justify-between items-center h-16 px-6 ml-64 bg-white/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
 <div class="flex items-center gap-4">
 <div class="relative">
 <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -165,7 +164,7 @@
 <p class="text-xs font-bold text-neutral-900 dark:text-white leading-none">Admin User</p>
 <p class="text-[10px] text-neutral-500">Super Moderator</p>
 </div>
-<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover" data-alt="close-up portrait of a professional man in a minimal studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsh0DnFZoElezidYjmO1yt_XdXFmne3Ug52DNfeZgOrLFq3I5OToC895grgCBskFawnzs_VonwHd_DSLOJa4FkMor-534Qj3i5E70e28bS2DIFue2-J9ad9r-Tk0QnBXQD80_ZQgFgLlqvJiUt3iXPnVS_uja-yjQ2QvNBjITdAR2b5AZzpwn8EhSeNGKtnTs-nGddGTCOhiRIFuQKEJmI5nXINGoodHZXPy2UcFtnm7J0A5Q3QczgDSlgnS8BrY5PL1FOduDxa7KZ"/>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover" alt="close-up portrait of a professional man in a minimal studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsh0DnFZoElezidYjmO1yt_XdXFmne3Ug52DNfeZgOrLFq3I5OToC895grgCBskFawnzs_VonwHd_DSLOJa4FkMor-534Qj3i5E70e28bS2DIFue2-J9ad9r-Tk0QnBXQD80_ZQgFgLlqvJiUt3iXPnVS_uja-yjQ2QvNBjITdAR2b5AZzpwn8EhSeNGKtnTs-nGddGTCOhiRIFuQKEJmI5nXINGoodHZXPy2UcFtnm7J0A5Q3QczgDSlgnS8BrY5PL1FOduDxa7KZ"/>
 </div>
 </div>
 </header>
@@ -189,7 +188,7 @@
 <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b-4 border-orange-500/10">
 <div class="flex items-center justify-between mb-4">
 <div class="p-2 bg-orange-50 rounded-lg">
-<span class="material-symbols-outlined text-orange-600">flag</span>
+<span class="material-symbols-outlined text-primary">flag</span>
 </div>
 <span class="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">Lopend</span>
 </div>
@@ -237,10 +236,10 @@
 <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/5 rounded-full blur-2xl"></div>
 <!-- Friendly Flat Illustration -->
 <div class="relative w-80 h-80 mb-8 flex items-center justify-center">
-<img alt="Empty state illustration" class="w-full h-full object-contain mix-blend-multiply opacity-80" data-alt="Minimalist flat design illustration of a clean white workspace with a potted plant and soft morning sunlight shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCGeAJX2gL3ACBa3bxU6Sc3YfpBoRWJ88PLwckKhE7cLZgFkJ5XSiEiqcS_H4vhl_cBlKd7JrqxJHQYxbYBuWhV_9AqLAxKyUjEjgjSPcv7yW7WnNqhfzWavXr0N88CZmigJSpVex-MdA8k50713ZlKjkRHbwQutZaybI-SgqlgziULFD9t5MHmNSvd3gN6PvMa7U6NwHQ87fUm50diKCn_JdpeyIUrUMv13zPqTC9W9MJwXmj74TVOQaSHnYGaOm4qgU87gb3U9Uj"/>
+<img alt="Empty state illustration" class="w-full h-full object-contain mix-blend-multiply opacity-80" alt="Minimalist flat design illustration of a clean white workspace with a potted plant and soft morning sunlight shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCGeAJX2gL3ACBa3bxU6Sc3YfpBoRWJ88PLwckKhE7cLZgFkJ5XSiEiqcS_H4vhl_cBlKd7JrqxJHQYxbYBuWhV_9AqLAxKyUjEjgjSPcv7yW7WnNqhfzWavXr0N88CZmigJSpVex-MdA8k50713ZlKjkRHbwQutZaybI-SgqlgziULFD9t5MHmNSvd3gN6PvMa7U6NwHQ87fUm50diKCn_JdpeyIUrUMv13zPqTC9W9MJwXmj74TVOQaSHnYGaOm4qgU87gb3U9Uj"/>
 <!-- Overlapping depth element -->
 <div class="absolute bottom-4 right-4 bg-white/40 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 animate-pulse">
-<span class="material-symbols-outlined text-orange-500 text-4xl" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">bedtime</span>
 </div>
 </div>
 <div class="relative z-10 max-w-md">
@@ -252,7 +251,7 @@
 <button class="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
                             Vernieuwen
                         </button>
-<button class="px-8 py-3 bg-white text-neutral-700 font-bold rounded-xl border border-neutral-200/50 hover:bg-neutral-50 transition-all">
+<button class="px-8 py-3 bg-white text-neutral-700 font-bold rounded-xl border border-neutral-200/50 hover:bg-surface transition-all">
                             Bekijk Logs
                         </button>
 </div>
@@ -262,30 +261,30 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
 <div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-3xl border border-neutral-100 shadow-sm">
 <h4 class="text-lg font-bold mb-6 flex items-center gap-2">
-<span class="material-symbols-outlined text-orange-500">trending_up</span>
+<span class="material-symbols-outlined text-primary">trending_up</span>
                         Activiteit Trends
                     </h4>
 <div class="h-48 flex items-end justify-between gap-2 px-4">
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-4 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-6 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-3 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-5 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-8 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-4 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 <div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-2 group relative">
-<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-neutral-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
 </div>
 </div>
 <p class="text-center text-xs text-neutral-400 mt-6 font-medium">Wekelijkse data wordt getoond zodra er acties zijn uitgevoerd.</p>

@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -19,7 +18,7 @@
               "surface-container-high": "#ebe7e7",
               "on-background": "#1c1b1b",
               "surface-container-low": "#f6f3f2",
-              "background": "#fcf9f8",
+              "background": "#121212",
               "inverse-primary": "#ffb59e",
               "on-tertiary-container": "#f7fff2",
               "on-secondary-fixed-variant": "#164974",
@@ -38,7 +37,7 @@
               "on-primary": "#ffffff",
               "error": "#ba1a1a",
               "primary-fixed": "#ffdbd0",
-              "on-surface-variant": "#5a4139",
+              "on-surface-variant": "#c4c4c4",
               "surface-container-highest": "#e5e2e1",
               "surface-tint": "#ad3300",
               "on-tertiary": "#ffffff",
@@ -50,12 +49,12 @@
               "tertiary-container": "#008730",
               "outline": "#8e7067",
               "on-primary-fixed": "#3a0b00",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed": "#002106",
               "on-error": "#ffffff",
               "inverse-on-surface": "#f3f0ef",
               "on-primary-fixed-variant": "#842500",
-              "on-surface": "#1c1b1b",
+              "on-surface": "#f2f2f2",
               "secondary": "#34618d",
               "tertiary": "#006b24",
               "outline-variant": "#e2bfb4",
@@ -103,7 +102,7 @@
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 glass-header">
 <div class="flex items-center gap-4">
 <button class="w-10 h-10 flex items-center justify-center rounded-full active:bg-white/10 transition-colors">
-<span class="material-symbols-outlined text-[#F15A24]" data-icon="arrow_back">arrow_back</span>
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
 </button>
 <h1 class="text-xl font-bold tracking-tight text-[#F2F2F2] font-headline">Categorieën</h1>
 </div>
@@ -121,11 +120,11 @@
 <section class="mb-8">
 <div class="relative overflow-hidden rounded-xl h-32 bg-gradient-to-br from-[#1E1E1E] to-[#121212] flex items-center p-6 border border-white/5">
 <div class="z-10">
-<h2 class="text-lg font-extrabold text-[#F15A24] leading-tight">Vind wat je zoekt</h2>
+<h2 class="text-lg font-extrabold text-primary leading-tight">Vind wat je zoekt</h2>
 <p class="text-sm text-[#a0a0a0] max-w-[200px]">Blader door duizenden geverifieerde listings in jouw buurt.</p>
 </div>
 <div class="absolute -right-4 -bottom-4 opacity-20">
-<span class="material-symbols-outlined text-9xl text-[#F15A24]" data-icon="grid_view" style="font-size: 160px;">grid_view</span>
+<span class="material-symbols-outlined text-9xl text-primary" data-icon="grid_view" style="font-size: 160px;">grid_view</span>
 </div>
 </div>
 </section>
@@ -137,7 +136,7 @@
 <span class="material-symbols-outlined text-2xl" data-icon="devices">devices</span>
 </div>
 <span class="flex-1 ml-4 text-[16px] font-semibold text-[#F2F2F2]">Elektronica</span>
-<span class="material-symbols-outlined text-[#a0a0a0] group-active:text-[#F15A24]" data-icon="chevron_right">chevron_right</span>
+<span class="material-symbols-outlined text-[#a0a0a0] group-active:text-primary" data-icon="chevron_right">chevron_right</span>
 </div>
 <!-- Mode -->
 <div class="category-card group flex items-center w-full px-5 bg-[#1E1E1E] border border-pink-900/20 rounded-xl">
@@ -157,7 +156,7 @@
 </div>
 <!-- Sport -->
 <div class="category-card group flex items-center w-full px-5 bg-[#1E1E1E] border border-orange-900/20 rounded-xl">
-<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-orange-500/10 text-orange-400">
+<div class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
 <span class="material-symbols-outlined text-2xl" data-icon="fitness_center">fitness_center</span>
 </div>
 <span class="flex-1 ml-4 text-[16px] font-semibold text-[#F2F2F2]">Sport</span>
@@ -203,7 +202,7 @@
 <span class="material-symbols-outlined mb-1" data-icon="home">home</span>
             Home
         </a>
-<a class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-xl px-3 py-1 font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider" href="#">
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-3 py-1 font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
             Zoeken
         </a>

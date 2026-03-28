@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -41,7 +40,7 @@
               "tertiary-fixed": "#82fc8e",
               "surface": "#fcf9f8",
               "surface-bright": "#fcf9f8",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-error-container": "#93000a",
               "on-error": "#ffffff",
               "surface-variant": "#e5e2e1",
@@ -83,7 +82,7 @@
             appearance: none;
             width: 24px;
             height: 24px;
-            background: #a93200;
+            background: #F15A24;
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid white;
@@ -92,7 +91,7 @@
         .custom-range::-moz-range-thumb {
             width: 24px;
             height: 24px;
-            background: #a93200;
+            background: #F15A24;
             cursor: pointer;
             border-radius: 50%;
             border: 4px solid white;
@@ -107,10 +106,10 @@
   </head>
 <body class="bg-surface text-on-surface overflow-hidden">
 <!-- Top App Bar -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full tonal-shift">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full tonal-shift">
 <div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-[#F15A24] cursor-pointer" data-icon="arrow_back">arrow_back</span>
-<h1 class="font-['Plus_Jakarta_Sans'] tracking-tight font-bold text-lg text-[#F15A24]">Search</h1>
+<span class="material-symbols-outlined text-primary cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-['Plus_Jakarta_Sans'] tracking-tight font-bold text-lg text-primary">Search</h1>
 </div>
 <div class="flex items-center gap-4">
 <span class="material-symbols-outlined text-[#5a5a5a] cursor-pointer" data-icon="close">close</span>
@@ -128,21 +127,21 @@
 <!-- Asymmetric Bento Grid Mockup -->
 <div class="grid grid-cols-2 gap-4 opacity-40">
 <div class="col-span-1 bg-surface-container-lowest rounded-xl overflow-hidden">
-<div class="h-40 bg-surface-container" data-alt="minimalist wooden lounge chair with leather cushions in a bright sunlit studio apartment" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAFpoRTYwWCp0tkHOVIyUYLHd3nUNxFhr1oYDwv_vJJwkMIQBz0xTdL3sfn4SdpbgOSIerm5xh8cJdEH4CkyLZ8ElyviUDMpM4P7s6ElhJR4QTlXUPI2lWLBb_KiE2W9wKNxzv5IeB3QZwc9AvRjntiL_r9MGma3SMTWmyvunqgi3HTAkKsb3_KAkgln_ZdLY6YDsra2Cg_8CJbuLBMAzJrS_nRXUrod-wKRDSkEiXPt5LwEiHhQS6gLmSuDVfKn39isZZDAGt5n0E3'); background-size: cover; background-position: center;"></div>
+<div class="h-40 bg-surface-container" alt="minimalist wooden lounge chair with leather cushions in a bright sunlit studio apartment" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAFpoRTYwWCp0tkHOVIyUYLHd3nUNxFhr1oYDwv_vJJwkMIQBz0xTdL3sfn4SdpbgOSIerm5xh8cJdEH4CkyLZ8ElyviUDMpM4P7s6ElhJR4QTlXUPI2lWLBb_KiE2W9wKNxzv5IeB3QZwc9AvRjntiL_r9MGma3SMTWmyvunqgi3HTAkKsb3_KAkgln_ZdLY6YDsra2Cg_8CJbuLBMAzJrS_nRXUrod-wKRDSkEiXPt5LwEiHhQS6gLmSuDVfKn39isZZDAGt5n0E3'); background-size: cover; background-position: center;"></div>
 <div class="p-3">
 <div class="text-secondary font-bold text-lg">€ 850</div>
 <div class="text-sm font-semibold truncate">Vintage Eames Chair</div>
 </div>
 </div>
 <div class="col-span-1 bg-surface-container-lowest rounded-xl overflow-hidden mt-6">
-<div class="h-48 bg-surface-container" data-alt="mid-century modern walnut sideboard with brass handles on a neutral textured wall background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBghIGFS-hRfcCxtlYCJeduIAzyPyXUpm8IhMcnmgLhI-_0PGPk4bJr7IABPEkgeglpHZievlKifjrZbjykWKA97MB8sJBFj9PvJX3eUCLh-ELNi8M2TgjU9Qsmkqy9XJ501_b_6V-I8NU5uk8cA1Da7nZIZiETRf_TvQcp9NGm5gRn0oDezU1Lv5XQUe6TE_NH3OLLzqtAYqfX98HRbgXr52Zj1Jo3om54bejVBvk6RmPEJzdAAhPEAUvuYH-VSotJXloFzqyfuEic'); background-size: cover; background-position: center;"></div>
+<div class="h-48 bg-surface-container" alt="mid-century modern walnut sideboard with brass handles on a neutral textured wall background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBghIGFS-hRfcCxtlYCJeduIAzyPyXUpm8IhMcnmgLhI-_0PGPk4bJr7IABPEkgeglpHZievlKifjrZbjykWKA97MB8sJBFj9PvJX3eUCLh-ELNi8M2TgjU9Qsmkqy9XJ501_b_6V-I8NU5uk8cA1Da7nZIZiETRf_TvQcp9NGm5gRn0oDezU1Lv5XQUe6TE_NH3OLLzqtAYqfX98HRbgXr52Zj1Jo3om54bejVBvk6RmPEJzdAAhPEAUvuYH-VSotJXloFzqyfuEic'); background-size: cover; background-position: center;"></div>
 <div class="p-3">
 <div class="text-secondary font-bold text-lg">€ 1.200</div>
 <div class="text-sm font-semibold truncate">Walnut Sideboard</div>
 </div>
 </div>
 <div class="col-span-2 bg-surface-container-lowest rounded-xl overflow-hidden flex">
-<div class="w-1/2 h-32 bg-surface-container" data-alt="contemporary ceramic vase collection with matte finish on a minimalist stone shelf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDOR2AZnbXFTqbLpIi6o2nFM2QNSnwm9LFb7XFgHhJw0Xwcwk9t1pdBfi76JzUSl3nKJbnyyvKsi-UNp-UKuC_G-Rjvpzfb8Z8ACBzITqNzgsowoiRIRfeYxleH7ezBb8xGM7KKZhYpgkWq-mXP3_xnGJ5gIxMhxBjLwWtzEjui1xh4G7SlV6enk0aLRDLqbyeXM08BMA8_YIhyFJsZN4uMKJS3tccPgO0PfGWWYwi7FE6N2wkzfVWKDZNnO3dcncCADI5mWcl1c85P'); background-size: cover; background-position: center;"></div>
+<div class="w-1/2 h-32 bg-surface-container" alt="contemporary ceramic vase collection with matte finish on a minimalist stone shelf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDOR2AZnbXFTqbLpIi6o2nFM2QNSnwm9LFb7XFgHhJw0Xwcwk9t1pdBfi76JzUSl3nKJbnyyvKsi-UNp-UKuC_G-Rjvpzfb8Z8ACBzITqNzgsowoiRIRfeYxleH7ezBb8xGM7KKZhYpgkWq-mXP3_xnGJ5gIxMhxBjLwWtzEjui1xh4G7SlV6enk0aLRDLqbyeXM08BMA8_YIhyFJsZN4uMKJS3tccPgO0PfGWWYwi7FE6N2wkzfVWKDZNnO3dcncCADI5mWcl1c85P'); background-size: cover; background-position: center;"></div>
 <div class="w-1/2 p-4 flex flex-col justify-center">
 <div class="text-secondary font-bold text-lg">€ 45</div>
 <div class="text-sm font-semibold">Handmade Ceramic Vase</div>
@@ -231,12 +230,12 @@
 </div>
 </div>
 <!-- Bottom Nav Bar (Suppressed because focused task is open, but kept for shell reference as per rules if user moves away) -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl z-40 md:flex hidden">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 backdrop-blur-xl z-40 md:flex hidden">
 <div class="flex flex-col items-center justify-center text-[#5a5a5a] px-4 py-2">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Home</span>
 </div>
-<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-2xl px-4 py-2">
+<div class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-2xl px-4 py-2">
 <span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Search</span>
 </div>

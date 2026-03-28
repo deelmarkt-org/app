@@ -1,4 +1,4 @@
-# Design System Strategy: The Honest Exchange
+# Design System Strategy: DeelMarkt
 
 This design system is a comprehensive framework designed to elevate the P2P marketplace experience from a utility to a premium editorial destination. It balances the energy of Dutch commerce with a sophisticated, trust-first aesthetic that feels both authoritative and accessible.
 

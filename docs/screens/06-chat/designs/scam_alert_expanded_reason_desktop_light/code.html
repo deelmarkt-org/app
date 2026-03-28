@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -25,7 +24,7 @@
               "on-secondary-container": "#285782",
               "surface": "#fcf9f8",
               "surface-tint": "#ad3300",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-primary-fixed-variant": "#842500",
               "inverse-surface": "#313030",
               "outline-variant": "#e2bfb4",
@@ -80,14 +79,14 @@
 </head>
 <body class="bg-surface text-on-surface min-h-screen flex flex-col">
 <!-- TopNavBar -->
-<header class="bg-[#fcf9f8]/80 backdrop-blur-xl sticky top-0 w-full z-50 shadow-none no-border bg-surface-container-low/50">
+<header class="bg-surface/80 backdrop-blur-xl sticky top-0 w-full z-50 shadow-none no-border bg-surface-container-low/50">
 <div class="flex justify-between items-center px-6 h-16 w-full max-w-none">
 <div class="flex items-center gap-4">
-<span class="text-xl font-extrabold text-[#F15A24] tracking-tight">DeelMarkt</span>
+<span class="text-xl font-extrabold text-primary tracking-tight">DeelMarkt</span>
 </div>
 <div class="hidden md:flex items-center gap-8">
 <a class="text-[#444746] font-semibold hover:bg-[#ebe7e7] px-3 py-1 rounded-lg transition-colors" href="#">Verkennen</a>
-<a class="text-[#F15A24] font-bold px-3 py-1 rounded-lg" href="#">Berichten</a>
+<a class="text-primary font-bold px-3 py-1 rounded-lg" href="#">Berichten</a>
 <a class="text-[#444746] font-semibold hover:bg-[#ebe7e7] px-3 py-1 rounded-lg transition-colors" href="#">Mijn Advertenties</a>
 </div>
 <div class="flex items-center gap-4">
@@ -102,7 +101,7 @@
 <!-- Context Header: Product Info -->
 <div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl shadow-sm">
 <div class="w-16 h-16 bg-surface-container rounded-lg overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="close-up of premium wireless headphones on a wooden table with warm cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj18Pu7QabJWPT2sGid5LdNoCwVQ9tkJTSqWNzVkAnOzP7PtmkiKVmEmzdOZilmu-gkikWWLcm0PDslzLH8LUUBNZ454mYCkgKie2Rx9MGqsYH_2ZJqzE21sykpdRNQmG5ZxrQgj29wmLHopugrZFjAoNz8n44qodwjvu_gKxppJONhh4PydRwCDzmtktIpCWEv3bLF1_LepN-9bYP47dfEZkufxtdIkqKbimONYr_sxFoY1ROm2J_LuKgez1FIgouf1QpMU6fILH8"/>
+<img class="w-full h-full object-cover" alt="close-up of premium wireless headphones on a wooden table with warm cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj18Pu7QabJWPT2sGid5LdNoCwVQ9tkJTSqWNzVkAnOzP7PtmkiKVmEmzdOZilmu-gkikWWLcm0PDslzLH8LUUBNZ454mYCkgKie2Rx9MGqsYH_2ZJqzE21sykpdRNQmG5ZxrQgj29wmLHopugrZFjAoNz8n44qodwjvu_gKxppJONhh4PydRwCDzmtktIpCWEv3bLF1_LepN-9bYP47dfEZkufxtdIkqKbimONYr_sxFoY1ROm2J_LuKgez1FIgouf1QpMU6fILH8"/>
 </div>
 <div class="flex-grow">
 <h2 class="font-bold text-on-surface leading-tight">Bose QuietComfort Special Edition</h2>
@@ -184,7 +183,7 @@
 </div>
 </div>
 <!-- BottomNavBar (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-[#fcf9f8]/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] no-border bg-surface-container-low/50">
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-surface/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] no-border bg-surface-container-low/50">
 <div class="flex flex-col items-center justify-center text-[#444746] opacity-70 hover:opacity-100 transition-opacity">
 <span class="material-symbols-outlined">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Explore</span>
@@ -193,7 +192,7 @@
 <span class="material-symbols-outlined">favorite</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Saved</span>
 </div>
-<div class="flex flex-col items-center justify-center text-[#F15A24] scale-110">
+<div class="flex flex-col items-center justify-center text-primary scale-110">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Messages</span>
 </div>

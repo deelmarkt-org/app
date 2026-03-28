@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -51,7 +50,7 @@
               "on-surface": "#1c1b1b",
               "primary-container": "#d1430a",
               "secondary-container": "#a1cdff",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "inverse-primary": "#ffb59e",
               "on-primary-container": "#fffbff",
               "on-secondary-fixed-variant": "#164974",
@@ -77,13 +76,13 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .bg-primary-gradient {
-            background: linear-gradient(135deg, #a93200 0%, #d1430a 100%);
+            background: linear-gradient(135deg, #F15A24 0%, #d1430a 100%);
         }
     </style>
 </head>
 <body class="bg-surface-container-low text-on-surface antialiased min-h-screen">
 <!-- TopNavBar -->
-<header class="sticky top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl shadow-sm">
+<header class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm">
 <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
 <div class="flex items-center gap-4">
 <button class="text-on-surface-variant hover:text-primary transition-colors">
@@ -92,8 +91,8 @@
 <h1 class="text-xl font-black text-[#121212] plus-jakarta-sans font-bold tracking-tight">Details</h1>
 </div>
 <div class="flex items-center gap-6">
-<span class="hidden md:block text-[#4a4a4a] text-sm font-medium hover:text-[#F15A24] transition-all duration-200 cursor-pointer">Draft opslaan</span>
-<button class="text-[#F15A24] font-bold text-sm scale-95 active:scale-90 transition-transform">Volgende</button>
+<span class="hidden md:block text-[#4a4a4a] text-sm font-medium hover:text-primary transition-all duration-200 cursor-pointer">Draft opslaan</span>
+<button class="text-primary font-bold text-sm scale-95 active:scale-90 transition-transform">Volgende</button>
 </div>
 </div>
 </header>
@@ -105,8 +104,8 @@
 <h2 class="text-sm font-bold uppercase tracking-widest text-outline mb-4">Live Preview</h2>
 <div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.04)] border border-outline-variant/10">
 <div class="aspect-[4/3] bg-surface-container-highest relative overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="professional sleek black aero triathlon bike leaning against a minimalist concrete wall in a bright modern studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfd6jihgDrUW3lRVUwhstrYnnGQt5PEFxBh2piCNB2T_SOsTdDAuPfXQIoqI2OU9lEpvMQHDsH0CG9CwAhWgDnbODXguDSRhjG4xnXdvvnsr8Pe_mcXve73zAwR7Aan6CCg0Dj14Th7LQa6EntXLYdrglfuinX5dF1k4x6kVubmLIMT8dNtwKsZvrEYro1LNcpjO1tC_2piMMcn41YOPh8nTtSlvp99E8iEKSBaNxI4A-EeGQRAD_Muwbkv7s5T3PmLNemQOuT6aVl"/>
-<div class="absolute top-4 left-4 bg-[#fcf9f8]/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
+<img class="w-full h-full object-cover" alt="professional sleek black aero triathlon bike leaning against a minimalist concrete wall in a bright modern studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfd6jihgDrUW3lRVUwhstrYnnGQt5PEFxBh2piCNB2T_SOsTdDAuPfXQIoqI2OU9lEpvMQHDsH0CG9CwAhWgDnbODXguDSRhjG4xnXdvvnsr8Pe_mcXve73zAwR7Aan6CCg0Dj14Th7LQa6EntXLYdrglfuinX5dF1k4x6kVubmLIMT8dNtwKsZvrEYro1LNcpjO1tC_2piMMcn41YOPh8nTtSlvp99E8iEKSBaNxI4A-EeGQRAD_Muwbkv7s5T3PmLNemQOuT6aVl"/>
+<div class="absolute top-4 left-4 bg-surface/80 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1">
 <span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
 <span class="text-[10px] font-bold text-on-surface uppercase tracking-tight">Geverifieerd</span>
 </div>
@@ -235,7 +234,7 @@
 </div>
 </main>
 <!-- BottomNavBar (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl border-t border-[#ebe7e7]/15 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] flex justify-around items-center px-4 pb-6 pt-3">
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-t border-[#ebe7e7]/15 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] flex justify-around items-center px-4 pb-6 pt-3">
 <div class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60">
 <span class="material-symbols-outlined">explore</span>
 <span class="text-[10px] font-semibold plus-jakarta-sans">Ontdekken</span>
@@ -244,7 +243,7 @@
 <span class="material-symbols-outlined">chat_bubble</span>
 <span class="text-[10px] font-semibold plus-jakarta-sans">Berichten</span>
 </div>
-<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-2">
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-2">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
 <span class="text-[10px] font-semibold plus-jakarta-sans">Verkopen</span>
 </div>

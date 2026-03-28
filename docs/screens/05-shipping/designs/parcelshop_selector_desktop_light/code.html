@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -25,7 +24,7 @@
               "on-primary-container": "#fffbff",
               "on-background": "#1c1b1b",
               "surface-container-highest": "#e5e2e1",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-secondary-fixed": "#001d35",
               "tertiary-fixed-dim": "#65df75",
               "primary-fixed-dim": "#ffb59e",
@@ -82,14 +81,14 @@
 </head>
 <body class="bg-surface text-on-surface min-h-screen">
 <!-- Top Navigation Bar (Shared Component) -->
-<nav class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl shadow-sm">
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm">
 <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
 <div class="flex items-center gap-12">
-<span class="text-2xl font-bold text-[#F15A24] tracking-tight">DeelMarkt</span>
+<span class="text-2xl font-bold text-primary tracking-tight">DeelMarkt</span>
 <div class="hidden md:flex gap-8">
-<a class="text-[#34618d] font-medium hover:text-[#a93200] transition-colors duration-200" href="#">Marketplace</a>
-<a class="text-[#F15A24] font-bold border-b-2 border-[#F15A24] hover:text-[#a93200] transition-colors duration-200" href="#">Service Points</a>
-<a class="text-[#34618d] font-medium hover:text-[#a93200] transition-colors duration-200" href="#">My Shipments</a>
+<a class="text-[#34618d] font-medium hover:text-primary transition-colors duration-200" href="#">Marketplace</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] hover:text-primary transition-colors duration-200" href="#">Service Points</a>
+<a class="text-[#34618d] font-medium hover:text-primary transition-colors duration-200" href="#">My Shipments</a>
 </div>
 </div>
 <div class="flex items-center gap-4">
@@ -119,10 +118,10 @@
 <span class="text-[10px] font-bold uppercase tracking-wider text-[#34618d]">Ship</span>
 </div>
 <div class="flex flex-col items-center gap-1">
-<div class="p-3 bg-[#F15A24]/10 text-[#F15A24] rounded-xl transition-all cursor-pointer">
+<div class="p-3 bg-primary/10 text-primary rounded-xl transition-all cursor-pointer">
 <span class="material-symbols-outlined" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
 </div>
-<span class="text-[10px] font-bold uppercase tracking-wider text-[#F15A24]">Points</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Points</span>
 </div>
 <div class="mt-auto flex flex-col items-center gap-1">
 <div class="p-3 text-[#34618d] rounded-xl hover:bg-surface-container transition-all cursor-pointer">
@@ -200,7 +199,7 @@
 </div>
 <!-- Map Integration (Conceptual Layout) -->
 <div class="w-full h-64 bg-surface-container-high rounded-3xl overflow-hidden mb-10 relative group">
-<img alt="Map view of Amsterdam city center" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="overhead map view of urban city grid with marked location pin and clean navigational UI aesthetic" data-location="Amsterdam" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUOJXmH8B8rOPKCv0rIyqcQmI8uto-s4pSOQxtVIbVC0wgmqMxd6Apq7V7HkX8wxjPG3HyApymZKfK00Ozu9EjJ7vIcFWNMwW4o3G9clf2vMjZpu0cZwCbvZdv2ym5_RQHRH3bOUOB-7iFbiK6o-MhG96nJ0RreRtE3WrS2pJl3UfJsY3MZqaKDg25StNIa13SR9dNnbaMJJUEpm5J2vWHNILe9LB-Vqd6r2VNMCUEfOp6aYnUPhx_bszP7kSdPqUz_8mTsQo4aNa_"/>
+<img alt="Map view of Amsterdam city center" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="overhead map view of urban city grid with marked location pin and clean navigational UI aesthetic" data-location="Amsterdam" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUOJXmH8B8rOPKCv0rIyqcQmI8uto-s4pSOQxtVIbVC0wgmqMxd6Apq7V7HkX8wxjPG3HyApymZKfK00Ozu9EjJ7vIcFWNMwW4o3G9clf2vMjZpu0cZwCbvZdv2ym5_RQHRH3bOUOB-7iFbiK6o-MhG96nJ0RreRtE3WrS2pJl3UfJsY3MZqaKDg25StNIa13SR9dNnbaMJJUEpm5J2vWHNILe9LB-Vqd6r2VNMCUEfOp6aYnUPhx_bszP7kSdPqUz_8mTsQo4aNa_"/>
 <div class="absolute inset-0 bg-primary/10 mix-blend-multiply opacity-20"></div>
 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary p-4 rounded-full shadow-2xl ring-4 ring-white">
 <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
@@ -286,7 +285,7 @@
 </main>
 <!-- Mobile Navigation Bar (Suppressed on Desktop) -->
 <footer class="md:hidden">
-<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+<div class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-surface/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
 <div class="flex flex-col items-center justify-center text-[#34618d]">
 <span class="material-symbols-outlined" data-icon="search">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Explore</span>
@@ -295,7 +294,7 @@
 <span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Ship</span>
 </div>
-<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-1">
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-1">
 <span class="material-symbols-outlined" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Points</span>
 </div>

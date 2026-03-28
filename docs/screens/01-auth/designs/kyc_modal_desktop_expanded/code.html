@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .material-symbols-outlined {
@@ -64,7 +63,7 @@
                         "tertiary-fixed-dim": "#65df75",
                         "tertiary-fixed": "#82fc8e",
                         "tertiary-container": "#008730",
-                        "primary": "#a93200",
+                        "primary": "#F15A24",
                         "outline": "#8e7067"
                     },
                     fontFamily: {
@@ -80,13 +79,13 @@
 </head>
 <body class="bg-surface text-on-surface min-h-screen overflow-hidden">
 <!-- Top Navigation Bar -->
-<nav class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl">
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl">
 <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-<div class="text-2xl font-black text-[#F15A24] tracking-tighter">Honest Exchange</div>
+<div class="text-2xl font-black text-primary tracking-tighter">DeelMarkt</div>
 <div class="hidden md:flex items-center space-x-8">
-<a class="text-[#F15A24] border-b-2 border-[#F15A24] pb-1 font-bold tracking-tight" href="#">Marketplace</a>
-<a class="text-[#34618d] font-medium hover:text-[#a93200] transition-colors" href="#">Deals</a>
-<a class="text-[#34618d] font-medium hover:text-[#a93200] transition-colors" href="#">Verify</a>
+<a class="text-primary border-b-2 border-[#F15A24] pb-1 font-bold tracking-tight" href="#">Marketplace</a>
+<a class="text-[#34618d] font-medium hover:text-primary transition-colors" href="#">Deals</a>
+<a class="text-[#34618d] font-medium hover:text-primary transition-colors" href="#">Verify</a>
 </div>
 <div class="flex items-center space-x-4">
 <button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">notifications</button>
@@ -97,20 +96,20 @@
 <!-- Side Navigation / Rail -->
 <aside class="fixed left-0 top-0 h-full w-20 bg-surface flex flex-col items-center pt-24 space-y-8 z-40 hidden md:flex">
 <div class="flex flex-col items-center space-y-1 group cursor-pointer">
-<span class="material-symbols-outlined text-[#F15A24] bg-[#F15A24]/10 p-3 rounded-xl">storefront</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-[#F15A24]">Shop</span>
+<span class="material-symbols-outlined text-primary bg-primary/10 p-3 rounded-xl">storefront</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Shop</span>
 </div>
 <div class="flex flex-col items-center space-y-1 group cursor-pointer">
-<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors p-3">verified_user</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-primary">Trust</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors p-3">verified_user</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant group-hover:text-primary">Trust</span>
 </div>
 <div class="flex flex-col items-center space-y-1 group cursor-pointer">
-<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors p-3">chat_bubble</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-primary">Inbox</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors p-3">chat_bubble</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant group-hover:text-primary">Inbox</span>
 </div>
 <div class="flex flex-col items-center space-y-1 group cursor-pointer">
-<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors p-3">person</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-primary">Profile</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors p-3">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant group-hover:text-primary">Profile</span>
 </div>
 </aside>
 <!-- Main Content (Listing Detail Mockup Background) -->
@@ -118,17 +117,17 @@
 <!-- Gallery Section -->
 <section class="space-y-6">
 <div class="aspect-[4/3] rounded-[2rem] overflow-hidden bg-surface-container">
-<img class="w-full h-full object-cover" data-alt="high-end carbon fiber road bike with matte finish, studio lighting, deep shadows, professional cycling photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt8s4cM7DQ-XpRf9EbzQSHZgvBrmRDlS1JbcLLBkZ8oIyma2YKitdF6g_Ds5r_6Kyf98vN512LMi5s0fL64eEny4fdLejpeNPteeL1nSFvfKXX1Bui1xf8dFPxQpi4dQpZMNYqXJimAqcJELTYzQjRovItu4YCeHF3m9C1XdBarMwYwXvZ-Qx1Gf5cDTMWsHZMWbEgdBYJcPxOktK5UFy3uuXKhKFy8NKv_xQwbxJ-6hvIXR81vdS4V59jkDx4s0rz--gnXanRJcEm"/>
+<img class="w-full h-full object-cover" alt="high-end carbon fiber road bike with matte finish, studio lighting, deep shadows, professional cycling photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt8s4cM7DQ-XpRf9EbzQSHZgvBrmRDlS1JbcLLBkZ8oIyma2YKitdF6g_Ds5r_6Kyf98vN512LMi5s0fL64eEny4fdLejpeNPteeL1nSFvfKXX1Bui1xf8dFPxQpi4dQpZMNYqXJimAqcJELTYzQjRovItu4YCeHF3m9C1XdBarMwYwXvZ-Qx1Gf5cDTMWsHZMWbEgdBYJcPxOktK5UFy3uuXKhKFy8NKv_xQwbxJ-6hvIXR81vdS4V59jkDx4s0rz--gnXanRJcEm"/>
 </div>
 <div class="grid grid-cols-3 gap-4">
 <div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
-<img class="w-full h-full object-cover" data-alt="detail shot of bicycle gears and chain, macro photography, oil on metal texture, warm indoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaD59BHGrqdh-FTicGmqYLzRE7KGy8eLBsZs4wics3ZjuEcCqC80lIJ41NWeIG4rg7T6O7q3tFwlhP0qN_QCM7bfo5jwCbCdgBCMpEpQGH2Afi5y7UB8mdP95QgLsrfZgOPOO-OaTH7yHZkgPg9BIhyJb-cuXx6G-HimIiI13HcQ1d6QNJO9t0jvMP-3ny3XU1qENVSi8Y3Ngnnswe-jJH5bL4tGU6hCKaGitEimNmqI7XkA8aTMcrW4YgNGrCkrYKAl4IINaC4xAv"/>
+<img class="w-full h-full object-cover" alt="detail shot of bicycle gears and chain, macro photography, oil on metal texture, warm indoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaD59BHGrqdh-FTicGmqYLzRE7KGy8eLBsZs4wics3ZjuEcCqC80lIJ41NWeIG4rg7T6O7q3tFwlhP0qN_QCM7bfo5jwCbCdgBCMpEpQGH2Afi5y7UB8mdP95QgLsrfZgOPOO-OaTH7yHZkgPg9BIhyJb-cuXx6G-HimIiI13HcQ1d6QNJO9t0jvMP-3ny3XU1qENVSi8Y3Ngnnswe-jJH5bL4tGU6hCKaGitEimNmqI7XkA8aTMcrW4YgNGrCkrYKAl4IINaC4xAv"/>
 </div>
 <div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
-<img class="w-full h-full object-cover" data-alt="bicycle handlebar detail with leather grips, shallow depth of field, natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMP_2yrnOGxbHCHM8Ym_V9Ej2XTPbv-aLK7cLGirQ8RtKFZ9u3sJyNurlTFw2bIRgJ59IFIcUp3FudS8l8zbfnzEKFlVxpAJXh0CdPKn8bGASnCQ1NqBdn007-mtPYGq70AdgfAdcghhvRXzMJTykgKJ1VPRZ63p4b6LF97AZ4MLLmp98aLsSd0bJob9dJ5zowcw0ByZri47cV36g5mPL6sVZlncuwZAPYpGKHeDB8nr4LXD4HcZWA0Jxlb4hd9z3mJkDAc4z6tyOX"/>
+<img class="w-full h-full object-cover" alt="bicycle handlebar detail with leather grips, shallow depth of field, natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMP_2yrnOGxbHCHM8Ym_V9Ej2XTPbv-aLK7cLGirQ8RtKFZ9u3sJyNurlTFw2bIRgJ59IFIcUp3FudS8l8zbfnzEKFlVxpAJXh0CdPKn8bGASnCQ1NqBdn007-mtPYGq70AdgfAdcghhvRXzMJTykgKJ1VPRZ63p4b6LF97AZ4MLLmp98aLsSd0bJob9dJ5zowcw0ByZri47cV36g5mPL6sVZlncuwZAPYpGKHeDB8nr4LXD4HcZWA0Jxlb4hd9z3mJkDAc4z6tyOX"/>
 </div>
 <div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low">
-<img class="w-full h-full object-cover" data-alt="bicycle frame serial number and branding, high contrast architectural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcp727ujNisJ-Ck4O3Js2HjPDmILNG3nDFiUj6mFA04ZrnOeVnjFb50E2GXwqkquDx5dWKTv1negCx4tADl5J7W6-0RBvyLYYOEAm7RA8_7UQVDi-QScQ0aVr4gno7dqMWJ9U1yUPs--Tgxi30qCE71mCw0grB31iSOCMkr19oocPgsn7RRNzKd4ZEzTR1qqS-emMkkDBKbc0HaL95EmUkLsn1YjKWkvMUO5H1Vcw1GbzuHWL1KFfJfFsNQJkrzb7bcVZ8Yn9ZGlam"/>
+<img class="w-full h-full object-cover" alt="bicycle frame serial number and branding, high contrast architectural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcp727ujNisJ-Ck4O3Js2HjPDmILNG3nDFiUj6mFA04ZrnOeVnjFb50E2GXwqkquDx5dWKTv1negCx4tADl5J7W6-0RBvyLYYOEAm7RA8_7UQVDi-QScQ0aVr4gno7dqMWJ9U1yUPs--Tgxi30qCE71mCw0grB31iSOCMkr19oocPgsn7RRNzKd4ZEzTR1qqS-emMkkDBKbc0HaL95EmUkLsn1YjKWkvMUO5H1Vcw1GbzuHWL1KFfJfFsNQJkrzb7bcVZ8Yn9ZGlam"/>
 </div>
 </div>
 </section>
@@ -145,11 +144,11 @@
 <div class="p-6 bg-surface-container-low rounded-2xl space-y-4">
 <div class="flex items-center gap-4">
 <div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden">
-<img class="w-full h-full object-cover" data-alt="professional headshot of a smiling middle-aged man, outdoor natural lighting, soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqKnTNbiclk6Y7FoPqTkqCYpr3mi2zf3Ks7LiJxW-Np5Oj9nWW0WJL0xCLIF-fuxqAqOpgF9bh-uGaYWMfN2XqbUAOO9aR45EuI1Z5Kwk2ReFiNpgE1YVU75NdnLclWdpmzsZBV0h1qZeG2Nrzx56ATKLTrxY7YV_N3G17tfzIH9iY_PVOQLVNLLtMLgBaAe7lqaAOu04zbLFNKoZRgN6reJeY9eJWblLeo-7tcFEN-PaZZ5pwPPJtIoHf1JtkGK2X2fIl6NDvLivh"/>
+<img class="w-full h-full object-cover" alt="professional headshot of a smiling middle-aged man, outdoor natural lighting, soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqKnTNbiclk6Y7FoPqTkqCYpr3mi2zf3Ks7LiJxW-Np5Oj9nWW0WJL0xCLIF-fuxqAqOpgF9bh-uGaYWMfN2XqbUAOO9aR45EuI1Z5Kwk2ReFiNpgE1YVU75NdnLclWdpmzsZBV0h1qZeG2Nrzx56ATKLTrxY7YV_N3G17tfzIH9iY_PVOQLVNLLtMLgBaAe7lqaAOu04zbLFNKoZRgN6reJeY9eJWblLeo-7tcFEN-PaZZ5pwPPJtIoHf1JtkGK2X2fIl6NDvLivh"/>
 </div>
 <div>
 <p class="font-bold">Pieter V. <span class="text-xs font-normal text-on-surface-variant ml-2">Lid sinds 2018</span></p>
-<div class="flex text-[#F15A24]">
+<div class="flex text-primary">
 <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
 <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
 <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>

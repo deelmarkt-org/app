@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -48,7 +47,7 @@
               "on-surface": "#1c1b1b",
               "on-primary-fixed": "#3a0b00",
               "surface-container": "#f0edec",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed-variant": "#00531a",
               "surface-container-low": "#f6f3f2",
               "on-secondary-container": "#285782",
@@ -89,14 +88,14 @@
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- SideNavBar (Authority: JSON) -->
-<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-neutral-50 dark:bg-neutral-950 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-surface dark:bg-surface flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
 <div class="mb-8 px-4 py-2">
-<h1 class="text-lg font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">Moderation Hub</h1>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary tracking-tighter">Moderation Hub</h1>
 <p class="text-xs text-neutral-500 font-medium">Admin Control Panel</p>
 </div>
 <nav class="flex-1 space-y-1">
 <!-- Active State: Dashboard -->
-<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm rounded-lg py-2.5 px-4 mb-1 custom-bezier" href="#">
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 custom-bezier" href="#">
 <span class="material-symbols-outlined text-lg">dashboard</span>
 <span>Dashboard</span>
 </a>
@@ -133,7 +132,7 @@
 </div>
 </aside>
 <!-- TopNavBar (Authority: JSON) -->
-<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl flex justify-between items-center h-16 px-6 ml-64 shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-surface/80 backdrop-blur-xl flex justify-between items-center h-16 px-6 ml-64 shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
 <div class="flex items-center gap-4 flex-1">
 <div class="relative w-full max-w-md">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-lg">search</span>
@@ -149,7 +148,7 @@
 </button>
 <div class="h-8 w-px bg-neutral-200 mx-2"></div>
 <div class="flex items-center gap-3 pl-2">
-<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white" data-alt="professional portrait of a male system administrator in a modern office setting with warm natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFvUo0jf9DfhJ9_HDrNlfUwdyx5MPEBPKb6jOM3OCLxE4XHWClOgQ56N97oFdIbKRReQxCvIhMwMzqZtyDuUvSJ_7e6SZNcWnavSza8lkn250vZwjrKUzC2pMWIS2SMi5ilmnYzoa_c5m4pKGTmuDYBVY1vk49LnGPxIZk48LDViTiTX6-7bR0F8VxmgMiLeP1MOl6eiOF1VVOmdP-iP9POf3eFOlD2pXrnj5GMWrtauv4tVuEXyaMBQs4eAyVmjm0oh9oyXUsqhvn"/>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full object-cover ring-2 ring-white" alt="professional portrait of a male system administrator in a modern office setting with warm natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFvUo0jf9DfhJ9_HDrNlfUwdyx5MPEBPKb6jOM3OCLxE4XHWClOgQ56N97oFdIbKRReQxCvIhMwMzqZtyDuUvSJ_7e6SZNcWnavSza8lkn250vZwjrKUzC2pMWIS2SMi5ilmnYzoa_c5m4pKGTmuDYBVY1vk49LnGPxIZk48LDViTiTX6-7bR0F8VxmgMiLeP1MOl6eiOF1VVOmdP-iP9POf3eFOlD2pXrnj5GMWrtauv4tVuEXyaMBQs4eAyVmjm0oh9oyXUsqhvn"/>
 <span class="text-sm font-semibold text-neutral-900">Admin</span>
 </div>
 </div>
@@ -167,8 +166,8 @@
 <!-- Stat Card 1 -->
 <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-neutral-100 flex flex-col justify-between">
 <div class="flex justify-between items-start mb-4">
-<span class="material-symbols-outlined text-orange-600 bg-orange-50 p-2 rounded-lg">gavel</span>
-<span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-full">+2 vandaag</span>
+<span class="material-symbols-outlined text-primary bg-orange-50 p-2 rounded-lg">gavel</span>
+<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">+2 vandaag</span>
 </div>
 <div>
 <p class="text-3xl font-extrabold text-on-surface tracking-tight">12</p>

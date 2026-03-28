@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -23,7 +22,7 @@
               "on-tertiary": "#ffffff",
               "on-surface-variant": "#5a4139",
               "surface-container-lowest": "#ffffff",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-primary-container": "#fffbff",
               "on-secondary": "#ffffff",
               "surface-dim": "#dcd9d9",
@@ -83,9 +82,9 @@
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl transition-colors duration-300">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl transition-colors duration-300">
 <div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto">
-<div class="text-2xl font-black tracking-tighter text-[#F15A24]">DeelMarkt</div>
+<div class="text-2xl font-black tracking-tighter text-primary">DeelMarkt</div>
 <div class="flex items-center gap-6">
 <div class="hidden md:flex items-center bg-surface-container-high px-4 py-2 rounded-full w-96 transition-all focus-within:ring-2 focus-within:ring-primary/20">
 <span class="material-symbols-outlined text-outline text-xl">search</span>
@@ -96,16 +95,16 @@
 <span class="material-symbols-outlined text-[#34618d]">notifications</span>
 </button>
 <div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary/10">
-<img class="h-full w-full object-cover" data-alt="close up portrait of a professional smiling man in a clean modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABJYgGvPoO2ya-e_d0kTTmSQxcfkfKfdrjUH5cam56G28EGgvLclmqY8q_YVKBz-sQmGlSfnO4CdXbW33W7goR3QFYDYnGIeA54rvl-Std2RLArUAG_HfqyJzJt1X0dBHoeUJwIdTHMRM0r4vfteQYewAWpdP2dS7DdiLsAkqdfKGtpgWoxz30ToYDQLl2Pc1yWfd9UXWbQHo4lXUTzNhjHVm78HD7xOUJ-9gYgZI2GT4SS0JkxDtjYKa1kMJBsXoBgNQi-L0Ve33X"/>
+<img class="h-full w-full object-cover" alt="close up portrait of a professional smiling man in a clean modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABJYgGvPoO2ya-e_d0kTTmSQxcfkfKfdrjUH5cam56G28EGgvLclmqY8q_YVKBz-sQmGlSfnO4CdXbW33W7goR3QFYDYnGIeA54rvl-Std2RLArUAG_HfqyJzJt1X0dBHoeUJwIdTHMRM0r4vfteQYewAWpdP2dS7DdiLsAkqdfKGtpgWoxz30ToYDQLl2Pc1yWfd9UXWbQHo4lXUTzNhjHVm78HD7xOUJ-9gYgZI2GT4SS0JkxDtjYKa1kMJBsXoBgNQi-L0Ve33X"/>
 </div>
 </div>
 </div>
 </div>
 </header>
 <!-- SideNavBar (Navigation Rail) -->
-<aside class="fixed left-0 top-0 h-full w-[72px] z-40 bg-[#fcf9f8] border-r border-[#f15a24]/10 flex flex-col items-center py-20 gap-y-6">
+<aside class="fixed left-0 top-0 h-full w-[72px] z-40 bg-surface border-r border-[#f15a24]/10 flex flex-col items-center py-20 gap-y-6">
 <nav class="flex flex-col items-center gap-y-8">
-<a class="flex flex-col items-center gap-1 text-[#F15A24] font-bold bg-[#f15a24]/5 rounded-xl border-r-2 border-[#F15A24] p-2 w-14 transition-all hover:translate-x-1" href="#">
+<a class="flex flex-col items-center gap-1 text-primary font-bold bg-[#f15a24]/5 rounded-xl border-r-2 border-[#F15A24] p-2 w-14 transition-all hover:translate-x-1" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
 <span class="text-[10px] tracking-tight font-semibold">Home</span>
 </a>
@@ -201,7 +200,7 @@
 <!-- Card 1: Gazelle Fiets -->
 <article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="high-end Dutch city bicycle parked against a brick wall in a sunlit Amsterdam street" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA92kVjPUm9PStUAh2Ir7g1tkrD9LTzjW8KwNG87XvxBw6ZDFTfGkNB1_GHEr9vyc-U58soHFED5vRHWpsanQX_PLgcT5wQrfgG39tPlos0D53e0dcYFOiOOROY_45FCrv51O7xiy8zMhdxkKmvJ2kxvdRAX_TEpOaVcvSNViZgYlzX4R5X1ppQ497gmSElYDTAatlE9pxTJZKmRKgFT2JKKvbLvaBrEimLLRsL7f9WkGsR36V9nASbOgiENNzzO6CzAdDy2ONWSHw-"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="high-end Dutch city bicycle parked against a brick wall in a sunlit Amsterdam street" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA92kVjPUm9PStUAh2Ir7g1tkrD9LTzjW8KwNG87XvxBw6ZDFTfGkNB1_GHEr9vyc-U58soHFED5vRHWpsanQX_PLgcT5wQrfgG39tPlos0D53e0dcYFOiOOROY_45FCrv51O7xiy8zMhdxkKmvJ2kxvdRAX_TEpOaVcvSNViZgYlzX4R5X1ppQ497gmSElYDTAatlE9pxTJZKmRKgFT2JKKvbLvaBrEimLLRsL7f9WkGsR36V9nASbOgiENNzzO6CzAdDy2ONWSHw-"/>
 <button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
 <span class="material-symbols-outlined text-outline">favorite</span>
 </button>
@@ -209,7 +208,7 @@
 <div class="p-5">
 <div class="flex items-center gap-2 mb-3">
 <div class="h-6 w-6 rounded-full overflow-hidden">
-<img class="h-full w-full object-cover" data-alt="portrait of a friendly middle-aged man smiling for a profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBYSACmIIRtbxZ8mTUxn4mbPVa04T-vKqE9xr_PoQaHquDSWAZypTiLx8RX6lhX2F8IU6DbdQydEWzFgBWlo8hCa7NhtSWQVx69fuX010W-TMcc_xrd_EEnA8lWbXwroReFcukm1Grt3bVVNRuvcXzEohgII0b67lK3CvAAWg39hcLIF3Yv9g1LY4vNg4j7FwdbxBd7cKfSig3ZKblv-4SjEmxvnFAF3dGiPX6PMlGlw4PwHri6YNPiaThw1J3Y3Au-ICFnBUGUFV6"/>
+<img class="h-full w-full object-cover" alt="portrait of a friendly middle-aged man smiling for a profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBYSACmIIRtbxZ8mTUxn4mbPVa04T-vKqE9xr_PoQaHquDSWAZypTiLx8RX6lhX2F8IU6DbdQydEWzFgBWlo8hCa7NhtSWQVx69fuX010W-TMcc_xrd_EEnA8lWbXwroReFcukm1Grt3bVVNRuvcXzEohgII0b67lK3CvAAWg39hcLIF3Yv9g1LY4vNg4j7FwdbxBd7cKfSig3ZKblv-4SjEmxvnFAF3dGiPX6PMlGlw4PwHri6YNPiaThw1J3Y3Au-ICFnBUGUFV6"/>
 </div>
 <span class="text-[10px] font-bold tracking-wider text-outline uppercase">Geverifieerde Verkoper</span>
 </div>
@@ -226,7 +225,7 @@
 <!-- Card 2: Nike Sneakers -->
 <article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="premium red nike sneakers displayed on a minimalist white pedestal with sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE-vA0y7hB6ppfhzNJ2tAWScEA9RQpd7UuP4Muc0P-LGO4VJQ1wNqvV5WS_m7wvJ27nasNoT-sFHZWaMCE1vEJ847-kqO6I3wN-OWBqyQZeX5ZqVghuNYbhjCsEDaKI3kC1-y5u9IeIJRSbIJtIWzH64bdQGbTQDRf58D5JvsApmO2ld8bspt838Y74t60m-fzuacSKTdcc-B89tzpmFcabkSKsANczDrx_nRrcVXbDUVb-puWGnxSOgtW6fcIiijuVMLOD3Hlh8RA"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="premium red nike sneakers displayed on a minimalist white pedestal with sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE-vA0y7hB6ppfhzNJ2tAWScEA9RQpd7UuP4Muc0P-LGO4VJQ1wNqvV5WS_m7wvJ27nasNoT-sFHZWaMCE1vEJ847-kqO6I3wN-OWBqyQZeX5ZqVghuNYbhjCsEDaKI3kC1-y5u9IeIJRSbIJtIWzH64bdQGbTQDRf58D5JvsApmO2ld8bspt838Y74t60m-fzuacSKTdcc-B89tzpmFcabkSKsANczDrx_nRrcVXbDUVb-puWGnxSOgtW6fcIiijuVMLOD3Hlh8RA"/>
 <button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
 <span class="material-symbols-outlined text-outline">favorite</span>
 </button>
@@ -234,7 +233,7 @@
 <div class="p-5">
 <div class="flex items-center gap-2 mb-3">
 <div class="h-6 w-6 rounded-full overflow-hidden">
-<img class="h-full w-full object-cover" data-alt="portrait of a young smiling professional woman with bright eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcR0A8gxbBOABklXK_w7W9ZGa4fl8OKhP29yvsGXKi-eBzsV6DAbMsjSVJG-rMpBdOg8HG0_LEs3r9uP2xn5daidJGtBQBFu_aKnT_GgA58AgVDOS-LDYq1gGU19E1k_5b6iBcEiAoeS-uTCO8x0_yQsxIRHMvKKp7ebvPTlVj026b1SVWaVgPdeX3g4NdA4foEQAe6sDD4aLZuQSu9aN_kPNPKhsDrgCUpPLHIr9ZqMk25tb8f_W8HcQUwML5DH9Ah6G5BvQqfoVh"/>
+<img class="h-full w-full object-cover" alt="portrait of a young smiling professional woman with bright eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcR0A8gxbBOABklXK_w7W9ZGa4fl8OKhP29yvsGXKi-eBzsV6DAbMsjSVJG-rMpBdOg8HG0_LEs3r9uP2xn5daidJGtBQBFu_aKnT_GgA58AgVDOS-LDYq1gGU19E1k_5b6iBcEiAoeS-uTCO8x0_yQsxIRHMvKKp7ebvPTlVj026b1SVWaVgPdeX3g4NdA4foEQAe6sDD4aLZuQSu9aN_kPNPKhsDrgCUpPLHIr9ZqMk25tb8f_W8HcQUwML5DH9Ah6G5BvQqfoVh"/>
 </div>
 <span class="text-[10px] font-bold tracking-wider text-outline uppercase">Snelle Reactie</span>
 </div>
@@ -251,7 +250,7 @@
 <!-- Card 3: IKEA Bank -->
 <article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="modern green velvet sofa in a clean brightly lit scandinavian style living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2zJPyfvrYAYtyREL2uKkWEv7ubYgHHE4ZmbES-JDHVLhJ_xJWIF2m48wXB78MDnNoObnCS2YpyhD_kEtLBdwd7J68kptxX5ijhCSAcanQ0ICXnqVrt5LLMm_1jalJDk-1aiXZSbm9iLJ72QZPoAJ8fsyCXvp9qWp00jXmnWIDzE3mYNV-KBC5Z5zZOk0M3cpDs15D-2SgX1Kjh0cjV4WX1wZnXORgAd1d03JgbTdpKTbBYHyaEJxDXu8MWoMLzC-g4fTLV5nF_MVU"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="modern green velvet sofa in a clean brightly lit scandinavian style living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2zJPyfvrYAYtyREL2uKkWEv7ubYgHHE4ZmbES-JDHVLhJ_xJWIF2m48wXB78MDnNoObnCS2YpyhD_kEtLBdwd7J68kptxX5ijhCSAcanQ0ICXnqVrt5LLMm_1jalJDk-1aiXZSbm9iLJ72QZPoAJ8fsyCXvp9qWp00jXmnWIDzE3mYNV-KBC5Z5zZOk0M3cpDs15D-2SgX1Kjh0cjV4WX1wZnXORgAd1d03JgbTdpKTbBYHyaEJxDXu8MWoMLzC-g4fTLV5nF_MVU"/>
 <button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
 <span class="material-symbols-outlined text-outline">favorite</span>
 </button>
@@ -259,7 +258,7 @@
 <div class="p-5">
 <div class="flex items-center gap-2 mb-3">
 <div class="h-6 w-6 rounded-full overflow-hidden">
-<img class="h-full w-full object-cover" data-alt="portrait of a bearded man smiling in a natural daylight setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6NJFYg7xn3vJYFTymfKc6h-rzVUjJ3r0dZrcncECrwlGl4tPGDyvu-5H80npCbp7PR6bGB6ZbRpFNDkySR4iFjiavIv9CU0JCBjBI4ojNcHbq79gaOkmVeZEDKS_ljvV9nW9fiRes2Hwtn7Q36UmvUADTK_mSxKm-Kk-pc39uC3PPCKbm_3U7IGJkxTvqbl1VjosPqL3Dxjtchyy_OjGsTW-Aw9Htex5DJhPQtBnX8fseOJ2bJB-kpp4-8ocg5R2_ur-a3fELbASy"/>
+<img class="h-full w-full object-cover" alt="portrait of a bearded man smiling in a natural daylight setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6NJFYg7xn3vJYFTymfKc6h-rzVUjJ3r0dZrcncECrwlGl4tPGDyvu-5H80npCbp7PR6bGB6ZbRpFNDkySR4iFjiavIv9CU0JCBjBI4ojNcHbq79gaOkmVeZEDKS_ljvV9nW9fiRes2Hwtn7Q36UmvUADTK_mSxKm-Kk-pc39uC3PPCKbm_3U7IGJkxTvqbl1VjosPqL3Dxjtchyy_OjGsTW-Aw9Htex5DJhPQtBnX8fseOJ2bJB-kpp4-8ocg5R2_ur-a3fELbASy"/>
 </div>
 <span class="text-[10px] font-bold tracking-wider text-outline uppercase">Betrouwbaar</span>
 </div>
@@ -276,7 +275,7 @@
 <!-- Card 4: MacBook Pro -->
 <article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
 <div class="relative aspect-[4/3] overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="sleek apple macbook pro laptop open on a clean wooden desk in a minimalist workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbWqpSLqPnaDBWXhOz0RiZGJSx0neljxI7114rQo8MIGuHXH0c0p77i9JpIAfXWhg9_RC3OrVD0Y1Hc-lJF5F7v6L8G0U6fXV4o0vlozCdVhu5TitloVzHDvmU0iaWGfF61OOY3i7hD_gq4Myjhsq2E3XLlgdoiuIo7sntmAm-gg83NYwhWtBeVIb33HUVrS1B-pusosFSq-D3veCTW2jSiJw5r6FErP2IjKc2ZAgKoKV2taoMjC1H2K0E2KA-La7asOPhhVV2Dvc"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="sleek apple macbook pro laptop open on a clean wooden desk in a minimalist workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbWqpSLqPnaDBWXhOz0RiZGJSx0neljxI7114rQo8MIGuHXH0c0p77i9JpIAfXWhg9_RC3OrVD0Y1Hc-lJF5F7v6L8G0U6fXV4o0vlozCdVhu5TitloVzHDvmU0iaWGfF61OOY3i7hD_gq4Myjhsq2E3XLlgdoiuIo7sntmAm-gg83NYwhWtBeVIb33HUVrS1B-pusosFSq-D3veCTW2jSiJw5r6FErP2IjKc2ZAgKoKV2taoMjC1H2K0E2KA-La7asOPhhVV2Dvc"/>
 <button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
 <span class="material-symbols-outlined text-outline">favorite</span>
 </button>
@@ -284,7 +283,7 @@
 <div class="p-5">
 <div class="flex items-center gap-2 mb-3">
 <div class="h-6 w-6 rounded-full overflow-hidden">
-<img class="h-full w-full object-cover" data-alt="portrait of a man with a slight smile in a modern professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATy8KZSwVYqthfA12Pt5cEeRXMsIU2ON_NMMJO48BB62BjFNVzlp4MtYymVvQ6_olnRSnxWuhhvV3v5FHOGhZQTvNYX2nftvb52Bg8SkqvULO1rfTMuuw1CAFOv1W9tJdn7mjcBbNEilmrXxDAaanJ0udRiiDDMpJ4_DW34e6L8vhKjnP_TJZHOYxgaGIq6BccRFmq9FSzb42itWxcEokWmVtfcaT1KHya4l430KTXjRTbXuOfoOmohQRR2aQ2JDDVGT8cOyOSU9v1"/>
+<img class="h-full w-full object-cover" alt="portrait of a man with a slight smile in a modern professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATy8KZSwVYqthfA12Pt5cEeRXMsIU2ON_NMMJO48BB62BjFNVzlp4MtYymVvQ6_olnRSnxWuhhvV3v5FHOGhZQTvNYX2nftvb52Bg8SkqvULO1rfTMuuw1CAFOv1W9tJdn7mjcBbNEilmrXxDAaanJ0udRiiDDMpJ4_DW34e6L8vhKjnP_TJZHOYxgaGIq6BccRFmq9FSzb42itWxcEokWmVtfcaT1KHya4l430KTXjRTbXuOfoOmohQRR2aQ2JDDVGT8cOyOSU9v1"/>
 </div>
 <span class="text-[10px] font-bold tracking-wider text-outline uppercase">PRO Verkoper</span>
 </div>

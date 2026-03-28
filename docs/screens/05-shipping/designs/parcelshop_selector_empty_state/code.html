@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -25,7 +24,7 @@
               "on-primary-container": "#fffbff",
               "on-background": "#1c1b1b",
               "surface-container-highest": "#e5e2e1",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-secondary-fixed": "#001d35",
               "tertiary-fixed-dim": "#65df75",
               "primary-fixed-dim": "#ffb59e",
@@ -103,7 +102,7 @@
 </div>
 </div>
 <!-- TopNavBar (Shared Component) -->
-<header class="fixed top-0 w-full z-40 bg-[#fcf9f8]/80 backdrop-blur-xl transition-colors duration-200">
+<header class="fixed top-0 w-full z-40 bg-surface/80 backdrop-blur-xl transition-colors duration-200">
 <div class="flex justify-between items-center px-6 py-4 max-w-[393px] mx-auto">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-primary cursor-pointer">arrow_back</span>
@@ -164,7 +163,7 @@
 </div>
 </section>
 <!-- BottomNavBar (Shared Component) -->
-<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-[#fcf9f8]/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-50 max-w-[393px] mx-auto">
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-surface/80 backdrop-blur-xl rounded-t-2xl shadow-[0_-4px_12px_rgba(0,0,0,0.05)] z-50 max-w-[393px] mx-auto">
 <div class="flex flex-col items-center justify-center text-[#34618d]">
 <span class="material-symbols-outlined">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Explore</span>
@@ -173,7 +172,7 @@
 <span class="material-symbols-outlined">local_shipping</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Ship</span>
 </div>
-<div class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-xl px-4 py-1.5">
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-1.5">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Points</span>
 </div>

@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -50,7 +49,7 @@
               "tertiary-container": "#008730",
               "outline": "#8e7067",
               "on-primary-fixed": "#3a0b00",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed": "#002106",
               "on-error": "#ffffff",
               "inverse-on-surface": "#f3f0ef",
@@ -85,12 +84,12 @@
   </head>
 <body class="bg-surface text-on-surface min-h-screen">
 <!-- TopAppBar -->
-<header class="bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 w-full no-border bg-[#f6f3f2] dark:bg-[#1e1e1e] shadow-none">
+<header class="bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 w-full no-border bg-[#f6f3f2] dark:bg-[#1e1e1e] shadow-none">
 <div class="flex items-center gap-4">
 <button class="active:scale-95 duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#ebe7e7]/50 dark:hover:bg-[#2a2a2a] p-2 rounded-full transition-colors">
 <span class="material-symbols-outlined text-[#4a4a4a] dark:text-[#a0a0a0]" data-icon="arrow_back">arrow_back</span>
 </button>
-<h1 class="text-xl font-extrabold text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
 </div>
 <div class="flex items-center gap-2">
 <button class="active:scale-95 duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#ebe7e7]/50 dark:hover:bg-[#2a2a2a] p-2 rounded-full transition-colors">
@@ -199,31 +198,31 @@
 </button>
 </div>
 <div class="w-1/2 relative">
-<img alt="Vintage design item" class="absolute inset-0 w-full h-full object-cover" data-alt="minimalist mid-century modern wooden chair in a sunlit bright studio with soft shadows and clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCefMBpby2YF1lkgqDWX1vkqx_1nMcyZUOqAndFuCsNicd5WSfEY8NnkOpNCfJuFYc4sz9QpXZN-cO7crtjRdtfG2BDj0qh9E6GAc__ckBD8nqaqYa9_4pbQl6QKe_bXjnW87kSLrAO9SDXDgR9yOyReSdBITooZbArwTCvg8IaKhLSuiBj-gCaOL_h2sc9mwOTPILLSwqugM1Xr3kiVwsrfkwXvcNoYsBliM5WqF_axHJHtMlg-qClyaQu1zB2y3dSKZrXnck7HaIf"/>
+<img alt="Vintage design item" class="absolute inset-0 w-full h-full object-cover" alt="minimalist mid-century modern wooden chair in a sunlit bright studio with soft shadows and clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCefMBpby2YF1lkgqDWX1vkqx_1nMcyZUOqAndFuCsNicd5WSfEY8NnkOpNCfJuFYc4sz9QpXZN-cO7crtjRdtfG2BDj0qh9E6GAc__ckBD8nqaqYa9_4pbQl6QKe_bXjnW87kSLrAO9SDXDgR9yOyReSdBITooZbArwTCvg8IaKhLSuiBj-gCaOL_h2sc9mwOTPILLSwqugM1Xr3kiVwsrfkwXvcNoYsBliM5WqF_axHJHtMlg-qClyaQu1zB2y3dSKZrXnck7HaIf"/>
 </div>
 </div>
 </section>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] no-line bg-gradient-to-t from-[#f6f3f2] to-transparent">
-<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-[#F15A24]/5" href="#">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] no-line bg-gradient-to-t from-[#f6f3f2] to-transparent">
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="home">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
 </a>
 <!-- ACTIVE TAB: Zoeken -->
-<a class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-xl px-3 py-1 active:bg-[#F15A24]/5" href="#">
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-3 py-1 active:bg-primary/5" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Zoeken</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-[#F15A24]/5" href="#">
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="add_box">add_box</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Plaatsen</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-[#F15A24]/5" href="#">
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inbox</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-[#F15A24]/5" href="#">
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
 <span class="material-symbols-outlined mb-1" data-icon="account_circle">account_circle</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
 </a>

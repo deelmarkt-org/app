@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -32,7 +31,7 @@
                         "on-secondary-fixed-variant": "#164974",
                         "on-primary-fixed-variant": "#842500",
                         "secondary-container": "#a1cdff",
-                        "primary": "#a93200",
+                        "primary": "#F15A24",
                         "surface": "#fcf9f8",
                         "primary-fixed": "#ffdbd0",
                         "tertiary-fixed-dim": "#65df75",
@@ -97,7 +96,7 @@
   </head>
 <body class="bg-surface font-body text-on-surface antialiased min-h-screen pb-32">
 <!-- TopAppBar -->
-<header class="sticky top-0 z-50 w-full bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl">
+<header class="sticky top-0 z-50 w-full bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl">
 <div class="flex items-center justify-between px-6 py-4 w-full">
 <div class="flex items-center gap-4">
 <button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity">arrow_back</button>
@@ -193,7 +192,7 @@
 <div class="mt-12 bg-surface-container-low rounded-3xl p-6 relative overflow-hidden group">
 <div class="flex gap-4">
 <div class="w-24 h-24 flex-shrink-0">
-<img alt="Product" class="w-full h-full object-cover rounded-2xl rotate-3 shadow-lg group-hover:rotate-0 transition-transform duration-500" data-alt="Modern high-performance red sneakers on a clean white background with soft studio lighting and crisp details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbXIVesaJ_14xoLyFUQdaFt0LVPa-zMH7xNmAQVGHTPmR7MtN9O6HhShC1aXclb8nMEl5ZnocbcZT-AfW0THogeLT4VoOY9Blb0dJW9oLb0KYrnrvulkSktvWoSFRGmcx91xKrgbT0Uf3i9-rupQ92wKVX6_GExbSSWkvz9IbxjnGRkLKliRc622DESdTEVNP3OEreT4ZdeSKj2-ZeLhyFsyWutnC-gtmZHdlV3GDI2JQW2cUWkHSyphsY6wPM3tGj-UIj2BOqpFRZ"/>
+<img alt="Product" class="w-full h-full object-cover rounded-2xl rotate-3 shadow-lg group-hover:rotate-0 transition-transform duration-500" alt="Modern high-performance red sneakers on a clean white background with soft studio lighting and crisp details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbXIVesaJ_14xoLyFUQdaFt0LVPa-zMH7xNmAQVGHTPmR7MtN9O6HhShC1aXclb8nMEl5ZnocbcZT-AfW0THogeLT4VoOY9Blb0dJW9oLb0KYrnrvulkSktvWoSFRGmcx91xKrgbT0Uf3i9-rupQ92wKVX6_GExbSSWkvz9IbxjnGRkLKliRc622DESdTEVNP3OEreT4ZdeSKj2-ZeLhyFsyWutnC-gtmZHdlV3GDI2JQW2cUWkHSyphsY6wPM3tGj-UIj2BOqpFRZ"/>
 </div>
 <div class="flex flex-col justify-center">
 <span class="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Gekocht item</span>
@@ -207,7 +206,7 @@
 </div>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#fcf9f8]/80 dark:bg-[#121212]/80 backdrop-blur-xl rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
 <a class="flex flex-col items-center justify-center text-[#121212]/40 px-4 py-2 transition-all hover:text-primary" href="#">
 <span class="material-symbols-outlined mb-1">storefront</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Shop</span>
@@ -216,7 +215,7 @@
 <span class="material-symbols-outlined mb-1">gavel</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Bids</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-[#F15A24]/10 text-[#F15A24] rounded-2xl px-5 py-2 scale-105" href="#">
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2 scale-105" href="#">
 <span class="material-symbols-outlined mb-1" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold tracking-wide uppercase">Tracking</span>
 </a>

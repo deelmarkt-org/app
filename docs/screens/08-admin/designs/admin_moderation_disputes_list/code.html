@@ -9,7 +9,6 @@
 <!-- Google Fonts: Plus Jakarta Sans -->
 <link href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
@@ -53,7 +52,7 @@
               "on-surface": "#1c1b1b",
               "on-primary-fixed": "#3a0b00",
               "surface-container": "#f0edec",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed-variant": "#00531a",
               "surface-container-low": "#f6f3f2",
               "on-secondary-container": "#285782",
@@ -91,14 +90,14 @@
 </head>
 <body class="bg-surface text-on-surface antialiased">
 <!-- SideNavBar (Authority: JSON & Design System) -->
-<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-neutral-50 dark:bg-neutral-950 flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-surface dark:bg-surface flex flex-col h-full border-r border-neutral-200/50 dark:border-neutral-800/50 p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
 <div class="mb-8 px-4 py-2">
 <div class="flex items-center gap-3">
 <div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-white">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_person</span>
 </div>
 <div>
-<h1 class="text-lg font-extrabold text-orange-600 dark:text-orange-500 tracking-tighter">Moderation Hub</h1>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary tracking-tighter">Moderation Hub</h1>
 <p class="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Admin Control Panel</p>
 </div>
 </div>
@@ -117,7 +116,7 @@
 <span>Reported Users</span>
 </a>
 <!-- Active State: Disputes (Mapped to 'Geschillen') -->
-<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-orange-600 dark:text-orange-400 shadow-sm rounded-lg py-2.5 px-4 mb-1 cubic-bezier-transition font-semibold" href="#">
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 cubic-bezier-transition font-semibold" href="#">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gavel</span>
 <span>Disputes</span>
 </a>
@@ -131,7 +130,7 @@
 </a>
 </nav>
 <div class="mt-auto pt-4 border-t border-neutral-100 dark:border-neutral-900 space-y-1">
-<button class="w-full mb-4 py-2.5 px-4 rounded-xl bg-neutral-900 text-white font-bold text-xs uppercase tracking-widest hover:bg-neutral-800 transition-colors">
+<button class="w-full mb-4 py-2.5 px-4 rounded-xl bg-on-surface text-white font-bold text-xs uppercase tracking-widest hover:bg-neutral-800 transition-colors">
                 View Global Logs
             </button>
 <a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2 px-4 rounded-lg cubic-bezier-transition" href="#">
@@ -145,7 +144,7 @@
 </div>
 </aside>
 <!-- TopNavBar (Authority: JSON & Design System) -->
-<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
 <div class="flex justify-between items-center h-16 px-6 ml-64">
 <div class="flex items-center gap-4 flex-1 max-w-xl">
 <div class="relative w-full">
@@ -163,7 +162,7 @@
 </button>
 <div class="h-8 w-px bg-neutral-100 dark:bg-neutral-800"></div>
 <div class="flex items-center gap-3 cursor-pointer p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl transition-all">
-<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="Close-up portrait of a professional male administrator with glasses, neutral background, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCffbPxGCpbFTi9VNyPL7k6cQWSbIOON4MiTT3ikdUpWHKy9ZaQAvvJq-hgDbqkRYVOxGbnj6nr7tFF2QJzRHQZaQLcUfzO--X7fTcLpC5lIHigqCuC7IFOlbOvyY9Btpyk2OSpuSGZvVIQH-moeZ73XwMptqZXZJ0kYpNqT6Pe0wByb6-4if5INMqqaGrQDK2zrOMqNQ45mi7Xxz4X_eEA9fUn9heQoBabdhmjcjl_O9uWt8IjizGAAYbdMsJBJI2GOyE6Sa1vwuL5"/>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full object-cover" alt="Close-up portrait of a professional male administrator with glasses, neutral background, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCffbPxGCpbFTi9VNyPL7k6cQWSbIOON4MiTT3ikdUpWHKy9ZaQAvvJq-hgDbqkRYVOxGbnj6nr7tFF2QJzRHQZaQLcUfzO--X7fTcLpC5lIHigqCuC7IFOlbOvyY9Btpyk2OSpuSGZvVIQH-moeZ73XwMptqZXZJ0kYpNqT6Pe0wByb6-4if5INMqqaGrQDK2zrOMqNQ45mi7Xxz4X_eEA9fUn9heQoBabdhmjcjl_O9uWt8IjizGAAYbdMsJBJI2GOyE6Sa1vwuL5"/>
 <div class="hidden lg:block text-left">
 <p class="text-xs font-bold text-neutral-900 dark:text-white leading-none">M. van den Berg</p>
 <p class="text-[10px] text-neutral-500">Super Admin</p>
@@ -230,7 +229,7 @@
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
 <thead>
-<tr class="bg-neutral-50 border-b border-neutral-100">
+<tr class="bg-surface border-b border-neutral-100">
 <th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Order #</th>
 <th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Koper</th>
 <th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Verkoper</th>
@@ -241,25 +240,25 @@
 </thead>
 <tbody class="divide-y divide-neutral-50">
 <!-- Row 1 -->
-<tr class="hover:bg-neutral-50/50 transition-colors cursor-pointer group">
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer group">
 <td class="px-6 py-5">
 <span class="text-sm font-bold text-neutral-900">#DM-90214</span>
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" data-alt="Headshot of a smiling young man in a blue casual shirt, bright natural lighting, clear background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ33QxJ8loIUcXsqH8ZeGiJemQiVDOX4ieBA-acmxCMZ1zb3VRV8JKn5oh_EaAIjymLJLW_-SnFA6vYQ0HRckc2e0Ql50FRtB3LkdS5-m6PCQYZ4eX_Mwvw8WoVE7DX_uMVYOd9o3jN8ns8y0KX4FYM-5m_2p4MmJbVm94nCNRd4CEriUzQRkXJX2p2ijV6XMJ-gaejKTxfztSRJmzgumSqPXcvZknziYpIMjtZLYNH67JiN62TFA3bZQZgZn4mkXHnMLgmxk-NpJX"/>
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Headshot of a smiling young man in a blue casual shirt, bright natural lighting, clear background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ33QxJ8loIUcXsqH8ZeGiJemQiVDOX4ieBA-acmxCMZ1zb3VRV8JKn5oh_EaAIjymLJLW_-SnFA6vYQ0HRckc2e0Ql50FRtB3LkdS5-m6PCQYZ4eX_Mwvw8WoVE7DX_uMVYOd9o3jN8ns8y0KX4FYM-5m_2p4MmJbVm94nCNRd4CEriUzQRkXJX2p2ijV6XMJ-gaejKTxfztSRJmzgumSqPXcvZknziYpIMjtZLYNH67JiN62TFA3bZQZgZn4mkXHnMLgmxk-NpJX"/>
 <span class="text-sm font-semibold text-neutral-700">Thomas De Groot</span>
 </div>
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Seller" class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a young woman with curly hair, natural lifestyle aesthetic, warm outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNxeGPKMifJ9i81D6C-TlLcN7VYoIbqhi--ePZ5Ye-xxhg3S3cfEGrQALZSTXZ9qlYi6_9VRUWVFf5iFR-X4Ksn7NGH5kzJ7v9IHpH4BDrXPDw8HUIk1UOTi0J7wiDhFxxrIPpqagbCGdBJzmCALO8vGN3mi1OW-sHefgw-hwEskcPpvXqL_HU0zJM6pQZfhiNcPdW6qTEbSkmIFdKyp2CKg0LLH2rfKwxcyzM25yVUlCSXxzNgQiFdRA5hBUUuTzBQ1Wkm7iIC8-x"/>
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a young woman with curly hair, natural lifestyle aesthetic, warm outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNxeGPKMifJ9i81D6C-TlLcN7VYoIbqhi--ePZ5Ye-xxhg3S3cfEGrQALZSTXZ9qlYi6_9VRUWVFf5iFR-X4Ksn7NGH5kzJ7v9IHpH4BDrXPDw8HUIk1UOTi0J7wiDhFxxrIPpqagbCGdBJzmCALO8vGN3mi1OW-sHefgw-hwEskcPpvXqL_HU0zJM6pQZfhiNcPdW6qTEbSkmIFdKyp2CKg0LLH2rfKwxcyzM25yVUlCSXxzNgQiFdRA5hBUUuTzBQ1Wkm7iIC8-x"/>
 <span class="text-sm font-semibold text-neutral-700">Annelies Bakker</span>
 </div>
 </td>
 <td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 145,00</td>
 <td class="px-6 py-5">
-<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-100 text-orange-700 border border-orange-200">Wacht op Admin</span>
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">Wacht op Admin</span>
 </td>
 <td class="px-6 py-5 text-right">
 <span class="text-xs font-bold text-error bg-error/5 px-2 py-1 rounded-md ring-1 ring-error/20 inline-flex items-center gap-1">
@@ -269,7 +268,7 @@
 </td>
 </tr>
 <!-- Row 2 -->
-<tr class="hover:bg-neutral-50/50 transition-colors cursor-pointer">
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
 <td class="px-6 py-5">
 <span class="text-sm font-bold text-neutral-900">#DM-88432</span>
 </td>
@@ -281,7 +280,7 @@
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Seller" class="w-8 h-8 rounded-full object-cover" data-alt="Candid portrait of a professional woman in an office setting, soft natural window light, modern feel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlzUEpYc-TIgRmFyRDzASE5wuPh1fvgatoXNvgGM79LKkkEql4NtoQItcFRun-xk2l79BgRgM4O9LsKGU38OQlKxtHO-tCYsfA14sR1smXWkiVL5M8SfEXVejSXG3P7RAyLUB2kjwEYcigpHESYGCoAKWczlYOiDQIbdZDVsWCxdjAUWZuNYI7Yj23_yXFckaE52iUV8qgYRSessV3rVKjGzSF-ValCvXVsRRVVWZlJt8P4Bf1oamnRfSSZYwemM8cGrIXFamnTMVh"/>
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Candid portrait of a professional woman in an office setting, soft natural window light, modern feel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlzUEpYc-TIgRmFyRDzASE5wuPh1fvgatoXNvgGM79LKkkEql4NtoQItcFRun-xk2l79BgRgM4O9LsKGU38OQlKxtHO-tCYsfA14sR1smXWkiVL5M8SfEXVejSXG3P7RAyLUB2kjwEYcigpHESYGCoAKWczlYOiDQIbdZDVsWCxdjAUWZuNYI7Yj23_yXFckaE52iUV8qgYRSessV3rVKjGzSF-ValCvXVsRRVVWZlJt8P4Bf1oamnRfSSZYwemM8cGrIXFamnTMVh"/>
 <span class="text-sm font-semibold text-neutral-700">Petra Jansen</span>
 </div>
 </td>
@@ -297,13 +296,13 @@
 </td>
 </tr>
 <!-- Row 3 -->
-<tr class="hover:bg-neutral-50/50 transition-colors cursor-pointer">
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
 <td class="px-6 py-5">
 <span class="text-sm font-bold text-neutral-900">#DM-91001</span>
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a mature man with a beard, high contrast lighting, black and white style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASyGg_FH5O0i2gul5T7eXo30JkgnE555z49gyNZ7CKcKGYmh8F_YpeLBmXCRadPY-xjQke2Ku50AO8HsqdbVhFTxI2JQq4ndJQQMmHJMAbF3gw_qwqzuD_Ln0aKH2DkdO9zxCySBkRDU9fZuX7GOWyk5QBmS8o-WzWjM08Tb1sFGCocTfO8Xm1qBnnWt2XXVaOCJo7s4eQ7AL0Ecqv6KPcsGm22njGRs97M5NILKRHlmPoR1hlQt2Gyb7dKnwNH3r0Ym5B9BKZG_II"/>
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a mature man with a beard, high contrast lighting, black and white style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASyGg_FH5O0i2gul5T7eXo30JkgnE555z49gyNZ7CKcKGYmh8F_YpeLBmXCRadPY-xjQke2Ku50AO8HsqdbVhFTxI2JQq4ndJQQMmHJMAbF3gw_qwqzuD_Ln0aKH2DkdO9zxCySBkRDU9fZuX7GOWyk5QBmS8o-WzWjM08Tb1sFGCocTfO8Xm1qBnnWt2XXVaOCJo7s4eQ7AL0Ecqv6KPcsGm22njGRs97M5NILKRHlmPoR1hlQt2Gyb7dKnwNH3r0Ym5B9BKZG_II"/>
 <span class="text-sm font-semibold text-neutral-700">Erik Meijer</span>
 </div>
 </td>
@@ -325,13 +324,13 @@
 </td>
 </tr>
 <!-- Row 4 -->
-<tr class="hover:bg-neutral-50/50 transition-colors cursor-pointer">
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
 <td class="px-6 py-5">
 <span class="text-sm font-bold text-neutral-900">#DM-89552</span>
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" data-alt="Close-up profile of a stylish young woman, fashion aesthetic, soft focused urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCapFjqWeLmtDdrNGHXJj-84P-Fiv5ziuMnG_a6_wHFW6TAPXa5ZnNFvt9HoZ6t7nM0bTYZZKDVW8TiIdoizEOTiQ6pUX0sdhLHYZTTwF2Hq98sKyKn7QxPWGsD9Ds5a8PUIi_jd-Px8VJxxlbWhoAL5ehC571vFgxc3lDpB2tNwzPQvhu8ruZB1mZghZi8D6QtzD7qwU7wgGK-KekS0P1382j0j8rL3BhfcaaRywSrpQQqFZiTZw5XKGkn5401YDtsPnbcbPfUIiZ_"/>
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Close-up profile of a stylish young woman, fashion aesthetic, soft focused urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCapFjqWeLmtDdrNGHXJj-84P-Fiv5ziuMnG_a6_wHFW6TAPXa5ZnNFvt9HoZ6t7nM0bTYZZKDVW8TiIdoizEOTiQ6pUX0sdhLHYZTTwF2Hq98sKyKn7QxPWGsD9Ds5a8PUIi_jd-Px8VJxxlbWhoAL5ehC571vFgxc3lDpB2tNwzPQvhu8ruZB1mZghZi8D6QtzD7qwU7wgGK-KekS0P1382j0j8rL3BhfcaaRywSrpQQqFZiTZw5XKGkn5401YDtsPnbcbPfUIiZ_"/>
 <span class="text-sm font-semibold text-neutral-700">Lisa de Wit</span>
 </div>
 </td>
@@ -343,7 +342,7 @@
 </td>
 <td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 2.150,00</td>
 <td class="px-6 py-5">
-<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-100 text-orange-700 border border-orange-200">Hoog Risico</span>
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">Hoog Risico</span>
 </td>
 <td class="px-6 py-5 text-right">
 <span class="text-xs font-bold text-neutral-900 bg-neutral-100 px-2 py-1 rounded-md inline-flex items-center gap-1">
@@ -353,7 +352,7 @@
 </td>
 </tr>
 <!-- Row 5 -->
-<tr class="hover:bg-neutral-50/50 transition-colors cursor-pointer border-none">
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer border-none">
 <td class="px-6 py-5">
 <span class="text-sm font-bold text-neutral-900">#DM-91420</span>
 </td>
@@ -365,7 +364,7 @@
 </td>
 <td class="px-6 py-5">
 <div class="flex items-center gap-3">
-<img alt="Seller" class="w-8 h-8 rounded-full object-cover" data-alt="Portrait of a creative professional woman, neutral artistic background, soft diffused lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDySC3VlIjzfX9HaCqLqzqzMMdhTGK0Y3w8KYTk150lh9oOgczrl3UClihBKKK9ZsQcpPI9fu8dq3ztVX6SieCKaahXc1TMufEuCyFWBVHDT8QxCyXyx9-1xE5nllghTsRrsZgptEayF_oJxmNqFCeaNvWjnB5nextzVXuaTCjsaFCjo9h68tPQh78Ehn5J1K2l--trRI--2t2YxSTPrzArhofUWyA60vrFDBqTTlles6_r7nS9xSbdqw10AbXnC9Nj2OVbm-vbVYMc"/>
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a creative professional woman, neutral artistic background, soft diffused lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDySC3VlIjzfX9HaCqLqzqzMMdhTGK0Y3w8KYTk150lh9oOgczrl3UClihBKKK9ZsQcpPI9fu8dq3ztVX6SieCKaahXc1TMufEuCyFWBVHDT8QxCyXyx9-1xE5nllghTsRrsZgptEayF_oJxmNqFCeaNvWjnB5nextzVXuaTCjsaFCjo9h68tPQh78Ehn5J1K2l--trRI--2t2YxSTPrzArhofUWyA60vrFDBqTTlles6_r7nS9xSbdqw10AbXnC9Nj2OVbm-vbVYMc"/>
 <span class="text-sm font-semibold text-neutral-700">Fleur Bloom</span>
 </div>
 </td>
@@ -384,7 +383,7 @@
 </table>
 </div>
 <!-- Table Footer / Pagination -->
-<div class="px-6 py-4 bg-neutral-50 flex items-center justify-between">
+<div class="px-6 py-4 bg-surface flex items-center justify-between">
 <p class="text-xs font-bold text-neutral-500 uppercase tracking-widest">Toont 1-5 van 142 geschillen</p>
 <div class="flex gap-1">
 <button class="w-8 h-8 rounded-lg flex items-center justify-center bg-white border border-neutral-200 text-neutral-400 hover:text-neutral-900 transition-colors">

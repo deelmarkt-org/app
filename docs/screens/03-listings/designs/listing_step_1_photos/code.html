@@ -6,7 +6,6 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -51,7 +50,7 @@
               "on-surface": "#1c1b1b",
               "primary-container": "#d1430a",
               "secondary-container": "#a1cdff",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "inverse-primary": "#ffb59e",
               "on-primary-container": "#fffbff",
               "on-secondary-fixed-variant": "#164974",
@@ -80,7 +79,7 @@
 </head>
 <body class="bg-surface-container-low min-h-screen text-on-surface">
 <!-- TopNavBar Implementation from JSON -->
-<nav class="bg-[#fcf9f8]/80 backdrop-blur-xl sticky top-0 w-full z-50 shadow-sm transition-colors duration-300">
+<nav class="bg-surface/80 backdrop-blur-xl sticky top-0 w-full z-50 shadow-sm transition-colors duration-300">
 <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
 <div class="flex items-center gap-4">
 <button class="scale-95 active:scale-90 transition-transform text-on-surface">
@@ -89,7 +88,7 @@
 <span class="text-xl font-black text-[#121212] plus-jakarta-sans font-bold tracking-tight">Nieuwe advertentie</span>
 </div>
 <div class="flex items-center gap-6">
-<button class="text-[#4a4a4a] hover:text-[#F15A24] transition-all duration-200 font-bold">Draft opslaan</button>
+<button class="text-[#4a4a4a] hover:text-primary transition-all duration-200 font-bold">Draft opslaan</button>
 <button class="bg-[#d1430a] text-white px-6 py-2 rounded-lg font-bold scale-95 active:scale-90 transition-transform">Volgende</button>
 </div>
 </div>
@@ -105,7 +104,7 @@
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
 <!-- Uploaded Photo 1 -->
 <div class="aspect-square rounded-xl overflow-hidden relative group cursor-pointer bg-surface-container">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close-up side view of a matte black Canyon Speedmax triathlon bike with aerodynamic carbon wheels in a bright studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqMgJVW5k34pQsc9oyi1FPVbKdGyyqyt-S49jGJGHNX5ibqIDLtT1V1zY6xhJHnQwG8E6NJhM1T4AyuAWYUeo43mNuzh82Axh54IkdXiPv6gsuXRuqs08blxhgv1XP7V8cKb-1olbbmso5fbgEveoOeaXHqxgDKV0-nPy1XmXLRv6_zW8Yco13zsQbFIokDn9jTlWPqkQaN8_SdwX93lcV-wUY_Bkg85MQqXd6TAlCiVLa_WofUxusSVREyKYSCnDDP-GN82Iwy4GH"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Close-up side view of a matte black Canyon Speedmax triathlon bike with aerodynamic carbon wheels in a bright studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqMgJVW5k34pQsc9oyi1FPVbKdGyyqyt-S49jGJGHNX5ibqIDLtT1V1zY6xhJHnQwG8E6NJhM1T4AyuAWYUeo43mNuzh82Axh54IkdXiPv6gsuXRuqs08blxhgv1XP7V8cKb-1olbbmso5fbgEveoOeaXHqxgDKV0-nPy1XmXLRv6_zW8Yco13zsQbFIokDn9jTlWPqkQaN8_SdwX93lcV-wUY_Bkg85MQqXd6TAlCiVLa_WofUxusSVREyKYSCnDDP-GN82Iwy4GH"/>
 <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-2">
 <button class="bg-white/90 text-error p-1.5 rounded-full shadow-lg">
 <span class="material-symbols-outlined text-sm">delete</span>
@@ -115,7 +114,7 @@
 </div>
 <!-- Uploaded Photo 2 -->
 <div class="aspect-square rounded-xl overflow-hidden relative group cursor-pointer bg-surface-container">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Detailed shot of the cockpit and handlebars of a high-end racing bike with digital gear shifters and sleek cable routing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuColi5HfzUlNU-uMH7_QGRP0cZFPzlKnX3d8ZJkl3ZJ5UoHGwfoZ4Or0TXukAjegvqb-BNkoDYyy_3fjwoo99OKLi1AoF4W-gTFzr-5A8a4yc-KVIaEyWY21Jis7shvKy2a6uHWBBHrHoa8qYPUAgGb_GxQPjZexJdkunZVmmOp65RSrY5EGbg0yImDJrJ87_VQsiHszzkyOW4yQZjmx8MV7D9etB3p64YlPwt5jhtmPse770N3hxhZyMpfz0wWK9u4Psn1XDp6o9sw"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Detailed shot of the cockpit and handlebars of a high-end racing bike with digital gear shifters and sleek cable routing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuColi5HfzUlNU-uMH7_QGRP0cZFPzlKnX3d8ZJkl3ZJ5UoHGwfoZ4Or0TXukAjegvqb-BNkoDYyy_3fjwoo99OKLi1AoF4W-gTFzr-5A8a4yc-KVIaEyWY21Jis7shvKy2a6uHWBBHrHoa8qYPUAgGb_GxQPjZexJdkunZVmmOp65RSrY5EGbg0yImDJrJ87_VQsiHszzkyOW4yQZjmx8MV7D9etB3p64YlPwt5jhtmPse770N3hxhZyMpfz0wWK9u4Psn1XDp6o9sw"/>
 <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-2">
 <button class="bg-white/90 text-error p-1.5 rounded-full shadow-lg">
 <span class="material-symbols-outlined text-sm">delete</span>
@@ -124,7 +123,7 @@
 </div>
 <!-- Uploaded Photo 3 -->
 <div class="aspect-square rounded-xl overflow-hidden relative group cursor-pointer bg-surface-container">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close-up of the rear derailleur and carbon chainset of a premium Canyon bicycle against a soft neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhoN4Fj2YyixWI57EhxwTCSveEsym-J7YhxrX7LGzWolnQf58XWO4Bg5dGtMOvIibkrRCmboKXQaCUXysSpRB1FOwMNZTI_v8trrjpPol-4v3B9WN-Zjr-rHv1IKRWjoK5g1uRA-AdnfrYY27oRR7pD76Ug3FERuK72rzekM5wXf2kvgfT-lXQCzc7ABjsZLyLbFicENUCJJXUk5YeY4wl6uNWkfWBUY-ozSLo1butHIpcLr3_bh8_wLHMdfla0wUkGkEjxbVXxLQk"/>
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Close-up of the rear derailleur and carbon chainset of a premium Canyon bicycle against a soft neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhoN4Fj2YyixWI57EhxwTCSveEsym-J7YhxrX7LGzWolnQf58XWO4Bg5dGtMOvIibkrRCmboKXQaCUXysSpRB1FOwMNZTI_v8trrjpPol-4v3B9WN-Zjr-rHv1IKRWjoK5g1uRA-AdnfrYY27oRR7pD76Ug3FERuK72rzekM5wXf2kvgfT-lXQCzc7ABjsZLyLbFicENUCJJXUk5YeY4wl6uNWkfWBUY-ozSLo1butHIpcLr3_bh8_wLHMdfla0wUkGkEjxbVXxLQk"/>
 <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-start justify-end p-2">
 <button class="bg-white/90 text-error p-1.5 rounded-full shadow-lg">
 <span class="material-symbols-outlined text-sm">delete</span>
@@ -172,7 +171,7 @@
 </main>
 <!-- BottomNavBar Suppression Check: Transactional page doesn't need global nav shell -->
 <!-- Mobile Bottom CTA sticky bar for ease of access -->
-<div class="md:hidden fixed bottom-0 left-0 w-full bg-[#fcf9f8]/95 backdrop-blur-lg px-6 py-6 border-t border-[#ebe7e7]/15 flex items-center justify-between gap-4">
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-surface/95 backdrop-blur-lg px-6 py-6 border-t border-[#ebe7e7]/15 flex items-center justify-between gap-4">
 <button class="text-[#4a4a4a] font-bold text-sm">Draft opslaan</button>
 <button class="bg-[#d1430a] text-white px-8 py-3 rounded-xl font-bold flex-1">Volgende</button>
 </div>

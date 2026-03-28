@@ -5,7 +5,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -50,7 +49,7 @@
               "tertiary-container": "#008730",
               "outline": "#8e7067",
               "on-primary-fixed": "#3a0b00",
-              "primary": "#a93200",
+              "primary": "#F15A24",
               "on-tertiary-fixed": "#002106",
               "on-error": "#ffffff",
               "inverse-on-surface": "#f3f0ef",
@@ -93,12 +92,12 @@
   </head>
 <body class="bg-background text-on-background font-body antialiased">
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-[#fcf9f8]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
 <div class="flex items-center gap-4">
 <button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 active:scale-95 duration-200 transition-colors">
-<span class="material-symbols-outlined text-[#F15A24]" data-icon="arrow_back">arrow_back</span>
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
 </button>
-<h1 class="text-xl font-extrabold text-[#F15A24] font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
 </div>
 <div class="flex items-center gap-2">
 <button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 active:scale-95 duration-200 transition-colors">
@@ -111,17 +110,17 @@
 </header>
 <!-- SideNavBar (Hidden on Mobile) -->
 <nav class="hidden md:flex flex-col py-8 px-4 fixed left-0 top-0 h-screen w-64 bg-[#f6f3f2] z-40">
-<div class="text-lg font-black text-[#F15A24] mb-8 font-['Plus_Jakarta_Sans']">The Honest Exchange</div>
+<div class="text-lg font-black text-primary mb-8 font-['Plus_Jakarta_Sans']">DeelMarkt</div>
 <div class="space-y-2">
-<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-[#F15A24] hover:bg-white/50 rounded-xl transition-all duration-300">
+<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-primary hover:bg-white/50 rounded-xl transition-all duration-300">
 <span class="material-symbols-outlined">home</span>
 <span class="font-medium text-sm">Home</span>
 </div>
-<div class="flex items-center gap-3 px-4 py-3 text-[#F15A24] border-r-4 border-[#F15A24] bg-white rounded-l-xl transition-all duration-300">
+<div class="flex items-center gap-3 px-4 py-3 text-primary border-r-4 border-[#F15A24] bg-white rounded-l-xl transition-all duration-300">
 <span class="material-symbols-outlined">explore</span>
 <span class="font-medium text-sm">Ontdekken</span>
 </div>
-<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-[#F15A24] hover:bg-white/50 rounded-xl transition-all duration-300">
+<div class="flex items-center gap-3 px-4 py-3 text-[#4a4a4a] hover:text-primary hover:bg-white/50 rounded-xl transition-all duration-300">
 <span class="material-symbols-outlined">add_circle</span>
 <span class="font-medium text-sm">Verkopen</span>
 </div>
@@ -180,12 +179,12 @@
 </div>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-[#fcf9f8]/80 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-surface/80 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
 <div class="flex flex-col items-center justify-center text-[#4a4a4a] transition-all">
 <span class="material-symbols-outlined" data-icon="home">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Home</span>
 </div>
-<div class="flex flex-col items-center justify-center text-[#F15A24] bg-[#F15A24]/10 rounded-xl px-4 py-2 transition-all">
+<div class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-4 py-2 transition-all">
 <span class="material-symbols-outlined" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Zoeken</span>
 </div>
