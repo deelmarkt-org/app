@@ -83,8 +83,8 @@ void main() {
   });
 
   group('KycLevel', () {
-    test('has 3 levels', () {
-      expect(KycLevel.values.length, equals(3));
+    test('has 5 levels', () {
+      expect(KycLevel.values.length, equals(5));
     });
   });
 
