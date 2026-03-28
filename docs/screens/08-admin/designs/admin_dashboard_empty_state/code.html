@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeelMarkt Admin - Dashboard</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d0e4ff",
+              "tertiary": "#006b24",
+              "tertiary-container": "#008730",
+              "inverse-primary": "#ffb59e",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-bright": "#fcf9f8",
+              "surface": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#164974",
+              "on-secondary": "#ffffff",
+              "surface-container-highest": "#e5e2e1",
+              "secondary-container": "#a1cdff",
+              "on-surface-variant": "#5a4139",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-container-high": "#ebe7e7",
+              "secondary-fixed-dim": "#9fcafc",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#82fc8e",
+              "surface-variant": "#e5e2e1",
+              "surface-container-lowest": "#ffffff",
+              "background": "#fcf9f8",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed-variant": "#842500",
+              "on-error-container": "#93000a",
+              "secondary": "#34618d",
+              "outline": "#8e7067",
+              "on-surface": "#1c1b1b",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container": "#f0edec",
+              "primary": "#F15A24",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "on-secondary-container": "#285782",
+              "on-background": "#1c1b1b",
+              "tertiary-fixed-dim": "#65df75",
+              "inverse-surface": "#313030",
+              "primary-fixed": "#ffdbd0",
+              "outline-variant": "#e2bfb4",
+              "on-primary-container": "#fffbff",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-fixed": "#001d35"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 flex flex-col h-full border-r border-neutral-200 dark:border-[#333333] p-4 bg-surface dark:bg-surface font-['Plus_Jakarta_Sans'] text-sm font-medium cubic-bezier(0.23, 1, 0.32, 1) duration-300">
+<div class="mb-8 px-4 py-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary tracking-tighter">Moderation Hub</h1>
+<p class="text-[10px] text-neutral-500 uppercase tracking-widest">Admin Control Panel</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">flag</span>
+<span>Flagged Listings</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">person_off</span>
+<span>Reported Users</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">gavel</span>
+<span>Disputes</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">policy</span>
+<span>DSA Notices</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span>Appeals</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-neutral-100 dark:border-neutral-900">
+<button class="w-full text-left flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Support</span>
+</button>
+<button class="w-full text-left flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg transition-all">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</button>
+</div>
+</aside>
+<!-- TopNavBar (Authority: JSON & Design System) -->
+<header class="fixed top-0 right-0 left-0 z-40 flex justify-between items-center h-16 px-6 ml-64 bg-white/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-neutral-400 text-sm">search</span>
+</div>
+<input class="bg-neutral-100 dark:bg-neutral-800 border-none rounded-full py-1.5 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-orange-600/20 transition-all outline-none" placeholder="Search moderation logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-neutral-100 dark:bg-neutral-800 mx-2"></div>
+<div class="flex items-center gap-3 pl-2">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-neutral-900 dark:text-white leading-none">Admin User</p>
+<p class="text-[10px] text-neutral-500">Super Moderator</p>
+</div>
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover" alt="close-up portrait of a professional man in a minimal studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsh0DnFZoElezidYjmO1yt_XdXFmne3Ug52DNfeZgOrLFq3I5OToC895grgCBskFawnzs_VonwHd_DSLOJa4FkMor-534Qj3i5E70e28bS2DIFue2-J9ad9r-Tk0QnBXQD80_ZQgFgLlqvJiUt3iXPnVS_uja-yjQ2QvNBjITdAR2b5AZzpwn8EhSeNGKtnTs-nGddGTCOhiRIFuQKEJmI5nXINGoodHZXPy2UcFtnm7J0A5Q3QczgDSlgnS8BrY5PL1FOduDxa7KZ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="p-8 max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">Dashboard Overzicht</h2>
+<p class="text-lg text-neutral-500 max-w-xl">Real-time status van de marktplaats integriteit en actieve meldingen.</p>
+</div>
+<button class="px-6 py-2.5 bg-neutral-100 text-neutral-900 font-semibold rounded-xl hover:bg-neutral-200 transition-all flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-lg">refresh</span>
+                    Vernieuwen
+                </button>
+</div>
+<!-- Stats Grid - Empty State (Values at '0') -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b-4 border-orange-500/10">
+<div class="flex items-center justify-between mb-4">
+<div class="p-2 bg-orange-50 rounded-lg">
+<span class="material-symbols-outlined text-primary">flag</span>
+</div>
+<span class="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">Lopend</span>
+</div>
+<p class="text-3xl font-extrabold text-neutral-900">0</p>
+<p class="text-sm text-neutral-500 font-medium">Flagged Listings</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b-4 border-blue-500/10">
+<div class="flex items-center justify-between mb-4">
+<div class="p-2 bg-blue-50 rounded-lg">
+<span class="material-symbols-outlined text-blue-600">person_off</span>
+</div>
+<span class="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">Vandaag</span>
+</div>
+<p class="text-3xl font-extrabold text-neutral-900">0</p>
+<p class="text-sm text-neutral-500 font-medium">Reported Users</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b-4 border-purple-500/10">
+<div class="flex items-center justify-between mb-4">
+<div class="p-2 bg-purple-50 rounded-lg">
+<span class="material-symbols-outlined text-purple-600">gavel</span>
+</div>
+<span class="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">Openstaand</span>
+</div>
+<p class="text-3xl font-extrabold text-neutral-900">0</p>
+<p class="text-sm text-neutral-500 font-medium">Actieve Disputes</p>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-b-4 border-emerald-500/10">
+<div class="flex items-center justify-between mb-4">
+<div class="p-2 bg-emerald-50 rounded-lg">
+<span class="material-symbols-outlined text-emerald-600">verified_user</span>
+</div>
+<span class="text-[10px] font-bold text-neutral-400 tracking-wider uppercase">Afgehandeld</span>
+</div>
+<p class="text-3xl font-extrabold text-neutral-900">0</p>
+<p class="text-sm text-neutral-500 font-medium">Goedgekeurd</p>
+</div>
+</div>
+<!-- Main Content Area: Empty State -->
+<div class="relative overflow-hidden bg-surface-container-low rounded-[32px] p-12 min-h-[500px] flex flex-col items-center justify-center text-center">
+<!-- Background decoration for "Premium" feel -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/5 rounded-full blur-2xl"></div>
+<!-- Friendly Flat Illustration -->
+<div class="relative w-80 h-80 mb-8 flex items-center justify-center">
+<img alt="Empty state illustration" class="w-full h-full object-contain mix-blend-multiply opacity-80" alt="Minimalist flat design illustration of a clean white workspace with a potted plant and soft morning sunlight shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCGeAJX2gL3ACBa3bxU6Sc3YfpBoRWJ88PLwckKhE7cLZgFkJ5XSiEiqcS_H4vhl_cBlKd7JrqxJHQYxbYBuWhV_9AqLAxKyUjEjgjSPcv7yW7WnNqhfzWavXr0N88CZmigJSpVex-MdA8k50713ZlKjkRHbwQutZaybI-SgqlgziULFD9t5MHmNSvd3gN6PvMa7U6NwHQ87fUm50diKCn_JdpeyIUrUMv13zPqTC9W9MJwXmj74TVOQaSHnYGaOm4qgU87gb3U9Uj"/>
+<!-- Overlapping depth element -->
+<div class="absolute bottom-4 right-4 bg-white/40 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 animate-pulse">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+</div>
+</div>
+<div class="relative z-10 max-w-md">
+<h3 class="text-2xl font-bold text-neutral-900 mb-4">Alles onder controle</h3>
+<p class="text-neutral-500 mb-8 leading-relaxed">
+                        Nog geen moderatie-acties vereist. De marktplaats is momenteel rustig.
+                    </p>
+<div class="flex gap-4 justify-center">
+<button class="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                            Vernieuwen
+                        </button>
+<button class="px-8 py-3 bg-white text-neutral-700 font-bold rounded-xl border border-neutral-200/50 hover:bg-surface transition-all">
+                            Bekijk Logs
+                        </button>
+</div>
+</div>
+</div>
+<!-- Secondary Bento-style Insights (Empty) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-3xl border border-neutral-100 shadow-sm">
+<h4 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+                        Activiteit Trends
+                    </h4>
+<div class="h-48 flex items-end justify-between gap-2 px-4">
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-4 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-6 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-3 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-5 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-8 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-4 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+<div class="w-full bg-neutral-100 rounded-t-lg h-2 transition-all hover:h-2 group relative">
+<span class="absolute -top-8 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100">0</span>
+</div>
+</div>
+<p class="text-center text-xs text-neutral-400 mt-6 font-medium">Wekelijkse data wordt getoond zodra er acties zijn uitgevoerd.</p>
+</div>
+<div class="bg-primary text-white p-8 rounded-3xl shadow-xl shadow-primary/20 flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-white/50 text-4xl mb-4">info</span>
+<h4 class="text-xl font-bold mb-2">Systeem Status</h4>
+<p class="text-white/80 text-sm leading-relaxed">Alle moderatie-algoritmes draaien op volle capaciteit. Geen kritieke issues gevonden.</p>
+</div>
+<div class="mt-8 flex items-center gap-3 bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+<div class="w-3 h-3 bg-green-400 rounded-full shadow-[0_0_12px_rgba(74,222,128,0.5)]"></div>
+<span class="text-sm font-bold tracking-tight">Operationeel</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

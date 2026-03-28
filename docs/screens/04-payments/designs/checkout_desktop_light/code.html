@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bestelling Bevestigen - DeelMarkt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#65df75",
+              "primary-fixed-dim": "#ffb59e",
+              "tertiary": "#006b24",
+              "outline": "#8e7067",
+              "on-secondary-container": "#285782",
+              "tertiary-fixed": "#82fc8e",
+              "secondary-fixed-dim": "#9fcafc",
+              "outline-variant": "#e2bfb4",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "background": "#fcf9f8",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-fixed": "#001d35",
+              "secondary": "#34618d",
+              "on-primary-fixed-variant": "#842500",
+              "surface-dim": "#dcd9d9",
+              "secondary-fixed": "#d0e4ff",
+              "surface-bright": "#fcf9f8",
+              "error": "#ba1a1a",
+              "on-tertiary-container": "#f7fff2",
+              "on-surface-variant": "#5a4139",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-background": "#1c1b1b",
+              "surface-container": "#f0edec",
+              "on-surface": "#1c1b1b",
+              "primary-container": "#d1430a",
+              "secondary-container": "#a1cdff",
+              "primary": "#F15A24",
+              "surface-container-high": "#ebe7e7",
+              "tertiary-container": "#008730",
+              "surface-container-low": "#f6f3f2",
+              "inverse-on-surface": "#f3f0ef",
+              "inverse-surface": "#313030",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-tint": "#ad3300",
+              "inverse-primary": "#ffb59e",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-variant": "#e5e2e1",
+              "on-primary-fixed": "#3a0b00"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl bg-gradient-to-b from-[#f6f3f2] to-transparent">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-none">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity scale-95 active:duration-100">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold text-primary">DeelMarkt</h1>
+</div>
+<div class="flex items-center">
+<button class="hover:opacity-80 transition-opacity scale-95 active:duration-100">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 px-4 sm:px-6 flex justify-center">
+<div class="w-full max-w-[500px] flex flex-col gap-6">
+<!-- Listing Summary -->
+<section class="bg-surface-container-lowest p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] flex gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" alt="Premium wireless noise-canceling headphones in matte black finish on a minimalist light wood surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBho1xWLgIhzkGXacdoB1W-V4rAPPx0ixRJEmBT18UL5KPA-wts36a8Loy7T3_46mmWM-beFEedVt7jeRfeOe_QnCux2Ptk8qMy3Bf0mLXKBu7ny8DEFxcVEJwTxVW2MzRFkI5MZUs36OyLVCQLxBmQFqwR3T8QVUM7DdyGqLorpGgxwk4tqXHejBta59bdqWOrJ9UtmD8y5G0-oUgiZyoEimhZcTWgW52wZYd8WJemS79-e-gBNlBoXkDkytIg6CkXIdXEQowtXKEG"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Elektronica</span>
+<h2 class="text-lg font-bold text-on-surface leading-tight">Sony WH-1000XM4 Noise Cancelling</h2>
+<p class="text-headline-sm font-bold text-primary mt-1">€ 185,00</p>
+</div>
+</section>
+<!-- Shipping Selection -->
+<section class="bg-surface-container-low p-6 rounded-xl flex flex-col gap-4">
+<h3 class="font-bold text-on-surface">Kies een verzendmethode</h3>
+<div class="space-y-3">
+<label class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl cursor-pointer ring-2 ring-primary transition-all">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-secondary">local_shipping</span>
+</div>
+<div>
+<p class="font-bold text-sm">PostNL Thuisbezorgd</p>
+<p class="text-xs text-on-surface-variant">Bezorging binnen 1-2 werkdagen</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-sm">€ 6,95</p>
+<input checked="" class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="shipping" type="radio"/>
+</div>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl cursor-pointer hover:bg-surface-container transition-all">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-secondary">box</span>
+</div>
+<div>
+<p class="font-bold text-sm">DHL ServicePoint</p>
+<p class="text-xs text-on-surface-variant">Zelf ophalen wanneer het uitkomt</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold text-sm">€ 4,50</p>
+<input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="shipping" type="radio"/>
+</div>
+</label>
+</div>
+</section>
+<!-- Delivery Address -->
+<section class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/15">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">location_on</span>
+<h3 class="font-bold text-on-surface">Bezorgadres</h3>
+</div>
+<a class="text-sm font-bold text-primary hover:underline" href="#">Wijzigen</a>
+</div>
+<div class="text-sm text-on-surface-variant leading-relaxed">
+<p class="font-semibold text-on-surface">Jan de Vries</p>
+<p>Keizersgracht 123</p>
+<p>1015 CJ Amsterdam</p>
+</div>
+</section>
+<!-- Price Breakdown -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden">
+<div class="p-6 space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Artikeltotaal</span>
+<span class="font-medium tabular-nums">€ 185,00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Verzendkosten</span>
+<span class="font-medium tabular-nums">€ 6,95</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Servicekosten</span>
+<span class="font-medium tabular-nums">€ 0,95</span>
+</div>
+<div class="pt-4 mt-2 border-t border-outline-variant/15 flex justify-between items-center">
+<span class="text-lg font-extrabold">Totaal</span>
+<span class="text-2xl font-extrabold text-primary tabular-nums">€ 192,90</span>
+</div>
+</div>
+</section>
+<!-- Trust Callout -->
+<section class="bg-tertiary/10 p-4 rounded-xl flex items-start gap-4 border border-tertiary/20">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<h4 class="text-sm font-bold text-tertiary">Kopersbescherming ingeschakeld</h4>
+<p class="text-xs text-on-tertiary-fixed-variant leading-relaxed mt-0.5">
+                        Jouw geld is veilig. We betalen de verkoper pas uit nadat jij het pakket hebt ontvangen en goedgekeurd.
+                    </p>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Bar (Payment) -->
+<nav class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center bg-surface dark:bg-[#121212] border-t-[1px] border-[#ebe7e7]/15 shadow-[0_-4px_40px_rgba(0,0,0,0.06)] z-50">
+<div class="w-full max-w-[500px]">
+<button class="flex items-center justify-center w-full h-14 bg-gradient-to-tr from-[#F15A24] to-[#d1430a] text-white rounded-xl hover:brightness-110 transition-all active:scale-[0.98] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] font-['Plus_Jakarta_Sans'] font-bold text-base gap-3">
+<span class="flex items-center gap-2">
+<svg class="w-8 h-8 fill-current" viewbox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+<path d="M11.66 23.47l-1.92-9.15h-3L4.12 23.47h2.82l.46-2.5h3.4l.43 2.5h2.43zm-3.56-4.5h-1.85l.84-4.52.93 4.52h.08zm8.74 4.5V14.32H14.3v9.15h2.54zm9.33-4.57c.75-.43 1.25-1.2 1.25-2.22 0-1.66-1.35-3-3-3h-4.32v9.15h4.4c1.7 0 3.08-1.38 3.08-3.08 0-.35-.06-.68-.17-.99l-1.24.14zm-3.66-2.92h1.92c.38 0 .68.3.68.68s-.3.68-.68.68h-1.92v-1.36zm1.92 5.14h-1.92v-1.54h1.92c.43 0 .78.35.78.78s-.35.76-.78.76z"></path>
+</svg>
+                    Bestelling bevestigen
+                </span>
+</button>
+</div>
+</nav>
+</body></html>

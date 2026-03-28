@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        /* iPhone 15 Pro Frame Mockup */
+        .phone-frame {
+            width: 393px;
+            height: 852px;
+            margin: 2rem auto;
+            border: 12px solid #1c1b1b;
+            border-radius: 55px;
+            position: relative;
+            overflow: hidden;
+            background: #fcf9f8;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .dynamic-island {
+            width: 120px;
+            height: 35px;
+            background: #1c1b1b;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 20px;
+            z-index: 100;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#fcf9f8",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#002106",
+                        "on-secondary-fixed-variant": "#164974",
+                        "surface-variant": "#e5e2e1",
+                        "on-surface": "#1c1b1b",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-container": "#f7fff2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb59e",
+                        "error-container": "#ffdad6",
+                        "secondary": "#34618d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "secondary-fixed": "#d0e4ff",
+                        "tertiary": "#006b24",
+                        "inverse-surface": "#313030",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-high": "#ebe7e7",
+                        "on-surface-variant": "#5a4139",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-container": "#008730",
+                        "outline-variant": "#e2bfb4",
+                        "surface-container": "#f0edec",
+                        "inverse-on-surface": "#f3f0ef",
+                        "outline": "#8e7067",
+                        "primary-container": "#d1430a",
+                        "on-secondary": "#ffffff",
+                        "primary": "#F15A24",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-background": "#1c1b1b",
+                        "on-secondary-container": "#285782",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#a1cdff",
+                        "on-secondary-fixed": "#001d35",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface": "#fcf9f8",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#ad3300",
+                        "on-primary-fixed-variant": "#842500"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-zinc-100 flex items-center justify-center min-h-screen">
+<div class="phone-frame">
+<div class="dynamic-island"></div>
+<!-- Shared Component: TopAppBar -->
+<header class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 pt-12">
+<button class="text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight font-headline text-on-surface">Verkoper</h1>
+<button class="text-on-surface">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<main class="pt-24 pb-32 overflow-y-auto h-full px-5 bg-surface">
+<!-- Profile Hero Section -->
+<div class="flex flex-col items-center mb-8">
+<div class="relative mb-4">
+<img alt="Jan de Vries" class="w-20 h-20 rounded-full object-cover ring-4 ring-white shadow-sm" alt="Close-up portrait of a friendly middle-aged Dutch man with short hair and a warm smile, outdoor natural lighting, soft background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDe_jkU531-RLvbUA3fuHmyLGSbaExb5LMn8yMvEgXRqtkLgNe-f6uHSwLK2TyFkFddrD-zs178I3zebzu99XDGrOwVRj802TcCuNnAI70j46DN6zHebPSBEQcD6hcCs_1M6ef_iFlDPfBCZjKjCH6wf7l70lKDKPEFClyEKnwvUm1iDnFgbnh-r4uPXlvei_Y2h1KFy8ChRqqMNp8dmiNTFMxN1V2KTu2b9OF_9w_fqPkXJ0UHV4EXje9IvX16NZGrvFtvvESPrGj"/>
+<div class="absolute bottom-0 right-0 bg-white rounded-full p-0.5">
+<span class="material-symbols-outlined text-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h2 class="text-2xl font-extrabold text-on-surface tracking-tight mb-1">Jan de Vries</h2>
+<p class="text-on-surface-variant text-sm font-medium mb-4">Lid sinds jan 2025</p>
+<!-- Trust Badge -->
+<div class="flex items-center gap-1 bg-tertiary-container/10 px-3 py-1 rounded-full mb-6 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="text-tertiary text-[11px] font-bold uppercase tracking-wider">Geverifieerde Verkoper</span>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-3 w-full bg-surface-container-lowest rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
+<div class="flex flex-col items-center border-r border-outline-variant/20">
+<span class="text-sm font-bold text-on-surface">23</span>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">verkocht</span>
+</div>
+<div class="flex flex-col items-center border-r border-outline-variant/20">
+<div class="flex items-center gap-0.5">
+<span class="text-sm font-bold text-on-surface">4.8</span>
+<span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">(12)</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-sm font-bold text-on-surface">&lt; 1 uur</span>
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">reactie</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full mt-6 py-4 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">chat_bubble</span>
+                    Bericht sturen
+                </button>
+</div>
+<!-- Tabs -->
+<div class="flex gap-8 mb-6 border-b border-outline-variant/10">
+<button class="pb-3 text-sm font-bold text-primary border-b-2 border-primary tracking-wide">Advertenties (8)</button>
+<button class="pb-3 text-sm font-medium text-on-surface-variant tracking-wide">Beoordelingen</button>
+</div>
+<!-- 2-Column Listing Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="flex flex-col group">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container">
+<img alt="Gazelle Herenfiets" class="w-full h-full object-cover" alt="Modern high-end Gazelle matte black hybrid bicycle leaning against a clean white brick wall, professional product photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2dV1bwKv_tiEev6GraGz80LpeZahYRuvhx3RMg7zHoFUYzfZEMa1mB4Fqatjy1VLFuAFx32AoOYbdh8OLz750XZlzMW7nDpB8qYdZYiGu4GXFFyJFFXXGMl8Aiqi0fFjHXwviw_UGRTbcKvcCLqQkXkBZUuEk8bKViepHYvQzSiOz6vPYzNwvaorS7kAbL0RzVAm3toJwdU5RaA2sIv46Psyy-Q1q1QX6i4e8fqM1FWvyqRZJYwgSyIx_2ew3nHnRIpn7_j8WjAzJ"/>
+<button class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-on-surface text-lg">favorite</span>
+</button>
+</div>
+<h3 class="text-sm font-bold text-on-surface line-clamp-1">Gazelle Ultimate C8</h3>
+<p class="text-primary font-extrabold text-base tabular-nums">€ 850,00</p>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col group">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container">
+<img alt="MacBook Pro" class="w-full h-full object-cover" alt="Silver MacBook Pro laptop on a minimalist wooden desk with soft warm lighting and a designer plant in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI_61o0ZCkenmgvtBVmo93cpHlkciD7fHIiWNuMnUfW3qOakJYGC8RD7YomwYto7kmyRfB1-9atLIjZlbvhVYGBqjg_4PTgfMQuvLuZM4nhx7WV0aqtD8ZYfTa435N63O1SaQWlKzvBWFjgEc1zNV0xReNy0PE0-Gf2-V9syhmzSqZas__H8ajXud5JbC5stzPhFPpVktUAeQlliU6Upy95j_PeonXxMWsLi09AJXnpuHGjzn0Q2EELUkmFPvmPOaqvplpefTVNCNp"/>
+<button class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-on-surface text-lg">favorite</span>
+</button>
+</div>
+<h3 class="text-sm font-bold text-on-surface line-clamp-1">MacBook Pro M2 - 512GB</h3>
+<p class="text-primary font-extrabold text-base tabular-nums">€ 1.250,00</p>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col group">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container">
+<img alt="VanMoof S3" class="w-full h-full object-cover" alt="Electric bike VanMoof S3 in dark gray parked in a clean architectural urban setting, bright daylight, cinematic depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqfSl3TDdz6XUDt7MKJ2FazI1XpRVq9MjMO_9YqgnQ37d9BGQ30spkW53Xhi-nXYtr0T9ZgFmu4cGV4Fws7IAWMnUOxokCKz4aixwKKrunJiCBiYS77J9f2m5lSU8M6LBK8d7EJy5dhyxwB6AZtiSeAYwrmHgX7CUDua2dUoinGHaMwoLmLSWCJB_RzSuSAmrq7obiMVMyg4Fh-V4hPu07N9Rh3sW9Ig9kpQKdcxEZ8zHMQQkyagdg8OMnAi9zd_HH7QXuFC0MK1y4"/>
+<button class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-on-surface text-lg">favorite</span>
+</button>
+</div>
+<h3 class="text-sm font-bold text-on-surface line-clamp-1">VanMoof S3 Dark Edition</h3>
+<p class="text-primary font-extrabold text-base tabular-nums">€ 1.400,00</p>
+</div>
+<!-- Card 4 -->
+<div class="flex flex-col group">
+<div class="relative aspect-square rounded-2xl overflow-hidden mb-3 bg-surface-container">
+<img alt="Dell Monitor" class="w-full h-full object-cover" alt="Premium Dell Ultrasharp monitor on a clean desk workspace with soft ambient glow, sharp details of the screen bezel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDod0cn1UprejYNokUg-VhFV0wE56ojjmhGlZbdpw-fL4rfH9bRY8NF_g0_x2tlRf3lM26dGP-fYOShRRKc3T6CPThAu7FPnBrBt6aPqkdD6hI5k8SNbKMtLZ0MiMYZxY6cfEGjcmNzubrdhcsrz10Zg4sqr3oEwcbPSJQdO9GKtUY2T-hYD8qdLS_N2eMK8r2XUUCuTtltoLwdbgfuakQL7vgIfydNJwY4KUe02lTFlOFsUy90EOZUEId4B5Do9KisgfarD0BzYiIM"/>
+<button class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full p-1.5 shadow-sm">
+<span class="material-symbols-outlined text-on-surface text-lg">favorite</span>
+</button>
+</div>
+<h3 class="text-sm font-bold text-on-surface line-clamp-1">Dell Ultrasharp 27" 4K</h3>
+<p class="text-primary font-extrabold text-base tabular-nums">€ 320,00</p>
+</div>
+</div>
+</main>
+<!-- Shared Component: BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-3 bg-white/80 backdrop-blur-xl shadow-[0_-1px_10px_rgba(0,0,0,0.05)] rounded-t-2xl">
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Zoeken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Plaatsen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Berichten</span>
+</div>
+<!-- ACTIVE TAB: Profiel (Contextual to Seller Profile) -->
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-2 transition-all">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Profiel</span>
+</div>
+</nav>
+</div>
+</body></html>

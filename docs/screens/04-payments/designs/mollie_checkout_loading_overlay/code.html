@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#82fc8e",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#5a4139",
+              "on-background": "#1c1b1b",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary-fixed-variant": "#164974",
+              "outline": "#8e7067",
+              "surface-variant": "#e5e2e1",
+              "surface-container": "#f0edec",
+              "on-tertiary-fixed": "#002106",
+              "inverse-primary": "#ffb59e",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "surface-bright": "#fcf9f8",
+              "secondary": "#34618d",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dcd9d9",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "on-error": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "surface-tint": "#ad3300",
+              "primary": "#F15A24",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "on-secondary": "#ffffff",
+              "tertiary": "#006b24",
+              "primary-fixed": "#ffdbd0",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "on-primary-fixed": "#3a0b00",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "primary-container": "#d1430a",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-container": "#008730",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-high": "#ebe7e7",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-on-surface": "#f3f0ef",
+              "on-secondary-container": "#285782",
+              "surface": "#fcf9f8",
+              "on-primary-container": "#fffbff",
+              "secondary-container": "#a1cdff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- Top Navigation Bar (Shared Component Implementation) -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl h-16 w-full flex items-center justify-between px-4 select-none">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors scale-95 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="close">close</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-lg text-on-surface">Betalen met iDEAL</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 flex items-center justify-center">
+<!-- Empty for alignment or placeholder for Mollie/Bank logo -->
+</div>
+</div>
+</header>
+<!-- Main Content Canvas (WebView Simulation) -->
+<main class="relative w-full h-screen pt-16 bg-surface-container-low">
+<!-- Mock iDEAL Bank Selector UI -->
+<div class="max-w-md mx-auto p-6 space-y-8 opacity-40 grayscale-[0.5]">
+<div class="flex justify-center mb-8">
+<div class="w-32 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="iDEAL Logo" class="h-8" alt="Official iDEAL payment method logo featuring the pink and blue typographic icon on a white rectangular background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaidV5JMrgwBHlg-PitdtgaSORIFbOKUXuvaNsxHdufYbyz_jXVQMYQSjSRF_LcMC7zL2WYzJJEvh2_BlPTozVbvdlPtTFAPO42sp7-L1V7Nq9bI6dETDjQUmDplVNcLS1Jv6Lxr_UrqXk5Qw88-wITpWuzKpPT46sWve8Vyu4hznnus560v_yi8s_Ov3nV-hEQ4fWaCuIcstVnbvD8O2Witluvd4C7PAwgupsgrNns2WzwSnBd4AlNMC1wzeKpWhmMLcTDeXIBECC"/>
+</div>
+</div>
+<div class="space-y-4">
+<h2 class="text-headline-sm font-bold text-center">Selecteer je bank</h2>
+<div class="grid grid-cols-1 gap-3">
+<!-- Bank Selection Items -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+</div>
+<span class="font-medium">ING Bank</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+</div>
+<span class="font-medium">Rabobank</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+</div>
+<span class="font-medium">ABN AMRO</span>
+</div>
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_balance</span>
+</div>
+<span class="font-medium">SNS Bank</span>
+</div>
+</div>
+</div>
+</div>
+<!-- LOADING OVERLAY -->
+<div class="absolute inset-0 bg-white/80 backdrop-blur-sm z-40 flex flex-col items-center justify-center p-8 transition-opacity duration-500">
+<div class="relative w-20 h-20 mb-6">
+<!-- Outer Track -->
+<div class="absolute inset-0 rounded-full border-[3px] border-surface-container-high"></div>
+<!-- Animated Spinner -->
+<div class="absolute inset-0 rounded-full border-[3px] border-primary border-t-transparent animate-spin-slow"></div>
+<!-- Inner Branding Element (Optional Mollie M shape) -->
+<div class="absolute inset-0 flex items-center justify-center opacity-10">
+<span class="material-symbols-outlined text-3xl" data-icon="payments">payments</span>
+</div>
+</div>
+<p class="text-body-md font-medium text-on-surface-variant tracking-wide animate-pulse">
+                Betaling verwerken...
+            </p>
+<!-- Transaction Details (Subtle Context) -->
+<div class="mt-24 w-full max-w-xs p-6 bg-surface-container-lowest/50 rounded-2xl border border-outline-variant/10 text-center">
+<span class="text-label-sm text-outline uppercase tracking-widest font-bold">Bedrag</span>
+<div class="text-headline-md font-extrabold text-primary mt-1">€ 149,00</div>
+<div class="mt-4 flex items-center justify-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-label-md">Beveiligd door Mollie</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Decoration (Glassmorphic touches) -->
+<div class="fixed -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10"></div>
+<div class="fixed top-24 -right-24 w-80 h-80 bg-secondary/5 rounded-full blur-3xl -z-10"></div>
+</body></html>

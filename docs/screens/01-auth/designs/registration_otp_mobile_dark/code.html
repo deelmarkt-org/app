@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary": "#FF7A4D",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#121212",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-background": "#f2f2f2",
+                        "surface-container-high": "#1e1e1e",
+                        "on-surface": "#f2f2f2",
+                        "tertiary": "#006b24",
+                        "on-secondary-fixed": "#001d35",
+                        "surface-container": "#1a1a1a",
+                        "inverse-primary": "#ffb59e",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "surface-container-highest": "#252525",
+                        "surface-container-low": "#181818",
+                        "primary-fixed": "#ffdbd0",
+                        "outline": "#8e7067",
+                        "surface-dim": "#121212",
+                        "surface-variant": "#2a2a2a",
+                        "outline-variant": "#e2bfb4",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#008730",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#002106",
+                        "on-secondary-container": "#285782",
+                        "background": "#121212",
+                        "primary-fixed-dim": "#ffb59e",
+                        "tertiary-fixed-dim": "#65df75",
+                        "secondary-fixed": "#d0e4ff",
+                        "secondary-container": "#a1cdff",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-error": "#ffffff",
+                        "secondary": "#34618d",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#ad3300",
+                        "primary-container": "#d1430a",
+                        "on-secondary-fixed-variant": "#164974",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#f2f2f2",
+                        "tertiary-fixed": "#82fc8e",
+                        "surface-bright": "#1a1a1a"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121212; color: #f2f2f2; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .otp-input:focus { outline: none; border-color: #d1430a; background-color: rgba(209, 67, 10, 0.05); }
+        .bg-orange-gradient { background: linear-gradient(135deg, #F15A24 0%, #d1430a 100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased">
+<!-- Screen 1: Registration Form -->
+<div class="min-h-screen flex flex-col p-6 max-w-md mx-auto" id="registration-screen">
+<!-- Top Navigation Area -->
+<header class="flex items-center justify-between mb-8 pt-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="text-sm font-semibold text-primary">DeelMarkt</div>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<main class="flex-1">
+<h1 class="text-3xl font-extrabold tracking-tight mb-2 font-headline text-on-surface">Account aanmaken</h1>
+<p class="text-on-surface-variant mb-8 font-medium">Sluit je aan bij de community van bewuste consumenten.</p>
+<!-- Social Logins -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<button class="flex items-center justify-center gap-3 py-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest transition-colors">
+<img alt="Google" class="w-5 h-5" alt="Official Google logo with vibrant red blue green and yellow colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQuXgs2kCOJAFSA_OggnoK543hU68ebP3rXMSuxN-JXB_JvUub5aDIg0TGxCjylXnVX0ty1tb-JKdo6FzBahUQfKe4DNNwaUtOvY5rvEctn53lRpHO-tB0mD10KYw7lzoA_fc6D56w-7jPrXf76NKgu2g2_qVJNLRrVnA2azDZrVfo6MXK_5Da2eBkkG7LIaH0_h5Y0YUsF4_tk76vwmM9Yvx7QAd1SF-e_GPfuaDx9XO-jOLHKjYKvPd1Z9wUo3y2YWZ2VhagvaGZ"/>
+<span class="text-sm font-bold">Google</span>
+</button>
+<button class="flex items-center justify-center gap-3 py-4 rounded-xl bg-surface-container-high hover:bg-surface-container-highest transition-colors">
+<img alt="Apple" class="w-5 h-5 invert" alt="Minimalist white Apple logo centered on a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBrAP7ZSVtsQC1eefNa9yIzT1mmY4yP7KJre69INKukXQVIvLUeLDj6gy7o1SERS8aP7R7CfL_mMw5wA8_YKcXPlI9YzCX58_IjQrzJBkSdok2dRXpG2SPAO5OM_yvZwG39i3O4LXVqgwhTxQ2za5BGdLzxxNDjDayiY6rbiOr3i1iyjrqgt-E-Q-0vaWAjax02P_wfzPFNMh9GpOnCgM2_7z4CmGQ5laHpQttZfnp44egx4EOs6xfxE_Da0P45S9JTTTJhktC2YOW"/>
+<span class="text-sm font-bold">Apple</span>
+</button>
+</div>
+<div class="relative flex items-center mb-8">
+<div class="flex-grow border-t border-surface-variant"></div>
+<span class="flex-shrink mx-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Of met telefoon</span>
+<div class="flex-grow border-t border-surface-variant"></div>
+</div>
+<!-- Form Fields -->
+<div class="space-y-6">
+<!-- Phone Input -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">Telefoonnummer</label>
+<div class="flex gap-3">
+<div class="flex items-center gap-2 px-4 py-4 bg-surface-container-high rounded-xl border border-transparent focus-within:border-primary/40 transition-all">
+<span class="text-sm font-bold">+31</span>
+<span class="material-symbols-outlined text-xs" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</div>
+<input class="flex-1 bg-surface-container-high border-transparent rounded-xl py-4 px-4 text-on-surface placeholder:text-on-surface-variant focus:ring-0 focus:border-primary/40 transition-all font-bold" placeholder="6 1234 5678" type="tel"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant px-1">Wachtwoord</label>
+<div class="relative">
+<input class="w-full bg-surface-container-high border-transparent rounded-xl py-4 px-4 text-on-surface placeholder:text-on-surface-variant focus:ring-0 focus:border-primary/40 transition-all font-bold" placeholder="Minimaal 8 tekens" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Strength Meter -->
+<div class="pt-2 px-1">
+<div class="flex gap-1 h-1.5 mb-2">
+<div class="flex-1 rounded-full bg-tertiary"></div>
+<div class="flex-1 rounded-full bg-tertiary"></div>
+<div class="flex-1 rounded-full bg-tertiary"></div>
+<div class="flex-1 rounded-full bg-tertiary"></div>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-tertiary">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Sterk</span>
+</div>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-start gap-3 py-2">
+<div class="relative flex items-center mt-1">
+<input class="w-5 h-5 rounded border-surface-variant bg-surface-container-high text-primary focus:ring-primary/20" type="checkbox"/>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                        Ik ga akkoord met de <a class="text-primary font-bold hover:underline" href="#">Algemene Voorwaarden</a> en het <a class="text-primary font-bold hover:underline" href="#">Privacybeleid</a> van DeelMarkt.
+                    </p>
+</div>
+</div>
+</main>
+<footer class="mt-8 pb-8">
+<button class="w-full py-5 rounded-2xl bg-orange-gradient text-white font-extrabold text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all">
+                Account aanmaken
+            </button>
+<p class="text-center mt-6 text-sm text-on-surface-variant">
+                Heb je al een account? <a class="text-primary font-bold" href="#">Inloggen</a>
+</p>
+</footer>
+</div>
+<!-- Divider for presentation -->
+<div class="h-24 bg-surface-container-low flex items-center justify-center opacity-30">
+<div class="w-full border-t border-dashed border-on-surface-variant"></div>
+</div>
+<!-- Screen 2: OTP Verification -->
+<div class="min-h-screen flex flex-col p-6 max-w-md mx-auto relative overflow-hidden" id="otp-screen">
+<!-- Background decorative element -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+<header class="flex items-center justify-between mb-12 pt-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="w-10"></div>
+</header>
+<main class="flex-1">
+<div class="mb-10">
+<h1 class="text-3xl font-extrabold tracking-tight mb-4 font-headline text-on-surface">Verificatie</h1>
+<p class="text-on-surface-variant font-medium leading-relaxed">
+                    Code verzonden naar <span class="text-on-surface font-bold">+31 6 •••• 1234</span>
+</p>
+</div>
+<!-- OTP Inputs -->
+<div class="flex justify-between gap-2 mb-10">
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-primary focus:ring-0 transition-all" maxlength="1" type="text" value="4"/>
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-primary focus:ring-0 transition-all" maxlength="1" type="text" value="8"/>
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-primary focus:ring-0 transition-all" maxlength="1" type="text" value="2"/>
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-on-surface focus:ring-0 transition-all" maxlength="1" placeholder="·" type="text"/>
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-on-surface focus:ring-0 transition-all" maxlength="1" placeholder="·" type="text"/>
+<input class="otp-input w-14 h-14 bg-surface-container-high border-transparent rounded-2xl text-center text-2xl font-extrabold text-on-surface focus:ring-0 transition-all" maxlength="1" placeholder="·" type="text"/>
+</div>
+<!-- Countdown and Resend -->
+<div class="flex flex-col items-center gap-4">
+<div class="px-6 py-3 rounded-full bg-surface-container-high flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="schedule">schedule</span>
+<span class="text-sm font-bold text-on-surface">00:45</span>
+</div>
+<p class="text-sm text-on-surface-variant">
+                    Geen code ontvangen? <button class="text-on-surface font-bold opacity-50 cursor-not-allowed">Stuur opnieuw</button>
+</p>
+</div>
+</main>
+<footer class="mt-8 pb-8">
+<button class="w-full py-5 rounded-2xl bg-orange-gradient text-white font-extrabold text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all">
+                Verifiëren
+            </button>
+<!-- Number Pad Visualization (Implicit for Mobile) -->
+<div class="grid grid-cols-3 gap-y-6 mt-12 text-center">
+<div class="text-2xl font-bold py-2">1</div>
+<div class="text-2xl font-bold py-2">2</div>
+<div class="text-2xl font-bold py-2">3</div>
+<div class="text-2xl font-bold py-2">4</div>
+<div class="text-2xl font-bold py-2">5</div>
+<div class="text-2xl font-bold py-2">6</div>
+<div class="text-2xl font-bold py-2">7</div>
+<div class="text-2xl font-bold py-2">8</div>
+<div class="text-2xl font-bold py-2">9</div>
+<div class="py-2"></div>
+<div class="text-2xl font-bold py-2">0</div>
+<div class="flex items-center justify-center py-2">
+<span class="material-symbols-outlined" data-icon="backspace">backspace</span>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

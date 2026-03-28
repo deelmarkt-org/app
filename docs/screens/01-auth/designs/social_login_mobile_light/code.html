@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0" name="viewport"/>
+<title>Inloggen - DeelMarkt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#164974",
+              "on-primary-fixed-variant": "#842500",
+              "primary-fixed": "#ffdbd0",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-error": "#ffffff",
+              "surface-bright": "#fcf9f8",
+              "secondary-container": "#a1cdff",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed": "#3a0b00",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-container": "#f0edec",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-background": "#1c1b1b",
+              "on-surface-variant": "#5a4139",
+              "on-surface": "#1c1b1b",
+              "on-secondary-fixed": "#001d35",
+              "on-primary-container": "#fffbff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "secondary": "#34618d",
+              "on-primary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "surface-variant": "#e5e2e1",
+              "surface": "#fcf9f8",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "tertiary-container": "#008730",
+              "surface-container-low": "#f6f3f2",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary-container": "#285782",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#e5e2e1",
+              "outline-variant": "#e2bfb4",
+              "tertiary-fixed-dim": "#65df75",
+              "on-tertiary": "#ffffff",
+              "tertiary": "#006b24",
+              "on-tertiary-container": "#f7fff2",
+              "primary-fixed-dim": "#ffb59e",
+              "primary": "#F15A24",
+              "on-tertiary-fixed": "#002106",
+              "surface-container-high": "#ebe7e7",
+              "on-secondary": "#ffffff",
+              "primary-container": "#d1430a",
+              "background": "#fcf9f8",
+              "outline": "#8e7067",
+              "surface-tint": "#ad3300",
+              "surface-container-lowest": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed">
+<!-- Status Bar Emulation -->
+<div class="w-[390px] h-11 flex justify-between items-center px-8 mx-auto sticky top-0 bg-surface/80 backdrop-blur-md z-50">
+<span class="text-[15px] font-semibold text-on-surface">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[20px]">battery_full</span>
+</div>
+</div>
+<!-- Main Content Container -->
+<main class="w-[390px] min-h-[800px] mx-auto px-6 flex flex-col bg-surface relative">
+<!-- Navigation Header -->
+<header class="pt-2 flex items-center">
+<button aria-label="Ga terug" class="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-surface-variant/20 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/40">
+<span class="material-symbols-outlined text-on-surface" data-icon="arrow_back">arrow_back</span>
+</button>
+</header>
+<!-- Identity Section -->
+<section class="mt-12">
+<h1 class="text-[24px] font-bold tracking-tight text-[#1A1A2E] font-headline">
+                Inloggen met
+            </h1>
+</section>
+<!-- Authentication Options -->
+<section class="mt-8 flex flex-col gap-3">
+<!-- Google Login -->
+<button aria-label="Doorgaan met Google" class="w-full h-[52px] flex items-center justify-center gap-3 bg-white border border-[#E5E5E5] rounded-[12px] shadow-sm hover:bg-surface active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20">
+<img alt="" class="w-6 h-6" alt="Official Google G logo in multicolored brand colors on white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK18fn3YxhkUDEcPd-LyfE4CLCz_Q_8MsCv97cEAPaaBhaCAApvEdmR-8IcuilnTX6216kxYFxe9r4nw8knOaAjBTHssqMuRe4fD7QG-ZdDjzxou3_KWaLKAm3b4KKUoeMUif_6junD116sP-tt3LHofGmNEwXjpqK3LzDCZkw6seETF5lL_i_-WHdwWaD7Ovqb3iXiDeWsn0PjnpX6rJKt1s_w_TsOEqeSMUSP8YhVX2f9GmKkFcRuwsT4xf8nua5ZgEJMUS1hNah"/>
+<span class="text-[16px] font-medium text-[#1A1A2E]">Doorgaan met Google</span>
+</button>
+<!-- Apple Login -->
+<button aria-label="Doorgaan met Apple" class="w-full h-[52px] flex items-center justify-center gap-3 bg-[#1A1A2E] rounded-[12px] hover:bg-black active:scale-[0.98] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-on-surface/40">
+<span class="material-symbols-outlined text-white text-[24px]" data-icon="apple" style="font-variation-settings: 'FILL' 1;">ios</span>
+<span class="text-[16px] font-medium text-white">Doorgaan met Apple</span>
+</button>
+</section>
+<!-- Divider -->
+<div class="mt-6 flex items-center gap-4">
+<div class="h-[1px] flex-1 bg-[#E5E5E5]"></div>
+<span class="text-[14px] text-[#6B7280] font-normal px-1">of</span>
+<div class="h-[1px] flex-1 bg-[#E5E5E5]"></div>
+</div>
+<!-- Alternative Auth -->
+<div class="mt-6 flex justify-center">
+<button aria-label="Inloggen met e-mail" class="h-[52px] px-6 text-[16px] font-semibold text-primary hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-xl">
+                Inloggen met e-mail
+            </button>
+</div>
+<!-- Decorative Spacer to push footer to bottom -->
+<div class="flex-grow"></div>
+<!-- Terms Footer -->
+<footer class="pb-12 text-center">
+<p class="text-[12px] leading-relaxed text-[#6B7280]">
+                Door in te loggen ga je akkoord met onze<br/>
+<a class="text-primary font-semibold hover:underline decoration-2 underline-offset-4" href="#">Voorwaarden</a>
+<span class="mx-0.5">en</span>
+<a class="text-primary font-semibold hover:underline decoration-2 underline-offset-4" href="#">Privacybeleid</a>
+</p>
+</footer>
+<!-- Brand Accent Element (Asymmetric Depth) -->
+<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+</main>
+</body></html>

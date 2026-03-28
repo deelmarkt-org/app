@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#82fc8e",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#5a4139",
+              "on-background": "#1c1b1b",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-variant": "#e5e2e1",
+              "surface-container": "#f0edec",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "inverse-primary": "#ffb59e",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "secondary": "#34618d",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dcd9d9",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "on-error": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "surface-tint": "#ad3300",
+              "primary": "#F15A24",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "tertiary": "#006b24",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary": "#ffffff",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container-low": "#f6f3f2",
+              "primary-container": "#d1430a",
+              "secondary-fixed-dim": "#9fcafc",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-container": "#008730",
+              "surface-container-high": "#ebe7e7",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-on-surface": "#f3f0ef",
+              "on-secondary-container": "#285782",
+              "surface": "#fcf9f8",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .browser-shadow {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- Top Navigation (Shell) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold text-[#1b1b1b] font-['Plus_Jakarta_Sans'] tracking-[-0.02em]">Shipping Label</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#1b1b1b]/60">share</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-4 flex flex-col items-center">
+<!-- Browser Frame Simulator (Visual Polish) -->
+<div class="w-full max-w-[600px] bg-surface-container-lowest rounded-2xl browser-shadow overflow-hidden">
+<!-- Browser Header -->
+<div class="bg-surface-container-low px-4 py-3 flex items-center gap-2 border-b border-outline-variant/10">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-error/20"></div>
+<div class="w-3 h-3 rounded-full bg-secondary-container/40"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary-container/20"></div>
+</div>
+<div class="mx-auto bg-surface-container-lowest px-4 py-1 rounded-full text-[10px] text-on-surface-variant font-medium tracking-wide border border-outline-variant/10">
+                    deelmarkt.nl/shipping/3sdevc1234567
+                </div>
+</div>
+<!-- Content Area -->
+<div class="p-6 md:p-10 flex flex-col items-center text-center">
+<!-- Title & Headline -->
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface mb-2">Pakket verzenden</h2>
+<!-- Trust Banner: Escrow Protection -->
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-tertiary-container/10 rounded-full mb-8">
+<span class="material-symbols-outlined text-tertiary text-sm" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-xs font-bold text-tertiary uppercase tracking-wider">Beschermd door DeelMarkt Escrow</span>
+</div>
+<!-- Main QR Card -->
+<div class="w-full bg-surface-container-low rounded-3xl p-8 relative mb-6 overflow-hidden">
+<!-- DHL Brand Bar -->
+<div class="absolute top-0 left-0 right-0 h-2 flex">
+<div class="flex-1 bg-[#FFCC00]"></div>
+<div class="flex-1 bg-[#D40511]"></div>
+</div>
+<div class="flex justify-between items-start mb-6 pt-2">
+<div class="text-left">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Koerier</p>
+<div class="flex items-center gap-1">
+<span class="text-lg font-black text-[#D40511]">DHL</span>
+<span class="text-lg font-light text-on-surface-variant italic">Express</span>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Deadline</p>
+<p class="text-sm font-bold text-error">Verzend voor 31 mrt 2026</p>
+</div>
+</div>
+<!-- QR Code Container -->
+<div class="bg-white p-4 rounded-2xl inline-block mb-6 border border-outline-variant/20 shadow-sm">
+<img alt="QR Code for shipping" class="w-[200px] h-[200px]" alt="Digital QR code on a clean white background for shipping tracking and logistics verification" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH3pdVQmwrAmoHK2fQ22MCoMf4jPtxXs3hzg9GGfKg2caBSbkyiyGpQs3GLFQmgq8tr2IgT4AwVHEUEW6OnlzD3lVx_M2qkZVqHrqvuzTgvin4mq-ITZK5DANKojQTBuPjm83cH_FoQ0xIMDyT50tiu7r_crWSgncq7kvu38gIR3Ik4SL_v98Ero-yzmhlYEFSPaICwyUsiHoYHBSuHuYHUbXSrckUEtgbjs_HKw4qXnx64UPcWJNkwrCU3sd1bofrELrPk9zgeWyX"/>
+</div>
+<!-- Tracking Info -->
+<div class="space-y-1">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tracking Nummer</p>
+<p class="text-2xl font-mono font-bold tracking-tighter text-on-surface">3SDEVC1234567</p>
+</div>
+</div>
+<!-- Instruction Card -->
+<div class="w-full bg-surface-container-high/50 rounded-2xl p-6 flex items-start gap-4 text-left mb-8 border border-outline-variant/10">
+<div class="w-10 h-10 rounded-full bg-primary-container/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">info</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface mb-1">Scan deze code bij een DHL servicepunt</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                            Je hoeft zelf geen label te printen. De medewerker scant de code en plakt het verzendlabel voor je op het pakket.
+                        </p>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-4 px-6 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl font-bold text-lg shadow-lg hover:opacity-90 active:scale-95 transition-all duration-200">
+                    Zoek servicepunt
+                </button>
+<button class="mt-6 text-sm font-bold text-primary hover:underline transition-all">
+                    Hulp nodig bij verzenden?
+                </button>
+</div>
+</div>
+<!-- Asymmetric Decorative Elements -->
+<div class="w-full max-w-[600px] mt-12 grid grid-cols-2 gap-6">
+<div class="bg-secondary-container/10 p-6 rounded-2xl">
+<span class="material-symbols-outlined text-secondary mb-3">box</span>
+<h5 class="font-bold text-secondary text-sm mb-1">Veilig Verpakt</h5>
+<p class="text-xs text-on-surface-variant">Zorg voor een stevige doos en voldoende opvullingsmateriaal.</p>
+</div>
+<div class="bg-tertiary-container/10 p-6 rounded-2xl mt-4">
+<span class="material-symbols-outlined text-tertiary mb-3">payments</span>
+<h5 class="font-bold text-tertiary text-sm mb-1">Direct Uitbetaald</h5>
+<p class="text-xs text-on-surface-variant">Je ontvangt je geld zodra de koper het pakket heeft ontvangen.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Shell) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40">
+<span class="material-symbols-outlined mb-1">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Market</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40">
+<span class="material-symbols-outlined mb-1">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Inbox</span>
+</div>
+<!-- Active Tab: Shipping -->
+<div class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Shipping</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Profile</span>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "on-surface": "#f2f2f2",
+              "surface-container-low": "#1e1e1e",
+              "surface-container-lowest": "#1e1e1e",
+              "secondary": "#34618d",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#121212",
+              "tertiary": "#006b24",
+              "inverse-surface": "#f2f2f2",
+              "surface-container-high": "#2a2a2a",
+              "background": "#121212",
+              "primary-container": "#d1430a",
+              "primary": "#FF7A4D",
+              "on-background": "#f2f2f2",
+              "surface-container": "#1e1e1e",
+              "surface": "#121212",
+              "outline": "#333333",
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121212; color: #f2f2f2; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { backdrop-filter: blur(24px); background: rgba(18, 18, 18, 0.8); }
+        .border-custom { border: 1px solid #333333; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased">
+<!-- Mobile Top Bar (Contextual Suppression of Full TopAppBar for Focus) -->
+<header class="fixed top-0 left-0 right-0 z-50 glass-nav px-6 py-4 flex justify-between items-center max-w-[430px] mx-auto">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<span class="font-headline font-bold text-lg tracking-tight">Verkoper Profiel</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface">share</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-4 max-w-[430px] mx-auto min-h-screen">
+<!-- Seller Profile Card -->
+<section class="mb-8 relative overflow-hidden rounded-3xl bg-surface-container-low border-custom p-6">
+<div class="flex flex-col items-center text-center">
+<!-- Avatar with Verification -->
+<div class="relative mb-4">
+<div class="w-28 h-28 rounded-full border-4 border-primary/20 p-1">
+<img class="w-full h-full object-cover rounded-full" alt="close-up portrait of a friendly middle-aged man with short hair and a kind smile, professional lighting, warm dark studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6bGxhEZziaf2YnKYI69po8PTUc4KSBI2s9lFXizyK1lesEgjQRyONrsEXU2Z_XuzRDEU0zbfmfOs25p-DGC2SCK-thy82vG7qoFFtxP97h6KgyBP8O4bDVpfbvvKGz-XtH75SppVa8TvEM_wsSn5T3WmYgHTTYcFrKuvShSshybWYxHN9jcQ_lbsNR0fYoIUbQ4joTi1XeDiW67bNNosEncTaxlYCLB-4KWjXTmQQi17cTS7DC_wsfXsAvNp8YPoUO-81LhyUvkLt"/>
+</div>
+<div class="absolute bottom-1 right-1 bg-tertiary-container text-white w-8 h-8 rounded-full flex items-center justify-center border-4 border-surface-container-low">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight mb-1">Jan de Vries</h1>
+<p class="text-zinc-500 text-sm font-medium mb-6">Lid sinds maart 2019 • <span class="text-primary">Premium Verkoper</span></p>
+<!-- Stats Row -->
+<div class="grid grid-cols-3 w-full gap-2 mb-8">
+<div class="flex flex-col items-center py-3 bg-surface-container-high rounded-2xl">
+<span class="text-lg font-bold tabular-nums">4.9</span>
+<div class="flex gap-0.5 text-[10px] text-[#FFB800]">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1">128 Reviews</span>
+</div>
+<div class="flex flex-col items-center py-3 bg-surface-container-high rounded-2xl">
+<span class="text-lg font-bold tabular-nums">154</span>
+<span class="material-symbols-outlined text-xs text-primary">sell</span>
+<span class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1">Verkocht</span>
+</div>
+<div class="flex flex-col items-center py-3 bg-surface-container-high rounded-2xl">
+<span class="text-lg font-bold tabular-nums">98%</span>
+<span class="material-symbols-outlined text-xs text-tertiary">speed</span>
+<span class="text-[10px] uppercase tracking-widest text-zinc-500 mt-1">Respons</span>
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-4 bg-surface-container-high hover:bg-zinc-800 text-on-surface font-bold rounded-2xl transition-all active:scale-[0.98] border-custom flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">chat_bubble</span>
+                    Bericht sturen
+                </button>
+</div>
+</section>
+<!-- Tabs Navigation -->
+<div class="flex gap-8 mb-6 px-2 border-b border-outline/30">
+<button class="pb-4 text-primary font-bold border-b-2 border-[#F15A24] text-sm uppercase tracking-widest">
+                Advertenties (24)
+            </button>
+<button class="pb-4 text-zinc-500 font-bold text-sm uppercase tracking-widest hover:text-on-surface transition-colors">
+                Reviews
+            </button>
+</div>
+<!-- 2-Column Listing Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="group bg-surface-container-low rounded-3xl overflow-hidden border-custom">
+<div class="relative h-44">
+<img class="w-full h-full object-cover" alt="minimalist studio product shot of a sleek modern analog watch on a soft grey surface, elegant shadows, high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI1Y2wmk23UCg5XoXOiqryFK1RcItpdfQHTS8roHKK3UA5TcQcXiOYDEXs0wofTKp5Jiw2rz_fX8bJIQYD1Io84pvoJiaQnCFHyEv-VWadAB2MPXucl-aD2WBZv0Ax3XrPani7Fpw9Fwo4fI015VFkdIifwB0WqYhoriN7ftKz8ZjrlGl1QK11N8cybacTHbqJvBFrcAKAI2D4UjuPUE8rXpZSqYI2xZEsG6MQ5A6Y9PQjbfKI8nH3I9NDfT5cwYGo6ZaXjhpR9k8P"/>
+<div class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2">
+<span class="material-symbols-outlined text-white text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-bold text-sm line-clamp-1 mb-1">Modern Analoog Horloge</h3>
+<p class="text-primary font-extrabold tabular-nums text-lg">€ 85,00</p>
+<div class="flex items-center gap-1 mt-2 text-zinc-500 text-[10px]">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+<span>Amsterdam</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-low rounded-3xl overflow-hidden border-custom">
+<div class="relative h-44">
+<img class="w-full h-full object-cover" alt="professional studio shot of premium matte black wireless headphones on a wooden stand, dramatic rim lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHPzHFtc1NzdNBNuO0i9bBeWWeNvRo0WN9imQ990SWaRQYZoJ5EcWl5geWr3tsj8Kqre3opQHf9JO-ThQvdbEbr9yCjMArxiW3gmPPFhKjt3gtBy4wimFJM5Ycp_Arzo2wayXYtZeQHI_Epup8nXX_mVJmlsSH4BYCeI3KvOXUbL6aUanOqUn-ioFncKnRru4bFNBAZp_YJyixyzG1Oieh7aZLMWcdL9_0_6Z04-WXMHHPgotis5HK1NmfYI-HHpu_LmzBUpLqUiQZ"/>
+<div class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2">
+<span class="material-symbols-outlined text-white text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-bold text-sm line-clamp-1 mb-1">Premium Draadloze Koptelefoon</h3>
+<p class="text-primary font-extrabold tabular-nums text-lg">€ 120,00</p>
+<div class="flex items-center gap-1 mt-2 text-zinc-500 text-[10px]">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+<span>Amsterdam</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-low rounded-3xl overflow-hidden border-custom">
+<div class="relative h-44">
+<img class="w-full h-full object-cover" alt="vintage leather armchair in a dimly lit studio, high texture detail, cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXOzPDn05Z3oaYWr5AuXcgAGtIBsVX8qaH3iZucKhdkrEXzeV-c7baAkjR1XdxA7fDIyUe1Oq69MXnvouGPNsHMtVA-XnvXgH5Zz2mO5Xo8C2djze6pv5h0E-iYoAQrX4w8B7qI5Taou6BGbX738UJb710n5OqLhSP5xX1uwm4gzLqWzmkJS-hImgb9zTcTYLx9YlQg1LH6lCLog3SYvqrfARsKdfEJhVtS5DoV-tX93616qytExXy49qqAwH4CGns_Em-B5XI96aL"/>
+<div class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2">
+<span class="material-symbols-outlined text-white text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-bold text-sm line-clamp-1 mb-1">Vintage Leren Fauteuil</h3>
+<p class="text-primary font-extrabold tabular-nums text-lg">€ 245,00</p>
+<div class="flex items-center gap-1 mt-2 text-zinc-500 text-[10px]">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+<span>Amsterdam</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-container-low rounded-3xl overflow-hidden border-custom">
+<div class="relative h-44">
+<img class="w-full h-full object-cover" alt="clean pair of white athletic sneakers on a white background, soft editorial lighting, minimalist style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7W8VrehA0Hz0z3vQO0GAHF-TpIRw0xWm5_na6b5z5j8JHXmcnBC8J5d9fKkHDZFfHn57ygsicErUnK1v93rb_EKAnbtKChXEw4gMWTagVxQhgSD3WFKNYvpeDi5OLhH6x9QCujZSC_NUqecfDXhVHEz0O7PEE--6Krgz_uRTipCXoXJM_4o_rR8IskXi705v39wwIiarw9X1EcFBZ0SYhDUCGkTiIaEmGEfj5O9Po6GrIY_LVRx37cI9ClUv4-mawETlchISQUA1F"/>
+<div class="absolute top-3 right-3 bg-white/10 backdrop-blur-md rounded-full p-2">
+<span class="material-symbols-outlined text-white text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<h3 class="font-bold text-sm line-clamp-1 mb-1">Sport Sneakers Limited</h3>
+<p class="text-primary font-extrabold tabular-nums text-lg">€ 60,00</p>
+<div class="flex items-center gap-1 mt-2 text-zinc-500 text-[10px]">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+<span>Amsterdam</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Shared Component Execution) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 glass-nav rounded-t-[32px] max-w-[430px] mx-auto shadow-[0_-8px_30px_rgba(0,0,0,0.5)] border-t border-outline/10">
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined mb-1 text-2xl">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Plaatsen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Berichten</span>
+</a>
+<!-- Active Tab: Profiel -->
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-4 py-2 transition-all" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Profiel</span>
+</a>
+</nav>
+<!-- FAB (Suppressed on Profile Page per rules) -->
+</body></html>

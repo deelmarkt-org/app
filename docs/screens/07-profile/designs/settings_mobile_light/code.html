@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary": "#34618d",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "background": "#fcf9f8",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "on-surface-variant": "#5a4139",
+              "surface-tint": "#ad3300",
+              "surface-container-lowest": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-highest": "#e5e2e1",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#F15A24",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary": "#006b24",
+              "secondary-fixed": "#d0e4ff",
+              "surface": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container": "#f0edec",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "tertiary-container": "#008730",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed-dim": "#9fcafc",
+              "secondary-container": "#a1cdff",
+              "on-secondary-fixed": "#001d35",
+              "surface-bright": "#fcf9f8",
+              "on-primary-container": "#fffbff",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "on-tertiary-container": "#f7fff2",
+              "surface-dim": "#dcd9d9",
+              "surface-container-low": "#f6f3f2",
+              "on-background": "#1c1b1b",
+              "primary-container": "#d1430a",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-container": "#285782",
+              "surface-container-high": "#ebe7e7",
+              "tertiary-fixed": "#82fc8e"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .custom-toggle:checked + .toggle-dot { transform: translateX(100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top App Bar -->
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 left-0 right-0 z-50 flex justify-between items-center w-full px-6 py-4 max-w-full mx-auto">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform duration-200 text-stone-600">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-black tracking-tight text-primary font-['Plus_Jakarta_Sans']">Instellingen</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-stone-600" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-stone-600" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-32 px-4 space-y-6 max-w-md mx-auto">
+<!-- Profile Summary -->
+<section class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-xl">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" alt="portrait of a friendly middle-aged man with short hair and a warm smile against a clean neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCOgsm1dDTlD9MjWQ1NbTKsHnm-AOlOUiybvfaBkHzP2MK45ZUGi4JEh0QvxEIbgM7zxmfmcxhtxgga7NQcs-ltav26PwX-UHk4yF1XP-U5ZndnPf_ANq5bdVtbwCbNz4ziV2fwrIg3f22aWvvSCBFzINeqFTdQDjIuDz7JUGWNuqyk_Mpk8b1RUN9SN47Cf7y_cE9oKZyR_s6PGU669Fz9iyN34gbIDodh1EV4kVFOWFpKzeiTWuAoR_vfMCtO1eTq7b0OiUungGN"/>
+</div>
+<div>
+<h2 class="text-lg font-bold leading-tight">Jasper de Vries</h2>
+<p class="text-sm text-on-surface-variant">Premium Lid sinds 2022</p>
+</div>
+</section>
+<!-- ACCOUNT Section -->
+<section class="space-y-2">
+<h3 class="px-2 text-xs font-extrabold tracking-widest text-outline uppercase">Account</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="flex items-center justify-between p-4 bg-stone-100/30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="language">language</span>
+<span class="text-sm font-medium">Taal</span>
+</div>
+<div class="flex bg-surface-container rounded-lg p-1">
+<button class="px-3 py-1 text-xs font-bold rounded-md bg-white shadow-sm text-primary">NL</button>
+<button class="px-3 py-1 text-xs font-medium text-on-surface-variant">EN</button>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="mail">mail</span>
+<span class="text-sm font-medium">E-mail</span>
+</div>
+<span class="text-sm text-on-surface-variant">jasper@voorbeeld.nl</span>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="phone">phone</span>
+<span class="text-sm font-medium">Telefoon</span>
+</div>
+<span class="text-sm text-on-surface-variant">+31 6 12345678</span>
+</div>
+</div>
+</section>
+<!-- ADRESSEN Section -->
+<section class="space-y-2">
+<h3 class="px-2 text-xs font-extrabold tracking-widest text-outline uppercase">Adressen</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="home">home</span>
+<div>
+<p class="text-sm font-medium">Thuis</p>
+<p class="text-xs text-on-surface-variant">Keizersgracht 123, Amsterdam</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="p-4 border-t border-surface-container flex items-center justify-center gap-2 text-primary font-bold text-sm hover:bg-stone-50 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="add_circle">add_circle</span>
+                    Nieuw adres toevoegen
+                </div>
+</div>
+</section>
+<!-- MELDINGEN Section -->
+<section class="space-y-2">
+<h3 class="px-2 text-xs font-extrabold tracking-widest text-outline uppercase">Meldingen</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="chat">chat</span>
+<span class="text-sm font-medium">Berichten</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="sell">sell</span>
+<span class="text-sm font-medium">Verkoopupdates</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="favorite">favorite</span>
+<span class="text-sm font-medium">Favorieten prijsverlaging</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="campaign">campaign</span>
+<span class="text-sm font-medium">Promoties &amp; Tips</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- PRIVACY Section -->
+<section class="space-y-2">
+<h3 class="px-2 text-xs font-extrabold tracking-widest text-outline uppercase">Privacy</h3>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="download">download</span>
+<span class="text-sm font-medium">Gegevens exporteren</span>
+</div>
+<span class="material-symbols-outlined text-outline text-sm" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 border-t border-surface-container">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" data-icon="delete_forever">delete_forever</span>
+<span class="text-sm font-bold text-error">Account verwijderen</span>
+</div>
+</div>
+</div>
+</section>
+<!-- APP Section -->
+<section class="text-center py-4">
+<p class="text-xs text-outline font-bold tracking-widest uppercase">App Versie</p>
+<p class="text-sm font-medium text-on-surface-variant">v2.4.12-premium</p>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-surface/90 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdekken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Verkopen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-500 px-4 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favorieten</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary/10/50 text-primary rounded-xl px-4 py-2 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instellingen</span>
+</a>
+</nav>
+</body></html>

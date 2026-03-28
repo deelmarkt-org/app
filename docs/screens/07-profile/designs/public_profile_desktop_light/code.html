@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#fcf9f8",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#002106",
+                        "on-secondary-fixed-variant": "#164974",
+                        "surface-variant": "#e5e2e1",
+                        "on-surface": "#1c1b1b",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-container": "#f7fff2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb59e",
+                        "error-container": "#ffdad6",
+                        "secondary": "#34618d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "secondary-fixed": "#d0e4ff",
+                        "tertiary": "#006b24",
+                        "inverse-surface": "#313030",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-high": "#ebe7e7",
+                        "on-surface-variant": "#5a4139",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-container": "#008730",
+                        "outline-variant": "#e2bfb4",
+                        "surface-container": "#f0edec",
+                        "inverse-on-surface": "#f3f0ef",
+                        "outline": "#8e7067",
+                        "primary-container": "#d1430a",
+                        "on-secondary": "#ffffff",
+                        "primary": "#F15A24",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-background": "#1c1b1b",
+                        "on-secondary-container": "#285782",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#a1cdff",
+                        "on-secondary-fixed": "#001d35",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface": "#fcf9f8",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#ad3300",
+                        "on-primary-fixed-variant": "#842500"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FB] font-body text-on-surface antialiased min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl docked full-width top-0 z-50 no-border shadow-none bg-zinc-50 dark:bg-zinc-800/50">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black tracking-tighter text-primary">DeelMarkt</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Ontdekken</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-primary transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Verkopen</a>
+<a class="text-zinc-500 dark:text-zinc-400 font-medium hover:text-primary transition-colors duration-200 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Hulp</a>
+</nav>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-zinc-600">notifications</span>
+<span class="material-symbols-outlined text-zinc-600">favorite</span>
+<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover ring-2 ring-surface-container" alt="Close-up of a friendly professional man with short dark hair in a bright modern office setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOwI6viEnoy9YT-u_OFo2iZLb_JmiIs34HSEsv0nm9Oi2EEWlQdigEC-4e3Py_0Q_yseeXHx8rba_PYLcU7yKXTV8fY5b_Z-xAOeFDwUJc0JP0q5ipXnaPVPsOYCORPuWL7XJ0JwnN2JXO2E8-lXxieLEYxJlx6bBpbsysrMYdJEQ0qZHYTzjhkeQ0BqT-6mpjjps1nh7IQcB39JwOhZA0y-W0KpG7PWWEzggjBCFQ75_B5H2JQ9xyLuHvIV2PzDLGd1G5_NE_DjZL"/>
+</div>
+</div>
+</header>
+<div class="flex max-w-7xl mx-auto min-h-screen">
+<!-- SideNavBar / NavigationRail -->
+<aside class="hidden md:flex flex-col h-screen sticky left-0 top-0 p-6 bg-zinc-50 dark:bg-zinc-950 w-64 border-r-0 bg-zinc-100 dark:bg-zinc-900">
+<div class="flex items-center gap-3 mb-12">
+<img alt="Verkoper profielafbeelding" class="w-12 h-12 rounded-xl object-cover" alt="Professional profile photo of a smiling man with a beard, wearing a casual denim shirt against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbW7BxJxv2-MK_Wd02OCFO0TLA0ntkg6nfzowxXN0bqGq4cXoMqRPDbTmpSCrkSyu3i8Im0Bdc8V8CPu86mtEHVg6ZE9MThVb9qYEHrGcaAp-skyPy2dWka_7qJiQkAnONAu3ioXR5j7VI9Ck6YITfmOgovRdZycB_PYukD3-hBjh1lfYMe8iPxilbYkxMm2Tz2GL5eHmtdfST32e0p6eEOASB9pYf9JXhObYmcmdZFdMO96SwBBCgzES7rksfiftzGJKMiMqyONty"/>
+<div>
+<p class="font-black text-on-surface leading-tight">Mijn DeelMarkt</p>
+<p class="text-xs text-secondary font-semibold">Premium Verkoper</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-all font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-4 border-[#F15A24] bg-primary/5 font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                    Mijn Advertenties
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-all font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<span class="material-symbols-outlined">mail</span>
+                    Berichten
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-all font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<span class="material-symbols-outlined">star</span>
+                    Favorieten
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 transition-all font-['Plus_Jakarta_Sans'] text-sm" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Instellingen
+                </a>
+</nav>
+<button class="mt-auto w-full py-4 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+                Nieuwe Advertentie
+            </button>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 md:p-12 overflow-y-auto">
+<!-- Seller Profile Header -->
+<section class="bg-surface-container-lowest rounded-3xl p-8 mb-12 shadow-sm border border-zinc-100">
+<div class="flex flex-col md:flex-row gap-8 items-start">
+<div class="relative">
+<img alt="Jan de Vries" class="w-20 h-20 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md" alt="Clear portrait of a man with friendly eyes and a gentle smile, natural daylight, soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmAvy5sfWumWxD6yg4Ybi1tECvKaa295Ob4dLHsBvobryFR9WTxM9mzxJCpPdgXr4vmoik9dbGLizkqJ6CQz8A59tvyYvTHWvKm8yvxDBDH5JTRVTIWosQF7fSUV7nDIqRpzu328g_4duG5NIs1ZAs1ezYvs0t3JcjSjbIRcgN6XJdxybc6EtDq-74dc1b0H4hez0u0mJ0eyNxdrVD3PH94hJpPRVl2jdv619a_qPUb3lkkgfiSOJM1lcSvErEBUovUAbKEXcUApFn"/>
+<div class="absolute -bottom-1 -right-1 bg-tertiary text-white p-1 rounded-full border-2 border-white">
+<span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex flex-wrap items-center gap-3 mb-2">
+<h1 class="text-3xl font-black tracking-tight text-on-surface">Jan de Vries</h1>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1 bg-tertiary/10 text-tertiary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-xs">mail</span> iDIN ✓
+                                </span>
+<span class="inline-flex items-center gap-1 bg-tertiary/10 text-tertiary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-xs">call</span> Phone ✓
+                                </span>
+<span class="inline-flex items-center gap-1 bg-tertiary/10 text-tertiary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-xs">shield</span> Email ✓
+                                </span>
+</div>
+</div>
+<div class="flex items-center gap-6 mb-6">
+<div class="flex items-center gap-1">
+<span class="text-2xl font-black tabular-nums">4.8</span>
+<div class="flex text-yellow-500">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-lg">star_half</span>
+</div>
+</div>
+<div class="h-4 w-px bg-zinc-200"></div>
+<div class="text-zinc-500 font-medium">
+<span class="text-on-surface font-bold tabular-nums">23</span> verkocht
+                            </div>
+<div class="h-4 w-px bg-zinc-200"></div>
+<div class="text-zinc-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span>
+                                &lt; 1 uur responstijd
+                            </div>
+</div>
+<div class="flex gap-4">
+<button class="bg-secondary px-8 py-3 text-white rounded-xl font-bold flex items-center gap-2 hover:bg-on-secondary-container transition-all">
+<span class="material-symbols-outlined">chat</span>
+                                Bericht sturen
+                            </button>
+<button class="bg-surface-container-high px-6 py-3 text-on-surface rounded-xl font-bold hover:bg-surface-dim transition-all">
+                                Volgen
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Tabs Section -->
+<div class="flex gap-12 border-b border-zinc-200 mb-10">
+<button class="pb-4 text-primary font-bold border-b-2 border-primary text-lg">
+                    Advertenties <span class="ml-2 px-2 py-0.5 bg-primary/10 rounded-md text-sm tabular-nums">12</span>
+</button>
+<button class="pb-4 text-zinc-400 font-bold text-lg hover:text-on-surface-variant transition-colors">
+                    Beoordelingen <span class="ml-2 px-2 py-0.5 bg-zinc-100 rounded-md text-sm tabular-nums">12</span>
+</button>
+</div>
+<!-- Bento Grid Marketplace -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Canyon Bike" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Sleek black Canyon road bike leaning against a minimalist white wall in a bright studio, high contrast lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq3LuLL570sv5qao9S7SLeAnwnG3PH__9ANRzr9YTzQEwCIfaBj0LBmtKocLAVmBfPmQb7YcwyHmSjm61dTcvWXr4xAs6SCz7D_dMQZCcOa7Y8a9s7ZVCtaA7gwEhbf7cvfaCjx7DhVgJm8ybVORt9gmon98llC8n14tlBiBOHbQbNzifldyzNVVK4Ly02HyGha1GlEqbvSDcLjwjLUBWg5rP_6NIEFa1Eq_BrHn0Pmrfbw78b0o6iM13xzxcoF4_l9SBpOVJkspqy"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 1.250,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">Canyon Endurace CF 7 - M</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="IKEA Table" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Modern minimalist IKEA wooden dining table in a sunlit scandinavian style room with light floor, soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Y9fBwflKWkEuy1hSfEERrp8YhO-t2GJogqwym4rMwvJldrl0T463mgm9FCnJZWKW6BEecVue37jkmoMUU86QcDel4ACMT2mFKWvjIh5HUVDq-95q372DxjSj4X8h2vGJ0ub4Zz-YPLQl5PjTMDp79yQtl3JrfHKayWD05PW6MhYAW2tTpiI3aFjTig_e06dJT8XTdg9ZPYOacs_f5ScqNHoQSjZmlm8epyo9R0VAEjzawO_mpDj09W8q-2NcHuROczQkcEkYF3pl"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 45,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">IKEA Lisabo Tafel - Eikenfineer</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Bose Headphones" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Premium Bose wireless headphones on a wooden table with soft focused indoor lighting, cozy atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbYYBM-fkSY7FJhd4rkjzI39C8aPjj1jNQhp4-GD5hslNBz4Eb2P4R5UTpcGekf4ozAQJlRH1gY12uvos0i_DDlcyF3LBzQPP1REmP03gon0oI90GnPk1uxaKCPOjJfIxzRqI98fv44rERcXCTXrSqAj69axm9fMDFkezFJZr_FolDWAftDS-KxY4_TKKMi7qZ7L_LUnQw37He_M8ihQ89Pa51zBP1I_G5aIivEatfwgUtxRdGgMSclT-lHZA82fmfV_sPI1aX7JS2"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 185,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">Bose QuietComfort 45 - Zwart</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Modern Watch" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Close-up of a stylish minimalist silver watch with a white face on a neutral textile background, clean elegant aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi6RedjqLhjPgmdtcqqhs7NRf9kVdmVXLjSZ0N6894BUIi3FfdITU4HxPgCXTa7fYC_O4iFnlPxxj2sUyXIPpts3CxTKG0HDjEsfrFwX4feI7EfTxO8SCiIhuNpsmwGbtOzyT7GO8esoGAOgZ81YCEbillVEKQnkKJDTXTV92myhP6OM8pHtF75QfgR7YvgBLMT1wEMN8S8mXpoE23vgnj5uka35h4TF6OJDEtOBMpUK5feqFtrzwzRAAtwuQwn6ZJdbvRbDRIa7A"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 89,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">Minimalistisch Design Horloge</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Nike Sneakers" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Pair of bright red Nike running shoes floating against a soft gradient grey background, commercial studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiiMQ9QuNvMp9dPIcVAYZFzXE2WDk22tuj_uv_v-PfYiNYEfGwyD_KjKIq0uiZcELqpB3sRnqSBeW5Hzg8t4F3a7hcx2ZIF1L0EX1ilru--ewOQgM2dco3EmH1BD5Mgd1RaaxXXaMjn6hso413i4qRCg3PoUvTfjT5jTVWpko8Y-cDgnclkFUGkfR_IRmSAEVfLWnmy_SPTCv03KNdSHU-6vn8bEmnrmGaxyNC53EF2-us155pji5c1Wk6CFqq8ndPNiiajcQpl7FV"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 75,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">Nike Air Zoom Pegasus - Maat 43</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group bg-surface-container-lowest rounded-2xl overflow-hidden border border-zinc-100 hover:shadow-xl transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img alt="Polaroid Camera" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Vintage style white polaroid camera on a bright yellow surface, fun pop-art aesthetic with sharp shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZDTddYHAgJ98_-9ZymqxevTrY1qD7l01J14K4Ne9G-bHCAJJDSkLOF9otlhS3BJXvpxhzBKp7pOf-m3T1FhkL7-MR0YtVhNIik_09U9pksSpmXtTZKrRAO1tLML-30TUJQmQnDCejrVX2q4oRyNaJDyZwP80AVPseuzUzWq2b10tbNOCOjwGNhpR1rMUY0zdNKm0DqZAZ3dIoDjbxwl0n2ZmUeT6IHq98DEEuqV3l-ywn9yBNReOuIZgqsINCnKCAh2gDcxrZeStr"/>
+<div class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-zinc-400 text-sm">favorite</span>
+</div>
+</div>
+<div class="p-4">
+<div class="text-xl font-black text-secondary tabular-nums mb-1">€ 110,00</div>
+<h3 class="font-bold text-on-surface line-clamp-1 mb-2">Polaroid Now+ Instant Camera</h3>
+<div class="flex items-center gap-1 text-zinc-400 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Amsterdam, NH
+                        </div>
+</div>
+</div>
+</div>
+<!-- Footer for SEO/Trust -->
+<footer class="mt-24 pt-12 border-t border-zinc-200">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+<div>
+<h4 class="font-bold text-on-surface mb-4">Over Jan</h4>
+<p class="text-zinc-500 leading-relaxed">Jan is een geverifieerde verkoper op DeelMarkt sinds 2021. Gespecialiseerd in hoogwaardige electronica en lifestyle producten.</p>
+</div>
+<div>
+<h4 class="font-bold text-on-surface mb-4">Geverifieerd</h4>
+<ul class="space-y-2 text-zinc-500">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-xs">check_circle</span> Bankrekening gekoppeld</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-xs">check_circle</span> 10+ Succesvolle transacties</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary text-xs">check_circle</span> KvK geregistreerd</li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-on-surface mb-4">Support</h4>
+<ul class="space-y-2 text-zinc-500">
+<li><a class="hover:text-primary transition-colors" href="#">Veilig Handelen</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Kopersbescherming</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Meld misbruik</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-12 py-6 border-t border-zinc-100 text-xs text-zinc-400 text-center">
+                    © 2024 DeelMarkt B.V. • Gebruikersvoorwaarden • Privacy Policy
+                </div>
+</footer>
+</main>
+</div>
+<!-- Mobile Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl flex justify-around items-center px-4 pb-6 pt-3 shadow-[0_-1px_10px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-xl px-4 py-2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Plaatsen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500 px-4 py-2" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest mt-1">Profiel</span>
+</a>
+</nav>
+</body></html>

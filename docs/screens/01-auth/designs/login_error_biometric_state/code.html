@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "on-surface": "#1c1b1b",
+              "on-background": "#1c1b1b",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-lowest": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "primary": "#F15A24",
+              "on-primary-container": "#fffbff",
+              "on-secondary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "error": "#ba1a1a",
+              "outline-variant": "#e2bfb4",
+              "surface-dim": "#dcd9d9",
+              "primary-fixed": "#ffdbd0",
+              "surface-container-low": "#f6f3f2",
+              "outline": "#8e7067",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "tertiary": "#006b24",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-primary": "#ffb59e",
+              "surface-container": "#f0edec",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "on-secondary-container": "#285782",
+              "secondary-container": "#a1cdff",
+              "on-error": "#ffffff",
+              "on-primary-fixed-variant": "#842500",
+              "secondary-fixed": "#d0e4ff",
+              "tertiary-fixed-dim": "#65df75",
+              "on-primary-fixed": "#3a0b00",
+              "tertiary-container": "#008730",
+              "on-tertiary-fixed": "#002106",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#82fc8e",
+              "inverse-surface": "#313030",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-bright": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "secondary": "#34618d",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .face-id-blur {
+            backdrop-filter: blur(20px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .ios-shadow {
+            shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#e5e5e5] flex items-center justify-center min-h-screen p-4">
+<!-- iPhone 15 Pro Frame -->
+<div class="relative w-[393px] h-[852px] bg-surface rounded-[55px] shadow-2xl overflow-hidden border-[8px] border-[#1c1b1b]">
+<!-- Status Bar -->
+<div class="absolute top-0 w-full px-8 pt-4 flex justify-between items-center z-40">
+<span class="text-sm font-bold text-on-surface">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+<!-- Dynamic Island -->
+<div class="absolute top-3 left-1/2 -translate-x-1/2 w-32 h-9 bg-[#1c1b1b] rounded-full z-50"></div>
+<!-- Main Content -->
+<div class="relative h-full flex flex-col px-8 pt-24">
+<!-- Logo Section -->
+<div class="mb-12">
+<h1 class="text-3xl font-extrabold text-primary tracking-tighter">DeelMarkt</h1>
+<p class="text-on-surface-variant mt-2 font-medium">Welkom terug bij de community.</p>
+</div>
+<!-- Login Form -->
+<div class="space-y-6">
+<div>
+<label class="block text-xs font-bold uppercase tracking-wider text-outline mb-2 ml-1">E-mailadres</label>
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center transition-all">
+<span class="material-symbols-outlined text-outline mr-3">mail</span>
+<input class="bg-transparent border-none p-0 text-on-surface focus:ring-0 w-full font-medium" readonly="" type="email" value="user@voorbeeld.nl"/>
+</div>
+</div>
+<!-- ERROR STATE: Password -->
+<div>
+<label class="block text-xs font-bold uppercase tracking-wider text-outline mb-2 ml-1">Wachtwoord</label>
+<div class="bg-surface-container-lowest rounded-xl p-4 flex items-center ring-2 ring-error transition-all">
+<span class="material-symbols-outlined text-error mr-3">lock</span>
+<input class="bg-transparent border-none p-0 text-error focus:ring-0 w-full font-medium" readonly="" type="password" value="********"/>
+<span class="material-symbols-outlined text-outline ml-2">visibility_off</span>
+</div>
+<p class="text-error text-xs mt-2 font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error</span>
+                        Onjuist wachtwoord
+                    </p>
+</div>
+<div class="flex justify-end">
+<button class="text-primary text-sm font-bold hover:opacity-80 transition-opacity">Wachtwoord vergeten?</button>
+</div>
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                    Laden...
+                    <svg class="animate-spin h-5 w-5 text-white" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+</button>
+</div>
+<!-- Social Login Divider -->
+<div class="mt-12 flex items-center gap-4">
+<div class="h-[1px] flex-1 bg-surface-variant"></div>
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Of ga verder met</span>
+<div class="h-[1px] flex-1 bg-surface-variant"></div>
+</div>
+<div class="mt-8 flex gap-4">
+<button class="flex-1 bg-surface-container-low py-4 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+<img alt="Google logo" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAb8Iz4T1QdqzdXjxKPHR5YU6yGUJnzeh3drNvoGCuovKblra913AFd6o7GwKMT6-A0xUqT_LSBdvHduZ7icKVD5xThKvY1BWPZH_NoVGi7w15rjA2meCbiewWj2mBHf3Mhg8CuCiPC6gYwcVYL2rzT4K9QnT_gtqj__RN7xIyVD_AYcmIcu5348y5dZObgi6c2m-Yc0jxaUgCTMX9ub0PiF_afBFqq3UKAvjlWwaAdNW1EK5JN8XzzcscjbY7qHhsQ6WbQpYW5r8J2"/>
+</button>
+<button class="flex-1 bg-surface-container-low py-4 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface text-[24px]" data-weight="fill">ios</span>
+</button>
+</div>
+<!-- Footer Link -->
+<div class="mt-auto mb-12 text-center">
+<p class="text-on-surface-variant text-sm font-medium">Nog geen account? <span class="text-primary font-bold">Meld je aan</span></p>
+</div>
+</div>
+<!-- Biometric Prompt Overlay -->
+<div class="absolute inset-0 bg-black/20 backdrop-blur-[2px] z-[60] flex items-center justify-center px-10">
+<div class="w-full face-id-blur rounded-[30px] p-8 flex flex-col items-center text-center ios-shadow border border-white/40">
+<div class="mb-6 relative">
+<div class="w-16 h-16 rounded-2xl bg-black flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'wght' 200;">face</span>
+</div>
+<!-- Small scanning line decorative -->
+<div class="absolute -inset-1 border-2 border-primary/30 rounded-2xl animate-pulse"></div>
+</div>
+<h2 class="text-xl font-bold text-on-surface mb-2 tracking-tight">Bijna klaar!</h2>
+<p class="text-sm text-on-surface/70 font-medium mb-8 leading-relaxed">Gebruik Face ID om veilig in te loggen bij DeelMarkt</p>
+<div class="w-full space-y-3">
+<button class="w-full py-3.5 bg-on-surface text-surface rounded-2xl font-bold text-sm">
+                        Probeer Face ID opnieuw
+                    </button>
+<button class="w-full py-3.5 text-on-surface font-semibold text-sm">
+                        Annuleren
+                    </button>
+</div>
+</div>
+</div>
+<!-- Navigation Bar Suppression Indicator -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-on-surface/20 rounded-full"></div>
+</div>
+</body></html>

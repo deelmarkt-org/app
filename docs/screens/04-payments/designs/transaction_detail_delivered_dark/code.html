@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#FF7A4D",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "on-background": "#1c1b1b",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e5e2e1",
+              "tertiary": "#006b24",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "on-tertiary-fixed": "#002106",
+              "tertiary-fixed": "#82fc8e",
+              "surface-bright": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "background": "#121212",
+              "tertiary-container": "#008730",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-container": "#285782",
+              "outline": "#8e7067",
+              "surface-container-high": "#ebe7e7",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "surface": "#fcf9f8",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-container": "#f0edec",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed-variant": "#842500",
+              "outline-variant": "#e2bfb4",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-surface": "#313030",
+              "secondary": "#34618d",
+              "on-surface-variant": "#c4c4c4",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary": "#ffffff",
+              "surface-container-low": "#f6f3f2",
+              "on-surface": "#f2f2f2",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #121212;
+            color: #f3f0ef;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#121212] min-h-screen pb-32">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight text-[#fcf9f8]">Transactiestatus</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</div>
+</div>
+</nav>
+<main class="pt-20 px-4 max-w-md mx-auto space-y-6">
+<!-- Escrow Trust Banner -->
+<div class="rounded-2xl border-2 border-tertiary/40 bg-tertiary/5 p-4 flex items-center gap-4">
+<div class="bg-tertiary/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<div>
+<p class="text-sm font-bold text-tertiary-fixed-dim">Beschermd door DeelMarkt Escrow</p>
+<p class="text-[11px] text-on-surface-variant leading-tight">Je geld wordt pas vrijgegeven nadat je de ontvangst bevestigt.</p>
+</div>
+</div>
+<!-- Order Snapshot -->
+<div class="bg-[#1e1e1e] rounded-3xl p-4 flex gap-4">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-800 flex-shrink-0">
+<img class="w-full h-full object-cover" alt="Premium minimalist white wristwatch on a dark slate background with professional studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa779PpUd00Ge42HFi-SHTBh8rFueUiYA4l6fOwmjMJr69zZcVMs567RNCMldkKlxiHpsQJyUNSex-pApdC67Lbg-GfwzkanwUiXBPGwGaa9udwVOGPKNeyTuKXcA1yWthJ8WbpYjaXFk05qwXK_22M7eDenhLLw-zhohw4c7LIn_cNt64NmUvCUm6URfuISdXoZQY8JuBVb8XtRPpyc9T4Rj86Hb11aoHRr8xkGxgjVMhhiXhynw4Cg5ha2ymBwBrPcdCWljV-VXy"/>
+</div>
+<div class="flex flex-col justify-center">
+<span class="text-[10px] uppercase tracking-widest text-primary font-bold mb-1">Bestelling #DM-82910</span>
+<h2 class="text-lg font-bold leading-tight text-white">Vintage Series Chronograph</h2>
+<p class="text-sm text-on-surface-variant">Verkoper: Mark V.</p>
+</div>
+</div>
+<!-- Escrow Timeline -->
+<section class="space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Verloop Transactie</h3>
+<div class="bg-[#1e1e1e] rounded-3xl p-6 relative">
+<div class="space-y-8">
+<!-- Step 1 -->
+<div class="flex gap-4 relative">
+<div class="z-10 bg-tertiary rounded-full w-6 h-6 flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-white" style="font-size: 14px;">check</span>
+</div>
+<div class="absolute left-3 top-6 w-[2px] h-8 bg-tertiary"></div>
+<div>
+<p class="text-sm font-bold text-white">Betaald</p>
+<p class="text-xs text-on-surface-variant">12 Okt, 14:20</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex gap-4 relative">
+<div class="z-10 bg-tertiary rounded-full w-6 h-6 flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-white" style="font-size: 14px;">check</span>
+</div>
+<div class="absolute left-3 top-6 w-[2px] h-8 bg-tertiary"></div>
+<div>
+<p class="text-sm font-bold text-white">Verzonden</p>
+<p class="text-xs text-on-surface-variant">13 Okt, 09:45</p>
+</div>
+</div>
+<!-- Step 3 (Active) -->
+<div class="flex gap-4 relative">
+<div class="z-10 bg-primary rounded-full w-6 h-6 flex items-center justify-center ring-4 ring-primary/20">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<div class="absolute left-3 top-6 w-[2px] h-8 bg-slate-700"></div>
+<div>
+<p class="text-sm font-bold text-primary">Afgeleverd</p>
+<p class="text-xs text-on-surface-variant italic">Vandaag, 11:30</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex gap-4 relative">
+<div class="z-10 bg-slate-700 rounded-full w-6 h-6 flex items-center justify-center"></div>
+<div class="absolute left-3 top-6 w-[2px] h-8 bg-slate-700"></div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Bevestigd</p>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="flex gap-4">
+<div class="z-10 bg-slate-700 rounded-full w-6 h-6 flex items-center justify-center"></div>
+<div>
+<p class="text-sm font-medium text-on-surface-variant">Vrijgegeven</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Amount Section -->
+<section class="space-y-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">Betalingsgegevens</h3>
+<div class="bg-[#1e1e1e] rounded-3xl p-6 border border-slate-800">
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Artikeltotaal</span>
+<span class="text-white font-medium">€ 149,00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Verzendkosten</span>
+<span class="text-white font-medium">€ 4,95</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Servicekosten</span>
+<span class="text-white font-medium">€ 3,50</span>
+</div>
+<div class="pt-3 border-t border-slate-800 flex justify-between items-end">
+<span class="text-base font-bold text-white">Totaal betaald</span>
+<span class="text-2xl font-black text-secondary-fixed-dim tracking-tighter">€ 157,45</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Informational Note -->
+<div class="bg-primary/5 rounded-2xl p-4">
+<p class="text-xs text-on-surface-variant text-center leading-relaxed">
+                Nadat je de levering hebt bevestigd, wordt het geld direct uitbetaald aan de verkoper. Controleer het pakket goed voordat je bevestigt.
+            </p>
+</div>
+</main>
+<!-- Fixed Action Section (Bottom) -->
+<div class="fixed bottom-0 left-0 w-full bg-[#121212]/95 backdrop-blur-md px-6 pt-4 pb-8 space-y-3 z-50">
+<button class="w-full bg-tertiary-container hover:bg-tertiary text-white font-bold py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">verified</span>
+            Levering bevestigen
+        </button>
+<button class="w-full bg-transparent border border-error/30 text-error font-semibold py-3 rounded-2xl hover:bg-error/10 transition-all active:scale-95 text-sm">
+            Geschil openen
+        </button>
+</div>
+</body></html>

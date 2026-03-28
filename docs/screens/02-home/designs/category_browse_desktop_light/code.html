@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-dim": "#dcd9d9",
+              "surface-container-high": "#ebe7e7",
+              "on-background": "#1c1b1b",
+              "surface-container-low": "#f6f3f2",
+              "background": "#fcf9f8",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-bright": "#fcf9f8",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed": "#82fc8e",
+              "inverse-surface": "#313030",
+              "surface-container": "#f0edec",
+              "on-secondary-fixed": "#001d35",
+              "surface": "#fcf9f8",
+              "secondary-fixed": "#d0e4ff",
+              "primary-fixed-dim": "#ffb59e",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "surface-container-highest": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "secondary-container": "#a1cdff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "outline": "#8e7067",
+              "on-primary-fixed": "#3a0b00",
+              "primary": "#F15A24",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "on-primary-fixed-variant": "#842500",
+              "on-surface": "#1c1b1b",
+              "secondary": "#34618d",
+              "tertiary": "#006b24",
+              "outline-variant": "#e2bfb4",
+              "tertiary-fixed-dim": "#65df75"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "16px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(252, 249, 248, 0.8);
+            backdrop-filter: blur(24px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e2e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 glass-header flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container-high/50 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<span class="font-headline font-bold tracking-tight text-primary text-xl">Categorieën</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden md:flex bg-surface-container-high items-center px-4 py-2 rounded-full w-96 mr-4">
+<span class="material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-medium ml-2 placeholder:text-outline" placeholder="Zoek in alle categorieën..." type="text"/>
+</div>
+<button class="p-2 hover:bg-surface-container-high/50 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface" data-icon="search">search</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high/50 transition-colors rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</div>
+</header>
+<!-- Side Navigation Bar (Desktop Rail) -->
+<nav class="hidden md:flex flex-col py-8 px-4 fixed left-0 top-0 h-screen w-64 bg-surface-container-low z-40">
+<div class="text-lg font-black text-primary mb-8 font-headline tracking-tighter">DeelMarkt</div>
+<div class="space-y-2 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-lowest transition-all duration-300 rounded-xl font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary border-r-4 border-primary bg-surface-container-lowest transition-all duration-300 rounded-xl font-bold text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                Ontdekken
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-lowest transition-all duration-300 rounded-xl font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                Verkopen
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-lowest transition-all duration-300 rounded-xl font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                Berichten
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-container-lowest transition-all duration-300 rounded-xl font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                Profiel
+            </a>
+</div>
+<div class="mt-auto p-4 bg-surface-container-lowest rounded-2xl flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" alt="Portrait of a friendly person smiling warmly against a soft blue background in a professional studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMRdckU3js1GrszfdhTrWugTogdl_zB2G7clV2oYpK38v7KdZs99MCdmlN0oGqWm0bXsvFBW1fexFf4xVFLzam9e45YVBP8EkWvmyGCHJ--Lv0j-GurCxPXBvY5oTWTbYs1YvuvxPqyWDSRcNv1p_KuR7zaKZH-iAQuZ6DbW1BitCFeJHlRe3H2SnlnNOC5XCAZXG_DD2CYnJmM5S5wUnc4sa4kKj6SezlsEASEUkF7d0-poVw_o6mpvHs8fd8UFzbe36z7fLamO-C"/>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">Bram van Dam</p>
+<p class="text-[10px] text-outline">Verified Seller</p>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 md:pl-72 px-6 min-h-screen">
+<div class="max-w-[1200px] mx-auto">
+<!-- Header Section -->
+<div class="mb-10">
+<h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Vind je passie.</h1>
+<p class="text-lg text-on-surface-variant max-w-2xl">Verken onze zorgvuldig samengestelde collecties en geef premium producten een tweede leven.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: L1 Category Cards (2-column grid) -->
+<div class="lg:col-span-5">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-sm font-bold uppercase tracking-widest text-outline">Hoofdcategorieën</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Category Card: Sport (Active) -->
+<button class="flex flex-col items-center justify-center p-6 bg-primary-container/10 border-2 border-primary rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">sports_soccer</span>
+</div>
+<span class="font-headline font-bold text-primary">Sport &amp; Outdoor</span>
+</button>
+<!-- Category Card: Fashion -->
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest hover:bg-surface-container-high/50 rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-3xl">checkroom</span>
+</div>
+<span class="font-headline font-semibold text-on-surface">Mode &amp; Kleding</span>
+</button>
+<!-- Category Card: Electronics -->
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest hover:bg-surface-container-high/50 rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-3xl">devices</span>
+</div>
+<span class="font-headline font-semibold text-on-surface">Elektronica</span>
+</button>
+<!-- Category Card: Home -->
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest hover:bg-surface-container-high/50 rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-outline-variant/30 text-on-surface-variant flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-3xl">home_max</span>
+</div>
+<span class="font-headline font-semibold text-on-surface">Huis &amp; Tuin</span>
+</button>
+<!-- Category Card: Hobby -->
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest hover:bg-surface-container-high/50 rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-3xl">brush</span>
+</div>
+<span class="font-headline font-semibold text-on-surface">Hobby &amp; Vrije tijd</span>
+</button>
+<!-- Category Card: Vehicles -->
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest hover:bg-surface-container-high/50 rounded-xl transition-all duration-300 active:scale-95 group text-center">
+<div class="w-14 h-14 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-3xl">directions_car</span>
+</div>
+<span class="font-headline font-semibold text-on-surface">Voertuigen</span>
+</button>
+</div>
+</div>
+<!-- Right Column: L2 Subcategories (Selected: Sport) -->
+<div class="lg:col-span-7">
+<div class="bg-surface-container-low rounded-[2rem] p-8 min-h-[500px] border-none shadow-sm relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-4 mb-8">
+<div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-on-primary shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-2xl">sports_soccer</span>
+</div>
+<div>
+<h3 class="text-2xl font-headline font-bold text-on-surface">Sport &amp; Outdoor</h3>
+<p class="text-on-surface-variant text-sm">Ontdek alle subcategorieën in sport</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-3">
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Voetbal</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Wielrennen</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Kamperen</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Fitness &amp; Yoga</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Watersport</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Wintersport</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Hardlopen</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Tennis &amp; Padel</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+<a class="px-5 py-3 bg-surface-container-lowest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-full font-semibold text-sm shadow-sm flex items-center gap-2 group" href="#">
+<span>Golf</span>
+<span class="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</a>
+</div>
+<div class="mt-12 grid grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-2xl relative overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" alt="Dynamic shot of a mountain biker racing down a sun-dappled forest trail with motion blur and intense concentration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuKiV58SvIdtaMELwGGbHhIz8MWULboZsY9nTwXbN-m5YjII1Fc_8Bb0jwik9aYs62MRrHc4aF6pWFEMpouLb1g3dKK2x-UJHiNEmp4gq6rPj2IyVoJDyIYrW5sn2mWQZPphyvQz1ReQNjQAr_RIdI1uke9I1N6Y3duMJzZQWdw5u9k5Vm5AqQle4zC_n8znqXUr0HVHgGnyxbgqwiD0SXF0HocFQ5HDLLbNG-7DKhalh7iKW6-EpPwTa5KuNXH70dx-44HM7OEUmX"/>
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">Populaire Actie</p>
+<h4 class="font-headline font-bold text-lg text-on-surface mb-2">Outdoor Gear</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Bespaar tot 40% op premium outdoor uitrusting deze week.</p>
+<button class="text-xs font-bold text-primary flex items-center gap-1 group/btn">
+                                            Bekijk alles <span class="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform">east</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-2xl relative overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-700" alt="Interior of a modern high-end gym with clean aesthetic, dumbbells in rows, and soft morning sunlight streaming in" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCk5dGuyOSbuWaLzY_1QZ69XYOx-s9NUCtvO_Cjn7BV--DrvHcLfy0yWbISYaZa0bmLm8F9eIaH2_Xba10fA3No9UCMpQ7nY1QxGZtVrEtBx_91-KNP1w9WfB6D9j9SF1vHMLxa1b6tVCAdvOtsA2DX9_mP0xB50M3cEn2t-gmU54PCxb5G2UT-CO12L_M5gM2Kdtd7LYiWMP8YbFI5SVw9uBTMOWI3PF59AwSX00GyAiSMUeh76d6ISq1cBvXe-MYPWNjjFhutbDkq"/>
+<div class="relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Geverifieerd</p>
+<h4 class="font-headline font-bold text-lg text-on-surface mb-2">Home Gym</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Gecureerde selectie van professionele fitness apparatuur.</p>
+<button class="text-xs font-bold text-secondary flex items-center gap-1 group/btn">
+                                            Ontdek collectie <span class="material-symbols-outlined text-sm group-hover/btn:translate-x-1 transition-transform">east</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-surface/80 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<button class="flex flex-col items-center justify-center text-outline transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-3 py-1 transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="search">search</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Zoeken</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="add_box">add_box</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Plaatsen</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Inbox</span>
+</button>
+<button class="flex flex-col items-center justify-center text-outline transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="account_circle">account_circle</span>
+<span class="font-label text-[10px] font-semibold uppercase tracking-wider mt-1">Account</span>
+</button>
+</nav>
+</body></html>

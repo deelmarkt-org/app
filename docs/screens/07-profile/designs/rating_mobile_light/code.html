@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .star-active {
+            font-variation-settings: 'FILL' 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e5e2e1",
+                        "background": "#fcf9f8",
+                        "surface-container-high": "#ebe7e7",
+                        "primary-fixed-dim": "#ffb59e",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#ffb59e",
+                        "on-background": "#1c1b1b",
+                        "on-secondary-container": "#285782",
+                        "tertiary-fixed-dim": "#65df75",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "primary": "#F15A24",
+                        "error": "#ba1a1a",
+                        "surface-container": "#f0edec",
+                        "surface": "#fcf9f8",
+                        "primary-container": "#d1430a",
+                        "tertiary-container": "#008730",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#006b24",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#842500",
+                        "surface-dim": "#dcd9d9",
+                        "on-primary-container": "#fffbff",
+                        "outline-variant": "#e2bfb4",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdbd0",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "secondary-fixed": "#d0e4ff",
+                        "outline": "#8e7067",
+                        "inverse-surface": "#313030",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-surface-variant": "#5a4139",
+                        "on-surface": "#1c1b1b",
+                        "on-primary-fixed": "#3a0b00",
+                        "surface-tint": "#ad3300",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#164974",
+                        "inverse-on-surface": "#f3f0ef",
+                        "secondary-container": "#a1cdff",
+                        "on-tertiary-fixed": "#002106",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary": "#34618d",
+                        "on-secondary-fixed": "#001d35"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl transition-all duration-300">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<h1 class="text-xl font-bold text-primary tracking-tight">Beoordeling</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f6f3f2] transition-all duration-300 active:scale-90">
+<span class="material-symbols-outlined text-on-surface" data-icon="close">close</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-md px-6 pt-24 pb-32 space-y-8">
+<!-- Listing Context Card -->
+<section class="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 transition-transform duration-300 active:scale-[0.98]">
+<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
+<img alt="Product foto" class="w-full h-full object-cover" alt="Close-up of premium wireless headphones on a wooden surface with soft bokeh lighting and warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrh1huwfsCcPu0_izpkow5I64C15VfnkPjgioJL9e8gri8MrhFqUgycaJHdNw4ZO7RcjF2go7OAEYqpmC1YARVO6pysZ4QIqmI1v-zFqFHMPCh8jCuEzG8H-p5sFsyN9v3fBtflmonVT86luhXTqeagy4N1d2c7dpa7_So_mJfQijr84XVMByqXbnIvBlezY-Yg2lnx5wNa8gIgBirTajEt7D2Xe9TBq2MMD8thBM-eW5JMlpocu_ECbZW2wX1qigVXhjlnI1veEgL"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Gekocht van Mahmut</p>
+<h3 class="text-on-surface font-bold truncate">Sony WH-1000XM4 Noise Cancelling</h3>
+<p class="text-secondary font-bold text-sm">€ 185,00</p>
+</div>
+</section>
+<!-- Rating Section -->
+<section class="space-y-6">
+<div class="text-center space-y-2">
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface">Hoe was je ervaring met Mahmut?</h2>
+<p class="text-on-surface-variant text-sm">Je feedback helpt de community veilig te blijven.</p>
+</div>
+<div class="flex justify-center gap-2 py-4">
+<span class="material-symbols-outlined text-4xl text-primary star-active cursor-pointer" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-4xl text-primary star-active cursor-pointer" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-4xl text-primary star-active cursor-pointer" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-4xl text-primary star-active cursor-pointer" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-4xl text-outline-variant cursor-pointer" data-icon="star">star</span>
+</div>
+</section>
+<!-- Review Input -->
+<section class="space-y-3">
+<label class="block text-sm font-bold text-on-surface-variant px-1">Beschrijf je ervaring</label>
+<div class="relative group">
+<textarea class="w-full h-32 p-4 bg-surface-container-lowest border-none rounded-xl text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary/20 transition-all resize-none text-body-lg" placeholder="Vertel over je ervaring..."></textarea>
+<div class="absolute bottom-3 right-3 text-[10px] font-bold text-on-surface-variant/40 tracking-widest uppercase">
+                    Optioneel
+                </div>
+</div>
+</section>
+<!-- Trust Callout: Blinde Beoordeling -->
+<section class="bg-tertiary-container/10 border border-tertiary-container/10 rounded-xl p-4 flex gap-4 items-start">
+<div class="bg-tertiary-container/20 p-2 rounded-lg text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-xl" data-icon="shield_with_heart" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<div class="space-y-1">
+<h4 class="text-sm font-bold text-on-tertiary-fixed-variant">Blinde beoordeling</h4>
+<p class="text-xs leading-relaxed text-on-tertiary-fixed-variant opacity-80">
+                    Jouw beoordeling wordt pas zichtbaar nadat Mahmut jou ook heeft beoordeeld, of na 14 dagen. Zo blijft het eerlijk voor iedereen.
+                </p>
+</div>
+</section>
+</main>
+<!-- Sticky Action Button -->
+<footer class="fixed bottom-0 w-full max-w-md bg-gradient-to-t from-background via-background to-background/0 px-6 pb-8 pt-4">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all duration-300 active:scale-[0.97] hover:brightness-110">
+            Beoordeling plaatsen
+        </button>
+<!-- Safe Area Spacer for Mobile -->
+<div class="h-safe-area-bottom"></div>
+</footer>
+</body></html>

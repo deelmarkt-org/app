@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#8e7067",
+              "on-primary-container": "#fffbff",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#FF7A4D",
+              "outline-variant": "#e2bfb4",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "surface": "#1c1b1b", /* Adjusted for Dark Mode Scaffold */
+              "on-secondary-fixed": "#001d35",
+              "on-secondary-container": "#285782",
+              "secondary": "#34618d",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-high": "#2c2a2a",
+              "on-error-container": "#93000a",
+              "on-primary-fixed-variant": "#842500",
+              "on-primary-fixed": "#3a0b00",
+              "surface-variant": "#4d4543",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "tertiary-fixed": "#82fc8e",
+              "on-surface": "#fcf9f8",
+              "surface-tint": "#ad3300",
+              "surface-bright": "#313030",
+              "inverse-surface": "#fcf9f8",
+              "tertiary-fixed-dim": "#65df75",
+              "surface-container": "#1e1e1e", /* Card Color as requested */
+              "surface-container-highest": "#363434",
+              "primary-container": "#F15A24", /* Brand Orange */
+              "tertiary-container": "#008730",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-tertiary-fixed": "#002106",
+              "on-background": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "inverse-on-surface": "#1c1b1b",
+              "on-surface-variant": "#d2c2bd",
+              "on-tertiary-fixed-variant": "#00531a",
+              "tertiary": "#006b24",
+              "surface-container-lowest": "#121212", /* Scaffold Base */
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-primary": "#ffb59e",
+              "surface-dim": "#121212",
+              "background": "#121212",
+              "surface-container-low": "#1a1a1a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #121212;
+            color: #fcf9f8;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#121212]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-extrabold text-primary tracking-tighter">DeelMarkt</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Ontdekken</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Verkopen</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 font-['Plus_Jakarta_Sans'] tracking-tight" href="#">Berichten</a>
+<a class="text-on-surface-variant hover:text-primary font-['Plus_Jakarta_Sans'] tracking-tight transition-colors duration-300" href="#">Favorieten</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-800 rounded-full transition-colors duration-300">
+<span class="material-symbols-outlined text-on-surface">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="Gebruikersprofiel" class="w-full h-full object-cover" alt="Close-up portrait of a smiling man with a neat beard in a professional studio setting with soft warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALaCBdv-oRQ790ltoCaJEuS-Vl_0SA0jzC-9zlH_Ohp3PXdfJc_kVFzmKstVH8orTel9i7jdRYssOSq2M7qVdMJ6EWBy3QwFGZW5f90l_X403HLS8T_PPQGjXhaKEuXWOOjU0tf-ntBdkpuiTpxC-QGV5tbubmGzkcgtTFze0pEOuT4C-tsLSvFlFZhMeohJOxadlfE1Kf0eNiHK-jMLBUnlRqPV2GhJrGm_J5JcuibH75cy4Q-M546uRiE6dgGvH8kiBYhsJ3_asH"/>
+</div>
+</div>
+</header>
+<main class="pt-28 px-6 max-w-3xl mx-auto">
+<!-- Header Section -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Berichten</h2>
+<p class="text-on-surface-variant text-lg">Beheer je gesprekken en biedingen</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high p-3 rounded-xl hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative mb-8">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-2xl py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant focus:ring-2 focus:ring-primary/40 transition-all" placeholder="Zoek in gesprekken..." type="text"/>
+</div>
+<!-- Conversation List -->
+<div class="space-y-4">
+<!-- Unread Conversation 1 -->
+<div class="bg-[#1E1E1E] p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-full object-cover" alt="Profile photo of a young woman with curly hair looking directly at the camera with a confident smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBOynZCfZVI8wN0o5SIkih5ZT0J_1ivuiVVhUPy8LcOCDmkf2PJn4p7CGj6jIK4Zan0F9j8NATjNM8ST2pQLJ7PIgJcekpqXtao8etfMPmV4QPfxgVf7OudPtF45qpuLx4X6fXxaGGRumere91dFyIn8Awx_063ZN5E6jKYvEFJWC4rlKqeBXBiPrFN8eHZ-pr_aZvWlPHtL1P8CkIj8AaLOIyfyMnyYYsvd-AabDqAAW6PLpbqBAZvmEEAziBv0WbqXftNqOGzLkS"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-[#1E1E1E] rounded-full"></div>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Sophie Bakker</h3>
+<span class="text-xs font-semibold text-primary">14:20</span>
+</div>
+<p class="text-on-surface font-bold truncate pr-8">Is de prijs van €450 nog steeds onderhandelbaar voor de camera?</p>
+<div class="flex items-center mt-2">
+<span class="bg-primary-container/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Bieden</span>
+</div>
+</div>
+<div class="flex-shrink-0 flex flex-col items-end gap-2">
+<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" alt="High-end mirrorless digital camera with a professional lens on a clean minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhTEBPEFRs2asXHzr6dlZfX9V2g9D4RFqVYh_poR6GZMQt0Cuf9VY1qQ9DU-S94EGoHqKKIKxgJzarQ7Qvrl3-SOz7smkgBU8b5I1X1W5v24eYxm15Sf7ve6Wc9tSylws-lb7PIMA0WIKE_n_zkQP5moWUEQR28p0l02aSzmQWG39Cn38I_eXxoBRyLs040j9BxkNomt83rUtC8YpO2jxLEPBBY-3yleSzWOiJtqpt-oBO0w2I4v904EFKKM4D2qMKyxVwcA1-uLu6"/>
+<div class="bg-primary text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">2</div>
+</div>
+</div>
+<!-- Unread Conversation 2 -->
+<div class="bg-[#1E1E1E] p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex-shrink-0">
+<img class="w-14 h-14 rounded-full object-cover" alt="Close-up of a smiling young man in a denim jacket with soft natural sunlight on his face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlAxbv7yq8OTxfwN1tD9gQUzhYmJ6wR9zlX4-jUKwYtV7RxSc-Fps-AzrPDIk8Gls9hcYZ7v6tLftwUssBKzSZ0bzSpkadmL7cPT5P2telFfr___jBINPAlA451icY0oJ-rKtPkdEWOa8fBhLMpaqr35rOwa9k_hoJ8_2zWiiP00eF9_QE3lQ5soWdB1Nikb4EkCFNefddJLU3dXC35iw4ptTCoOpFUSP1Z8OTSGVyFPLrmri1Lay4Nr4e3LUHTubuWmMXqgMJbL0u"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-bold text-lg text-on-surface truncate">Lars van den Berg</h3>
+<span class="text-xs font-semibold text-primary">Gisteren</span>
+</div>
+<p class="text-on-surface font-bold truncate pr-8">Top! Ik kom hem morgenavond rond 19:00 uur ophalen.</p>
+</div>
+<div class="flex-shrink-0 flex flex-col items-end gap-2">
+<img class="w-16 h-16 rounded-xl object-cover shadow-lg group-hover:scale-105 transition-transform" alt="Modern dark green velvet sofa with gold legs in a bright minimalist living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTHGDywdBUf46uOOZzxTBI2pj2NhM3_Jx9DuYBoP21-maMvNsUJ2IHGyEc9HVZKvUuyAnVmM5GLQIwCUfCLO9SPxOzSUoPeIgVKeLl5eMhxMVaTPPUgiOZUfmLvUYS4jtnxMUX3-GZHEWy3aQzI4_o0zkCvKNIizUKFx4hiYMvf2SayQs1JALGStjMiGfoA0RWBSA7P9U8o1ZXwipRdwVk2-1oB3b2Sz0nX6HIU2ILP2hThfw9TZ_n1Y_CHlD9htO5YacGT2Eq-uJC"/>
+<div class="bg-primary text-white text-[11px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full shadow-lg shadow-primary/20">1</div>
+</div>
+</div>
+<!-- Read Conversation 3 -->
+<div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
+<div class="flex-shrink-0">
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Professional portrait of a woman with blond hair and glasses against a soft grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdkP_SKZXKZPDgXMViY-wosTA96Asx0vhehexovfjPtRG1pv9nGBhmgXh65YLhAkXz-4ZryJv6X1jUIhVH-5oG7Koi4SofAErfdHmdbm0vNJToH06ov8BqK9Y-cZXPsX2aMbp59-xxZLjGVzo8POYfZB562dQTmCw_dW7NIfY1qtyUfQuMb22gLao-JR33PyDxR34MnkRStqqLmb7Gzs8nr7LYtvRj2aWs9ciosR108Tn2Ki3DY6LTmVqCH06_7czNB8OtO2v3PAan"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-medium text-lg text-on-surface-variant truncate">Emma de Wit</h3>
+<span class="text-xs font-medium text-on-surface-variant/60">Gisteren</span>
+</div>
+<p class="text-on-surface-variant truncate pr-8">Bedankt voor de snelle verzending! De schoenen passen perfect.</p>
+</div>
+<div class="flex-shrink-0">
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Vibrant red athletic running shoe displayed on a pedestal with cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-5WoTs8aoY2l_wZTxWveOhnAMnCDYGd3uGnzY9oDBOtigbACO_PCA0w9-lF4Ej42yUEGVNgE756WRvu1QQC7bYGIhYRHLuWUy0dX61kI-NPTEcLbGiB4l1Mel-mE0y0ZbK7w8vRON6TwMAzNrEnV6tlBfTTsTushfGJF3vYcxC6TQDc8xwlPi8Tsbw22hlAPda0aHYPJKvKQ8OgnBhWxyoTKUGh6sVIZw92AEkKMPv1IBm6hKQFQpGDjkqIB10VAEOghh96HSUKt1"/>
+</div>
+</div>
+<!-- Read Conversation 4 -->
+<div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
+<div class="flex-shrink-0">
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Headshot of a middle-aged man with salt and pepper hair in a casual blue shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmdu4GTZawhjLW6LlQwk_dwYSSFlt83cNvAei5safLiWXuWJh5TFoN1rOVnNhq67KjDI0hGHltc_0RjExTF176kdk4wknqUVBaSMyaus3N0sitTi3KksoOcVXOXoSbTcP_ZK9KW0QxxlG3o7LPp5v6uMAiPzv_8orE75kvzhk9BxPd1cwljzr4a7e8pI2dR5DQFK54XmlhKTzTVSOXorabmZwB7OgFHPF7hk3d00PKfm_wNrjt5ymGW5SymQLKhLwl8FVE7UMxGHvI"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-medium text-lg text-on-surface-variant truncate">Mark Jansen</h3>
+<span class="text-xs font-medium text-on-surface-variant/60">Woensdag</span>
+</div>
+<p class="text-on-surface-variant truncate pr-8">Is het boek nog beschikbaar of al verkocht?</p>
+</div>
+<div class="flex-shrink-0">
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Stack of vintage hardcover books on a rustic wooden table with soft candle light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQZIdKuxl91VDsyNQDuyNI-xXqeGbBOvVZ91YWrPTd1HZu1rUGKImul-T9EHCVGxkHVxF31C34D6TDGE4ZW4vzaFXawP2u788qsrJgMbpThGjRn9gdAUsskDhMeFc7oJfCFsPgubmynkLsEgwXGa8eSbxTyYpVq5y5llLF1HwxF410hoM9EZUzXsNi6KiRe5eiTeBNTmhPk4XMTkNYZH6gEElGTh8hrn_jYYXzIn9J0VVWHnAz7yQVU0z3sD7v86ZEIl6o6zAcJjLF"/>
+</div>
+</div>
+<!-- Read Conversation 5 -->
+<div class="bg-[#1E1E1E]/50 p-5 rounded-2xl flex items-center gap-4 hover:bg-surface-container-highest transition-all duration-300 cursor-pointer group">
+<div class="flex-shrink-0">
+<img class="w-14 h-14 rounded-full object-cover grayscale opacity-80" alt="Artistic portrait of a woman looking away with dramatic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCnEvZXHsOq3_SoQfQ17EIP0iRA8965PsSaozo8hKM-fTFCCmvmM8mBz6VCeNVHyHYkDZYmBTxgDGZ_C-ksVuUG8Gkw9ckmRcyKA77vYMmCcBvzMRBua1U8HCVwVZAHaU-5PtIgi-tWKZAaGgn48RvFnsc8xEF_OyHaEqXKFo5TRBktbnWkwfYOlnU057_TEQzUFMEQvOiIRWHeUbmX0HnDP5zofT9Xd6mmnol0Cp5J8hcn80V_oihBRXh9sLdQEmhATa-utirvYw7"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-medium text-lg text-on-surface-variant truncate">Anouk Visser</h3>
+<span class="text-xs font-medium text-on-surface-variant/60">24 Oct</span>
+</div>
+<p class="text-on-surface-variant truncate pr-8">Verstuur je ook naar België? Ik hoor het graag.</p>
+</div>
+<div class="flex-shrink-0">
+<img class="w-16 h-16 rounded-xl object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" alt="Minimalist white luxury watch on a clean studio background with soft directional light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOPu_vJvZ_zGcTnO4FHbykm4tQVsfFYrCgxHUGMlffSPlMSaMfoBRyHCeB8anSI_QBkShRHNUS9HssByI1qMg6WcVGnOSZINT4T4HI1nwPCB8J09H0ROtvLlRAOG5tRvfPENIbg3_55Xq-RNJ1A_aUmQm78rD2_l7qaQshTbvfpJiCXXmvJJ4uw3MFCK7UI2dIfftRAg2K45iBguCNs3EKXzQRPYR_WPWqyPdvRsMhM8nDOkfQOTMdZsLzl75mTLwVLeTur4X2sY8Q"/>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#121212]/90 backdrop-blur-2xl border-t border-slate-800/10 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1 text-3xl text-primary">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Verkopen</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2 active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold">Profiel</span>
+</a>
+</nav>
+</body></html>

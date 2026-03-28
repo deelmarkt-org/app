@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#65df75",
+                        "tertiary-container": "#008730",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "surface-container-high": "#ebe7e7",
+                        "on-tertiary-container": "#f7fff2",
+                        "inverse-on-surface": "#f3f0ef",
+                        "primary-container": "#d1430a",
+                        "on-primary-container": "#fffbff",
+                        "secondary-container": "#a1cdff",
+                        "on-secondary-container": "#285782",
+                        "surface": "#fcf9f8",
+                        "surface-tint": "#ad3300",
+                        "primary": "#F15A24",
+                        "on-primary-fixed-variant": "#842500",
+                        "inverse-surface": "#313030",
+                        "outline-variant": "#e2bfb4",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "surface-container-low": "#f6f3f2",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#006b24",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-secondary-fixed": "#001d35",
+                        "primary-fixed-dim": "#ffb59e",
+                        "background": "#fcf9f8",
+                        "on-primary": "#ffffff",
+                        "outline": "#8e7067",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "on-tertiary-fixed": "#002106",
+                        "inverse-primary": "#ffb59e",
+                        "surface-dim": "#dcd9d9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#1c1b1b",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "secondary": "#34618d",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#fde8e8",
+                        "error": "#e53e3e",
+                        "on-surface-variant": "#5a4139",
+                        "on-background": "#1c1b1b",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#d0e4ff",
+                        "on-secondary-fixed-variant": "#164974"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scam-banner-border {
+            border-left-width: 4px;
+            border-left-color: #e53e3e;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Anchor (Shared Component Execution) -->
+<nav class="sticky top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full max-w-none">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">arrow_back</span>
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" alt="Close-up portrait of a friendly man with a slight smile in a bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeVaI-WmUm8tO5GYFsIrrVpQCgRvF8TalrBljycKwVbCvRHgObGdv9Y9ecFkJh7e4I7RLaXmtvyxUdrZGlAJ6Y1jaPj5zlv7pJFO8wWmQ_Hbu0bH0_6ZPp63D3eFErBD1LSKx8Q7s6o5mqG_2ju0xydO7TbyB0OexH3UHEZL_9Nu9jOo-HYZcDgzeBolHc5ayam-b3bAYLwU-QhByaJUPk-7BGeIj_z1t-JFaeoA1iQaZC4ZQjQNLzvp3jIgrZXi-eyqGbYH3adRxH"/>
+</div>
+<div>
+<h1 class="font-headline font-bold text-sm tracking-tight leading-none">Mark J.</h1>
+<span class="text-[10px] text-tertiary font-semibold uppercase tracking-widest">Online</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#444746]" data-icon="flag">flag</span>
+<span class="material-symbols-outlined text-[#444746]" data-icon="more_vert">more_vert</span>
+</div>
+</nav>
+<main class="max-w-md mx-auto min-h-screen pb-24 relative">
+<!-- Scam Alert Banner (Instruction Override) -->
+<div class="mx-4 mt-4 mb-6 p-4 bg-[#FDE8E8] scam-banner-border rounded-r-xl flex items-start gap-3 shadow-sm">
+<span class="material-symbols-outlined text-[#E53E3E] shrink-0" style="font-variation-settings: 'FILL' 1;">warning</span>
+<div class="flex flex-col gap-1">
+<p class="text-sm font-semibold text-on-surface leading-tight">Dit bericht bevat mogelijk oplichting</p>
+<a class="text-xs font-bold text-secondary uppercase tracking-wider hover:underline transition-all" href="#">Meld dit bericht</a>
+</div>
+</div>
+<!-- Chat Conversation (Asymmetric Layout) -->
+<div class="flex flex-col gap-6 px-4">
+<!-- System Date -->
+<div class="flex justify-center">
+<span class="bg-surface-container-high px-3 py-1 rounded-full text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Vandaag</span>
+</div>
+<!-- Received Message -->
+<div class="flex flex-col gap-1 max-w-[85%] self-start">
+<div class="bg-surface-container-lowest p-4 rounded-2xl rounded-tl-none shadow-sm">
+<p class="text-sm text-on-surface leading-relaxed">
+                        Hoi! Ik zag je advertentie voor de camera. Is deze nog beschikbaar? Ik wil hem graag direct kopen en via een externe koerier laten ophalen. Klik hier om de betaling te bevestigen: bit.ly/check-payment-safe
+                    </p>
+</div>
+<span class="text-[10px] text-on-surface-variant ml-1">14:22</span>
+</div>
+<!-- Product Context Card (Editorial Style) -->
+<div class="bg-surface-container-low p-3 rounded-2xl flex gap-3 items-center">
+<div class="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" alt="High-end professional mirrorless camera with lens on a wooden surface in warm natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrtmUl1_IrEjQgV1680QMaBzFoCBI5fPHkRrLPrj4nC2ilzj8ULR6x4ab2P2iaXsc-ERBderdzMqLzj5LY7K4PvnuJK_ZrTZFub6T4ll3GS7pCqxDPZo7_eBp1ZHqUE9rTYSlvK5p-HBZHs-Nue8VM4QUxU83mD3tJjhtHMroO4inmkSqw04MCbvQugRyD8M3SJhfambi9HI-q3HSnjejyZ_EkGfDtAeZ6MBWUXqv1JJHyrCHIJyToSHwLhp_V0X-8AwGnmErenxOf"/>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest">Advertentie</span>
+<h3 class="text-sm font-bold text-on-surface leading-tight">Sony Alpha A7 III + 28-70mm</h3>
+<p class="text-secondary font-extrabold text-base">€ 1.250,00</p>
+</div>
+</div>
+<!-- Outgoing Message (Intentional Spacing) -->
+<div class="flex flex-col gap-1 max-w-[80%] self-end">
+<div class="bg-primary-container text-on-primary-container p-4 rounded-2xl rounded-tr-none shadow-md">
+<p class="text-sm leading-relaxed">
+                        Hoi Mark, de camera is nog beschikbaar. Ik werk echter alleen met de officiële betaalverzoeken van DeelMarkt voor onze veiligheid.
+                    </p>
+</div>
+<div class="flex items-center justify-end gap-1 mr-1">
+<span class="text-[10px] text-on-surface-variant">14:45</span>
+<span class="material-symbols-outlined text-[12px] text-tertiary">done_all</span>
+</div>
+</div>
+</div>
+<!-- Chat Input Field (Floating Glassmorphism) -->
+<div class="fixed bottom-20 left-0 w-full px-4 md:hidden">
+<div class="bg-surface-container-lowest/90 backdrop-blur-md rounded-full shadow-lg p-2 flex items-center gap-2 border border-white/20">
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">add</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-2 px-1" placeholder="Typ een bericht..." type="text"/>
+<button class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Shared Component Execution) -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface/80 backdrop-blur-xl flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl z-50 md:hidden">
+<div class="flex flex-col items-center justify-center text-[#444746] opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Explore</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#444746] opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Saved</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary scale-110">
+<span class="material-symbols-outlined" data-icon="chat_bubble" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Messages</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#444746] opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Sell</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#444746] opacity-70 transition-opacity">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profile</span>
+</div>
+</nav>
+</body></html>

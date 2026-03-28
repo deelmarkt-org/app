@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#fcf9f8",
+              "surface-variant": "#e5e2e1",
+              "on-tertiary-fixed": "#002106",
+              "tertiary": "#006b24",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed": "#82fc8e",
+              "surface-bright": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "on-background": "#1c1b1b",
+              "surface-container-highest": "#e5e2e1",
+              "primary": "#F15A24",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "primary-fixed-dim": "#ffb59e",
+              "surface": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "outline": "#8e7067",
+              "on-secondary": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed": "#d0e4ff",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "error-container": "#ffdad6",
+              "surface-container": "#f0edec",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-dim": "#dcd9d9",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-lowest": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "on-surface": "#1c1b1b",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "on-primary": "#ffffff",
+              "secondary": "#34618d",
+              "on-surface-variant": "#5a4139",
+              "on-primary-fixed-variant": "#842500",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-surface": "#313030",
+              "outline-variant": "#e2bfb4"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex justify-center">
+<!-- Mobile Frame (iPhone 15 Pro concept) -->
+<div class="relative w-full max-w-[393px] min-h-screen bg-surface shadow-2xl overflow-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full max-w-[393px] z-50 bg-surface/80 backdrop-blur-xl transition-colors duration-200">
+<div class="flex justify-between items-center px-6 py-5">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface cursor-pointer">arrow_back</span>
+<h1 class="text-xl font-extrabold tracking-tight text-on-background">Servicepunt kiezen</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">map</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-24 pb-32 px-4 space-y-4">
+<!-- Search / Filter Area -->
+<section class="bg-surface-container-low rounded-xl p-1 mb-6">
+<div class="flex items-center bg-surface-container-lowest rounded-lg px-4 py-3 shadow-sm">
+<span class="material-symbols-outlined text-outline mr-3">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-medium" placeholder="Postcode of stad" type="text" value="1012 NX, Amsterdam"/>
+</div>
+</section>
+<!-- Map Placeholder (Visual Anchor) -->
+<div class="w-full h-40 rounded-2xl overflow-hidden mb-6 relative group">
+<img class="w-full h-full object-cover" alt="Modern minimalist vector map of Amsterdam city center with soft orange location pins and clean streets in light beige tones" data-location="Amsterdam Center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoSMd85k8-vSO_T1Rw-GTVJwaYCABlj0aEQUzOIsVQUYspKZ1tIDIUfwldK9zNXTrK74x_fAS-8sq2TN_ASdcvZqR76_zTy7y13ZgByo9k1Kz9StRywk0dUZX6XHd_DHvabRRPWVIxj_r3rPj9P40B1SOtDUP1KtMLXtQ9ZyGr4NGt-yDJCgM8vcL20VUxUxYI6M8qVXew62kl8o4rAymyl2vuwDVzTvvP1hOH6CF3uHO4Z9GcBupPVYY1DQVBnq7Dmd812lvqF5Ph"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+</div>
+<!-- Service Point List -->
+<div class="space-y-3">
+<!-- Selected Item -->
+<article class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary flex items-start gap-4 transition-transform active:scale-[0.98]">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FF6B00]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FF6B00]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-lg leading-tight">Albert Heijn Kalverstraat</h3>
+<span class="text-secondary font-bold tabular-nums text-sm">0.2 km</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Kalverstraat 208, 1012 XH Amsterdam</p>
+<div class="flex items-center mt-3 gap-2">
+<span class="px-2 py-0.5 bg-tertiary-container/10 text-tertiary text-[10px] font-bold uppercase tracking-wider rounded">Open tot 22:00</span>
+<span class="px-2 py-0.5 bg-secondary-container/10 text-on-secondary-container text-[10px] font-bold uppercase tracking-wider rounded italic">PostNL</span>
+</div>
+</div>
+</article>
+<!-- Inactive Item 1 -->
+<article class="bg-surface-container-low p-4 rounded-xl flex items-start gap-4 transition-colors hover:bg-surface-container-high cursor-pointer">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFCC00]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#E5B800]" style="font-variation-settings: 'FILL' 1;">package_2</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-lg leading-tight">Primera Damrak</h3>
+<span class="text-on-surface-variant font-medium tabular-nums text-sm">0.5 km</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Damrak 44, 1012 LK Amsterdam</p>
+<div class="flex items-center mt-3 gap-2">
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase tracking-wider rounded">Open tot 18:00</span>
+<span class="px-2 py-0.5 bg-yellow-400/10 text-yellow-700 text-[10px] font-bold uppercase tracking-wider rounded italic">DHL</span>
+</div>
+</div>
+</article>
+<!-- Inactive Item 2 -->
+<article class="bg-surface-container-low p-4 rounded-xl flex items-start gap-4 transition-colors hover:bg-surface-container-high cursor-pointer">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FF6B00]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#FF6B00]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-lg leading-tight">Bruna Nieuwendijk</h3>
+<span class="text-on-surface-variant font-medium tabular-nums text-sm">0.8 km</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Nieuwendijk 154, 1012 MB Amsterdam</p>
+<div class="flex items-center mt-3 gap-2">
+<span class="px-2 py-0.5 bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase tracking-wider rounded">Open tot 18:30</span>
+<span class="px-2 py-0.5 bg-secondary-container/10 text-on-secondary-container text-[10px] font-bold uppercase tracking-wider rounded italic">PostNL</span>
+</div>
+</div>
+</article>
+<!-- Inactive Item 3 -->
+<article class="bg-surface-container-low p-4 rounded-xl flex items-start gap-4 transition-colors hover:bg-surface-container-high cursor-pointer">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-[#FFCC00]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#E5B800]" style="font-variation-settings: 'FILL' 1;">package_2</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface text-lg leading-tight">Spar City Spuistraat</h3>
+<span class="text-on-surface-variant font-medium tabular-nums text-sm">1.1 km</span>
+</div>
+<p class="text-on-surface-variant text-sm mt-1">Spuistraat 123, 1012 SV Amsterdam</p>
+<div class="flex items-center mt-3 gap-2">
+<span class="px-2 py-0.5 bg-tertiary-container/10 text-tertiary text-[10px] font-bold uppercase tracking-wider rounded">Open tot 21:00</span>
+<span class="px-2 py-0.5 bg-yellow-400/10 text-yellow-700 text-[10px] font-bold uppercase tracking-wider rounded italic">DHL</span>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Sticky Bottom Bar -->
+<footer class="fixed bottom-0 w-full max-w-[393px] z-50 bg-surface/90 backdrop-blur-xl px-6 pt-4 pb-10 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 rounded-xl font-extrabold text-lg shadow-lg active:scale-95 transition-transform duration-200 flex items-center justify-center gap-3">
+                Kies dit servicepunt
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</footer>
+<!-- Bottom Navigation Shell (Filter Logic: Supressed due to focused transactional journey) -->
+<!-- Only displaying the Action Button for the specific screen intent -->
+</div>
+</body></html>

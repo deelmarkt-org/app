@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#8e7067",
+              "on-primary-container": "#fffbff",
+              "on-error": "#ffffff",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#F15A24",
+              "outline-variant": "#e2bfb4",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "surface": "#fcf9f8",
+              "on-secondary-fixed": "#001d35",
+              "on-secondary-container": "#285782",
+              "secondary": "#34618d",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-high": "#ebe7e7",
+              "on-error-container": "#93000a",
+              "on-primary-fixed-variant": "#842500",
+              "on-primary-fixed": "#3a0b00",
+              "surface-variant": "#e5e2e1",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "tertiary-fixed": "#82fc8e",
+              "on-surface": "#1c1b1b",
+              "surface-tint": "#ad3300",
+              "surface-bright": "#fcf9f8",
+              "inverse-surface": "#313030",
+              "tertiary-fixed-dim": "#65df75",
+              "surface-container": "#f0edec",
+              "surface-container-highest": "#e5e2e1",
+              "primary-container": "#d1430a",
+              "tertiary-container": "#008730",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-tertiary-fixed": "#002106",
+              "on-background": "#1c1b1b",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "inverse-on-surface": "#f3f0ef",
+              "on-surface-variant": "#5a4139",
+              "on-tertiary-fixed-variant": "#00531a",
+              "tertiary": "#006b24",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-primary": "#ffb59e",
+              "surface-dim": "#dcd9d9",
+              "background": "#fcf9f8",
+              "surface-container-low": "#f6f3f2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen overflow-hidden">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 w-full shadow-none">
+<div class="flex items-center gap-8">
+<span class="text-xl font-extrabold text-primary tracking-tighter">DeelMarkt</span>
+<nav class="hidden md:flex items-center gap-6 font-['Plus_Jakarta_Sans'] tracking-tight">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Ontdekken</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Verkopen</a>
+<a class="text-primary font-bold border-b-2 border-[#F15A24] pb-1 duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Berichten</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" href="#">Favorieten</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<img alt="Gebruikersprofiel" class="w-10 h-10 rounded-full object-cover border-2 border-primary/10" alt="Professional studio portrait of a friendly man with short hair and a warm smile, high-end commercial lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY8IKGm1IRKRw8vtjT6UDTZxQRtWtbVapfC8Y4ODIbYcAlDjUW5v0FsKHp7RKuQZBUqlKNNGqpidgd-nm9KiTCLtFml89CPSHLPl9k7Ng63mfnKic7UrQONDZbyjuKdM31dFfG16VVZVnQbgIk4byCxmAay5bE8qTKCfAeGKZYAe2CWNwU-u1TDAIL0vImG8N54ifuKMNcrlmXz84UK4dDs_FoSsuhj62307IrGsviEW0o6-BOOhClkG3Rx3mIXKsLpUlWSxzu1y7R"/>
+</div>
+</header>
+<!-- Main Content Wrapper (Max-width 1200px constraint) -->
+<main class="pt-20 h-screen flex justify-center bg-surface">
+<div class="w-full max-width-[1200px] flex h-full overflow-hidden">
+<!-- Side Navigation Rail -->
+<aside class="w-20 hidden md:flex flex-col items-center py-6 gap-8 bg-surface-container-low border-r border-outline-variant/10">
+<button class="w-12 h-12 flex items-center justify-center rounded-2xl bg-primary-container text-on-primary-container shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-2xl text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">storefront</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-2xl text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center rounded-2xl text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</aside>
+<!-- Master View: Conversation List (360px) -->
+<section class="w-[360px] flex flex-col bg-surface-container-low border-r border-outline-variant/10">
+<div class="p-6">
+<h1 class="text-2xl font-extrabold tracking-tight text-on-surface mb-6">Berichten</h1>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-xl">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-surface-container-lowest border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/60" placeholder="Zoek in gesprekken..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto space-y-1 px-3">
+<!-- Active Conversation -->
+<div class="group cursor-pointer p-4 rounded-2xl bg-surface-container-lowest shadow-sm flex gap-4 border-l-4 border-primary">
+<img class="w-12 h-12 rounded-full object-cover" alt="Close-up portrait of Jan, a middle-aged Dutch man with kind eyes and a friendly demeanor, soft natural outdoor light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArLawO8E8ZGL4A8h6GOf9dkkCgVIo-PDOqhg7Iy7z5kqpZpI2a_10lHp7gBH3gitMppQXhUEh6sPAvYTKtWu-RLeNXZXgv3zgS3EPgR9vnAnBhmj2rKvmfJNFmIWi-QTDbzwA5Sx13MOjuSYlTxTxCFxd4FCYS4j62IfgRSzg-fAfae4NB8KLLdSNZ4-XbGtcZCgyXm8HwZLE8l0mH3twpIJe6MFWelf-N5iIg8oIIruR8eJnt28UriP3D_dnqleq0H52BY-Pj_jG3"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-bold text-on-surface truncate">Jan de Vries</h3>
+<span class="text-[10px] font-bold text-primary uppercase">Nu</span>
+</div>
+<p class="text-xs font-bold text-secondary mb-1 truncate">Gazelle Herenfiets</p>
+<p class="text-sm text-on-surface-variant truncate font-medium">Is €250 ook goed voor je?</p>
+</div>
+</div>
+<!-- Inactive Conversation 1 -->
+<div class="group cursor-pointer p-4 rounded-2xl hover:bg-surface-container-high transition-colors flex gap-4">
+<img class="w-12 h-12 rounded-full object-cover" alt="Portrait of a woman with curly hair smiling, warm afternoon sun hitting her face, professional lifestyle photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZnry2ZJV0-54mNMYzY0HeSLZXhxFE51huc2AusCLP-HzAmG5bgr8oRVt0BwoHFSwzqx_XC1vsUuO7DNNa8GbQz7SjUocTPqP-tMm6obktLUbYqmgeJ63_bI0fNcqlrYUNqYUr5Jhy2XK07ObV8BX-5FWYZ8xW7UGDT9HYAzORN2_ZoDv4XB5NQap7Q_QQ7CZb8_qc22x2Z1utfkm4zN0IaFUClsZDbpUYl5I864whKl6K37917xBiB4pxwP3dVuk4tHNOBaVg9bBj"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-semibold text-on-surface truncate">Anouk Bakker</h3>
+<span class="text-[10px] text-on-surface-variant">14:20</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-1 truncate">Vintage Philips Platenspeler</p>
+<p class="text-sm text-on-surface-variant/70 truncate">Bedankt voor de snelle reactie!</p>
+</div>
+</div>
+<!-- Inactive Conversation 2 -->
+<div class="group cursor-pointer p-4 rounded-2xl hover:bg-surface-container-high transition-colors flex gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<h3 class="font-semibold text-on-surface truncate">Mark Rutte</h3>
+<span class="text-[10px] text-on-surface-variant">Gisteren</span>
+</div>
+<p class="text-xs text-on-surface-variant mb-1 truncate">Houten Eettafel</p>
+<p class="text-sm text-on-surface-variant/70 truncate">Kan ik morgen langskomen?</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Detail View: Thread Preview -->
+<section class="flex-1 flex flex-col bg-surface relative">
+<!-- Thread Header -->
+<header class="h-20 flex items-center justify-between px-8 bg-surface/80 backdrop-blur-md z-10 border-b border-outline-variant/5">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover" alt="Jan de Vries, friendly seller avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLWiMDWM_g3OVaQikkTPGHMr7cHDtj6c8bkbuNuGA7IJV-WBGYV7xLJzYGc6QcSimvIGP2oDbdeilKiEPWnblTg7fqaSx8CB4PwkVBUcKk-cRQd8lkMUNHhry2n05ufqe3cQiHz5Ki4lJzL9FW5EdttN1jTbRRV27-23vyjhn4WzcqTaIrmOPOOpY807G2OoEMmNpua-H2nAFOqwupaDvYEYPchxlt5kJUV_3J1a53WYeDDZ5R-gKUIicqqcVHmcSbePy3pkKcSXbR"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary border-2 border-surface rounded-full"></div>
+</div>
+<div>
+<h2 class="font-bold text-on-surface">Jan de Vries</h2>
+<p class="text-xs text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                Geverifieerde verkoper
+                            </p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-xl hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">call</span>
+</button>
+<button class="p-2 rounded-xl hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Listing Context Card -->
+<div class="px-8 py-4">
+<div class="bg-surface-container-lowest rounded-2xl p-4 flex items-center gap-4 shadow-sm group hover:shadow-md transition-shadow cursor-pointer">
+<img class="w-20 h-20 rounded-xl object-cover" alt="Elegant classic Gazelle men's bicycle in black with leather saddle, shot in a minimalist urban setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJysGcXAQrBjCwjcKkf-6CHm0GPNBqOz2Tx68l0JF8NI-7u-RzPOo3iYo5pQdBJWK9FRP4jyhIhpg02xTST2r-zz0AUH78Eo27n7wRuVGGaG1ookXIs-DTS1lYvpqmISMvpYzHeqanDP63KYi1NVKF2FBf03FFD10Fi5lWSk5YBnxEj9d2qjeM2Qf644gITFc2Yk1regv7MN3z87y2adrk2aHWNU-gb1Zfq3G4akqZZqiANNoT7QRfPCLvvPpevsetOCKNex4lNp37"/>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-bold text-on-surface leading-tight">Gazelle Herenfiets (Classic Line)</h4>
+<p class="text-xs text-on-surface-variant">Advertentie m12938421 • Amsterdam</p>
+</div>
+<div class="text-right">
+<p class="text-xl font-extrabold text-secondary">€275,00</p>
+<span class="text-[10px] font-bold py-1 px-2 rounded-full bg-secondary-container/20 text-secondary uppercase tracking-wider">Actief</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+<!-- Messages Area -->
+<div class="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="px-4 py-1 rounded-full bg-surface-container-high text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Vandaag</span>
+</div>
+<!-- Message Received -->
+<div class="flex gap-3 max-w-[80%]">
+<img class="w-8 h-8 rounded-full self-end" alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu4r6eRFkWaY3CrSXlZ1KgtzRxCug_Dr1WXTWhrADJJu4HcG2JBdi38a3aII-BMKc1ZbDpfQ5n-tYXJtPoXhtw4CKRL08k74H0j6UOd5tVQiZEwOU3ftVCWcR-FAod-MJIdp1FOhXnNcm6BoXBWpw7dp3Ca9yw6Sb2-Ty073MITrcBwDRsd30cLwVtbxFA_PXHqA1ovyQolCFgrPqHdBYRuIQ4-jtqKwvhlJTSI1VudZQTKf54N0f7fE6X0kKWNoNGY4FBU6jYiGIi"/>
+<div class="relative">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm">
+<p class="text-sm">Hoi! Ik heb erg veel interesse in je Gazelle. Is de staat van de banden nog goed?</p>
+</div>
+<span class="text-[10px] text-on-surface-variant mt-1 block">15:10</span>
+</div>
+</div>
+<!-- Message Sent -->
+<div class="flex flex-row-reverse gap-3 ml-auto max-w-[80%]">
+<div class="relative flex flex-col items-end">
+<div class="bg-primary-container text-on-primary-container p-4 rounded-2xl rounded-br-none shadow-lg shadow-primary/10">
+<p class="text-sm">Zeker! Ze zijn vorig jaar nog vervangen. De fiets is technisch helemaal in orde.</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="text-[10px] text-on-surface-variant">15:12</span>
+<span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Message Received (The offer) -->
+<div class="flex gap-3 max-w-[80%]">
+<img class="w-8 h-8 rounded-full self-end" alt="Jan portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCADq_N9V9MDSnNcC_DN_23QEqvCI_fjjcQV7F4xoaL_xC7OzlfnG6j7g9LbsNlmvcKDzr_45QgjSdvo2UWLcK5zJ-9Tm3LPBDTbEe83EMGX0VOEhW_lBM-K2AswIMqnypM10BgUEQYwUdJwq_e9l8-kD-g9vqP7nyxEdpNmQJzbZPnfO1TXoXMhnrEyCyuiwxjY1kx87P1V1AyKqsOoR8Msd_NZt7TqQx1QK8uupGS3bjWhPYoEJyRSgmX7M9gjRdTuv51C1YPxhD"/>
+<div class="relative">
+<div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-bl-none shadow-sm">
+<p class="text-sm">Klinkt goed. Is €250 ook goed voor je? Dan kan ik hem vanavond nog komen ophalen.</p>
+</div>
+<span class="text-[10px] text-on-surface-variant mt-1 block">15:14</span>
+</div>
+</div>
+</div>
+<!-- Message Input Footer -->
+<footer class="p-6 bg-surface">
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-2xl border border-outline-variant/10">
+<button class="p-3 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 px-2" placeholder="Typ een bericht..." type="text"/>
+<button class="p-3 bg-primary text-on-primary rounded-xl shadow-md hover:bg-primary-container transition-all active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</footer>
+</section>
+</div>
+</main>
+<!-- Shared Bottom Nav for Mobile (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/90 dark:bg-[#121212]/90 backdrop-blur-2xl border-t border-slate-200/10 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Zoeken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Verkopen</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary/10 text-primary rounded-2xl px-5 py-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Berichten</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-2">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-semibold font-['Plus_Jakarta_Sans']">Profiel</span>
+</div>
+</nav>
+</body></html>

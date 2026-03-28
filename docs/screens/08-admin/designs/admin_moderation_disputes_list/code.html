@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeelMarkt Admin - Disputes Management</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed": "#d0e4ff",
+              "tertiary": "#006b24",
+              "tertiary-container": "#008730",
+              "inverse-primary": "#ffb59e",
+              "primary-container": "#d1430a",
+              "surface-tint": "#ad3300",
+              "surface-bright": "#fcf9f8",
+              "surface": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#164974",
+              "on-secondary": "#ffffff",
+              "surface-container-highest": "#e5e2e1",
+              "secondary-container": "#a1cdff",
+              "on-surface-variant": "#5a4139",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-container-high": "#ebe7e7",
+              "secondary-fixed-dim": "#9fcafc",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#82fc8e",
+              "surface-variant": "#e5e2e1",
+              "surface-container-lowest": "#ffffff",
+              "background": "#fcf9f8",
+              "surface-dim": "#dcd9d9",
+              "on-primary-fixed-variant": "#842500",
+              "on-error-container": "#93000a",
+              "secondary": "#34618d",
+              "outline": "#8e7067",
+              "on-surface": "#1c1b1b",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container": "#f0edec",
+              "primary": "#F15A24",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-container-low": "#f6f3f2",
+              "on-secondary-container": "#285782",
+              "on-background": "#1c1b1b",
+              "tertiary-fixed-dim": "#65df75",
+              "inverse-surface": "#313030",
+              "primary-fixed": "#ffdbd0",
+              "outline-variant": "#e2bfb4",
+              "on-primary-container": "#fffbff",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-fixed": "#001d35"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .cubic-bezier-transition {
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 z-50 bg-surface dark:bg-surface flex flex-col h-full border-r border-neutral-200 dark:border-[#333333] p-4 font-['Plus_Jakarta_Sans'] text-sm font-medium">
+<div class="mb-8 px-4 py-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold text-primary dark:text-primary tracking-tighter">Moderation Hub</h1>
+<p class="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Admin Control Panel</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">flag</span>
+<span>Flagged Listings</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">person_off</span>
+<span>Reported Users</span>
+</a>
+<!-- Active State: Disputes (Mapped to 'Geschillen') -->
+<a class="flex items-center gap-3 bg-white dark:bg-neutral-800 text-primary dark:text-primary shadow-sm rounded-lg py-2.5 px-4 mb-1 cubic-bezier-transition font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span>Disputes</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">policy</span>
+<span>DSA Notices</span>
+</a>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2.5 px-4 mb-1 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span>Appeals</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-neutral-100 dark:border-neutral-900 space-y-1">
+<button class="w-full mb-4 py-2.5 px-4 rounded-xl bg-on-surface text-white font-bold text-xs uppercase tracking-widest hover:bg-neutral-800 transition-colors">
+                View Global Logs
+            </button>
+<a class="flex items-center gap-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 py-2 px-4 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 text-error hover:bg-error/5 py-2 px-4 rounded-lg cubic-bezier-transition" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar (Authority: JSON & Design System) -->
+<header class="fixed top-0 right-0 left-0 z-40 bg-white/80 dark:bg-surface/80 backdrop-blur-xl shadow-sm dark:shadow-none font-['Plus_Jakarta_Sans'] antialiased tracking-tight">
+<div class="flex justify-between items-center h-16 px-6 ml-64">
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 material-symbols-outlined">search</span>
+<input class="w-full bg-neutral-100 dark:bg-neutral-800 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/40 cubic-bezier-transition" placeholder="Search disputes, order IDs, or users..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-6">
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg cubic-bezier-transition relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-white dark:border-neutral-900"></span>
+</button>
+<button class="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg cubic-bezier-transition">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-neutral-100 dark:bg-neutral-800"></div>
+<div class="flex items-center gap-3 cursor-pointer p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl transition-all">
+<img alt="Admin Profile Avatar" class="w-8 h-8 rounded-full object-cover" alt="Close-up portrait of a professional male administrator with glasses, neutral background, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCffbPxGCpbFTi9VNyPL7k6cQWSbIOON4MiTT3ikdUpWHKy9ZaQAvvJq-hgDbqkRYVOxGbnj6nr7tFF2QJzRHQZaQLcUfzO--X7fTcLpC5lIHigqCuC7IFOlbOvyY9Btpyk2OSpuSGZvVIQH-moeZ73XwMptqZXZJ0kYpNqT6Pe0wByb6-4if5INMqqaGrQDK2zrOMqNQ45mi7Xxz4X_eEA9fUn9heQoBabdhmjcjl_O9uWt8IjizGAAYbdMsJBJI2GOyE6Sa1vwuL5"/>
+<div class="hidden lg:block text-left">
+<p class="text-xs font-bold text-neutral-900 dark:text-white leading-none">M. van den Berg</p>
+<p class="text-[10px] text-neutral-500">Super Admin</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-neutral-100 dark:bg-neutral-800 h-px ml-64"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen bg-surface">
+<!-- Header Section -->
+<div class="mb-10">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-neutral-900 mb-2">Active Disputes</h2>
+<p class="text-neutral-500 font-medium">Manage and resolve transactional conflicts across the platform.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2.5 bg-surface-container-high text-on-secondary-container font-semibold rounded-xl hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                        Filter
+                    </button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export Report
+                    </button>
+</div>
+</div>
+<!-- Stats Overview Cards (Bento Style) -->
+<div class="grid grid-cols-4 gap-6 mt-8">
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-neutral-100/50">
+<p class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Total Active</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-neutral-900">142</span>
+<span class="text-xs font-bold text-tertiary">+8%</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-neutral-100/50">
+<p class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Critical SLA</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-error">12</span>
+<span class="text-xs font-bold text-error">Overdue</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-neutral-100/50">
+<p class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Average Resolution</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-neutral-900">4.2u</span>
+<span class="text-xs font-bold text-tertiary">Faster</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-neutral-100/50">
+<p class="text-[11px] font-bold text-neutral-400 uppercase tracking-widest mb-1">Refund Rate</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-neutral-900">18%</span>
+<span class="text-xs font-bold text-neutral-400">Steady</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-neutral-100/50">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface border-b border-neutral-100">
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Order #</th>
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Koper</th>
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Verkoper</th>
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Bedrag</th>
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Status</th>
+<th class="px-6 py-5 text-[11px] font-bold text-neutral-500 uppercase tracking-widest text-right">SLA Countdown</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-neutral-50">
+<!-- Row 1 -->
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer group">
+<td class="px-6 py-5">
+<span class="text-sm font-bold text-neutral-900">#DM-90214</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Headshot of a smiling young man in a blue casual shirt, bright natural lighting, clear background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ33QxJ8loIUcXsqH8ZeGiJemQiVDOX4ieBA-acmxCMZ1zb3VRV8JKn5oh_EaAIjymLJLW_-SnFA6vYQ0HRckc2e0Ql50FRtB3LkdS5-m6PCQYZ4eX_Mwvw8WoVE7DX_uMVYOd9o3jN8ns8y0KX4FYM-5m_2p4MmJbVm94nCNRd4CEriUzQRkXJX2p2ijV6XMJ-gaejKTxfztSRJmzgumSqPXcvZknziYpIMjtZLYNH67JiN62TFA3bZQZgZn4mkXHnMLgmxk-NpJX"/>
+<span class="text-sm font-semibold text-neutral-700">Thomas De Groot</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a young woman with curly hair, natural lifestyle aesthetic, warm outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNxeGPKMifJ9i81D6C-TlLcN7VYoIbqhi--ePZ5Ye-xxhg3S3cfEGrQALZSTXZ9qlYi6_9VRUWVFf5iFR-X4Ksn7NGH5kzJ7v9IHpH4BDrXPDw8HUIk1UOTi0J7wiDhFxxrIPpqagbCGdBJzmCALO8vGN3mi1OW-sHefgw-hwEskcPpvXqL_HU0zJM6pQZfhiNcPdW6qTEbSkmIFdKyp2CKg0LLH2rfKwxcyzM25yVUlCSXxzNgQiFdRA5hBUUuTzBQ1Wkm7iIC8-x"/>
+<span class="text-sm font-semibold text-neutral-700">Annelies Bakker</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 145,00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">Wacht op Admin</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="text-xs font-bold text-error bg-error/5 px-2 py-1 rounded-md ring-1 ring-error/20 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                    2u over
+                                </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
+<td class="px-6 py-5">
+<span class="text-sm font-bold text-neutral-900">#DM-88432</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">SV</div>
+<span class="text-sm font-semibold text-neutral-700">Sander Vliet</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Candid portrait of a professional woman in an office setting, soft natural window light, modern feel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlzUEpYc-TIgRmFyRDzASE5wuPh1fvgatoXNvgGM79LKkkEql4NtoQItcFRun-xk2l79BgRgM4O9LsKGU38OQlKxtHO-tCYsfA14sR1smXWkiVL5M8SfEXVejSXG3P7RAyLUB2kjwEYcigpHESYGCoAKWczlYOiDQIbdZDVsWCxdjAUWZuNYI7Yj23_yXFckaE52iUV8qgYRSessV3rVKjGzSF-ValCvXVsRRVVWZlJt8P4Bf1oamnRfSSZYwemM8cGrIXFamnTMVh"/>
+<span class="text-sm font-semibold text-neutral-700">Petra Jansen</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 890,50</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-100 text-blue-700 border border-blue-200">Evidence Review</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="text-xs font-bold text-neutral-500 bg-neutral-100 px-2 py-1 rounded-md inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                    14u resteert
+                                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
+<td class="px-6 py-5">
+<span class="text-sm font-bold text-neutral-900">#DM-91001</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a mature man with a beard, high contrast lighting, black and white style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASyGg_FH5O0i2gul5T7eXo30JkgnE555z49gyNZ7CKcKGYmh8F_YpeLBmXCRadPY-xjQke2Ku50AO8HsqdbVhFTxI2JQq4ndJQQMmHJMAbF3gw_qwqzuD_Ln0aKH2DkdO9zxCySBkRDU9fZuX7GOWyk5QBmS8o-WzWjM08Tb1sFGCocTfO8Xm1qBnnWt2XXVaOCJo7s4eQ7AL0Ecqv6KPcsGm22njGRs97M5NILKRHlmPoR1hlQt2Gyb7dKnwNH3r0Ym5B9BKZG_II"/>
+<span class="text-sm font-semibold text-neutral-700">Erik Meijer</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-container flex items-center justify-center text-white font-bold text-xs">GL</div>
+<span class="text-sm font-semibold text-neutral-700">Garage Loft</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 42,00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-neutral-100 text-neutral-600 border border-neutral-200">Pending Seller</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="text-xs font-bold text-error bg-error/5 px-2 py-1 rounded-md ring-1 ring-error/20 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                    1u over
+                                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer">
+<td class="px-6 py-5">
+<span class="text-sm font-bold text-neutral-900">#DM-89552</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Buyer" class="w-8 h-8 rounded-full object-cover" alt="Close-up profile of a stylish young woman, fashion aesthetic, soft focused urban background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCapFjqWeLmtDdrNGHXJj-84P-Fiv5ziuMnG_a6_wHFW6TAPXa5ZnNFvt9HoZ6t7nM0bTYZZKDVW8TiIdoizEOTiQ6pUX0sdhLHYZTTwF2Hq98sKyKn7QxPWGsD9Ds5a8PUIi_jd-Px8VJxxlbWhoAL5ehC571vFgxc3lDpB2tNwzPQvhu8ruZB1mZghZi8D6QtzD7qwU7wgGK-KekS0P1382j0j8rL3BhfcaaRywSrpQQqFZiTZw5XKGkn5401YDtsPnbcbPfUIiZ_"/>
+<span class="text-sm font-semibold text-neutral-700">Lisa de Wit</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-neutral-700 font-bold text-xs">K</div>
+<span class="text-sm font-semibold text-neutral-700">Kees.2023</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 2.150,00</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">Hoog Risico</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="text-xs font-bold text-neutral-900 bg-neutral-100 px-2 py-1 rounded-md inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">schedule</span>
+                                    32u resteert
+                                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface/50 transition-colors cursor-pointer border-none">
+<td class="px-6 py-5">
+<span class="text-sm font-bold text-neutral-900">#DM-91420</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold text-xs">MB</div>
+<span class="text-sm font-semibold text-neutral-700">Mark Bos</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img alt="Seller" class="w-8 h-8 rounded-full object-cover" alt="Portrait of a creative professional woman, neutral artistic background, soft diffused lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDySC3VlIjzfX9HaCqLqzqzMMdhTGK0Y3w8KYTk150lh9oOgczrl3UClihBKKK9ZsQcpPI9fu8dq3ztVX6SieCKaahXc1TMufEuCyFWBVHDT8QxCyXyx9-1xE5nllghTsRrsZgptEayF_oJxmNqFCeaNvWjnB5nextzVXuaTCjsaFCjo9h68tPQh78Ehn5J1K2l--trRI--2t2YxSTPrzArhofUWyA60vrFDBqTTlles6_r7nS9xSbdqw10AbXnC9Nj2OVbm-vbVYMc"/>
+<span class="text-sm font-semibold text-neutral-700">Fleur Bloom</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm font-extrabold text-secondary">€ 12,50</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-green-100 text-green-700 border border-green-200">Opgelost</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="text-xs font-bold text-tertiary bg-tertiary/10 px-2 py-1 rounded-md inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                                    On-time
+                                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="px-6 py-4 bg-surface flex items-center justify-between">
+<p class="text-xs font-bold text-neutral-500 uppercase tracking-widest">Toont 1-5 van 142 geschillen</p>
+<div class="flex gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-white border border-neutral-200 text-neutral-400 hover:text-neutral-900 transition-colors">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-white border border-neutral-200 text-primary font-bold text-xs">1</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white text-neutral-500 font-bold text-xs">2</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white text-neutral-500 font-bold text-xs">3</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-white border border-neutral-200 text-neutral-400 hover:text-neutral-900 transition-colors">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Secondary Section: High Priority Tasks (Editorial Grid) -->
+<div class="mt-12">
+<h3 class="text-xl font-bold text-neutral-900 mb-6">Recent Escalations</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-low p-6 rounded-3xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-error text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Critical</span>
+<span class="text-xs font-bold text-neutral-400">Order DM-91822</span>
+</div>
+<h4 class="text-lg font-bold text-neutral-900 mb-2">Claim for Non-Delivery</h4>
+<p class="text-sm text-neutral-600 mb-6 leading-relaxed">High-value electronics claim. Buyer claims empty box received. No courier proof uploaded yet.</p>
+<button class="w-full py-2.5 rounded-xl bg-white border border-neutral-200 text-neutral-900 font-bold text-sm hover:shadow-md transition-shadow">Inspect Evidence</button>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-low p-6 rounded-3xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Escalated</span>
+<span class="text-xs font-bold text-neutral-400">Order DM-92015</span>
+</div>
+<h4 class="text-lg font-bold text-neutral-900 mb-2">Counterfeit Apparel</h4>
+<p class="text-sm text-neutral-600 mb-6 leading-relaxed">Buyer provides serial number mismatch for designer jacket. Seller disputing authenticity check.</p>
+<button class="w-full py-2.5 rounded-xl bg-white border border-neutral-200 text-neutral-900 font-bold text-sm hover:shadow-md transition-shadow">Open Review Hub</button>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-low p-6 rounded-3xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">New</span>
+<span class="text-xs font-bold text-neutral-400">Order DM-92144</span>
+</div>
+<h4 class="text-lg font-bold text-neutral-900 mb-2">Damaged on Arrival</h4>
+<p class="text-sm text-neutral-600 mb-6 leading-relaxed">Ceramic items arrived broken. Photos provided by buyer. Awaiting seller response to insurance claim.</p>
+<button class="w-full py-2.5 rounded-xl bg-white border border-neutral-200 text-neutral-900 font-bold text-sm hover:shadow-md transition-shadow">Message Parties</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden on management screens per instructions, but placeholder for structure if needed) -->
+<!-- Suppressed on Details/Transactional screens -->
+</body></html>

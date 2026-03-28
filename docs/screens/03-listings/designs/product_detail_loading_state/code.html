@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#65df75",
+              "surface-container": "#f0edec",
+              "surface-container-highest": "#e5e2e1",
+              "secondary-fixed": "#d0e4ff",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-bright": "#fcf9f8",
+              "tertiary-container": "#008730",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#fcf9f8",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-secondary-container": "#285782",
+              "tertiary": "#006b24",
+              "on-surface": "#1c1b1b",
+              "outline": "#8e7067",
+              "tertiary-fixed": "#82fc8e",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed": "#001d35",
+              "on-tertiary-fixed": "#002106",
+              "surface-dim": "#dcd9d9",
+              "surface-container-low": "#f6f3f2",
+              "on-primary-fixed-variant": "#842500",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-surface": "#313030",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#3a0b00",
+              "on-error": "#ffffff",
+              "background": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "on-secondary": "#ffffff",
+              "error-container": "#ffdad6",
+              "primary": "#F15A24",
+              "surface-variant": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error-container": "#93000a",
+              "on-tertiary-container": "#f7fff2",
+              "on-background": "#1c1b1b",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "primary-container": "#d1430a",
+              "outline-variant": "#e2bfb4",
+              "secondary": "#34618d",
+              "inverse-primary": "#ffb59e",
+              "error": "#ba1a1a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f0edec 25%, #e5e2e1 50%, #f0edec 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            border: 12px solid #1c1b1b;
+            border-radius: 54px;
+            overflow: hidden;
+            position: relative;
+            background: #fcf9f8;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .dynamic-island {
+            width: 120px;
+            height: 35px;
+            background: #000;
+            border-radius: 20px;
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-dim min-h-screen flex items-center justify-center p-4">
+<!-- Device Container -->
+<div class="iphone-frame">
+<div class="dynamic-island"></div>
+<!-- TopAppBar Shared Component Mapping -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-full hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</div>
+</div>
+<div class="text-xl font-black text-primary font-['Plus_Jakarta_Sans'] tracking-[-0.02em]">DeelMarkt</div>
+<div class="flex items-center gap-4">
+<div class="p-2 rounded-full hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="share">share</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="h-full overflow-y-auto pt-16 pb-32">
+<!-- Hero Image Gallery Skeleton -->
+<section class="px-4 pt-4">
+<div class="w-full aspect-[4/5] rounded-[32px] skeleton"></div>
+<div class="flex gap-3 mt-4 overflow-hidden">
+<div class="w-20 h-20 rounded-2xl skeleton flex-shrink-0"></div>
+<div class="w-20 h-20 rounded-2xl skeleton flex-shrink-0"></div>
+<div class="w-20 h-20 rounded-2xl skeleton flex-shrink-0"></div>
+<div class="w-20 h-20 rounded-2xl skeleton flex-shrink-0"></div>
+</div>
+</section>
+<!-- Product Info Skeleton -->
+<section class="px-6 mt-8">
+<div class="flex justify-between items-start mb-4">
+<div class="space-y-3 w-2/3">
+<div class="h-8 w-full rounded-lg skeleton"></div>
+<div class="h-8 w-1/2 rounded-lg skeleton"></div>
+</div>
+<div class="h-10 w-24 rounded-xl skeleton"></div>
+</div>
+<!-- Price and Badges -->
+<div class="flex items-center gap-4 mb-8">
+<div class="h-10 w-32 rounded-xl skeleton"></div>
+<div class="h-6 w-20 rounded-full skeleton"></div>
+</div>
+<!-- Description Bento Section -->
+<div class="space-y-6">
+<div class="p-6 bg-surface-container-low rounded-[24px] space-y-4">
+<div class="h-4 w-1/4 rounded skeleton"></div>
+<div class="space-y-2">
+<div class="h-4 w-full rounded skeleton"></div>
+<div class="h-4 w-full rounded skeleton"></div>
+<div class="h-4 w-4/5 rounded skeleton"></div>
+</div>
+</div>
+<!-- Specs Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-surface-container-lowest rounded-2xl space-y-2">
+<div class="h-3 w-1/2 rounded skeleton opacity-50"></div>
+<div class="h-5 w-3/4 rounded skeleton"></div>
+</div>
+<div class="p-4 bg-surface-container-lowest rounded-2xl space-y-2">
+<div class="h-3 w-1/2 rounded skeleton opacity-50"></div>
+<div class="h-5 w-3/4 rounded skeleton"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Seller Card Skeleton -->
+<section class="px-6 mt-10 mb-12">
+<div class="p-5 bg-surface-container-high rounded-[28px] flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full skeleton"></div>
+<div class="space-y-2">
+<div class="h-5 w-32 rounded skeleton"></div>
+<div class="h-3 w-24 rounded skeleton opacity-60"></div>
+</div>
+</div>
+<div class="h-10 w-10 rounded-full skeleton"></div>
+</div>
+</section>
+<!-- Map Placeholder -->
+<section class="px-6">
+<div class="h-48 w-full rounded-[32px] skeleton"></div>
+<div class="mt-4 flex items-center gap-2">
+<div class="h-4 w-4 rounded-full skeleton"></div>
+<div class="h-4 w-48 rounded skeleton"></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shared Component Mapping (Skeleton State) -->
+<nav class="fixed bottom-0 left-0 w-full px-4 pb-8 pt-4 flex justify-between gap-4 bg-white/90 backdrop-blur-2xl rounded-t-[24px] z-50 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+<!-- Inactive State Mapping: Message -->
+<div class="flex flex-1 items-center justify-center gap-2 bg-[#f6f3f2] text-[#4e4644] rounded-xl py-4 mx-2 skeleton opacity-40">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Message</span>
+</div>
+<!-- Active State Mapping: Buy Now -->
+<div class="flex flex-1 items-center justify-center gap-2 bg-gradient-to-br from-[#F15A24] to-[#d1430a] text-white rounded-xl py-4 mx-2 skeleton">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight">Buy Now</span>
+</div>
+</nav>
+<!-- Visual Anchor: Home Indicator -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-on-surface/20 rounded-full"></div>
+</div>
+</body></html>
