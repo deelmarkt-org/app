@@ -140,8 +140,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .single();
 
     if (labelError || !label) {
-      console.error(`[tracking-webhook] Barcode not found: ${payload.barcode}`);
-      return jsonResponse({ error: "Barcode not found" }, 422);
+      console.log(`[tracking-webhook] Barcode not found (ignored): ${payload.barcode}`);
+      return jsonResponse({ status: "ignored", reason: "barcode_not_found" }, 200);
     }
 
     // 5. Insert tracking event (DB UNIQUE on carrier_event_id is safety net)
