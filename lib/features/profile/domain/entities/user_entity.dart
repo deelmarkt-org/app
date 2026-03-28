@@ -47,6 +47,32 @@ class UserEntity extends Equatable {
     responseTimeMinutes,
     createdAt,
   ];
+
+  UserEntity copyWith({
+    String? id,
+    String? displayName,
+    String? avatarUrl,
+    String? location,
+    KycLevel? kycLevel,
+    List<BadgeType>? badges,
+    double? averageRating,
+    int? reviewCount,
+    int? responseTimeMinutes,
+    DateTime? createdAt,
+  }) {
+    return UserEntity(
+      id: id ?? this.id,
+      displayName: displayName ?? this.displayName,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      location: location ?? this.location,
+      kycLevel: kycLevel ?? this.kycLevel,
+      badges: badges ?? this.badges,
+      averageRating: averageRating ?? this.averageRating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      responseTimeMinutes: responseTimeMinutes ?? this.responseTimeMinutes,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }
 
 /// Progressive KYC levels — per E02 epic.

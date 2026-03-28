@@ -5,6 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'routes.dart';
 
 /// Routes that require authentication — redirect to onboarding if not logged in.
+///
+/// Note: `/listings/:id` is intentionally NOT protected — listing detail pages
+/// are public for SEO and sharing. Auth is required only for actions (buy, message).
 const _protectedRoutes = [
   AppRoutes.sell,
   AppRoutes.messages,

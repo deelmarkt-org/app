@@ -130,7 +130,11 @@ async function createViaEctaro(
 
 /** PostNL base URL — sandbox or production based on POSTNL_ENV. */
 function getPostNLBaseUrl(): string {
-  const isSandbox = Deno.env.get("POSTNL_ENV") !== "production";
+  const postnlEnv = Deno.env.get("POSTNL_ENV");
+  if (!postnlEnv) {
+    console.warn("[create-shipping-label] POSTNL_ENV not set — defaulting to sandbox. Set POSTNL_ENV=production for live API.");
+  }
+  const isSandbox = postnlEnv !== "production";
   return isSandbox
     ? "https://api-sandbox.postnl.nl"
     : "https://api.postnl.nl";

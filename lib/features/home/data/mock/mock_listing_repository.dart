@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../domain/entities/listing_entity.dart';
 import '../../domain/repositories/listing_repository.dart';
 
@@ -6,7 +8,8 @@ import '../../domain/repositories/listing_repository.dart';
 /// Swapped for SupabaseListingRepository in Phase 4 via Riverpod override.
 /// Note: not thread-safe — single-isolate mock use only.
 class MockListingRepository implements ListingRepository {
-  Set<String> _favouriteIds = const <String>{};
+  @visibleForTesting
+  Set<String> favouriteIds = const <String>{};
 
   @override
   Future<List<ListingEntity>> getRecent({int limit = 20}) async {
@@ -79,19 +82,19 @@ class MockListingRepository implements ListingRepository {
   @override
   Future<ListingEntity> toggleFavourite(String listingId) async {
     await Future<void>.delayed(const Duration(milliseconds: 100));
-    if (_favouriteIds.contains(listingId)) {
-      _favouriteIds = {..._favouriteIds}..remove(listingId);
+    if (favouriteIds.contains(listingId)) {
+      favouriteIds = {...favouriteIds}..remove(listingId);
     } else {
-      _favouriteIds = {..._favouriteIds, listingId};
+      favouriteIds = {...favouriteIds, listingId};
     }
     final listing = _mockListings.firstWhere((l) => l.id == listingId);
-    return listing.copyWith(isFavourited: _favouriteIds.contains(listingId));
+    return listing.copyWith(isFavourited: favouriteIds.contains(listingId));
   }
 
   @override
   Future<List<ListingEntity>> getFavourites() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    return _mockListings.where((l) => _favouriteIds.contains(l.id)).toList();
+    return _mockListings.where((l) => favouriteIds.contains(l.id)).toList();
   }
 }
 
