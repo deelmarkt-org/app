@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
-import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 
 void main() {
   group('ConversationEntity', () {
