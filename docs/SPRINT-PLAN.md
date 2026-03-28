@@ -246,7 +246,7 @@ The agent will:
 - [x] `P-50` GoRouter auth guard + splash screen + `/onboarding` route — 4h ✅ PR #14
 - [x] `P-51` Mock data layer (5 entities + 4 repository interfaces + 4 mock implementations) — 7h ✅ PR #14
 - [x] `P-52` Web error boundary + font loading strategy — 2h ✅ PR #14 (error boundary done, font FOUT TBD)
-- [ ] `P-46` Dynamic OG meta tags + crawler pre-rendering — 6h — ⚠️ Owner: belengaz (Cloudflare)
+- [x] `P-46` Dynamic OG meta tags + crawler pre-rendering — 6h — ⚠️ Owner: belengaz (Cloudflare)
 - [ ] `P-47` Dark mode implementation & validation — 12h (spread across phases) — ⚠️ Part 1 done in PR #14 (dark tokens wired)
 
 ---
