@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bank-row:active {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: scale(0.98);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e2e1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "tertiary-fixed": "#82fc8e",
+                "on-error-container": "#93000a",
+                "error": "#ba1a1a",
+                "on-surface-variant": "#5a4139",
+                "on-background": "#1c1b1b",
+                "secondary-fixed": "#d0e4ff",
+                "on-secondary-fixed-variant": "#164974",
+                "outline": "#8e7067",
+                "surface-variant": "#e5e2e1",
+                "surface-container": "#f0edec",
+                "on-tertiary-fixed": "#002106",
+                "inverse-primary": "#ffb59e",
+                "primary-fixed-dim": "#ffb59e",
+                "background": "#fcf9f8",
+                "on-primary": "#ffffff",
+                "surface-bright": "#fcf9f8",
+                "secondary": "#34618d",
+                "on-tertiary": "#ffffff",
+                "error-container": "#ffdad6",
+                "surface-dim": "#dcd9d9",
+                "surface-container-lowest": "#ffffff",
+                "on-surface": "#1c1b1b",
+                "on-error": "#ffffff",
+                "outline-variant": "#e2bfb4",
+                "surface-tint": "#ad3300",
+                "primary": "#F15A24",
+                "on-primary-fixed-variant": "#842500",
+                "inverse-surface": "#313030",
+                "on-secondary": "#ffffff",
+                "tertiary": "#006b24",
+                "primary-fixed": "#ffdbd0",
+                "surface-container-highest": "#e5e2e1",
+                "on-secondary-fixed": "#001d35",
+                "on-primary-fixed": "#3a0b00",
+                "on-tertiary-fixed-variant": "#00531a",
+                "surface-container-low": "#f6f3f2",
+                "primary-container": "#d1430a",
+                "tertiary-fixed-dim": "#65df75",
+                "tertiary-container": "#008730",
+                "secondary-fixed-dim": "#9fcafc",
+                "surface-container-high": "#ebe7e7",
+                "on-tertiary-container": "#f7fff2",
+                "inverse-on-surface": "#f3f0ef",
+                "on-secondary-container": "#285782",
+                "surface": "#fcf9f8",
+                "on-primary-container": "#fffbff",
+                "secondary-container": "#a1cdff"
+              },
+              fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-0 md:p-8">
+<!-- WebView Container -->
+<div class="w-full max-w-[440px] h-[884px] md:h-[844px] bg-white md:rounded-[40px] md:shadow-2xl overflow-hidden flex flex-col relative md:border-[8px] md:border-on-surface">
+<!-- TopAppBar Shared Component -->
+<header class="bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl docked full-width top-0 z-50 flex items-center justify-between px-4 h-16 w-full shadow-none tonal-shift bg-surface-container-low dark:bg-[#1e1e1e]">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors scale-95 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary dark:text-[#d1430a]" data-icon="close">close</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-lg text-on-surface">Betalen met iDEAL</h1>
+</div>
+<div class="pr-2">
+<span class="material-symbols-outlined text-outline-variant" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+</header>
+<!-- WebView Content (Mollie iDEAL Selector) -->
+<main class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+<!-- Checkout Branding Section -->
+<div class="px-6 pt-8 pb-6 flex flex-col items-center text-center">
+<div class="w-16 h-16 bg-surface-container flex items-center justify-center rounded-2xl mb-4">
+<img alt="iDEAL Logo" class="w-10 h-10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMCu6Am22ZKYH3qbBvllIzzMbmAxLL2--Yl37V_8Z5tKJUVB_0ilv34I_RMuDYkWJQ6ISE2GQAL18ELhJ_HVhtW0b0FvZGRt7o4pyrdDvQqVr4Qn2CuF5bhmH6XsfMEEfUWoZXNBP4uAHOqN9ZWP_kR4ADExBIsKu9Xs30OeWCZqlmKx9JMhk5rizmIa5p5AWpoYbAGlJpbpTqnZRnlMxvT8xF89Uf9-2Vq_1-q3rO8vWUyYPFERVGRgGom3I08TcbuRpJJygBnIhp"/>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface mb-1">DeelMarkt</h2>
+<p class="text-on-surface-variant text-sm font-medium">Betaling aan Mollie Payments</p>
+<div class="mt-4 px-4 py-2 bg-surface-container-low rounded-full">
+<span class="text-primary font-bold text-lg">€ 142,50</span>
+</div>
+</div>
+<!-- Bank Selection List -->
+<div class="px-6 pb-12">
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-4 px-1">Kies je bank</p>
+<div class="space-y-1">
+<!-- Bank Item: ABN AMRO -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">ABN AMRO</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: ING -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">ING</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: Rabobank -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">Rabobank</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: SNS -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">SNS Bank</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: ASN Bank -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">ASN Bank</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: RegioBank -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">RegioBank</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: Triodos Bank -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">Triodos Bank</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Bank Item: Van Lanschot -->
+<button class="bank-row w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200 hover:bg-surface-container-low group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="font-bold text-on-surface">Van Lanschot</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<div class="mt-10 pt-6 border-t border-surface-container-highest text-center">
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                        Door op een bank te klikken, word je doorgestuurd naar de veilige omgeving van je eigen bank om de betaling af te ronden.
+                    </p>
+<div class="mt-6 flex items-center justify-center gap-2 opacity-50 grayscale">
+<span class="text-[10px] font-bold tracking-widest uppercase">Powered by</span>
+<img alt="Mollie Logo" class="h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBovvjv3do5iQH8Co53dgSOeDNC3pKCrRLOBY6mpeumGBPKt0PI0jeOZAJQowAs6v_--a4yBaz_TtPnIfs5yC_9DEu3PqpKuJi1SeUXR4e7io7e2WStbi6Y6unXlc5WQGjs3dgAOS92k9El53Uu6tZdFiDfoC_MZIt-VR6XWuRb3vdL-kYavHvFuYVcOS4wDHy-_jZHTrXyqdfZM7NGPb-VOI9pMQFc5oChK8Re3oSqSGn2LEcTN2jL35dhIGoLYXy8mCI22_6dYXZT"/>
+</div>
+</div>
+</div>
+</main>
+<!-- Home Indicator (Mobile Look) -->
+<div class="hidden md:block absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-on-surface/20 rounded-full"></div>
+</div>
+<!-- Decorative Elements (Outside Wrapper) -->
+<div class="hidden lg:block absolute top-1/2 left-12 -translate-y-1/2 space-y-8 max-w-xs">
+<h3 class="text-4xl font-extrabold tracking-tighter leading-tight text-primary">Veilig &amp; Snel Betalen</h3>
+<p class="text-on-surface-variant text-lg leading-relaxed">
+            DeelMarkt gebruikt <span class="text-secondary font-bold">Mollie</span> om jouw transacties veilig te verwerken. Kies je favoriete bank en rond je aankoop in een paar seconden af.
+        </p>
+<div class="flex items-center gap-4 text-tertiary font-bold">
+<span class="material-symbols-outlined" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span>100% Beveiligde Verbinding</span>
+</div>
+</div>
+<!-- Image placeholders for visual richness (hidden but fulfilling the data-alt requirement) -->
+<img class="hidden" alt="close up of a modern smartphone showing a digital wallet application with abstract blue and orange graphics in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtHLe0A3E7TLfFFA-j-gl7w_0FeSTpIPrn5OPV-d5ur3-yXwEg9wcQcpaHa6kP0mmiLzNYPeNXWWaFkbHhujEOUP6zHtO2g84SSDhQz278kLqfh4gr4aQdMpi507o4cwrL_sZSTo1wLCqeQPjn8H9OWeds-KhprTusTbe-sA76gImrAz7HVEtvijA2IBkaCAQK8wRFRpVvF2zGKVabtF_hYBsXJJ2TDxfYQeLJK5a1qbQf2U57tyUnOZb77O4yNZP8Af1BH4tabp5Z"/>
+<img class="hidden" alt="clean minimalist office setting with a focused light on a credit card and smartphone lying on a light wood desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5vulh1v866xYz1wIMlDH0uYQE9qYr63eAX-9AqG5rzv67_7d8U-zVvQLimyHn-IJr2Gecce5Sb7NsFgt3E79IhPyEdo53Ilel2BWa2WKnbN1Z-WmA8QJY6CA-EbnixdFYGiRu3kcapk4SgTZnePs0JGGHOqOklzqXt1-4fvP0shWWh9Sl3UUWZSzIQ_iRzBUvJRQeVM1WtvDry4GjsegzECjxLaViAtCPw1DH3WIcPvj9NfzXqBZQLMD2_J0CCBFfMV79IMPOWiWm"/>
+</body></html>

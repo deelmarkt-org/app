@@ -1,15 +1,6 @@
-/**
- * Shared Upstash Redis utility for Edge Functions.
- *
- * R-11: Centralised Redis client — eliminates duplication across webhooks.
- * Uses Upstash REST API (no SDK dependency, works in Deno runtime).
- *
- * Reference: docs/epics/E07-infrastructure.md §External Services
- */
+/** R-11: Shared Upstash Redis utility — credentials + core operations. */
 
-// ---------------------------------------------------------------------------
-// Credentials
-// ---------------------------------------------------------------------------
+// --- Credentials ---
 
 export interface RedisCredentials {
   url: string;
@@ -31,25 +22,16 @@ export function getRedisCredentials(): RedisCredentials {
   return { url, token };
 }
 
-// ---------------------------------------------------------------------------
-// Cache tier TTLs (E07 §External Services)
-// ---------------------------------------------------------------------------
+// --- Cache TTLs ---
 
-/** Cache TTLs in seconds, per E07 epic specification. */
 export const CACHE_TTL = {
-  /** Listing detail — 5 min. Invalidated by listing.updated/sold/deleted. */
-  LISTING_DETAIL: 300,
-  /** Search results — 2 min. Invalidated by listing.created/updated. */
-  SEARCH_RESULTS: 120,
-  /** User profile — 10 min. Invalidated by user.updated, review added. */
-  USER_PROFILE: 600,
-  /** Idempotency keys — 24 hours. */
-  IDEMPOTENCY: 86400,
+  LISTING_DETAIL: 300,   // 5 min — invalidated by listing.updated/sold/deleted
+  SEARCH_RESULTS: 120,   // 2 min — invalidated by listing.created/updated
+  USER_PROFILE: 600,     // 10 min — invalidated by user.updated, review added
+  IDEMPOTENCY: 86400,    // 24 hours
 } as const;
 
-// ---------------------------------------------------------------------------
-// Core operations
-// ---------------------------------------------------------------------------
+// --- Core operations ---
 
 /**
  * SET a key with optional TTL. Returns true if the key was set.
@@ -74,6 +56,9 @@ export async function redisSet(
   const response = await fetch(parts.join("/"), {
     headers: { Authorization: `Bearer ${creds.token}` },
   });
+  if (!response.ok) {
+    throw new Error(`Redis SET failed (HTTP ${response.status}): ${await response.text()}`);
+  }
   const data = await response.json();
   return data.result === "OK";
 }
@@ -89,6 +74,9 @@ export async function redisGet(
     `${creds.url}/get/${encodeURIComponent(key)}`,
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
+  if (!response.ok) {
+    throw new Error(`Redis GET failed (HTTP ${response.status}): ${await response.text()}`);
+  }
   const data = await response.json();
   return data.result ?? null;
 }
@@ -104,38 +92,9 @@ export async function redisDel(
     `${creds.url}/del/${encodeURIComponent(key)}`,
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
+  if (!response.ok) {
+    throw new Error(`Redis DEL failed (HTTP ${response.status}): ${await response.text()}`);
+  }
   const data = await response.json();
   return data.result ?? 0;
-}
-
-// ---------------------------------------------------------------------------
-// Idempotency helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Atomic idempotency check via SET NX.
- * Returns true if this is a NEW event (key was set).
- * Returns false if the event was already processed (key exists).
- */
-export async function checkIdempotency(
-  creds: RedisCredentials,
-  key: string,
-  ttl = CACHE_TTL.IDEMPOTENCY,
-): Promise<boolean> {
-  return redisSet(creds, key, "1", ttl, true);
-}
-
-/**
- * Rollback an idempotency key on failure so retries succeed.
- * Best-effort — errors are silently caught.
- */
-export async function rollbackIdempotency(
-  creds: RedisCredentials,
-  key: string,
-): Promise<void> {
-  try {
-    await redisDel(creds, key);
-  } catch {
-    // Best-effort — carrier/payment provider will retry
-  }
 }

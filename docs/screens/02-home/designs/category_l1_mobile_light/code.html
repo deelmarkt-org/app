@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-dim": "#dcd9d9",
+              "surface-container-high": "#ebe7e7",
+              "on-background": "#1c1b1b",
+              "surface-container-low": "#f6f3f2",
+              "background": "#fcf9f8",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-bright": "#fcf9f8",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed": "#82fc8e",
+              "inverse-surface": "#313030",
+              "surface-container": "#f0edec",
+              "on-secondary-fixed": "#001d35",
+              "surface": "#fcf9f8",
+              "secondary-fixed": "#d0e4ff",
+              "primary-fixed-dim": "#ffb59e",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "surface-container-highest": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "secondary-container": "#a1cdff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "outline": "#8e7067",
+              "on-primary-fixed": "#3a0b00",
+              "primary": "#F15A24",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "on-primary-fixed-variant": "#842500",
+              "on-surface": "#1c1b1b",
+              "secondary": "#34618d",
+              "tertiary": "#006b24",
+              "outline-variant": "#e2bfb4",
+              "tertiary-fixed-dim": "#65df75"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 w-full no-border bg-[#f6f3f2] dark:bg-[#1e1e1e] shadow-none">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#ebe7e7]/50 dark:hover:bg-[#2a2a2a] p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[#4a4a4a] dark:text-[#a0a0a0]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">Categorieën</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="active:scale-95 duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#ebe7e7]/50 dark:hover:bg-[#2a2a2a] p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[#4a4a4a] dark:text-[#a0a0a0]" data-icon="search">search</span>
+</button>
+<button class="active:scale-95 duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#ebe7e7]/50 dark:hover:bg-[#2a2a2a] p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[#4a4a4a] dark:text-[#a0a0a0]" data-icon="shopping_cart">shopping_cart</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-20 pb-28 px-4 space-y-3">
+<!-- Categories List -->
+<div class="flex flex-col gap-3">
+<!-- Elektronica -->
+<a class="flex items-center justify-between h-20 px-5 bg-secondary-container/10 border border-secondary-container/5 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-2xl" data-icon="devices">devices</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Elektronica</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Mode -->
+<a class="flex items-center justify-between h-20 px-5 bg-error-container/10 border border-error-container/5 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-2xl" data-icon="apparel">apparel</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Mode</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Huis & Tuin -->
+<a class="flex items-center justify-between h-20 px-5 bg-tertiary-container/10 border border-tertiary-container/5 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container">
+<span class="material-symbols-outlined text-2xl" data-icon="home_mini">home_mini</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Huis &amp; Tuin</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Sport -->
+<a class="flex items-center justify-between h-20 px-5 bg-primary-container/10 border border-primary-container/5 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+<span class="material-symbols-outlined text-2xl" data-icon="sports_tennis">sports_tennis</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Sport</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Auto & Fiets -->
+<a class="flex items-center justify-between h-20 px-5 bg-secondary/10 border border-secondary/5 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-secondary text-white">
+<span class="material-symbols-outlined text-2xl" data-icon="directions_car">directions_car</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Auto &amp; Fiets</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Boeken -->
+<a class="flex items-center justify-between h-20 px-5 bg-amber-100/30 border border-amber-200/20 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-[#FFB300] text-on-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="menu_book">menu_book</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Boeken</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Kinderen -->
+<a class="flex items-center justify-between h-20 px-5 bg-purple-100/30 border border-purple-200/20 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-500 text-white">
+<span class="material-symbols-outlined text-2xl" data-icon="child_care">child_care</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Kinderen</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+<!-- Overig -->
+<a class="flex items-center justify-between h-20 px-5 bg-surface-container-high/40 border border-surface-container-high/30 rounded-xl transition-all active:scale-[0.98] duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined text-2xl" data-icon="more_horiz">more_horiz</span>
+</div>
+<span class="text-on-surface font-semibold text-base">Overig</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+<!-- Featured Section Asymmetric -->
+<section class="mt-8">
+<h2 class="font-headline text-lg font-bold mb-4 px-2">Uitgelichte Collectie</h2>
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest h-48 flex">
+<div class="w-1/2 p-6 flex flex-col justify-center">
+<span class="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Curated</span>
+<h3 class="text-xl font-extrabold leading-tight mb-3">Vintage Dutch Design</h3>
+<button class="text-sm font-bold text-primary flex items-center gap-1 group">
+                        Bekijk nu
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="w-1/2 relative">
+<img alt="Vintage design item" class="absolute inset-0 w-full h-full object-cover" alt="minimalist mid-century modern wooden chair in a sunlit bright studio with soft shadows and clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCefMBpby2YF1lkgqDWX1vkqx_1nMcyZUOqAndFuCsNicd5WSfEY8NnkOpNCfJuFYc4sz9QpXZN-cO7crtjRdtfG2BDj0qh9E6GAc__ckBD8nqaqYa9_4pbQl6QKe_bXjnW87kSLrAO9SDXDgR9yOyReSdBITooZbArwTCvg8IaKhLSuiBj-gCaOL_h2sc9mwOTPILLSwqugM1Xr3kiVwsrfkwXvcNoYsBliM5WqF_axHJHtMlg-qClyaQu1zB2y3dSKZrXnck7HaIf"/>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] no-line bg-gradient-to-t from-[#f6f3f2] to-transparent">
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</a>
+<!-- ACTIVE TAB: Zoeken -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-3 py-1 active:bg-primary/5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="search" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="add_box">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Plaatsen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inbox</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0] active:bg-primary/5" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="account_circle">account_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
+</a>
+</nav>
+</body></html>

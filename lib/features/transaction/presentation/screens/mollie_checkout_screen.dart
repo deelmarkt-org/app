@@ -34,10 +34,26 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   bool _isLoading = true;
   bool _hasError = false;
 
-  /// Allowed URL prefixes for the payment WebView.
-  /// Only Mollie checkout URLs are loaded — JavaScript is required
+  /// Allowed URL hosts for the payment WebView.
+  /// Mollie + iDEAL bank domains — JavaScript is required
   /// for iDEAL bank selection and 3D-Secure flows.
-  static const _trustedHosts = ['www.mollie.com', 'mollie.com'];
+  static const _trustedHosts = [
+    'www.mollie.com',
+    'mollie.com',
+    // iDEAL bank redirect domains
+    'ideal.nl',
+    'ideal.ing.nl',
+    'ideal.rabobank.nl',
+    'ideal.abnamro.nl',
+    'ideal.triodos.nl',
+    'ideal.bunq.com',
+    'ideal.knab.nl',
+    'ideal.asnbank.nl',
+    'ideal.regiobank.nl',
+    'ideal.snsbank.nl',
+    'ideal.vanlanschot.com',
+    'ideal.handelsbanken.nl',
+  ];
 
   @override
   void initState() {
@@ -73,11 +89,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
                   if (mounted) context.pop(MollieCheckoutResult.completed);
                   return NavigationDecision.prevent;
                 }
-                // Allow Mollie domains + bank domains (iDEAL redirects)
+                // Only allow HTTPS to trusted hosts (Mollie + iDEAL banks).
                 final host = Uri.parse(request.url).host;
                 final isTrusted = _trustedHosts.any((h) => host.endsWith(h));
-                // Allow HTTPS navigation to bank domains for iDEAL
-                if (request.url.startsWith('https://') || isTrusted) {
+                if (request.url.startsWith('https://') && isTrusted) {
                   return NavigationDecision.navigate;
                 }
                 return NavigationDecision.prevent;
@@ -111,6 +126,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   }
 
   Widget _buildWebView() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       children: [
         WebViewWidget(controller: _controller),
@@ -119,7 +135,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
             label: 'payment.processing'.tr(),
             liveRegion: true,
             child: Container(
-              color: DeelmarktColors.white.withValues(alpha: 0.8),
+              color:
+                  isDark
+                      ? DeelmarktColors.darkScaffold.withValues(alpha: 0.8)
+                      : DeelmarktColors.white.withValues(alpha: 0.8),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -140,6 +159,7 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   }
 
   Widget _buildError(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: 'error.payment_failed'.tr(),
       liveRegion: true,
@@ -152,19 +172,23 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
               Icon(
                 PhosphorIcons.warningCircle(),
                 size: 48,
-                color: DeelmarktColors.error,
+                color:
+                    isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
               ),
               const SizedBox(height: Spacing.s4),
               Text(
                 'error.payment_failed'.tr(),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: Theme.of(context).textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: Spacing.s2),
               Text(
                 'error.network'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: DeelmarktColors.neutral500,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
                 textAlign: TextAlign.center,
               ),

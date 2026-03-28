@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface": "#fcf9f8",
+              "surface-container-high": "#ebe7e7",
+              "on-surface": "#1c1b1b",
+              "inverse-on-surface": "#f3f0ef",
+              "on-background": "#1c1b1b",
+              "secondary-fixed-dim": "#9fcafc",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "surface-container-lowest": "#ffffff",
+              "primary": "#F15A24",
+              "on-primary-container": "#fffbff",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#dcd9d9",
+              "surface-variant": "#e5e2e1",
+              "outline-variant": "#e2bfb4",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e5e2e1",
+              "surface-container-low": "#f6f3f2",
+              "primary-fixed": "#ffdbd0",
+              "outline": "#8e7067",
+              "tertiary": "#006b24",
+              "on-secondary-fixed": "#001d35",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "surface-container": "#f0edec",
+              "primary-fixed-dim": "#ffb59e",
+              "on-secondary-container": "#285782",
+              "background": "#fcf9f8",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "on-primary-fixed-variant": "#842500",
+              "on-error": "#ffffff",
+              "tertiary-fixed-dim": "#65df75",
+              "on-primary-fixed": "#3a0b00",
+              "tertiary-container": "#008730",
+              "on-tertiary-fixed": "#002106",
+              "on-error-container": "#93000a",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "surface-bright": "#fcf9f8",
+              "on-primary": "#ffffff",
+              "secondary": "#34618d",
+              "surface-tint": "#ad3300",
+              "primary-container": "#d1430a"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e2e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl transition-colors duration-300">
+<div class="flex justify-between items-center px-8 h-16 w-full max-w-[1440px] mx-auto">
+<div class="text-2xl font-black tracking-tighter text-primary">DeelMarkt</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-surface-container-high px-4 py-2 rounded-full w-96 transition-all focus-within:ring-2 focus-within:ring-primary/20">
+<span class="material-symbols-outlined text-outline text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-medium ml-2 placeholder:text-outline" placeholder="Zoek op DeelMarkt..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors duration-300 scale-95 active:scale-90">
+<span class="material-symbols-outlined text-[#34618d]">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary/10">
+<img class="h-full w-full object-cover" alt="close up portrait of a professional smiling man in a clean modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABJYgGvPoO2ya-e_d0kTTmSQxcfkfKfdrjUH5cam56G28EGgvLclmqY8q_YVKBz-sQmGlSfnO4CdXbW33W7goR3QFYDYnGIeA54rvl-Std2RLArUAG_HfqyJzJt1X0dBHoeUJwIdTHMRM0r4vfteQYewAWpdP2dS7DdiLsAkqdfKGtpgWoxz30ToYDQLl2Pc1yWfd9UXWbQHo4lXUTzNhjHVm78HD7xOUJ-9gYgZI2GT4SS0JkxDtjYKa1kMJBsXoBgNQi-L0Ve33X"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Navigation Rail) -->
+<aside class="fixed left-0 top-0 h-full w-[72px] z-40 bg-surface border-r border-[#f15a24]/10 flex flex-col items-center py-20 gap-y-6">
+<nav class="flex flex-col items-center gap-y-8">
+<a class="flex flex-col items-center gap-1 text-primary font-bold bg-[#f15a24]/5 rounded-xl border-r-2 border-[#F15A24] p-2 w-14 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] tracking-tight font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#34618d] opacity-70 hover:opacity-100 p-2 w-14 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] tracking-tight font-semibold">Search</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#34618d] opacity-70 hover:opacity-100 p-2 w-14 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[10px] tracking-tight font-semibold">Sell</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#34618d] opacity-70 hover:opacity-100 p-2 w-14 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="text-[10px] tracking-tight font-semibold">Messages</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#34618d] opacity-70 hover:opacity-100 p-2 w-14 transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] tracking-tight font-semibold">Profile</span>
+</a>
+</nav>
+</aside>
+<main class="ml-[72px] pt-24 pb-12 px-8 max-w-[1272px] mx-auto">
+<!-- Trust Banner -->
+<section class="mb-10">
+<div class="bg-tertiary/5 border border-tertiary/20 rounded-2xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="text-on-surface font-semibold text-sm">Veilig kopen met escrow bescherming</p>
+</div>
+<button class="text-tertiary text-xs font-bold hover:underline">Hoe het werkt →</button>
+</div>
+</section>
+<!-- Category Carousel -->
+<section class="mb-12 overflow-hidden">
+<div class="flex gap-8 overflow-x-auto pb-4 custom-scrollbar">
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">devices</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Elektronica</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">apparel</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Mode</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">home_pin</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Huis &amp; Tuin</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">sports_soccer</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Sport</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">directions_car</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Auto &amp; Fiets</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">menu_book</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Boeken</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">child_care</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Kinderen</span>
+</div>
+<div class="flex flex-col items-center gap-3 min-w-[80px] group cursor-pointer">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center transition-all group-hover:bg-primary-container/10 group-hover:scale-105">
+<span class="material-symbols-outlined text-primary text-2xl">grid_view</span>
+</div>
+<span class="text-xs font-bold text-on-surface/80 group-hover:text-primary">Overig</span>
+</div>
+</div>
+</section>
+<!-- In de buurt Section -->
+<section class="mb-16">
+<div class="flex items-baseline justify-between mb-8">
+<h2 class="text-3xl font-extrabold tracking-tight">In de buurt</h2>
+<a class="text-primary font-bold text-sm hover:underline" href="#">Bekijk alles →</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Card 1: Gazelle Fiets -->
+<article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="high-end Dutch city bicycle parked against a brick wall in a sunlit Amsterdam street" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA92kVjPUm9PStUAh2Ir7g1tkrD9LTzjW8KwNG87XvxBw6ZDFTfGkNB1_GHEr9vyc-U58soHFED5vRHWpsanQX_PLgcT5wQrfgG39tPlos0D53e0dcYFOiOOROY_45FCrv51O7xiy8zMhdxkKmvJ2kxvdRAX_TEpOaVcvSNViZgYlzX4R5X1ppQ497gmSElYDTAatlE9pxTJZKmRKgFT2JKKvbLvaBrEimLLRsL7f9WkGsR36V9nASbOgiENNzzO6CzAdDy2ONWSHw-"/>
+<button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
+<span class="material-symbols-outlined text-outline">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-3">
+<div class="h-6 w-6 rounded-full overflow-hidden">
+<img class="h-full w-full object-cover" alt="portrait of a friendly middle-aged man smiling for a profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBYSACmIIRtbxZ8mTUxn4mbPVa04T-vKqE9xr_PoQaHquDSWAZypTiLx8RX6lhX2F8IU6DbdQydEWzFgBWlo8hCa7NhtSWQVx69fuX010W-TMcc_xrd_EEnA8lWbXwroReFcukm1Grt3bVVNRuvcXzEohgII0b67lK3CvAAWg39hcLIF3Yv9g1LY4vNg4j7FwdbxBd7cKfSig3ZKblv-4SjEmxvnFAF3dGiPX6PMlGlw4PwHri6YNPiaThw1J3Y3Au-ICFnBUGUFV6"/>
+</div>
+<span class="text-[10px] font-bold tracking-wider text-outline uppercase">Geverifieerde Verkoper</span>
+</div>
+<h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">Gazelle Orange C8</h3>
+<p class="text-sm text-outline mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Amsterdam
+                        </p>
+<div class="flex items-center justify-between">
+<span class="text-2xl font-black text-secondary">€ 450</span>
+<button class="bg-primary hover:bg-primary-container text-white px-4 py-2 rounded-xl text-xs font-bold transition-all cubic-bezier(0.23,1,0.32,1) active:scale-95">Bieden</button>
+</div>
+</div>
+</article>
+<!-- Card 2: Nike Sneakers -->
+<article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="premium red nike sneakers displayed on a minimalist white pedestal with sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE-vA0y7hB6ppfhzNJ2tAWScEA9RQpd7UuP4Muc0P-LGO4VJQ1wNqvV5WS_m7wvJ27nasNoT-sFHZWaMCE1vEJ847-kqO6I3wN-OWBqyQZeX5ZqVghuNYbhjCsEDaKI3kC1-y5u9IeIJRSbIJtIWzH64bdQGbTQDRf58D5JvsApmO2ld8bspt838Y74t60m-fzuacSKTdcc-B89tzpmFcabkSKsANczDrx_nRrcVXbDUVb-puWGnxSOgtW6fcIiijuVMLOD3Hlh8RA"/>
+<button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
+<span class="material-symbols-outlined text-outline">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-3">
+<div class="h-6 w-6 rounded-full overflow-hidden">
+<img class="h-full w-full object-cover" alt="portrait of a young smiling professional woman with bright eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcR0A8gxbBOABklXK_w7W9ZGa4fl8OKhP29yvsGXKi-eBzsV6DAbMsjSVJG-rMpBdOg8HG0_LEs3r9uP2xn5daidJGtBQBFu_aKnT_GgA58AgVDOS-LDYq1gGU19E1k_5b6iBcEiAoeS-uTCO8x0_yQsxIRHMvKKp7ebvPTlVj026b1SVWaVgPdeX3g4NdA4foEQAe6sDD4aLZuQSu9aN_kPNPKhsDrgCUpPLHIr9ZqMk25tb8f_W8HcQUwML5DH9Ah6G5BvQqfoVh"/>
+</div>
+<span class="text-[10px] font-bold tracking-wider text-outline uppercase">Snelle Reactie</span>
+</div>
+<h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">Nike Air Max (Nieuw)</h3>
+<p class="text-sm text-outline mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Utrecht
+                        </p>
+<div class="flex items-center justify-between">
+<span class="text-2xl font-black text-secondary">€ 120</span>
+<button class="bg-primary hover:bg-primary-container text-white px-4 py-2 rounded-xl text-xs font-bold transition-all cubic-bezier(0.23,1,0.32,1) active:scale-95">Bieden</button>
+</div>
+</div>
+</article>
+<!-- Card 3: IKEA Bank -->
+<article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="modern green velvet sofa in a clean brightly lit scandinavian style living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2zJPyfvrYAYtyREL2uKkWEv7ubYgHHE4ZmbES-JDHVLhJ_xJWIF2m48wXB78MDnNoObnCS2YpyhD_kEtLBdwd7J68kptxX5ijhCSAcanQ0ICXnqVrt5LLMm_1jalJDk-1aiXZSbm9iLJ72QZPoAJ8fsyCXvp9qWp00jXmnWIDzE3mYNV-KBC5Z5zZOk0M3cpDs15D-2SgX1Kjh0cjV4WX1wZnXORgAd1d03JgbTdpKTbBYHyaEJxDXu8MWoMLzC-g4fTLV5nF_MVU"/>
+<button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
+<span class="material-symbols-outlined text-outline">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-3">
+<div class="h-6 w-6 rounded-full overflow-hidden">
+<img class="h-full w-full object-cover" alt="portrait of a bearded man smiling in a natural daylight setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6NJFYg7xn3vJYFTymfKc6h-rzVUjJ3r0dZrcncECrwlGl4tPGDyvu-5H80npCbp7PR6bGB6ZbRpFNDkySR4iFjiavIv9CU0JCBjBI4ojNcHbq79gaOkmVeZEDKS_ljvV9nW9fiRes2Hwtn7Q36UmvUADTK_mSxKm-Kk-pc39uC3PPCKbm_3U7IGJkxTvqbl1VjosPqL3Dxjtchyy_OjGsTW-Aw9Htex5DJhPQtBnX8fseOJ2bJB-kpp4-8ocg5R2_ur-a3fELbASy"/>
+</div>
+<span class="text-[10px] font-bold tracking-wider text-outline uppercase">Betrouwbaar</span>
+</div>
+<h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">IKEA Vimle 3-zitsbank</h3>
+<p class="text-sm text-outline mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Rotterdam
+                        </p>
+<div class="flex items-center justify-between">
+<span class="text-2xl font-black text-secondary">€ 280</span>
+<button class="bg-primary hover:bg-primary-container text-white px-4 py-2 rounded-xl text-xs font-bold transition-all cubic-bezier(0.23,1,0.32,1) active:scale-95">Bieden</button>
+</div>
+</div>
+</article>
+<!-- Card 4: MacBook Pro -->
+<article class="group relative bg-surface-container-lowest rounded-2xl overflow-hidden transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+<div class="relative aspect-[4/3] overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="sleek apple macbook pro laptop open on a clean wooden desk in a minimalist workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbWqpSLqPnaDBWXhOz0RiZGJSx0neljxI7114rQo8MIGuHXH0c0p77i9JpIAfXWhg9_RC3OrVD0Y1Hc-lJF5F7v6L8G0U6fXV4o0vlozCdVhu5TitloVzHDvmU0iaWGfF61OOY3i7hD_gq4Myjhsq2E3XLlgdoiuIo7sntmAm-gg83NYwhWtBeVIb33HUVrS1B-pusosFSq-D3veCTW2jSiJw5r6FErP2IjKc2ZAgKoKV2taoMjC1H2K0E2KA-La7asOPhhVV2Dvc"/>
+<button class="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center transition-all hover:bg-white active:scale-90">
+<span class="material-symbols-outlined text-outline">favorite</span>
+</button>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-3">
+<div class="h-6 w-6 rounded-full overflow-hidden">
+<img class="h-full w-full object-cover" alt="portrait of a man with a slight smile in a modern professional setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATy8KZSwVYqthfA12Pt5cEeRXMsIU2ON_NMMJO48BB62BjFNVzlp4MtYymVvQ6_olnRSnxWuhhvV3v5FHOGhZQTvNYX2nftvb52Bg8SkqvULO1rfTMuuw1CAFOv1W9tJdn7mjcBbNEilmrXxDAaanJ0udRiiDDMpJ4_DW34e6L8vhKjnP_TJZHOYxgaGIq6BccRFmq9FSzb42itWxcEokWmVtfcaT1KHya4l430KTXjRTbXuOfoOmohQRR2aQ2JDDVGT8cOyOSU9v1"/>
+</div>
+<span class="text-[10px] font-bold tracking-wider text-outline uppercase">PRO Verkoper</span>
+</div>
+<h3 class="text-lg font-bold mb-1 group-hover:text-primary transition-colors">MacBook Pro M2 256GB</h3>
+<p class="text-sm text-outline mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Eindhoven
+                        </p>
+<div class="flex items-center justify-between">
+<span class="text-2xl font-black text-secondary">€ 1.150</span>
+<button class="bg-primary hover:bg-primary-container text-white px-4 py-2 rounded-xl text-xs font-bold transition-all cubic-bezier(0.23,1,0.32,1) active:scale-95">Bieden</button>
+</div>
+</div>
+</article>
+<!-- Placeholder for grid balance -->
+<div class="hidden lg:flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/30 rounded-2xl bg-surface-container-low p-8 text-center">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4">add_circle</span>
+<h3 class="font-bold text-outline">Verkoop iets in de buurt</h3>
+<p class="text-xs text-outline/60 mt-2">Maak vandaag nog je eerste advertentie.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (List Item) -->
+<button class="fixed bottom-8 right-8 bg-gradient-to-br from-primary to-primary-container text-white px-6 py-4 rounded-full shadow-2xl flex items-center gap-3 transition-all cubic-bezier(0.23,1,0.32,1) hover:scale-105 active:scale-95 z-50">
+<span class="material-symbols-outlined">add</span>
+<span class="font-bold tracking-tight">Advertentie Plaatsen</span>
+</button>
+</body></html>

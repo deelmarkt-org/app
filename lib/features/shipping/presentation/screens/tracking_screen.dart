@@ -25,6 +25,7 @@ class TrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(title: Text('tracking.title'.tr())),
       body: SafeArea(
@@ -34,11 +35,11 @@ class TrackingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _carrierHeader(context),
+                _carrierHeader(context, isDark: isDark),
                 const SizedBox(height: Spacing.s4),
-                _trackingNumberCard(context),
+                _trackingNumberCard(context, isDark: isDark),
                 const SizedBox(height: Spacing.s6),
-                _timelineSection(context),
+                _timelineSection(context, isDark: isDark),
               ],
             ),
           ),
@@ -47,7 +48,7 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _carrierHeader(BuildContext context) {
+  Widget _carrierHeader(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: '${label.carrier.localizedName} ${'tracking.shipment'.tr()}',
       excludeSemantics: true,
@@ -55,15 +56,16 @@ class TrackingScreen extends StatelessWidget {
         children: [
           Icon(
             PhosphorIcons.package(PhosphorIconsStyle.fill),
-            color: DeelmarktColors.secondary,
+            color:
+                isDark
+                    ? DeelmarktColors.darkSecondary
+                    : DeelmarktColors.secondary,
           ),
           const SizedBox(width: Spacing.s2),
           Flexible(
             child: Text(
               '${label.carrier.localizedName} ${'tracking.shipment'.tr()}',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.headlineMedium,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -72,20 +74,34 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _trackingNumberCard(BuildContext context) {
+  Widget _trackingNumberCard(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: '${'shipping.trackingNumber'.tr()} ${label.trackingNumber}',
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.all(Spacing.s4),
         decoration: BoxDecoration(
-          color: DeelmarktColors.neutral50,
+          color:
+              isDark
+                  ? DeelmarktColors.darkSurfaceElevated
+                  : DeelmarktColors.neutral50,
           borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          border: Border.all(color: DeelmarktColors.neutral200),
+          border: Border.all(
+            color:
+                isDark
+                    ? DeelmarktColors.darkBorder
+                    : DeelmarktColors.neutral200,
+          ),
         ),
         child: Row(
           children: [
-            Icon(PhosphorIcons.barcode(), color: DeelmarktColors.neutral700),
+            Icon(
+              PhosphorIcons.barcode(),
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurface
+                      : DeelmarktColors.neutral700,
+            ),
             const SizedBox(width: Spacing.s3),
             Expanded(
               child: Column(
@@ -94,7 +110,10 @@ class TrackingScreen extends StatelessWidget {
                   Text(
                     'shipping.trackingNumber'.tr(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: DeelmarktColors.neutral500,
+                      color:
+                          isDark
+                              ? DeelmarktColors.darkOnSurfaceSecondary
+                              : DeelmarktColors.neutral500,
                     ),
                   ),
                   const SizedBox(height: Spacing.s1),
@@ -115,26 +134,24 @@ class TrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _timelineSection(BuildContext context) {
+  Widget _timelineSection(BuildContext context, {required bool isDark}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'tracking.updates'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: Spacing.s4),
         if (events.isEmpty)
-          _emptyState(context)
+          _emptyState(context, isDark: isDark)
         else
           TrackingTimeline(events: events),
       ],
     );
   }
 
-  Widget _emptyState(BuildContext context) {
+  Widget _emptyState(BuildContext context, {required bool isDark}) {
     return Semantics(
       label: 'tracking.noUpdates'.tr(),
       child: Container(
@@ -145,13 +162,19 @@ class TrackingScreen extends StatelessWidget {
             Icon(
               PhosphorIcons.clockCountdown(),
               size: 48,
-              color: DeelmarktColors.neutral300,
+              color:
+                  isDark
+                      ? DeelmarktColors.darkOnSurfaceSecondary
+                      : DeelmarktColors.neutral300,
             ),
             const SizedBox(height: Spacing.s3),
             Text(
               'tracking.noUpdates'.tr(),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DeelmarktColors.neutral500,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkOnSurfaceSecondary
+                        : DeelmarktColors.neutral500,
               ),
             ),
           ],

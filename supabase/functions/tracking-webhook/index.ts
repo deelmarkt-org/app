@@ -18,11 +18,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { jsonResponse } from "../_shared/response.ts";
-import {
-  getRedisCredentials,
-  checkIdempotency,
-  rollbackIdempotency,
-} from "../_shared/redis.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
+import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -143,8 +140,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .single();
 
     if (labelError || !label) {
-      console.error(`[tracking-webhook] Barcode not found: ${payload.barcode}`);
-      return jsonResponse({ error: "Barcode not found" }, 422);
+      console.log(`[tracking-webhook] Barcode not found (ignored): ${payload.barcode}`);
+      return jsonResponse({ status: "ignored", reason: "barcode_not_found" }, 200);
     }
 
     // 5. Insert tracking event (DB UNIQUE on carrier_event_id is safety net)

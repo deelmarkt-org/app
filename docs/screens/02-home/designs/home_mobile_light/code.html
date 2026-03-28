@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#fcf9f8",
+                        "surface-container-high": "#ebe7e7",
+                        "on-surface": "#1c1b1b",
+                        "inverse-on-surface": "#f3f0ef",
+                        "on-background": "#1c1b1b",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#5a4139",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#F15A24",
+                        "on-primary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "surface-variant": "#e5e2e1",
+                        "outline-variant": "#e2bfb4",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "primary-fixed": "#ffdbd0",
+                        "outline": "#8e7067",
+                        "tertiary": "#006b24",
+                        "on-secondary-fixed": "#001d35",
+                        "inverse-primary": "#ffb59e",
+                        "on-tertiary-container": "#f7fff2",
+                        "surface-container": "#f0edec",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-secondary-container": "#285782",
+                        "background": "#fcf9f8",
+                        "secondary-fixed": "#d0e4ff",
+                        "secondary-container": "#a1cdff",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#65df75",
+                        "on-primary-fixed": "#3a0b00",
+                        "tertiary-container": "#008730",
+                        "on-tertiary-fixed": "#002106",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#313030",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-secondary-fixed-variant": "#164974",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#fcf9f8",
+                        "on-primary": "#ffffff",
+                        "secondary": "#34618d",
+                        "surface-tint": "#ad3300",
+                        "primary-container": "#d1430a"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-extrabold tracking-tighter text-primary font-['Plus_Jakarta_Sans']">DeelMarkt</div>
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<button class="active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 pb-28">
+<!-- Category Carousel -->
+<section class="mt-2">
+<div class="flex overflow-x-auto no-scrollbar gap-4 px-6 py-4">
+<!-- Elektronica -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">devices</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Elektronica</span>
+</div>
+<!-- Mode -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">apparel</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Mode</span>
+</div>
+<!-- Huis & Tuin -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">home_pin</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant whitespace-nowrap">Huis &amp; Tuin</span>
+</div>
+<!-- Sport -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">fitness_center</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Sport</span>
+</div>
+<!-- Auto & Fiets -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">directions_car</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant whitespace-nowrap">Auto &amp; Fiets</span>
+</div>
+<!-- Boeken -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">menu_book</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Boeken</span>
+</div>
+<!-- Kinderen -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">child_care</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Kinderen</span>
+</div>
+<!-- Overig -->
+<div class="flex flex-col items-center gap-2 min-w-[72px]">
+<div class="w-14 h-14 rounded-full bg-surface-container-low flex items-center justify-center active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-secondary">more_horiz</span>
+</div>
+<span class="text-[11px] font-semibold text-on-surface-variant">Overig</span>
+</div>
+</div>
+</section>
+<!-- Trust Banner -->
+<section class="px-6 py-4">
+<div class="bg-tertiary-container/10 border border-tertiary/20 rounded-2xl p-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<h4 class="text-sm font-bold text-on-tertiary-fixed-variant">Veilig kopen met escrow bescherming</h4>
+<p class="text-xs text-tertiary/80">Jouw betaling wordt pas vrijgegeven na ontvangst.</p>
+</div>
+</div>
+</section>
+<!-- Section In de buurt -->
+<section class="px-6 py-6">
+<div class="flex justify-between items-end mb-6">
+<div>
+<h2 class="text-2xl font-extrabold tracking-tight">In de buurt</h2>
+<p class="text-sm text-on-surface-variant font-medium">Binnen 10km van Amsterdam</p>
+</div>
+<a class="text-primary font-bold text-sm hover:opacity-80 transition-opacity" href="#">Bekijk alles →</a>
+</div>
+<!-- 2-column Grid -->
+<div class="grid grid-cols-2 gap-x-4 gap-y-8">
+<!-- Card: Gazelle fiets -->
+<article class="flex flex-col gap-3 group">
+<div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="modern orange city bicycle leaning against a white brick wall in bright daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgQqrWwBfI-0QcxQen8NBg1WbI3MGw2towaXu8lhCUo9hTBgbDUMPZpxRKEUYw8PgezpUcTheVJFQCtl6EmxrntuvWhJ5xXYHZpxj4x0fuk2-ZKdQYkUHmcuUiimmaLuFsogwJlQjzj6fIJQMTWl37I-9gDBdRHvNQ8B8y5fj2UnQtXyAqhe3EJFk6F00uSaPEB8A8AMqBQc5_aqLBbj5Yvva3gIJ9sj001bRkLKVvO-U_a7FdEkyhjvvPLVEEBPRPybOjYLMHwLcL"/>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary text-lg">favorite</span>
+</button>
+</div>
+<div class="px-1">
+<div class="flex items-center gap-2 mb-1">
+<img class="w-5 h-5 rounded-full object-cover" alt="portrait of a smiling young man in a denim jacket outdoor with soft bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtv17d0V6JeH0--TxndB3nWgg9QmNJawsLBEMGGUeroH1MWfe5uv4zRW0wvHc2K_3PVGURW-AGG-GISRNzA-UR32GE8WCxn09CLVhrNKWoFo3kJX6OluUp_ypnooxfQtwyZGMiL3tkgjg0XldzUJ03l3iCDiSrRO8oF8b0LtUH8Te6ko_0mKjQf4jBQh2zJvrDzRQ8Q9txcuUrrwckjYIVZgKqBigOnERBE08UIZC_KI-0tC_2Gvwss3N8eipeRG4Xa6OBEkbRXD3i"/>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Mark P.</span>
+</div>
+<h3 class="font-bold text-on-surface leading-tight mb-1">Gazelle Esprit C7 Fiets</h3>
+<p class="text-primary text-lg font-extrabold">€ 450</p>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[10px] font-medium">Amsterdam-Zuid</span>
+</div>
+</div>
+</article>
+<!-- Card: Nike sneakers -->
+<article class="flex flex-col gap-3 group">
+<div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="red nike athletic sneakers on a clean grey background with cinematic studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC17uPnB_3tOGgefsQjtJVgpC2oGjlPGaNvKscgMvn6WSvKN-I89fPFEHmEIcWqzs9npcI2MQWRse05peWoB0xgQaUxAGgvyK9mBzNfcn5fzZXyPPKLgjHJ6LSRmufJIU-hQq5ESECMPnEN6eIccGIAgnyf4afcT5pvlnu9KGqeSUIXtCj6js5WRBOEd-1BVWxz3dLVvS7vJ3doN-BSGJ2ItkY4Tg8E4iWz_D9e0a6AJsADyRAAHRcpD1z9EZOcDNX10QiuFztxNDU_"/>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="px-1">
+<div class="flex items-center gap-2 mb-1">
+<img class="w-5 h-5 rounded-full object-cover" alt="portrait of a young woman with curly hair smiling brightly in a sunny park" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvAdFSKyS8wm4ch-5CcdlSG1JyxrSHFKTuU1yQdC05gVzxkxnZGAHtFTqwm8lI-Qo6LmWQtSFk8zEQDNU1kMr5dit8f6bKwUClgUXRhIxxUEsxBF5y2ydMAzUxbP7DyNbjM9U5NeYk-ZXEA47DSTw-FvPiZwIoVZg6IOLQETfdsHfhv8iz6lnx1KNb_ZxtkInOx0xzX7VAjSkpE4nQmork32IhVnBnKk20cOTkfFQ0G8loJ0g6OpaK0fPOvHgLwK3BnzMI-XKjv2eW"/>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Lisa S.</span>
+</div>
+<h3 class="font-bold text-on-surface leading-tight mb-1">Nike Air Max (Nieuw)</h3>
+<p class="text-primary text-lg font-extrabold">€ 85</p>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[10px] font-medium">Amstelveen</span>
+</div>
+</div>
+</article>
+<!-- Card: IKEA bank -->
+<article class="flex flex-col gap-3 group">
+<div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="minimalist green fabric sofa in a sunlit scandinavian living room with plants" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUBwt-NEWdT8uSyxJ40pyZ4BDF7AeZLSw_cp0UyAXEsMFUWkKffLX3wK90JOa29LJ0D3Yhx3PWgzeukXuguxWFqYpKjixaQbDNNZ0zHqDqsBXbovZNyENmS3XPGgSJtD3wy_B865SZBCpXGUTQJfYHnk2D4per783VY0MIaZQWh6t4B61T22lW5B3AbQ3fw-ouljlhzNECNQOLhXlam9wvFtLiF4IUVp2mwweE0V-qpfGc6s1ljGqTc13YW_MvzJaPDJsMKs59GFxt"/>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary text-lg">favorite</span>
+</button>
+</div>
+<div class="px-1">
+<div class="flex items-center gap-2 mb-1">
+<img class="w-5 h-5 rounded-full object-cover" alt="middle-aged man with beard and glasses wearing a professional blazer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDp4D1k_F0HNF6CPGtw3pYfDSBt-asnBJtDpQm6fR42AMxTxh5gok2A30SSPxo3zNl3fcKTtmDKhiZkD1ypemqpmVjsmOHI8IadfbhPXV53t6TKXJtl-3ySJ_0NG6gcLVfpTYEgypIRY9DlTu2N9mk5ajRMm4_XTAFfaXhKJ1pl00YI4R9R6G9poYRzG3FX2HYcFzvjoYzTNEJP1r0NK0HT53Oq8woW8l3RrFWZ77wQOMLEes3bL6ZhHMQz8ETVSM26PPEPTILf7fi"/>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Erik J.</span>
+</div>
+<h3 class="font-bold text-on-surface leading-tight mb-1">IKEA Landskrona Bank</h3>
+<p class="text-primary text-lg font-extrabold">€ 220</p>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[10px] font-medium">Amsterdam-West</span>
+</div>
+</div>
+</article>
+<!-- Card: Macbook Pro -->
+<article class="flex flex-col gap-3 group">
+<div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="silver apple macbook pro open on a minimalist wooden desk with soft natural window light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBymotibDIiC46KSb5n6d_yGE-fL18ibmVucCsft-KZfTSIu86HQXpDVH5KkRVz3jvbJSGuQxqqKOucSwTwKLun8B5YZvv-we4J0yk_Bd7Kit6qwUVPxDrBqrogCmwfKcKJIjvfrhM8sjR4aZzMuF3kJjeyHcz1Xh5qBrqKMyWMopvH90sPg5fxYbCBfICRh3fHIQ3DsHmeFJDjFuvj2Waj2QlZEba0OS_op1kitnzoCu_jF_6Yv_PThSyGC3FzqdUr4wTN2M54l6ZV"/>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-sm active:scale-90 transition-all">
+<span class="material-symbols-outlined text-primary text-lg">favorite</span>
+</button>
+</div>
+<div class="px-1">
+<div class="flex items-center gap-2 mb-1">
+<img class="w-5 h-5 rounded-full object-cover" alt="young professional woman with neutral expression in a bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-D66q7QLPY2NmAAAX8-RZnBuInMBevdcnm1c6DrQ5B_Xy8OJL4tsXeIQQ0MROQRdNo6pnQKvaOccVjxBpaqHt-sgrYfEYSP_kvh2qOuLjmUfPLjjunNrZkZkb7CKzOjnaBYZZp0njjFsotU_mE4K2bX7ce6C25STz8z065Jqhcx4I1jAwX0tVP4e8lRkedIOscxMNpmwZDJM7vZdrm3F3nRbNIcGDfgPzCjWxigqFXvXKyooyRa2lxJIYrnVbsQFsyrzZyuI8CT5M"/>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Sophie V.</span>
+</div>
+<h3 class="font-bold text-on-surface leading-tight mb-1">Macbook Pro M1 13"</h3>
+<p class="text-primary text-lg font-extrabold">€ 950</p>
+<div class="flex items-center gap-1 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[10px] font-medium">Amsterdam-Centrum</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface/90 dark:bg-[#121212]/90 backdrop-blur-2xl z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] pb-6 pt-3 px-4">
+<div class="flex justify-around items-end">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Home</span>
+</a>
+<!-- Ontdekken -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Ontdekken</span>
+</a>
+<!-- Plaatsen (FAB) -->
+<div class="relative -top-6">
+<button class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container shadow-lg shadow-primary/30 flex items-center justify-center text-white active:scale-90 transition-all">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-bold text-primary whitespace-nowrap">Plaatsen</span>
+</div>
+<!-- Berichten -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Berichten</span>
+</a>
+<!-- Profiel -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans'] mt-1">Profiel</span>
+</a>
+</div>
+</nav>
+</body></html>

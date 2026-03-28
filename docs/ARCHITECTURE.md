@@ -243,3 +243,6 @@ Universal Links (iOS) + App Links (Android) via GoRouter. **Must be live before 
 | 16 | Custom backend only on pain | Supabase handles 50K+ MAU; defer migration decision |
 | 17 | Unleash for feature flags (not Firebase Remote Config) | Self-hosted = full GDPR control; audit trail; environment scoping; instant kill-switch. Remote Config handles A/B experiments only |
 | 18 | Shorebird for OTA hotfixes (Phase 2) | Critical payment/trust bugs deployed in minutes without App Store review; ~$200/mo |
+| 19 | PWA: online-first with offline app shell | CanvasKit WASM requires network for first load. Flutter's default Service Worker caches static assets (cache-first for return visits). Custom Workbox deferred to Phase 5 — default SW handles 90% of cases. No full offline mode (marketplace needs fresh data). PWA installable via manifest.json. |
+| 20 | `wasm-unsafe-eval` in CSP for CanvasKit | CanvasKit uses `WebAssembly.compileStreaming()` which requires `wasm-unsafe-eval` in `script-src`. Without it, Flutter web shows white screen. `--csp` build flag removes `eval()` but WASM compilation still needs this directive. |
+| 21 | Entity equality by ID (not freezed) | Existing entities use manual `==`/`hashCode` by ID. Consistent pattern, minimal code-gen. Revisit `freezed` if entity count exceeds 15. `equatable` available as dependency if needed. |

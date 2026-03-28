@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #121212;
+            color: #F2F2F2;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .settings-card {
+            background-color: #1E1E1E;
+            border: 1px solid #333333;
+        }
+        .active-tab {
+            background-color: rgba(255, 122, 77, 0.15);
+            color: #F15A24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#34618d",
+                        "error": "#ba1a1a",
+                        "background": "#121212",
+                        "surface": "#121212",
+                        "primary": "#FF7A4D",
+                        "on-primary": "#ffffff",
+                        "on-background": "#F2F2F2",
+                        "surface-container-low": "#1E1E1E",
+                        "outline-variant": "#333333"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased selection:bg-primary/30">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 glass-header px-6 py-4 flex justify-between items-center">
+<h1 class="text-2xl font-black tracking-tighter text-primary">DeelMarkt</h1>
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-on-background/70 hover:text-primary transition-colors" data-icon="notifications">notifications</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Profile" class="w-full h-full object-cover" alt="Close-up portrait of a professional man with a friendly expression, soft studio lighting, high-end editorial style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9uogVxi4QqYp9Y3PSUMtyHEslc0Ei4iW9poItDnYQfLJ6d085FC9THNcunVc6hAF4_ddD8ZVq2QZguFzGVMrcq0VXb2QIK2V-aNfcIjoneGpc72ErI7HW66r7J4ABE8BGhmvSax2d5YNXIRoO9GwlW7WbIHWPFV123YdgCfmSbvm6gHM4gHC5VJAigxRym2uDjK5qzDriA1-I2UPDQqkk38hPsBYmfEJ2BCT64qH1pwchn31FI1bnkVyMbB_w_yYDeH1LzUs_aXmk"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-md mx-auto">
+<!-- Profile Summary -->
+<section class="mb-10 flex items-center gap-5">
+<div class="relative">
+<div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/20 p-1">
+<img alt="User" class="w-full h-full object-cover rounded-xl" alt="Professional headshot of a man, warm ambient lighting, modern aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYj7xODetSQaz1vXuW5ZAOGjEQcRHFhgSpX2FuWTy4sOLk6N3cVIF47BpmLsvqj7iI7_737Fak6KZxAk8ZKjHmE7-Wfk6h8fqQzHL1Fr867UnX4D_6M5pYCmP32KoV67dRA20yNrmL5SDvjVVadeTaunsf7DYsvdVhP4CchlgEmzTgj53cnUqTdWrSq2EzpvFSA8uNp-7Ni6dvDSAHsdP1urQg9GBRKPrrKVk3JtLT3FtcYidXf_CJueq3xIGdEDqv-Je4vU75jlVt"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-lg flex items-center justify-center border-2 border-background">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div>
+<h2 class="text-xl font-bold text-on-background">Thomas de Vries</h2>
+<p class="text-sm text-on-background/50 font-medium tracking-wide">Premium Member • Amsterdam</p>
+<div class="flex items-center mt-1 text-primary gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-xs font-bold uppercase tracking-widest">4.9 Rating</span>
+</div>
+</div>
+</section>
+<!-- ACCOUNT SECTION -->
+<div class="mb-8">
+<h3 class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-on-background/40 mb-3 px-1">ACCOUNT</h3>
+<div class="settings-card rounded-2xl overflow-hidden">
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+<span class="text-sm font-semibold">Persoonlijke Gegevens</span>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">chevron_right</span>
+</div>
+<div class="h-[1px] bg-[#333333] mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+<span class="text-sm font-semibold">Betaalmethoden</span>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- ADRESSEN SECTION -->
+<div class="mb-8">
+<h3 class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-on-background/40 mb-3 px-1">ADRESSEN</h3>
+<div class="settings-card rounded-2xl overflow-hidden">
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="home">home</span>
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Thuisadres</span>
+<span class="text-[11px] text-on-background/40">Prinsengracht 12, Amsterdam</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">edit</span>
+</div>
+</div>
+</div>
+<!-- MELDINGEN SECTION -->
+<div class="mb-8">
+<h3 class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-on-background/40 mb-3 px-1">MELDINGEN</h3>
+<div class="settings-card rounded-2xl overflow-hidden">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="notifications_active">notifications_active</span>
+<span class="text-sm font-semibold">Pushmeldingen</span>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full ml-auto"></div>
+</div>
+</div>
+<div class="h-[1px] bg-[#333333] mx-4"></div>
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="mail">mail</span>
+<span class="text-sm font-semibold">E-mail Updates</span>
+</div>
+<div class="w-10 h-6 bg-[#333333] rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-on-background/30 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- PRIVACY SECTION -->
+<div class="mb-8">
+<h3 class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-on-background/40 mb-3 px-1">PRIVACY</h3>
+<div class="settings-card rounded-2xl overflow-hidden">
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="lock">lock</span>
+<span class="text-sm font-semibold">Wachtwoord &amp; Beveiliging</span>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">chevron_right</span>
+</div>
+<div class="h-[1px] bg-[#333333] mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="visibility_off">visibility_off</span>
+<span class="text-sm font-semibold">Profiel Zichtbaarheid</span>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- APP SECTION -->
+<div class="mb-12">
+<h3 class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-on-background/40 mb-3 px-1">APP</h3>
+<div class="settings-card rounded-2xl overflow-hidden">
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="language">language</span>
+<span class="text-sm font-semibold">Taal</span>
+</div>
+<span class="text-xs font-bold text-primary mr-2 uppercase tracking-wider">Nederlands</span>
+</div>
+<div class="h-[1px] bg-[#333333] mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="help">help</span>
+<span class="text-sm font-semibold">Helpcentrum</span>
+</div>
+<span class="material-symbols-outlined text-on-background/30 text-lg">open_in_new</span>
+</div>
+<div class="h-[1px] bg-[#333333] mx-4"></div>
+<div class="flex items-center justify-between p-4 hover:bg-error/10 transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-error" data-icon="logout">logout</span>
+<span class="text-sm font-bold text-error">Uitloggen</span>
+</div>
+</div>
+</div>
+<p class="text-center text-[10px] text-on-background/20 mt-8 font-medium tracking-[0.3em] uppercase">DeelMarkt v2.4.1 (Premium)</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#121212]/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] md:hidden">
+<a class="flex flex-col items-center justify-center text-on-background/40 px-3 py-2" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] uppercase tracking-widest font-bold">Ontdekken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-background/40 px-3 py-2" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="chat">chat</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] uppercase tracking-widest font-bold">Berichten</span>
+</a>
+<a class="flex flex-col items-center justify-center -mt-8" href="#">
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F15A24] to-[#D1430A] flex items-center justify-center shadow-lg shadow-primary/20 transform active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="add">add</span>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] uppercase tracking-widest font-bold mt-2 text-on-background/40">Verkopen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-background/40 px-3 py-2" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="favorite">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] uppercase tracking-widest font-bold">Favorieten</span>
+</a>
+<a class="flex flex-col items-center justify-center active-tab rounded-xl px-3 py-2" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[9px] uppercase tracking-widest font-bold">Instellingen</span>
+</a>
+</nav>
+</body></html>

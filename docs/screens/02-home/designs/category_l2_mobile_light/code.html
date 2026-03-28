@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sport Categorieën - DeelMarkt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcf9f8;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scale-active:active {
+            transform: scale(0.95);
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-dim": "#dcd9d9",
+              "surface-container-high": "#ebe7e7",
+              "on-background": "#1c1b1b",
+              "surface-container-low": "#f6f3f2",
+              "background": "#fcf9f8",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "on-secondary-fixed-variant": "#164974",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-bright": "#fcf9f8",
+              "error-container": "#ffdad6",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed": "#82fc8e",
+              "inverse-surface": "#313030",
+              "surface-container": "#f0edec",
+              "on-secondary-fixed": "#001d35",
+              "surface": "#fcf9f8",
+              "secondary-fixed": "#d0e4ff",
+              "primary-fixed-dim": "#ffb59e",
+              "primary-container": "#d1430a",
+              "on-primary": "#ffffff",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdbd0",
+              "on-surface-variant": "#5a4139",
+              "surface-container-highest": "#e5e2e1",
+              "surface-tint": "#ad3300",
+              "on-tertiary": "#ffffff",
+              "on-error-container": "#93000a",
+              "secondary-container": "#a1cdff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-secondary-container": "#285782",
+              "tertiary-container": "#008730",
+              "outline": "#8e7067",
+              "on-primary-fixed": "#3a0b00",
+              "primary": "#F15A24",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f3f0ef",
+              "on-primary-fixed-variant": "#842500",
+              "on-surface": "#1c1b1b",
+              "secondary": "#34618d",
+              "tertiary": "#006b24",
+              "outline-variant": "#e2bfb4",
+              "tertiary-fixed-dim": "#65df75"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "xxl": "24px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background selection:bg-primary-container selection:text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full shadow-none">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">Sport</h1>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#4a4a4a]">search</span>
+</button>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[#ebe7e7]/50 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#4a4a4a]">shopping_cart</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-28 px-4 max-w-lg mx-auto">
+<!-- Hero Section Asymmetric Layout -->
+<section class="mb-8">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-6 flex flex-col justify-end min-h-[160px]">
+<div class="absolute top-[-20%] right-[-10%] w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+<h2 class="text-3xl font-extrabold tracking-tighter text-on-surface leading-none mb-2">Alles voor jouw<br/><span class="text-primary">actieve levensstijl</span></h2>
+<p class="text-sm text-on-surface-variant font-medium max-w-[80%]">Vind kwalitatieve sportartikelen van andere enthousiastelingen in jouw buurt.</p>
+</div>
+</section>
+<!-- Subcategory Grid (Chips) -->
+<section class="mb-10">
+<h3 class="text-xs font-bold uppercase tracking-widest text-outline mb-6 px-1">Verfijn je zoekopdracht</h3>
+<div class="flex flex-wrap gap-3">
+<!-- Chip: Fietsen -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">pedal_bike</span>
+                    Fietsen
+                </button>
+<!-- Chip: Fitness -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">fitness_center</span>
+                    Fitness
+                </button>
+<!-- Chip: Voetbal -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">sports_soccer</span>
+                    Voetbal
+                </button>
+<!-- Chip: Tennis -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">sports_tennis</span>
+                    Tennis
+                </button>
+<!-- Chip: Hardlopen -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">directions_run</span>
+                    Hardlopen
+                </button>
+<!-- Chip: Watersport -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">surfing</span>
+                    Watersport
+                </button>
+<!-- Chip: Wintersport -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">downhill_skiing</span>
+                    Wintersport
+                </button>
+<!-- Chip: Overig -->
+<button class="px-6 py-2.5 rounded-xxl border border-surface-variant text-on-surface text-sm font-semibold hover:bg-surface-container-highest hover:border-outline transition-all duration-300 flex items-center gap-2 bg-surface-container-lowest">
+<span class="material-symbols-outlined text-base">more_horiz</span>
+                    Overig
+                </button>
+</div>
+</section>
+<!-- Featured Listings (Visual Interest) -->
+<section>
+<div class="flex justify-between items-end mb-6">
+<h3 class="text-xl font-extrabold text-on-surface">Aanbevolen in Sport</h3>
+<span class="text-sm font-bold text-primary">Alles bekijken</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Listing Card 1 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="aspect-[4/5] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Modern pair of gray and neon orange running shoes on a clean concrete studio background with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW1l3R88_4Kaz0ar6cQONmSO8XNv9_us_I-aFoEI_H159ftvuwMt2xrM_50UXIJXH2bfKP5wGcwOqr58a370Sez2m3Yseh0CKtSl4UVOaGfZ28E24seKEsz7w7zTpRbJa_LhXmqaJbULfcXgNVrjhF3Ofiqd_myNTZZt4iSmGfOdh67JB1lOzfjBfyBYfWHs5hsySy7k2LbZqqnitcml12Z1wWCO5IY4XwO8CsGVw0fyP9NZyqQKtVBsXkKMhV7yK7bdgaCs-jA_QP"/>
+<div class="absolute top-3 left-3 bg-surface/80 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold text-on-surface-variant">NIEUW</div>
+</div>
+<div class="p-3">
+<p class="text-xs text-outline font-medium">Hardlopen</p>
+<h4 class="text-sm font-bold text-on-surface truncate">Pro-Series Run 500</h4>
+<p class="text-secondary font-extrabold text-base mt-1">€ 45,00</p>
+</div>
+</div>
+<!-- Listing Card 2 -->
+<div class="group relative bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="aspect-[4/5] bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Minimalist indoor cycling setup with a high-end black road bike on a smart trainer in a bright modern apartment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxbc7IHndN5LJqzJj_h0hgQckqSJCBLpQFhMbs8rakaLunKcN5_vpI4xAD4CTU8EjS8G2ZAdiEZY3YAviCEnHTR2fkrG-gUf2CZIjozWQIGoXY-_LA3kJXFwFzDzetp5Hmfrn_r3QLzf6MjGOemQl39PmBObLzi_cl3VjpZisowNYfJjyC1LZqrOne0hYtvJ0AVCE_nf2SHd65yVSx3I3zd7Hl5x-vn8DSSvn5e-Yx_sAJd5NkDXePKvqnYpBjT_0VAUF4CItm8PoR"/>
+<div class="absolute top-3 right-3 bg-tertiary-container/20 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-tertiary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold text-tertiary">CHECK</span>
+</div>
+</div>
+<div class="p-3">
+<p class="text-xs text-outline font-medium">Fietsen</p>
+<h4 class="text-sm font-bold text-on-surface truncate">Racefiets Carbon-X</h4>
+<p class="text-secondary font-extrabold text-base mt-1">€ 890,00</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 md:hidden bg-surface/80 backdrop-blur-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] rounded-t-3xl">
+<div class="absolute inset-0 bg-gradient-to-t from-[#f6f3f2] to-transparent pointer-events-none -z-10"></div>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0]" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Home</span>
+</a>
+<!-- Active Tab: Zoeken (Contextually mapped to Browsing/Categories) -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Zoeken</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0]" href="#">
+<span class="material-symbols-outlined mb-1">add_box</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Plaatsen</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0]" href="#">
+<span class="material-symbols-outlined mb-1">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inbox</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4a4a4a] dark:text-[#a0a0a0]" href="#">
+<span class="material-symbols-outlined mb-1">account_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Account</span>
+</a>
+</nav>
+</body></html>

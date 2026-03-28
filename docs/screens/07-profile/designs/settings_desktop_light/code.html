@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary": "#34618d",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "background": "#fcf9f8",
+              "on-secondary": "#ffffff",
+              "inverse-primary": "#ffb59e",
+              "on-surface-variant": "#5a4139",
+              "surface-tint": "#ad3300",
+              "surface-container-lowest": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-container-highest": "#e5e2e1",
+              "primary-fixed": "#ffdbd0",
+              "primary": "#F15A24",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e5e2e1",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary": "#006b24",
+              "secondary-fixed": "#d0e4ff",
+              "surface": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container": "#f0edec",
+              "on-primary": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "tertiary-container": "#008730",
+              "inverse-on-surface": "#f3f0ef",
+              "secondary-fixed-dim": "#9fcafc",
+              "secondary-container": "#a1cdff",
+              "on-secondary-fixed": "#001d35",
+              "surface-bright": "#fcf9f8",
+              "on-primary-container": "#fffbff",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "on-tertiary-container": "#f7fff2",
+              "surface-dim": "#dcd9d9",
+              "surface-container-low": "#f6f3f2",
+              "on-background": "#1c1b1b",
+              "primary-container": "#d1430a",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "on-secondary-container": "#285782",
+              "surface-container-high": "#ebe7e7",
+              "tertiary-fixed": "#82fc8e"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Desktop Sidebar (SideNavBar) -->
+<nav class="hidden md:flex flex-col h-screen p-6 fixed left-0 top-0 bg-surface dark:bg-zinc-950 w-64 z-40">
+<div class="text-xl font-black text-primary mb-8">
+            DeelMarkt
+            <span class="block text-[10px] font-medium tracking-widest text-stone-400 uppercase">Premium P2P</span>
+</div>
+<div class="flex flex-col space-y-2">
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:fill-current">explore</span>
+<span class="font-medium text-sm">Ontdekken</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:fill-current">chat</span>
+<span class="font-medium text-sm">Berichten</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:fill-current">add_box</span>
+<span class="font-medium text-sm">Verkopen</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-stone-500 dark:text-stone-400 hover:text-primary hover:translate-x-1 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:fill-current">favorite</span>
+<span class="font-medium text-sm">Favorieten</span>
+</a>
+<a class="flex items-center space-x-4 px-4 py-3 rounded-xl text-primary font-bold border-r-4 border-[#F15A24] bg-stone-100/50" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-medium text-sm">Instellingen</span>
+</a>
+</div>
+<div class="mt-auto pt-6">
+<div class="p-4 rounded-xl bg-surface-container-low flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-bold">JD</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold">Jan de Vries</span>
+<span class="text-[10px] text-stone-500">Premium Lid</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen bg-surface-container-low pb-24">
+<!-- Sticky Header (TopAppBar logic) -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-8 py-6 bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center space-x-6">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<h1 class="text-3xl font-black tracking-tighter text-on-surface font-headline uppercase">Instellingen</h1>
+</div>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-stone-400">notifications</span>
+<span class="material-symbols-outlined text-stone-400">account_circle</span>
+</div>
+</header>
+<!-- Centered Settings Column -->
+<div class="max-w-[600px] mx-auto mt-8 px-4 space-y-12">
+<!-- ACCOUNT SECTION -->
+<section class="space-y-4">
+<h2 class="text-[11px] font-extrabold tracking-[0.2em] text-stone-400 uppercase px-1">Account</h2>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<!-- Language Toggle -->
+<div class="flex items-center justify-between p-5 group hover:bg-surface-container/30 transition-colors">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-secondary">language</span>
+<span class="text-sm font-semibold">Taal</span>
+</div>
+<div class="flex bg-surface-container p-1 rounded-lg">
+<button class="px-3 py-1 text-xs font-bold bg-surface-container-lowest text-primary rounded-md shadow-sm">NL</button>
+<button class="px-3 py-1 text-xs font-bold text-stone-500 hover:text-stone-800">EN</button>
+</div>
+</div>
+<!-- Email -->
+<div class="flex items-center justify-between p-5 group hover:bg-surface-container/30 transition-colors">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-secondary">mail</span>
+<div class="flex flex-col">
+<span class="text-sm font-semibold">E-mailadres</span>
+<span class="text-xs text-stone-500">jan.devries@example.com</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-300 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<!-- Phone -->
+<div class="flex items-center justify-between p-5 group hover:bg-surface-container/30 transition-colors">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-secondary">phone</span>
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Telefoonnummer</span>
+<span class="text-xs text-stone-500">+31 6 1234 5678</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-stone-300 group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- ADRESSEN SECTION -->
+<section class="space-y-4">
+<h2 class="text-[11px] font-extrabold tracking-[0.2em] text-stone-400 uppercase px-1">Adressen</h2>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<div class="p-5 flex items-start justify-between">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-secondary">home</span>
+<div class="flex flex-col">
+<span class="text-sm font-bold">Thuis</span>
+<span class="text-xs text-stone-500 leading-relaxed">Prinsengracht 123-HS<br/>1016 GV Amsterdam, NL</span>
+</div>
+</div>
+<button class="text-[10px] font-bold text-primary uppercase tracking-widest px-3 py-1 bg-primary-fixed rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors">Wijzig</button>
+</div>
+<div class="p-5 flex items-center justify-center bg-stone-50/50">
+<button class="flex items-center space-x-2 text-sm font-bold text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+<span>Nieuw adres toevoegen</span>
+</button>
+</div>
+</div>
+</section>
+<!-- MELDINGEN SECTION -->
+<section class="space-y-4">
+<h2 class="text-[11px] font-extrabold tracking-[0.2em] text-stone-400 uppercase px-1">Meldingen</h2>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<!-- Toggle 1 -->
+<div class="flex items-center justify-between p-5">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Push notificaties</span>
+<span class="text-xs text-stone-500">Belangrijke updates en alerts</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full ml-auto shadow-sm"></div>
+</div>
+</div>
+<!-- Toggle 2 -->
+<div class="flex items-center justify-between p-5 border-t border-stone-50">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Nieuwe berichten</span>
+<span class="text-xs text-stone-500">Wanneer kopers je een bericht sturen</span>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full ml-auto shadow-sm"></div>
+</div>
+</div>
+<!-- Toggle 3 -->
+<div class="flex items-center justify-between p-5 border-t border-stone-50">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Prijsverlagingen</span>
+<span class="text-xs text-stone-500">Updates over je favoriete items</span>
+</div>
+<div class="w-12 h-6 bg-stone-200 rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Toggle 4 -->
+<div class="flex items-center justify-between p-5 border-t border-stone-50">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">E-mail marketing</span>
+<span class="text-xs text-stone-500">Wekelijkse curatie en aanbiedingen</span>
+</div>
+<div class="w-12 h-6 bg-stone-200 rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- PRIVACY SECTION -->
+<section class="space-y-4">
+<h2 class="text-[11px] font-extrabold tracking-[0.2em] text-stone-400 uppercase px-1">Privacy &amp; Data</h2>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<button class="w-full flex items-center justify-between p-5 group hover:bg-stone-50 transition-colors">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-secondary">download</span>
+<span class="text-sm font-semibold">Exporteer mijn gegevens</span>
+</div>
+<span class="material-symbols-outlined text-stone-300">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-5 group hover:bg-red-50/30 transition-colors border-t border-stone-50">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-error">delete_forever</span>
+<span class="text-sm font-bold text-error">Account verwijderen</span>
+</div>
+<span class="material-symbols-outlined text-error opacity-30">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- APP SECTION -->
+<section class="pt-8 pb-12 flex flex-col items-center space-y-2">
+<div class="text-[11px] font-extrabold tracking-[0.3em] text-stone-300 uppercase">App Versie</div>
+<div class="tabular-nums text-xs font-medium text-stone-400 bg-surface-container-high px-4 py-1.5 rounded-full">
+                    v2.4.82-stable
+                </div>
+<div class="pt-6 flex space-x-6 text-[10px] font-bold text-stone-400 uppercase tracking-widest">
+<a class="hover:text-primary transition-colors" href="#">Voorwaarden</a>
+<a class="hover:text-primary transition-colors" href="#">Privacybeleid</a>
+<a class="hover:text-primary transition-colors" href="#">Helpdesk</a>
+</div>
+</section>
+</div>
+</main>
+<!-- Mobile Bottom NavBar (Suppressed on large screen, visible on mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 pt-3 md:hidden bg-surface/90 backdrop-blur-2xl rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+<button class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Ontdek</span>
+</button>
+<button class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+</button>
+<button class="flex flex-col items-center justify-center text-stone-500 px-4 py-2">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Favoriet</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary/10/50 text-primary rounded-xl px-4 py-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] uppercase tracking-widest font-bold mt-1">Instel</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#65df75",
+              "primary-fixed-dim": "#ffb59e",
+              "tertiary": "#006b24",
+              "outline": "#8e7067",
+              "on-secondary-container": "#285782",
+              "tertiary-fixed": "#82fc8e",
+              "secondary-fixed-dim": "#9fcafc",
+              "outline-variant": "#e2bfb4",
+              "on-tertiary-fixed": "#002106",
+              "on-error": "#ffffff",
+              "background": "#fcf9f8",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary-fixed": "#001d35",
+              "secondary": "#34618d",
+              "on-primary-fixed-variant": "#842500",
+              "surface-dim": "#dcd9d9",
+              "secondary-fixed": "#d0e4ff",
+              "surface-bright": "#fcf9f8",
+              "error": "#ba1a1a",
+              "on-tertiary-container": "#f7fff2",
+              "on-surface-variant": "#5a4139",
+              "on-primary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-background": "#1c1b1b",
+              "surface-container": "#f0edec",
+              "on-surface": "#1c1b1b",
+              "primary-container": "#d1430a",
+              "secondary-container": "#a1cdff",
+              "primary": "#F15A24",
+              "surface-container-high": "#ebe7e7",
+              "tertiary-container": "#008730",
+              "surface-container-low": "#f6f3f2",
+              "inverse-on-surface": "#f3f0ef",
+              "inverse-surface": "#313030",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "surface-tint": "#ad3300",
+              "inverse-primary": "#ffb59e",
+              "on-primary-container": "#fffbff",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-variant": "#e5e2e1",
+              "on-primary-fixed": "#3a0b00"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .skeleton {
+            background: linear-gradient(90deg, #f0edec 25%, #e5e2e1 50%, #f0edec 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+<!-- Top Navigation -->
+<header class="bg-surface/80 backdrop-blur-xl fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full max-none">
+<div class="flex items-center gap-4">
+<button class="text-primary scale-95 active:duration-100 transition-opacity hover:opacity-80">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-extrabold text-primary font-['Plus_Jakarta_Sans'] tracking-tight">DeelMarkt</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary scale-95 active:duration-100 transition-opacity hover:opacity-80">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-4 max-w-md mx-auto space-y-6">
+<!-- Error State Banner -->
+<div class="bg-error-container text-on-error-container p-4 rounded-xl flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error">error</span>
+<span class="font-bold text-sm">Betaling mislukt</span>
+</div>
+<button class="bg-error text-on-error px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 active:scale-95 transition-all">
+                Opnieuw proberen
+            </button>
+</div>
+<!-- Checkout Header (Loaded state snippet for context) -->
+<div class="flex flex-col gap-1">
+<h2 class="text-2xl font-extrabold tracking-tight text-on-surface">Overzicht</h2>
+<p class="text-on-surface-variant text-sm">Controleer je bestelling voordat je betaalt.</p>
+</div>
+<!-- Order Summary Skeleton Card -->
+<div class="bg-surface-container-lowest rounded-xl p-5 space-y-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+<div class="flex gap-4">
+<div class="w-24 h-24 rounded-lg skeleton shrink-0"></div>
+<div class="flex flex-col justify-center gap-2 w-full">
+<div class="h-5 w-3/4 skeleton rounded"></div>
+<div class="h-4 w-1/2 skeleton rounded"></div>
+<div class="h-6 w-1/4 skeleton rounded mt-2"></div>
+</div>
+</div>
+<!-- Breakdown Skeleton -->
+<div class="space-y-4 pt-4 border-t border-outline-variant/15">
+<div class="flex justify-between items-center">
+<div class="h-4 w-20 skeleton rounded"></div>
+<div class="h-4 w-16 skeleton rounded"></div>
+</div>
+<div class="flex justify-between items-center">
+<div class="h-4 w-24 skeleton rounded"></div>
+<div class="h-4 w-12 skeleton rounded"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<div class="h-6 w-16 skeleton rounded"></div>
+<div class="h-6 w-20 skeleton rounded"></div>
+</div>
+</div>
+</div>
+<!-- Payment Method Selection (Bento Style) -->
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl flex flex-col gap-3 border border-primary/20 ring-2 ring-primary/10">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+</div>
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant opacity-60">iDEAL</p>
+<p class="text-sm font-bold">ING Bank</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3 transition-all hover:bg-surface-container-high cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-on-surface-variant">credit_card</span>
+</div>
+<div>
+<p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant opacity-60">Creditcard</p>
+<p class="text-sm font-bold">Visa / Master</p>
+</div>
+</div>
+</div>
+<!-- Seller Trust Section -->
+<div class="bg-tertiary/5 rounded-xl p-4 flex items-center gap-4">
+<div class="bg-tertiary-container/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-tertiary-fixed-variant">Aankoopbescherming actief</p>
+<p class="text-xs text-on-surface-variant">Je geld is veilig tot je het product hebt ontvangen.</p>
+</div>
+</div>
+<!-- Delivery Address Skeleton -->
+<div class="bg-surface-container-lowest rounded-xl p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">location_on</span>
+<span class="font-bold text-sm">Bezorgadres</span>
+</div>
+<button class="text-primary text-xs font-bold">Wijzigen</button>
+</div>
+<div class="space-y-2">
+<div class="h-4 w-full skeleton rounded"></div>
+<div class="h-4 w-2/3 skeleton rounded"></div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<nav class="fixed bottom-0 left-0 w-full p-4 flex justify-center items-center bg-surface border-t-[1px] border-[#ebe7e7]/15 shadow-[0_-4px_40px_rgba(0,0,0,0.06)] z-50 rounded-t-[16px]">
+<button class="flex items-center justify-center w-full h-14 bg-gradient-to-tr from-[#F15A24] to-[#d1430a] text-white rounded-xl mx-4 my-2 hover:brightness-110 transition-all active:scale-[0.98] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-base mr-2">Bestelling bevestigen</span>
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</button>
+</nav>
+</body></html>

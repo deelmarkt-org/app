@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#f3f0ef",
+              "on-background": "#1c1b1b",
+              "surface-container-high": "#ebe7e7",
+              "on-surface": "#1c1b1b",
+              "surface": "#fcf9f8",
+              "primary": "#F15A24",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-tertiary": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#9fcafc",
+              "surface-container-highest": "#e5e2e1",
+              "surface-container-low": "#f6f3f2",
+              "primary-fixed": "#ffdbd0",
+              "outline": "#8e7067",
+              "surface-dim": "#dcd9d9",
+              "surface-variant": "#e5e2e1",
+              "outline-variant": "#e2bfb4",
+              "error": "#ba1a1a",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#fffbff",
+              "surface-container": "#f0edec",
+              "inverse-primary": "#ffb59e",
+              "on-tertiary-container": "#f7fff2",
+              "tertiary": "#006b24",
+              "on-secondary-fixed": "#001d35",
+              "tertiary-fixed-dim": "#65df75",
+              "secondary-fixed": "#d0e4ff",
+              "secondary-container": "#a1cdff",
+              "on-primary-fixed-variant": "#842500",
+              "on-error": "#ffffff",
+              "on-secondary-container": "#285782",
+              "background": "#fcf9f8",
+              "primary-fixed-dim": "#ffb59e",
+              "on-error-container": "#93000a",
+              "on-tertiary-fixed": "#002106",
+              "tertiary-container": "#008730",
+              "on-primary-fixed": "#3a0b00",
+              "surface-bright": "#fcf9f8",
+              "on-secondary-fixed-variant": "#164974",
+              "error-container": "#ffdad6",
+              "inverse-surface": "#313030",
+              "tertiary-fixed": "#82fc8e",
+              "surface-tint": "#ad3300",
+              "primary-container": "#d1430a",
+              "secondary": "#34618d",
+              "on-primary": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity scale-95 active:duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] tracking-[-0.02em] font-bold text-2xl">Favorieten</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-[#4a4a4a] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="text-[#4a4a4a] hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</header>
+<main class="px-4 pt-4 pb-32">
+<!-- Editorial Section Header -->
+<div class="mb-8 px-2">
+<p class="text-secondary font-semibold text-sm mb-1 uppercase tracking-widest">Jouw Verzameling</p>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Opgeslagen items</h2>
+</div>
+<!-- Bento-ish Grid of DeelCards -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Card 1: Gazelle -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="modern matte black electric commuter bicycle parked against a clean architectural wall in soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8e5mRzbdcFurODVrxzSr6ysP1BgYsavaFwU05KPdV7GyZ8_fBxWnSP8XjOby_Mqol2edS32l0l5KjzO5xPKTGmTKCGl8YDDlDLt5TwhAtInY0Hm6tNOtitWJ4I0nZYNPu-iikUwyfUvQEpHhak3yYavup8bnkkp0wHS0mqzldaXUR_n-MImfF0wl1m6GbPNyPdikz74qoIw68JpH-Kqe8mNgMb03tbTjXswSTvR7_oVYNKkyBU5ws6_jv7asgPiNot4Bsmyg8J_WA"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 2.100,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">Gazelle Ultimate T10 HMB (Electric bike)</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Utrecht • 2km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: iPhone -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="titanium blue smartphone displaying a high-resolution interface on a minimalist reflective surface with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCri0cOtjiMw0QbWXjLQftmENCK8Qg8rS7dQHvOHD38K_VtHFEyaMPIBtrhrAfFOUp3V3M531GHDk6k6JatduKGvv6r_9vUf59m3EwcWrYWsvpcy-HQfsbkIKy7_OEbDTQvws1bYOFLhOuw1MMghiBMELXisoNzYTUG3sII7huqyTM2pusuObjNiyaGQUwpK-fbg1OZ3jak6KpypsIfP413Lfp-ipjjNHMyn986roKJDgVsKOpoYMpTQc3zv5EUuQNOAWB-4d9h1qzh"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 850,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">iPhone 15 Pro - 256GB - Blue Titanium</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Amsterdam • 5km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: IKEA Table -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="vintage 90s glass coffee table with brushed metal frame in a sun-drenched loft apartment setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHUFAYFv1MaXSwa91kAKkuEeFMlD252Ba6GP7e0BxEfQ8UvnFuwp5-lG3axnjleSaM4NN2-OndHkYXWfCmg7M1hORsOTFBs3QHpf2N2avCOGmjjE7grtCaN5fSkWgLD47TwbIyChz7T_XxFCKGxSvDgi2EIlG-KtmpV57G_bIIf49ClyebIgxsDITd1KJulWswxB4t_3ZDUqhuac1S_2FvUNC3UftdeWlcuK0jENGJbUts293_TlOZFoBRQulA0U2if2tiuj9j6WIy"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 125,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">Vintage IKEA 'Moments' tafel</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Rotterdam • 12km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Nike Air Max -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="red and white classic sneakers on a clean grey background with soft studio lighting and crisp details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbRmVbqh8vdUHgKqCnXJ3Xy0VBnM2QfQ-EBzTqOHZ1oFG9piOjuAqOLWBfHqvuBzA8cSVDch9lTXixBrgOXUz1fnMnwbIoBmHR9-KhRObPQqrNL4n0OEC_UXDpk68-r7V4L-j-49hTXvETx1p4mjVjsexhvSrCeh4JAvmvLm0X3Z4qCa2XuScLCqU52FD7iz26JSpSx9zlFzyBi3O225IluAGszJsXKFp6EiWMzUsy-JwfMsTNNN97qpXC22o5qC_FYrKaZBi8112i"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 140,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">Nike Air Max 1 '86 OG</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Den Haag • 8km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5: Sonos -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="minimalist matte white smart speaker on a clean wooden surface with soft diffused background light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_dKwWKv6LlaDtpVUoPrrH_HKi9agth2Y2M7heHx5KeZDZoduoXwptmyqRtfwK4oIVwqB6r530fRc0UT9NOoGNmhwIhJc9m2rUYpNPHFdsfl_kAOxgq587G11zoqd9RDNU1-GvSyM3TCHWeDzaXDAN28C62S_utUtXKmnJkZFmmjdqIvUrJAAtS0q93HIE6IdlV97Gbgu21qYQFbYryWiX3IiGmzahrRkslV9MVuc3W0_NkfG3Hqv8GtuqN5d_PfVJocpAM_aic6bV"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 220,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">Sonos Era 100 Speaker</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Eindhoven • 1km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 6: Rapha Shirt -->
+<div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-lg">
+<div class="relative aspect-square">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="high-quality cycling jersey in navy blue laid flat on a clean textured surface with focus on the fabric quality" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw3u0W6DUP4vOnKNJuSNPDfFS7cCXBM0ErkUFfmbLUYONj8GxxUCI5Oerh08ZSbQrrF6GP4HFLsA_R0BOe16TVu-MlRVtGHkrSmP2bMTiC9ijkFWpFIbPlmDHpGfIbVSNiytObC5sLHB3uA2QKbHmqlb3VS_Jxf-UI7EZlRgCXLUwrLOiyLb16ET-zNj7z_H6aiZohoxtCxysDV988r0x3OZz4SmJdlEmcQs7iAAVXKAQBHT-2r-Vn4aFwCB6U5OT5y6q-DjDc2e-s"/>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-error">
+<span class="material-symbols-outlined" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="p-3 flex flex-col flex-grow">
+<span class="text-secondary font-bold text-lg">€ 45,00</span>
+<h3 class="text-on-surface font-semibold text-sm line-clamp-2 mt-1 mb-2 leading-snug">Wielrenshirt Rapha Core (M)</h3>
+<div class="mt-auto">
+<div class="flex items-center text-on-surface-variant text-xs mb-2">
+<span class="material-symbols-outlined text-[14px] mr-1" data-icon="location_on">location_on</span>
+                            Utrecht • 3km
+                        </div>
+<div class="inline-flex items-center px-2 py-1 rounded-full bg-tertiary-container/10 border border-tertiary-container/20">
+<span class="material-symbols-outlined text-tertiary text-[12px] mr-1" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-tertiary text-[10px] font-bold uppercase tracking-wide">Escrow</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] z-50">
+<div class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Ontdekken</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary scale-110 transition-transform">
+<span class="material-symbols-outlined mb-1" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Favorieten</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200">
+<span class="material-symbols-outlined mb-1 text-3xl" data-icon="add_circle">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Plaatsen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="mail">mail</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Berichten</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4a4a4a] opacity-60 hover:opacity-100 transition-all scale-90 active:duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold uppercase tracking-wider">Profiel</span>
+</div>
+</nav>
+</body></html>

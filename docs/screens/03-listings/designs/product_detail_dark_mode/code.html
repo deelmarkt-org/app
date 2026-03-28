@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#65df75",
+                        "surface-container": "#f0edec",
+                        "surface-container-highest": "#e5e2e1",
+                        "secondary-fixed": "#d0e4ff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#008730",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "on-secondary-container": "#285782",
+                        "tertiary": "#006b24",
+                        "on-surface": "#f2f2f2",
+                        "outline": "#8e7067",
+                        "tertiary-fixed": "#82fc8e",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001d35",
+                        "on-tertiary-fixed": "#002106",
+                        "surface-dim": "#dcd9d9",
+                        "surface-container-low": "#f6f3f2",
+                        "on-primary-fixed-variant": "#842500",
+                        "on-secondary-fixed-variant": "#164974",
+                        "inverse-surface": "#313030",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#3a0b00",
+                        "on-error": "#ffffff",
+                        "background": "#121212",
+                        "surface-container-high": "#ebe7e7",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary": "#FF7A4D",
+                        "surface-variant": "#e5e2e1",
+                        "surface-tint": "#ad3300",
+                        "secondary-container": "#a1cdff",
+                        "on-primary-container": "#fffbff",
+                        "primary-fixed-dim": "#ffb59e",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#f7fff2",
+                        "on-background": "#1c1b1b",
+                        "primary-fixed": "#ffdbd0",
+                        "on-surface-variant": "#c4c4c4",
+                        "primary-container": "#d1430a",
+                        "outline-variant": "#e2bfb4",
+                        "secondary": "#34618d",
+                        "inverse-primary": "#ffb59e",
+                        "error": "#ba1a1a"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #121212;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #ebe7e7;
+        }
+        .iphone-frame {
+            width: 375px;
+            height: 812px;
+            margin: 2rem auto;
+            position: relative;
+            background: #121212;
+            border: 8px solid #1e1e1e;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .premium-blur {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex items-center justify-center min-h-screen">
+<!-- iPhone 15 Pro Frame -->
+<div class="iphone-frame flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 w-full bg-[#121212]/80 backdrop-blur-xl no-border bg-gradient-to-b from-[#121212] to-transparent">
+<button class="text-[#ebe7e7] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-xl font-black text-primary font-['Plus_Jakarta_Sans'] tracking-[-0.02em]">DeelMarkt</h1>
+<button class="text-[#ebe7e7] hover:opacity-80 transition-opacity scale-95 active:scale-100 transition-transform duration-200">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto custom-scrollbar pt-16 pb-32">
+<!-- Hero Image Section -->
+<section class="relative h-[400px] w-full bg-[#1E1E1E]">
+<img alt="Canyon Speedmax CF SLX" class="w-full h-full object-cover" alt="Professional triathlon bicycle Canyon Speedmax CF SLX in matte black and silver finish, studio lighting, dramatic shadows, cinematic angle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoDAAqzf37gt6-mWJG98MYCy8O2QiHpaDquHBM_eu-ZsRK5k2yErx53x5AvXFMTU59kQ5h1HlOeUMGcL9ylJ7_DiEIBg5OI9tjOeofN8aAMtb8yGX5ku11CgbOviqij_NWbkfpWkAhirAjFCW4gom0S69m4vYbHgOV4c65Z2GM8DOqZsNOxE6VJEOiptDmJVUTBTeYpOlHseFsi-QaAKYL1Ms4eRzE-tkWzvw3Z5b-J_x34Jm0v71Moq9jz5BgFlQDdhzbmimghfsk"/>
+<div class="absolute bottom-4 left-4 flex gap-2">
+<span class="bg-black/40 premium-blur px-3 py-1 rounded-full text-[10px] font-bold tracking-widest text-white uppercase">Aerodynamic</span>
+<span class="bg-[#008730]/40 premium-blur px-3 py-1 rounded-full text-[10px] font-bold tracking-widest text-white uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">shield</span> Verified
+                    </span>
+</div>
+</section>
+<!-- Product Info -->
+<div class="px-6 mt-8">
+<div class="flex justify-between items-start mb-2">
+<h2 class="text-3xl font-extrabold tracking-tight leading-tight text-white">Canyon Speedmax CF SLX</h2>
+<span class="text-2xl font-bold text-[#9fcafc]">€ 5.450</span>
+</div>
+<p class="text-[#outline-variant] opacity-70 text-sm mb-6">Triathlon / Time Trial • Maat M • 2023 Model</p>
+<!-- Bento Info Grid -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-[#1E1E1E] p-4 rounded-xl flex flex-col gap-2">
+<span class="material-symbols-outlined text-primary">speed</span>
+<span class="text-xs text-[#outline-variant] uppercase font-bold tracking-wider">Kilometers</span>
+<span class="text-lg font-bold text-white">850 km</span>
+</div>
+<div class="bg-[#1E1E1E] p-4 rounded-xl flex flex-col gap-2">
+<span class="material-symbols-outlined text-primary">weight</span>
+<span class="text-xs text-[#outline-variant] uppercase font-bold tracking-wider">Gewicht</span>
+<span class="text-lg font-bold text-white">8.2 kg</span>
+</div>
+</div>
+<!-- Seller Profile Card -->
+<div class="bg-[#1E1E1E] p-6 rounded-[24px] mb-8 relative overflow-hidden group">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img class="w-14 h-14 rounded-full object-cover border-2 border-primary/20" alt="Professional portrait of Jan de Vries, a middle-aged man with short hair and friendly expression, neutral outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLxPA7lQu3_4Q0v_4UiQsUOGDoeM6JAmNo1NCCSDPUgwjW89uMY_usi7jy5HA2z1Xbm6zuca4SoBfc8qQ2JpHmWGM_XnM11K-rOJSSKAMpyUIkyrnDTAVx67i2t33C3ZtA1gOuQsEP_-CNt70s66MPf5YHwi6fuZvmmhoDZhrJ9Y3emlpWnLwyH72Kv8wRb8t-ywTEy4e-PtyWXmIuX6_umTpnbjDynVradTy-PqABsKNMiwb5W5wRzvCc5nNTRTrSnnxSGRh5AjIV"/>
+<div class="absolute -bottom-1 -right-1 bg-tertiary rounded-full p-1 border-2 border-[#1E1E1E]">
+<span class="material-symbols-outlined text-[12px] text-white" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div>
+<h3 class="text-lg font-bold text-white">Jan de Vries</h3>
+<div class="flex items-center gap-1 text-[#tertiary-fixed-dim] text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>4.9 (124 reviews)</span>
+</div>
+</div>
+</div>
+<button class="bg-[#121212] p-2 rounded-full text-[#ebe7e7]">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<p class="text-sm text-[#outline-variant] leading-relaxed mb-4">"Deze fiets is met uiterste zorg onderhouden en heeft enkel droge kilometers gezien. Verkoop wegens overstap naar nieuw model."</p>
+<div class="flex items-center gap-2">
+<span class="bg-[#008730]/10 text-[#65df75] text-[10px] font-bold px-2 py-1 rounded">ID Geverifieerd</span>
+<span class="bg-[#008730]/10 text-[#65df75] text-[10px] font-bold px-2 py-1 rounded">Actief sinds 2018</span>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-4 mb-8">
+<h4 class="text-lg font-bold text-white">Specificaties</h4>
+<p class="text-sm text-[#outline-variant] leading-relaxed">
+                        De Speedmax CF SLX is ontworpen voor maximale aerodynamische efficiëntie. Voorzien van Shimano Ultegra Di2 groepset, DT Swiss ARC 1400 wielen en geïntegreerd hydratatiesysteem. Inclusief originele bon en garantiebewijs.
+                    </p>
+<ul class="space-y-3 pt-4">
+<li class="flex items-center gap-3 text-sm text-[#ebe7e7]">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Carbon Frame Pro Grade</span>
+</li>
+<li class="flex items-center gap-3 text-sm text-[#ebe7e7]">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Elektronisch schakelen (Di2)</span>
+</li>
+<li class="flex items-center gap-3 text-sm text-[#ebe7e7]">
+<span class="material-symbols-outlined text-primary text-[18px]">check_circle</span>
+<span>Hydratatiesysteem inbegrepen</span>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (The Footer Actions) -->
+<nav class="fixed bottom-0 left-0 w-full px-4 pb-8 pt-4 flex justify-between gap-4 bg-white/90 dark:bg-[#121212]/90 backdrop-blur-2xl rounded-t-[24px] z-50 no-border shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<!-- Message Button (Inactive style but customized for task) -->
+<button class="flex flex-1 items-center justify-center gap-2 bg-[#f6f3f2] dark:bg-[#ebe7e7]/10 text-[#4e4644] dark:text-white rounded-xl py-4 mx-2 font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span>Bericht sturen</span>
+</button>
+<!-- Buy Now Button (Active style) -->
+<button class="flex flex-1 items-center justify-center gap-2 bg-gradient-to-br from-[#F15A24] to-[#d1430a] text-white rounded-xl py-4 mx-2 font-['Plus_Jakarta_Sans'] text-sm font-bold tracking-tight hover:brightness-110 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span>Kopen</span>
+</button>
+</nav>
+<!-- Status Bar Mockup -->
+<div class="absolute top-0 w-full px-8 py-2 flex justify-between items-center z-[60] text-white text-[12px] font-bold">
+<span>9:41</span>
+<div class="flex gap-1 items-center">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_full</span>
+</div>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-[60]"></div>
+</div>
+</body></html>

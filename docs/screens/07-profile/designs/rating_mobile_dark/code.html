@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-variant": "#414141",
+              "background": "#121212",
+              "surface-container-high": "#2c2c2c",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-bright": "#1e1e1e",
+              "on-tertiary-container": "#f7fff2",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#ffb59e",
+              "on-background": "#f2f2f2",
+              "on-secondary-container": "#9fcafc",
+              "tertiary-fixed-dim": "#65df75",
+              "error-container": "#ffdad6",
+              "on-secondary": "#ffffff",
+              "primary": "#FF7A4D",
+              "error": "#ba1a1a",
+              "surface-container": "#1e1e1e",
+              "surface": "#121212",
+              "primary-container": "#d1430a",
+              "tertiary-container": "#008730",
+              "on-primary": "#ffffff",
+              "tertiary": "#006b24",
+              "surface-container-highest": "#333333",
+              "tertiary-fixed": "#82fc8e",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#842500",
+              "surface-dim": "#0e0e0e",
+              "on-primary-container": "#fffbff",
+              "outline-variant": "#5a4139",
+              "surface-container-lowest": "#181818",
+              "primary-fixed": "#ffdbd0",
+              "secondary-fixed-dim": "#9fcafc",
+              "secondary-fixed": "#d0e4ff",
+              "outline": "#8e7067",
+              "inverse-surface": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-surface-variant": "#a1a1a1",
+              "on-surface": "#f2f2f2",
+              "on-primary-fixed": "#3a0b00",
+              "surface-tint": "#F15A24",
+              "on-error": "#ffffff",
+              "on-secondary-fixed-variant": "#164974",
+              "inverse-on-surface": "#1c1b1b",
+              "secondary-container": "#164974",
+              "on-tertiary-fixed": "#002106",
+              "surface-container-low": "#1e1e1e",
+              "secondary": "#34618d",
+              "on-secondary-fixed": "#001d35"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121212; color: #f2f2f2; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled-icon { font-variation-settings: 'FILL' 1; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<header class="fixed top-0 w-full z-50 bg-[#121212]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-6 h-16 w-full max-w-7xl mx-auto">
+<h1 class="text-xl font-bold text-primary tracking-tight">Beoordeling</h1>
+<button class="text-[#f2f2f2] hover:bg-[#1e1e1e] transition-all duration-300 p-2 rounded-full scale-95 active:scale-90">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-32 px-6 max-w-lg mx-auto w-full">
+<div class="mb-10 text-center">
+<div class="relative inline-block mb-6">
+<img alt="Seller Profile" class="w-24 h-24 rounded-full object-cover border-4 border-[#1e1e1e] shadow-xl" alt="Close-up portrait of a friendly woman with a warm smile, soft cinematic studio lighting on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNeLMThiYuU4yIGGadROYIJU2t_95_YyY8fSGEsOoRszicQU2jEswyss0xZkmwJHCLtbVad19GJHYHJnAtzBwsoovn4S6b1kbK2MFzS_IxEDArMIpqjgTUi1slwY3ZNGLDQoXwg9dHhh1DYORQYvVppq5eFkwIicNuY4phcZfwa9qW54JVV1V5fx7vTZbeQZEb4YcvxzD3rFyeQadHrlSb8Wq6RXz48eEdiSMLihM6lkW_umr_ny3o3zfuEWJEs6pDaztxVZeBM0Gu"/>
+<div class="absolute -bottom-1 -right-1 bg-tertiary-container p-1 rounded-full border-2 border-[#121212]">
+<span class="material-symbols-outlined text-white text-sm filled-icon" data-icon="verified">verified</span>
+</div>
+</div>
+<h2 class="text-2xl font-extrabold tracking-tight mb-2">Hoe was je ervaring met Sophie?</h2>
+<p class="text-on-surface-variant body-lg">Je kocht: <span class="text-on-surface font-semibold">Vintage Designer Stoel</span></p>
+</div>
+<div class="flex justify-center gap-3 mb-10">
+<button class="text-primary scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-5xl filled-icon" data-icon="star">star</span>
+</button>
+<button class="text-primary scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-5xl filled-icon" data-icon="star">star</span>
+</button>
+<button class="text-primary scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-5xl filled-icon" data-icon="star">star</span>
+</button>
+<button class="text-primary scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-5xl filled-icon" data-icon="star">star</span>
+</button>
+<button class="text-[#a1a1a1] opacity-40 scale-110 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-5xl" data-icon="star">star</span>
+</button>
+</div>
+<div class="space-y-6">
+<div class="bg-[#1e1e1e] p-5 rounded-xl border border-white/5">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="edit_note">edit_note</span>
+<label class="text-sm font-bold uppercase tracking-wider text-[#a1a1a1]">Schrijf een beoordeling</label>
+</div>
+<textarea class="w-full bg-[#121212] border-none rounded-lg p-4 text-[#f2f2f2] focus:ring-2 focus:ring-[#F15A24]/40 min-h-[140px] placeholder:text-[#5a4139]" placeholder="Wat vond je van de communicatie en het product?"></textarea>
+</div>
+<div class="bg-secondary-container/20 p-5 rounded-xl flex items-start gap-4">
+<div class="bg-secondary-container/30 p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#9fcafc]" data-icon="shield_check">shield</span>
+</div>
+<div>
+<h4 class="font-bold text-[#9fcafc] mb-1">Veilig &amp; Transparant</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Jouw feedback helpt onze community van meer dan 2 miljoen gebruikers om veilig te handelen op ons platform.</p>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 w-full p-6 bg-[#121212]/95 backdrop-blur-md">
+<div class="max-w-lg mx-auto">
+<button class="w-full py-4 px-6 bg-gradient-to-r from-[#F15A24] to-[#d1430a] text-white rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+                Plaats beoordeling
+                <span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-on-surface-variant mt-4 opacity-60">
+                Door te plaatsen ga je akkoord met onze community richtlijnen.
+            </p>
+</div>
+</footer>
+</body></html>

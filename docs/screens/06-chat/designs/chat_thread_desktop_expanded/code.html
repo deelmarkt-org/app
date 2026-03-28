@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeelMarkt | Berichten</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#d0e4ff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#842500",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#9fcafc",
+                        "primary-fixed-dim": "#ffb59e",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#65df75",
+                        "surface-bright": "#fcf9f8",
+                        "surface-container-low": "#f6f3f2",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "background": "#fcf9f8",
+                        "on-surface": "#1c1b1b",
+                        "on-surface-variant": "#5a4139",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#001d35",
+                        "on-secondary-container": "#285782",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#e2bfb4",
+                        "secondary-container": "#a1cdff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-container-highest": "#e5e2e1",
+                        "tertiary-container": "#008730",
+                        "on-primary-fixed": "#3a0b00",
+                        "secondary": "#34618d",
+                        "inverse-surface": "#313030",
+                        "on-tertiary-container": "#f7fff2",
+                        "tertiary": "#006b24",
+                        "inverse-primary": "#ffb59e",
+                        "tertiary-fixed": "#82fc8e",
+                        "surface-container": "#f0edec",
+                        "surface": "#fcf9f8",
+                        "primary": "#F15A24",
+                        "on-tertiary-fixed-variant": "#00531a",
+                        "surface-dim": "#dcd9d9",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#d1430a",
+                        "on-tertiary-fixed": "#002106",
+                        "on-background": "#1c1b1b",
+                        "surface-variant": "#e5e2e1",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-tint": "#ad3300",
+                        "surface-container-high": "#ebe7e7",
+                        "outline": "#8e7067",
+                        "on-secondary-fixed-variant": "#164974"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e2e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Top Navigation (Shell Implementation) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-zinc-900/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold text-primary dark:text-primary">DeelMarkt</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-zinc-500 hover:bg-zinc-100 p-2 rounded-full transition-colors">call</button>
+<button class="material-symbols-outlined text-zinc-500 hover:bg-zinc-100 p-2 rounded-full transition-colors">videocam</button>
+<div class="h-8 w-8 rounded-full bg-zinc-200 overflow-hidden ring-2 ring-orange-500/20">
+<img alt="Seller's avatar showing online status" class="w-full h-full object-cover" alt="Close up portrait of a friendly man with short brown hair wearing a blue sweater, clean studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAPqgM2SPkfI7FxnLop5xFpUCiaGp29R226jlzAlKazXBTgv92cIJYgOtYgVDDZcw0px1JQAwErz0r8vVVxwiGIlupDGtKyQEY3NJVl5xqy-UVjCOU76YvGHqafw2ZfsnLADnp0EMLUYemuFml6JdOxF2UW47vmXJxpaOMAwFDJWEIsVEEmukwotgXEDXLQYLh0Rn-YaMhqpC9QpAd9CUdBQdWDDocatgCcaxSvqPEZ4N5E4wlbvuwgNyrTremwVZOoVCxBGrtAjJZ"/>
+</div>
+<button class="material-symbols-outlined text-zinc-500">more_vert</button>
+</div>
+</header>
+<div class="flex h-screen pt-16">
+<!-- Side Navigation Bar (Shell Implementation) -->
+<nav class="hidden lg:flex flex-col fixed left-0 top-0 h-screen py-8 bg-surface-container-low dark:bg-zinc-900 h-full w-20 border-r-0 z-40 items-center">
+<div class="mb-10 text-primary">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">local_mall</span>
+</div>
+<div class="flex flex-col gap-8">
+<!-- Messages Active -->
+<a class="text-primary dark:text-primary font-semibold border-r-4 border-primary pr-2 transition-all cubic-bezier(0.23,1,0.32,1)" href="#">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">chat</span>
+</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">storefront</span>
+</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</a>
+<a class="text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800 p-2 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+</a>
+</div>
+</nav>
+<!-- Main Layout Wrapper -->
+<main class="flex flex-1 ml-20">
+<!-- Conversation List (320px) -->
+<section class="w-80 flex flex-col bg-surface-container-low border-r border-transparent">
+<div class="p-6">
+<h1 class="text-display-sm font-bold tracking-tighter text-on-surface mb-1">Conversations</h1>
+<p class="text-body-sm text-on-surface-variant font-medium">Active Dutch Trade</p>
+<div class="mt-6 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest rounded-xl border-none focus:ring-2 focus:ring-orange-500/20 text-sm placeholder:text-zinc-400" placeholder="Zoek in berichten..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar px-2 space-y-1">
+<!-- Active Chat -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-highest rounded-2xl cursor-pointer transition-colors">
+<div class="relative">
+<img alt="Jan de Vries" class="w-12 h-12 rounded-full bg-white" alt="Avatar of Jan de Vries, friendly man with brown hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-aFjDdUzWd6-IwhhOVwLJBg9yK5ioqbvbjYOCqalUSLcQpRK3sxH4Ecj5yPf8bisiv0y-a5nN1SQvOTmmqb1k12tFvQtE4eE_Gv2zrSzEnkTcE_IpB0eP_wV3BjVEIH37RfxjeFfVC0z8bY8v3AEIK7pU88mEiaTLJxbVdCNK1dJuypFZSwRWlYkLmDtx2tlqfPv0c2Q1PVtDebVsTA1ahXqFpaCcc3ATxWEc2eVDVvZWZSxyZbGwUWw_ZPFHE9VaBG6T7uUZ_z3-"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-bold text-on-surface truncate">Jan de Vries</span>
+<span class="text-[10px] text-zinc-500 font-medium">14:20</span>
+</div>
+<p class="text-sm text-primary font-bold truncate">Bod: € 120,00</p>
+</div>
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover" alt="Vintage mid-century modern wooden coffee table in a bright minimalist living room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7tT15hTuwTDJdCAaDKWvINxlEaZ3KFy-zZd1kAUF1t1FNGWOs_ETbDM1rU8XfLYdJMPYUEUj6fDMoCk3-lyxDbjQ20oSvGExJJJH9TzLcpRIrMk2HXfvKevmvzol1N53IkUboPMegyTBxauHAIwYlT8taKah0CvV1vb0Cvh259LgQoljd-1UVR6LdoTlWqPVEDd8ybUOSjNWom3T3rd0WiU6BoA2PB2p4f4eIDM1fvhXf7DY6qf9XnTyd0Xq3Pszvp6nruSOFQrI_"/>
+</div>
+</div>
+<!-- Unread Chat -->
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-colors">
+<div class="relative">
+<img alt="Sanne" class="w-12 h-12 rounded-full bg-white" alt="Avatar of Sanne, young woman with blonde hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSiJLvtv6vkX0l7-0yLiCKMhSA681kQ6ZuX-CBa2YGhwV-xR85ELw6HR76o2paJLleqI5Quwb2hf7o7y5qcuI-Qd9Ok1teizwNtoDexznJEoqtCa3ZDgyB-Rp6FyZetlG03l1NjLKfyjv9RoyuFolEN202KT2BDgxe04ie9L08QWw8wNAxIX3X5YPPgrFE7_v2sBS2ng3RwsdM1oFw8BQ_xDUpm2BYd1CWmPrg86zs33qGxCv26mGUgJFRRTfdZ5O6odtrPuCh76rE"/>
+<div class="absolute top-0 right-0 w-3 h-3 bg-orange-600 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-bold text-on-surface truncate">Sanne Bakker</span>
+<span class="text-[10px] text-zinc-500 font-medium">12:05</span>
+</div>
+<p class="text-sm font-bold text-on-surface truncate">Is de fiets nog beschikbaar?</p>
+</div>
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover" alt="Classic matte black urban commuter bicycle leaning against a brick wall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHRoM6qnRL6e3S1wqnajxqrIVTSj31865cu5fmNb9kTbKYZFfeFGpOQ9KXZ15rMB6RxsPgXh91wRLwx8WdsQPhjEUmR1wgMsDY4WgUhzDbpI9osgphZwlcp8CwFdtkt8ac902U1cH1vCcPalM5KSsR2fQt-EW_Ofu5HfFGktBCiRAEp6u9fqjb4uw34FPFOkmzV7yhEOm4uLVBGLlmq7ArZ9CNPKZktU6lujs8LAlHmfwuRHuzef4HjNRWHA0cG6UTeB-qMPOXdRt9"/>
+</div>
+</div>
+<!-- Other Chats -->
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-colors opacity-70">
+<img alt="Pieter" class="w-12 h-12 rounded-full bg-white" alt="Avatar of Pieter, older man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYSwrghbUjIHNsbWJ5H_3AxSRwEEdoHzFUAFb8h_9gCtyux2lmlN3a9Ym_qS-fpSCy7ArUZdr_ykKRVkyRVr2dUgKZNZMDtTtrxmzA73ZCFQfFcyMoZkD7EI8OAklh_B2eHvPKv9yaswKbQLAAb5-wRCnnkZu2MQ3w37sg_gFsnh8Y554URpWR2xGVY3pXk1mcP_HUj1OmZW2Ea2iNxZ1dWBgfSxQnGY9tp0aRynjDGyGAAXKg9KSVcQ-PXFkO8Dlql5L1LLubQKl3"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-medium text-on-surface truncate">Pieter Post</span>
+<span class="text-[10px] text-zinc-500">Gisteren</span>
+</div>
+<p class="text-sm text-on-surface-variant truncate">Bedankt voor de snelle verzending!</p>
+</div>
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 grayscale">
+<img alt="Product" class="w-full h-full object-cover" alt="Minimalist white designer wristwatch with leather strap on soft grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6GMiMCGPgkwzrl2P_G2zv5dnrZOycuFopKlZ53wD4cE07H5893c0Ew_SNuc00zpggLcJOb22sHCmYfRpA4r-LfeUU6mjP-Py4NV7Yc8Ts7lC6bDcGi51SbBvTrfNNgEhOsFlgB54xQNARKgICnH03oUa3_SOuSN8w4YbHLlT_Ge_XLjWehOOXJhx7Gs3tSiVM7Aj3w_tVvT6PHlGnzAWhEUejf3KGPR0aShldYOVIAOXlXrFeKMA4y4HH_Qqp9EcmnFkZn2uNJgWz"/>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 hover:bg-surface-container-high rounded-2xl cursor-pointer transition-colors opacity-70">
+<img alt="Lisa" class="w-12 h-12 rounded-full bg-white" alt="Avatar of Lisa, smiling woman with dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkkhUYAdVKBRtIhSJAOIbe1ijet9Q3psqen9GH1m9bkfqNe9r0EMqTu6u2YlpgI0-uJu-Qy3-ZkhtCNP3kudHHSqXPhjyQ_qi3owQLqvu3VNbvlt0aLtIMAHOOQeQbUJUKWaOFOvZqR9x3l6yyvSusBBRkd-Yxq7PU7FiJLn_Be0_EiVWJHj9QrJ1CpQ9t_qItzNfVkNFd6JOT7Wk6PXITC89mJb2QQMakfFjcMi7NAvVOwifS4Jzv23OfdcAzRiP1ZS2j2fE7t69S"/>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline">
+<span class="font-medium text-on-surface truncate">Lisa Meijer</span>
+<span class="text-[10px] text-zinc-500">Maandag</span>
+</div>
+<p class="text-sm text-on-surface-variant truncate">Helaas, te laat gezien.</p>
+</div>
+<div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 grayscale">
+<img alt="Product" class="w-full h-full object-cover" alt="Professional studio headphones on a wooden desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkz6lNIw9C_-NW55J-LMXOZMsSWNmzDD07xd-KKZuWVEHqJ-KZC5vTe_fWyCQFx4lEXEwpw6w0cJCo-EbXQJyA8_DYksbftnSOiqbWySa3HKHv2jCRL5vx8sxB0MVPOhhiYZYjCu42TxRE4VpXeCnbCr7oGhVbnFpa-KSFIIr3TP3ITgtG8NLfyaRVu0BRL42cGHswMtbUhiPwyanhZMUiqBhCzLrqznTaQYKH5ZxHNyGMOqA0ArFgT3hwZTGTbHsDBmycUYWOf1et"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Thread (Fluid) -->
+<section class="flex-1 flex flex-col bg-surface relative">
+<!-- Thread Header -->
+<div class="h-20 border-b border-transparent px-8 flex items-center justify-between bg-surface/40 backdrop-blur-md sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Jan" class="w-10 h-10 rounded-full bg-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4ObieR9QYoxz64vVnVaF_qqkcQUeykZd1eese0Yy3pbw_JuAO-0NRik5DyZrRgjopSVHcqeEy4QAx5FXC6AwZsPbB5jo7ixvVz7KRqKD7MLSA6fJBpguy-k7EsCY1a81tEAw_x9deHDSBAyyGHkeY6sZ-p0TFB4CQg7Y3XlLJHssq_rRaoa-7mSF9WbUub15ACC78rONRniENDhJxYdzDR7j5zNlwZyddxWjODZinByzYp0dJWNlbKRAbEMCH0LRVIZCYhLdbGSA-"/>
+<div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-tertiary border-2 border-surface rounded-full"></div>
+</div>
+<div>
+<h2 class="font-bold text-on-surface">Jan de Vries</h2>
+<p class="text-xs text-tertiary font-medium">Online</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface text-sm font-bold rounded-xl hover:bg-surface-container-highest transition-colors">Advertentie bekijken</button>
+<button class="material-symbols-outlined p-2 text-zinc-400 hover:text-primary transition-colors">flag</button>
+</div>
+</div>
+<!-- Chat Body -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="px-4 py-1 bg-surface-container-low text-[10px] font-bold text-zinc-500 rounded-full uppercase tracking-widest">Vandaag</span>
+</div>
+<!-- Product Context Card -->
+<div class="flex justify-center">
+<div class="w-full max-w-lg bg-surface-container-lowest rounded-3xl p-4 flex gap-4 shadow-[0_4px_24px_rgba(0,0,0,0.03)] border border-outline-variant/10">
+<img alt="Coffee Table" class="w-24 h-24 rounded-2xl object-cover" alt="Close up of a premium wooden coffee table with elegant grain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA78Kr5p-Ij2VLj4tLHJ685HLWac6hIqL6tGWF-oIrIs1l0lqwHIw3_-T5GJunCVQeDd53oA06w6BLXoWlvqnqQkC4Ef7PJAq73mrFso1Sc1W2I7GvBKNi1EQe3nrArXECwJ3nu3mCizuzR-gEU7TnGnKpmwh0c5Rrgyzhv47yaU3QFO-ZZrU29SECQfjVGsggp7ObLzTmxIZwNPaqYcJKKSflcTg-_BFYzn-bGSPEkTAn0yOS6miW0wI_jfqj8oAhaiBsCmhaJDTCx"/>
+<div class="flex flex-col justify-center flex-1">
+<h3 class="font-bold text-on-surface">Vintage Eiken Salontafel</h3>
+<p class="text-headline-sm text-secondary font-bold mt-1">€ 145,00</p>
+<p class="text-xs text-zinc-500 mt-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">location_on</span> Utrecht, NL</p>
+</div>
+</div>
+</div>
+<!-- Message Received -->
+<div class="flex items-start gap-3">
+<img alt="Jan" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmHXYdzqa4j5rE-8fPeUmjp8iIb6Uug0a3-uuwxEJ3AAJUkP-V7SHUMWMjBMKWuJ5bEHjwZvPmkRY9WEQR1ivy36XdS6oh4o3pZepvoAq9u3zh3wlLz6MCzfeEbsqDiLmlpqMognv-rPnb8UIWCHAQfRnTN3FWKTOZXMpMxKyUvNfCihvyjhCLhuoMK0NhYYhwENESPvOV3EF3kG_v8d2vcBZJwEOGGD4op-fyyzAPDyTLqTu6_bvNCRpWce-AKJYYX2IrbPSc27LZ"/>
+<div class="flex flex-col gap-1 max-w-[70%]">
+<div class="bg-surface-container-high p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed">
+                                Goedemiddag! Prachtige tafel. Is deze nog beschikbaar voor ophalen dit weekend?
+                            </div>
+<span class="text-[10px] text-zinc-400 ml-1">14:02</span>
+</div>
+</div>
+<!-- Message Sent -->
+<div class="flex flex-col items-end gap-1">
+<div class="bg-primary text-white p-4 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[70%] shadow-lg shadow-primary/20">
+                            Zeker! Ik ben zaterdag de hele dag thuis. Heb je een specifiek tijdstip in gedachten?
+                        </div>
+<div class="flex items-center gap-1 mr-1">
+<span class="text-[10px] text-zinc-400">14:05</span>
+<span class="material-symbols-outlined text-xs text-primary" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+<!-- Offer Card (Accepted State) -->
+<div class="flex justify-center">
+<div class="w-full max-w-sm bg-surface-container-lowest border-2 border-tertiary/20 rounded-3xl overflow-hidden shadow-xl">
+<div class="p-6 text-center">
+<div class="w-16 h-16 bg-tertiary-fixed rounded-full flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-tertiary text-3xl" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<h4 class="font-bold text-on-surface text-lg">Bod van Jan de Vries</h4>
+<p class="text-3xl font-black text-secondary my-2">€ 120,00</p>
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-tertiary/10 text-tertiary rounded-full mt-2 font-bold text-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Geaccepteerd ✓
+                                </div>
+</div>
+<div class="bg-surface-container-low p-4 text-center">
+<p class="text-xs text-on-surface-variant font-medium">De betaling wordt nu verwerkt via DeelMarkt Secure.</p>
+</div>
+</div>
+</div>
+<!-- Last Message Received -->
+<div class="flex items-start gap-3">
+<img alt="Jan" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDRZTc2mKco_dBfvnloVbPy9hB7Rj0EIXOVgO78O0XnYcqxzWfhne2zvePqhiUXjfA5EGul-PO1WXlom-8oalnRC6nL1QnXvgUvPPi-8D6ql8yC8jZYzCQjlmzLBcMHjhCcQA3hBbWwkCZWdvJmJ4AsbIXI5Uq7qOGbRt5DDt5JgT2BeGUMCuCqNbjBo8VbxjAOLqQRdZf1ROJ6axJ_qRvv4W69I9VRidtpUxarxoRsVkn2t5j8t8DBnNMV5jql0wAIriIEZRccviu"/>
+<div class="flex flex-col gap-1 max-w-[70%]">
+<div class="bg-surface-container-high p-4 rounded-2xl rounded-tl-none text-sm leading-relaxed">
+                                Geweldig, bedankt voor het accepteren! Ik kom zaterdag rond 11:00 langs. Kun je het adres sturen?
+                            </div>
+<span class="text-[10px] text-zinc-400 ml-1">14:20</span>
+</div>
+</div>
+</div>
+<!-- Chat Input Footer -->
+<div class="p-6 bg-surface/80 backdrop-blur-xl">
+<div class="max-w-4xl mx-auto flex items-end gap-3 bg-surface-container-low p-2 rounded-2xl border border-outline-variant/10">
+<button class="material-symbols-outlined p-3 text-zinc-500 hover:text-primary transition-colors">add_circle</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 resize-none custom-scrollbar min-h-[44px]" placeholder="Typ je bericht..." rows="1"></textarea>
+<button class="material-symbols-outlined p-3 text-zinc-500 hover:text-primary transition-colors">sentiment_satisfied</button>
+<button class="w-11 h-11 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="mt-4 flex justify-center gap-6">
+<button class="flex items-center gap-2 text-[11px] font-bold text-zinc-500 hover:text-primary transition-colors uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">image</span> Stuur Foto
+                        </button>
+<button class="flex items-center gap-2 text-[11px] font-bold text-zinc-500 hover:text-primary transition-colors uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">location_on</span> Locatie Delen
+                        </button>
+<button class="flex items-center gap-2 text-[11px] font-bold text-zinc-500 hover:text-primary transition-colors uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm">payments</span> Betaalverzoek
+                        </button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Mobile Navigation (Shell Implementation) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-4 pb-safe bg-surface/80 dark:bg-zinc-900/80 backdrop-blur-2xl z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">home</span>
+<span class="font-plus-jakarta text-[10px] font-bold tracking-tight uppercase mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary bg-orange-50 dark:bg-orange-900/20 rounded-xl px-4 py-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+<span class="font-plus-jakarta text-[10px] font-bold tracking-tight uppercase mt-1">Inbox</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">local_mall</span>
+<span class="font-plus-jakarta text-[10px] font-bold tracking-tight uppercase mt-1">Selling</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
+<span class="material-symbols-outlined">menu</span>
+<span class="font-plus-jakarta text-[10px] font-bold tracking-tight uppercase mt-1">Menu</span>
+</div>
+</nav>
+</body></html>

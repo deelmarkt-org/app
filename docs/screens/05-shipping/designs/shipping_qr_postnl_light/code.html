@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#82fc8e",
+              "on-error-container": "#93000a",
+              "error": "#ba1a1a",
+              "on-surface-variant": "#5a4139",
+              "on-background": "#1c1b1b",
+              "secondary-fixed": "#d0e4ff",
+              "on-secondary-fixed-variant": "#164974",
+              "surface-variant": "#e5e2e1",
+              "surface-container": "#f0edec",
+              "outline": "#8e7067",
+              "on-tertiary-fixed": "#002106",
+              "inverse-primary": "#ffb59e",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#ffb59e",
+              "background": "#fcf9f8",
+              "secondary": "#34618d",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dcd9d9",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#1c1b1b",
+              "on-error": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "surface-tint": "#ad3300",
+              "primary": "#F15A24",
+              "on-primary-fixed-variant": "#842500",
+              "inverse-surface": "#313030",
+              "tertiary": "#006b24",
+              "primary-fixed": "#ffdbd0",
+              "on-secondary": "#ffffff",
+              "surface-container-highest": "#e5e2e1",
+              "on-secondary-fixed": "#001d35",
+              "on-tertiary-fixed-variant": "#00531a",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container-low": "#f6f3f2",
+              "primary-container": "#d1430a",
+              "secondary-fixed-dim": "#9fcafc",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-container": "#008730",
+              "surface-container-high": "#ebe7e7",
+              "on-tertiary-container": "#f7fff2",
+              "inverse-on-surface": "#f3f0ef",
+              "on-secondary-container": "#285782",
+              "surface": "#fcf9f8",
+              "secondary-container": "#a1cdff",
+              "on-primary-container": "#fffbff"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- Device Frame: iPhone 15 Pro -->
+<div class="relative mx-auto border-[8px] border-inverse-surface rounded-[3rem] h-[852px] w-[393px] shadow-2xl bg-background overflow-hidden mt-8 mb-8">
+<!-- TopAppBar (From JSON) -->
+<nav class="fixed top-0 w-[377px] z-50 bg-surface/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary active:scale-95 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer" data-icon="arrow_back">arrow_back</span>
+<h1 class="text-xl font-bold text-[#1b1b1b] font-['Plus_Jakarta_Sans'] tracking-[-0.02em]">Pakket verzenden</h1>
+</div>
+<span class="material-symbols-outlined text-[#1b1b1b]/60 hover:opacity-80 transition-opacity cursor-pointer" data-icon="share">share</span>
+</div>
+</nav>
+<!-- Content Area -->
+<main class="pt-20 pb-28 px-6 overflow-y-auto h-full scrollbar-hide">
+<!-- Trust Banner -->
+<section class="mb-6">
+<div class="flex items-center gap-3 p-3 rounded-xl border border-tertiary/20 bg-tertiary-fixed/10">
+<div class="bg-tertiary-container p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-container text-sm" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<p class="text-[13px] font-semibold text-tertiary">Beschermd door DeelMarkt Escrow</p>
+</div>
+</section>
+<!-- Main QR Card -->
+<section class="relative mb-6">
+<div class="bg-surface-container-lowest rounded-3xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-center flex flex-col items-center">
+<!-- PostNL Badge -->
+<div class="mb-6 flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-2xl bg-[#ED6B00] flex items-center justify-center shadow-lg">
+<span class="text-white font-black text-xs italic tracking-tighter">postnl</span>
+</div>
+<span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant/60">Verzendlabel</span>
+</div>
+<!-- QR Code Placeholder -->
+<div class="relative p-4 bg-white rounded-2xl border-4 border-surface-container mb-6">
+<img alt="PostNL Shipping QR Code" class="w-[200px] h-[200px]" alt="A sharp, black and white 2D QR code displayed on a clean white square background, professional and high contrast for easy scanning" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB3o664I7n4nBwt7RP3nTbCjljlGXWidilw4LYUhVvetuGBqCx4L3vXyXfG1KX6wLPLwkqjea5e6Toq6dkTt87Sbi8UDQ4JCge_Y6nIoNqnWsgZVvCPGYJ1BMAXFZqk7Be5L63CJkSxb5Ipd7Tss_473q8Y3ano1AjFM6q8pKM5VZpOaIBgu19mV-PGMIWfZzWiEZdlxwguKXhF_M249hGSLVTWLzz9Rv64-SqWvncI3I5988QHTw5M8rpqVW3H5J0EcOIAQ7xmXvG"/>
+<!-- Decorative Corners -->
+<div class="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
+<div class="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
+<div class="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
+</div>
+<!-- Tracking Info -->
+<div class="space-y-1">
+<p class="text-sm font-medium text-on-surface-variant">Track &amp; Trace</p>
+<p class="text-2xl font-extrabold tracking-tight text-on-surface">3SDEVC1234567</p>
+</div>
+<!-- Deadline Badge -->
+<div class="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-error-container/40 rounded-full">
+<span class="material-symbols-outlined text-on-error-container text-base" data-icon="schedule">schedule</span>
+<span class="text-[13px] font-bold text-on-error-container">Verzend voor 31 mrt 2026</span>
+</div>
+</div>
+<!-- Asymmetric Decorative Element -->
+<div class="absolute -z-10 -right-4 -top-4 w-32 h-32 bg-secondary/5 rounded-full blur-2xl"></div>
+</section>
+<!-- Instruction Card -->
+<section class="mb-8">
+<div class="bg-secondary-container/20 rounded-2xl p-5 flex gap-4 items-start border border-secondary/10">
+<div class="bg-secondary text-on-secondary p-2 rounded-xl flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-lg" data-icon="info" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<div class="space-y-1">
+<h4 class="font-bold text-secondary text-sm">Geen printer nodig</h4>
+<p class="text-on-secondary-container text-sm leading-relaxed">
+                            Scan deze code bij een PostNL servicepunt. Zij printen het verzendlabel voor je uit.
+                        </p>
+</div>
+</div>
+</section>
+<!-- Primary Action -->
+<button class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-2xl shadow-xl shadow-primary/20 active:scale-95 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span class="font-bold text-lg tracking-tight">Zoek servicepunt</span>
+</button>
+</main>
+<!-- BottomNavBar (From JSON) -->
+<nav class="fixed bottom-0 left-0 w-[377px] bg-surface/80 backdrop-blur-xl z-50 rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.06)]">
+<div class="flex justify-around items-center px-4 pb-8 pt-3">
+<!-- Market -->
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40 hover:text-primary active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Market</span>
+</div>
+<!-- Inbox -->
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40 hover:text-primary active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Inbox</span>
+</div>
+<!-- Shipping (ACTIVE) -->
+<div class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="qr_code_2" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Shipping</span>
+</div>
+<!-- Profile -->
+<div class="flex flex-col items-center justify-center text-[#1b1b1b]/40 hover:text-primary active:scale-90 transition-transform duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold">Profile</span>
+</div>
+</div>
+</nav>
+<!-- Status Bar Mimic -->
+<div class="absolute top-0 w-full h-8 flex justify-between items-center px-8 z-50">
+<span class="text-[12px] font-bold">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- Dynamic Island Mimic -->
+<div class="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-[60]"></div>
+</div>
+</body></html>

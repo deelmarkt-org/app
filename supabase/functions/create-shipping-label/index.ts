@@ -2,7 +2,7 @@
  * B-25 + B-26: Create Shipping Label Edge Function
  *
  * Creates a shipping label via Ectaro Partner API (primary, cheaper rates)
- * with direct PostNL Shipment V4 as failover.
+ * with direct PostNL Shipment v2 as failover.
  *
  * POST /functions/v1/create-shipping-label
  * Auth: service_role (called from app via authenticated endpoint)
@@ -128,15 +128,35 @@ async function createViaEctaro(
 
 // --- PostNL Shipment V4 API (failover for PostNL labels) ---
 
+/** PostNL base URL — sandbox or production based on POSTNL_ENV. */
+function getPostNLBaseUrl(): string {
+  const postnlEnv = Deno.env.get("POSTNL_ENV");
+  if (!postnlEnv) {
+    console.warn("[create-shipping-label] POSTNL_ENV not set — defaulting to sandbox. Set POSTNL_ENV=production for live API.");
+  }
+  const isSandbox = postnlEnv !== "production";
+  return isSandbox
+    ? "https://api-sandbox.postnl.nl"
+    : "https://api.postnl.nl";
+}
+
 async function createViaPostNL(
   input: CreateLabelInput,
   apiKey: string,
 ): Promise<LabelResult> {
-  // TODO: Replace with real PostNL contract values from Vault after contract approval
+  // PostNL account details from env — never hardcoded (§9)
+  const customerCode = Deno.env.get("POSTNL_CUSTOMER_CODE");
+  const customerNumber = Deno.env.get("POSTNL_CUSTOMER_NUMBER");
+  const collectionLocation = Deno.env.get("POSTNL_COLLECTION_LOCATION");
+  if (!customerCode || !customerNumber || !collectionLocation) {
+    throw new Error("Missing PostNL account config: POSTNL_CUSTOMER_CODE, POSTNL_CUSTOMER_NUMBER, POSTNL_COLLECTION_LOCATION");
+  }
+
   const payload = {
     Customer: {
-      CustomerCode: "DEVC",
-      CustomerNumber: "11223344",
+      CustomerCode: customerCode,
+      CustomerNumber: customerNumber,
+      CollectionLocation: collectionLocation,
     },
     Message: {
       MessageID: crypto.randomUUID(),
@@ -171,11 +191,10 @@ async function createViaPostNL(
     }],
   };
 
-  const baseUrl = apiKey.startsWith("test_")
-    ? "https://api-sandbox.postnl.nl"
-    : "https://api.postnl.nl";
+  const baseUrl = getPostNLBaseUrl();
 
-  const resp = await fetch(`${baseUrl}/v4/shipment`, {
+  // PostNL v4 not yet available — use v2 per PostNL support (2026-03-26)
+  const resp = await fetch(`${baseUrl}/v2/shipment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -186,7 +205,7 @@ async function createViaPostNL(
 
   if (!resp.ok) {
     const text = await resp.text();
-    throw new Error(`PostNL Shipment V4 failed (${resp.status}): ${text}`);
+    throw new Error(`PostNL Shipment v2 failed (${resp.status}): ${text}`);
   }
 
   const data = await resp.json();
@@ -214,9 +233,7 @@ async function registerPostNLTracking(
   postnlKey: string,
 ): Promise<void> {
 
-  const baseUrl = postnlKey.startsWith("test_")
-    ? "https://api-sandbox.postnl.nl"
-    : "https://api.postnl.nl";
+  const baseUrl = getPostNLBaseUrl();
 
   // Webhook URL where PostNL sends tracking events
   const webhookUrl =
@@ -324,8 +341,9 @@ Deno.serve(async (req: Request) => {
     }
 
     // Store label
-    const shipByDeadline = new Date();
-    shipByDeadline.setDate(shipByDeadline.getDate() + 5);
+    // UTC is acceptable — PostNL API expects UTC timestamps. Dutch timezone offset
+    // (CET/CEST +1/+2h) does not affect the 5-day shipping window significantly.
+    const shipByDeadline = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
 
     const { error: insertError } = await supabase
       .from("shipping_labels")

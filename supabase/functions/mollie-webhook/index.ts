@@ -15,7 +15,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
-import { getRedisCredentials, checkIdempotency } from "../_shared/redis.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
+import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -120,15 +121,24 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error("[mollie-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    return jsonResponse({ error: "Internal configuration error" }, 500);
+  }
   const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+  // Hoisted for catch-block rollback — req.body is consumed by req.text(),
+  // so we must capture these before entering the try block.
+  let rawBody = "";
+  let molliePaymentId = "unknown";
 
   try {
     // 1. Read and validate body
-    const rawBody = await req.text();
+    rawBody = await req.text();
     const payload = WebhookPayloadSchema.parse(JSON.parse(rawBody));
-    const molliePaymentId = payload.id;
+    molliePaymentId = payload.id;
 
     // 2. Authentication: HMAC for external Mollie calls, service_role for DLQ retries
     const isDlqRetry = req.headers.get("x-dlq-retry") === "true";
@@ -159,7 +169,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     // 4. Fetch payment details from Mollie
-    const mollieApiKey = await getVaultSecret(supabase, "mollie_test_api_key");
+    const mollieVaultKey = Deno.env.get("MOLLIE_VAULT_KEY") ?? "mollie_api_key";
+    const mollieApiKey = await getVaultSecret(supabase, mollieVaultKey);
     const payment = await fetchMolliePayment(molliePaymentId, mollieApiKey);
     const transactionId = payment.metadata?.transaction_id;
 
@@ -273,26 +284,31 @@ Deno.serve(async (req: Request): Promise<Response> => {
   } catch (error) {
     console.error(`[mollie-webhook] Error: ${(error as Error).message}`);
 
+    // Rollback idempotency key so Mollie can retry (CRITICAL: without this, retries are blocked for 24h)
+    const rollbackKey = `mollie:webhook:${molliePaymentId}`;
+    try {
+      const redisCreds = getRedisCredentials();
+      await rollbackIdempotency(redisCreds, rollbackKey);
+    } catch {
+      // Best-effort rollback
+    }
+
     // Record failure for DLQ — preserve existing state
     try {
-      const bodyText = await req.clone().text().catch(() => "");
-      const parsed = JSON.parse(bodyText).id ?? "unknown";
-      const key = `mollie:webhook:${parsed}`;
-
       const { data: existing } = await supabase
         .from("mollie_webhook_events")
         .select("attempts, event_type")
-        .eq("idempotency_key", key)
+        .eq("idempotency_key", rollbackKey)
         .single();
 
       await supabase
         .from("mollie_webhook_events")
         .upsert(
           {
-            mollie_id: parsed,
+            mollie_id: molliePaymentId,
             event_type: existing?.event_type ?? "error",
             payload: { error: (error as Error).message },
-            idempotency_key: key,
+            idempotency_key: rollbackKey,
             processed: false,
             attempts: (existing?.attempts ?? 0) + 1,
             last_error: (error as Error).message,

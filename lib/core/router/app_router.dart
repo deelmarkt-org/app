@@ -1,11 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../services/supabase_service.dart';
+import 'auth_guard.dart';
 import 'routes.dart';
 import 'scaffold_with_nav.dart';
+import 'splash_screen.dart';
 
-/// Central GoRouter configuration with deep link support.
+/// Central GoRouter configuration with deep link support + auth guard.
 ///
 /// Deep link paths handled:
 ///   /listings/:id     → Listing detail
@@ -13,15 +19,61 @@ import 'scaffold_with_nav.dart';
 ///   /transactions/:id → Transaction detail
 ///   /shipping/:id     → Shipping tracking
 ///   /search           → Search (with query params)
-///   /sell             → Create listing
+///   /sell             → Create listing (auth required)
+///
+/// Auth guard:
+///   - /splash shown while auth state loads (prevents FOUC)
+///   - Protected routes redirect to /onboarding if not logged in
+///   - /onboarding redirects to /home if already logged in
 ///
 /// See .well-known/apple-app-site-association and
 /// .well-known/assetlinks.json for the matching host config.
-GoRouter createRouter() {
+GoRouter createRouter({
+  required Ref ref,
+  required Stream<AuthState> authStream,
+}) {
+  return _buildRouter(
+    authStream: authStream,
+    redirect: (context, state) {
+      // Read auth state at redirect-time (not router-creation-time)
+      // to get the current value on every navigation event.
+      final authState = ref.read(authStateChangesProvider);
+      return authRedirect(
+        isLoading: authState.isLoading,
+        isLoggedIn: authState.valueOrNull?.session != null,
+        currentPath: state.matchedLocation,
+      );
+    },
+  );
+}
+
+/// Test-only factory — accepts a pre-configured redirect function.
+@visibleForTesting
+GoRouter createTestRouter({
+  required GoRouterRedirect redirect,
+  Stream<AuthState> authStream = const Stream.empty(),
+}) {
+  return _buildRouter(authStream: authStream, redirect: redirect);
+}
+
+GoRouter _buildRouter({
+  required Stream<AuthState> authStream,
+  required GoRouterRedirect redirect,
+}) {
   return GoRouter(
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: kDebugMode,
+    refreshListenable: GoRouterRefreshStream(authStream),
+    redirect: redirect,
     routes: [
+      // ── Auth routes (outside shell) ──
+      GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (_, _) => const OnboardingScreen(),
+      ),
+
       // ── Bottom navigation shell ──
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="nl"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#001d35",
+              "on-primary-container": "#fffbff",
+              "primary-container": "#d1430a",
+              "on-error": "#ffffff",
+              "inverse-surface": "#313030",
+              "surface-dim": "#dcd9d9",
+              "on-background": "#1c1b1b",
+              "inverse-primary": "#ffb59e",
+              "on-secondary-fixed-variant": "#164974",
+              "on-primary-fixed-variant": "#842500",
+              "on-surface": "#1c1b1b",
+              "tertiary-container": "#008730",
+              "primary": "#F15A24",
+              "outline": "#8e7067",
+              "tertiary-fixed-dim": "#65df75",
+              "tertiary-fixed": "#82fc8e",
+              "tertiary": "#006b24",
+              "on-tertiary-fixed": "#002106",
+              "background": "#fcf9f8",
+              "on-primary-fixed": "#3a0b00",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-secondary-container": "#285782",
+              "surface-container-low": "#f6f3f2",
+              "secondary-fixed": "#d0e4ff",
+              "secondary": "#34618d",
+              "surface-container-high": "#ebe7e7",
+              "on-tertiary-container": "#f7fff2",
+              "secondary-fixed-dim": "#9fcafc",
+              "primary-fixed": "#ffdbd0",
+              "secondary-container": "#a1cdff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "surface": "#fcf9f8",
+              "on-tertiary-fixed-variant": "#00531a",
+              "inverse-on-surface": "#f3f0ef",
+              "surface-variant": "#e5e2e1",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#5a4139",
+              "surface-container-highest": "#e5e2e1",
+              "surface-container": "#f0edec",
+              "primary-fixed-dim": "#ffb59e",
+              "surface-bright": "#fcf9f8",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#e2bfb4",
+              "surface-tint": "#ad3300"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-slate-900 flex justify-center items-center min-h-screen p-4">
+<!-- iPhone 15 Pro Frame -->
+<div class="relative w-[393px] h-[852px] bg-surface rounded-[55px] shadow-2xl overflow-hidden border-[8px] border-slate-800">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-[377px] z-50 bg-surface/80 backdrop-blur-xl">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="text-2xl font-extrabold tracking-tighter text-primary">DeelMarkt</div>
+<!-- Buyer/Seller Toggle -->
+<div class="flex bg-surface-container-high p-1 rounded-full items-center">
+<button class="px-3 py-1 text-xs font-bold text-on-surface-variant">Koper</button>
+<button class="px-4 py-1 text-xs font-bold bg-primary text-on-primary rounded-full shadow-sm">Verkoper</button>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">help_outline</span>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="h-full overflow-y-auto no-scrollbar pt-20 pb-32 px-6">
+<!-- Welcome -->
+<section class="mb-8 mt-4">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-1">Hallo, Mahmut</h1>
+<p class="text-on-surface-variant font-medium">Je hebt een goede week tot nu toe!</p>
+</section>
+<!-- Stats Row (Horizontal Scroll) -->
+<section class="mb-10 -mx-6">
+<div class="flex gap-4 overflow-x-auto px-6 no-scrollbar snap-x">
+<!-- Sales Card -->
+<div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
+<span class="material-symbols-outlined text-primary mb-3">payments</span>
+<div class="text-2xl font-bold text-on-surface">€428,50</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Verkoop</div>
+</div>
+<!-- Listings Card -->
+<div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
+<span class="material-symbols-outlined text-secondary mb-3">inventory_2</span>
+<div class="text-2xl font-bold text-on-surface">12</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Advertenties</div>
+</div>
+<!-- Messages Card -->
+<div class="min-w-[160px] p-5 rounded-2xl bg-surface-container-lowest border border-outline-variant/10 shadow-sm snap-start">
+<span class="material-symbols-outlined text-tertiary mb-3">chat_bubble</span>
+<div class="text-2xl font-bold text-on-surface text-primary">3</div>
+<div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Nieuw</div>
+</div>
+</div>
+</section>
+<!-- Actie vereist -->
+<section class="mb-10">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-bold tracking-tight">Actie vereist</h2>
+<span class="text-primary text-sm font-bold">Alles bekijken</span>
+</div>
+<div class="space-y-3">
+<!-- Action Card 1 -->
+<div class="flex items-center p-4 bg-primary-fixed/30 rounded-2xl border-l-4 border-primary">
+<div class="bg-primary-container p-3 rounded-xl mr-4">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<div class="flex-1">
+<div class="font-bold text-on-surface text-sm">Pakket verzenden</div>
+<div class="text-xs text-on-surface-variant">Canon EOS R5 wacht op verzending naar Amsterdam</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<!-- Action Card 2 -->
+<div class="flex items-center p-4 bg-secondary-fixed/30 rounded-2xl border-l-4 border-secondary">
+<div class="bg-secondary p-3 rounded-xl mr-4">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">mark_chat_unread</span>
+</div>
+<div class="flex-1">
+<div class="font-bold text-on-surface text-sm">Nieuw bod ontvangen</div>
+<div class="text-xs text-on-surface-variant">€120,- geboden op "Vintage Leerjas"</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Mijn advertenties (List View) -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold tracking-tight">Mijn advertenties</h2>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-xl">tune</span>
+</div>
+</div>
+<div class="space-y-6">
+<!-- Ad Item 1 -->
+<div class="flex gap-4 group">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" alt="Modern smartphone against a minimalist clean background with cinematic lighting and deep shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG9SpHcMYCezACLJJitUnZysSX7MM-Ac50L5mq-Zm8reZ0jK_LS11g95CXmteKD8FWHVVZ2xHJg2muFqz4UJBRucUi6cYcVuoQkKI2a64IX3tdkfaLOdCF3fArAHmqVB2TG-tB4H-TP8xLzT2uSnX-5OyQB2CwLUYNJeUs9nfQBFE4EyYG1clS699vl_voUukVaKsj8tUU04t1IMG_95_E69MsABTuGrO6pvGoxTCjSaaCNOAdTLDdfE9to5v6ZMwCF_EzZVhPdxjk"/>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface">iPhone 14 Pro Max - 256GB</h3>
+<span class="bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Actief</span>
+</div>
+<p class="text-lg font-bold text-secondary mt-1">€850,00</p>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-xs font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">visibility</span> 128</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">favorite</span> 12</span>
+</div>
+</div>
+</div>
+<!-- Ad Item 2 -->
+<div class="flex gap-4 group">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" alt="Luxury black leather sneakers on a stone pedestal with soft directional lighting and premium textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf3W6Mlb9zz1AWa-mdhRp1BZMmCw4ZFi6aaGCripRSZ4UXYyYy6YFY5W_Qgf09uC34g-jqBdDOucCZGi67AQ9hh84sxYdBELwhcDxWluQV4o2fCmkjC8ArovPUMlVdi3XvKgc5_dG18N3_igWIsGSWBwMJ2qhRiIGzwv-4EkLx0uTV2hLNIXAYpMeTVG-MGSsARUAIwcuQLYnDzZEhFxbFaMaQnGMG4WjcPiDt8JmIOlIgLF6wThCFvZidBt_IDIHZCUrqK4GeZ9jc"/>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface">Designer Sneakers</h3>
+<span class="bg-primary-fixed/40 text-primary px-2 py-0.5 rounded text-[10px] font-bold uppercase">Verkocht</span>
+</div>
+<p class="text-lg font-bold text-secondary mt-1">€145,00</p>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-xs font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">visibility</span> 342</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">favorite</span> 45</span>
+</div>
+</div>
+</div>
+<!-- Ad Item 3 -->
+<div class="flex gap-4 group">
+<div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 relative">
+<img class="w-full h-full object-cover" alt="Classic analog watch with leather strap on a rustic wooden surface with warm soft morning light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAISy6ioW-yuWDg0R8ObEvWPbpzoqy53WQDoR_3NFMcspR6-Vg6mZHksoaeppLA4y_TagDho1ePoF-tQanTfVESN8bFvRQxyKfiL27xR77-xdVOaLjJshjII9p6a9OMgYDAcEYn5CMiy9LpEN2P6FIY5ahqlCXkcZ10F9ClJfMzCaysVYPaU6bJniLjWu47Yssz7Pfq8M5Vq7x7jt6et-aGU0plgDhx8ND_IPokiwOyGjTOkipSGbbQhgrxCvbn9X1DHJns2riHpkyj"/>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-on-surface">Vintage Horloge</h3>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase">Concept</span>
+</div>
+<p class="text-lg font-bold text-secondary mt-1">€65,00</p>
+<div class="flex items-center gap-4 mt-2 text-on-surface-variant text-xs font-medium">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">visibility</span> 0</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">favorite</span> 0</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-8 z-50 flex items-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary-container px-6 py-4 rounded-2xl shadow-xl active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-bold">Nieuwe advertentie</span>
+</button>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-10 pt-4 bg-surface/90 backdrop-blur-2xl rounded-t-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] z-50">
+<!-- Home (Active) -->
+<div class="flex flex-col items-center justify-center text-primary scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Home</span>
+</div>
+<!-- Search -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Ontdekken</span>
+</div>
+<!-- Sell -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Plaatsen</span>
+</div>
+<!-- Messages -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant relative">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Berichten</span>
+<div class="absolute top-0 right-1 w-2 h-2 bg-primary rounded-full"></div>
+</div>
+<!-- Profile -->
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[11px] font-semibold font-['Plus_Jakarta_Sans']">Profiel</span>
+</div>
+</nav>
+<!-- Dynamic Notch -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-8 bg-black rounded-b-3xl"></div>
+</div>
+</body></html>

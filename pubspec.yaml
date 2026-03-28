@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
 
   # Localization — E07 §Localisation
   easy_localization: ^3.0.7
@@ -47,6 +49,9 @@ dependencies:
 
   # Shipping — QR code display for label-free shipping
   qr_flutter: ^4.1.0
+
+  # Entity equality — needed by Riverpod state diffing (Phase 1 v3.1 audit)
+  equatable: ^2.0.7
 
   # Loading — Shimmer effect for skeleton placeholders (P-07)
   shimmer: ^3.0.0
