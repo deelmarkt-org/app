@@ -94,7 +94,7 @@ void main() {
   });
 
   group('GoRouterRefreshStream', () {
-    test('notifies on stream events', () {
+    test('notifies on stream events', () async {
       final controller = StreamController<int>();
       final stream = GoRouterRefreshStream(controller.stream);
 
@@ -102,7 +102,10 @@ void main() {
       stream.addListener(() => notifyCount++);
 
       controller.add(1);
+      // Pump event loop to allow stream event to be processed
+      await Future<void>.delayed(Duration.zero);
 
+      expect(notifyCount, equals(1));
       expect(controller.hasListener, isTrue);
 
       stream.dispose();

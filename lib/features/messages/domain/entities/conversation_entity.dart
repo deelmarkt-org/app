@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-export 'message_entity.dart';
-
 /// Chat conversation between buyer and seller about a listing.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.

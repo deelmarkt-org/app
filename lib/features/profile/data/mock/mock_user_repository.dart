@@ -26,7 +26,12 @@ class MockUserRepository implements UserRepository {
     String? location,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return _mockUsers.first;
+    final user = _mockUsers.first;
+    return user.copyWith(
+      displayName: displayName ?? user.displayName,
+      avatarUrl: avatarUrl ?? user.avatarUrl,
+      location: location ?? user.location,
+    );
   }
 }
 

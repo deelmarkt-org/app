@@ -16,7 +16,7 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
 import { getRedisCredentials } from "../_shared/redis.ts";
-import { checkIdempotency } from "../_shared/idempotency.ts";
+import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -277,6 +277,17 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return new Response("OK", { status: 200 });
   } catch (error) {
     console.error(`[mollie-webhook] Error: ${(error as Error).message}`);
+
+    // Rollback idempotency key so Mollie can retry (CRITICAL: without this, retries are blocked for 24h)
+    try {
+      const bodyForRollback = await req.clone().text().catch(() => "");
+      const parsedForRollback = JSON.parse(bodyForRollback).id ?? "unknown";
+      const rollbackKey = `mollie:webhook:${parsedForRollback}`;
+      const redisCreds = getRedisCredentials();
+      await rollbackIdempotency(redisCreds, rollbackKey);
+    } catch {
+      // Best-effort rollback
+    }
 
     // Record failure for DLQ — preserve existing state
     try {

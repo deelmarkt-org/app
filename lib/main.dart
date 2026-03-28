@@ -13,6 +13,12 @@ import 'core/services/firebase_service.dart';
 import 'core/services/supabase_service.dart';
 import 'core/services/unleash_service.dart';
 
+/// Fatal error message shown when app crashes before l10n is available.
+/// NL + EN fallback — extracted for testing and accessibility.
+const kFatalErrorMessage =
+    'Er ging iets mis. Start de app opnieuw.\n'
+    'Something went wrong. Please restart the app.';
+
 /// Riverpod provider for GoRouter — single instance, auth-aware.
 ///
 /// Passes `ref` to the router so the redirect function reads auth state
@@ -55,15 +61,17 @@ void main() async {
   // unavailable here. A minimal NL fallback is acceptable (§3.3 exception).
   if (!kDebugMode) {
     ErrorWidget.builder = (FlutterErrorDetails details) {
-      return const MaterialApp(
+      return MaterialApp(
         home: Scaffold(
           body: Center(
             child: Padding(
-              padding: EdgeInsets.all(Spacing.s6),
-              child: Text(
-                'Er ging iets mis. Start de app opnieuw.\n'
-                'Something went wrong. Please restart the app.',
-                textAlign: TextAlign.center,
+              padding: const EdgeInsets.all(Spacing.s6),
+              child: Semantics(
+                label: kFatalErrorMessage,
+                child: const Text(
+                  kFatalErrorMessage,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),

@@ -46,6 +46,24 @@ class ProviderError extends Error {
   }
 }
 
+/** Request timeout for external provider calls (5 seconds). */
+const PROVIDER_TIMEOUT_MS = 5000;
+
+/** Fetch with timeout using AbortController. */
+async function fetchWithTimeout(
+  url: string,
+  options?: RequestInit,
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), PROVIDER_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 /**
  * Primary: postcode.tech — free tier 10,000 requests/month.
  * No API key required for basic usage.
@@ -58,10 +76,14 @@ async function lookupViaPostcodeTech(
 ): Promise<AddressResult | null> {
   const params = new URLSearchParams({ postcode, number: houseNumber });
   if (addition) params.set("addition", addition);
-  const resp = await fetch(
+  const resp = await fetchWithTimeout(
     `https://postcode.tech/api/v1/postcode/full?${params}`,
   );
 
+  if (resp.status === 429) {
+    console.warn("[postcode-lookup] postcode.tech rate limited (429) — free tier exhausted");
+    throw new ProviderError("postcode.tech", resp.status);
+  }
   if (resp.status >= 500) throw new ProviderError("postcode.tech", resp.status);
   if (!resp.ok) return null;
 
@@ -95,13 +117,17 @@ async function lookupViaApiPostcode(
 
   const params = new URLSearchParams({ postcode, number: houseNumber });
   if (addition) params.set("addition", addition);
-  const resp = await fetch(
+  const resp = await fetchWithTimeout(
     `https://json.api-postcode.nl?${params}`,
     {
       headers: { "X-Api-Key": apiKey },
     },
   );
 
+  if (resp.status === 429) {
+    console.warn("[postcode-lookup] api-postcode.nl rate limited (429) — daily quota exhausted");
+    throw new ProviderError("api-postcode.nl", resp.status);
+  }
   if (resp.status >= 500) throw new ProviderError("api-postcode.nl", resp.status);
   if (!resp.ok) return null;
 
