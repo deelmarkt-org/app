@@ -85,6 +85,12 @@ enum KycLevel {
 
   /// iDIN bank verification (BRP/DigiD).
   level2,
+
+  /// ID document verified.
+  level3,
+
+  /// Business seller (KVK).
+  level4,
 }
 
 /// Verification badge types — per design system components.md.
