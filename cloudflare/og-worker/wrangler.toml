@@ -1,0 +1,18 @@
+# P-46: Cloudflare Worker for dynamic OG meta tags + crawler pre-rendering
+# Detects crawler user-agents and injects listing-specific meta tags.
+# Non-crawler requests receive the standard Flutter SPA shell.
+
+name = "deelmarkt-og-worker"
+main = "src/worker.ts"
+compatibility_date = "2024-12-01"
+
+[vars]
+SUPABASE_URL = "https://your-project.supabase.co"
+# SUPABASE_ANON_KEY is stored as a secret: wrangler secret put SUPABASE_ANON_KEY
+SITE_URL = "https://deelmarkt.com"
+CLOUDINARY_CLOUD = "deelmarkt"
+
+# Route all deelmarkt.com traffic through this worker
+# [[routes]]
+# pattern = "deelmarkt.com/*"
+# zone_name = "deelmarkt.com"

@@ -472,3 +472,10 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/tracking-webhook/deno.json"
 entrypoint = "./functions/tracking-webhook/index.ts"
+
+# P-46: Sitemap generation — public, no JWT (crawlers need access)
+[functions.sitemap]
+enabled = true
+verify_jwt = false
+import_map = "./functions/sitemap/deno.json"
+entrypoint = "./functions/sitemap/index.ts"

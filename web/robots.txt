@@ -1,0 +1,21 @@
+# P-46: robots.txt for DeelMarkt
+# Allows crawling of public pages, blocks private/transactional routes.
+
+User-agent: *
+Allow: /
+Allow: /listings/
+Allow: /users/
+Allow: /search
+Disallow: /sell
+Disallow: /messages
+Disallow: /profile
+Disallow: /transactions/
+Disallow: /shipping/
+Disallow: /settings
+Disallow: /onboarding
+Disallow: /login
+Disallow: /register
+Disallow: /splash
+
+# Sitemap (served via Supabase Edge Function)
+Sitemap: https://deelmarkt.com/functions/v1/sitemap
