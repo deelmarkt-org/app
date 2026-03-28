@@ -78,8 +78,8 @@ The agent will:
 - [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
 - [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
 - [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
-- [ ] `B-09` Set up Betterstack uptime monitoring — monitors Supabase, alerts on Slack
-- [ ] `B-10` Set up PagerDuty alerting — CRITICAL/HIGH/INFO tiers configured
+- [x] `B-09` Set up Betterstack uptime monitoring — monitors Supabase, alerts on Slack
+- [x] `B-10` Set up PagerDuty alerting — CRITICAL/HIGH/INFO tiers configured
 - [x] `B-11` Configure SonarCloud SAST in CI — analysis + quality gate on PR
 - [x] `B-12` Enable secret scanning — detect-secrets pre-commit + TruffleHog in CI
 
