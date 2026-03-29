@@ -165,8 +165,16 @@ async function createViaPostNL(
   };
 
   // Step 1: Generate barcode via GET /shipment/v1_1/barcode
-  const barcodeUrl = `${baseUrl}/shipment/v1_1/barcode?CustomerCode=${customerCode}&CustomerNumber=${customerNumber}&Type=3S&Serie=000000000-999999999`;
-  const barcodeResp = await fetch(barcodeUrl, { headers: { apikey: apiKey, Accept: "application/json" } });
+  const barcodeParams = new URLSearchParams({
+    CustomerCode: customerCode,
+    CustomerNumber: customerNumber,
+    Type: "3S",
+    Serie: "000000000-999999999",
+  });
+  const barcodeResp = await fetch(
+    `${baseUrl}/shipment/v1_1/barcode?${barcodeParams}`,
+    { headers: { apikey: apiKey, Accept: "application/json" } },
+  );
 
   if (!barcodeResp.ok) {
     const text = await barcodeResp.text();
@@ -179,10 +187,10 @@ async function createViaPostNL(
     throw new Error("PostNL barcode response missing Barcode field");
   }
 
-  // PostNL timestamp format: DD-MM-YYYY HH:MM:SS
+  // PostNL timestamp format: DD-MM-YYYY HH:MM:SS (UTC to avoid timezone issues)
   const now = new Date();
   const pad = (n: number) => n.toString().padStart(2, "0");
-  const messageTimestamp = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const messageTimestamp = `${pad(now.getUTCDate())}-${pad(now.getUTCMonth() + 1)}-${now.getUTCFullYear()} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
 
   const shipmentPayload = {
     Customer: {
@@ -229,11 +237,14 @@ async function createViaPostNL(
     }],
   };
 
+  // Stringify once for confirm, then update MessageID for label
+  const confirmBody = JSON.stringify(shipmentPayload);
+
   // Step 2: Confirm shipment via POST /shipment/v2/confirm
   const confirmResp = await fetch(`${baseUrl}/shipment/v2/confirm`, {
     method: "POST",
     headers,
-    body: JSON.stringify(shipmentPayload),
+    body: confirmBody,
   });
 
   if (!confirmResp.ok) {
@@ -248,6 +259,8 @@ async function createViaPostNL(
   }
 
   // Step 3: Generate label via POST /shipment/v2_2/label
+  // New MessageID required — confirm and label are distinct API calls
+  shipmentPayload.Message.MessageID = crypto.randomUUID();
   const labelResp = await fetch(`${baseUrl}/shipment/v2_2/label`, {
     method: "POST",
     headers,
@@ -282,7 +295,7 @@ async function createViaPostNL(
 async function pollPostNLStatus(
   barcode: string,
   postnlKey: string,
-): Promise<{ status: string; timestamp: string } | null> {
+): Promise<{ status: string; timestamp: string | null } | null> {
   const baseUrl = getPostNLBaseUrl();
   const resp = await fetch(
     `${baseUrl}/shipment/v2/status/barcode/${encodeURIComponent(barcode)}`,
@@ -297,7 +310,8 @@ async function pollPostNLStatus(
 
   return {
     status: current.StatusCode,
-    timestamp: current.TimeStamp ?? new Date().toISOString(),
+    // Use API timestamp if available; null if missing (don't fabricate times)
+    timestamp: current.TimeStamp ?? null,
   };
 }
 
