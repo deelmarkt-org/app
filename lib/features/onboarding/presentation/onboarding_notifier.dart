@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
@@ -9,40 +11,49 @@ part 'onboarding_notifier.g.dart';
 /// Onboarding state — immutable via Dart record type.
 ///
 /// [currentPage]: which PageView page is visible (0-indexed).
-/// [isComplete]: whether the user has finished onboarding.
-typedef OnboardingState = ({int currentPage, bool isComplete});
+typedef OnboardingState = ({int currentPage});
 
 /// Provides the [OnboardingRepository] — reads SharedPreferences provider.
 @riverpod
-OnboardingRepository onboardingRepository(OnboardingRepositoryRef ref) {
+OnboardingRepository onboardingRepository(Ref ref) {
   return SharedPrefsOnboardingRepo(ref.watch(sharedPreferencesProvider));
+}
+
+/// Whether onboarding has been completed — used by auth guard to skip
+/// the onboarding route for returning users. Loaded once at startup.
+@Riverpod(keepAlive: true)
+Future<bool> isOnboardingComplete(Ref ref) async {
+  try {
+    final repo = ref.watch(onboardingRepositoryProvider);
+    return repo.isComplete();
+  } catch (e) {
+    debugPrint('Onboarding completion check failed: $e');
+    return false; // fail-open: show onboarding as safe default
+  }
 }
 
 /// Manages onboarding page state and completion persistence.
 ///
-/// This is the first class-based Notifier in the codebase. It uses the
-/// `@riverpod` annotation with `class ... extends _$...` syntax from
-/// `riverpod_annotation ^2.6.1`. See Riverpod docs:
-/// https://riverpod.dev/docs/concepts/about_code_generation#notifiers
-@riverpod
+/// Uses `@Riverpod(keepAlive: true)` to prevent state loss if a system
+/// dialog triggers during the flow (e.g. permission prompt).
+@Riverpod(keepAlive: true)
 class OnboardingNotifier extends _$OnboardingNotifier {
   @override
-  OnboardingState build() => (currentPage: 0, isComplete: false);
+  OnboardingState build() => (currentPage: 0);
 
   /// Updates the current page index. Called from PageController listener.
   void setPage(int page) {
-    state = (currentPage: page, isComplete: state.isComplete);
+    state = (currentPage: page);
   }
 
-  /// Marks onboarding as complete in SharedPreferences and updates state.
+  /// Marks onboarding as complete in SharedPreferences and invalidates
+  /// the [isOnboardingCompleteProvider] so the auth guard picks up the change.
   Future<void> completeOnboarding() async {
-    await ref.read(onboardingRepositoryProvider).complete();
-    state = (currentPage: state.currentPage, isComplete: true);
-  }
-
-  /// Returns `true` if onboarding should be shown (not yet completed).
-  Future<bool> shouldShowOnboarding() async {
-    final complete = await ref.read(onboardingRepositoryProvider).isComplete();
-    return !complete;
+    try {
+      await ref.read(onboardingRepositoryProvider).complete();
+      ref.invalidate(isOnboardingCompleteProvider);
+    } catch (e) {
+      debugPrint('Failed to complete onboarding: $e');
+    }
   }
 }

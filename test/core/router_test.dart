@@ -151,9 +151,7 @@ void main() {
           ),
         ),
       );
-      for (var i = 0; i < 10; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
+      await tester.pumpAndSettle();
       // Verify redirect happened — router navigated to /onboarding.
       expect(router.routeInformationProvider.value.uri.path, '/onboarding');
       router.dispose();

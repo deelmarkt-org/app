@@ -22,21 +22,31 @@ const _authRoutes = ['/onboarding', '/login', '/register'];
 /// GoRouter redirect function for authentication state.
 ///
 /// - While auth state is loading → `/splash` (prevents FOUC)
-/// - Unauthenticated + protected route → `/onboarding`
+/// - Unauthenticated + onboarding not complete → `/onboarding`
+/// - Unauthenticated + onboarding complete + protected route → `/login`
 /// - Authenticated + auth route → `/home`
 /// - Otherwise → no redirect
 String? authRedirect({
   required bool isLoading,
   required bool isLoggedIn,
   required String currentPath,
+  bool isOnboardingComplete = false,
 }) {
   if (isLoading) return '/splash';
+
+  // After auth resolves, leave the splash screen.
+  if (currentPath == '/splash') {
+    if (isLoggedIn) return AppRoutes.home;
+    return isOnboardingComplete ? AppRoutes.login : AppRoutes.onboarding;
+  }
 
   final isProtected = _protectedRoutes.any(
     (route) => currentPath.startsWith(route),
   );
 
-  if (!isLoggedIn && isProtected) return '/onboarding';
+  if (!isLoggedIn && isProtected) {
+    return isOnboardingComplete ? '/login' : '/onboarding';
+  }
   if (isLoggedIn && _authRoutes.contains(currentPath)) return AppRoutes.home;
 
   return null;

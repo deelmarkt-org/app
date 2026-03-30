@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +21,7 @@ Future<void> initSharedPreferences() async {
 /// Throws [StateError] if [initSharedPreferences] was not called.
 /// Used by: onboarding (P-14), consent (future), settings (future).
 @Riverpod(keepAlive: true)
-SharedPreferences sharedPreferences(SharedPreferencesRef ref) {
+SharedPreferences sharedPreferences(Ref ref) {
   if (_instance == null) {
     throw StateError(
       'initSharedPreferences() must be called in main() before runApp()',

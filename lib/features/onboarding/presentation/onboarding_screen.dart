@@ -21,7 +21,8 @@ import 'widgets/welcome_page.dart';
 /// Replaces the Phase 1 placeholder. Persists completion flag via
 /// SharedPreferences so returning users skip onboarding.
 ///
-/// Route: `/onboarding` (auth guard redirects here when not logged in).
+/// Route: `/onboarding` (auth guard redirects here when not logged in
+/// and onboarding is not yet complete).
 ///
 /// Reference: docs/screens/01-auth/01-onboarding.md
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -40,7 +41,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.initState();
     _pageController = PageController();
     _pageController.addListener(_onPageChanged);
-    _checkOnboardingComplete();
   }
 
   @override
@@ -52,25 +52,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _onPageChanged() {
     final page = _pageController.page?.round();
-    if (page != null) {
+    if (page != null &&
+        page != ref.read(onboardingNotifierProvider).currentPage) {
       ref.read(onboardingNotifierProvider.notifier).setPage(page);
     }
   }
 
-  Future<void> _checkOnboardingComplete() async {
-    final shouldShow =
-        await ref
-            .read(onboardingNotifierProvider.notifier)
-            .shouldShowOnboarding();
-    if (!shouldShow && mounted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.go(AppRoutes.home);
-      });
-    }
-  }
-
   Future<void> _completeAndNavigate(String route) async {
-    await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+    try {
+      await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+    } catch (e) {
+      debugPrint('Failed to complete onboarding: $e');
+    }
     if (mounted) context.go(route);
   }
 

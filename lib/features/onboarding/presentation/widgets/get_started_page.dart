@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
@@ -13,7 +12,6 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 /// Illustration → Title → Subtitle → "Account aanmaken" CTA → "Ik heb al een account" link
 ///
 /// Design reference: `docs/screens/01-auth/designs/onboarding_light_mobile_flow/`
-/// Page 3 (lines 237-275).
 class GetStartedPage extends StatelessWidget {
   const GetStartedPage({
     required this.onCreateAccount,
@@ -27,7 +25,6 @@ class GetStartedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -37,25 +34,20 @@ class GetStartedPage extends StatelessWidget {
           children: [
             const SizedBox(height: Spacing.s12),
             Semantics(
+              image: true,
               label: 'onboarding.handshake_illustration'.tr(),
               child: AspectRatio(
                 aspectRatio: 4 / 3,
                 child: Container(
                   decoration: BoxDecoration(
-                    color:
-                        isDark
-                            ? DeelmarktColors.darkSurfaceElevated
-                            : DeelmarktColors.secondarySurface,
+                    color: theme.colorScheme.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
                   ),
                   child: Center(
                     child: Icon(
                       PhosphorIcons.handshake(PhosphorIconsStyle.duotone),
                       size: 64,
-                      color:
-                          isDark
-                              ? DeelmarktColors.darkSecondary
-                              : DeelmarktColors.secondary,
+                      color: theme.colorScheme.secondary,
                     ),
                   ),
                 ),

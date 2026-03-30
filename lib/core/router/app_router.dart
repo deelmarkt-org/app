@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/onboarding/presentation/onboarding_notifier.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../services/supabase_service.dart';
 import 'auth_guard.dart';
@@ -35,13 +36,25 @@ GoRouter createRouter({
   return _buildRouter(
     authStream: authStream,
     redirect: (context, state) {
-      // Read auth state at redirect-time (not router-creation-time)
-      // to get the current value on every navigation event.
+      // Read auth state at redirect-time (not router-creation-time).
+      // When the stream hasn't emitted yet (AsyncValue.loading), fall back
+      // to the synchronous current session. GoRouterRefreshStream can miss
+      // Supabase's INITIAL_SESSION event when it subscribes after init.
       final authState = ref.read(authStateChangesProvider);
+      final supabase = ref.read(supabaseClientProvider);
+      // Once Supabase.initialize() has completed, currentSession is available
+      // synchronously — use it instead of treating the state as still loading.
+      final isLoggedIn =
+          authState.isLoading
+              ? supabase.auth.currentSession != null
+              : authState.valueOrNull?.session != null;
+      final onboardingComplete =
+          ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
       return authRedirect(
-        isLoading: authState.isLoading,
-        isLoggedIn: authState.valueOrNull?.session != null,
+        isLoading: false, // Supabase is always initialized before runApp
+        isLoggedIn: isLoggedIn,
         currentPath: state.matchedLocation,
+        isOnboardingComplete: onboardingComplete,
       );
     },
   );

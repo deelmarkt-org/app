@@ -20,10 +20,9 @@ void main() {
   tearDown(() => container.dispose());
 
   group('OnboardingNotifier', () {
-    test('initial state has currentPage 0 and isComplete false', () {
+    test('initial state has currentPage 0', () {
       final state = container.read(onboardingNotifierProvider);
       expect(state.currentPage, 0);
-      expect(state.isComplete, false);
     });
 
     test('setPage updates currentPage', () {
@@ -38,47 +37,58 @@ void main() {
       expect(state.currentPage, 2);
     });
 
-    test('completeOnboarding sets isComplete and persists', () async {
+    test('completeOnboarding persists to SharedPreferences', () async {
       await container
           .read(onboardingNotifierProvider.notifier)
           .completeOnboarding();
-
-      final state = container.read(onboardingNotifierProvider);
-      expect(state.isComplete, true);
 
       // Verify persistence
       expect(prefs.getBool('onboarding_complete'), true);
     });
 
-    test('shouldShowOnboarding returns true when not complete', () async {
-      final result =
-          await container
-              .read(onboardingNotifierProvider.notifier)
-              .shouldShowOnboarding();
-      expect(result, true);
-    });
+    test(
+      'completeOnboarding invalidates isOnboardingCompleteProvider',
+      () async {
+        // Before completion
+        final before = await container.read(
+          isOnboardingCompleteProvider.future,
+        );
+        expect(before, false);
 
-    test('shouldShowOnboarding returns false after completion', () async {
-      await container
-          .read(onboardingNotifierProvider.notifier)
-          .completeOnboarding();
+        await container
+            .read(onboardingNotifierProvider.notifier)
+            .completeOnboarding();
 
-      final result =
-          await container
-              .read(onboardingNotifierProvider.notifier)
-              .shouldShowOnboarding();
-      expect(result, false);
-    });
+        // After completion — provider was invalidated and re-reads from prefs
+        final after = await container.read(isOnboardingCompleteProvider.future);
+        expect(after, true);
+      },
+    );
 
-    test('setPage preserves isComplete state', () async {
-      await container
-          .read(onboardingNotifierProvider.notifier)
-          .completeOnboarding();
+    test('setPage preserves page state after multiple updates', () {
+      container.read(onboardingNotifierProvider.notifier).setPage(1);
       container.read(onboardingNotifierProvider.notifier).setPage(2);
 
       final state = container.read(onboardingNotifierProvider);
       expect(state.currentPage, 2);
-      expect(state.isComplete, true);
+    });
+  });
+
+  group('isOnboardingCompleteProvider', () {
+    test('returns false when not complete', () async {
+      final result = await container.read(isOnboardingCompleteProvider.future);
+      expect(result, false);
+    });
+
+    test('returns true after completion', () async {
+      await prefs.setBool('onboarding_complete', true);
+      // Need a fresh container to pick up the new value
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      );
+      final result = await container.read(isOnboardingCompleteProvider.future);
+      expect(result, true);
     });
   });
 

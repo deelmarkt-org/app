@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
@@ -13,14 +12,12 @@ import 'package:deelmarkt/widgets/settings/language_switch.dart';
 /// Logo → Tagline → Subtitle → Illustration placeholder → LanguageSwitch
 ///
 /// Design reference: `docs/screens/01-auth/designs/onboarding_light_mobile_flow/`
-/// Page 1 (lines 130-168).
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -48,10 +45,7 @@ class WelcomePage extends StatelessWidget {
             _IllustrationPlaceholder(
               icon: PhosphorIcons.storefront(PhosphorIconsStyle.duotone),
               semanticLabel: 'onboarding.welcome_illustration'.tr(),
-              backgroundColor:
-                  isDark
-                      ? DeelmarktColors.darkSurfaceElevated
-                      : DeelmarktColors.primarySurface,
+              backgroundColor: theme.colorScheme.surfaceContainerLow,
               iconColor: theme.colorScheme.primary,
             ),
             const SizedBox(height: Spacing.s8),
@@ -92,6 +86,7 @@ class _IllustrationPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
+      image: true,
       label: semanticLabel,
       child: AspectRatio(
         aspectRatio: 1,

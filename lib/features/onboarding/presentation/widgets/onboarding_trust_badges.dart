@@ -8,10 +8,9 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 /// Trust badges shown in the onboarding footer on expanded breakpoints.
 ///
 /// Three badges: Veilig (Safe), Lokaal (Local), Duurzaam (Sustainable).
-/// Only visible when screen width ≥ 840px (tablet/desktop).
+/// Only visible when screen width >= 840px (tablet/desktop).
 ///
 /// Design reference: `docs/screens/01-auth/designs/onboarding_tablet_optimized_card/`
-/// Footer trust badges (lines 141-154).
 class OnboardingTrustBadges extends StatelessWidget {
   const OnboardingTrustBadges({super.key});
 
@@ -20,34 +19,30 @@ class OnboardingTrustBadges extends StatelessWidget {
     if (!Breakpoints.isExpanded(context)) return const SizedBox.shrink();
 
     final theme = Theme.of(context);
-    final style = theme.textTheme.labelSmall?.copyWith(
-      color: theme.colorScheme.onSurfaceVariant,
-    );
+    final color = theme.colorScheme.onSurfaceVariant;
+    final style = theme.textTheme.labelSmall?.copyWith(color: color);
 
-    return Opacity(
-      opacity: 0.6,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Badge(
-            icon: PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
-            label: 'onboarding.badge_safe'.tr(),
-            style: style,
-          ),
-          const SizedBox(width: Spacing.s6),
-          _Badge(
-            icon: PhosphorIcons.users(PhosphorIconsStyle.fill),
-            label: 'onboarding.badge_local'.tr(),
-            style: style,
-          ),
-          const SizedBox(width: Spacing.s6),
-          _Badge(
-            icon: PhosphorIcons.leaf(PhosphorIconsStyle.fill),
-            label: 'onboarding.badge_sustainable'.tr(),
-            style: style,
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _Badge(
+          icon: PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
+          label: 'onboarding.badge_safe'.tr(),
+          style: style,
+        ),
+        const SizedBox(width: Spacing.s6),
+        _Badge(
+          icon: PhosphorIcons.users(PhosphorIconsStyle.fill),
+          label: 'onboarding.badge_local'.tr(),
+          style: style,
+        ),
+        const SizedBox(width: Spacing.s6),
+        _Badge(
+          icon: PhosphorIcons.leaf(PhosphorIconsStyle.fill),
+          label: 'onboarding.badge_sustainable'.tr(),
+          style: style,
+        ),
+      ],
     );
   }
 }
@@ -61,13 +56,16 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: style?.color),
-        const SizedBox(width: Spacing.s1),
-        Text(label.toUpperCase(), style: style),
-      ],
+    return Semantics(
+      label: label,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: style?.color),
+          const SizedBox(width: Spacing.s1),
+          Text(label.toUpperCase(), style: style),
+        ],
+      ),
     );
   }
 }

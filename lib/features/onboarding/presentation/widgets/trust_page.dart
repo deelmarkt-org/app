@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'trust_feature_card.dart';
@@ -16,14 +15,12 @@ import 'trust_feature_card.dart';
 /// design system overrides mockup content variance).
 ///
 /// Design reference: `docs/screens/01-auth/designs/onboarding_light_mobile_flow/`
-/// Page 2 (lines 174-232).
 class TrustPage extends StatelessWidget {
   const TrustPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -31,24 +28,19 @@ class TrustPage extends StatelessWidget {
         children: [
           const SizedBox(height: Spacing.s8),
           Semantics(
+            image: true,
             label: 'onboarding.trust_icon_label'.tr(),
             child: Container(
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                color:
-                    isDark
-                        ? DeelmarktColors.darkTrustShield
-                        : DeelmarktColors.successSurface,
+                color: theme.colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
               ),
               child: Icon(
                 PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
                 size: 48,
-                color:
-                    isDark
-                        ? DeelmarktColors.darkTrustVerified
-                        : DeelmarktColors.trustVerified,
+                color: theme.colorScheme.primary,
               ),
             ),
           ),
@@ -71,28 +63,21 @@ class TrustPage extends StatelessWidget {
             icon: PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.escrow_title'.tr(),
             subtitle: 'onboarding.escrow_subtitle'.tr(),
-            iconColor:
-                isDark
-                    ? DeelmarktColors.darkSecondary
-                    : DeelmarktColors.secondary,
+            iconColor: theme.colorScheme.secondary,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(
             icon: PhosphorIcons.sealCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.verified_title'.tr(),
             subtitle: 'onboarding.verified_subtitle'.tr(),
-            iconColor:
-                isDark
-                    ? DeelmarktColors.darkTrustVerified
-                    : DeelmarktColors.trustVerified,
+            iconColor: theme.colorScheme.primary,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(
             icon: PhosphorIcons.arrowUUpLeft(PhosphorIconsStyle.duotone),
             title: 'onboarding.returns_title'.tr(),
             subtitle: 'onboarding.returns_subtitle'.tr(),
-            iconColor:
-                isDark ? DeelmarktColors.darkPrimary : DeelmarktColors.primary,
+            iconColor: theme.colorScheme.primary,
           ),
           const SizedBox(height: Spacing.s8),
         ],
