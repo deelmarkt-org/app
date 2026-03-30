@@ -67,12 +67,10 @@ void main() {
       expect(find.byType(PageView), findsOneWidget);
 
       // Primary DeelButton (Next) visible
-      expect(
-        find.byWidgetPredicate(
-          (w) => w is DeelButton && w.variant == DeelButtonVariant.primary,
-        ),
-        findsOneWidget,
+      final nextBtn = find.byWidgetPredicate(
+        (w) => w is DeelButton && w.variant == DeelButtonVariant.primary,
       );
+      expect(nextBtn, findsOneWidget);
 
       // 3 page indicator dots
       expect(
@@ -80,8 +78,8 @@ void main() {
         findsNWidgets(3),
       );
 
-      // --- Swipe to Page 2: Trust ---
-      await tester.fling(find.byType(PageView), const Offset(-400, 0), 800);
+      // --- Tap Next button to go to Page 2 (exercises _nextPage) ---
+      await tester.tap(nextBtn);
       await tester.pumpAndSettle();
       expect(find.byType(TrustFeatureCard), findsNWidgets(3));
 
@@ -99,6 +97,20 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(GetStartedPage), findsOneWidget);
       expect(find.byType(DeelButton), findsAtLeast(2));
+
+      // --- Error handling: tap Login button with failing repo ---
+      final loginBtn = find.byWidgetPredicate(
+        (w) => w is DeelButton && w.variant == DeelButtonVariant.ghost,
+      );
+      if (loginBtn.evaluate().isNotEmpty) {
+        await tester.ensureVisible(loginBtn.first);
+        await tester.pumpAndSettle();
+        await tester.tap(loginBtn.first);
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        expect(find.byType(SnackBar), findsOneWidget);
+        await tester.pump(const Duration(seconds: 4));
+      }
 
       // --- Error handling: tap Create Account with failing repo ---
       final createBtn = find.byWidgetPredicate(
