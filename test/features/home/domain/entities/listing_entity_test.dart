@@ -100,6 +100,61 @@ void main() {
     });
   });
 
+  group('ListingEntity copyWith — all fields', () {
+    test('returns identical entity when no fields overridden', () {
+      expect(listing.copyWith(), equals(listing));
+    });
+
+    test('overrides title', () {
+      final updated = listing.copyWith(title: 'New Title');
+      expect(updated.title, 'New Title');
+      expect(updated.id, listing.id);
+    });
+
+    test('overrides priceInCents', () {
+      final updated = listing.copyWith(priceInCents: 9999);
+      expect(updated.priceInCents, 9999);
+    });
+
+    test('overrides condition', () {
+      final updated = listing.copyWith(condition: ListingCondition.poor);
+      expect(updated.condition, ListingCondition.poor);
+    });
+
+    test('overrides imageUrls', () {
+      final updated = listing.copyWith(imageUrls: ['a.jpg', 'b.jpg']);
+      expect(updated.imageUrls, ['a.jpg', 'b.jpg']);
+    });
+
+    test('overrides location and distanceKm', () {
+      final updated = listing.copyWith(location: 'Rotterdam', distanceKm: 12.5);
+      expect(updated.location, 'Rotterdam');
+      expect(updated.distanceKm, 12.5);
+    });
+
+    test('overrides multiple fields at once', () {
+      final updated = listing.copyWith(
+        title: 'Updated',
+        priceInCents: 100,
+        sellerId: 'user-2',
+        sellerName: 'Other User',
+        categoryId: 'cat-2',
+        createdAt: DateTime(2026, 6),
+      );
+      expect(updated.title, 'Updated');
+      expect(updated.priceInCents, 100);
+      expect(updated.sellerId, 'user-2');
+      expect(updated.sellerName, 'Other User');
+      expect(updated.categoryId, 'cat-2');
+      expect(updated.createdAt, DateTime(2026, 6));
+    });
+
+    test('overrides description', () {
+      final updated = listing.copyWith(description: 'New description');
+      expect(updated.description, 'New description');
+    });
+  });
+
   group('ListingCondition', () {
     test('has 6 values', () {
       expect(ListingCondition.values.length, equals(6));
