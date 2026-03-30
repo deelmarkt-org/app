@@ -1,0 +1,27 @@
+# P-46: OG Meta Tags Worker
+# Deploy: cd cloudflare/og-worker && wrangler deploy
+# Dev:    cd cloudflare/og-worker && wrangler dev
+
+name = "deelmarkt-og"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Routes: intercept specific deelmarkt.com paths for OG tag generation
+# Worker passes non-crawler requests through via fetch(request)
+routes = [
+  { pattern = "deelmarkt.com/", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/listings/*", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/users/*", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/transactions/*", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/shipping/*", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/messages/*", zone_name = "deelmarkt.com" },
+  { pattern = "deelmarkt.com/search", zone_name = "deelmarkt.com" },
+]
+
+# Non-secret environment variables
+[vars]
+SITE_URL = "https://deelmarkt.com"
+
+# Secrets (set via wrangler secret put, NOT committed):
+# SUPABASE_URL       = <your Supabase project URL>
+# SUPABASE_ANON_KEY  = <your Supabase anon key from .env>

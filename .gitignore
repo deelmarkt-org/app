@@ -54,6 +54,10 @@ firebase.json
 *.inject.summary
 *.inject.dart
 
+# Firebase admin SDK + config files (NEVER commit private keys)
+firebase/
+*-firebase-adminsdk-*.json
+
 # Devran AI Kit (local dev tooling)
 # Install: npx @devran-ai/kit init
 .agent/

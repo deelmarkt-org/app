@@ -94,6 +94,9 @@ enum KycLevel {
 }
 
 /// Verification badge types — per design system components.md.
+///
+/// DB stores as TEXT[] (e.g. ['emailVerified', 'phoneVerified']).
+/// Use [BadgeType.fromDbList] and [BadgeType.toDbList] for serialization.
 enum BadgeType {
   emailVerified,
   phoneVerified,
@@ -101,5 +104,24 @@ enum BadgeType {
   trustedSeller,
   fastResponder,
   topRated,
-  newUser,
+  newUser;
+
+  /// Lookup map for O(1) deserialization — built once, reused.
+  static final Map<String, BadgeType> _nameMap = {
+    for (final b in BadgeType.values) b.name: b,
+  };
+
+  /// Parse a list of DB strings to BadgeType list.
+  /// Unknown values are silently skipped (forward-compatible).
+  static List<BadgeType> fromDbList(List<dynamic> values) {
+    return [
+      for (final v in values)
+        if (v is String && _nameMap.containsKey(v)) _nameMap[v]!,
+    ];
+  }
+
+  /// Convert to DB TEXT[] format.
+  static List<String> toDbList(List<BadgeType> badges) {
+    return badges.map((b) => b.name).toList();
+  }
 }

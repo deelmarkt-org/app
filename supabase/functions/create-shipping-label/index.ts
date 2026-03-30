@@ -126,7 +126,12 @@ async function createViaEctaro(
   };
 }
 
-// --- PostNL Shipment V4 API (failover for PostNL labels) ---
+// --- PostNL Shipment v2 API (failover for PostNL labels) ---
+// Verified via sandbox testing 2026-03-29:
+//   Barcode:  GET  /shipment/v1_1/barcode
+//   Confirm:  POST /shipment/v2/confirm
+//   Label:    POST /shipment/v2_2/label
+//   Status:   GET  /shipment/v2/status/barcode/:barcode
 
 /** PostNL base URL — sandbox or production based on POSTNL_ENV. */
 function getPostNLBaseUrl(): string {
@@ -152,15 +157,61 @@ async function createViaPostNL(
     throw new Error("Missing PostNL account config: POSTNL_CUSTOMER_CODE, POSTNL_CUSTOMER_NUMBER, POSTNL_COLLECTION_LOCATION");
   }
 
-  const payload = {
+  const baseUrl = getPostNLBaseUrl();
+  const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "apikey": apiKey,
+  };
+
+  // Step 1: Generate barcode via GET /shipment/v1_1/barcode
+  const barcodeParams = new URLSearchParams({
+    CustomerCode: customerCode,
+    CustomerNumber: customerNumber,
+    Type: "3S",
+    Serie: "000000000-999999999",
+  });
+  const barcodeResp = await fetch(
+    `${baseUrl}/shipment/v1_1/barcode?${barcodeParams}`,
+    { headers: { apikey: apiKey, Accept: "application/json" } },
+  );
+
+  if (!barcodeResp.ok) {
+    const text = await barcodeResp.text();
+    throw new Error(`PostNL Barcode v1_1 failed (${barcodeResp.status}): ${text}`);
+  }
+
+  const barcodeData = await barcodeResp.json();
+  const barcode = barcodeData.Barcode;
+  if (!barcode) {
+    throw new Error("PostNL barcode response missing Barcode field");
+  }
+
+  // PostNL timestamp format: DD-MM-YYYY HH:MM:SS (UTC to avoid timezone issues)
+  const now = new Date();
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const messageTimestamp = `${pad(now.getUTCDate())}-${pad(now.getUTCMonth() + 1)}-${now.getUTCFullYear()} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+
+  const shipmentPayload = {
     Customer: {
       CustomerCode: customerCode,
       CustomerNumber: customerNumber,
       CollectionLocation: collectionLocation,
+      Address: {
+        AddressType: "02",
+        CompanyName: input.sender.name,
+        Street: input.sender.street,
+        HouseNr: input.sender.houseNumber,
+        HouseNrExt: input.sender.houseNumberAddition ?? "",
+        Zipcode: input.sender.postcode,
+        City: input.sender.city,
+        Countrycode: input.sender.countryCode,
+      },
     },
     Message: {
       MessageID: crypto.randomUUID(),
-      MessageTimeStamp: new Date().toISOString(),
+      MessageTimeStamp: messageTimestamp,
+      Printertype: "GraphicFile|PDF",
     },
     Shipments: [{
       Addresses: [
@@ -174,46 +225,54 @@ async function createViaPostNL(
           City: input.recipient.city,
           Countrycode: input.recipient.countryCode,
         },
-        {
-          AddressType: "02",
-          FirstName: input.sender.name,
-          Street: input.sender.street,
-          HouseNr: input.sender.houseNumber,
-          HouseNrExt: input.sender.houseNumberAddition ?? "",
-          Zipcode: input.sender.postcode,
-          City: input.sender.city,
-          Countrycode: input.sender.countryCode,
-        },
       ],
-      Dimension: { Weight: input.weightGrams },
+      Barcode: barcode,
+      Contacts: [{
+        ContactType: "01",
+        Email: "",
+      }],
+      Dimension: { Weight: input.weightGrams.toString() },
       ProductCodeDelivery: "3085",
       Reference: input.transactionId,
     }],
   };
 
-  const baseUrl = getPostNLBaseUrl();
+  // Stringify once for confirm, then update MessageID for label
+  const confirmBody = JSON.stringify(shipmentPayload);
 
-  // PostNL v4 not yet available — use v2 per PostNL support (2026-03-26)
-  const resp = await fetch(`${baseUrl}/v2/shipment`, {
+  // Step 2: Confirm shipment via POST /shipment/v2/confirm
+  const confirmResp = await fetch(`${baseUrl}/shipment/v2/confirm`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": apiKey,
-    },
-    body: JSON.stringify(payload),
+    headers,
+    body: confirmBody,
   });
 
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`PostNL Shipment v2 failed (${resp.status}): ${text}`);
+  if (!confirmResp.ok) {
+    const text = await confirmResp.text();
+    throw new Error(`PostNL Shipment v2/confirm failed (${confirmResp.status}): ${text}`);
   }
 
-  const data = await resp.json();
-  const shipment = data.ResponseShipments?.[0];
-  const barcode = shipment?.Barcode;
+  const confirmData = await confirmResp.json();
+  const errors = confirmData.ResponseShipments?.[0]?.Errors;
+  if (errors && errors.length > 0) {
+    throw new Error(`PostNL shipment errors: ${errors.map((e: { ErrorMsg: string }) => e.ErrorMsg).join(", ")}`);
+  }
 
-  if (!barcode) {
-    throw new Error("PostNL response missing barcode");
+  // Step 3: Generate label via POST /shipment/v2_2/label
+  // New MessageID required — confirm and label are distinct API calls
+  shipmentPayload.Message.MessageID = crypto.randomUUID();
+  const labelResp = await fetch(`${baseUrl}/shipment/v2_2/label`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(shipmentPayload),
+  });
+
+  let labelPdf: string | undefined;
+  if (labelResp.ok) {
+    const labelData = await labelResp.json();
+    labelPdf = labelData.ResponseShipments?.[0]?.Labels?.[0]?.Content;
+  } else {
+    console.warn(`[create-shipping-label] PostNL label generation failed (${labelResp.status}) — shipment confirmed but no PDF`);
   }
 
   return {
@@ -221,41 +280,39 @@ async function createViaPostNL(
     qrData: barcode,
     carrier: "postnl",
     trackingUrl: buildTrackingUrl("postnl", barcode),
-    labelPdf: shipment?.Labels?.[0]?.Content,
+    labelPdf,
   };
 }
 
-// --- B-27: PostNL Track & Trace Subscription ---
+// --- B-27: PostNL Track & Trace ---
+// PostNL webhooks are configured server-side by PostNL support (Chi-Ho, 2026-03-26).
+// They push tracking events to our tracking-webhook Edge Function.
+// No per-shipment registration needed — all barcodes for our customer number
+// are automatically tracked once the webhook is configured.
+//
+// Fallback: poll /shipment/v2/status/barcode/:barcode for status updates.
 
-async function registerPostNLTracking(
+async function pollPostNLStatus(
   barcode: string,
-  supabaseUrl: string,
   postnlKey: string,
-): Promise<void> {
-
+): Promise<{ status: string; timestamp: string | null } | null> {
   const baseUrl = getPostNLBaseUrl();
+  const resp = await fetch(
+    `${baseUrl}/shipment/v2/status/barcode/${encodeURIComponent(barcode)}`,
+    { headers: { apikey: postnlKey, Accept: "application/json" } },
+  );
 
-  // Webhook URL where PostNL sends tracking events
-  const webhookUrl =
-    `${supabaseUrl}/functions/v1/tracking-webhook`;
+  if (!resp.ok) return null;
 
-  const resp = await fetch(`${baseUrl}/v2/notification`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "apikey": postnlKey,
-    },
-    body: JSON.stringify({
-      Barcode: barcode,
-      NotificationType: "shipment_status",
-      WebhookUrl: webhookUrl,
-    }),
-  });
+  const data = await resp.json();
+  const current = data.CurrentStatus;
+  if (!current?.StatusCode) return null;
 
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`PostNL notification registration failed (${resp.status}): ${text}`);
-  }
+  return {
+    status: current.StatusCode,
+    // Use API timestamp if available; null if missing (don't fabricate times)
+    timestamp: current.TimeStamp ?? null,
+  };
 }
 
 // --- Main Handler ---
@@ -384,17 +441,8 @@ Deno.serve(async (req: Request) => {
       .eq("id", input.transactionId)
       .eq("status", "paid");
 
-    // B-27: Register for PostNL tracking notifications (best-effort)
-    if (input.carrier === "postnl") {
-      try {
-        const postnlKeyForTracking = await getVaultSecret(supabase, "POSTNL_API_KEY");
-        await registerPostNLTracking(result.trackingNumber, supabaseUrl, postnlKeyForTracking);
-      } catch (trackErr) {
-        console.warn(
-          `[create-shipping-label] PostNL tracking registration failed (non-blocking): ${(trackErr as Error).message}`,
-        );
-      }
-    }
+    // B-27: PostNL tracking is handled via webhook (configured server-side by PostNL).
+    // No per-shipment registration needed. Fallback polling available via pollPostNLStatus().
 
     console.log(
       `[create-shipping-label] ${provider} | ${input.carrier} | ${result.trackingNumber} | txn:${input.transactionId}`,

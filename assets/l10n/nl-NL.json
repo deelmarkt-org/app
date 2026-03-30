@@ -85,8 +85,30 @@
     "clear": "Wissen"
   },
   "onboarding": {
+    "tagline": "De eerlijke marktplaats van Nederland",
+    "subtitle": "Ontdek een veilige plek om spullen te kopen en verkopen met mensen uit jouw buurt.",
+    "safe_buying": "Veilig kopen en verkopen",
+    "safe_buying_subtitle": "Jouw veiligheid is onze hoogste prioriteit.",
+    "escrow_title": "Escrow bescherming",
+    "escrow_subtitle": "Je geld is veilig tot levering. Wij houden de betaling vast tot alles akkoord is.",
+    "verified_title": "Geverifieerde verkopers",
+    "verified_subtitle": "E-mail, telefoon en iDIN verificatie voor maximale betrouwbaarheid.",
+    "returns_title": "Eenvoudig retourneren",
+    "returns_subtitle": "Geen gedoe bij problemen. Onze klantenservice staat voor je klaar.",
+    "ready_title": "Klaar om te beginnen?",
+    "ready_subtitle": "Sluit je aan bij de community en begin vandaag nog met eerlijk handelen.",
+    "create_account": "Account aanmaken",
+    "have_account": "Ik heb al een account",
+    "next": "Volgende",
+    "skip": "Overslaan",
     "trust_icon_label": "Vertrouwensschild",
-    "placeholder": "Onboarding — komt in Fase 2"
+    "page_indicator": "Pagina {current} van {total}",
+    "welcome_illustration": "Welkomstillustratie",
+    "trust_illustration": "Veiligheid illustratie",
+    "handshake_illustration": "Handdruk illustratie",
+    "badge_safe": "Veilig",
+    "badge_local": "Lokaal",
+    "badge_sustainable": "Duurzaam"
   },
   "a11y": {
     "closeModal": "Sluiten",
@@ -137,6 +159,14 @@
     "countdownHint": "48 uur om te bevestigen",
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
+  },
+  "condition": {
+    "newWithTags": "Nieuw met labels",
+    "newWithoutTags": "Nieuw zonder labels",
+    "likeNew": "Als nieuw",
+    "good": "Goed",
+    "fair": "Redelijk",
+    "poor": "Matig"
   },
   "address": {
     "postcode": "Postcode",

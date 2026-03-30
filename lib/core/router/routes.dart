@@ -11,6 +11,11 @@ abstract final class AppRoutes {
   static const messages = '/messages';
   static const profile = '/profile';
 
+  // ── Auth flow ──
+  static const onboarding = '/onboarding';
+  static const login = '/login';
+  static const register = '/register';
+
   // ── Deep link targets ──
   static const listingDetail = '/listings/:id';
   static const userProfile = '/users/:id';

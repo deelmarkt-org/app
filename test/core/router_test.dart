@@ -1,10 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 
 /// Creates a test router with pre-set auth state (no real Supabase).
 GoRouter _createTestRouter({bool isLoggedIn = false, bool isLoading = false}) {
@@ -117,18 +121,97 @@ void main() {
     });
   });
 
+  group('GoRouter shipping sub-routes', () {
+    testWidgets('navigates to shipping QR sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/qr');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Shipping QR ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('navigates to shipping tracking sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/tracking');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Tracking ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('navigates to parcel shops sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/parcel-shops');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Parcel Shops ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+  });
+
+  group('GoRouter tab routes', () {
+    testWidgets('sell tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/sell');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Sell'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('messages tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/messages');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Messages'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('profile tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/profile');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Profile'), findsWidgets);
+      authedRouter.dispose();
+    });
+  });
+
   group('GoRouter auth guard integration', () {
     testWidgets('redirects /sell to /onboarding when not logged in', (
       tester,
     ) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      await EasyLocalization.ensureInitialized();
       final router = _createTestRouter(isLoggedIn: false);
       router.go('/sell');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpWidget(
+        EasyLocalization(
+          supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+          fallbackLocale: const Locale('nl', 'NL'),
+          path: 'assets/l10n',
+          child: Builder(
+            builder:
+                (context) => ProviderScope(
+                  overrides: [
+                    sharedPreferencesProvider.overrideWithValue(prefs),
+                  ],
+                  child: MaterialApp.router(
+                    routerConfig: router,
+                    localizationsDelegates: context.localizationDelegates,
+                    supportedLocales: context.supportedLocales,
+                    locale: context.locale,
+                  ),
+                ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
-      expect(
-        find.text('app.name'),
-        findsWidgets,
-      ); // onboarding screen (l10n key)
+      // Verify redirect happened — router navigated to /onboarding.
+      expect(router.routeInformationProvider.value.uri.path, '/onboarding');
       router.dispose();
     });
 

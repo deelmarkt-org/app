@@ -85,8 +85,30 @@
     "clear": "Clear"
   },
   "onboarding": {
+    "tagline": "The fair marketplace of the Netherlands",
+    "subtitle": "Discover a safe place to buy and sell items with people in your neighbourhood.",
+    "safe_buying": "Safe buying and selling",
+    "safe_buying_subtitle": "Your safety is our highest priority.",
+    "escrow_title": "Escrow protection",
+    "escrow_subtitle": "Your money is safe until delivery. We hold the payment until everything is agreed.",
+    "verified_title": "Verified sellers",
+    "verified_subtitle": "Email, phone and iDIN verification for maximum reliability.",
+    "returns_title": "Easy returns",
+    "returns_subtitle": "No hassle when problems arise. Our customer service is here for you.",
+    "ready_title": "Ready to get started?",
+    "ready_subtitle": "Join the community and start fair trading today.",
+    "create_account": "Create account",
+    "have_account": "I already have an account",
+    "next": "Next",
+    "skip": "Skip",
     "trust_icon_label": "Trust shield",
-    "placeholder": "Onboarding — coming in Phase 2"
+    "page_indicator": "Page {current} of {total}",
+    "welcome_illustration": "Welcome illustration",
+    "trust_illustration": "Safety illustration",
+    "handshake_illustration": "Handshake illustration",
+    "badge_safe": "Safe",
+    "badge_local": "Local",
+    "badge_sustainable": "Sustainable"
   },
   "a11y": {
     "closeModal": "Close",
@@ -132,6 +154,14 @@
     "countdownHint": "48 hours to confirm",
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller"
+  },
+  "condition": {
+    "newWithTags": "New with tags",
+    "newWithoutTags": "New without tags",
+    "likeNew": "Like new",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor"
   },
   "address": {
     "postcode": "Postcode",

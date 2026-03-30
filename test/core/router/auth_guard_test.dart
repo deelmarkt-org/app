@@ -20,6 +20,21 @@ void main() {
       );
     });
 
+    test(
+      'redirects /sell to /login when not logged in but onboarding complete',
+      () {
+        expect(
+          authRedirect(
+            isLoading: false,
+            isLoggedIn: false,
+            currentPath: '/sell',
+            isOnboardingComplete: true,
+          ),
+          '/login',
+        );
+      },
+    );
+
     test('redirects /messages to /onboarding when not logged in', () {
       expect(
         authRedirect(
@@ -39,6 +54,46 @@ void main() {
           currentPath: '/profile',
         ),
         '/onboarding',
+      );
+    });
+
+    test(
+      'redirects /splash to /onboarding when resolved and not logged in',
+      () {
+        expect(
+          authRedirect(
+            isLoading: false,
+            isLoggedIn: false,
+            currentPath: '/splash',
+          ),
+          '/onboarding',
+        );
+      },
+    );
+
+    test(
+      'redirects /splash to /login when resolved, not logged in, onboarding complete',
+      () {
+        expect(
+          authRedirect(
+            isLoading: false,
+            isLoggedIn: false,
+            currentPath: '/splash',
+            isOnboardingComplete: true,
+          ),
+          '/login',
+        );
+      },
+    );
+
+    test('redirects /splash to / when resolved and logged in', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/splash',
+        ),
+        '/',
       );
     });
 
