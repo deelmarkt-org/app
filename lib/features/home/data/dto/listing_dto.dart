@@ -20,7 +20,7 @@ class ListingDto {
         description is! String ||
         priceCents is! int ||
         createdAtRaw is! String) {
-      throw FormatException(
+      throw const FormatException(
         'ListingDto.fromJson: missing or invalid required fields',
       );
     }
