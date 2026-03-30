@@ -158,13 +158,13 @@ The agent will:
 > **Reassigned from reso**: R-19, R-22, R-23, R-24, R-25, R-28 (DB schemas)
 > **Reassigned from pizmam**: P-25, P-26, P-29 (connected screens)
 
-**Phase A — DB Foundation (Week 1):**
-- [ ] `B-39` User profiles table + RLS — CRUD with verification badges *(was R-19)*
-- [ ] `B-40` Listings table + RLS — CRUD with correct permissions, FK to transactions *(was R-22)*
-- [ ] `B-41` Categories table + seed data (8 L1 + initial L2) *(was R-23)*
-- [ ] `B-42` Favourites table + RLS — save/unsave/list works *(was R-24)*
-- [ ] `B-43` PostgreSQL FTS (Dutch tsvector) — "fietsen" matches "fiets" *(was R-25)*
-- [ ] `B-44` Location/distance query (haversine) — distance sorting works *(was R-28)*
+**Phase A — DB Foundation (Week 1): ✅ COMPLETED**
+- [x] `B-39` User profiles table + RLS — CRUD with verification badges *(was R-19)*
+- [x] `B-40` Listings table + RLS — CRUD with correct permissions, FK to transactions *(was R-22)*
+- [x] `B-41` Categories table + seed data (8 L1 + initial L2) *(was R-23)*
+- [x] `B-42` Favourites table + RLS — save/unsave/list works *(was R-24)*
+- [x] `B-43` PostgreSQL FTS (Dutch tsvector) — "fietsen" matches "fiets" *(was R-25)*
+- [x] `B-44` Location/distance query (haversine) — distance sorting works *(was R-28)*
 
 **Phase B — Flutter Data Layer (Week 2):**
 - [ ] `B-45` DTOs: ListingDto, CategoryDto, UserDto — fromJson/toJson for Supabase
