@@ -77,5 +77,59 @@ void main() {
       expect(list, hasLength(2));
       expect(list.first.id, 'listing-001');
     });
+
+    test('fromJsonList skips non-Map entries', () {
+      final list = ListingDto.fromJsonList([sampleJson, 'invalid', 42, null]);
+      expect(list, hasLength(1));
+    });
+
+    test('fromJson throws FormatException on missing required fields', () {
+      expect(() => ListingDto.fromJson({}), throwsFormatException);
+      expect(
+        () => ListingDto.fromJson({'id': 'x', 'title': 'x'}),
+        throwsFormatException,
+      );
+    });
+
+    test('fromJson handles null optional fields gracefully', () {
+      final json = {
+        'id': 'listing-003',
+        'title': 'Test',
+        'description': 'Test description',
+        'price_cents': 100,
+        'created_at': '2026-01-01T00:00:00Z',
+        'seller_id': null,
+        'seller_name': null,
+        'condition': null,
+        'category_id': null,
+        'image_urls': null,
+        'is_favourited': null,
+      };
+      final entity = ListingDto.fromJson(json);
+      expect(entity.sellerId, '');
+      expect(entity.sellerName, 'Verkoper');
+      expect(entity.condition, ListingCondition.good);
+      expect(entity.categoryId, '');
+      expect(entity.imageUrls, isEmpty);
+      expect(entity.isFavourited, false);
+    });
+
+    test('fromJson uses DateTime.now on invalid date', () {
+      final json = {
+        'id': 'listing-004',
+        'title': 'Test',
+        'description': 'Test desc',
+        'price_cents': 100,
+        'created_at': 'not-a-date',
+      };
+      final entity = ListingDto.fromJson(json);
+      expect(entity.createdAt.year, DateTime.now().year);
+    });
+
+    test('fromJson handles unknown condition gracefully', () {
+      final json = {...sampleJson, 'condition': 'future_condition'};
+      final entity = ListingDto.fromJson(json);
+      expect(entity.condition, ListingCondition.good);
+    });
   });
 }

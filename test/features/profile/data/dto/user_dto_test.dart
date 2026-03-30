@@ -98,5 +98,21 @@ void main() {
       final list = UserDto.fromJsonList([sampleJson, sampleJson]);
       expect(list, hasLength(2));
     });
+
+    test('fromJson throws FormatException on missing required fields', () {
+      expect(() => UserDto.fromJson({}), throwsFormatException);
+      expect(() => UserDto.fromJson({'id': 'x'}), throwsFormatException);
+    });
+
+    test('fromJson handles missing created_at gracefully', () {
+      final json = {'id': 'user-x', 'display_name': 'Test'};
+      final entity = UserDto.fromJson(json);
+      expect(entity.createdAt.year, DateTime.now().year);
+    });
+
+    test('fromJsonList skips non-Map entries', () {
+      final list = UserDto.fromJsonList([sampleJson, 'invalid', null]);
+      expect(list, hasLength(1));
+    });
   });
 }

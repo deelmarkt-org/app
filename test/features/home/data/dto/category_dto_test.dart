@@ -86,5 +86,24 @@ void main() {
 
       expect(list, hasLength(2));
     });
+
+    test('fromJson throws FormatException on missing id', () {
+      expect(() => CategoryDto.fromJson({}), throwsFormatException);
+    });
+
+    test('fromJsonList skips non-Map entries', () {
+      final list = CategoryDto.fromJsonList([
+        {
+          'id': '1',
+          'name': 'A',
+          'name_nl': 'A',
+          'icon': 'star',
+          'parent_id': null,
+        },
+        'invalid',
+        null,
+      ]);
+      expect(list, hasLength(1));
+    });
   });
 }
