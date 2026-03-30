@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
@@ -41,7 +42,10 @@ class TrustPage extends StatelessWidget {
               child: Icon(
                 PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
                 size: DeelmarktIconSize.xl,
-                color: theme.colorScheme.primary,
+                color:
+                    theme.brightness == Brightness.dark
+                        ? DeelmarktColors.darkTrustVerified
+                        : DeelmarktColors.trustVerified,
               ),
             ),
           ),
@@ -64,14 +68,20 @@ class TrustPage extends StatelessWidget {
             icon: PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.escrow_title'.tr(),
             subtitle: 'onboarding.escrow_subtitle'.tr(),
-            iconColor: theme.colorScheme.secondary,
+            iconColor:
+                theme.brightness == Brightness.dark
+                    ? DeelmarktColors.darkTrustEscrow
+                    : DeelmarktColors.trustEscrow,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(
             icon: PhosphorIcons.sealCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.verified_title'.tr(),
             subtitle: 'onboarding.verified_subtitle'.tr(),
-            iconColor: theme.colorScheme.primary,
+            iconColor:
+                theme.brightness == Brightness.dark
+                    ? DeelmarktColors.darkTrustVerified
+                    : DeelmarktColors.trustVerified,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(

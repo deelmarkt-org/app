@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_feature_card.dart';
 import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_page.dart';
 import '../../../../helpers/pump_app.dart';
@@ -50,6 +52,38 @@ void main() {
         find.bySemanticsLabel('onboarding.trust_icon_label'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('shield icon uses trust-verified green', (tester) async {
+      await pumpTestWidget(tester, const TrustPage());
+
+      // The top shield uses trustVerified; the verified card also uses it.
+      // Find the trust-verified icons — should be exactly 2
+      // (top shield + verified sellers card).
+      final iconFinder = find.byWidgetPredicate(
+        (w) => w is Icon && w.color == DeelmarktColors.trustVerified,
+      );
+      expect(iconFinder, findsNWidgets(2));
+    });
+
+    testWidgets('escrow card uses trust-escrow blue', (tester) async {
+      await pumpTestWidget(tester, const TrustPage());
+
+      final cards = tester.widgetList<TrustFeatureCard>(
+        find.byType(TrustFeatureCard),
+      );
+      final escrowCard = cards.first;
+      expect(escrowCard.iconColor, DeelmarktColors.trustEscrow);
+    });
+
+    testWidgets('verified card uses trust-verified green', (tester) async {
+      await pumpTestWidget(tester, const TrustPage());
+
+      final cards =
+          tester
+              .widgetList<TrustFeatureCard>(find.byType(TrustFeatureCard))
+              .toList();
+      expect(cards[1].iconColor, DeelmarktColors.trustVerified);
     });
 
     testWidgets('feature cards have Semantics labels', (tester) async {

@@ -18,8 +18,8 @@ import 'widgets/welcome_page.dart';
 /// Full onboarding flow — 3-page PageView with language selection,
 /// trust value proposition, and account creation CTA.
 ///
-/// Replaces the Phase 1 placeholder. Persists completion flag via
-/// SharedPreferences so returning users skip onboarding.
+/// Persists completion flag via SharedPreferences so returning users
+/// skip onboarding.
 ///
 /// Route: `/onboarding` (auth guard redirects here when not logged in
 /// and onboarding is not yet complete).
@@ -103,7 +103,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       child: Scaffold(
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 500,
+            maxWidth: 600,
             child: Column(
               children: [
                 // Header (expanded breakpoint only): logo + skip
@@ -130,7 +130,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           onPressed:
                               () => _completeAndNavigate(AppRoutes.register),
                           variant: DeelButtonVariant.ghost,
-                          size: DeelButtonSize.small,
+                          size: DeelButtonSize.medium,
                           fullWidth: false,
                         ),
                       ],
