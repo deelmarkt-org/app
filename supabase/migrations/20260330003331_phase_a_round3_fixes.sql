@@ -42,36 +42,35 @@ LEFT JOIN user_profiles up ON up.id = l.seller_id;
 
 ALTER TABLE categories ADD COLUMN listing_count INTEGER NOT NULL DEFAULT 0;
 
--- Function to update category listing count
+-- Function to update category listing count (incremental +1/-1 for performance)
 CREATE OR REPLACE FUNCTION update_category_listing_count()
 RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
-    UPDATE categories SET listing_count = (
-      SELECT count(*) FROM listings WHERE category_id = NEW.category_id AND is_active = true AND is_sold = false
-    ) WHERE id = NEW.category_id;
+    IF NEW.is_active = true AND NEW.is_sold = false AND NEW.category_id IS NOT NULL THEN
+      UPDATE categories SET listing_count = listing_count + 1 WHERE id = NEW.category_id;
+    END IF;
     RETURN NEW;
   ELSIF TG_OP = 'DELETE' THEN
-    UPDATE categories SET listing_count = (
-      SELECT count(*) FROM listings WHERE category_id = OLD.category_id AND is_active = true AND is_sold = false
-    ) WHERE id = OLD.category_id;
+    IF OLD.is_active = true AND OLD.is_sold = false AND OLD.category_id IS NOT NULL THEN
+      UPDATE categories SET listing_count = GREATEST(listing_count - 1, 0) WHERE id = OLD.category_id;
+    END IF;
     RETURN OLD;
   ELSIF TG_OP = 'UPDATE' THEN
-    -- Category changed, or listing sold/deactivated
-    IF OLD.category_id IS DISTINCT FROM NEW.category_id
-       OR OLD.is_active IS DISTINCT FROM NEW.is_active
-       OR OLD.is_sold IS DISTINCT FROM NEW.is_sold THEN
-      -- Update old category count
-      IF OLD.category_id IS NOT NULL THEN
-        UPDATE categories SET listing_count = (
-          SELECT count(*) FROM listings WHERE category_id = OLD.category_id AND is_active = true AND is_sold = false
-        ) WHERE id = OLD.category_id;
+    -- Determine if old row was counted
+    IF OLD.is_active = true AND OLD.is_sold = false AND OLD.category_id IS NOT NULL THEN
+      -- Old row was active — decrement old category
+      IF OLD.category_id IS DISTINCT FROM NEW.category_id
+         OR NEW.is_active = false OR NEW.is_sold = true THEN
+        UPDATE categories SET listing_count = GREATEST(listing_count - 1, 0) WHERE id = OLD.category_id;
       END IF;
-      -- Update new category count (if category changed)
-      IF NEW.category_id IS DISTINCT FROM OLD.category_id AND NEW.category_id IS NOT NULL THEN
-        UPDATE categories SET listing_count = (
-          SELECT count(*) FROM listings WHERE category_id = NEW.category_id AND is_active = true AND is_sold = false
-        ) WHERE id = NEW.category_id;
+    END IF;
+    -- Determine if new row should be counted
+    IF NEW.is_active = true AND NEW.is_sold = false AND NEW.category_id IS NOT NULL THEN
+      -- New row is active — increment new category
+      IF NEW.category_id IS DISTINCT FROM OLD.category_id
+         OR OLD.is_active = false OR OLD.is_sold = true THEN
+        UPDATE categories SET listing_count = listing_count + 1 WHERE id = NEW.category_id;
       END IF;
     END IF;
     RETURN NEW;

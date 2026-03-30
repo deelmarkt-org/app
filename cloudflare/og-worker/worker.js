@@ -154,7 +154,7 @@ async function handleListing(id, url, env) {
   try {
     const resp = await supabaseFetch(
       env,
-      `listings?id=eq.${encodeURIComponent(id)}&select=id,title,description,price_cents,category,condition,images,is_sold,seller:users!seller_id(display_name,avatar_url)`
+      `listings?id=eq.${encodeURIComponent(id)}&select=id,title,description,price_cents,category,condition,images,is_sold,seller:user_profiles!seller_id(display_name,avatar_url)`
     );
 
     if (!resp.ok) {
@@ -206,7 +206,7 @@ async function handleUser(id, url, env) {
   try {
     const resp = await supabaseFetch(
       env,
-      `users?id=eq.${encodeURIComponent(id)}&select=id,display_name,avatar_url,location,average_rating,review_count`
+      `user_profiles?id=eq.${encodeURIComponent(id)}&select=id,display_name,avatar_url,location,average_rating,review_count`
     );
 
     if (!resp.ok) {
@@ -354,51 +354,20 @@ async function handleShipping(id, subpath, url, env) {
 }
 
 /**
- * Fetch conversation context from Supabase and return OG tags.
+ * Return default OG tags for messages routes.
+ * The conversations table does not exist yet (planned for a future sprint).
+ * Once messaging is implemented, this can be updated to fetch conversation context.
  */
 async function handleMessages(id, url, env) {
-  if (!isValidId(id)) {
-    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
-  }
-
-  try {
-    const resp = await supabaseFetch(
-      env,
-      `conversations?id=eq.${encodeURIComponent(id)}&select=id,listing_title,listing_image_url`
-    );
-
-    if (!resp.ok) {
-      return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
-    }
-
-    const conversations = await resp.json();
-    if (!conversations || conversations.length === 0) {
-      return renderOgHtml({
-        title: 'Berichten — DeelMarkt',
-        description: 'Stuur berichten op DeelMarkt. Veilig chatten met ingebouwde oplichtersbescherming.',
-        image: DEFAULT_OG.image,
-        type: 'website',
-        url: url.toString(),
-        siteName: 'DeelMarkt',
-        locale: 'nl_NL',
-      }, env);
-    }
-
-    const conv = conversations[0];
-
-    return renderOgHtml({
-      title: `Chat over "${conv.listing_title || 'artikel'}" — DeelMarkt`,
-      description: 'Veilig chatten op DeelMarkt met ingebouwde oplichtersbescherming.',
-      image: conv.listing_image_url || DEFAULT_OG.image,
-      type: 'website',
-      url: url.toString(),
-      siteName: 'DeelMarkt',
-      locale: 'nl_NL',
-    }, env);
-  } catch (err) {
-    console.error(`[og-worker] Messages fetch failed: ${err.message}`);
-    return renderOgHtml({ ...DEFAULT_OG, url: url.toString(), siteName: 'DeelMarkt' }, env);
-  }
+  return renderOgHtml({
+    title: 'Berichten — DeelMarkt',
+    description: 'Stuur berichten op DeelMarkt. Veilig chatten met ingebouwde oplichtersbescherming.',
+    image: DEFAULT_OG.image,
+    type: 'website',
+    url: url.toString(),
+    siteName: 'DeelMarkt',
+    locale: 'nl_NL',
+  }, env);
 }
 
 /**
