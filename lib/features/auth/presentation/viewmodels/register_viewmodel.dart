@@ -6,6 +6,8 @@ import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.d
 
 part 'register_viewmodel.g.dart';
 
+const _kGenericErrorKey = 'error.generic';
+
 /// ViewModel for the multi-step registration flow.
 ///
 /// State machine: emailForm → emailVerification → phoneForm → phoneVerification → complete.
@@ -44,7 +46,10 @@ class RegisterViewModel extends _$RegisterViewModel {
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
-      state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
     }
   }
 
@@ -57,7 +62,10 @@ class RegisterViewModel extends _$RegisterViewModel {
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
-      state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
     }
   }
 
@@ -75,7 +83,10 @@ class RegisterViewModel extends _$RegisterViewModel {
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
-      state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
     }
   }
 
@@ -92,7 +103,10 @@ class RegisterViewModel extends _$RegisterViewModel {
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
-      state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
     }
   }
 
@@ -107,7 +121,10 @@ class RegisterViewModel extends _$RegisterViewModel {
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
-      state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
     }
   }
 

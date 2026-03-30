@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/supabase_service.dart';
@@ -14,35 +15,33 @@ part 'auth_providers.g.dart';
 
 /// Provides the [AuthRepository] — overridable in tests.
 @Riverpod(keepAlive: true)
-AuthRepository authRepository(AuthRepositoryRef ref) {
+AuthRepository authRepository(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
   final datasource = AuthRemoteDatasource(client);
   return AuthRepositoryImpl(datasource);
 }
 
 @riverpod
-RegisterWithEmailUseCase registerWithEmailUseCase(
-  RegisterWithEmailUseCaseRef ref,
-) {
+RegisterWithEmailUseCase registerWithEmailUseCase(Ref ref) {
   return RegisterWithEmailUseCase(ref.watch(authRepositoryProvider));
 }
 
 @riverpod
-ResendEmailOtpUseCase resendEmailOtpUseCase(ResendEmailOtpUseCaseRef ref) {
+ResendEmailOtpUseCase resendEmailOtpUseCase(Ref ref) {
   return ResendEmailOtpUseCase(ref.watch(authRepositoryProvider));
 }
 
 @riverpod
-VerifyEmailOtpUseCase verifyEmailOtpUseCase(VerifyEmailOtpUseCaseRef ref) {
+VerifyEmailOtpUseCase verifyEmailOtpUseCase(Ref ref) {
   return VerifyEmailOtpUseCase(ref.watch(authRepositoryProvider));
 }
 
 @riverpod
-SendPhoneOtpUseCase sendPhoneOtpUseCase(SendPhoneOtpUseCaseRef ref) {
+SendPhoneOtpUseCase sendPhoneOtpUseCase(Ref ref) {
   return SendPhoneOtpUseCase(ref.watch(authRepositoryProvider));
 }
 
 @riverpod
-VerifyPhoneOtpUseCase verifyPhoneOtpUseCase(VerifyPhoneOtpUseCaseRef ref) {
+VerifyPhoneOtpUseCase verifyPhoneOtpUseCase(Ref ref) {
   return VerifyPhoneOtpUseCase(ref.watch(authRepositoryProvider));
 }

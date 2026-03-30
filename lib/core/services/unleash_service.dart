@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
@@ -52,14 +53,14 @@ UnleashClient? _unleashClient;
 ///
 /// Disposes the polling timer when the provider is torn down.
 @Riverpod(keepAlive: true)
-UnleashClient? unleashClient(UnleashClientRef ref) {
+UnleashClient? unleashClient(Ref ref) {
   ref.onDispose(() => _unleashClient?.stop());
   return _unleashClient;
 }
 
 /// Triggers re-evaluation when the Unleash SDK fetches updated toggles.
 @Riverpod(keepAlive: true)
-Object? unleashUpdates(UnleashUpdatesRef ref) {
+Object? unleashUpdates(Ref ref) {
   final client = ref.watch(unleashClientProvider);
 
   void listener(dynamic _) {
@@ -82,7 +83,7 @@ Object? unleashUpdates(UnleashUpdatesRef ref) {
 /// Returns `false` if Unleash is unavailable or the flag does not exist.
 /// Reactive: re-evaluates when the SDK receives updated toggles.
 @riverpod
-bool isFeatureEnabled(IsFeatureEnabledRef ref, String flagName) {
+bool isFeatureEnabled(Ref ref, String flagName) {
   ref.watch(unleashUpdatesProvider);
   final client = ref.read(unleashClientProvider);
   return client?.isEnabled(flagName) ?? false;

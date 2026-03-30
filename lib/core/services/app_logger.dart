@@ -103,8 +103,9 @@ abstract final class AppLogger {
     // error handler. For now, use debugPrint as a fallback in release
     // to ensure errors are not silently swallowed.
     //
-    // TODO(reso): Wire to FirebaseCrashlytics.instance.recordError()
-    // once firebase_service.dart exposes a non-fatal recording method.
+    // Crashlytics integration tracked in GitHub issue — wire to
+    // FirebaseCrashlytics.instance.recordError() once firebase_service.dart
+    // exposes a non-fatal recording method.
     debugPrint('[$tag] $message${error != null ? ' | $error' : ''}');
   }
 }
