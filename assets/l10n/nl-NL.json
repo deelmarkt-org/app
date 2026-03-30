@@ -29,11 +29,17 @@
     "price": "Prijs",
     "title": "Titel",
     "description": "Beschrijving",
-    "pass_field": "Wachtwoord"
+    "pass_field": "Wachtwoord",
+    "show_password": "Wachtwoord tonen",
+    "hide_password": "Wachtwoord verbergen"
   },
   "error": {
-    "generic": "Er is iets misgegaan",
-    "network": "Geen internetverbinding",
+    "generic": "Dat lukte niet — probeer opnieuw",
+    "network": "Geen internetverbinding — controleer je netwerk",
+    "email_taken": "Dit e-mailadres is al in gebruik",
+    "otp_expired": "Je code is verlopen — vraag een nieuwe aan",
+    "otp_invalid": "Ongeldige code — probeer opnieuw",
+    "rate_limited": "Te veel pogingen — wacht even en probeer opnieuw",
     "notFound": "Pagina niet gevonden",
     "tryAgain": "Probeer het opnieuw",
     "sessionExpired": "Je sessie is verlopen — log opnieuw in",
@@ -74,7 +80,45 @@
     "logout": "Uitloggen",
     "forgotPassword": "Wachtwoord vergeten?",
     "verifyEmail": "Verifieer je e-mailadres",
-    "welcome": "Welkom bij DeelMarkt!"
+    "welcome": "Welkom bij DeelMarkt!",
+    "verify_email_title": "Controleer je e-mail",
+    "verify_email_subtitle": "We hebben een code gestuurd naar {email}",
+    "phone_entry_title": "Voeg je telefoonnummer toe",
+    "phone_entry_subtitle": "Voor extra beveiliging van je account",
+    "verify_phone_title": "Bevestig je telefoonnummer",
+    "otp_resend": "Code niet ontvangen?",
+    "otp_resend_timer": "Opnieuw versturen over {seconds}s",
+    "otp_resent_success": "Nieuwe code verstuurd!",
+    "create_account": "Account aanmaken",
+    "send_code": "Stuur verificatiecode",
+    "already_have_account": "Al een account? Inloggen",
+    "terms_checkbox": "Ik ga akkoord met de {terms} en het {privacy}",
+    "terms_link": "Algemene Voorwaarden",
+    "privacy_link": "Privacybeleid",
+    "terms_agree_prefix": "Ik ga akkoord met de ",
+    "privacy_agree_prefix": "Ik ga akkoord met het ",
+    "verify_phone_subtitle": "We hebben een code gestuurd naar {phone}",
+    "otp_field_label": "Verificatiecode"
+  },
+  "validation": {
+    "email_required": "Voer je e-mailadres in",
+    "email_invalid": "Voer een geldig e-mailadres in",
+    "password_required": "Voer een wachtwoord in",
+    "password_too_short": "Minimaal 8 tekens",
+    "password_needs_uppercase": "Minimaal 1 hoofdletter",
+    "password_needs_lowercase": "Minimaal 1 kleine letter",
+    "password_needs_digit": "Minimaal 1 cijfer",
+    "phone_required": "Voer je telefoonnummer in",
+    "phone_invalid": "Voer een geldig Nederlands telefoonnummer in",
+    "otp_required": "Voer de verificatiecode in",
+    "otp_invalid": "Ongeldige code — probeer opnieuw",
+    "terms_required": "Je moet akkoord gaan met de voorwaarden"
+  },
+  "password_strength": {
+    "weak": "Zwak",
+    "fair": "Redelijk",
+    "strong": "Sterk",
+    "very_strong": "Zeer sterk"
   },
   "input": {
     "search_hint": "Zoek op DeelMarkt...",
@@ -159,6 +203,14 @@
     "countdownHint": "48 uur om te bevestigen",
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
+  },
+  "condition": {
+    "newWithTags": "Nieuw met labels",
+    "newWithoutTags": "Nieuw zonder labels",
+    "likeNew": "Als nieuw",
+    "good": "Goed",
+    "fair": "Redelijk",
+    "poor": "Matig"
   },
   "address": {
     "postcode": "Postcode",

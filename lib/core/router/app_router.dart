@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/onboarding/presentation/onboarding_notifier.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../services/supabase_service.dart';
@@ -94,7 +95,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.register,
         name: 'register',
-        builder: (_, _) => const _Placeholder('Register'),
+        builder: (_, _) => const RegisterScreen(),
       ),
 
       // ── Bottom navigation shell ──

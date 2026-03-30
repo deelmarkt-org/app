@@ -4,6 +4,7 @@ import 'colors.dart';
 import 'deel_button_theme.dart';
 import 'radius.dart';
 import 'spacing.dart';
+import 'trust_theme.dart';
 import 'typography.dart';
 
 /// DeelMarkt app theme (Material 3).
@@ -16,7 +17,10 @@ class DeelmarktTheme {
   static ThemeData light = ThemeData(
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
-    extensions: <ThemeExtension>[DeelButtonThemeData.light()],
+    extensions: <ThemeExtension>[
+      DeelButtonThemeData.light(),
+      DeelmarktTrustTheme.light(),
+    ],
     textTheme: DeelmarktTypography.textTheme,
     primaryColor: DeelmarktColors.primary,
     scaffoldBackgroundColor: DeelmarktColors.neutral50,
@@ -132,7 +136,10 @@ class DeelmarktTheme {
   static ThemeData dark = ThemeData(
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
-    extensions: <ThemeExtension>[DeelButtonThemeData.dark()],
+    extensions: <ThemeExtension>[
+      DeelButtonThemeData.dark(),
+      DeelmarktTrustTheme.dark(),
+    ],
     textTheme: DeelmarktTypography.textTheme,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: DeelmarktColors.darkScaffold,

@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/trust_theme.dart';
 import 'trust_feature_card.dart';
 
 /// Page 2 of onboarding — Trust & Security value proposition.
@@ -23,6 +23,7 @@ class TrustPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final trustColors = theme.extension<DeelmarktTrustTheme>()!;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -42,10 +43,7 @@ class TrustPage extends StatelessWidget {
               child: Icon(
                 PhosphorIcons.shieldCheck(PhosphorIconsStyle.fill),
                 size: DeelmarktIconSize.xl,
-                color:
-                    theme.brightness == Brightness.dark
-                        ? DeelmarktColors.darkTrustVerified
-                        : DeelmarktColors.trustVerified,
+                color: trustColors.verified,
               ),
             ),
           ),
@@ -68,20 +66,14 @@ class TrustPage extends StatelessWidget {
             icon: PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.escrow_title'.tr(),
             subtitle: 'onboarding.escrow_subtitle'.tr(),
-            iconColor:
-                theme.brightness == Brightness.dark
-                    ? DeelmarktColors.darkTrustEscrow
-                    : DeelmarktColors.trustEscrow,
+            iconColor: trustColors.escrow,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(
             icon: PhosphorIcons.sealCheck(PhosphorIconsStyle.duotone),
             title: 'onboarding.verified_title'.tr(),
             subtitle: 'onboarding.verified_subtitle'.tr(),
-            iconColor:
-                theme.brightness == Brightness.dark
-                    ? DeelmarktColors.darkTrustVerified
-                    : DeelmarktColors.trustVerified,
+            iconColor: trustColors.verified,
           ),
           const SizedBox(height: Spacing.s4),
           TrustFeatureCard(
