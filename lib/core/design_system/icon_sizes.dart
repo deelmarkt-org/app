@@ -2,9 +2,7 @@
 ///
 /// Matches Phosphor Icons sizing defined in
 /// `docs/design-system/components.md` → Icons section.
-class DeelmarktIconSize {
-  DeelmarktIconSize._();
-
+abstract final class DeelmarktIconSize {
   /// 16px — Inline with small text, badges.
   static const double xs = 16;
 
