@@ -10,6 +10,7 @@ import 'core/l10n/l10n.dart';
 import 'core/router/app_router.dart';
 import 'core/services/firebase_service.dart';
 import 'core/services/supabase_service.dart';
+import 'core/services/shared_prefs_provider.dart';
 import 'core/services/unleash_service.dart';
 
 /// Fatal error message shown when app crashes before l10n is available.
@@ -39,6 +40,7 @@ void main() async {
     initSupabase(),
     initFirebase(),
     initUnleash(),
+    initSharedPreferences(),
   ]);
 
   // Production error widget — user-friendly instead of white screen.

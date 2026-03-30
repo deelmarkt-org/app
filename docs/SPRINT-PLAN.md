@@ -127,7 +127,7 @@ The agent will:
 
 **Branch:** `feature/pizmam-E02-auth-screens` | **Epic:** [E02](epics/E02-user-auth-kyc.md)
 
-- [ ] `P-14` Onboarding screen (first launch) — language selection + value proposition
+- [x] `P-14` Onboarding screen (first launch) — language selection + value proposition ✅ PR #28
 - [ ] `P-15` Registration screen (email + phone) — form validation, OTP flow
 - [ ] `P-16` Login screen (email + biometric) — both flows, error states
 - [ ] `P-17` Profile screen (public view) — badges, ratings placeholder, response time
