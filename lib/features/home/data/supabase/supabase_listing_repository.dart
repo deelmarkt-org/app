@@ -59,8 +59,9 @@ class SupabaseListingRepository implements ListingRepository {
       // Build a map of id → distance for enrichment
       final distanceMap = <String, double>{};
       for (final row in idsList) {
-        final id = (row as Map<String, dynamic>)['listing_id'];
-        final dist = (row)['distance_km'];
+        final typedRow = row as Map<String, dynamic>;
+        final id = typedRow['listing_id'];
+        final dist = typedRow['distance_km'];
         if (id is String && dist is num) {
           distanceMap[id] = dist.toDouble();
         }
