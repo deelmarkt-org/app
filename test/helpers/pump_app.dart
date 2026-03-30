@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
@@ -30,6 +31,24 @@ Future<void> pumpTestScreen(
 }) async {
   await tester.pumpWidget(
     MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+  );
+  await tester.pumpAndSettle();
+}
+
+/// Pump a full-screen widget wrapped in [ProviderScope] for Riverpod tests.
+///
+/// Use [overrides] to inject test dependencies (e.g. SharedPreferences).
+Future<void> pumpTestScreenWithProviders(
+  WidgetTester tester,
+  Widget screen, {
+  ThemeData? theme,
+  List<Override> overrides = const [],
+}) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: overrides,
+      child: MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+    ),
   );
   await tester.pumpAndSettle();
 }

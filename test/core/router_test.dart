@@ -1,10 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 
 /// Creates a test router with pre-set auth state (no real Supabase).
 GoRouter _createTestRouter({bool isLoggedIn = false, bool isLoading = false}) {
@@ -121,14 +125,37 @@ void main() {
     testWidgets('redirects /sell to /onboarding when not logged in', (
       tester,
     ) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      await EasyLocalization.ensureInitialized();
       final router = _createTestRouter(isLoggedIn: false);
       router.go('/sell');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-      await tester.pumpAndSettle();
-      expect(
-        find.text('app.name'),
-        findsWidgets,
-      ); // onboarding screen (l10n key)
+      await tester.pumpWidget(
+        EasyLocalization(
+          supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+          fallbackLocale: const Locale('nl', 'NL'),
+          path: 'assets/l10n',
+          child: Builder(
+            builder:
+                (context) => ProviderScope(
+                  overrides: [
+                    sharedPreferencesProvider.overrideWithValue(prefs),
+                  ],
+                  child: MaterialApp.router(
+                    routerConfig: router,
+                    localizationsDelegates: context.localizationDelegates,
+                    supportedLocales: context.supportedLocales,
+                    locale: context.locale,
+                  ),
+                ),
+          ),
+        ),
+      );
+      for (var i = 0; i < 10; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      // Verify redirect happened — router navigated to /onboarding.
+      expect(router.routeInformationProvider.value.uri.path, '/onboarding');
       router.dispose();
     });
 

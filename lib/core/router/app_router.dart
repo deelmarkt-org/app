@@ -69,9 +69,19 @@ GoRouter _buildRouter({
       // ── Auth routes (outside shell) ──
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       GoRoute(
-        path: '/onboarding',
+        path: AppRoutes.onboarding,
         name: 'onboarding',
         builder: (_, _) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.login,
+        name: 'login',
+        builder: (_, _) => const _Placeholder('Login'),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        name: 'register',
+        builder: (_, _) => const _Placeholder('Register'),
       ),
 
       // ── Bottom navigation shell ──

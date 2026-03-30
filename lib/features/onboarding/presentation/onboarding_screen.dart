@@ -1,70 +1,173 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../core/design_system/colors.dart';
-import '../../../core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
+import 'onboarding_notifier.dart';
+import 'widgets/get_started_page.dart';
+import 'widgets/onboarding_trust_badges.dart';
+import 'widgets/page_dot_indicator.dart';
+import 'widgets/trust_page.dart';
+import 'widgets/welcome_page.dart';
 
-/// Placeholder onboarding screen — Phase 2 (P-14) replaces with full flow.
+/// Full onboarding flow — 3-page PageView with language selection,
+/// trust value proposition, and account creation CTA.
 ///
-/// Shows language selection + value proposition. Unauthenticated users
-/// land here via auth guard redirect.
-class OnboardingScreen extends StatelessWidget {
+/// Replaces the Phase 1 placeholder. Persists completion flag via
+/// SharedPreferences so returning users skip onboarding.
+///
+/// Route: `/onboarding` (auth guard redirects here when not logged in).
+///
+/// Reference: docs/screens/01-auth/01-onboarding.md
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+  static const _pageCount = 3;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    _pageController.addListener(_onPageChanged);
+    _checkOnboardingComplete();
+  }
+
+  @override
+  void dispose() {
+    _pageController.removeListener(_onPageChanged);
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onPageChanged() {
+    final page = _pageController.page?.round();
+    if (page != null) {
+      ref.read(onboardingNotifierProvider.notifier).setPage(page);
+    }
+  }
+
+  Future<void> _checkOnboardingComplete() async {
+    final shouldShow =
+        await ref
+            .read(onboardingNotifierProvider.notifier)
+            .shouldShowOnboarding();
+    if (!shouldShow && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) context.go(AppRoutes.home);
+      });
+    }
+  }
+
+  Future<void> _completeAndNavigate(String route) async {
+    await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+    if (mounted) context.go(route);
+  }
+
+  void _nextPage() {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    _pageController.nextPage(
+      duration:
+          reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final state = ref.watch(onboardingNotifierProvider);
+    final isExpanded = Breakpoints.isExpanded(context);
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.s6),
+        child: ResponsiveBody(
+          maxWidth: 500,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                PhosphorIcons.shieldCheck(PhosphorIconsStyle.duotone),
-                size: 80,
-                color:
-                    isDark
-                        ? DeelmarktColors.darkPrimary
-                        : DeelmarktColors.primary,
-                semanticLabel: 'onboarding.trust_icon_label'.tr(),
+              // Header (expanded breakpoint only): logo + skip
+              if (isExpanded) ...[
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: Spacing.s4,
+                    bottom: Spacing.s2,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'app.name'.tr(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      DeelButton(
+                        label: 'onboarding.skip'.tr(),
+                        onPressed:
+                            () => _completeAndNavigate(AppRoutes.register),
+                        variant: DeelButtonVariant.ghost,
+                        size: DeelButtonSize.small,
+                        fullWidth: false,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
+              // PageView
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const ClampingScrollPhysics(),
+                  children: [
+                    const WelcomePage(),
+                    const TrustPage(),
+                    GetStartedPage(
+                      onCreateAccount:
+                          () => _completeAndNavigate(AppRoutes.register),
+                      onLogin: () => _completeAndNavigate(AppRoutes.login),
+                    ),
+                  ],
+                ),
               ),
+
+              // Dot indicator
               const SizedBox(height: Spacing.s6),
-              Text(
-                'app.name'.tr(),
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkPrimary
-                          : DeelmarktColors.primary,
-                ),
+              PageDotIndicator(
+                currentPage: state.currentPage,
+                pageCount: _pageCount,
               ),
-              const SizedBox(height: Spacing.s3),
-              Text(
-                'app.tagline'.tr(),
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkOnSurfaceSecondary
-                          : DeelmarktColors.neutral700,
+
+              // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
+              if (state.currentPage < _pageCount - 1) ...[
+                const SizedBox(height: Spacing.s4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
+                  child: DeelButton(
+                    label: 'onboarding.next'.tr(),
+                    onPressed: _nextPage,
+                    variant: DeelButtonVariant.primary,
+                    size: DeelButtonSize.large,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: Spacing.s8),
-              // P-14: Replace with full onboarding flow (language + value prop pages)
-              Text(
-                'onboarding.placeholder'.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkOnSurfaceSecondary
-                          : DeelmarktColors.neutral500,
-                ),
-              ),
+              ],
+
+              // Trust badges (expanded only)
+              const SizedBox(height: Spacing.s6),
+              const OnboardingTrustBadges(),
+              const SizedBox(height: Spacing.s4),
             ],
           ),
         ),
