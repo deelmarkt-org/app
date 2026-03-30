@@ -106,20 +106,18 @@ enum BadgeType {
   topRated,
   newUser;
 
+  /// Lookup map for O(1) deserialization — built once, reused.
+  static final Map<String, BadgeType> _nameMap = {
+    for (final b in BadgeType.values) b.name: b,
+  };
+
   /// Parse a list of DB strings to BadgeType list.
   /// Unknown values are silently skipped (forward-compatible).
   static List<BadgeType> fromDbList(List<dynamic> values) {
-    return values
-        .whereType<String>()
-        .map((v) {
-          try {
-            return BadgeType.values.firstWhere((b) => b.name == v);
-          } catch (_) {
-            return null;
-          }
-        })
-        .whereType<BadgeType>()
-        .toList();
+    return [
+      for (final v in values)
+        if (v is String && _nameMap.containsKey(v)) _nameMap[v]!,
+    ];
   }
 
   /// Convert to DB TEXT[] format.
