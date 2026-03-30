@@ -61,10 +61,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Future<void> _completeAndNavigate(String route) async {
     try {
       await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
+      if (mounted) context.go(route);
     } catch (e) {
       debugPrint('Failed to complete onboarding: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('error.generic'.tr())));
+      }
     }
-    if (mounted) context.go(route);
   }
 
   void _nextPage() {
@@ -76,92 +81,107 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  void _previousPage() {
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
+    _pageController.previousPage(
+      duration:
+          reduceMotion ? Duration.zero : const Duration(milliseconds: 300),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(onboardingNotifierProvider);
     final isExpanded = Breakpoints.isExpanded(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: ResponsiveBody(
-          maxWidth: 500,
-          child: Column(
-            children: [
-              // Header (expanded breakpoint only): logo + skip
-              if (isExpanded) ...[
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: Spacing.s4,
-                    bottom: Spacing.s2,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'app.name'.tr(),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          color: Theme.of(context).colorScheme.primary,
+    return PopScope(
+      canPop: state.currentPage == 0,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _previousPage();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: ResponsiveBody(
+            maxWidth: 500,
+            child: Column(
+              children: [
+                // Header (expanded breakpoint only): logo + skip
+                if (isExpanded) ...[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: Spacing.s4,
+                      bottom: Spacing.s2,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'app.name'.tr(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      DeelButton(
-                        label: 'onboarding.skip'.tr(),
-                        onPressed:
+                        DeelButton(
+                          label: 'onboarding.skip'.tr(),
+                          onPressed:
+                              () => _completeAndNavigate(AppRoutes.register),
+                          variant: DeelButtonVariant.ghost,
+                          size: DeelButtonSize.small,
+                          fullWidth: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // PageView
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const ClampingScrollPhysics(),
+                    children: [
+                      const WelcomePage(),
+                      const TrustPage(),
+                      GetStartedPage(
+                        onCreateAccount:
                             () => _completeAndNavigate(AppRoutes.register),
-                        variant: DeelButtonVariant.ghost,
-                        size: DeelButtonSize.small,
-                        fullWidth: false,
+                        onLogin: () => _completeAndNavigate(AppRoutes.login),
                       ),
                     ],
                   ),
                 ),
-              ],
 
-              // PageView
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics: const ClampingScrollPhysics(),
-                  children: [
-                    const WelcomePage(),
-                    const TrustPage(),
-                    GetStartedPage(
-                      onCreateAccount:
-                          () => _completeAndNavigate(AppRoutes.register),
-                      onLogin: () => _completeAndNavigate(AppRoutes.login),
+                // Dot indicator
+                const SizedBox(height: Spacing.s6),
+                PageDotIndicator(
+                  currentPage: state.currentPage,
+                  pageCount: _pageCount,
+                ),
+
+                // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
+                if (state.currentPage < _pageCount - 1) ...[
+                  const SizedBox(height: Spacing.s4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
+                    child: DeelButton(
+                      label: 'onboarding.next'.tr(),
+                      onPressed: _nextPage,
+                      variant: DeelButtonVariant.primary,
+                      size: DeelButtonSize.large,
                     ),
-                  ],
-                ),
-              ),
-
-              // Dot indicator
-              const SizedBox(height: Spacing.s6),
-              PageDotIndicator(
-                currentPage: state.currentPage,
-                pageCount: _pageCount,
-              ),
-
-              // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
-              if (state.currentPage < _pageCount - 1) ...[
-                const SizedBox(height: Spacing.s4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-                  child: DeelButton(
-                    label: 'onboarding.next'.tr(),
-                    onPressed: _nextPage,
-                    variant: DeelButtonVariant.primary,
-                    size: DeelButtonSize.large,
                   ),
-                ),
-              ],
+                ],
 
-              // Trust badges (expanded only)
-              const SizedBox(height: Spacing.s6),
-              const OnboardingTrustBadges(),
-              const SizedBox(height: Spacing.s4),
-            ],
+                // Trust badges (expanded only)
+                const SizedBox(height: Spacing.s6),
+                const OnboardingTrustBadges(),
+                const SizedBox(height: Spacing.s4),
+              ],
+            ),
           ),
         ),
       ),

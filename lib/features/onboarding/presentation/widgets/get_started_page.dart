@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
@@ -46,7 +47,7 @@ class GetStartedPage extends StatelessWidget {
                   child: Center(
                     child: Icon(
                       PhosphorIcons.handshake(PhosphorIconsStyle.duotone),
-                      size: 64,
+                      size: DeelmarktIconSize.hero,
                       color: theme.colorScheme.secondary,
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
@@ -95,7 +96,9 @@ class _IllustrationPlaceholder extends StatelessWidget {
             color: backgroundColor,
             borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
           ),
-          child: Center(child: Icon(icon, size: 64, color: iconColor)),
+          child: Center(
+            child: Icon(icon, size: DeelmarktIconSize.hero, color: iconColor),
+          ),
         ),
       ),
     );

@@ -51,5 +51,25 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('feature cards have Semantics labels', (tester) async {
+      await pumpTestWidget(tester, const TrustPage());
+
+      // Each TrustFeatureCard wraps in Semantics(label: '$title — $subtitle').
+      // pumpTestWidget doesn't init EasyLocalization, so .tr() returns keys.
+      // bySemanticsLabel uses RegExp — escape the em dash.
+      expect(
+        find.bySemanticsLabel(RegExp(r'onboarding\.escrow_title')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(RegExp(r'onboarding\.verified_title')),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel(RegExp(r'onboarding\.returns_title')),
+        findsOneWidget,
+      );
+    });
   });
 }
