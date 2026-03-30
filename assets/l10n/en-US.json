@@ -222,7 +222,6 @@
     "lookingUp": "Looking up address...",
     "notFound": "Address not found"
   },
-
   "shipping": {
     "sendPackage": "Send your package",
     "scanAtServicePoint": "Scan this QR code at a PostNL or DHL service point",
@@ -286,5 +285,19 @@
     "accept_all": "Accept all",
     "necessary_only": "Necessary only",
     "privacy_policy": "Read our privacy policy"
+  },
+  "home": {
+    "nearby": "Nearby",
+    "viewAll": "View all",
+    "recentlyAdded": "Recently added",
+    "categories": "Categories",
+    "emptyNearby": "No listings nearby",
+    "emptyNearbyAction": "Start searching"
+  },
+  "listing_card": {
+    "escrowAvailable": "Escrow available",
+    "distanceKm": "{} km",
+    "addFavourite": "Add to favourites",
+    "removeFavourite": "Remove from favourites"
   }
 }

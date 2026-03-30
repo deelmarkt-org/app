@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
+import 'package:deelmarkt/features/home/presentation/home_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
@@ -109,9 +110,7 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.home,
                 name: 'home',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Home'), // l10n: P-task
+                builder: (context, state) => const HomeScreen(),
               ),
             ],
           ),

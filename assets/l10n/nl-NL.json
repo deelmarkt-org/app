@@ -227,7 +227,6 @@
     "lookingUp": "Adres opzoeken...",
     "notFound": "Adres niet gevonden"
   },
-
   "shipping": {
     "sendPackage": "Verzend je pakket",
     "scanAtServicePoint": "Scan deze QR-code bij een PostNL- of DHL-servicepunt",
@@ -286,5 +285,19 @@
     "accept_all": "Alles accepteren",
     "necessary_only": "Alleen noodzakelijk",
     "privacy_policy": "Lees ons privacybeleid"
+  },
+  "home": {
+    "nearby": "In de buurt",
+    "viewAll": "Bekijk alles",
+    "recentlyAdded": "Recent toegevoegd",
+    "categories": "Categorieën",
+    "emptyNearby": "Geen advertenties in de buurt",
+    "emptyNearbyAction": "Start met zoeken"
+  },
+  "listing_card": {
+    "escrowAvailable": "Escrow beschikbaar",
+    "distanceKm": "{} km",
+    "addFavourite": "Toevoegen aan favorieten",
+    "removeFavourite": "Verwijderen uit favorieten"
   }
 }
