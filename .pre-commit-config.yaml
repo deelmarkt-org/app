@@ -42,7 +42,7 @@ repos:
       - id: flutter-analyze
         name: flutter analyze
         language: system
-        entry: bash -c 'flutter analyze --no-pub --no-fatal-infos'
+        entry: bash -c 'flutter analyze --no-pub'
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]

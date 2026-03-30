@@ -159,31 +159,12 @@ class SupabaseListingRepository implements ListingRepository {
 
   @override
   Future<ListingEntity> toggleFavourite(String listingId) async {
-    final userId = _client.auth.currentUser?.id;
-    if (userId == null) throw Exception('Not authenticated');
-
     try {
-      // Check if already favourited
-      final existing =
-          await _client
-              .from('favourites')
-              .select('id')
-              .eq('user_id', userId)
-              .eq('listing_id', listingId)
-              .maybeSingle();
-
-      if (existing != null) {
-        await _client
-            .from('favourites')
-            .delete()
-            .eq('user_id', userId)
-            .eq('listing_id', listingId);
-      } else {
-        await _client.from('favourites').insert({
-          'user_id': userId,
-          'listing_id': listingId,
-        });
-      }
+      // Atomic toggle via RPC — single round-trip instead of 3
+      await _client.rpc(
+        'toggle_favourite',
+        params: {'p_listing_id': listingId},
+      );
 
       // Return updated listing
       final updated = await getById(listingId);

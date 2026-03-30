@@ -34,9 +34,9 @@ export interface RateLimitResult {
 /**
  * Check rate limit for a user on a specific endpoint.
  *
- * Uses Redis INCR + EXPIRE for atomic counter increment.
- * If the key doesn't exist, INCR creates it with value 1.
- * EXPIRE sets the TTL only on the first request in a window.
+ * Uses a Lua script via EVAL for atomic INCR + EXPIRE + TTL in a single
+ * round-trip. This prevents the race condition where EXPIRE could fail
+ * after INCR, leaving a key without TTL that persists forever.
  */
 export async function checkRateLimit(
   creds: RedisCredentials,
@@ -46,48 +46,34 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   const key = `ratelimit:${endpoint}:${userId}`;
 
-  // INCR — atomic increment, creates key with value 1 if it doesn't exist
-  const incrResponse = await fetch(
-    `${creds.url}/incr/${encodeURIComponent(key)}`,
-    { headers: { Authorization: `Bearer ${creds.token}` } },
-  );
+  // Lua script: atomically INCR, set EXPIRE on first request, return [count, ttl]
+  const luaScript = [
+    "local count = redis.call('INCR', KEYS[1])",
+    "if count == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end",
+    "local ttl = redis.call('TTL', KEYS[1])",
+    "return {count, ttl}",
+  ].join("\n");
 
-  if (!incrResponse.ok) {
+  // Upstash REST API: POST body is [script, numkeys, ...keys, ...args]
+  const evalResponse = await fetch(`${creds.url}/eval`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${creds.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify([luaScript, 1, key, config.windowSeconds]),
+  });
+
+  if (!evalResponse.ok) {
     // Redis unavailable — fail open (allow the request, log warning)
-    console.warn(`[rate-limit] Redis INCR failed (HTTP ${incrResponse.status}), failing open`);
+    console.warn(`[rate-limit] Redis EVAL failed (HTTP ${evalResponse.status}), failing open`);
     return { allowed: true, remaining: config.maxRequests, resetSeconds: 0 };
   }
 
-  const incrData = await incrResponse.json();
-  const currentCount: number = incrData.result;
+  const evalData = await evalResponse.json();
+  const [currentCount, ttl] = evalData.result as [number, number];
 
-  // Set TTL on the first request in the window (count === 1)
-  if (currentCount === 1) {
-    await fetch(
-      `${creds.url}/expire/${encodeURIComponent(key)}/${config.windowSeconds}`,
-      { headers: { Authorization: `Bearer ${creds.token}` } },
-    ).catch((err) => {
-      console.warn(`[rate-limit] Redis EXPIRE failed: ${err}`);
-    });
-  }
-
-  // Get TTL for reset time
-  let resetSeconds = config.windowSeconds;
-  try {
-    const ttlResponse = await fetch(
-      `${creds.url}/ttl/${encodeURIComponent(key)}`,
-      { headers: { Authorization: `Bearer ${creds.token}` } },
-    );
-    if (ttlResponse.ok) {
-      const ttlData = await ttlResponse.json();
-      if (ttlData.result > 0) {
-        resetSeconds = ttlData.result;
-      }
-    }
-  } catch {
-    // Non-critical — use default window
-  }
-
+  const resetSeconds = ttl > 0 ? ttl : config.windowSeconds;
   const remaining = Math.max(0, config.maxRequests - currentCount);
 
   return {

@@ -20,12 +20,16 @@ class AuthRepositoryImpl implements AuthRepository {
     required DateTime privacyAcceptedAt,
   }) async {
     try {
+      // Use UTC timestamps generated at call time for GDPR audit trail.
+      // Client-passed timestamps are unreliable (clock skew, timezone).
+      // The authoritative record is Supabase auth.users.created_at.
+      final serverNow = DateTime.now().toUtc().toIso8601String();
       await _datasource.signUpWithEmail(
         email: email,
         password: password,
         metadata: {
-          'terms_accepted_at': termsAcceptedAt.toIso8601String(),
-          'privacy_accepted_at': privacyAcceptedAt.toIso8601String(),
+          'terms_accepted_at': serverNow,
+          'privacy_accepted_at': serverNow,
         },
       );
     } on sb.AuthException catch (e) {
@@ -86,6 +90,25 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   AppException _mapAuthError(sb.AuthException e) {
+    // Prefer status codes over message string matching for robustness.
+    // Status codes are stable API contract; messages may change between
+    // Supabase versions or be localised.
+    final code = e.statusCode;
+
+    // 429 — rate limited (check first, most actionable)
+    if (code == '429') {
+      return const AuthException('error.rate_limited');
+    }
+    // 422 — validation error (invalid OTP, expired token, etc.)
+    if (code == '422') {
+      final msg = e.message.toLowerCase();
+      if (msg.contains('expired')) {
+        return const AuthException('error.otp_expired');
+      }
+      return const AuthException('error.otp_invalid');
+    }
+
+    // Fall back to message matching for cases without distinct status codes
     final msg = e.message.toLowerCase();
     if (msg.contains('already registered') ||
         msg.contains('already been registered')) {
@@ -99,13 +122,13 @@ class AuthRepositoryImpl implements AuthRepository {
     if (msg.contains('expired')) {
       return const AuthException('error.otp_expired');
     }
-    if (e.statusCode == '429' || msg.contains('rate')) {
+    if (msg.contains('rate')) {
       return const AuthException('error.rate_limited');
     }
     // H-7: sanitize — never pass raw Supabase message (may contain PII)
     return AuthException(
       'error.generic',
-      debugMessage: 'auth_error_status_${e.statusCode}',
+      debugMessage: 'auth_error_status_$code',
     );
   }
 

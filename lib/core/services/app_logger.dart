@@ -84,6 +84,13 @@ abstract final class AppLogger {
       RegExp(r'[A-Z]{2}\d{2}[A-Z]{4}\d{10}'),
       'NL**BANK**********',
     );
+    // BSN (Dutch citizen service number): 9 digits, often preceded by
+    // "BSN" or "bsn" label. Only mask when preceded by BSN context to
+    // avoid false positives with other 9-digit sequences.
+    masked = masked.replaceAll(
+      RegExp(r'[Bb][Ss][Nn][:\s]*\d{9}'),
+      'BSN: *********',
+    );
     return masked;
   }
 

@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/home/data/mock/mock_category_repository.dart';
 import 'package:deelmarkt/features/home/data/mock/mock_listing_repository.dart';
@@ -14,16 +13,11 @@ import 'package:deelmarkt/core/services/supabase_service.dart';
 
 /// Whether to use real Supabase or mock repositories.
 ///
+/// Compile-time constant: `--dart-define=USE_MOCK_DATA=true` for mock mode.
 /// Override in tests: `ProviderScope(overrides: [useMockDataProvider.overrideWithValue(true)])`
 /// In production: defaults to false (real Supabase).
 final useMockDataProvider = Provider<bool>((ref) {
-  try {
-    Supabase.instance.client;
-    return false;
-    // ignore: avoid_catches_without_on_clauses — Supabase throws AssertionError (not Exception)
-  } catch (_) {
-    return true;
-  }
+  return const bool.fromEnvironment('USE_MOCK_DATA');
 });
 
 /// Listing repository — mock or Supabase based on [useMockDataProvider].

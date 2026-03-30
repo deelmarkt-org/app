@@ -58,6 +58,29 @@ void main() {
       expect(result, isNot(contains('NL91ABNA0417164300')));
     });
 
+    test('masks BSN preceded by label', () {
+      const input = 'Gebruiker BSN: 123456789 aangemeld';
+      final result = AppLogger.maskPii(input);
+
+      expect(result, contains('BSN: *********'));
+      expect(result, isNot(contains('123456789')));
+    });
+
+    test('masks BSN case-insensitively', () {
+      const input = 'bsn 987654321 gevonden';
+      final result = AppLogger.maskPii(input);
+
+      expect(result, contains('BSN: *********'));
+      expect(result, isNot(contains('987654321')));
+    });
+
+    test('does not mask 9-digit numbers without BSN context', () {
+      const input = 'Order 123456789 processed';
+      final result = AppLogger.maskPii(input);
+
+      expect(result, contains('123456789'));
+    });
+
     test('masks multiple PII types in one string', () {
       const input = 'User jan@test.nl (+31612345678) IBAN: NL91ABNA0417164300';
       final result = AppLogger.maskPii(input);
