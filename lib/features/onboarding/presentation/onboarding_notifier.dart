@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import '../data/shared_prefs_onboarding_repo.dart';
 import '../domain/onboarding_repository.dart';
@@ -27,7 +27,11 @@ Future<bool> isOnboardingComplete(Ref ref) async {
     final repo = ref.watch(onboardingRepositoryProvider);
     return repo.isComplete();
   } catch (e) {
-    debugPrint('Onboarding completion check failed: $e');
+    AppLogger.warning(
+      'Onboarding completion check failed',
+      tag: 'onboarding',
+      error: e,
+    );
     return false; // fail-open: show onboarding as safe default
   }
 }

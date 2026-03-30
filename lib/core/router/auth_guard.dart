@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:deelmarkt/core/services/app_logger.dart';
+
 import 'routes.dart';
 
 /// Routes that require authentication — redirect to onboarding if not logged in.
@@ -61,7 +63,7 @@ class GoRouterRefreshStream extends ChangeNotifier {
     _subscription = stream.asBroadcastStream().listen(
       (_) => notifyListeners(),
       onError: (Object error) {
-        debugPrint('Auth stream error: $error');
+        AppLogger.warning('Auth stream error', tag: 'router', error: error);
       },
     );
   }

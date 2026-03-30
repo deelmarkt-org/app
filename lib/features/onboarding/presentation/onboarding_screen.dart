@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'onboarding_notifier.dart';
@@ -18,8 +19,8 @@ import 'widgets/welcome_page.dart';
 /// Full onboarding flow — 3-page PageView with language selection,
 /// trust value proposition, and account creation CTA.
 ///
-/// Persists completion flag via SharedPreferences so returning users
-/// skip onboarding.
+/// Replaces the Phase 1 placeholder. Persists completion flag via
+/// SharedPreferences so returning users skip onboarding.
 ///
 /// Route: `/onboarding` (auth guard redirects here when not logged in
 /// and onboarding is not yet complete).
@@ -63,7 +64,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
       if (mounted) context.go(route);
     } catch (e) {
-      debugPrint('Failed to complete onboarding: $e');
+      AppLogger.error(
+        'Failed to complete onboarding',
+        tag: 'onboarding',
+        error: e,
+      );
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -103,7 +108,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       child: Scaffold(
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 600,
+            maxWidth: 500,
             child: Column(
               children: [
                 // Header (expanded breakpoint only): logo + skip
@@ -130,7 +135,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           onPressed:
                               () => _completeAndNavigate(AppRoutes.register),
                           variant: DeelButtonVariant.ghost,
-                          size: DeelButtonSize.medium,
+                          size: DeelButtonSize.small,
                           fullWidth: false,
                         ),
                       ],

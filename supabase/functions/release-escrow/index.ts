@@ -56,19 +56,39 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   try {
     // -----------------------------------------------------------------------
+    // C-02 FIX: Use FOR UPDATE SKIP LOCKED to prevent TOCTOU race condition.
+    //
+    // When pg_cron fires overlapping invocations (>15min processing time or
+    // retry), both would fetch the same transactions and attempt release.
+    // FOR UPDATE SKIP LOCKED atomically locks rows and skips already-locked
+    // ones, guaranteeing each transaction is processed by exactly one worker.
+    //
+    // Falls back to standard queries if RPC is unavailable (e.g. migration
+    // not yet applied), preserving the existing neq("released") guard in
+    // releaseToSeller() as a secondary defense.
+    // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
     // 1. Release confirmed transactions (B-22)
     //    Buyer confirmed delivery → release seller payout
     // -----------------------------------------------------------------------
     const { data: confirmed, error: confirmedError } = await supabase
-      .from("transactions")
-      .select("id, seller_id, item_amount_cents, shipping_cost_cents")
-      .eq("status", "confirmed");
+      .rpc("fetch_releasable_confirmed", {})
+      .then((res: { data: unknown; error: unknown }) => res)
+      .catch((err: unknown) => {
+        // Fallback: RPC not available (migration not yet applied)
+        console.warn(`[release-escrow] fetch_releasable_confirmed RPC unavailable, falling back to standard query: ${err}`);
+        return supabase
+          .from("transactions")
+          .select("id, seller_id, item_amount_cents, shipping_cost_cents")
+          .eq("status", "confirmed");
+      });
 
     if (confirmedError) {
-      throw new Error(`Failed to fetch confirmed txns: ${confirmedError.message}`);
+      throw new Error(`Failed to fetch confirmed txns: ${(confirmedError as { message: string }).message}`);
     }
 
-    for (const txn of confirmed ?? []) {
+    for (const txn of (confirmed as Array<{ id: string; seller_id: string; item_amount_cents: number; shipping_cost_cents: number }>) ?? []) {
       try {
         await releaseToSeller(supabase, txn);
         results.confirmed_releases++;
@@ -83,22 +103,30 @@ Deno.serve(async (req: Request): Promise<Response> => {
     //    48h window passed after delivery → auto-release to seller
     // -----------------------------------------------------------------------
     const { data: expired, error: expiredError } = await supabase
-      .from("transactions")
-      .select("id, seller_id, item_amount_cents, shipping_cost_cents")
-      .eq("status", "delivered")
-      .lt("escrow_deadline", now);
+      .rpc("fetch_releasable_expired", {})
+      .then((res: { data: unknown; error: unknown }) => res)
+      .catch((err: unknown) => {
+        console.warn(`[release-escrow] fetch_releasable_expired RPC unavailable, falling back to standard query: ${err}`);
+        return supabase
+          .from("transactions")
+          .select("id, seller_id, item_amount_cents, shipping_cost_cents")
+          .eq("status", "delivered")
+          .lt("escrow_deadline", now);
+      });
 
     if (expiredError) {
-      throw new Error(`Failed to fetch expired txns: ${expiredError.message}`);
+      throw new Error(`Failed to fetch expired txns: ${(expiredError as { message: string }).message}`);
     }
 
-    for (const txn of expired ?? []) {
+    for (const txn of (expired as Array<{ id: string; seller_id: string; item_amount_cents: number; shipping_cost_cents: number }>) ?? []) {
       try {
         // Auto-confirm then release
         await supabase
           .from("transactions")
           .update({ status: "confirmed", confirmed_at: now })
-          .eq("id", txn.id);
+          .eq("id", txn.id)
+          .neq("status", "confirmed")
+          .neq("status", "released");
 
         await releaseToSeller(supabase, txn);
         results.timeout_releases++;
@@ -116,18 +144,22 @@ Deno.serve(async (req: Request): Promise<Response> => {
     hardLimitDate.setDate(hardLimitDate.getDate() - ESCROW_HARD_LIMIT_DAYS);
 
     const { data: stale, error: staleError } = await supabase
-      .from("transactions")
-      .select("id, seller_id, buyer_id, status, item_amount_cents, shipping_cost_cents, paid_at")
-      // C1: Exclude 'disputed' — DB state machine only allows disputed → {resolved, refunded}
-      // Disputed txns require manual resolution, not auto-release to seller
-      .in("status", ["paid", "shipped", "delivered", "confirmed"])
-      .lt("paid_at", hardLimitDate.toISOString());
+      .rpc("fetch_releasable_stale", { hard_limit_iso: hardLimitDate.toISOString() })
+      .then((res: { data: unknown; error: unknown }) => res)
+      .catch((err: unknown) => {
+        console.warn(`[release-escrow] fetch_releasable_stale RPC unavailable, falling back to standard query: ${err}`);
+        return supabase
+          .from("transactions")
+          .select("id, seller_id, buyer_id, status, item_amount_cents, shipping_cost_cents, paid_at")
+          .in("status", ["paid", "shipped", "delivered", "confirmed"])
+          .lt("paid_at", hardLimitDate.toISOString());
+      });
 
     if (staleError) {
-      throw new Error(`Failed to fetch stale txns: ${staleError.message}`);
+      throw new Error(`Failed to fetch stale txns: ${(staleError as { message: string }).message}`);
     }
 
-    for (const txn of stale ?? []) {
+    for (const txn of (stale as Array<{ id: string; seller_id: string; buyer_id: string; status: string; item_amount_cents: number; shipping_cost_cents: number; paid_at: string }>) ?? []) {
       try {
         // Walk through valid state transitions to reach 'confirmed'.
         // DB trigger enforces state machine, so we can't skip states.
