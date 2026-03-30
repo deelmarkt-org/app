@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/services/consent/consent_record.dart';
 
-import 'gdpr_consent_banner.dart';
+import 'package:deelmarkt/widgets/consent/gdpr_consent_banner.dart';
 
 /// Wraps app content and shows consent banner when:
 /// - No consent recorded ([consentRecord] is null), or

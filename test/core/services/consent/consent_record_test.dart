@@ -11,7 +11,7 @@ void main() {
     return ConsentRecord(
       level: level,
       version: version,
-      timestamp: DateTime.utc(2026, 3, 24, 12, 0),
+      timestamp: DateTime.utc(2026, 3, 24, 12),
       locale: locale,
       source: ConsentSource.banner,
       purposes: {
@@ -41,7 +41,7 @@ void main() {
     });
 
     test('isOutdated returns false when version matches', () {
-      final record = createRecord(version: '1.0.0');
+      final record = createRecord();
       expect(record.isOutdated('1.0.0'), isFalse);
     });
 

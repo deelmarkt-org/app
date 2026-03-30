@@ -1,4 +1,4 @@
-import '../../domain/entities/category_entity.dart';
+import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 
 /// DTO for converting Supabase REST JSON to [CategoryEntity].
 class CategoryDto {

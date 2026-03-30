@@ -21,7 +21,7 @@ void main() {
     return ConsentRecord(
       level: level,
       version: version,
-      timestamp: DateTime.utc(2026, 3, 24, 12, 0),
+      timestamp: DateTime.utc(2026, 3, 24, 12),
       locale: 'nl',
       source: ConsentSource.banner,
       purposes: {
@@ -76,7 +76,7 @@ void main() {
       'consent persists across new repository instance (app restart)',
       () async {
         // Save consent with first repo instance.
-        await repo.saveConsent(createRecord(version: '1.0.0'));
+        await repo.saveConsent(createRecord());
 
         // Create a new repo instance (simulates app restart).
         final newRepo = SharedPrefsConsentRepository(prefs);
@@ -88,7 +88,7 @@ void main() {
     );
 
     test('multiple sequential writes produce consistent state', () async {
-      await repo.saveConsent(createRecord(level: ConsentLevel.allCookies));
+      await repo.saveConsent(createRecord());
       await repo.saveConsent(createRecord(level: ConsentLevel.necessaryOnly));
       final restored = await repo.getConsent();
       expect(restored!.level, ConsentLevel.necessaryOnly);

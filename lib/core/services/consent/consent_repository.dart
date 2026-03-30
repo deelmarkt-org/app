@@ -1,4 +1,4 @@
-import 'consent_record.dart';
+import 'package:deelmarkt/core/services/consent/consent_record.dart';
 
 /// Consent persistence interface.
 ///

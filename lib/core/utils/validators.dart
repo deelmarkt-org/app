@@ -5,10 +5,13 @@
 abstract final class Validators {
   /// Email: non-empty + simplified RFC 5322 regex.
   static String? email(String? value) {
-    if (value == null || value.trim().isEmpty)
+    if (value == null || value.trim().isEmpty) {
       return 'validation.email_required';
+    }
     final pattern = RegExp(r'^[\w.+-]+@[\w-]+\.[\w.]+$');
-    if (!pattern.hasMatch(value.trim())) return 'validation.email_invalid';
+    if (!pattern.hasMatch(value.trim())) {
+      return 'validation.email_invalid';
+    }
     return null;
   }
 
@@ -16,19 +19,23 @@ abstract final class Validators {
   static String? password(String? value) {
     if (value == null || value.isEmpty) return 'validation.password_required';
     if (value.length < 8) return 'validation.password_too_short';
-    if (!value.contains(RegExp(r'[A-Z]')))
+    if (!value.contains(RegExp(r'[A-Z]'))) {
       return 'validation.password_needs_uppercase';
-    if (!value.contains(RegExp(r'[a-z]')))
+    }
+    if (!value.contains(RegExp(r'[a-z]'))) {
       return 'validation.password_needs_lowercase';
-    if (!value.contains(RegExp(r'[0-9]')))
+    }
+    if (!value.contains(RegExp(r'[0-9]'))) {
       return 'validation.password_needs_digit';
+    }
     return null;
   }
 
   /// Dutch mobile phone: +316XXXXXXXX or 06XXXXXXXX.
   static String? dutchPhone(String? value) {
-    if (value == null || value.trim().isEmpty)
+    if (value == null || value.trim().isEmpty) {
       return 'validation.phone_required';
+    }
     final normalized = normalizePhone(value);
     // +31 followed by 9 digits (6XXXXXXXX)
     if (!RegExp(r'^\+31[1-9]\d{8}$').hasMatch(normalized)) {
@@ -40,8 +47,9 @@ abstract final class Validators {
   /// OTP: exactly 6 numeric digits.
   static String? otp(String? value) {
     if (value == null || value.trim().isEmpty) return 'validation.otp_required';
-    if (!RegExp(r'^\d{6}$').hasMatch(value.trim()))
+    if (!RegExp(r'^\d{6}$').hasMatch(value.trim())) {
       return 'validation.otp_invalid';
+    }
     return null;
   }
 

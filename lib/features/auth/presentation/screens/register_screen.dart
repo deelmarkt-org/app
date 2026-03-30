@@ -51,7 +51,7 @@ class RegisterScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: Spacing.s4),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
           child: switch (state.step) {
             RegistrationStep.emailForm => RegistrationForm(
               isLoading: state.isLoading,
@@ -191,11 +191,11 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(height: Spacing.s6),
+        const SizedBox(height: Spacing.s6),
         Text(widget.title, style: theme.textTheme.headlineMedium),
-        SizedBox(height: Spacing.s2),
+        const SizedBox(height: Spacing.s2),
         Text(widget.subtitle, style: theme.textTheme.bodyLarge),
-        SizedBox(height: Spacing.s8),
+        const SizedBox(height: Spacing.s8),
         if (widget.isLoading)
           const Center(child: CircularProgressIndicator.adaptive())
         else
@@ -204,7 +204,7 @@ class _OtpVerificationViewState extends State<_OtpVerificationView> {
             errorText: widget.errorText?.tr(),
             semanticLabel: 'auth.otp_field_label'.tr(),
           ),
-        SizedBox(height: Spacing.s6),
+        const SizedBox(height: Spacing.s6),
         Center(
           child:
               _resendSeconds > 0
@@ -269,17 +269,17 @@ class _PhoneFormViewState extends State<_PhoneFormView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: Spacing.s6),
+          const SizedBox(height: Spacing.s6),
           Text(
             'auth.phone_entry_title'.tr(),
             style: theme.textTheme.headlineMedium,
           ),
-          SizedBox(height: Spacing.s2),
+          const SizedBox(height: Spacing.s2),
           Text(
             'auth.phone_entry_subtitle'.tr(),
             style: theme.textTheme.bodyLarge,
           ),
-          SizedBox(height: Spacing.s6),
+          const SizedBox(height: Spacing.s6),
           if (widget.errorText != null) ...[
             Semantics(
               liveRegion: true,
@@ -290,7 +290,7 @@ class _PhoneFormViewState extends State<_PhoneFormView> {
                 ),
               ),
             ),
-            SizedBox(height: Spacing.s3),
+            const SizedBox(height: Spacing.s3),
           ],
           DeelInput(
             label: 'form.phone'.tr(),
@@ -303,11 +303,14 @@ class _PhoneFormViewState extends State<_PhoneFormView> {
             autofillHints: const [AutofillHints.telephoneNumber],
             validator: Validators.dutchPhone,
             prefixIcon: Padding(
-              padding: EdgeInsets.only(left: Spacing.s3, right: Spacing.s1),
+              padding: const EdgeInsets.only(
+                left: Spacing.s3,
+                right: Spacing.s1,
+              ),
               child: Text('+31', style: theme.textTheme.bodyLarge),
             ),
           ),
-          SizedBox(height: Spacing.s6),
+          const SizedBox(height: Spacing.s6),
           DeelButton(
             label: 'auth.send_code'.tr(),
             onPressed: widget.isLoading ? null : _submit,

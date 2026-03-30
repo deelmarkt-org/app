@@ -9,7 +9,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'firebase_options.dart';
+import 'package:deelmarkt/core/services/firebase_options.dart';
 
 part 'firebase_service.g.dart';
 

@@ -1,4 +1,4 @@
-import '../repositories/auth_repository.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 
 /// Registers a new user with email, password, and consent timestamps.
 class RegisterWithEmailUseCase {

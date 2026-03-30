@@ -14,11 +14,7 @@ class VariantSection extends StatelessWidget {
       spacing: Spacing.s3,
       runSpacing: Spacing.s3,
       children: [
-        DeelButton(
-          label: 'Primary',
-          variant: DeelButtonVariant.primary,
-          onPressed: () {},
-        ),
+        DeelButton(label: 'Primary', onPressed: () {}),
         DeelButton(
           label: 'Secondary',
           variant: DeelButtonVariant.secondary,
@@ -70,11 +66,7 @@ class SizeSection extends StatelessWidget {
           size: DeelButtonSize.medium,
           onPressed: () {},
         ),
-        DeelButton(
-          label: 'Large',
-          size: DeelButtonSize.large,
-          onPressed: () {},
-        ),
+        DeelButton(label: 'Large', onPressed: () {}),
       ],
     );
   }
@@ -136,7 +128,6 @@ class FullWidthSection extends StatelessWidget {
           child: DeelButton(
             label: 'Place Order',
             leadingIcon: PhosphorIcons.shoppingCart(),
-            size: DeelButtonSize.large,
             onPressed: () {},
           ),
         ),
@@ -147,7 +138,6 @@ class FullWidthSection extends StatelessWidget {
             label: 'Processing Payment...',
             isLoading: true,
             loadingLabel: 'Processing payment',
-            size: DeelButtonSize.large,
             onPressed: () {},
           ),
         ),

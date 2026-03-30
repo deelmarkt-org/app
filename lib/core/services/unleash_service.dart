@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:unleash_proxy_client_flutter/unleash_proxy_client_flutter.dart';
 
-import 'env.dart';
+import 'package:deelmarkt/core/services/env.dart';
 
 part 'unleash_service.g.dart';
 
@@ -36,7 +36,7 @@ Future<void> initUnleash() async {
       },
     );
     _unleashClient = client;
-  } catch (e) {
+  } on Exception catch (e) {
     AppLogger.warning(
       'Failed to connect — all flags default to off',
       tag: 'unleash',

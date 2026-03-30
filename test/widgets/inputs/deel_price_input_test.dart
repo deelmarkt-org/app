@@ -15,50 +15,44 @@ void main() {
     });
 
     test('valueInCents parses NL format (comma decimal)', () {
-      final controller = DeelPriceController(decimalSeparator: ',');
-      controller.text = '45,50';
+      final controller = DeelPriceController()..text = '45,50';
       expect(controller.valueInCents, 4550);
       controller.dispose();
     });
 
     test('valueInCents parses EN format (dot decimal)', () {
-      final controller = DeelPriceController(decimalSeparator: '.');
-      controller.text = '45.50';
+      final controller = DeelPriceController(decimalSeparator: '.')
+        ..text = '45.50';
       expect(controller.valueInCents, 4550);
       controller.dispose();
     });
 
     test('set valueInCents updates display text', () {
-      final controller = DeelPriceController(decimalSeparator: ',');
-      controller.valueInCents = 4550;
+      final controller = DeelPriceController()..valueInCents = 4550;
       expect(controller.text, '45,50');
       controller.dispose();
     });
 
     test('set valueInCents with zero remainder pads correctly', () {
-      final controller = DeelPriceController(decimalSeparator: ',');
-      controller.valueInCents = 4500;
+      final controller = DeelPriceController()..valueInCents = 4500;
       expect(controller.text, '45,00');
       controller.dispose();
     });
 
     test('isWithinBounds checks minCents', () {
-      final controller = DeelPriceController(minCents: 100);
-      controller.text = '0,50';
+      final controller = DeelPriceController()..text = '0,50';
       expect(controller.isWithinBounds, isFalse);
       controller.dispose();
     });
 
     test('isWithinBounds checks maxCents', () {
-      final controller = DeelPriceController(maxCents: 10000);
-      controller.text = '200,00';
+      final controller = DeelPriceController(maxCents: 10000)..text = '200,00';
       expect(controller.isWithinBounds, isFalse);
       controller.dispose();
     });
 
     test('isWithinBounds returns true for valid amount', () {
-      final controller = DeelPriceController(minCents: 100, maxCents: 10000);
-      controller.text = '50,00';
+      final controller = DeelPriceController(maxCents: 10000)..text = '50,00';
       expect(controller.isWithinBounds, isTrue);
       controller.dispose();
     });
@@ -66,8 +60,7 @@ void main() {
 
   group('DeelPriceController security', () {
     test('valueInCents clamps to maxCents for overflow input', () {
-      final controller = DeelPriceController(maxCents: 10000);
-      controller.text = '999,99';
+      final controller = DeelPriceController(maxCents: 10000)..text = '999,99';
       expect(controller.valueInCents, 10000);
       controller.dispose();
     });
@@ -80,23 +73,21 @@ void main() {
     });
 
     test('programmatic text is sanitised through formatter', () {
-      final controller = DeelPriceController();
-      controller.text = 'EUR 45,50';
+      final controller = DeelPriceController()..text = 'EUR 45,50';
       expect(controller.text, '45,50');
       expect(controller.valueInCents, 4550);
       controller.dispose();
     });
 
     test('programmatic text rejects letters', () {
-      final controller = DeelPriceController();
-      controller.text = 'abc';
+      final controller = DeelPriceController()..text = 'abc';
       expect(controller.text, '');
       expect(controller.valueInCents, 0);
       controller.dispose();
     });
 
     test('parseToCents with 3+ decimal places returns null', () {
-      final formatter = PriceInputFormatter(decimalSeparator: ',');
+      final formatter = PriceInputFormatter();
       expect(formatter.parseToCents('1,105'), isNull);
     });
   });
@@ -127,7 +118,7 @@ void main() {
     });
 
     testWidgets('accepts digits and comma', (tester) async {
-      final controller = DeelPriceController(decimalSeparator: ',');
+      final controller = DeelPriceController();
       await tester.pumpWidget(
         buildInputApp(
           child: DeelPriceInput(label: 'Prijs', controller: controller),

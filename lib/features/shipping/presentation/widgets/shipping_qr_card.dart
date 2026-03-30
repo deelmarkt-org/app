@@ -8,8 +8,8 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 
-import '../../domain/entities/shipping_label.dart';
-import '../extensions/shipping_carrier_ext.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
+import 'package:deelmarkt/features/shipping/presentation/extensions/shipping_carrier_ext.dart';
 
 /// Displays a QR code card for label-free shipping at PostNL/DHL.
 ///
@@ -80,7 +80,6 @@ class ShippingQrCard extends StatelessWidget {
       ),
       child: QrImageView(
         data: label.qrData,
-        version: QrVersions.auto,
         size: 200,
         eyeStyle: const QrEyeStyle(
           eyeShape: QrEyeShape.square,

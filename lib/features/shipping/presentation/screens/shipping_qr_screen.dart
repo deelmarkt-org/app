@@ -11,8 +11,8 @@ import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../domain/entities/shipping_label.dart';
-import '../widgets/shipping_qr_card.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
+import 'package:deelmarkt/features/shipping/presentation/widgets/shipping_qr_card.dart';
 
 /// Screen displaying shipping QR code for seller to scan at service point.
 ///
@@ -84,7 +84,6 @@ class ShippingQrScreen extends StatelessWidget {
     return DeelButton(
       label: 'shipping.findServicePoint'.tr(),
       leadingIcon: PhosphorIcons.mapPin(),
-      variant: DeelButtonVariant.primary,
       onPressed: () {
         assert(label.id.isNotEmpty, 'ShippingLabel.id must not be empty');
         final route = AppRoutes.parcelShopSelector.replaceFirst(

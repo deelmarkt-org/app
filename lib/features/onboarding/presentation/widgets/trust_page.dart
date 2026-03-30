@@ -6,7 +6,7 @@ import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/trust_theme.dart';
-import 'trust_feature_card.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_feature_card.dart';
 
 /// Page 2 of onboarding — Trust & Security value proposition.
 ///

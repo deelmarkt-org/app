@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../domain/onboarding_repository.dart';
+import 'package:deelmarkt/features/onboarding/domain/onboarding_repository.dart';
 
 /// SharedPreferences-backed onboarding completion persistence.
 ///

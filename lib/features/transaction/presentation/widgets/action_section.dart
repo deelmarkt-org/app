@@ -7,7 +7,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
 
-import '../../domain/entities/transaction_entity.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 
 /// Action buttons based on transaction status.
 class ActionSection extends StatelessWidget {

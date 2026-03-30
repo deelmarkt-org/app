@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'deel_button_style.dart';
-import 'deel_button_tokens.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button_style.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button_tokens.dart';
 
 /// Button variants for different action types.
 /// Reference: docs/design-system/components.md §Buttons
@@ -201,8 +201,9 @@ class DeelButton extends StatelessWidget {
     final List<Widget> children = [];
 
     if (leadingIcon != null) {
-      children.add(Icon(leadingIcon, size: iconSize));
-      children.add(const SizedBox(width: Spacing.s2));
+      children
+        ..add(Icon(leadingIcon, size: iconSize))
+        ..add(const SizedBox(width: Spacing.s2));
     }
 
     children.add(
@@ -212,8 +213,9 @@ class DeelButton extends StatelessWidget {
     );
 
     if (trailingIcon != null) {
-      children.add(const SizedBox(width: Spacing.s2));
-      children.add(Icon(trailingIcon, size: iconSize));
+      children
+        ..add(const SizedBox(width: Spacing.s2))
+        ..add(Icon(trailingIcon, size: iconSize));
     }
 
     return Row(

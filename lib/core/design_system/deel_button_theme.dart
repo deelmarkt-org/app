@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
 
 /// Theme extension providing per-variant colour tokens for [DeelButton].
 ///

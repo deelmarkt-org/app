@@ -1,4 +1,4 @@
-import '../../../core/models/transaction_status.dart';
+import 'package:deelmarkt/core/models/transaction_status.dart';
 
 /// Thrown when a transaction cannot be found.
 class TransactionNotFoundException implements Exception {

@@ -20,11 +20,7 @@ void main() {
     testWidgets('large size has minimum height of 52px', (tester) async {
       await tester.pumpWidget(
         buildButtonApp(
-          button: const DeelButton(
-            label: 'Test',
-            onPressed: null,
-            size: DeelButtonSize.large,
-          ),
+          button: const DeelButton(label: 'Test', onPressed: null),
         ),
       );
 
@@ -65,11 +61,7 @@ void main() {
     testWidgets('fullWidth true expands to parent width', (tester) async {
       await tester.pumpWidget(
         buildButtonApp(
-          button: const DeelButton(
-            label: 'Full width',
-            onPressed: null,
-            fullWidth: true,
-          ),
+          button: const DeelButton(label: 'Full width', onPressed: null),
         ),
       );
 
@@ -82,11 +74,7 @@ void main() {
     testWidgets('primary renders ElevatedButton', (tester) async {
       await tester.pumpWidget(
         buildButtonApp(
-          button: const DeelButton(
-            label: 'Primary',
-            onPressed: null,
-            variant: DeelButtonVariant.primary,
-          ),
+          button: const DeelButton(label: 'Primary', onPressed: null),
         ),
       );
 

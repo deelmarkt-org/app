@@ -72,8 +72,6 @@ class GetStartedPage extends StatelessWidget {
             DeelButton(
               label: 'onboarding.create_account'.tr(),
               onPressed: onCreateAccount,
-              variant: DeelButtonVariant.primary,
-              size: DeelButtonSize.large,
             ),
             const SizedBox(height: Spacing.s4),
             DeelButton(

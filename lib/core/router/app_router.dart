@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../features/auth/presentation/screens/register_screen.dart';
-import '../../features/onboarding/presentation/onboarding_notifier.dart';
-import '../../features/onboarding/presentation/onboarding_screen.dart';
-import '../services/supabase_service.dart';
-import 'auth_guard.dart';
-import 'routes.dart';
-import 'scaffold_with_nav.dart';
-import 'splash_screen.dart';
+import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
+import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
+import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/core/router/auth_guard.dart';
+import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/router/scaffold_with_nav.dart';
+import 'package:deelmarkt/core/router/splash_screen.dart';
 
 /// Central GoRouter configuration with deep link support + auth guard.
 ///

@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../domain/entities/listing_entity.dart';
-import '../../domain/repositories/listing_repository.dart';
-import '../dto/listing_dto.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/home/data/dto/listing_dto.dart';
 
 /// Supabase implementation of [ListingRepository].
 ///
@@ -59,8 +59,8 @@ class SupabaseListingRepository implements ListingRepository {
       // Build a map of id → distance for enrichment
       final distanceMap = <String, double>{};
       for (final row in idsList) {
-        final id = row['listing_id'];
-        final dist = row['distance_km'];
+        final id = (row as Map<String, dynamic>)['listing_id'];
+        final dist = (row)['distance_km'];
         if (id is String && dist is num) {
           distanceMap[id] = dist.toDouble();
         }

@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../domain/entities/shipping_label.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
 
 /// Presentation-layer extension for localized carrier display names.
 ///

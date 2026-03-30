@@ -171,7 +171,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
             }),
           ),
           if (hasError) ...[
-            SizedBox(height: Spacing.s2),
+            const SizedBox(height: Spacing.s2),
             Semantics(
               liveRegion: true,
               child: Text(

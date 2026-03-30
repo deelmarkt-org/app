@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
 /// Listing repository interface — domain layer.
 ///

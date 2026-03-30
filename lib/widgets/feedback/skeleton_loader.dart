@@ -40,7 +40,6 @@ class SkeletonLoader extends StatelessWidget {
             isDark
                 ? DeelmarktColors.darkShimmerHighlight
                 : DeelmarktColors.neutral100,
-        period: const Duration(milliseconds: 1500),
         enabled: enabled && !reduceMotion,
         child: child,
       ),

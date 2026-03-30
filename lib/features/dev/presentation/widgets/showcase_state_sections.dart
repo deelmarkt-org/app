@@ -37,11 +37,7 @@ class DisabledSection extends StatelessWidget {
       spacing: Spacing.s3,
       runSpacing: Spacing.s3,
       children: [
-        DeelButton(
-          label: 'Primary',
-          variant: DeelButtonVariant.primary,
-          onPressed: null,
-        ),
+        DeelButton(label: 'Primary', onPressed: null),
         DeelButton(
           label: 'Secondary',
           variant: DeelButtonVariant.secondary,
@@ -82,12 +78,7 @@ class LoadingSection extends StatelessWidget {
       spacing: Spacing.s3,
       runSpacing: Spacing.s3,
       children: [
-        DeelButton(
-          label: 'Primary',
-          variant: DeelButtonVariant.primary,
-          isLoading: true,
-          onPressed: () {},
-        ),
+        DeelButton(label: 'Primary', isLoading: true, onPressed: () {}),
         DeelButton(
           label: 'Secondary',
           variant: DeelButtonVariant.secondary,

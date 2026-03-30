@@ -49,9 +49,7 @@ void main() {
     });
 
     testWidgets('hides banner when consent is current', (tester) async {
-      await tester.pumpWidget(
-        _buildApp(consentRecord: _createRecord(version: kPrivacyPolicyVersion)),
-      );
+      await tester.pumpWidget(_buildApp(consentRecord: _createRecord()));
       expect(find.byType(GdprConsentBanner), findsNothing);
       expect(find.text('App Content'), findsOneWidget);
     });

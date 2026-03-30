@@ -1,4 +1,4 @@
-import '../repositories/auth_repository.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 
 /// Verifies the phone OTP code sent via SMS.
 class VerifyPhoneOtpUseCase {

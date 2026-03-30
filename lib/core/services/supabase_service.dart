@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'env.dart';
+import 'package:deelmarkt/core/services/env.dart';
 
 part 'supabase_service.g.dart';
 

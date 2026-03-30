@@ -59,7 +59,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
               );
             }),
           ),
-          SizedBox(height: Spacing.s1),
+          const SizedBox(height: Spacing.s1),
           Text(
             labels[strength.index],
             style: Theme.of(

@@ -6,9 +6,9 @@ import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
-import '../../domain/entities/transaction_entity.dart';
-import '../widgets/action_section.dart';
-import '../widgets/amount_section.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/action_section.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/amount_section.dart';
 
 /// Transaction detail screen — shows escrow timeline, amounts, and actions.
 ///

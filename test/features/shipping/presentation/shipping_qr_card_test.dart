@@ -17,7 +17,7 @@ ShippingLabel _label({
     qrData: qrData,
     trackingNumber: '3SDEVC1234567',
     carrier: carrier,
-    shipByDeadline: DateTime(2026, 3, 25, 18, 0),
+    shipByDeadline: DateTime(2026, 3, 25, 18),
     createdAt: DateTime(2026, 3, 23),
   );
 }

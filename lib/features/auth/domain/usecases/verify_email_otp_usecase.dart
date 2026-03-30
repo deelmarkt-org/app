@@ -1,4 +1,4 @@
-import '../repositories/auth_repository.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 
 /// Verifies the email OTP code sent during registration.
 class VerifyEmailOtpUseCase {

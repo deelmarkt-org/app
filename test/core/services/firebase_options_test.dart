@@ -6,21 +6,21 @@ import 'package:deelmarkt/core/services/firebase_options.dart';
 void main() {
   group('DefaultFirebaseOptions', () {
     test('android config has correct project values', () {
-      final options = DefaultFirebaseOptions.android;
+      const options = DefaultFirebaseOptions.android;
       expect(options.projectId, isNotEmpty);
       expect(options.appId, isNotEmpty);
       expect(options.messagingSenderId, isNotEmpty);
     });
 
     test('ios config has correct bundle ID', () {
-      final options = DefaultFirebaseOptions.ios;
+      const options = DefaultFirebaseOptions.ios;
       expect(options.projectId, isNotEmpty);
       expect(options.appId, isNotEmpty);
       expect(options.iosBundleId, 'nl.deelmarkt.deelmarkt');
     });
 
     test('web config has correct project values', () {
-      final options = DefaultFirebaseOptions.web;
+      const options = DefaultFirebaseOptions.web;
       expect(options.projectId, 'deelmarkt-8e696');
       expect(options.appId, isNotEmpty);
       expect(options.messagingSenderId, isNotEmpty);

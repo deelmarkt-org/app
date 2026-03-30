@@ -86,8 +86,8 @@ void main() {
     testWidgets(
       'navigates to transaction detail via deep link (auth required)',
       (tester) async {
-        final authedRouter = _createTestRouter(isLoggedIn: true);
-        authedRouter.go('/transactions/tx-789');
+        final authedRouter = _createTestRouter(isLoggedIn: true)
+          ..go('/transactions/tx-789');
         await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
         await tester.pumpAndSettle();
         expect(find.text('Transaction tx-789'), findsWidgets);
@@ -98,8 +98,8 @@ void main() {
     testWidgets('navigates to shipping detail via deep link (auth required)', (
       tester,
     ) async {
-      final authedRouter = _createTestRouter(isLoggedIn: true);
-      authedRouter.go('/shipping/ship-012');
+      final authedRouter = _createTestRouter(isLoggedIn: true)
+        ..go('/shipping/ship-012');
       await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
       await tester.pumpAndSettle();
       expect(find.text('Shipping ship-012'), findsWidgets);
@@ -128,8 +128,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       await EasyLocalization.ensureInitialized();
-      final router = _createTestRouter(isLoggedIn: false);
-      router.go('/sell');
+      final router = _createTestRouter()..go('/sell');
       await tester.pumpWidget(
         EasyLocalization(
           supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],

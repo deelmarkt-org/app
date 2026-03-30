@@ -159,7 +159,6 @@ class GdprConsentBanner extends StatelessWidget {
         Expanded(
           child: DeelButton(
             label: 'consent.accept_all'.tr(),
-            variant: DeelButtonVariant.primary,
             size: DeelButtonSize.medium,
             onPressed: onAcceptAll,
           ),

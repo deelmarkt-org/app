@@ -1,4 +1,4 @@
-import '../repositories/auth_repository.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 
 /// Resends the email OTP for an existing registration.
 class ResendEmailOtpUseCase {

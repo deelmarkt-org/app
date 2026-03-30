@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../../domain/entities/listing_entity.dart';
-import '../../domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 
 /// Mock listing repository — returns static data for Phase 1-2 widget development.
 ///

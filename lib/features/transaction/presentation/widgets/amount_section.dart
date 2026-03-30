@@ -6,7 +6,7 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 
-import '../../domain/entities/transaction_entity.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 
 /// Displays item price, platform fee, shipping, and total.
 class AmountSection extends StatelessWidget {

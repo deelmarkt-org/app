@@ -43,7 +43,7 @@ class RegisterViewModel extends _$RegisterViewModel {
       );
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } catch (_) {
+    } on Exception catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
     }
   }
@@ -56,7 +56,7 @@ class RegisterViewModel extends _$RegisterViewModel {
       state = state.copyWith(isLoading: false);
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } catch (_) {
+    } on Exception catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
     }
   }
@@ -74,7 +74,7 @@ class RegisterViewModel extends _$RegisterViewModel {
       );
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } catch (_) {
+    } on Exception catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
     }
   }
@@ -91,7 +91,7 @@ class RegisterViewModel extends _$RegisterViewModel {
       );
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } catch (_) {
+    } on Exception catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
     }
   }
@@ -106,7 +106,7 @@ class RegisterViewModel extends _$RegisterViewModel {
       state = state.copyWith(step: RegistrationStep.complete, isLoading: false);
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } catch (_) {
+    } on Exception catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => 'error.generic');
     }
   }

@@ -121,11 +121,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: Spacing.s6),
+          const SizedBox(height: Spacing.s6),
           Text('auth.register'.tr(), style: theme.textTheme.headlineMedium),
           const SizedBox(height: Spacing.s2),
           Text('auth.welcome'.tr(), style: theme.textTheme.bodyLarge),
-          SizedBox(height: Spacing.s6),
+          const SizedBox(height: Spacing.s6),
 
           // Email
           DeelInput(
@@ -140,7 +140,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             autofillHints: const [AutofillHints.email],
             validator: Validators.email,
           ),
-          SizedBox(height: Spacing.s4),
+          const SizedBox(height: Spacing.s4),
 
           // Password
           DeelInput(
@@ -173,7 +173,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               labels: strengthLabels,
             ),
           ],
-          SizedBox(height: Spacing.s4),
+          const SizedBox(height: Spacing.s4),
 
           // Error from server
           if (widget.errorText != null) ...[
@@ -204,7 +204,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 children: [
                   TextSpan(
                     text: 'auth.terms_link'.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: DeelmarktColors.secondary,
                       decoration: TextDecoration.underline,
                     ),
@@ -231,7 +231,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 children: [
                   TextSpan(
                     text: 'auth.privacy_link'.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: DeelmarktColors.secondary,
                       decoration: TextDecoration.underline,
                     ),
@@ -242,7 +242,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               style: theme.textTheme.bodyMedium,
             ),
           ),
-          SizedBox(height: Spacing.s4),
+          const SizedBox(height: Spacing.s4),
 
           // Submit
           DeelButton(

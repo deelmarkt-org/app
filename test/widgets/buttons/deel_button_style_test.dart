@@ -69,13 +69,13 @@ void main() {
 
   group('DeelButtonStyleResolver style resolution', () {
     test('medium size produces 44px min height', () {
-      final style = resolver(size: DeelButtonSize.medium).resolve();
+      final style = resolver().resolve();
       final minSize = style.minimumSize!.resolve({});
       expect(minSize!.height, DeelButtonTokens.heightMedium);
     });
 
     test('fullWidth true produces infinity width', () {
-      final style = resolver(fullWidth: true).resolve();
+      final style = resolver().resolve();
       final minSize = style.minimumSize!.resolve({});
       expect(minSize!.width, double.infinity);
     });
@@ -114,7 +114,7 @@ void main() {
     });
 
     test('focused outline border uses primary colour', () {
-      final style = resolver(variant: DeelButtonVariant.primary).resolve();
+      final style = resolver().resolve();
       final shape =
           style.shape!.resolve({WidgetState.focused}) as RoundedRectangleBorder;
       expect(shape.side.color, theme.primaryBackground);

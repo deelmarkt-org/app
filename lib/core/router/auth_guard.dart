@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 
-import 'routes.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 
 /// Routes that require authentication — redirect to onboarding if not logged in.
 ///
