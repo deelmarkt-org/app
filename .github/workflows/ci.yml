@@ -168,13 +168,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: subosito/flutter-action@0ca7a949e71ae44c8e688a51c5e7e93b2c87e295 # v2
-        with:
-          channel: stable
-          cache: true
-
-      - name: Install dependencies
-        run: flutter pub get
+      - uses: ./.github/actions/setup-flutter
 
       - name: Download coverage for SonarCloud
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
