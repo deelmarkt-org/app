@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:unleash_proxy_client_flutter/unleash_proxy_client_flutter.dart';
 
 import 'env.dart';
@@ -28,12 +29,19 @@ Future<void> initUnleash() async {
     await client.start().timeout(
       const Duration(seconds: 5),
       onTimeout: () {
-        debugPrint('[Unleash] Connection timed out — using defaults');
+        AppLogger.warning(
+          'Connection timed out — using defaults',
+          tag: 'unleash',
+        );
       },
     );
     _unleashClient = client;
   } catch (e) {
-    debugPrint('[Unleash] Failed to connect — all flags default to off: $e');
+    AppLogger.warning(
+      'Failed to connect — all flags default to off',
+      tag: 'unleash',
+      error: e,
+    );
   }
 }
 

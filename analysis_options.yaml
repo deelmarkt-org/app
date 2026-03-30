@@ -1,1 +1,63 @@
 include: package:flutter_lints/flutter.yaml
+
+# === Tier-1 Audit H-01: Strict analysis for production financial application ===
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-raw-types: true
+  errors:
+    # Promote critical async/resource issues to warnings (CI blocks on these)
+    unawaited_futures: warning
+    close_sinks: warning
+    cancel_subscriptions: warning
+    # Prevent accidental production debug output
+    avoid_print: warning
+    # --- Non-blocking: info-level rules for gradual adoption ---
+    # These flag pre-existing code and will be upgraded to warning
+    # once the codebase is fully migrated.
+    always_use_package_imports: info
+    cascade_invocations: info
+    avoid_redundant_argument_values: info
+    avoid_catches_without_on_clauses: info
+    avoid_dynamic_calls: info
+  exclude:
+    # Generated code
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "lib/core/services/firebase_options.dart"
+
+linter:
+  rules:
+    # --- Async safety (critical for payment flows) ---
+    - unawaited_futures
+    - close_sinks
+    - cancel_subscriptions
+
+    # --- Production hygiene ---
+    - avoid_print    # Use AppLogger instead of debugPrint/print
+    - avoid_dynamic_calls
+
+    # --- Const correctness (Flutter widget tree performance) ---
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
+
+    # --- Import enforcement (CLAUDE.md §2.3) ---
+    - always_use_package_imports
+
+    # --- Code quality ---
+    - prefer_final_locals
+    - require_trailing_commas
+    - cascade_invocations
+    - avoid_redundant_argument_values
+    - prefer_single_quotes
+    - sort_child_properties_last
+
+    # --- Type safety ---
+    - avoid_slow_async_io
+    - prefer_void_to_null
+
+    # --- Error handling ---
+    - avoid_catches_without_on_clauses
+    - use_build_context_synchronously

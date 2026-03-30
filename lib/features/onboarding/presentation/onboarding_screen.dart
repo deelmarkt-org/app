@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'onboarding_notifier.dart';
@@ -63,7 +64,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
       if (mounted) context.go(route);
     } catch (e) {
-      debugPrint('Failed to complete onboarding: $e');
+      AppLogger.error(
+        'Failed to complete onboarding',
+        tag: 'onboarding',
+        error: e,
+      );
       if (mounted) {
         ScaffoldMessenger.of(
           context,
