@@ -16,11 +16,17 @@ import 'supabase_service.dart';
 ///
 /// Override in tests: `ProviderScope(overrides: [useMockDataProvider.overrideWithValue(true)])`
 /// In production: defaults to false (real Supabase).
+/// Uses compile-time flag to avoid catching unrelated Supabase errors.
 final useMockDataProvider = Provider<bool>((ref) {
+  const useMock = bool.fromEnvironment('USE_MOCK_DATA');
+  if (useMock) return true;
   try {
     Supabase.instance.client;
     return false;
-  } catch (_) {
+  } on StateError {
+    return true;
+  } on AssertionError {
+    // Supabase uses assert(_isInitialized) internally
     return true;
   }
 });

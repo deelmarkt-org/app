@@ -103,7 +103,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       child: Scaffold(
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 500,
+            maxWidth: Breakpoints.contentMaxWidth,
             child: Column(
               children: [
                 // Header (expanded breakpoint only): logo + skip

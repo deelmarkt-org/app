@@ -107,7 +107,7 @@ INSERT INTO categories (name, name_nl, icon, parent_id, sort_order) VALUES
 -- 3. B-40: Listings table
 -- =============================================================================
 
-CREATE TYPE listing_condition AS ENUM ('new', 'as_new', 'good', 'fair', 'poor');
+CREATE TYPE listing_condition AS ENUM ('new_with_tags', 'new_without_tags', 'like_new', 'good', 'fair', 'poor');
 
 CREATE TABLE listings (
   id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
