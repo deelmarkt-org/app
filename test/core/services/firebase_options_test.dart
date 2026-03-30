@@ -19,6 +19,15 @@ void main() {
       expect(options.iosBundleId, 'nl.deelmarkt.deelmarkt');
     });
 
+    test('web config has correct project values', () {
+      final options = DefaultFirebaseOptions.web;
+      expect(options.projectId, 'deelmarkt-8e696');
+      expect(options.appId, isNotEmpty);
+      expect(options.messagingSenderId, isNotEmpty);
+      expect(options.authDomain, contains('deelmarkt'));
+      expect(options.measurementId, isNotEmpty);
+    });
+
     test('currentPlatform throws on unsupported platform', () {
       debugDefaultTargetPlatformOverride = TargetPlatform.linux;
       addTearDown(() {
@@ -28,6 +37,12 @@ void main() {
         () => DefaultFirebaseOptions.currentPlatform,
         throwsUnsupportedError,
       );
+    });
+
+    test('all platforms share the same project ID', () {
+      expect(DefaultFirebaseOptions.android.projectId, 'deelmarkt-8e696');
+      expect(DefaultFirebaseOptions.ios.projectId, 'deelmarkt-8e696');
+      expect(DefaultFirebaseOptions.web.projectId, 'deelmarkt-8e696');
     });
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/features/onboarding/domain/onboarding_repository.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 
 void main() {
@@ -101,4 +102,35 @@ void main() {
       expect(await repo.isComplete(), true);
     });
   });
+
+  group('completeOnboarding error handling', () {
+    test('throws when repository fails', () async {
+      final failingContainer = ProviderContainer(
+        overrides: [
+          onboardingRepositoryProvider.overrideWithValue(
+            _FailingOnboardingRepo(),
+          ),
+          sharedPreferencesProvider.overrideWithValue(prefs),
+        ],
+      );
+      addTearDown(failingContainer.dispose);
+
+      expect(
+        () =>
+            failingContainer
+                .read(onboardingNotifierProvider.notifier)
+                .completeOnboarding(),
+        throwsException,
+      );
+    });
+  });
+}
+
+/// Test double that always throws on [complete].
+class _FailingOnboardingRepo implements OnboardingRepository {
+  @override
+  Future<bool> isComplete() async => false;
+
+  @override
+  Future<void> complete() async => throw Exception('Storage full');
 }

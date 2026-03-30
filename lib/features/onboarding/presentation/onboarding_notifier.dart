@@ -48,12 +48,10 @@ class OnboardingNotifier extends _$OnboardingNotifier {
 
   /// Marks onboarding as complete in SharedPreferences and invalidates
   /// the [isOnboardingCompleteProvider] so the auth guard picks up the change.
+  ///
+  /// Throws on failure — callers must handle the error (e.g. show feedback).
   Future<void> completeOnboarding() async {
-    try {
-      await ref.read(onboardingRepositoryProvider).complete();
-      ref.invalidate(isOnboardingCompleteProvider);
-    } catch (e) {
-      debugPrint('Failed to complete onboarding: $e');
-    }
+    await ref.read(onboardingRepositoryProvider).complete();
+    ref.invalidate(isOnboardingCompleteProvider);
   }
 }

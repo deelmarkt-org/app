@@ -19,18 +19,21 @@ part 'firebase_service.g.dart';
 Future<void> initFirebase() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Crashlytics: capture all uncaught Flutter errors.
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // Crashlytics is not supported on web.
+  if (!kIsWeb) {
+    // Crashlytics: capture all uncaught Flutter errors.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  // Crashlytics: capture platform-level errors (native crashes).
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+    // Crashlytics: capture platform-level errors (native crashes).
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
 
-  // Disable Crashlytics in debug mode to reduce noise.
-  if (kDebugMode) {
-    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    // Disable Crashlytics in debug mode to reduce noise.
+    if (kDebugMode) {
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+    }
   }
 }
 
