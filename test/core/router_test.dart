@@ -121,6 +121,64 @@ void main() {
     });
   });
 
+  group('GoRouter shipping sub-routes', () {
+    testWidgets('navigates to shipping QR sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/qr');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Shipping QR ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('navigates to shipping tracking sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/tracking');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Tracking ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('navigates to parcel shops sub-route', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/shipping/ship-1/parcel-shops');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Parcel Shops ship-1'), findsWidgets);
+      authedRouter.dispose();
+    });
+  });
+
+  group('GoRouter tab routes', () {
+    testWidgets('sell tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/sell');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Sell'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('messages tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/messages');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Messages'), findsWidgets);
+      authedRouter.dispose();
+    });
+
+    testWidgets('profile tab shows placeholder', (tester) async {
+      final authedRouter = _createTestRouter(isLoggedIn: true);
+      authedRouter.go('/profile');
+      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
+      await tester.pumpAndSettle();
+      expect(find.text('Profile'), findsWidgets);
+      authedRouter.dispose();
+    });
+  });
+
   group('GoRouter auth guard integration', () {
     testWidgets('redirects /sell to /onboarding when not logged in', (
       tester,

@@ -175,6 +175,164 @@ void main() {
     });
   });
 
+  group('DeelmarktTheme light — component themes', () {
+    test('elevatedButton has primary background', () {
+      final style = DeelmarktTheme.light.elevatedButtonTheme.style!;
+      final bg = style.backgroundColor?.resolve({});
+      expect(bg, DeelmarktColors.primary);
+    });
+
+    test('elevatedButton has 52px min height', () {
+      final style = DeelmarktTheme.light.elevatedButtonTheme.style!;
+      final size = style.minimumSize?.resolve({});
+      expect(size?.height, 52);
+    });
+
+    test('card has neutral200 border', () {
+      final shape =
+          DeelmarktTheme.light.cardTheme.shape as RoundedRectangleBorder;
+      expect(shape.side.color, DeelmarktColors.neutral200);
+    });
+
+    test('card has zero elevation', () {
+      expect(DeelmarktTheme.light.cardTheme.elevation, 0);
+    });
+
+    test('navigationBar background is white', () {
+      expect(
+        DeelmarktTheme.light.navigationBarTheme.backgroundColor,
+        DeelmarktColors.white,
+      );
+    });
+
+    test('navigationBar indicator uses primarySurface', () {
+      expect(
+        DeelmarktTheme.light.navigationBarTheme.indicatorColor,
+        DeelmarktColors.primarySurface,
+      );
+    });
+
+    test('inputDecoration error border uses error color', () {
+      final errorBorder =
+          DeelmarktTheme.light.inputDecorationTheme.errorBorder
+              as OutlineInputBorder;
+      expect(errorBorder.borderSide.color, DeelmarktColors.error);
+    });
+
+    test('inputDecoration focused border uses primary with width 2', () {
+      final focusedBorder =
+          DeelmarktTheme.light.inputDecorationTheme.focusedBorder
+              as OutlineInputBorder;
+      expect(focusedBorder.borderSide.color, DeelmarktColors.primary);
+      expect(focusedBorder.borderSide.width, 2);
+    });
+
+    test('segmentedButton selected state uses primary', () {
+      final style = DeelmarktTheme.light.segmentedButtonTheme.style!;
+      final bg = style.backgroundColor!.resolve({WidgetState.selected});
+      expect(bg, DeelmarktColors.primary);
+    });
+
+    test('segmentedButton unselected state is transparent', () {
+      final style = DeelmarktTheme.light.segmentedButtonTheme.style!;
+      final bg = style.backgroundColor!.resolve({});
+      expect(bg, Colors.transparent);
+    });
+
+    test('segmentedButton min height is 44 (WCAG)', () {
+      final style = DeelmarktTheme.light.segmentedButtonTheme.style!;
+      final size = style.minimumSize!.resolve({});
+      expect(size?.height, 44);
+    });
+
+    test('colorScheme secondary is DeelMarkt blue', () {
+      expect(
+        DeelmarktTheme.light.colorScheme.secondary,
+        DeelmarktColors.secondary,
+      );
+    });
+
+    test('colorScheme error is DeelMarkt error', () {
+      expect(DeelmarktTheme.light.colorScheme.error, DeelmarktColors.error);
+    });
+
+    test('divider uses neutral200', () {
+      expect(
+        DeelmarktTheme.light.dividerTheme.color,
+        DeelmarktColors.neutral200,
+      );
+    });
+
+    test('appBar elevation is 0', () {
+      expect(DeelmarktTheme.light.appBarTheme.elevation, 0);
+    });
+
+    test('appBar scrolledUnderElevation is 1', () {
+      expect(DeelmarktTheme.light.appBarTheme.scrolledUnderElevation, 1);
+    });
+
+    test('has DeelButtonThemeData extension', () {
+      expect(DeelmarktTheme.light.extensions.isNotEmpty, true);
+    });
+  });
+
+  group('DeelmarktTheme dark — component themes', () {
+    test('navigationBar background is darkSurface', () {
+      expect(
+        DeelmarktTheme.dark.navigationBarTheme.backgroundColor,
+        DeelmarktColors.darkSurface,
+      );
+    });
+
+    test('divider uses darkDivider', () {
+      expect(
+        DeelmarktTheme.dark.dividerTheme.color,
+        DeelmarktColors.darkDivider,
+      );
+    });
+
+    test('segmentedButton selected state uses darkPrimary', () {
+      final style = DeelmarktTheme.dark.segmentedButtonTheme.style!;
+      final bg = style.backgroundColor!.resolve({WidgetState.selected});
+      expect(bg, DeelmarktColors.darkPrimary);
+    });
+
+    test('segmentedButton foreground selected uses darkOnPrimary', () {
+      final style = DeelmarktTheme.dark.segmentedButtonTheme.style!;
+      final fg = style.foregroundColor!.resolve({WidgetState.selected});
+      expect(fg, DeelmarktColors.darkOnPrimary);
+    });
+
+    test(
+      'segmentedButton foreground unselected uses darkOnSurfaceSecondary',
+      () {
+        final style = DeelmarktTheme.dark.segmentedButtonTheme.style!;
+        final fg = style.foregroundColor!.resolve({});
+        expect(fg, DeelmarktColors.darkOnSurfaceSecondary);
+      },
+    );
+
+    test('elevatedButton uses darkPrimary', () {
+      final style = DeelmarktTheme.dark.elevatedButtonTheme.style!;
+      final bg = style.backgroundColor?.resolve({});
+      expect(bg, DeelmarktColors.darkPrimary);
+    });
+
+    test('inputDecoration focused border uses darkPrimary', () {
+      final focusedBorder =
+          DeelmarktTheme.dark.inputDecorationTheme.focusedBorder
+              as OutlineInputBorder;
+      expect(focusedBorder.borderSide.color, DeelmarktColors.darkPrimary);
+    });
+
+    test('inputDecoration error border uses darkError', () {
+      final errorBorder =
+          DeelmarktTheme.dark.inputDecorationTheme.errorBorder
+              as OutlineInputBorder;
+      expect(errorBorder.borderSide.color, DeelmarktColors.darkError);
+    });
+  });
+
   group('Theme renders', () {
     testWidgets('light theme applies to MaterialApp', (tester) async {
       await tester.pumpWidget(
