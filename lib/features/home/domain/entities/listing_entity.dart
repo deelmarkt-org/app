@@ -123,6 +123,8 @@ enum ListingCondition {
   };
 
   /// Parse from DB snake_case value.
+  /// Unknown values default to [good] for forward-compatibility
+  /// (e.g., if backend adds a new condition before app update).
   static ListingCondition fromDb(String value) => switch (value) {
     'new_with_tags' => ListingCondition.newWithTags,
     'new_without_tags' => ListingCondition.newWithoutTags,
@@ -130,6 +132,6 @@ enum ListingCondition {
     'good' => ListingCondition.good,
     'fair' => ListingCondition.fair,
     'poor' => ListingCondition.poor,
-    _ => throw ArgumentError('Unknown listing condition: $value'),
+    _ => ListingCondition.good,
   };
 }

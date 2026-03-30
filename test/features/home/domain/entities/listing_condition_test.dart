@@ -31,10 +31,11 @@ void main() {
         expect(ListingCondition.fromDb('poor'), ListingCondition.poor);
       });
 
-      test('throws on unknown value', () {
-        expect(() => ListingCondition.fromDb('unknown'), throwsArgumentError);
-        expect(() => ListingCondition.fromDb(''), throwsArgumentError);
-        expect(() => ListingCondition.fromDb('NEW'), throwsArgumentError);
+      test('defaults to good on unknown value (forward-compatible)', () {
+        expect(ListingCondition.fromDb('unknown'), ListingCondition.good);
+        expect(ListingCondition.fromDb(''), ListingCondition.good);
+        expect(ListingCondition.fromDb('NEW'), ListingCondition.good);
+        expect(ListingCondition.fromDb('future_type'), ListingCondition.good);
       });
     });
 
