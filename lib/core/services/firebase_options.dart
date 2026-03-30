@@ -1,23 +1,14 @@
-// ============================================================================
-// PLACEHOLDER — Replace with `flutterfire configure` output.
+// Firebase configuration for DeelMarkt — generated from Firebase console.
+// Project: deelmarkt-8e696
 //
-// Steps:
-// 1. dart pub global activate flutterfire_cli
-// 2. flutterfire configure --project=deelmarkt-xxx
-// 3. This file will be overwritten with real Firebase config.
-//
-// Until then, this stub allows CI builds to compile.
-// ============================================================================
+// These are PUBLIC API keys (like Supabase anon key) — safe to commit.
+// Private keys (admin SDK) are in firebase/ directory (gitignored).
 
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 class DefaultFirebaseOptions {
-  static const _placeholderProjectId = 'deelmarkt-placeholder';
-  static const _placeholderSenderId = '000000000000';
-  static const _placeholderApiKey = 'placeholder'; // pragma: allowlist secret
-
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) return web;
     switch (defaultTargetPlatform) {
@@ -28,34 +19,38 @@ class DefaultFirebaseOptions {
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions has not been configured for '
-          '$defaultTargetPlatform. Run `flutterfire configure` to generate '
-          'platform-specific options.',
+          '$defaultTargetPlatform.',
         );
     }
   }
 
-  // Placeholder values — app will not connect to Firebase until replaced.
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: _placeholderApiKey,
-    appId: '1:000000000000:web:0000000000000000',
-    messagingSenderId: _placeholderSenderId,
-    projectId: _placeholderProjectId,
-    authDomain: '$_placeholderProjectId.firebaseapp.com',
-    storageBucket: '$_placeholderProjectId.appspot.com',
+    apiKey:
+        'AIzaSyB1jlcKv16FQ3uHa_E6NpLf2klM4IFQJ4w', // pragma: allowlist secret
+    appId: '1:570805600912:web:4ebb87979bc94e1f444e15',
+    messagingSenderId: '570805600912',
+    projectId: 'deelmarkt-8e696',
+    authDomain: 'deelmarkt-8e696.firebaseapp.com',
+    storageBucket: 'deelmarkt-8e696.firebasestorage.app',
+    measurementId: 'G-WFL16K5J5Z',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: _placeholderApiKey,
-    appId: '1:000000000000:android:0000000000000000',
-    messagingSenderId: _placeholderSenderId,
-    projectId: _placeholderProjectId,
+    apiKey:
+        'AIzaSyAdBHtTbMld3Sx1nfEwylYv2izVQ8vAMvI', // pragma: allowlist secret
+    appId: '1:570805600912:android:da2b5812bcc62303444e15',
+    messagingSenderId: '570805600912',
+    projectId: 'deelmarkt-8e696',
+    storageBucket: 'deelmarkt-8e696.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: _placeholderApiKey,
-    appId: '1:000000000000:ios:0000000000000000',
-    messagingSenderId: _placeholderSenderId,
-    projectId: _placeholderProjectId,
+    apiKey:
+        'AIzaSyDDFpNi788en6aday5klz56JiG_-K0MWsQ', // pragma: allowlist secret
+    appId: '1:570805600912:ios:f9d355e2dc5487d4444e15',
+    messagingSenderId: '570805600912',
+    projectId: 'deelmarkt-8e696',
+    storageBucket: 'deelmarkt-8e696.firebasestorage.app',
     iosBundleId: 'nl.deelmarkt.deelmarkt',
   );
 }
