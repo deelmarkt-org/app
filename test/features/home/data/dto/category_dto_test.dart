@@ -53,6 +53,19 @@ void main() {
       expect(entity.listingCount, 0);
     });
 
+    test('fromJson falls back to English name when name_nl is null', () {
+      final json = {
+        'id': 'cat-002',
+        'name': 'Electronics',
+        'name_nl': null,
+        'icon': 'device-mobile',
+        'parent_id': null,
+      };
+
+      final entity = CategoryDto.fromJson(json);
+      expect(entity.name, 'Electronics');
+    });
+
     test('fromJsonList parses multiple categories', () {
       final list = CategoryDto.fromJsonList([
         {

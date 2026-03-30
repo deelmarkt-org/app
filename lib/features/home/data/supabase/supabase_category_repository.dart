@@ -15,23 +15,31 @@ class SupabaseCategoryRepository implements CategoryRepository {
 
   @override
   Future<List<CategoryEntity>> getTopLevel() async {
-    final response = await _client
-        .from('categories')
-        .select()
-        .isFilter('parent_id', null)
-        .order('sort_order');
+    try {
+      final response = await _client
+          .from('categories')
+          .select()
+          .isFilter('parent_id', null)
+          .order('sort_order');
 
-    return CategoryDto.fromJsonList(response);
+      return CategoryDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch categories: ${e.message}');
+    }
   }
 
   @override
   Future<List<CategoryEntity>> getSubcategories(String parentId) async {
-    final response = await _client
-        .from('categories')
-        .select()
-        .eq('parent_id', parentId)
-        .order('sort_order');
+    try {
+      final response = await _client
+          .from('categories')
+          .select()
+          .eq('parent_id', parentId)
+          .order('sort_order');
 
-    return CategoryDto.fromJsonList(response);
+      return CategoryDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch subcategories: ${e.message}');
+    }
   }
 }

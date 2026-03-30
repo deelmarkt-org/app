@@ -17,11 +17,19 @@ class SupabaseUserRepository implements UserRepository {
 
   @override
   Future<UserEntity?> getById(String id) async {
-    final response =
-        await _client.from('user_profiles').select().eq('id', id).maybeSingle();
+    try {
+      final response =
+          await _client
+              .from('user_profiles')
+              .select()
+              .eq('id', id)
+              .maybeSingle();
 
-    if (response == null) return null;
-    return UserDto.fromJson(response);
+      if (response == null) return null;
+      return UserDto.fromJson(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch user $id: ${e.message}');
+    }
   }
 
   @override
@@ -51,14 +59,18 @@ class SupabaseUserRepository implements UserRepository {
       return current;
     }
 
-    final response =
-        await _client
-            .from('user_profiles')
-            .update(updates)
-            .eq('id', userId)
-            .select()
-            .single();
+    try {
+      final response =
+          await _client
+              .from('user_profiles')
+              .update(updates)
+              .eq('id', userId)
+              .select()
+              .single();
 
-    return UserDto.fromJson(response);
+      return UserDto.fromJson(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to update profile: ${e.message}');
+    }
   }
 }

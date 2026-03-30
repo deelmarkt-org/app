@@ -20,13 +20,17 @@ class SupabaseListingRepository implements ListingRepository {
 
   @override
   Future<List<ListingEntity>> getRecent({int limit = 20}) async {
-    final response = await _client
-        .from(_view)
-        .select()
-        .order('created_at', ascending: false)
-        .limit(limit);
+    try {
+      final response = await _client
+          .from(_view)
+          .select()
+          .order('created_at', ascending: false)
+          .limit(limit);
 
-    return ListingDto.fromJsonList(response);
+      return ListingDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch recent listings: ${e.message}');
+    }
   }
 
   @override
@@ -36,50 +40,65 @@ class SupabaseListingRepository implements ListingRepository {
     double radiusKm = 25,
     int limit = 20,
   }) async {
-    // Use the nearby_listings RPC for distance-sorted results
-    final nearbyIds = await _client.rpc(
-      'nearby_listings',
-      params: {
-        'user_lat': latitude,
-        'user_lon': longitude,
-        'radius_km': radiusKm,
-        'max_results': limit,
-      },
-    );
-
-    if (nearbyIds == null || (nearbyIds as List).isEmpty) return [];
-
-    // Build a map of id → distance for enrichment
-    final distanceMap = <String, double>{};
-    for (final row in nearbyIds) {
-      distanceMap[row['listing_id'] as String] =
-          (row['distance_km'] as num).toDouble();
-    }
-
-    // Fetch full listing data for these IDs
-    final ids = distanceMap.keys.toList();
-    final response = await _client.from(_view).select().inFilter('id', ids);
-
-    final listings = ListingDto.fromJsonList(response);
-
-    // Enrich with distance and sort by distance
-    return listings
-        .map((l) => l.copyWith(distanceKm: distanceMap[l.id]))
-        .toList()
-      ..sort(
-        (a, b) => (a.distanceKm ?? double.infinity).compareTo(
-          b.distanceKm ?? double.infinity,
-        ),
+    try {
+      // Use the nearby_listings RPC for distance-sorted results
+      final nearbyIds = await _client.rpc(
+        'nearby_listings',
+        params: {
+          'user_lat': latitude,
+          'user_lon': longitude,
+          'radius_km': radiusKm,
+          'max_results': limit,
+        },
       );
+
+      if (nearbyIds == null) return [];
+      final idsList = nearbyIds is List ? nearbyIds : [];
+      if (idsList.isEmpty) return [];
+
+      // Build a map of id → distance for enrichment
+      final distanceMap = <String, double>{};
+      for (final row in idsList) {
+        final id = row['listing_id'];
+        final dist = row['distance_km'];
+        if (id is String && dist is num) {
+          distanceMap[id] = dist.toDouble();
+        }
+      }
+
+      if (distanceMap.isEmpty) return [];
+
+      // Fetch full listing data for these IDs
+      final ids = distanceMap.keys.toList();
+      final response = await _client.from(_view).select().inFilter('id', ids);
+
+      final listings = ListingDto.fromJsonList(response);
+
+      // Enrich with distance and sort by distance
+      return listings
+          .map((l) => l.copyWith(distanceKm: distanceMap[l.id]))
+          .toList()
+        ..sort(
+          (a, b) => (a.distanceKm ?? double.infinity).compareTo(
+            b.distanceKm ?? double.infinity,
+          ),
+        );
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch nearby listings: ${e.message}');
+    }
   }
 
   @override
   Future<ListingEntity?> getById(String id) async {
-    final response =
-        await _client.from(_view).select().eq('id', id).maybeSingle();
+    try {
+      final response =
+          await _client.from(_view).select().eq('id', id).maybeSingle();
 
-    if (response == null) return null;
-    return ListingDto.fromJson(response);
+      if (response == null) return null;
+      return ListingDto.fromJson(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch listing $id: ${e.message}');
+    }
   }
 
   @override
@@ -92,48 +111,49 @@ class SupabaseListingRepository implements ListingRepository {
     int offset = 0,
     int limit = 20,
   }) async {
-    var request = _client.from(_view).select();
+    try {
+      var request = _client.from(_view).select();
 
-    // Full-text search using the Dutch tsvector
-    if (query.isNotEmpty) {
-      request = request.textSearch(
-        'search_vector',
-        query,
-        config: 'dutch',
-        type: TextSearchType.websearch,
+      // Full-text search using the Dutch tsvector
+      if (query.isNotEmpty) {
+        request = request.textSearch(
+          'search_vector',
+          query,
+          config: 'dutch',
+          type: TextSearchType.websearch,
+        );
+      }
+
+      if (categoryId != null) {
+        request = request.eq('category_id', categoryId);
+      }
+      if (minPriceCents != null) {
+        request = request.gte('price_cents', minPriceCents);
+      }
+      if (maxPriceCents != null) {
+        request = request.lte('price_cents', maxPriceCents);
+      }
+      if (condition != null) {
+        request = request.eq('condition', condition.toDb());
+      }
+
+      final response = await request
+          .order('created_at', ascending: false)
+          .range(offset, offset + limit - 1);
+
+      final listings = ListingDto.fromJsonList(response);
+
+      // Pagination: if we got fewer items than limit, we've reached the end.
+      // Otherwise, signal there may be more items.
+      return ListingSearchResult(
+        listings: listings,
+        total: offset + listings.length + (listings.length == limit ? 1 : 0),
+        offset: offset,
+        limit: limit,
       );
+    } on PostgrestException catch (e) {
+      throw Exception('Search failed: ${e.message}');
     }
-
-    if (categoryId != null) {
-      request = request.eq('category_id', categoryId);
-    }
-    if (minPriceCents != null) {
-      request = request.gte('price_cents', minPriceCents);
-    }
-    if (maxPriceCents != null) {
-      request = request.lte('price_cents', maxPriceCents);
-    }
-    if (condition != null) {
-      request = request.eq('condition', condition.toDb());
-    }
-
-    final response = await request
-        .order('created_at', ascending: false)
-        .range(offset, offset + limit - 1);
-
-    // PostgREST doesn't return total count with range queries.
-    // Use response length as approximation; exact count needs separate query.
-    final listings = ListingDto.fromJsonList(response);
-
-    return ListingSearchResult(
-      listings: listings,
-      total:
-          listings.length < limit
-              ? offset + listings.length
-              : offset + limit + 1,
-      offset: offset,
-      limit: limit,
-    );
   }
 
   @override
@@ -141,33 +161,38 @@ class SupabaseListingRepository implements ListingRepository {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) throw Exception('Not authenticated');
 
-    // Check if already favourited
-    final existing =
+    try {
+      // Check if already favourited
+      final existing =
+          await _client
+              .from('favourites')
+              .select('id')
+              .eq('user_id', userId)
+              .eq('listing_id', listingId)
+              .maybeSingle();
+
+      if (existing != null) {
         await _client
             .from('favourites')
-            .select('id')
+            .delete()
             .eq('user_id', userId)
-            .eq('listing_id', listingId)
-            .maybeSingle();
+            .eq('listing_id', listingId);
+      } else {
+        await _client.from('favourites').insert({
+          'user_id': userId,
+          'listing_id': listingId,
+        });
+      }
 
-    if (existing != null) {
-      // Remove favourite
-      await _client
-          .from('favourites')
-          .delete()
-          .eq('user_id', userId)
-          .eq('listing_id', listingId);
-    } else {
-      // Add favourite
-      await _client.from('favourites').insert({
-        'user_id': userId,
-        'listing_id': listingId,
-      });
+      // Return updated listing
+      final updated = await getById(listingId);
+      if (updated == null) {
+        throw Exception('Listing $listingId not found after favourite toggle');
+      }
+      return updated;
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to toggle favourite: ${e.message}');
     }
-
-    // Return updated listing
-    final updated = await getById(listingId);
-    return updated!;
   }
 
   @override
@@ -175,18 +200,21 @@ class SupabaseListingRepository implements ListingRepository {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) throw Exception('Not authenticated');
 
-    // Join favourites → listings via the view
-    final favIds = await _client
-        .from('favourites')
-        .select('listing_id')
-        .eq('user_id', userId)
-        .order('created_at', ascending: false);
+    try {
+      final favIds = await _client
+          .from('favourites')
+          .select('listing_id')
+          .eq('user_id', userId)
+          .order('created_at', ascending: false);
 
-    if (favIds.isEmpty) return [];
+      if (favIds.isEmpty) return [];
 
-    final ids = favIds.map((f) => f['listing_id'] as String).toList();
-    final response = await _client.from(_view).select().inFilter('id', ids);
+      final ids = favIds.map((f) => f['listing_id'] as String).toList();
+      final response = await _client.from(_view).select().inFilter('id', ids);
 
-    return ListingDto.fromJsonList(response);
+      return ListingDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch favourites: ${e.message}');
+    }
   }
 }
