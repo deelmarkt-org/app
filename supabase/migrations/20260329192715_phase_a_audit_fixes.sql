@@ -2,25 +2,10 @@
 -- Reference: Phase A audit 2026-03-29
 
 -- =============================================================================
--- H1: Fix listing_condition enum — align with Dart ListingCondition
+-- H1: listing_condition enum — already correct in initial migration
 -- =============================================================================
--- Dart: newWithTags, newWithoutTags, likeNew, good, fair, poor (6 values)
--- DB was: new, as_new, good, fair, poor (5 values, wrong names)
---
--- PostgreSQL doesn't support DROP VALUE from ENUM, so we recreate:
-
-ALTER TABLE listings ALTER COLUMN condition TYPE TEXT;
-DROP TYPE listing_condition;
-CREATE TYPE listing_condition AS ENUM (
-  'new_with_tags',
-  'new_without_tags',
-  'like_new',
-  'good',
-  'fair',
-  'poor'
-);
-ALTER TABLE listings ALTER COLUMN condition TYPE listing_condition
-  USING condition::listing_condition;
+-- No-op: enum was consolidated into the initial migration with correct values
+-- (new_with_tags, new_without_tags, like_new, good, fair, poor).
 
 -- =============================================================================
 -- H3: View for listings with per-user isFavourited flag
@@ -82,12 +67,12 @@ RETURNS TRIGGER AS $$
 BEGIN
   IF TG_OP = 'INSERT' THEN
     UPDATE listings
-    SET favourite_count = (SELECT count(*) FROM favourites WHERE listing_id = NEW.listing_id)
+    SET favourite_count = favourite_count + 1
     WHERE id = NEW.listing_id;
     RETURN NEW;
   ELSIF TG_OP = 'DELETE' THEN
     UPDATE listings
-    SET favourite_count = (SELECT count(*) FROM favourites WHERE listing_id = OLD.listing_id)
+    SET favourite_count = GREATEST(favourite_count - 1, 0)
     WHERE id = OLD.listing_id;
     RETURN OLD;
   END IF;

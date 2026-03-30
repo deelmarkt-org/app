@@ -16,6 +16,7 @@ import 'package:deelmarkt/core/services/supabase_service.dart';
 /// Compile-time constant: `--dart-define=USE_MOCK_DATA=true` for mock mode.
 /// Override in tests: `ProviderScope(overrides: [useMockDataProvider.overrideWithValue(true)])`
 /// In production: defaults to false (real Supabase).
+/// Uses compile-time flag to avoid catching unrelated Supabase errors.
 final useMockDataProvider = Provider<bool>((ref) {
   return const bool.fromEnvironment('USE_MOCK_DATA');
 });

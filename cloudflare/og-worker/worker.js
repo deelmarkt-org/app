@@ -154,7 +154,7 @@ async function handleListing(id, url, env) {
   try {
     const resp = await supabaseFetch(
       env,
-      `listings?id=eq.${encodeURIComponent(id)}&select=id,title,description,price_cents,category,condition,images,is_sold,seller:user_profiles!seller_id(display_name,avatar_url)`
+      `listings_with_favourites?id=eq.${encodeURIComponent(id)}&select=id,title,description,price_cents,condition,image_urls,is_sold,seller_name`
     );
 
     if (!resp.ok) {
@@ -168,8 +168,8 @@ async function handleListing(id, url, env) {
 
     const listing = listings[0];
     const price = (listing.price_cents / 100).toFixed(2).replace('.', ',');
-    const image = listing.images?.[0] || DEFAULT_OG.image;
-    const sellerName = listing.seller?.display_name || 'Verkoper';
+    const image = listing.image_urls?.[0] || DEFAULT_OG.image;
+    const sellerName = listing.seller_name || 'Verkoper';
     const condition = listing.condition || '';
     const soldPrefix = listing.is_sold ? '(VERKOCHT) ' : '';
 
@@ -249,7 +249,7 @@ async function handleTransaction(id, url, env) {
   try {
     const resp = await supabaseFetch(
       env,
-      `transactions?id=eq.${encodeURIComponent(id)}&select=id,status,total_amount_cents,listing:listings!listing_id(title,images)`
+      `transactions?id=eq.${encodeURIComponent(id)}&select=id,status,total_amount_cents,listing:listings!listing_id(title,image_urls)`
     );
 
     if (!resp.ok) {
@@ -276,7 +276,7 @@ async function handleTransaction(id, url, env) {
     const status = statusNl[txn.status] || txn.status;
     const price = (txn.total_amount_cents / 100).toFixed(2).replace('.', ',');
     const listingTitle = txn.listing?.title || 'Transactie';
-    const image = txn.listing?.images?.[0] || DEFAULT_OG.image;
+    const image = txn.listing?.image_urls?.[0] || DEFAULT_OG.image;
 
     return renderOgHtml({
       title: `${listingTitle} — €${price} (${status})`,
@@ -307,7 +307,7 @@ async function handleShipping(id, subpath, url, env) {
   try {
     const resp = await supabaseFetch(
       env,
-      `shipping_labels?transaction_id=eq.${encodeURIComponent(id)}&select=id,carrier,tracking_number,transaction:transactions!transaction_id(listing:listings!listing_id(title,images))`
+      `shipping_labels?transaction_id=eq.${encodeURIComponent(id)}&select=id,carrier,tracking_number,transaction:transactions!transaction_id(listing:listings!listing_id(title,image_urls))`
     );
 
     if (!resp.ok) {
@@ -330,7 +330,7 @@ async function handleShipping(id, subpath, url, env) {
     const label = labels[0];
     const carrier = (label.carrier || '').toUpperCase();
     const listingTitle = label.transaction?.listing?.title || 'Pakket';
-    const image = label.transaction?.listing?.images?.[0] || DEFAULT_OG.image;
+    const image = label.transaction?.listing?.image_urls?.[0] || DEFAULT_OG.image;
     const subpageNl = {
       qr: 'QR-code',
       tracking: 'Tracking',
