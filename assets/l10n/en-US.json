@@ -133,6 +133,14 @@
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller"
   },
+  "condition": {
+    "newWithTags": "New with tags",
+    "newWithoutTags": "New without tags",
+    "likeNew": "Like new",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor"
+  },
   "address": {
     "postcode": "Postcode",
     "postcodePlaceholder": "1012 AB",

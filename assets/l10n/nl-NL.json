@@ -138,6 +138,14 @@
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
   },
+  "condition": {
+    "newWithTags": "Nieuw met labels",
+    "newWithoutTags": "Nieuw zonder labels",
+    "likeNew": "Als nieuw",
+    "good": "Goed",
+    "fair": "Redelijk",
+    "poor": "Matig"
+  },
   "address": {
     "postcode": "Postcode",
     "postcodePlaceholder": "1012 AB",
