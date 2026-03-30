@@ -14,6 +14,10 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 class DefaultFirebaseOptions {
+  static const _placeholderProjectId = 'deelmarkt-placeholder';
+  static const _placeholderSenderId = '000000000000';
+  static const _placeholderApiKey = 'placeholder'; // pragma: allowlist secret
+
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) return web;
     switch (defaultTargetPlatform) {
@@ -32,26 +36,26 @@ class DefaultFirebaseOptions {
 
   // Placeholder values — app will not connect to Firebase until replaced.
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'placeholder', // pragma: allowlist secret
+    apiKey: _placeholderApiKey,
     appId: '1:000000000000:web:0000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'deelmarkt-placeholder',
-    authDomain: 'deelmarkt-placeholder.firebaseapp.com',
-    storageBucket: 'deelmarkt-placeholder.appspot.com',
+    messagingSenderId: _placeholderSenderId,
+    projectId: _placeholderProjectId,
+    authDomain: '$_placeholderProjectId.firebaseapp.com',
+    storageBucket: '$_placeholderProjectId.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'placeholder', // pragma: allowlist secret
+    apiKey: _placeholderApiKey,
     appId: '1:000000000000:android:0000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'deelmarkt-placeholder',
+    messagingSenderId: _placeholderSenderId,
+    projectId: _placeholderProjectId,
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'placeholder', // pragma: allowlist secret
+    apiKey: _placeholderApiKey,
     appId: '1:000000000000:ios:0000000000000000',
-    messagingSenderId: '000000000000',
-    projectId: 'deelmarkt-placeholder',
+    messagingSenderId: _placeholderSenderId,
+    projectId: _placeholderProjectId,
     iosBundleId: 'nl.deelmarkt.deelmarkt',
   );
 }
