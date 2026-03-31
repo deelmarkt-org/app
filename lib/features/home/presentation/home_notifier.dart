@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,7 +8,7 @@ import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
 part 'home_notifier.g.dart';
 
-class HomeState {
+class HomeState extends Equatable {
   const HomeState({
     this.categories = const [],
     this.nearby = const [],
@@ -17,6 +18,9 @@ class HomeState {
   final List<CategoryEntity> categories;
   final List<ListingEntity> nearby;
   final List<ListingEntity> recent;
+
+  @override
+  List<Object?> get props => [categories, nearby, recent];
 }
 
 /// Default location (Amsterdam Centraal) — replaced by device location

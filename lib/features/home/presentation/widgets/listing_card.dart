@@ -119,6 +119,7 @@ class _ImageSection extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(DeelmarktRadius.xl),
             ),
+            // TODO: Replace with CachedNetworkImage when cached_network_image is added (coordinate with team).
             child:
                 imageUrl != null
                     ? Image.network(
