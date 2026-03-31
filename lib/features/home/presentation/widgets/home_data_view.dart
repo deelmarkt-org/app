@@ -79,7 +79,7 @@ class HomeDataView extends ConsumerWidget {
         IconButton(
           icon: Icon(PhosphorIcons.bell()),
           tooltip: 'nav.notifications'.tr(),
-          onPressed: () {}, // Phase 2: wire to notifications
+          onPressed: null, // Phase 2: wire to notifications (R-34)
         ),
       ],
     );
@@ -136,7 +136,11 @@ class HomeDataView extends ConsumerWidget {
           for (final listing in data.nearby)
             ListingCard(
               listing: listing,
-              onTap: () => context.go('/listings/${listing.id}'),
+              onTap:
+                  () => context.goNamed(
+                    'listing-detail',
+                    pathParameters: {'id': listing.id},
+                  ),
               onFavouriteTap:
                   () => ref
                       .read(homeNotifierProvider.notifier)
@@ -185,7 +189,11 @@ class HomeDataView extends ConsumerWidget {
               width: _recentCardWidth,
               child: ListingCard(
                 listing: listing,
-                onTap: () => context.go('/listings/${listing.id}'),
+                onTap:
+                    () => context.goNamed(
+                      'listing-detail',
+                      pathParameters: {'id': listing.id},
+                    ),
                 onFavouriteTap:
                     () => ref
                         .read(homeNotifierProvider.notifier)

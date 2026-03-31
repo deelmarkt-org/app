@@ -1,10 +1,14 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/usecases/get_nearby_listings_usecase.dart';
+import 'package:deelmarkt/features/home/domain/usecases/get_recent_listings_usecase.dart';
+import 'package:deelmarkt/features/home/domain/usecases/get_top_categories_usecase.dart';
+import 'package:deelmarkt/features/home/domain/usecases/toggle_favourite_usecase.dart';
 
 part 'home_notifier.g.dart';
 
@@ -23,27 +27,40 @@ class HomeState extends Equatable {
   List<Object?> get props => [categories, nearby, recent];
 }
 
-/// Default location (Amsterdam Centraal) — replaced by device location
-/// when LocationService is implemented (E05).
-const _defaultLatitude = 52.3676;
-const _defaultLongitude = 4.9041;
-const _pageSize = 10;
+/// Riverpod provider for [GetTopCategoriesUseCase].
+final getTopCategoriesUseCaseProvider = Provider<GetTopCategoriesUseCase>(
+  (ref) => GetTopCategoriesUseCase(ref.watch(categoryRepositoryProvider)),
+);
+
+/// Riverpod provider for [GetNearbyListingsUseCase].
+final getNearbyListingsUseCaseProvider = Provider<GetNearbyListingsUseCase>(
+  (ref) => GetNearbyListingsUseCase(ref.watch(listingRepositoryProvider)),
+);
+
+/// Riverpod provider for [GetRecentListingsUseCase].
+final getRecentListingsUseCaseProvider = Provider<GetRecentListingsUseCase>(
+  (ref) => GetRecentListingsUseCase(ref.watch(listingRepositoryProvider)),
+);
+
+/// Riverpod provider for [ToggleFavouriteUseCase].
+final toggleFavouriteUseCaseProvider = Provider<ToggleFavouriteUseCase>(
+  (ref) => ToggleFavouriteUseCase(ref.watch(listingRepositoryProvider)),
+);
 
 @riverpod
 class HomeNotifier extends _$HomeNotifier {
   @override
-  Future<HomeState> build() async {
-    final listings = ref.watch(listingRepositoryProvider);
-    final categories = ref.watch(categoryRepositoryProvider);
+  Future<HomeState> build() => _fetchData();
+
+  Future<HomeState> _fetchData() async {
+    final getTopCategories = ref.watch(getTopCategoriesUseCaseProvider);
+    final getNearbyListings = ref.watch(getNearbyListingsUseCaseProvider);
+    final getRecentListings = ref.watch(getRecentListingsUseCaseProvider);
 
     final results = await Future.wait([
-      categories.getTopLevel(),
-      listings.getNearby(
-        latitude: _defaultLatitude,
-        longitude: _defaultLongitude,
-        limit: _pageSize,
-      ),
-      listings.getRecent(limit: _pageSize),
+      getTopCategories(),
+      getNearbyListings(),
+      getRecentListings(),
     ]);
 
     return HomeState(
@@ -56,7 +73,7 @@ class HomeNotifier extends _$HomeNotifier {
   Future<void> refresh() async {
     final previous = state.valueOrNull;
     state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => build());
+    state = await AsyncValue.guard(_fetchData);
     // If refresh fails, restore previous data so the user doesn't lose content.
     if (state.hasError && previous != null) {
       state = AsyncValue.data(previous);
@@ -72,8 +89,8 @@ class HomeNotifier extends _$HomeNotifier {
     state = AsyncValue.data(optimistic);
 
     try {
-      final listings = ref.read(listingRepositoryProvider);
-      final updated = await listings.toggleFavourite(listingId);
+      final toggleFav = ref.read(toggleFavouriteUseCaseProvider);
+      final updated = await toggleFav(listingId);
       final latest = state.valueOrNull;
       if (latest == null) return;
 
@@ -86,7 +103,7 @@ class HomeNotifier extends _$HomeNotifier {
       );
     } on Exception catch (e) {
       // Revert optimistic update on failure
-      debugPrint('Failed to toggle favourite: $e');
+      AppLogger.error('Failed to toggle favourite', error: e, tag: 'home');
       state = AsyncValue.data(current);
     }
   }

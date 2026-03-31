@@ -39,7 +39,10 @@ class SectionHeader extends StatelessWidget {
                   onTap: onAction,
                   borderRadius: BorderRadius.circular(Spacing.s2),
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: 44),
+                    constraints: const BoxConstraints(
+                      minHeight: 44,
+                      minWidth: 44,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: Spacing.s2,

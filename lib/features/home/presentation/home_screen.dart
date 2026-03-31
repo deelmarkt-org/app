@@ -39,7 +39,12 @@ class _LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final crossAxisCount = Breakpoints.isCompact(context) ? 2 : 3;
+    final crossAxisCount =
+        Breakpoints.isCompact(context)
+            ? 2
+            : Breakpoints.isMedium(context)
+            ? 3
+            : 4;
 
     return Semantics(
       label: 'a11y.loading'.tr(),
