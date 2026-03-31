@@ -17,7 +17,7 @@ ShippingLabel _label() => ShippingLabel(
   qrData: 'https://postnl.nl/qr/3SDEVC1234567',
   trackingNumber: '3SDEVC1234567',
   carrier: ShippingCarrier.postnl,
-  shipByDeadline: DateTime(2026, 3, 25, 18, 0),
+  shipByDeadline: DateTime(2026, 3, 25, 18),
   createdAt: DateTime(2026, 3, 23),
 );
 
@@ -26,14 +26,14 @@ List<TrackingEvent> _events() => [
     id: 'evt_2',
     status: TrackingStatus.pickedUp,
     description: 'Picked up by carrier',
-    timestamp: DateTime(2026, 3, 24, 10, 0),
+    timestamp: DateTime(2026, 3, 24, 10),
     location: 'PostNL ServicePoint',
   ),
   TrackingEvent(
     id: 'evt_1',
     status: TrackingStatus.labelCreated,
     description: 'Label created',
-    timestamp: DateTime(2026, 3, 23, 18, 0),
+    timestamp: DateTime(2026, 3, 23, 18),
   ),
 ];
 
@@ -167,7 +167,7 @@ void main() {
         qrData: 'https://dhl.nl/qr/JJD000123456',
         trackingNumber: 'JJD000123456',
         carrier: ShippingCarrier.dhl,
-        shipByDeadline: DateTime(2026, 3, 25, 18, 0),
+        shipByDeadline: DateTime(2026, 3, 25, 18),
         createdAt: DateTime(2026, 3, 23),
       );
 

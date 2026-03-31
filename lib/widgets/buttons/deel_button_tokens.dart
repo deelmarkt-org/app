@@ -1,6 +1,6 @@
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
-import 'deel_button.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Design tokens for [DeelButton] sizes.
 /// Reference: docs/design-system/components.md §Buttons

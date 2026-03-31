@@ -6,7 +6,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
 
-import '../../domain/entities/parcel_shop.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/parcel_shop.dart';
 
 /// Detail panel for the selected parcel shop (expanded layout).
 ///
@@ -54,7 +54,6 @@ class ParcelShopDetailPanel extends StatelessWidget {
           DeelButton(
             label: 'shipping.selectThisShop'.tr(),
             leadingIcon: PhosphorIcons.checkCircle(),
-            variant: DeelButtonVariant.primary,
             onPressed: onSelect,
           ),
         ],

@@ -7,10 +7,10 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
-import '../../domain/entities/shipping_label.dart';
-import '../../domain/entities/tracking_event.dart';
-import '../extensions/shipping_carrier_ext.dart';
-import '../widgets/tracking_timeline.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/tracking_event.dart';
+import 'package:deelmarkt/features/shipping/presentation/extensions/shipping_carrier_ext.dart';
+import 'package:deelmarkt/features/shipping/presentation/widgets/tracking_timeline.dart';
 
 /// Tracking screen showing shipment status for buyer and seller.
 ///

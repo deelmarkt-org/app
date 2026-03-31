@@ -1,8 +1,8 @@
 import 'package:deelmarkt/core/models/transaction_status.dart';
-import '../entities/payment_entity.dart';
-import '../exceptions.dart';
-import '../repositories/payment_repository.dart';
-import '../repositories/transaction_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/payment_entity.dart';
+import 'package:deelmarkt/features/transaction/domain/exceptions.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/payment_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 
 /// Creates a Mollie payment and transitions to `paymentPending`.
 ///

@@ -1,4 +1,4 @@
-import '../entities/transaction_entity.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 
 /// Repository interface for transaction operations.

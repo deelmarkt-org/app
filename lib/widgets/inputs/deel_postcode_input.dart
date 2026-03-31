@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'deel_input.dart';
-import 'deel_postcode_formatter.dart';
+import 'package:deelmarkt/widgets/inputs/deel_input.dart';
+import 'package:deelmarkt/widgets/inputs/deel_postcode_formatter.dart';
 
 /// Dutch postcode input with format enforcement and validation callback.
 ///

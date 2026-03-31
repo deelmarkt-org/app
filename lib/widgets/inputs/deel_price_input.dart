@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 
-import 'deel_input.dart';
-import 'deel_price_formatter.dart';
+import 'package:deelmarkt/widgets/inputs/deel_input.dart';
+import 'package:deelmarkt/widgets/inputs/deel_price_formatter.dart';
 
 /// Controller for [DeelPriceInput] that tracks the canonical cents value.
 ///
@@ -126,7 +126,7 @@ class DeelPriceInput extends StatelessWidget {
       prefixIcon: Container(
         padding: const EdgeInsets.only(left: Spacing.s4, right: Spacing.s2),
         alignment: Alignment.centerLeft,
-        constraints: const BoxConstraints(minWidth: 0, maxWidth: 56),
+        constraints: const BoxConstraints(maxWidth: 56),
         child: Text(
           'input.price_prefix'.tr(),
           style: DeelmarktTypography.pricePrefix,

@@ -1,34 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../features/home/data/mock/mock_category_repository.dart';
-import '../../features/home/data/mock/mock_listing_repository.dart';
-import '../../features/home/data/supabase/supabase_category_repository.dart';
-import '../../features/home/data/supabase/supabase_listing_repository.dart';
-import '../../features/home/domain/repositories/category_repository.dart';
-import '../../features/home/domain/repositories/listing_repository.dart';
-import '../../features/profile/data/mock/mock_user_repository.dart';
-import '../../features/profile/data/supabase/supabase_user_repository.dart';
-import '../../features/profile/domain/repositories/user_repository.dart';
-import 'supabase_service.dart';
+import 'package:deelmarkt/features/home/data/mock/mock_category_repository.dart';
+import 'package:deelmarkt/features/home/data/mock/mock_listing_repository.dart';
+import 'package:deelmarkt/features/home/data/supabase/supabase_category_repository.dart';
+import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repository.dart';
+import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/core/services/supabase_service.dart';
 
 /// Whether to use real Supabase or mock repositories.
 ///
+/// Compile-time constant: `--dart-define=USE_MOCK_DATA=true` for mock mode.
 /// Override in tests: `ProviderScope(overrides: [useMockDataProvider.overrideWithValue(true)])`
 /// In production: defaults to false (real Supabase).
 /// Uses compile-time flag to avoid catching unrelated Supabase errors.
 final useMockDataProvider = Provider<bool>((ref) {
-  const useMock = bool.fromEnvironment('USE_MOCK_DATA');
-  if (useMock) return true;
-  try {
-    Supabase.instance.client;
-    return false;
-  } on StateError {
-    return true;
-  } on AssertionError {
-    // Supabase uses assert(_isInitialized) internally
-    return true;
-  }
+  return const bool.fromEnvironment('USE_MOCK_DATA');
 });
 
 /// Listing repository — mock or Supabase based on [useMockDataProvider].

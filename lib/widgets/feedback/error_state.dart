@@ -164,7 +164,6 @@ class ErrorState extends StatelessWidget {
     return DeelButton(
       label: 'action.retry'.tr(),
       onPressed: onRetry,
-      variant: DeelButtonVariant.primary,
       size: DeelButtonSize.medium,
       fullWidth: fullWidth,
     );

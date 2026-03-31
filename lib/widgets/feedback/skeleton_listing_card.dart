@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
-import 'skeleton_loader.dart';
-import 'skeleton_shapes.dart';
+import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
+import 'package:deelmarkt/widgets/feedback/skeleton_shapes.dart';
 
 /// Composite skeleton placeholder for a listing card.
 ///

@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:unleash_proxy_client_flutter/unleash_proxy_client_flutter.dart';
 
-import 'env.dart';
+import 'package:deelmarkt/core/services/env.dart';
 
 part 'unleash_service.g.dart';
 
@@ -28,12 +30,19 @@ Future<void> initUnleash() async {
     await client.start().timeout(
       const Duration(seconds: 5),
       onTimeout: () {
-        debugPrint('[Unleash] Connection timed out — using defaults');
+        AppLogger.warning(
+          'Connection timed out — using defaults',
+          tag: 'unleash',
+        );
       },
     );
     _unleashClient = client;
-  } catch (e) {
-    debugPrint('[Unleash] Failed to connect — all flags default to off: $e');
+  } on Exception catch (e) {
+    AppLogger.warning(
+      'Failed to connect — all flags default to off',
+      tag: 'unleash',
+      error: e,
+    );
   }
 }
 
@@ -44,14 +53,14 @@ UnleashClient? _unleashClient;
 ///
 /// Disposes the polling timer when the provider is torn down.
 @Riverpod(keepAlive: true)
-UnleashClient? unleashClient(UnleashClientRef ref) {
+UnleashClient? unleashClient(Ref ref) {
   ref.onDispose(() => _unleashClient?.stop());
   return _unleashClient;
 }
 
 /// Triggers re-evaluation when the Unleash SDK fetches updated toggles.
 @Riverpod(keepAlive: true)
-Object? unleashUpdates(UnleashUpdatesRef ref) {
+Object? unleashUpdates(Ref ref) {
   final client = ref.watch(unleashClientProvider);
 
   void listener(dynamic _) {
@@ -74,7 +83,7 @@ Object? unleashUpdates(UnleashUpdatesRef ref) {
 /// Returns `false` if Unleash is unavailable or the flag does not exist.
 /// Reactive: re-evaluates when the SDK receives updated toggles.
 @riverpod
-bool isFeatureEnabled(IsFeatureEnabledRef ref, String flagName) {
+bool isFeatureEnabled(Ref ref, String flagName) {
   ref.watch(unleashUpdatesProvider);
   final client = ref.read(unleashClientProvider);
   return client?.isEnabled(flagName) ?? false;

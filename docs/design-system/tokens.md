@@ -183,6 +183,7 @@ class Spacing {
 
 | Token | px | Usage |
 |:------|:---|:------|
+| `xxs` | 2 | Strength indicator segments |
 | `xs` | 6 | Small badges, tags |
 | `sm` | 8 | Chips, small buttons |
 | `md` | 10 | Inputs, text fields |
@@ -193,7 +194,7 @@ class Spacing {
 
 ```dart
 class DeelmarktRadius {
-  static const xs = 6.0, sm = 8.0, md = 10.0, lg = 12.0;
+  static const xxs = 2.0, xs = 6.0, sm = 8.0, md = 10.0, lg = 12.0;
   static const xl = 16.0, xxl = 24.0, full = 999.0;
 }
 ```

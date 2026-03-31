@@ -25,15 +25,15 @@ void main() {
 
   group('Formatters.shortDateTime', () {
     test('formats with Dutch locale', () {
-      final dt = DateTime(2026, 3, 25, 18, 0);
-      final result = Formatters.shortDateTime(dt, locale: 'nl');
+      final dt = DateTime(2026, 3, 25, 18);
+      final result = Formatters.shortDateTime(dt);
       expect(result, contains('25'));
       expect(result, contains('2026'));
       expect(result, contains('18:00'));
     });
 
     test('formats with English locale', () {
-      final dt = DateTime(2026, 3, 25, 18, 0);
+      final dt = DateTime(2026, 3, 25, 18);
       final result = Formatters.shortDateTime(dt, locale: 'en');
       expect(result, contains('25'));
       expect(result, contains('Mar'));
@@ -42,14 +42,14 @@ void main() {
     });
 
     test('defaults to Dutch locale', () {
-      final dt = DateTime(2026, 1, 1, 0, 0);
+      final dt = DateTime(2026);
       final result = Formatters.shortDateTime(dt);
       expect(result, contains('2026'));
       expect(result, contains('00:00'));
     });
 
     test('handles midnight correctly', () {
-      final dt = DateTime(2026, 12, 31, 0, 0);
+      final dt = DateTime(2026, 12, 31);
       final result = Formatters.shortDateTime(dt, locale: 'en');
       expect(result, contains('00:00'));
       expect(result, contains('31'));

@@ -6,14 +6,15 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
-import 'onboarding_notifier.dart';
-import 'widgets/get_started_page.dart';
-import 'widgets/onboarding_trust_badges.dart';
-import 'widgets/page_dot_indicator.dart';
-import 'widgets/trust_page.dart';
-import 'widgets/welcome_page.dart';
+import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/get_started_page.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/onboarding_trust_badges.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/page_dot_indicator.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_page.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/welcome_page.dart';
 
 /// Full onboarding flow — 3-page PageView with language selection,
 /// trust value proposition, and account creation CTA.
@@ -45,8 +46,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   void dispose() {
-    _pageController.removeListener(_onPageChanged);
-    _pageController.dispose();
+    _pageController
+      ..removeListener(_onPageChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -62,8 +64,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     try {
       await ref.read(onboardingNotifierProvider.notifier).completeOnboarding();
       if (mounted) context.go(route);
-    } catch (e) {
-      debugPrint('Failed to complete onboarding: $e');
+    } on Exception catch (e) {
+      AppLogger.error(
+        'Failed to complete onboarding',
+        tag: 'onboarding',
+        error: e,
+      );
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -170,8 +176,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: DeelButton(
                       label: 'onboarding.next'.tr(),
                       onPressed: _nextPage,
-                      variant: DeelButtonVariant.primary,
-                      size: DeelButtonSize.large,
                     ),
                   ),
                 ],

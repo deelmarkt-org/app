@@ -91,7 +91,7 @@ Future<void> main() async {
       final testPath = normalised
           .replaceFirst('lib/', 'test/')
           .replaceFirst(RegExp(r'\.dart$'), '_test.dart');
-      if (await File(testPath).exists()) {
+      if (File(testPath).existsSync()) {
         testFiles.add(testPath);
       }
 
@@ -102,7 +102,7 @@ Future<void> main() async {
         final dirName = parts[parts.length - 2];
         final parentParts = parts.sublist(0, parts.length - 2);
         final dirTest = '${parentParts.join("/")}/${dirName}_test.dart';
-        if (await File(dirTest).exists()) {
+        if (File(dirTest).existsSync()) {
           testFiles.add(dirTest);
         }
       }

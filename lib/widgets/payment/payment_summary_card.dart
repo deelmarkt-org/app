@@ -7,8 +7,8 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
-import '../buttons/buttons.dart';
-import '../trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/buttons/buttons.dart';
+import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
 /// Payment summary card shown before checkout.
 ///

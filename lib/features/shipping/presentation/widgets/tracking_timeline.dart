@@ -5,7 +5,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 
-import '../../domain/entities/tracking_event.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/tracking_event.dart';
 
 /// Vertical tracking timeline showing carrier events for a shipment.
 ///

@@ -1,6 +1,6 @@
-import '../../domain/entities/conversation_entity.dart';
-import '../../domain/entities/message_entity.dart';
-import '../../domain/repositories/message_repository.dart';
+import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Mock data constants to avoid duplicate literals.
 const _currentUserId = 'user-001';
@@ -61,7 +61,6 @@ final _mockConversations = [
     otherUserName: 'Pieter Bakker',
     lastMessageText: 'Kan ik morgen ophalen?',
     lastMessageAt: DateTime(2026, 3, 24, 10, 15),
-    unreadCount: 0,
   ),
 ];
 
@@ -71,7 +70,7 @@ final _mockMessages = [
     conversationId: _convId001,
     senderId: _currentUserId,
     text: 'Hoi, ik heb interesse in de iPhone. Is deze nog beschikbaar?',
-    createdAt: DateTime(2026, 3, 25, 14, 0),
+    createdAt: DateTime(2026, 3, 25, 14),
     isRead: true,
   ),
   MessageEntity(
@@ -88,6 +87,5 @@ final _mockMessages = [
     senderId: _currentUserId,
     text: 'Is de prijs bespreekbaar?',
     createdAt: DateTime(2026, 3, 25, 14, 30),
-    isRead: false,
   ),
 ];

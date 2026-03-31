@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../domain/entities/listing_entity.dart';
-import '../../domain/repositories/listing_repository.dart';
-import '../dto/listing_dto.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/home/data/dto/listing_dto.dart';
 
 /// Supabase implementation of [ListingRepository].
 ///
@@ -59,8 +59,9 @@ class SupabaseListingRepository implements ListingRepository {
       // Build a map of id → distance for enrichment
       final distanceMap = <String, double>{};
       for (final row in idsList) {
-        final id = row['listing_id'];
-        final dist = row['distance_km'];
+        final typedRow = row as Map<String, dynamic>;
+        final id = typedRow['listing_id'];
+        final dist = typedRow['distance_km'];
         if (id is String && dist is num) {
           distanceMap[id] = dist.toDouble();
         }
@@ -158,31 +159,12 @@ class SupabaseListingRepository implements ListingRepository {
 
   @override
   Future<ListingEntity> toggleFavourite(String listingId) async {
-    final userId = _client.auth.currentUser?.id;
-    if (userId == null) throw Exception('Not authenticated');
-
     try {
-      // Check if already favourited
-      final existing =
-          await _client
-              .from('favourites')
-              .select('id')
-              .eq('user_id', userId)
-              .eq('listing_id', listingId)
-              .maybeSingle();
-
-      if (existing != null) {
-        await _client
-            .from('favourites')
-            .delete()
-            .eq('user_id', userId)
-            .eq('listing_id', listingId);
-      } else {
-        await _client.from('favourites').insert({
-          'user_id': userId,
-          'listing_id': listingId,
-        });
-      }
+      // Atomic toggle via RPC — single round-trip instead of 3
+      await _client.rpc(
+        'toggle_favourite',
+        params: {'p_listing_id': listingId},
+      );
 
       // Return updated listing
       final updated = await getById(listingId);

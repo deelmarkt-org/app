@@ -18,14 +18,14 @@ List<TrackingEvent> _events() => [
     id: 'evt_2',
     status: TrackingStatus.pickedUp,
     description: 'Picked up by carrier',
-    timestamp: DateTime(2026, 3, 24, 10, 0),
+    timestamp: DateTime(2026, 3, 24, 10),
     location: 'PostNL ServicePoint Centrum',
   ),
   TrackingEvent(
     id: 'evt_1',
     status: TrackingStatus.labelCreated,
     description: 'Label created',
-    timestamp: DateTime(2026, 3, 23, 18, 0),
+    timestamp: DateTime(2026, 3, 23, 18),
   ),
 ];
 
@@ -90,7 +90,7 @@ void main() {
               id: 'evt_d',
               status: TrackingStatus.delivered,
               description: 'Delivered',
-              timestamp: DateTime(2026, 3, 25, 12, 0),
+              timestamp: DateTime(2026, 3, 25, 12),
               location: 'Front door',
             ),
           ],

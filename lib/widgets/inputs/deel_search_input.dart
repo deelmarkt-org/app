@@ -6,8 +6,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
-import 'deel_input.dart';
-import 'deel_input_controller_mixin.dart';
+import 'package:deelmarkt/widgets/inputs/deel_input.dart';
+import 'package:deelmarkt/widgets/inputs/deel_input_controller_mixin.dart';
 
 /// Search input with debounce, clear button, and optional filter action.
 ///

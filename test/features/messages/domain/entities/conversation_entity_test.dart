@@ -13,7 +13,7 @@ void main() {
         otherUserId: 'u1',
         otherUserName: 'Alice',
         lastMessageText: 'Hi',
-        lastMessageAt: DateTime(2026, 1, 1),
+        lastMessageAt: DateTime(2026),
       );
       final b = ConversationEntity(
         id: 'c1',
@@ -23,7 +23,7 @@ void main() {
         otherUserId: 'u1',
         otherUserName: 'Alice',
         lastMessageText: 'Hi',
-        lastMessageAt: DateTime(2026, 1, 1),
+        lastMessageAt: DateTime(2026),
       );
 
       expect(a, equals(b));
@@ -38,7 +38,7 @@ void main() {
         otherUserId: 'u1',
         otherUserName: 'Alice',
         lastMessageText: 'Hi',
-        lastMessageAt: DateTime(2026, 1, 1),
+        lastMessageAt: DateTime(2026),
       );
       final b = ConversationEntity(
         id: 'c1',
@@ -48,7 +48,7 @@ void main() {
         otherUserId: 'u1',
         otherUserName: 'Alice',
         lastMessageText: 'Hi',
-        lastMessageAt: DateTime(2026, 1, 1),
+        lastMessageAt: DateTime(2026),
         unreadCount: 3,
       );
 
@@ -64,7 +64,7 @@ void main() {
         otherUserId: 'u1',
         otherUserName: 'User',
         lastMessageText: 'Hi',
-        lastMessageAt: DateTime(2026, 1, 1),
+        lastMessageAt: DateTime(2026),
       );
 
       expect(conv.unreadCount, equals(0));

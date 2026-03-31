@@ -1,5 +1,5 @@
-import '../../domain/entities/user_entity.dart';
-import '../../domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 
 /// Mock user repository — returns static data for Phase 1-2 widget development.
 class MockUserRepository implements UserRepository {
@@ -50,7 +50,7 @@ final _mockUsers = [
     averageRating: 4.7,
     reviewCount: 23,
     responseTimeMinutes: 15,
-    createdAt: DateTime(2025, 6, 1),
+    createdAt: DateTime(2025, 6),
   ),
   UserEntity(
     id: 'user-002',

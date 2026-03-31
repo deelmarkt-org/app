@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 
-import 'deel_input_controller_mixin.dart';
+import 'package:deelmarkt/widgets/inputs/deel_input_controller_mixin.dart';
 
 /// Base input widget wrapping [TextFormField] with design tokens, WCAG 2.2 AA,
 /// and [Form] integration. Composed by [DeelSearchInput], [DeelPriceInput],
@@ -32,6 +32,7 @@ class DeelInput extends StatefulWidget {
     this.autofillHints,
     this.textCapitalization = TextCapitalization.none,
     this.textStyle,
+    this.obscureText = false,
     super.key,
   });
 
@@ -78,6 +79,9 @@ class DeelInput extends StatefulWidget {
 
   /// Optional text style override (e.g. tabular figures for price).
   final TextStyle? textStyle;
+
+  /// Whether to obscure the text (for password fields).
+  final bool obscureText;
 
   @override
   State<DeelInput> createState() => _DeelInputState();
@@ -149,6 +153,7 @@ class _DeelInputState extends State<DeelInput>
           maxLength: widget.maxLength,
           autofillHints: widget.autofillHints,
           textCapitalization: widget.textCapitalization,
+          obscureText: widget.obscureText,
           style: widget.textStyle,
           decoration: InputDecoration(
             labelText: labelText,
