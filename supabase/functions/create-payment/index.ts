@@ -136,7 +136,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       console.log(`[create-payment] Rate limit: ${remaining} remaining for user ${user.id.slice(0, 8)}`);
     } catch (rateLimitErr) {
       // Fail open — log and continue
-      console.warn(`[create-payment] Rate limit check failed, proceeding: ${(rateLimitErr as Error).message}`);
+      console.warn(`[create-payment] Rate limit check failed, proceeding:`, rateLimitErr);
     }
 
     const { data: txn, error: txnError } = await serviceClient
