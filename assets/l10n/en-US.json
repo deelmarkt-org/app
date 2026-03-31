@@ -98,7 +98,21 @@
     "terms_agree_prefix": "I agree to the ",
     "privacy_agree_prefix": "I agree to the ",
     "verify_phone_subtitle": "We sent a code to {phone}",
-    "otp_field_label": "Verification code"
+    "otp_field_label": "Verification code",
+    "biometricReason": "Verify your identity to log in to DeelMarkt",
+    "continueWithApple": "Continue with Apple",
+    "continueWithGoogle": "Continue with Google",
+    "errorBiometricFailed": "Biometric verification failed. Try your password instead.",
+    "errorRateLimited": "Too many attempts. Try again in {0} minutes.",
+    "errorSessionExpired": "Your session has expired. Please log in with your password.",
+    "logIn": "Log in",
+    "newToDeelMarkt": "New to DeelMarkt?",
+    "or": "or",
+    "useFaceId": "Use Face ID",
+    "useFingerprint": "Use fingerprint",
+    "welcomeBack": "Welcome back",
+    "welcomeSubtitle": "Log in to continue safe trading.",
+    "invalidCredentials": "Incorrect email or password"
   },
   "validation": {
     "email_required": "Enter your email address",

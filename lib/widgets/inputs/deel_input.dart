@@ -33,6 +33,7 @@ class DeelInput extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.textStyle,
     this.obscureText = false,
+    this.onFieldSubmitted,
     super.key,
   });
 
@@ -82,6 +83,9 @@ class DeelInput extends StatefulWidget {
 
   /// Whether to obscure the text (for password fields).
   final bool obscureText;
+
+  /// Callback when the user submits the field (e.g. presses Enter/Done).
+  final ValueChanged<String>? onFieldSubmitted;
 
   @override
   State<DeelInput> createState() => _DeelInputState();
@@ -154,6 +158,7 @@ class _DeelInputState extends State<DeelInput>
           autofillHints: widget.autofillHints,
           textCapitalization: widget.textCapitalization,
           obscureText: widget.obscureText,
+          onFieldSubmitted: widget.onFieldSubmitted,
           style: widget.textStyle,
           decoration: InputDecoration(
             labelText: labelText,

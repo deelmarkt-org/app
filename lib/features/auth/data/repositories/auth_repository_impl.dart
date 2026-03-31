@@ -1,16 +1,22 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 
 /// Supabase-backed [AuthRepository] implementation.
 ///
 /// Catches platform exceptions and translates them to domain
 /// [AppException] subtypes with l10n error keys.
+///
+/// Login methods return [AuthResult] (sealed class) instead of throwing,
+/// enabling exhaustive `switch` in the ViewModel.
 class AuthRepositoryImpl implements AuthRepository {
-  const AuthRepositoryImpl(this._datasource);
+  const AuthRepositoryImpl(this._datasource, {required this.biometricService});
   final AuthRemoteDatasource _datasource;
+  final BiometricService biometricService;
 
   @override
   Future<void> registerWithEmail({
@@ -87,6 +93,98 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       throw _mapGenericError(e);
     }
+  }
+
+  // ── Login (P-16) ──
+
+  @override
+  Future<AuthResult> loginWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _datasource.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      final userId = response.user?.id;
+      if (userId == null) {
+        return const AuthFailureUnknown(message: 'No user returned');
+      }
+      return AuthSuccess(userId: userId);
+    } on sb.AuthException catch (e) {
+      return _mapLoginAuthError(e);
+    } on Object catch (e) {
+      return _mapLoginGenericError(e);
+    }
+  }
+
+  @override
+  Future<AuthResult> loginWithBiometric({
+    required String localizedReason,
+  }) async {
+    final available = await biometricService.isAvailable;
+    if (!available) return const AuthFailureBiometricUnavailable();
+
+    final session = _datasource.currentSession;
+    if (session == null) return const AuthFailureBiometricUnavailable();
+
+    final authenticated = await biometricService.authenticate(
+      localizedReason: localizedReason,
+    );
+    if (!authenticated) return const AuthFailureBiometricFailed();
+
+    try {
+      final response = await _datasource.refreshSession();
+      final userId = response.user?.id;
+      if (userId == null) return const AuthFailureSessionExpired();
+      return AuthSuccess(userId: userId);
+    } on sb.AuthException {
+      return const AuthFailureSessionExpired();
+    } on Object {
+      return const AuthFailureSessionExpired();
+    }
+  }
+
+  @override
+  Future<bool> get isBiometricAvailable async {
+    final available = await biometricService.isAvailable;
+    if (!available) return false;
+    // Biometric login requires an existing session to refresh
+    return _datasource.currentSession != null;
+  }
+
+  @override
+  Future<BiometricMethod?> get availableBiometricMethod =>
+      biometricService.availableMethod;
+
+  AuthResult _mapLoginAuthError(sb.AuthException e) {
+    final code = e.statusCode;
+    if (code == '429') {
+      return const AuthFailureRateLimited(retryAfter: Duration(minutes: 5));
+    }
+    if (code == '400') return const AuthFailureInvalidCredentials();
+
+    final msg = e.message.toLowerCase();
+    if (msg.contains('invalid login') || msg.contains('invalid credential')) {
+      return const AuthFailureInvalidCredentials();
+    }
+    if (msg.contains('rate')) {
+      return const AuthFailureRateLimited(retryAfter: Duration(minutes: 5));
+    }
+    return AuthFailureUnknown(message: 'auth_error_status_$code');
+  }
+
+  // H-1 fix: Never pass raw e.toString() — may contain PII or internal URLs.
+  AuthResult _mapLoginGenericError(Object e) {
+    final msg = e.toString().toLowerCase();
+    if (msg.contains('socket') ||
+        msg.contains('connection') ||
+        msg.contains('network') ||
+        msg.contains('timeout')) {
+      return const AuthFailureNetworkError(message: 'network_error');
+    }
+    return const AuthFailureUnknown(message: 'unknown_login_error');
   }
 
   AppException _mapAuthError(sb.AuthException e) {

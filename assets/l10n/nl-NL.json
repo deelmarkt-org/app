@@ -98,7 +98,21 @@
     "terms_agree_prefix": "Ik ga akkoord met de ",
     "privacy_agree_prefix": "Ik ga akkoord met het ",
     "verify_phone_subtitle": "We hebben een code gestuurd naar {phone}",
-    "otp_field_label": "Verificatiecode"
+    "otp_field_label": "Verificatiecode",
+    "biometricReason": "Verifieer je identiteit om in te loggen bij DeelMarkt",
+    "continueWithApple": "Doorgaan met Apple",
+    "continueWithGoogle": "Doorgaan met Google",
+    "errorBiometricFailed": "Biometrische verificatie mislukt. Gebruik je wachtwoord.",
+    "errorRateLimited": "Te veel pogingen. Probeer het over {0} minuten opnieuw.",
+    "errorSessionExpired": "Je sessie is verlopen. Log opnieuw in met je wachtwoord.",
+    "logIn": "Inloggen",
+    "newToDeelMarkt": "Nieuw bij DeelMarkt?",
+    "or": "of",
+    "useFaceId": "Gebruik Face ID",
+    "useFingerprint": "Gebruik vingerafdruk",
+    "welcomeBack": "Welkom terug",
+    "welcomeSubtitle": "Log in om verder te gaan met veilig handelen.",
+    "invalidCredentials": "Onjuist e-mailadres of wachtwoord"
   },
   "validation": {
     "email_required": "Voer je e-mailadres in",

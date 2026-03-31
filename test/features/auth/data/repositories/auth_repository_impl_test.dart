@@ -3,18 +3,26 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_repository_impl.dart';
 
 class MockAuthRemoteDatasource extends Mock implements AuthRemoteDatasource {}
 
+class MockBiometricService extends Mock implements BiometricService {}
+
 void main() {
   late MockAuthRemoteDatasource mockDatasource;
+  late MockBiometricService mockBiometricService;
   late AuthRepositoryImpl repository;
 
   setUp(() {
     mockDatasource = MockAuthRemoteDatasource();
-    repository = AuthRepositoryImpl(mockDatasource);
+    mockBiometricService = MockBiometricService();
+    repository = AuthRepositoryImpl(
+      mockDatasource,
+      biometricService: mockBiometricService,
+    );
   });
 
   // ---------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 
 /// In-memory mock for development when Supabase Auth (R-13) isn't ready.
@@ -48,4 +49,32 @@ class MockAuthRepository implements AuthRepository {
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
   }
+
+  // ── Login (P-16) ──
+
+  @override
+  Future<AuthResult> loginWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    // Simulate invalid credentials for test convenience.
+    final isInvalid = password == 'wrong'; // pragma: allowlist secret
+    if (isInvalid) return const AuthFailureInvalidCredentials();
+    return const AuthSuccess(userId: 'mock-user-id');
+  }
+
+  @override
+  Future<AuthResult> loginWithBiometric({
+    required String localizedReason,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return const AuthSuccess(userId: 'mock-user-id');
+  }
+
+  @override
+  Future<bool> get isBiometricAvailable async => false;
+
+  @override
+  Future<BiometricMethod?> get availableBiometricMethod async => null;
 }
