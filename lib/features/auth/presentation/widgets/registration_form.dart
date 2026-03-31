@@ -204,7 +204,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 children: [
                   TextSpan(
                     text: 'auth.terms_link'.tr(),
-                    style: const TextStyle(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: DeelmarktColors.secondary,
                       decoration: TextDecoration.underline,
                     ),
@@ -231,7 +231,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                 children: [
                   TextSpan(
                     text: 'auth.privacy_link'.tr(),
-                    style: const TextStyle(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: DeelmarktColors.secondary,
                       decoration: TextDecoration.underline,
                     ),

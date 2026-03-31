@@ -28,8 +28,8 @@ abstract final class DeelmarktAnimation {
   static const Duration quick = Duration(milliseconds: 150);
 
   /// Standard transitions (page slides, card reveals, layout shifts).
-  /// 300ms — the default for most UI motion.
-  static const Duration standard = Duration(milliseconds: 300);
+  /// 200ms — the default for most UI motion (tokens.md §Animation).
+  static const Duration standard = Duration(milliseconds: 200);
 
   /// Emphasis/celebratory (success animations, onboarding transitions).
   /// 500ms — deliberate pace for moments worth noticing.

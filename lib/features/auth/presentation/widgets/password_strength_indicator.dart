@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/validators.dart';
 
@@ -33,8 +35,10 @@ class PasswordStrengthIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final duration =
-        reduceMotion ? Duration.zero : const Duration(milliseconds: 200);
+    final duration = DeelmarktAnimation.resolve(
+      DeelmarktAnimation.standard,
+      reduceMotion: reduceMotion,
+    );
 
     return Semantics(
       liveRegion: true,
@@ -53,7 +57,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
                   margin: EdgeInsets.only(right: i < 3 ? Spacing.s1 : 0),
                   decoration: BoxDecoration(
                     color: filled ? _color : DeelmarktColors.neutral200,
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(DeelmarktRadius.xxs),
                   ),
                 ),
               );

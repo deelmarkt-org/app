@@ -15,10 +15,10 @@ void main() {
       );
     });
 
-    test('standard is 300ms', () {
+    test('standard is 200ms', () {
       expect(
         DeelmarktAnimation.standard,
-        equals(const Duration(milliseconds: 300)),
+        equals(const Duration(milliseconds: 200)),
       );
     });
 
