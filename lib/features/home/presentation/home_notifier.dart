@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
@@ -18,6 +19,12 @@ class HomeState {
   final List<ListingEntity> recent;
 }
 
+/// Default location (Amsterdam Centraal) — replaced by device location
+/// when LocationService is implemented (E05).
+const _defaultLatitude = 52.3676;
+const _defaultLongitude = 4.9041;
+const _pageSize = 10;
+
 @riverpod
 class HomeNotifier extends _$HomeNotifier {
   @override
@@ -28,12 +35,11 @@ class HomeNotifier extends _$HomeNotifier {
     final results = await Future.wait([
       categories.getTopLevel(),
       listings.getNearby(
-        latitude: 52.3676,
-        longitude: 4.9041,
-        radiusKm: 25,
-        limit: 10,
+        latitude: _defaultLatitude,
+        longitude: _defaultLongitude,
+        limit: _pageSize,
       ),
-      listings.getRecent(limit: 10),
+      listings.getRecent(limit: _pageSize),
     ]);
 
     return HomeState(
@@ -44,22 +50,60 @@ class HomeNotifier extends _$HomeNotifier {
   }
 
   Future<void> refresh() async {
+    final previous = state.valueOrNull;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => build());
+    // If refresh fails, restore previous data so the user doesn't lose content.
+    if (state.hasError && previous != null) {
+      state = AsyncValue.data(previous);
+    }
   }
 
   Future<void> toggleFavourite(String listingId) async {
-    final listings = ref.read(listingRepositoryProvider);
-    final updated = await listings.toggleFavourite(listingId);
     final current = state.valueOrNull;
     if (current == null) return;
 
-    state = AsyncValue.data(
-      HomeState(
-        categories: current.categories,
-        nearby: _replaceListing(current.nearby, updated),
-        recent: _replaceListing(current.recent, updated),
-      ),
+    // Optimistic UI: toggle immediately
+    final optimistic = _toggleInList(current, listingId);
+    state = AsyncValue.data(optimistic);
+
+    try {
+      final listings = ref.read(listingRepositoryProvider);
+      final updated = await listings.toggleFavourite(listingId);
+      final latest = state.valueOrNull;
+      if (latest == null) return;
+
+      state = AsyncValue.data(
+        HomeState(
+          categories: latest.categories,
+          nearby: _replaceListing(latest.nearby, updated),
+          recent: _replaceListing(latest.recent, updated),
+        ),
+      );
+    } on Exception catch (e) {
+      // Revert optimistic update on failure
+      debugPrint('Failed to toggle favourite: $e');
+      state = AsyncValue.data(current);
+    }
+  }
+
+  HomeState _toggleInList(HomeState current, String listingId) {
+    return HomeState(
+      categories: current.categories,
+      nearby: [
+        for (final l in current.nearby)
+          if (l.id == listingId)
+            l.copyWith(isFavourited: !l.isFavourited)
+          else
+            l,
+      ],
+      recent: [
+        for (final l in current.recent)
+          if (l.id == listingId)
+            l.copyWith(isFavourited: !l.isFavourited)
+          else
+            l,
+      ],
     );
   }
 

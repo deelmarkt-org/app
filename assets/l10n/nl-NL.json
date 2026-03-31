@@ -4,12 +4,13 @@
     "tagline": "Tweedehands met vertrouwen"
   },
   "nav": {
+    "back": "Terug",
     "home": "Home",
-    "search": "Zoeken",
-    "sell": "Verkopen",
     "messages": "Berichten",
+    "notifications": "Meldingen",
     "profile": "Profiel",
-    "back": "Terug"
+    "search": "Zoeken",
+    "sell": "Verkopen"
   },
   "action": {
     "save": "Opslaan",

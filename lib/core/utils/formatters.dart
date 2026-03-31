@@ -12,7 +12,12 @@ abstract final class Formatters {
   /// Uses comma as decimal separator per Dutch convention.
   static String euroFromCents(int cents) {
     final euros = cents / 100;
-    return '\u20AC${euros.toStringAsFixed(2).replaceAll('.', ',')}';
+    return '\u20AC\u00A0${euros.toStringAsFixed(2).replaceAll('.', ',')}';
+  }
+
+  /// Format distance in kilometres with Dutch locale (e.g. "3,2 km").
+  static String distanceKm(double km) {
+    return '${km.toStringAsFixed(1).replaceAll('.', ',')} km';
   }
 
   /// Initialize date locale data. Safe to call multiple times.

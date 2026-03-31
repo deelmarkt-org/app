@@ -33,15 +33,27 @@ class SectionHeader extends StatelessWidget {
           if (actionLabel != null && onAction != null)
             Semantics(
               button: true,
-              child: GestureDetector(
-                onTap: onAction,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.s2),
-                  child: Text(
-                    actionLabel!,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.w600,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onAction,
+                  borderRadius: BorderRadius.circular(Spacing.s2),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 44),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.s2,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          actionLabel!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

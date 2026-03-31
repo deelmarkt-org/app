@@ -4,12 +4,13 @@
     "tagline": "Second-hand with confidence"
   },
   "nav": {
+    "back": "Back",
     "home": "Home",
-    "search": "Search",
-    "sell": "Sell",
     "messages": "Messages",
+    "notifications": "Notifications",
     "profile": "Profile",
-    "back": "Back"
+    "search": "Search",
+    "sell": "Sell"
   },
   "action": {
     "save": "Save",

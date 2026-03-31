@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 
@@ -20,17 +20,19 @@ class CategoryCarousel extends StatelessWidget {
 
   static const double _iconContainerSize = 48;
 
-  /// Map category icon name to Phosphor icon.
+  /// Map category icon name to Phosphor duotone icon per design spec.
   static IconData _iconFor(String name) => switch (name) {
-    'car' => PhosphorIcons.car(),
-    'device-mobile' => PhosphorIcons.deviceMobile(),
-    'house' => PhosphorIcons.house(),
-    't-shirt' => PhosphorIcons.tShirt(),
-    'bicycle' => PhosphorIcons.bicycle(),
-    'baby' => PhosphorIcons.baby(),
-    'wrench' => PhosphorIcons.wrench(),
-    'dots-three' => PhosphorIcons.dotsThree(),
-    _ => PhosphorIcons.tag(),
+    'car' => PhosphorIcons.car(PhosphorIconsStyle.duotone),
+    'device-mobile' ||
+    'devices' => PhosphorIcons.devices(PhosphorIconsStyle.duotone),
+    'house' || 'armchair' => PhosphorIcons.armchair(PhosphorIconsStyle.duotone),
+    't-shirt' => PhosphorIcons.tShirt(PhosphorIconsStyle.duotone),
+    'bicycle' => PhosphorIcons.bicycle(PhosphorIconsStyle.duotone),
+    'baby' => PhosphorIcons.baby(PhosphorIconsStyle.duotone),
+    'wrench' => PhosphorIcons.wrench(PhosphorIconsStyle.duotone),
+    'dots-three' ||
+    'package' => PhosphorIcons.package(PhosphorIconsStyle.duotone),
+    _ => PhosphorIcons.tag(PhosphorIconsStyle.duotone),
   };
 
   @override
@@ -63,7 +65,6 @@ class CategoryCarousel extends StatelessWidget {
                 category: cat,
                 icon: _iconFor(cat.icon),
                 onTap: () => onCategoryTap(cat),
-                iconContainerSize: _iconContainerSize,
               );
             },
           ),
@@ -78,13 +79,11 @@ class _CategoryPill extends StatelessWidget {
     required this.category,
     required this.icon,
     required this.onTap,
-    required this.iconContainerSize,
   });
 
   final CategoryEntity category;
   final IconData icon;
   final VoidCallback onTap;
-  final double iconContainerSize;
 
   @override
   Widget build(BuildContext context) {
@@ -92,32 +91,40 @@ class _CategoryPill extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: category.name,
-      child: GestureDetector(
-        onTap: onTap,
-        child: SizedBox(
-          width: 72,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: iconContainerSize,
-                height: iconContainerSize,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+      label: '${'home.categories'.tr()}: ${category.name}',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(DeelmarktIconSize.md),
+          child: SizedBox(
+            width: 72,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: CategoryCarousel._iconContainerSize,
+                  height: CategoryCarousel._iconContainerSize,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerLow,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: DeelmarktColors.primary,
+                    size: DeelmarktIconSize.md,
+                  ),
                 ),
-                child: Icon(icon, color: DeelmarktColors.primary, size: 24),
-              ),
-              const SizedBox(height: Spacing.s2),
-              Text(
-                category.name,
-                style: theme.textTheme.labelSmall,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+                const SizedBox(height: Spacing.s2),
+                Text(
+                  category.name,
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ),
