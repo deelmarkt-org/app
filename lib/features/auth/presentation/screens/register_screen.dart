@@ -99,9 +99,10 @@ class RegisterScreen extends ConsumerWidget {
               onCompleted:
                   ref.read(registerViewModelProvider.notifier).verifyPhone,
               onResend:
-                  () => ref
-                      .read(registerViewModelProvider.notifier)
-                      .submitPhone(state.phone!),
+                  () =>
+                      ref
+                          .read(registerViewModelProvider.notifier)
+                          .resendPhoneOtp(),
             ),
             RegistrationStep.complete => const SizedBox.shrink(),
           },
