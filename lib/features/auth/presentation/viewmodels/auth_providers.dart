@@ -2,9 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
+import 'package:deelmarkt/features/auth/domain/usecases/login_with_biometric_usecase.dart';
+import 'package:deelmarkt/features/auth/domain/usecases/login_with_email_usecase.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/register_with_email_usecase.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/resend_email_otp_usecase.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/send_phone_otp_usecase.dart';
@@ -18,7 +21,10 @@ part 'auth_providers.g.dart';
 AuthRepository authRepository(Ref ref) {
   final client = ref.watch(supabaseClientProvider);
   final datasource = AuthRemoteDatasource(client);
-  return AuthRepositoryImpl(datasource);
+  return AuthRepositoryImpl(
+    datasource,
+    biometricService: ref.watch(biometricServiceProvider),
+  );
 }
 
 @riverpod
@@ -44,4 +50,18 @@ SendPhoneOtpUseCase sendPhoneOtpUseCase(Ref ref) {
 @riverpod
 VerifyPhoneOtpUseCase verifyPhoneOtpUseCase(Ref ref) {
   return VerifyPhoneOtpUseCase(ref.watch(authRepositoryProvider));
+}
+
+// ── Login (P-16) ──
+
+@riverpod
+LoginWithEmailUseCase loginWithEmailUseCase(Ref ref) {
+  return LoginWithEmailUseCase(repository: ref.watch(authRepositoryProvider));
+}
+
+@riverpod
+LoginWithBiometricUseCase loginWithBiometricUseCase(Ref ref) {
+  return LoginWithBiometricUseCase(
+    repository: ref.watch(authRepositoryProvider),
+  );
 }

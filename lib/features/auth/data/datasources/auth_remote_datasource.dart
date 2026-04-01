@@ -55,4 +55,22 @@ class AuthRemoteDatasource {
       token: token,
     );
   }
+
+  // ── Login (P-16) ──
+
+  /// Sign in with email + password.
+  Future<AuthResponse> signInWithPassword({
+    required String email,
+    required String password,
+  }) {
+    return _client.auth.signInWithPassword(email: email, password: password);
+  }
+
+  /// Refresh the current session (for biometric re-auth).
+  Future<AuthResponse> refreshSession() {
+    return _client.auth.refreshSession();
+  }
+
+  /// Returns the current session or null.
+  Session? get currentSession => _client.auth.currentSession;
 }

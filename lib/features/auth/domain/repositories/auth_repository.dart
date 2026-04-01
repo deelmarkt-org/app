@@ -1,3 +1,5 @@
+import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
+
 /// Abstract auth repository — domain layer, no Supabase imports.
 ///
 /// Data layer implements this interface and translates platform
@@ -25,4 +27,22 @@ abstract interface class AuthRepository {
 
   /// Verify the phone OTP code.
   Future<void> verifyPhoneOtp({required String phone, required String token});
+
+  // ── Login (P-16) ──
+
+  /// Authenticate with email + password via Supabase Auth.
+  Future<AuthResult> loginWithEmail({
+    required String email,
+    required String password,
+  });
+
+  /// Authenticate via biometric (Face ID / fingerprint) + session refresh.
+  /// [localizedReason] is displayed in the OS biometric prompt — must be l10n'd.
+  Future<AuthResult> loginWithBiometric({required String localizedReason});
+
+  /// Whether biometric hardware is available and enrolled.
+  Future<bool> get isBiometricAvailable;
+
+  /// Which biometric method is available (face or fingerprint), or null.
+  Future<BiometricMethod?> get availableBiometricMethod;
 }

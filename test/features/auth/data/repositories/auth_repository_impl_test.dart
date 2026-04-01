@@ -3,18 +3,27 @@ import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 
 class MockAuthRemoteDatasource extends Mock implements AuthRemoteDatasource {}
 
+class MockBiometricService extends Mock implements BiometricService {}
+
 void main() {
   late MockAuthRemoteDatasource mockDatasource;
+  late MockBiometricService mockBiometricService;
   late AuthRepositoryImpl repository;
 
   setUp(() {
     mockDatasource = MockAuthRemoteDatasource();
-    repository = AuthRepositoryImpl(mockDatasource);
+    mockBiometricService = MockBiometricService();
+    repository = AuthRepositoryImpl(
+      mockDatasource,
+      biometricService: mockBiometricService,
+    );
   });
 
   // ---------------------------------------------------------------------------
@@ -660,6 +669,365 @@ void main() {
         );
       },
     );
+  });
+
+  // ---------------------------------------------------------------------------
+  // loginWithEmail (P-16)
+  // ---------------------------------------------------------------------------
+  group('loginWithEmail', () {
+    void arrangeSignIn(sb.AuthResponse response) {
+      when(
+        () => mockDatasource.signInWithPassword(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => response);
+    }
+
+    void arrangeSignInThrows(Object error) {
+      when(
+        () => mockDatasource.signInWithPassword(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenThrow(error);
+    }
+
+    Future<AuthResult> act() =>
+        repository.loginWithEmail(email: tEmail, password: tPassword);
+
+    test('returns AuthSuccess with userId on success', () async {
+      final response = sb.AuthResponse(
+        user: sb.User(
+          id: 'user-123',
+          appMetadata: {},
+          userMetadata: {},
+          aud: 'authenticated',
+          createdAt: DateTime.now().toIso8601String(),
+        ),
+      );
+      arrangeSignIn(response);
+
+      final result = await act();
+
+      expect(result, isA<AuthSuccess>());
+      expect((result as AuthSuccess).userId, 'user-123');
+    });
+
+    test('returns AuthFailureUnknown when user is null', () async {
+      arrangeSignIn(tAuthResponse);
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureUnknown>());
+    });
+
+    test('returns AuthFailureRateLimited on status 429', () async {
+      arrangeSignInThrows(
+        authException('Too many requests', statusCode: '429'),
+      );
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureRateLimited>());
+    });
+
+    test('returns AuthFailureInvalidCredentials on status 400', () async {
+      arrangeSignInThrows(
+        authException('Invalid credentials', statusCode: '400'),
+      );
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureInvalidCredentials>());
+    });
+
+    test(
+      'returns AuthFailureInvalidCredentials on "invalid login" message',
+      () async {
+        arrangeSignInThrows(authException('Invalid login credentials'));
+
+        final result = await act();
+
+        expect(result, isA<AuthFailureInvalidCredentials>());
+      },
+    );
+
+    test(
+      'returns AuthFailureInvalidCredentials on "invalid credential" message',
+      () async {
+        arrangeSignInThrows(authException('Invalid credential provided'));
+
+        final result = await act();
+
+        expect(result, isA<AuthFailureInvalidCredentials>());
+      },
+    );
+
+    test('returns AuthFailureRateLimited on "rate" in message', () async {
+      arrangeSignInThrows(authException('Rate limit exceeded'));
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureRateLimited>());
+    });
+
+    test('returns AuthFailureUnknown for unrecognised AuthException', () async {
+      arrangeSignInThrows(authException('Something weird', statusCode: '500'));
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureUnknown>());
+      expect((result as AuthFailureUnknown).message, 'auth_error_status_500');
+    });
+
+    test('returns AuthFailureNetworkError on socket error', () async {
+      arrangeSignInThrows(Exception('SocketException: Connection refused'));
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureNetworkError>());
+    });
+
+    test('returns AuthFailureNetworkError on timeout error', () async {
+      arrangeSignInThrows(Exception('Request timeout'));
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureNetworkError>());
+    });
+
+    test('returns AuthFailureUnknown on unknown generic error', () async {
+      arrangeSignInThrows(Exception('Completely unexpected'));
+
+      final result = await act();
+
+      expect(result, isA<AuthFailureUnknown>());
+      expect((result as AuthFailureUnknown).message, 'unknown_login_error');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // loginWithBiometric (P-16)
+  // ---------------------------------------------------------------------------
+  group('loginWithBiometric', () {
+    const tReason = 'Verify identity';
+
+    test(
+      'returns AuthFailureBiometricUnavailable when not available',
+      () async {
+        when(
+          () => mockBiometricService.isAvailable,
+        ).thenAnswer((_) async => false);
+
+        final result = await repository.loginWithBiometric(
+          localizedReason: tReason,
+        );
+
+        expect(result, isA<AuthFailureBiometricUnavailable>());
+      },
+    );
+
+    test('returns AuthFailureBiometricUnavailable when no session', () async {
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(null);
+
+      final result = await repository.loginWithBiometric(
+        localizedReason: tReason,
+      );
+
+      expect(result, isA<AuthFailureBiometricUnavailable>());
+    });
+
+    test('returns AuthFailureBiometricFailed when auth fails', () async {
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(
+        sb.Session(
+          accessToken: 'token',
+          tokenType: 'bearer',
+          user: sb.User(
+            id: '1',
+            appMetadata: {},
+            userMetadata: {},
+            aud: 'authenticated',
+            createdAt: DateTime.now().toIso8601String(),
+          ),
+        ),
+      );
+      when(
+        () => mockBiometricService.authenticate(
+          localizedReason: any(named: 'localizedReason'),
+        ),
+      ).thenAnswer((_) async => false);
+
+      final result = await repository.loginWithBiometric(
+        localizedReason: tReason,
+      );
+
+      expect(result, isA<AuthFailureBiometricFailed>());
+    });
+
+    test('returns AuthSuccess on successful biometric + refresh', () async {
+      final tUser = sb.User(
+        id: 'bio-user',
+        appMetadata: {},
+        userMetadata: {},
+        aud: 'authenticated',
+        createdAt: DateTime.now().toIso8601String(),
+      );
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(
+        sb.Session(accessToken: 'token', tokenType: 'bearer', user: tUser),
+      );
+      when(
+        () => mockBiometricService.authenticate(
+          localizedReason: any(named: 'localizedReason'),
+        ),
+      ).thenAnswer((_) async => true);
+      when(
+        () => mockDatasource.refreshSession(),
+      ).thenAnswer((_) async => sb.AuthResponse(user: tUser));
+
+      final result = await repository.loginWithBiometric(
+        localizedReason: tReason,
+      );
+
+      expect(result, isA<AuthSuccess>());
+      expect((result as AuthSuccess).userId, 'bio-user');
+    });
+
+    test('returns AuthFailureSessionExpired when refresh fails', () async {
+      final tUser = sb.User(
+        id: '1',
+        appMetadata: {},
+        userMetadata: {},
+        aud: 'authenticated',
+        createdAt: DateTime.now().toIso8601String(),
+      );
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(
+        sb.Session(accessToken: 'token', tokenType: 'bearer', user: tUser),
+      );
+      when(
+        () => mockBiometricService.authenticate(
+          localizedReason: any(named: 'localizedReason'),
+        ),
+      ).thenAnswer((_) async => true);
+      when(
+        () => mockDatasource.refreshSession(),
+      ).thenThrow(authException('Session expired'));
+
+      final result = await repository.loginWithBiometric(
+        localizedReason: tReason,
+      );
+
+      expect(result, isA<AuthFailureSessionExpired>());
+    });
+
+    test(
+      'returns AuthFailureSessionExpired when user is null after refresh',
+      () async {
+        final tUser = sb.User(
+          id: '1',
+          appMetadata: {},
+          userMetadata: {},
+          aud: 'authenticated',
+          createdAt: DateTime.now().toIso8601String(),
+        );
+        when(
+          () => mockBiometricService.isAvailable,
+        ).thenAnswer((_) async => true);
+        when(() => mockDatasource.currentSession).thenReturn(
+          sb.Session(accessToken: 'token', tokenType: 'bearer', user: tUser),
+        );
+        when(
+          () => mockBiometricService.authenticate(
+            localizedReason: any(named: 'localizedReason'),
+          ),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockDatasource.refreshSession(),
+        ).thenAnswer((_) async => sb.AuthResponse());
+
+        final result = await repository.loginWithBiometric(
+          localizedReason: tReason,
+        );
+
+        expect(result, isA<AuthFailureSessionExpired>());
+      },
+    );
+  });
+
+  // ---------------------------------------------------------------------------
+  // isBiometricAvailable
+  // ---------------------------------------------------------------------------
+  group('isBiometricAvailable', () {
+    test('returns false when biometric hardware unavailable', () async {
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => false);
+
+      expect(await repository.isBiometricAvailable, false);
+    });
+
+    test('returns false when no session exists', () async {
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(null);
+
+      expect(await repository.isBiometricAvailable, false);
+    });
+
+    test('returns true when biometric available and session exists', () async {
+      when(
+        () => mockBiometricService.isAvailable,
+      ).thenAnswer((_) async => true);
+      when(() => mockDatasource.currentSession).thenReturn(
+        sb.Session(
+          accessToken: 'token',
+          tokenType: 'bearer',
+          user: sb.User(
+            id: '1',
+            appMetadata: {},
+            userMetadata: {},
+            aud: 'authenticated',
+            createdAt: DateTime.now().toIso8601String(),
+          ),
+        ),
+      );
+
+      expect(await repository.isBiometricAvailable, true);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // availableBiometricMethod
+  // ---------------------------------------------------------------------------
+  group('availableBiometricMethod', () {
+    test('delegates to biometricService.availableMethod', () async {
+      when(
+        () => mockBiometricService.availableMethod,
+      ).thenAnswer((_) async => BiometricMethod.face);
+
+      expect(await repository.availableBiometricMethod, BiometricMethod.face);
+    });
+
+    test('returns null when no method available', () async {
+      when(
+        () => mockBiometricService.availableMethod,
+      ).thenAnswer((_) async => null);
+
+      expect(await repository.availableBiometricMethod, isNull);
+    });
   });
 
   // ---------------------------------------------------------------------------

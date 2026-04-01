@@ -58,6 +58,9 @@ dependencies:
 
   # Local persistence — consent record, user preferences
   shared_preferences: ^2.3.0
+
+  # Biometric authentication — Face ID / Fingerprint (P-16)
+  local_auth: ^2.3.0
   url_launcher: ^6.3.2
 
 dev_dependencies:
