@@ -84,7 +84,11 @@ class LoginForm extends ConsumerWidget {
         Align(
           alignment: AlignmentDirectional.centerEnd,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('auth.forgotPasswordComingSoon'.tr())),
+              );
+            },
             child: Text(
               'auth.forgotPassword'.tr(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(

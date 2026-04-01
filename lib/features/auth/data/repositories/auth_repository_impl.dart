@@ -158,10 +158,13 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<BiometricMethod?> get availableBiometricMethod =>
       biometricService.availableMethod;
 
+  /// Default retry duration when Supabase doesn't expose Retry-After.
+  static const _defaultRateLimitRetry = Duration(minutes: 5);
+
   AuthResult _mapLoginAuthError(sb.AuthException e) {
     final code = e.statusCode;
     if (code == '429') {
-      return const AuthFailureRateLimited(retryAfter: Duration(minutes: 5));
+      return const AuthFailureRateLimited(retryAfter: _defaultRateLimitRetry);
     }
     if (code == '400') return const AuthFailureInvalidCredentials();
 
@@ -170,21 +173,34 @@ class AuthRepositoryImpl implements AuthRepository {
       return const AuthFailureInvalidCredentials();
     }
     if (msg.contains('rate')) {
-      return const AuthFailureRateLimited(retryAfter: Duration(minutes: 5));
+      return const AuthFailureRateLimited(retryAfter: _defaultRateLimitRetry);
     }
     return AuthFailureUnknown(message: 'auth_error_status_$code');
   }
 
   // H-1 fix: Never pass raw e.toString() — may contain PII or internal URLs.
   AuthResult _mapLoginGenericError(Object e) {
-    final msg = e.toString().toLowerCase();
-    if (msg.contains('socket') ||
-        msg.contains('connection') ||
-        msg.contains('network') ||
-        msg.contains('timeout')) {
+    if (_isNetworkError(e)) {
       return const AuthFailureNetworkError(message: 'network_error');
     }
     return const AuthFailureUnknown(message: 'unknown_login_error');
+  }
+
+  /// Check exception type name first (stable across locales), then fall back
+  /// to message matching. Avoids `dart:io` import for Flutter web compatibility.
+  static bool _isNetworkError(Object e) {
+    final typeName = e.runtimeType.toString();
+    if (typeName == 'SocketException' ||
+        typeName == 'HttpException' ||
+        typeName == 'TimeoutException' ||
+        typeName == 'ClientException') {
+      return true;
+    }
+    final msg = e.toString().toLowerCase();
+    return msg.contains('socket') ||
+        msg.contains('connection') ||
+        msg.contains('network') ||
+        msg.contains('timeout');
   }
 
   AppException _mapAuthError(sb.AuthException e) {

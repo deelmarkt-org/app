@@ -70,6 +70,15 @@ class LoginState extends Equatable {
   ];
 }
 
+/// Minimum password length — must match server-side validation and
+/// the registration screen constant.
+const int kMinPasswordLength = 8;
+
+/// Email format validation regex.
+final RegExp _emailRegex = RegExp(
+  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+);
+
 @riverpod
 class LoginViewModel extends _$LoginViewModel {
   @override
@@ -104,7 +113,7 @@ class LoginViewModel extends _$LoginViewModel {
       state = state.copyWith(emailError: () => 'validation.email_required');
       return;
     }
-    if (!emailTrimmed.contains('@') || !emailTrimmed.contains('.')) {
+    if (!_emailRegex.hasMatch(emailTrimmed)) {
       state = state.copyWith(emailError: () => 'validation.email_invalid');
       return;
     }
@@ -114,7 +123,7 @@ class LoginViewModel extends _$LoginViewModel {
       );
       return;
     }
-    if (state.password.length < 8) {
+    if (state.password.length < kMinPasswordLength) {
       state = state.copyWith(
         passwordError: () => 'validation.password_too_short',
       );

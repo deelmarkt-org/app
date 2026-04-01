@@ -50,11 +50,16 @@ class BiometricService {
   Future<BiometricMethod?> get availableMethod async {
     try {
       final types = await _localAuth.getAvailableBiometrics();
+      // Check specific types first — `strong` is a security tier (Class 3)
+      // on Android that can include Face ID (e.g. Pixel 4), so only use it
+      // as a generic fallback mapped to fingerprint.
       if (types.contains(BiometricType.face)) return BiometricMethod.face;
       if (types.contains(BiometricType.fingerprint)) {
         return BiometricMethod.fingerprint;
       }
       if (types.contains(BiometricType.strong)) {
+        // `strong` may be face or fingerprint — we can't determine hardware
+        // type from this tier alone. Default to fingerprint as the safer UX.
         return BiometricMethod.fingerprint;
       }
       return null;

@@ -131,12 +131,43 @@ void main() {
       );
     });
 
-    test('invalid email sets emailError', () async {
+    test('invalid email without @ sets emailError', () async {
       readNotifier().setEmail('noatsign');
       readNotifier().setPassword('12345678');
       await readNotifier().submitLogin();
 
       expect(readState().emailError, 'validation.email_invalid');
+    });
+
+    test('email like a@b. (no TLD) sets emailError', () async {
+      readNotifier().setEmail('a@b.');
+      readNotifier().setPassword('12345678');
+      await readNotifier().submitLogin();
+
+      expect(readState().emailError, 'validation.email_invalid');
+    });
+
+    test('email like user@domain.c (1-char TLD) sets emailError', () async {
+      readNotifier().setEmail('user@domain.c');
+      readNotifier().setPassword('12345678');
+      await readNotifier().submitLogin();
+
+      expect(readState().emailError, 'validation.email_invalid');
+    });
+
+    test('valid email passes validation', () async {
+      when(
+        () => mockEmailUseCase(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const AuthSuccess(userId: '1'));
+
+      readNotifier().setEmail('user@example.com');
+      readNotifier().setPassword('12345678');
+      await readNotifier().submitLogin();
+
+      expect(readState().emailError, isNull);
     });
 
     test('empty password sets passwordError', () async {
@@ -172,6 +203,36 @@ void main() {
 
       expect(readState().isLoading, false);
       expect(readState().lastResult, isA<AuthSuccess>());
+    });
+
+    test('C-1: password cleared from state after successful login', () async {
+      when(
+        () => mockEmailUseCase(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const AuthSuccess(userId: '123'));
+
+      readNotifier().setEmail('test@test.com');
+      readNotifier().setPassword('SecureP@ss1');
+      await readNotifier().submitLogin();
+
+      expect(readState().password, isEmpty);
+    });
+
+    test('C-1: password cleared from state after failed login', () async {
+      when(
+        () => mockEmailUseCase(
+          email: any(named: 'email'),
+          password: any(named: 'password'),
+        ),
+      ).thenAnswer((_) async => const AuthFailureInvalidCredentials());
+
+      readNotifier().setEmail('test@test.com');
+      readNotifier().setPassword('WrongPassword');
+      await readNotifier().submitLogin();
+
+      expect(readState().password, isEmpty);
     });
   });
 
@@ -231,6 +292,24 @@ void main() {
 
       expect(readState().isLoading, false);
       expect(readState().lastResult, isA<AuthSuccess>());
+    });
+
+    test('double-tap prevention — no-op when loading', () async {
+      when(
+        () => mockBioUseCase(localizedReason: any(named: 'localizedReason')),
+      ).thenAnswer((_) async {
+        await Future<void>.delayed(const Duration(milliseconds: 100));
+        return const AuthSuccess(userId: '1');
+      });
+
+      final f1 = readNotifier().loginWithBiometric(localizedReason: 'test');
+      final f2 = readNotifier().loginWithBiometric(localizedReason: 'test');
+
+      await Future.wait([f1, f2]);
+
+      verify(
+        () => mockBioUseCase(localizedReason: any(named: 'localizedReason')),
+      ).called(1);
     });
   });
 
