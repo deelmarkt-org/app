@@ -115,5 +115,50 @@ void main() {
 
       expect(find.byType(ListTile), findsNWidgets(2));
     });
+
+    testWidgets('formats member since for single-digit month', (tester) async {
+      final januaryUser = testUser.copyWith(createdAt: DateTime(2024));
+      await pumpTestWidget(tester, ProfileHeader(user: januaryUser));
+
+      expect(find.textContaining('1/2024'), findsOneWidget);
+    });
+
+    testWidgets('formats member since for double-digit month', (tester) async {
+      final decUser = testUser.copyWith(createdAt: DateTime(2025, 12));
+      await pumpTestWidget(tester, ProfileHeader(user: decUser));
+
+      expect(find.textContaining('12/2025'), findsOneWidget);
+    });
+
+    testWidgets('renders without avatar URL (initials fallback)', (
+      tester,
+    ) async {
+      final noAvatarUser = UserEntity(
+        id: 'user-002',
+        displayName: 'Pieter Bakker',
+        kycLevel: KycLevel.level0,
+        createdAt: DateTime(2026, 3),
+      );
+
+      await pumpTestWidget(tester, ProfileHeader(user: noAvatarUser));
+
+      final avatar = tester.widget<DeelAvatar>(find.byType(DeelAvatar));
+      expect(avatar.imageUrl, isNull);
+      expect(avatar.displayName, 'Pieter Bakker');
+      expect(find.text('Pieter Bakker'), findsOneWidget);
+    });
+
+    testWidgets('member since text includes the key path', (tester) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      expect(find.textContaining('profile.memberSince'), findsOneWidget);
+    });
+
+    testWidgets('renders onEditTap callback on avatar', (tester) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      final avatar = tester.widget<DeelAvatar>(find.byType(DeelAvatar));
+      expect(avatar.onEditTap, isNotNull);
+    });
   });
 }
