@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/inputs/deel_input.dart';
@@ -12,6 +11,10 @@ import 'package:deelmarkt/features/auth/presentation/view_models/login_view_mode
 /// Email + password form with forgot-password link and submit button.
 ///
 /// Must be wrapped in an [AutofillGroup] by the parent screen.
+///
+/// Uses [colorScheme.secondary] for the forgot-password link to meet
+/// WCAG 2.2 AA contrast at [bodySmall] (12px) size — primary orange
+/// only passes for large text (>= 18.66px bold).
 /// Reference: docs/screens/01-auth/03-login.md
 class LoginForm extends ConsumerWidget {
   const LoginForm({
@@ -30,6 +33,7 @@ class LoginForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(loginViewModelProvider);
+    final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -70,7 +74,7 @@ class LoginForm extends ConsumerWidget {
                 state.obscurePassword
                     ? PhosphorIconsDuotone.eye
                     : PhosphorIconsDuotone.eyeSlash,
-                color: DeelmarktColors.neutral500,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
               onPressed:
                   () =>
@@ -91,8 +95,8 @@ class LoginForm extends ConsumerWidget {
             },
             child: Text(
               'auth.forgotPassword'.tr(),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: DeelmarktColors.primary,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.secondary,
                 fontWeight: FontWeight.w700,
               ),
             ),

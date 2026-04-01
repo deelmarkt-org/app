@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
-import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/features/auth/presentation/view_models/login_view_model.dart';
 import 'package:deelmarkt/features/auth/presentation/widgets/biometric_section.dart';
 import 'package:deelmarkt/features/auth/presentation/widgets/login_form.dart';
+import 'package:deelmarkt/features/auth/presentation/widgets/login_logo_section.dart';
+import 'package:deelmarkt/features/auth/presentation/widgets/login_or_divider.dart';
+import 'package:deelmarkt/features/auth/presentation/widgets/login_register_link.dart';
+import 'package:deelmarkt/features/auth/presentation/widgets/login_social_buttons.dart';
+import 'package:deelmarkt/features/auth/presentation/widgets/login_welcome_section.dart';
 
 /// Login screen — email + biometric authentication.
 ///
@@ -103,13 +105,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: Spacing.s12),
-                  _LogoSection(),
+                  const LoginLogoSection(),
                   const SizedBox(height: Spacing.s8),
-                  _WelcomeSection(),
+                  const LoginWelcomeSection(),
                   const SizedBox(height: Spacing.s8),
-                  _SocialLoginButtons(),
+                  const LoginSocialButtons(),
                   const SizedBox(height: Spacing.s8),
-                  _OrDivider(),
+                  const LoginOrDivider(),
                   const SizedBox(height: Spacing.s8),
                   LoginForm(
                     emailController: _emailController,
@@ -120,7 +122,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: Spacing.s8),
                   const BiometricSection(),
                   const SizedBox(height: Spacing.s10),
-                  _RegisterLink(),
+                  const LoginRegisterLink(),
                   const SizedBox(height: Spacing.s12),
                 ],
               ),
@@ -128,134 +130,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _LogoSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 64,
-          height: 64,
-          decoration: BoxDecoration(
-            color: DeelmarktColors.primary,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Icon(
-            PhosphorIconsFill.handshake,
-            color: Colors.white,
-            size: 36,
-          ),
-        ),
-        const SizedBox(height: Spacing.s4),
-        Text(
-          'DeelMarkt',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            color: DeelmarktColors.primary,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _WelcomeSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'auth.welcomeBack'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w800),
-        ),
-        const SizedBox(height: Spacing.s2),
-        Text(
-          'auth.welcomeSubtitle'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: DeelmarktColors.neutral500),
-        ),
-      ],
-    );
-  }
-}
-
-class _SocialLoginButtons extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        DeelButton(
-          label: 'auth.continueWithGoogle'.tr(),
-          variant: DeelButtonVariant.outline,
-          leadingIcon: PhosphorIconsDuotone.googleLogo,
-          onPressed: null, // Stub — P-44 social login
-        ),
-        const SizedBox(height: Spacing.s3),
-        DeelButton(
-          label: 'auth.continueWithApple'.tr(),
-          variant: DeelButtonVariant.outline,
-          leadingIcon: PhosphorIconsDuotone.appleLogo,
-          onPressed: null, // Stub — P-44 social login
-        ),
-      ],
-    );
-  }
-}
-
-class _OrDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Expanded(child: Divider()),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          child: Text(
-            'auth.or'.tr(),
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: DeelmarktColors.neutral500,
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        const Expanded(child: Divider()),
-      ],
-    );
-  }
-}
-
-class _RegisterLink extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        Text(
-          'auth.newToDeelMarkt'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.bodyMedium?.copyWith(color: DeelmarktColors.neutral500),
-        ),
-        TextButton(
-          onPressed: () => context.go(AppRoutes.register),
-          child: Text(
-            'auth.create_account'.tr(),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: DeelmarktColors.primary,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

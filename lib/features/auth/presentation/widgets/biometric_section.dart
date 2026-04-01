@@ -12,6 +12,8 @@ import 'package:deelmarkt/features/auth/presentation/view_models/login_view_mode
 /// Only rendered when biometric hardware is available AND a stored session
 /// exists. Tapping triggers the OS biometric prompt.
 ///
+/// Uses [DeelmarktColors.neutral700] in light mode for WCAG 2.2 AA
+/// contrast compliance at [labelSmall] (11px) size.
 /// Reference: docs/screens/01-auth/03-login.md
 class BiometricSection extends ConsumerWidget {
   const BiometricSection({super.key});
@@ -22,6 +24,12 @@ class BiometricSection extends ConsumerWidget {
     if (!state.biometricAvailable) return const SizedBox.shrink();
 
     final isFace = state.biometricMethod == BiometricMethod.face;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final secondaryColor =
+        isDark
+            ? DeelmarktColors.darkOnSurfaceSecondary
+            : DeelmarktColors.neutral700;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -36,7 +44,7 @@ class BiometricSection extends ConsumerWidget {
                   ? PhosphorIconsDuotone.scan
                   : PhosphorIconsDuotone.fingerprint,
               size: 32,
-              color: DeelmarktColors.neutral500,
+              color: secondaryColor,
             ),
             onPressed:
                 state.isLoading
@@ -52,10 +60,7 @@ class BiometricSection extends ConsumerWidget {
         ),
         Text(
           isFace ? 'auth.useFaceId'.tr() : 'auth.useFingerprint'.tr(),
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: DeelmarktColors.neutral500,
-            letterSpacing: 0.5,
-          ),
+          style: theme.textTheme.labelSmall?.copyWith(color: secondaryColor),
         ),
       ],
     );
