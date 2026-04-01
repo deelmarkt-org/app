@@ -151,6 +151,82 @@ void main() {
       expect(find.text('auth.welcomeBack'), findsOneWidget);
       expect(find.text('auth.logIn'), findsOneWidget);
     });
+
+    testWidgets('renders all elements in dark mode', (tester) async {
+      await pumpLoginScreen(tester, theme: DeelmarktTheme.dark);
+
+      expect(find.text('DeelMarkt'), findsOneWidget);
+      expect(find.text('auth.welcomeSubtitle'), findsOneWidget);
+      expect(find.text('auth.continueWithGoogle'), findsOneWidget);
+      expect(find.text('auth.continueWithApple'), findsOneWidget);
+      expect(find.text('auth.or'), findsOneWidget);
+      expect(find.text('form.email'), findsOneWidget);
+      expect(find.text('form.pass_field'), findsOneWidget);
+      expect(find.text('auth.forgotPassword'), findsOneWidget);
+      expect(find.text('auth.newToDeelMarkt'), findsOneWidget);
+      expect(find.text('auth.create_account'), findsOneWidget);
+    });
+
+    testWidgets('biometric section renders in dark mode', (tester) async {
+      await pumpLoginScreen(
+        tester,
+        theme: DeelmarktTheme.dark,
+        initialState: const LoginState(
+          biometricAvailable: true,
+          biometricMethod: BiometricMethod.face,
+        ),
+      );
+
+      expect(find.text('auth.useFaceId'), findsOneWidget);
+    });
+
+    testWidgets('biometric fingerprint renders in dark mode', (tester) async {
+      await pumpLoginScreen(
+        tester,
+        theme: DeelmarktTheme.dark,
+        initialState: const LoginState(
+          biometricAvailable: true,
+          biometricMethod: BiometricMethod.fingerprint,
+        ),
+      );
+
+      expect(find.text('auth.useFingerprint'), findsOneWidget);
+    });
+
+    testWidgets('error states render in dark mode', (tester) async {
+      await pumpLoginScreen(
+        tester,
+        theme: DeelmarktTheme.dark,
+        initialState: const LoginState(
+          emailError: 'validation.email_invalid',
+          passwordError: 'auth.invalidCredentials', // pragma: allowlist secret
+        ),
+      );
+
+      expect(find.text('validation.email_invalid'), findsOneWidget);
+      expect(find.text('auth.invalidCredentials'), findsOneWidget);
+    });
+
+    testWidgets('loading state renders in dark mode', (tester) async {
+      final overrides = <Override>[
+        loginViewModelProvider.overrideWith(() {
+          return _FakeLoginViewModel(const LoginState(isLoading: true));
+        }),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides,
+          child: MaterialApp(
+            theme: DeelmarktTheme.dark,
+            home: const LoginScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
   });
 
   group('LoginScreen — accessibility', () {
