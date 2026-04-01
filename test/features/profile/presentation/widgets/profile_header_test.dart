@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
@@ -63,6 +64,56 @@ void main() {
 
       final avatar = tester.widget<DeelAvatar>(find.byType(DeelAvatar));
       expect(avatar.imageUrl, 'https://example.com/avatar.jpg');
+    });
+
+    testWidgets('tapping avatar opens bottom sheet with image picker options', (
+      tester,
+    ) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      await tester.tap(find.byType(DeelAvatar));
+      await tester.pumpAndSettle();
+
+      expect(find.text('profile.pickPhoto'), findsOneWidget);
+      expect(find.text('profile.takePhoto'), findsOneWidget);
+      expect(find.text('profile.chooseFromGallery'), findsOneWidget);
+    });
+
+    testWidgets('tapping camera option in bottom sheet closes it', (
+      tester,
+    ) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      await tester.tap(find.byType(DeelAvatar));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('profile.takePhoto'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('profile.pickPhoto'), findsNothing);
+    });
+
+    testWidgets('tapping gallery option in bottom sheet closes it', (
+      tester,
+    ) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      await tester.tap(find.byType(DeelAvatar));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('profile.chooseFromGallery'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('profile.pickPhoto'), findsNothing);
+    });
+
+    testWidgets('bottom sheet has two ListTile options', (tester) async {
+      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+
+      await tester.tap(find.byType(DeelAvatar));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListTile), findsNWidgets(2));
     });
   });
 }

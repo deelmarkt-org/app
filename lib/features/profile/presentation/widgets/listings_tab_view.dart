@@ -12,10 +12,14 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 /// Grid view of user's listings with status badges.
 class ListingsTabView extends StatelessWidget {
-  const ListingsTabView({required this.listings, this.onRetry, super.key});
+  const ListingsTabView({
+    required this.listings,
+    required this.onRetry,
+    super.key,
+  });
 
   final AsyncValue<List<ListingEntity>> listings;
-  final VoidCallback? onRetry;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +38,7 @@ class ListingsTabView extends StatelessWidget {
             itemBuilder: (_, _) => const DeelCardSkeleton(),
           ),
       error:
-          (_, _) => ErrorState(
-            message: 'error.generic'.tr(),
-            onRetry: onRetry ?? () {},
-          ),
+          (_, _) => ErrorState(message: 'error.generic'.tr(), onRetry: onRetry),
       data: (items) {
         if (items.isEmpty) {
           return EmptyState(

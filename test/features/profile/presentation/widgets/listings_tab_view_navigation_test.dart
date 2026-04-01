@@ -29,8 +29,9 @@ void main() {
     testWidgets('#51 — empty state onAction callback is wired', (tester) async {
       await pumpTestWidget(
         tester,
-        const ListingsTabView(
-          listings: AsyncValue<List<ListingEntity>>.data([]),
+        ListingsTabView(
+          listings: const AsyncValue<List<ListingEntity>>.data([]),
+          onRetry: () {},
         ),
       );
 
@@ -45,6 +46,7 @@ void main() {
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(testListings),
+          onRetry: () {},
         ),
       );
 

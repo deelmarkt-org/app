@@ -19,10 +19,11 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: DeelmarktTheme.light,
-          home: const Scaffold(
+          home: Scaffold(
             body: SingleChildScrollView(
               child: ListingsTabView(
-                listings: AsyncValue<List<ListingEntity>>.loading(),
+                listings: const AsyncValue<List<ListingEntity>>.loading(),
+                onRetry: () {},
               ),
             ),
           ),
@@ -36,8 +37,9 @@ void main() {
     testWidgets('empty data state shows EmptyState', (tester) async {
       await pumpTestWidget(
         tester,
-        const ListingsTabView(
-          listings: AsyncValue<List<ListingEntity>>.data([]),
+        ListingsTabView(
+          listings: const AsyncValue<List<ListingEntity>>.data([]),
+          onRetry: () {},
         ),
       );
 
@@ -52,6 +54,7 @@ void main() {
             Exception('fail'),
             StackTrace.current,
           ),
+          onRetry: () {},
         ),
       );
 
@@ -92,6 +95,7 @@ void main() {
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
+          onRetry: () {},
         ),
       );
 
@@ -119,6 +123,7 @@ void main() {
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
+          onRetry: () {},
         ),
       );
 

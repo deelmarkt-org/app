@@ -16,48 +16,35 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewm
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
 
+/// Provider for app version info.
+final appVersionProvider = FutureProvider<String>((ref) async {
+  try {
+    final info = await PackageInfo.fromPlatform();
+    return '${info.version} (${info.buildNumber})';
+  } on Exception {
+    return '1.0.0';
+  }
+});
+
 /// Settings screen with 5 sections:
 /// Account, Addresses, Notifications, Privacy, App Info.
-class SettingsScreen extends ConsumerStatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  String _version = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadVersion();
-  }
-
-  Future<void> _loadVersion() async {
-    try {
-      final info = await PackageInfo.fromPlatform();
-      if (mounted) {
-        setState(() => _version = '${info.version} (${info.buildNumber})');
-      }
-    } on Exception {
-      if (mounted) setState(() => _version = '1.0.0');
-    }
-  }
-
-  Future<void> _handleDeleteAccount() async {
-    final password = await DeleteAccountDialog.show(context);
-    if (password != null && password.isNotEmpty && mounted) {
-      await ref
-          .read(settingsProvider.notifier)
-          .deleteAccount(password: password);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(settingsProvider);
     final profileState = ref.watch(profileProvider);
+    final version = ref.watch(appVersionProvider);
+
+    Future<void> handleDeleteAccount() async {
+      final password = await DeleteAccountDialog.show(context);
+      if (password != null && password.isNotEmpty && context.mounted) {
+        await ref
+            .read(settingsProvider.notifier)
+            .deleteAccount(password: password);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text('settings.title'.tr())),
@@ -73,10 +60,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const LanguageSwitch(),
               const SizedBox(height: Spacing.s4),
               _buildAccountSection(profileState),
-              _buildAddressesSection(state),
-              _buildNotificationsSection(state),
-              _buildPrivacySection(state),
-              AppInfoSection(version: _version),
+              _buildAddressesSection(state, ref, context),
+              _buildNotificationsSection(state, ref),
+              _buildPrivacySection(state, ref, handleDeleteAccount),
+              AppInfoSection(version: version.valueOrNull ?? ''),
               const SizedBox(height: Spacing.s8),
             ],
           ),
@@ -96,7 +83,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildAddressesSection(SettingsState state) {
+  Widget _buildAddressesSection(
+    SettingsState state,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
     return state.addresses.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, _) => Text('error.generic'.tr()),
@@ -105,9 +96,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             addresses: addresses,
             onAdd: () async {
               final address = await AddressFormModal.show(context);
-              if (address != null && mounted) {
+              if (address != null && context.mounted) {
                 await ref.read(settingsProvider.notifier).saveAddress(address);
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('settings.addressSaved'.tr())),
                   );
@@ -119,9 +110,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 context,
                 address: address,
               );
-              if (updated != null && mounted) {
+              if (updated != null && context.mounted) {
                 await ref.read(settingsProvider.notifier).saveAddress(updated);
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('settings.addressSaved'.tr())),
                   );
@@ -135,7 +126,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildNotificationsSection(SettingsState state) {
+  Widget _buildNotificationsSection(SettingsState state, WidgetRef ref) {
     return state.notificationPrefs.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, _) => Text('error.generic'.tr()),
@@ -150,10 +141,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildPrivacySection(SettingsState state) {
+  Widget _buildPrivacySection(
+    SettingsState state,
+    WidgetRef ref,
+    Future<void> Function() handleDeleteAccount,
+  ) {
     return PrivacySection(
       onExport: () => ref.read(settingsProvider.notifier).exportUserData(),
-      onDeleteAccount: _handleDeleteAccount,
+      onDeleteAccount: handleDeleteAccount,
       isExporting: state.isExporting,
       isDeleting: state.isDeleting,
     );

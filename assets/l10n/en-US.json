@@ -339,6 +339,8 @@
     "removeFavourite": "Remove from favourites"
   },
   "profile": {
+    "title": "Profile",
+    "notLoggedIn": "Not logged in",
     "memberSince": "Member since",
     "verifyIdentity": "Verify your identity",
     "sold": "Sold",

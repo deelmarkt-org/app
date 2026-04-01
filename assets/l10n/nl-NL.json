@@ -339,6 +339,8 @@
     "removeFavourite": "Verwijderen uit favorieten"
   },
   "profile": {
+    "title": "Profiel",
+    "notLoggedIn": "Niet ingelogd",
     "memberSince": "Lid sinds",
     "verifyIdentity": "Verifieer je identiteit",
     "sold": "Verkocht",
