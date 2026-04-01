@@ -23,7 +23,7 @@ class ProfileHeader extends StatelessWidget {
           size: DeelAvatarSize.large,
           showEditOverlay: true,
           onEditTap: () {
-            // TODO: Navigate to avatar picker
+            // Tracked: #53
           },
         ),
         const SizedBox(height: Spacing.s3),

@@ -42,7 +42,7 @@ class ListingsTabView extends StatelessWidget {
           return EmptyState(
             variant: EmptyStateVariant.myListings,
             onAction: () {
-              // TODO: Navigate to sell screen
+              // Tracked: #51
             },
           );
         }
@@ -66,7 +66,7 @@ class ListingsTabView extends StatelessWidget {
                   '\u20AC ${(listing.priceInCents / 100).toStringAsFixed(2)}',
               title: listing.title,
               onTap: () {
-                // TODO: Navigate to listing detail
+                // Tracked: #52
               },
               location: listing.location,
             );

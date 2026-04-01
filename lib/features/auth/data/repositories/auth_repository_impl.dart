@@ -101,7 +101,7 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
   @override
   Future<String> initiateIdinVerification() async {
     try {
-      // TODO(reso): Wire to Edge Function when R-14 iDIN integration is ready.
+      // Tracked: #48 — iDIN Edge Function blocked by R-14
       // Returns redirect URL — must be validated against allowlist client-side.
       throw UnimplementedError('iDIN integration pending R-14');
     } on sb.AuthException catch (e) {

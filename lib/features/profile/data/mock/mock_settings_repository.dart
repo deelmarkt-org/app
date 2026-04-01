@@ -90,10 +90,6 @@ class MockSettingsRepository implements SettingsRepository {
   @override
   Future<void> deleteAccount({required String password}) async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    // TODO(reso): Implement 30-day soft-delete grace period with recovery email.
-    // Production: re-authenticate with password via Supabase, then mark account
-    // for deletion. Cascade: listings→inactive, messages→anonymize,
-    // reviews→keep text/anonymize author, addresses→hard delete,
-    // payment records→retain 7 years (Dutch tax), anonymize PII.
+    // Tracked: #49 — 30-day soft-delete grace period
   }
 }

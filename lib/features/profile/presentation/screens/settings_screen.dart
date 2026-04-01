@@ -103,10 +103,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           (addresses) => AddressesSection(
             addresses: addresses,
             onAdd: () {
-              // TODO(P-18): Navigate to address form
+              // Tracked: #50
             },
             onEdit: (address) {
-              // TODO(P-18): Navigate to address form with existing data
+              // Tracked: #50
             },
             onDelete:
                 (address) =>

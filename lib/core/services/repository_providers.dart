@@ -48,7 +48,7 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 
 /// Review repository — mock or real.
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
-  // TODO(reso): Add SupabaseReviewRepository when reviews table is ready
+  // Tracked: #46 — SupabaseReviewRepository blocked by R-36
   return MockReviewRepository();
 });
 
@@ -57,6 +57,6 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSettingsRepository();
-  // TODO(reso): Replace with SupabaseSettingsRepository before production.
+  // Tracked: #47 — P0 launch blocker: SupabaseSettingsRepository
   return MockSettingsRepository();
 });
