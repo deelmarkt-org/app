@@ -45,4 +45,10 @@ abstract interface class AuthRepository {
 
   /// Which biometric method is available (face or fingerprint), or null.
   Future<BiometricMethod?> get availableBiometricMethod;
+
+  /// Initiate iDIN bank verification flow.
+  ///
+  /// Returns the redirect URL for the iDIN bank selection page.
+  /// The URL MUST be validated against an allowlist before opening.
+  Future<String> initiateIdinVerification();
 }

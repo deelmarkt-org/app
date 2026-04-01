@@ -11,6 +11,8 @@ abstract final class AppRoutes {
   static const messages = '/messages';
   static const profile = '/profile';
 
+  static const settings = '/profile/settings';
+
   // ── Auth flow ──
   static const onboarding = '/onboarding';
   static const login = '/login';

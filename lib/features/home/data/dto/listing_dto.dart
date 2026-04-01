@@ -45,6 +45,7 @@ class ListingDto {
       distanceKm: (json['distance_km'] as num?)?.toDouble(),
       isFavourited: (json['is_favourited'] as bool?) ?? false,
       qualityScore: json['quality_score'] as int?,
+      status: ListingStatus.fromDb((json['status'] as String?) ?? 'active'),
       createdAt: DateTime.tryParse(createdAtRaw) ?? DateTime.now(),
     );
   }
@@ -60,6 +61,7 @@ class ListingDto {
       'category_id': entity.categoryId,
       'image_urls': entity.imageUrls,
       'location': entity.location,
+      'status': entity.status.toDb(),
     };
   }
 

@@ -96,6 +96,19 @@ class MockListingRepository implements ListingRepository {
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return _mockListings.where((l) => favouriteIds.contains(l.id)).toList();
   }
+
+  @override
+  Future<List<ListingEntity>> getByUserId(
+    String userId, {
+    int limit = 10,
+    String? cursor,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return _mockListings
+        .where((l) => l.sellerId == userId)
+        .take(limit)
+        .toList();
+  }
 }
 
 const _sampleImageUrl =
@@ -129,6 +142,7 @@ final _mockListings = [
     imageUrls: const [_sampleImageUrl],
     location: 'Rotterdam',
     distanceKm: 12.5,
+    status: ListingStatus.sold,
     createdAt: DateTime(2026, 3, 22),
   ),
   ListingEntity(
@@ -158,6 +172,7 @@ final _mockListings = [
     imageUrls: const [_sampleImageUrl],
     location: 'Den Haag',
     distanceKm: 5.1,
+    status: ListingStatus.draft,
     createdAt: DateTime(2026, 3, 25),
   ),
 ];
