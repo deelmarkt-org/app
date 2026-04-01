@@ -20,7 +20,8 @@
     "share": "Share",
     "edit": "Edit",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "comingSoon": "Coming soon"
   },
   "form": {
     "email": "Email address",

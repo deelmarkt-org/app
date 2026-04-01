@@ -6,7 +6,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/seller_info_row.dart';
 
@@ -62,7 +62,10 @@ class DetailSellerCard extends StatelessWidget {
                 Icon(
                   PhosphorIcons.caretRight(),
                   size: DeelmarktIconSize.sm,
-                  color: DeelmarktColors.neutral500,
+                  color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
               ],
             ),
@@ -99,9 +102,13 @@ class _Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return CircleAvatar(
       radius: DetailSellerCard._avatarSize / 2,
-      backgroundColor: DeelmarktColors.neutral200,
+      backgroundColor:
+          isDark
+              ? DeelmarktColors.darkSurfaceElevated
+              : DeelmarktColors.neutral200,
       backgroundImage: url != null ? NetworkImage(url!) : null,
       child:
           url == null

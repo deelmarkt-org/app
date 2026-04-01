@@ -135,10 +135,20 @@ class _DataView extends StatelessWidget {
           DetailActionBar(
             priceInCents: listing.priceInCents,
             isOwnListing: data.isOwnListing,
+            onMessage: () => _showComingSoon(context),
+            onBuy: () => _showComingSoon(context),
+            onEdit: () => _showComingSoon(context),
+            onDelete: () => _showComingSoon(context),
           ),
         ],
       ),
     );
+  }
+
+  void _showComingSoon(BuildContext context) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('action.comingSoon'.tr())));
   }
 
   void _shareListing(BuildContext context) {

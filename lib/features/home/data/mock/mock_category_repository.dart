@@ -10,6 +10,13 @@ class MockCategoryRepository implements CategoryRepository {
   }
 
   @override
+  Future<CategoryEntity?> getById(String id) async {
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    final all = [..._l1Categories, ..._l2Categories];
+    return all.where((c) => c.id == id).firstOrNull;
+  }
+
+  @override
   Future<List<CategoryEntity>> getSubcategories(String parentId) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return _l2Categories.where((c) => c.parentId == parentId).toList();

@@ -6,6 +6,7 @@ import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/buttons/circle_icon_button.dart';
 
 /// Swipeable image gallery with dot indicators, back/share/heart overlay.
 ///
@@ -82,7 +83,7 @@ class _DetailImageGalleryState extends State<DetailImageGallery> {
           Positioned(
             top: Spacing.s2,
             left: Spacing.s2,
-            child: _CircleButton(
+            child: CircleIconButton(
               icon: PhosphorIcons.arrowLeft(),
               onTap: widget.onBack,
               label: 'nav.back'.tr(),
@@ -97,14 +98,14 @@ class _DetailImageGalleryState extends State<DetailImageGallery> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (widget.onShare != null) ...[
-                  _CircleButton(
+                  CircleIconButton(
                     icon: PhosphorIcons.shareNetwork(),
                     onTap: widget.onShare!,
                     label: 'action.share'.tr(),
                   ),
                   const SizedBox(width: Spacing.s2),
                 ],
-                _CircleButton(
+                CircleIconButton(
                   icon:
                       widget.isFavourited
                           ? PhosphorIcons.heart(PhosphorIconsStyle.fill)
@@ -161,47 +162,6 @@ class _DetailImageGalleryState extends State<DetailImageGallery> {
         PhosphorIcons.image(),
         size: DeelmarktIconSize.hero,
         color: theme.colorScheme.onSurfaceVariant,
-      ),
-    );
-  }
-}
-
-class _CircleButton extends StatelessWidget {
-  const _CircleButton({
-    required this.icon,
-    required this.onTap,
-    required this.label,
-    this.iconColor,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-  final String label;
-  final Color? iconColor;
-
-  static const double _size = 44;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: label,
-      child: Material(
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const CircleBorder(),
-          child: SizedBox(
-            width: _size,
-            height: _size,
-            child: Icon(
-              icon,
-              color: iconColor ?? DeelmarktColors.neutral700,
-              size: DeelmarktIconSize.sm,
-            ),
-          ),
-        ),
       ),
     );
   }

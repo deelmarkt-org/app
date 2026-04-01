@@ -9,7 +9,7 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_chips.dart';
 
@@ -40,6 +40,7 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final listing = widget.listing;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
@@ -62,7 +63,10 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
               Text(
                 Formatters.euroFromCents(listing.priceInCents),
                 style: DeelmarktTypography.price.copyWith(
-                  color: DeelmarktColors.primary,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkPrimary
+                          : DeelmarktColors.primary,
                 ),
               ),
             ],
@@ -109,17 +113,31 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
               reduceMotion: reduceMotion,
             ),
           ),
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.s1),
-              child: Text(
+          Semantics(
+            button: true,
+            label:
                 _expanded
                     ? 'listing_detail.readLess'.tr()
                     : 'listing_detail.readMore'.tr(),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: DeelmarktColors.secondary,
-                  fontWeight: FontWeight.w600,
+            child: InkWell(
+              onTap: () => setState(() => _expanded = !_expanded),
+              borderRadius: BorderRadius.circular(DeelmarktRadius.xs),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 44),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    _expanded
+                        ? 'listing_detail.readLess'.tr()
+                        : 'listing_detail.readMore'.tr(),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color:
+                          isDark
+                              ? DeelmarktColors.darkSecondary
+                              : DeelmarktColors.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -140,20 +158,29 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
                 Icon(
                   PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
                   size: DeelmarktIconSize.xs,
-                  color: DeelmarktColors.neutral500,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral500,
                 ),
                 const SizedBox(width: Spacing.s1),
                 Text(
                   listing.location!,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: DeelmarktColors.neutral700,
+                    color:
+                        isDark
+                            ? DeelmarktColors.darkOnSurface
+                            : DeelmarktColors.neutral700,
                   ),
                 ),
                 if (listing.distanceKm != null)
                   Text(
                     ' · ${Formatters.distanceKm(listing.distanceKm!)}',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: DeelmarktColors.neutral500,
+                      color:
+                          isDark
+                              ? DeelmarktColors.darkOnSurfaceSecondary
+                              : DeelmarktColors.neutral500,
                     ),
                   ),
               ],
@@ -165,12 +192,18 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
               child: Container(
                 height: _mapPlaceholderHeight,
                 width: double.infinity,
-                color: DeelmarktColors.neutral100,
+                color:
+                    isDark
+                        ? DeelmarktColors.darkSurfaceElevated
+                        : DeelmarktColors.neutral100,
                 child: Center(
                   child: Icon(
                     PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
                     size: DeelmarktIconSize.lg,
-                    color: DeelmarktColors.neutral500,
+                    color:
+                        isDark
+                            ? DeelmarktColors.darkOnSurfaceSecondary
+                            : DeelmarktColors.neutral500,
                   ),
                 ),
               ),

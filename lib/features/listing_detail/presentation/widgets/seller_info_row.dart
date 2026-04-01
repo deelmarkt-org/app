@@ -4,7 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
-import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 
 /// Rating stars + review count + response time row for seller card.
 class SellerInfoRow extends StatelessWidget {
@@ -15,6 +15,13 @@ class SellerInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final secondaryColor =
+        isDark
+            ? DeelmarktColors.darkOnSurfaceSecondary
+            : DeelmarktColors.neutral500;
+    final starColor =
+        isDark ? DeelmarktColors.darkWarning : DeelmarktColors.warning;
     final parts = <Widget>[];
 
     if (seller.averageRating != null) {
@@ -25,7 +32,7 @@ class SellerInfoRow extends StatelessWidget {
             Icon(
               PhosphorIcons.star(PhosphorIconsStyle.fill),
               size: DeelmarktIconSize.xs,
-              color: DeelmarktColors.warning,
+              color: starColor,
             ),
             const SizedBox(width: 2),
             Text(
@@ -36,7 +43,7 @@ class SellerInfoRow extends StatelessWidget {
               Text(
                 ' (${seller.reviewCount})',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: DeelmarktColors.neutral500,
+                  color: secondaryColor,
                 ),
               ),
           ],
@@ -49,9 +56,7 @@ class SellerInfoRow extends StatelessWidget {
         parts.add(
           Text(
             ' · ',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: DeelmarktColors.neutral500,
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: secondaryColor),
           ),
         );
       }
@@ -62,14 +67,12 @@ class SellerInfoRow extends StatelessWidget {
             Icon(
               PhosphorIcons.clock(),
               size: DeelmarktIconSize.xs,
-              color: DeelmarktColors.neutral500,
+              color: secondaryColor,
             ),
             const SizedBox(width: 2),
             Text(
               _formatResponseTime(seller.responseTimeMinutes!),
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: DeelmarktColors.neutral500,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: secondaryColor),
             ),
           ],
         ),

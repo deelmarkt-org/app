@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
-import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/entities/category_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 
 class ListingDetailState extends Equatable {
   const ListingDetailState({
@@ -20,6 +20,20 @@ class ListingDetailState extends Equatable {
   final UserEntity? seller;
   final CategoryEntity? category;
   final bool isOwnListing;
+
+  ListingDetailState copyWith({
+    ListingEntity? listing,
+    UserEntity? seller,
+    CategoryEntity? category,
+    bool? isOwnListing,
+  }) {
+    return ListingDetailState(
+      listing: listing ?? this.listing,
+      seller: seller ?? this.seller,
+      category: category ?? this.category,
+      isOwnListing: isOwnListing ?? this.isOwnListing,
+    );
+  }
 
   @override
   List<Object?> get props => [listing, seller, category, isOwnListing];
@@ -45,7 +59,7 @@ class ListingDetailNotifier
     }
 
     // Determine if this is the current user's listing.
-    final currentUser = ref.read(currentUserProvider);
+    final currentUser = ref.watch(currentUserProvider);
     final isOwnListing =
         currentUser != null && currentUser.id == listing.sellerId;
 
@@ -66,9 +80,7 @@ class ListingDetailNotifier
       }(),
       () async {
         try {
-          final categories = await categoryRepo.getTopLevel();
-          category =
-              categories.where((c) => c.id == listing.categoryId).firstOrNull;
+          category = await categoryRepo.getById(listing.categoryId);
         } on Exception catch (e) {
           AppLogger.warning(
             'Failed to load category',
@@ -95,26 +107,12 @@ class ListingDetailNotifier
     final optimistic = current.listing.copyWith(
       isFavourited: !current.listing.isFavourited,
     );
-    state = AsyncValue.data(
-      ListingDetailState(
-        listing: optimistic,
-        seller: current.seller,
-        category: current.category,
-        isOwnListing: current.isOwnListing,
-      ),
-    );
+    state = AsyncValue.data(current.copyWith(listing: optimistic));
 
     try {
       final repo = ref.read(listingRepositoryProvider);
       final updated = await repo.toggleFavourite(current.listing.id);
-      state = AsyncValue.data(
-        ListingDetailState(
-          listing: updated,
-          seller: current.seller,
-          category: current.category,
-          isOwnListing: current.isOwnListing,
-        ),
-      );
+      state = AsyncValue.data(current.copyWith(listing: updated));
     } on Exception catch (e) {
       AppLogger.error(
         'Failed to toggle favourite',

@@ -17,6 +17,13 @@ class DetailLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final boneColor =
+        isDark
+            ? DeelmarktColors.darkSurfaceElevated
+            : DeelmarktColors.neutral200;
+    final borderColor =
+        isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200;
 
     return Scaffold(
       body: SafeArea(
@@ -31,12 +38,10 @@ class DetailLoadingView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Image skeleton
-                        const AspectRatio(
+                        AspectRatio(
                           aspectRatio: 4 / 3,
                           child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: DeelmarktColors.neutral200,
-                            ),
+                            decoration: BoxDecoration(color: boneColor),
                           ),
                         ),
                         Padding(
@@ -45,7 +50,12 @@ class DetailLoadingView extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Trust banner
-                              _bone(double.infinity, 56, DeelmarktRadius.sm),
+                              _bone(
+                                double.infinity,
+                                56,
+                                DeelmarktRadius.sm,
+                                boneColor,
+                              ),
                               const SizedBox(height: Spacing.s4),
                               // Title + price
                               Row(
@@ -55,28 +65,49 @@ class DetailLoadingView extends StatelessWidget {
                                       double.infinity,
                                       24,
                                       DeelmarktRadius.sm,
+                                      boneColor,
                                     ),
                                   ),
                                   const SizedBox(width: Spacing.s4),
-                                  _bone(80, 24, DeelmarktRadius.sm),
+                                  _bone(80, 24, DeelmarktRadius.sm, boneColor),
                                 ],
                               ),
                               const SizedBox(height: Spacing.s3),
                               // Chips
                               Row(
                                 children: [
-                                  _bone(72, 24, DeelmarktRadius.full),
+                                  _bone(
+                                    72,
+                                    24,
+                                    DeelmarktRadius.full,
+                                    boneColor,
+                                  ),
                                   const SizedBox(width: Spacing.s2),
-                                  _bone(64, 24, DeelmarktRadius.full),
+                                  _bone(
+                                    64,
+                                    24,
+                                    DeelmarktRadius.full,
+                                    boneColor,
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: Spacing.s4),
                               // Description lines
-                              _bone(double.infinity, 14, DeelmarktRadius.xs),
+                              _bone(
+                                double.infinity,
+                                14,
+                                DeelmarktRadius.xs,
+                                boneColor,
+                              ),
                               const SizedBox(height: Spacing.s2),
-                              _bone(double.infinity, 14, DeelmarktRadius.xs),
+                              _bone(
+                                double.infinity,
+                                14,
+                                DeelmarktRadius.xs,
+                                boneColor,
+                              ),
                               const SizedBox(height: Spacing.s2),
-                              _bone(200, 14, DeelmarktRadius.xs),
+                              _bone(200, 14, DeelmarktRadius.xs, boneColor),
                               const SizedBox(height: Spacing.s6),
                               // Seller card
                               Container(
@@ -85,22 +116,35 @@ class DetailLoadingView extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(
                                     DeelmarktRadius.lg,
                                   ),
-                                  border: Border.all(
-                                    color: theme.colorScheme.outlineVariant,
-                                  ),
+                                  border: Border.all(color: borderColor),
                                 ),
                                 child: Row(
                                   children: [
-                                    _bone(48, 48, DeelmarktRadius.full),
+                                    _bone(
+                                      48,
+                                      48,
+                                      DeelmarktRadius.full,
+                                      boneColor,
+                                    ),
                                     const SizedBox(width: Spacing.s3),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          _bone(120, 16, DeelmarktRadius.xs),
+                                          _bone(
+                                            120,
+                                            16,
+                                            DeelmarktRadius.xs,
+                                            boneColor,
+                                          ),
                                           const SizedBox(height: Spacing.s2),
-                                          _bone(80, 12, DeelmarktRadius.xs),
+                                          _bone(
+                                            80,
+                                            12,
+                                            DeelmarktRadius.xs,
+                                            boneColor,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -123,18 +167,26 @@ class DetailLoadingView extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surface,
-                    border: const Border(
-                      top: BorderSide(color: DeelmarktColors.neutral200),
-                    ),
+                    border: Border(top: BorderSide(color: borderColor)),
                   ),
                   child: Row(
                     children: [
                       Expanded(
-                        child: _bone(double.infinity, 52, DeelmarktRadius.lg),
+                        child: _bone(
+                          double.infinity,
+                          52,
+                          DeelmarktRadius.lg,
+                          boneColor,
+                        ),
                       ),
                       const SizedBox(width: Spacing.s3),
                       Expanded(
-                        child: _bone(double.infinity, 52, DeelmarktRadius.lg),
+                        child: _bone(
+                          double.infinity,
+                          52,
+                          DeelmarktRadius.lg,
+                          boneColor,
+                        ),
                       ),
                     ],
                   ),
@@ -148,10 +200,10 @@ class DetailLoadingView extends StatelessWidget {
   }
 
   /// Skeleton bone shape — a rounded rectangle picked up by the shimmer.
-  static Widget _bone(double width, double height, double radius) {
+  static Widget _bone(double width, double height, double radius, Color color) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: DeelmarktColors.neutral200,
+        color: color,
         borderRadius: BorderRadius.circular(radius),
       ),
       child: SizedBox(width: width, height: height),

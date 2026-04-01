@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 
 /// Condition pill chip (e.g. "Als nieuw").
 class ConditionChip extends StatelessWidget {
@@ -14,6 +14,7 @@ class ConditionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final label = 'condition.${condition.name}'.tr();
     return Semantics(
       label: label,
@@ -23,14 +24,20 @@ class ConditionChip extends StatelessWidget {
           vertical: Spacing.s1,
         ),
         decoration: BoxDecoration(
-          color: DeelmarktColors.neutral100,
+          color:
+              isDark
+                  ? DeelmarktColors.darkSurfaceElevated
+                  : DeelmarktColors.neutral100,
           borderRadius: BorderRadius.circular(DeelmarktRadius.full),
         ),
         child: Text(
           label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral700),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color:
+                isDark
+                    ? DeelmarktColors.darkOnSurface
+                    : DeelmarktColors.neutral700,
+          ),
         ),
       ),
     );
@@ -45,20 +52,27 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.s2,
         vertical: Spacing.s1,
       ),
       decoration: BoxDecoration(
-        color: DeelmarktColors.secondarySurface,
+        color:
+            isDark
+                ? DeelmarktColors.darkInfoSurface
+                : DeelmarktColors.secondarySurface,
         borderRadius: BorderRadius.circular(DeelmarktRadius.full),
       ),
       child: Text(
         name,
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.secondary),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color:
+              isDark
+                  ? DeelmarktColors.darkSecondary
+                  : DeelmarktColors.secondary,
+        ),
       ),
     );
   }
