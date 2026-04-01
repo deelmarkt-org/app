@@ -24,5 +24,9 @@ abstract class SettingsRepository {
   Future<String> exportUserData();
 
   /// Permanently delete user account.
-  Future<void> deleteAccount();
+  ///
+  /// Requires [password] for re-authentication before deletion
+  /// (OWASP ASVS L2 §4.2.1). Consider 30-day soft-delete grace period
+  /// before permanent deletion (Dutch market expectation).
+  Future<void> deleteAccount({required String password});
 }

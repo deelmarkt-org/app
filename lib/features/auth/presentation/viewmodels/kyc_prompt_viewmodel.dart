@@ -64,8 +64,8 @@ class KycPromptNotifier extends StateNotifier<KycPromptState> {
     try {
       await _initiateIdin();
       state = state.copyWith(isLoading: false, isSuccess: true);
-    } on Exception catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+    } on Exception {
+      state = state.copyWith(isLoading: false, error: 'error.generic');
     }
   }
 

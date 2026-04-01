@@ -23,7 +23,7 @@ class ReviewsTabView extends StatelessWidget {
             ),
           ),
       error:
-          (error, _) => ErrorState(message: error.toString(), onRetry: () {}),
+          (_, _) => ErrorState(message: 'error.generic'.tr(), onRetry: () {}),
       data: (items) {
         if (items.isEmpty) {
           return Center(

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,7 +32,7 @@ class ListingsTabView extends StatelessWidget {
             itemBuilder: (_, _) => const DeelCardSkeleton(),
           ),
       error:
-          (error, _) => ErrorState(message: error.toString(), onRetry: () {}),
+          (_, _) => ErrorState(message: 'error.generic'.tr(), onRetry: () {}),
       data: (items) {
         if (items.isEmpty) {
           return EmptyState(

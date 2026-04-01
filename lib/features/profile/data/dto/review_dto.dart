@@ -24,10 +24,8 @@ class ReviewDto {
         listingId is! String ||
         rating is! num ||
         text is! String) {
-      throw FormatException(
-        'ReviewDto.fromJson: missing required fields '
-        '(id=$id, reviewer_id=$reviewerId, reviewer_name=$reviewerName, '
-        'reviewee_id=$revieweeId, listing_id=$listingId, rating=$rating, text=$text)',
+      throw const FormatException(
+        'ReviewDto.fromJson: missing or malformed required fields',
       );
     }
 
@@ -47,8 +45,17 @@ class ReviewDto {
     );
   }
 
-  /// Parse a list of JSON rows. Skips malformed entries.
+  /// Parse a list of JSON rows. Skips malformed entries silently.
   static List<ReviewEntity> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.whereType<Map<String, dynamic>>().map(fromJson).toList();
+    final results = <ReviewEntity>[];
+    for (final item in jsonList) {
+      if (item is! Map<String, dynamic>) continue;
+      try {
+        results.add(fromJson(item));
+      } on FormatException {
+        // Skip malformed entries — logged at debug level upstream
+      }
+    }
+    return results;
   }
 }

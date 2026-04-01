@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +56,7 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       ),
       body: state.user.when(
         loading: () => const ProfileSkeleton(),
-        error: (error, _) => Center(child: Text(error.toString())),
+        error: (_, _) => Center(child: Text('error.generic'.tr())),
         data: (user) {
           if (user == null) return const Center(child: Text('Not logged in'));
 

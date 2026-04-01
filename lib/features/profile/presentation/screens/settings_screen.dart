@@ -45,9 +45,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _handleDeleteAccount() async {
-    final confirmed = await DeleteAccountDialog.show(context);
-    if (confirmed == true && mounted) {
-      await ref.read(settingsProvider.notifier).deleteAccount();
+    final password = await DeleteAccountDialog.show(context);
+    if (password != null && password.isNotEmpty && mounted) {
+      await ref
+          .read(settingsProvider.notifier)
+          .deleteAccount(password: password);
     }
   }
 
@@ -88,10 +90,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       error: (_, _) => const SizedBox.shrink(),
       data: (user) {
         if (user == null) return const SizedBox.shrink();
-        return const AccountSection(
-          email: 'jan@deelmarkt.nl',
-          phone: '+31612345678',
-        );
+        return AccountSection(email: user.email ?? '', phone: user.phone ?? '');
       },
     );
   }
@@ -99,7 +98,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _buildAddressesSection(SettingsState state) {
     return state.addresses.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Text(e.toString()),
+      error: (_, _) => Text('error.generic'.tr()),
       data:
           (addresses) => AddressesSection(
             addresses: addresses,
@@ -119,7 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _buildNotificationsSection(SettingsState state) {
     return state.notificationPrefs.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Text(e.toString()),
+      error: (_, _) => Text('error.generic'.tr()),
       data:
           (prefs) => NotificationsSection(
             prefs: prefs,

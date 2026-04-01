@@ -15,11 +15,17 @@ void main() {
   });
 
   group('DeleteAccountUseCase', () {
-    test('completes without error', () async {
-      when(() => repository.deleteAccount()).thenAnswer((_) async {});
+    test('requires password and delegates to repository', () async {
+      when(
+        () => repository.deleteAccount(password: any(named: 'password')),
+      ).thenAnswer((_) async {});
 
-      await expectLater(useCase.call(), completes);
-      verify(() => repository.deleteAccount()).called(1);
+      await useCase.call(password: 'test-password'); // pragma: allowlist secret
+      verify(
+        () => repository.deleteAccount(
+          password: 'test-password',
+        ), // pragma: allowlist secret
+      ).called(1);
     });
   });
 }

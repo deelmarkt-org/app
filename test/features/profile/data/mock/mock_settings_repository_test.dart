@@ -121,7 +121,12 @@ void main() {
 
     group('deleteAccount', () {
       test('completes without error', () async {
-        await expectLater(repository.deleteAccount(), completes);
+        await expectLater(
+          repository.deleteAccount(
+            password: 'test-password',
+          ), // pragma: allowlist secret
+          completes,
+        );
       });
     });
   });

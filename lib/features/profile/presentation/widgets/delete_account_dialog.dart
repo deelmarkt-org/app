@@ -6,16 +6,32 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Destructive confirmation dialog for account deletion.
 ///
-/// Returns `true` if the user confirms, `null` or `false` otherwise.
-class DeleteAccountDialog extends StatelessWidget {
+/// Requires password re-entry before confirming (OWASP ASVS L2 §4.2.1).
+/// Returns the entered password if confirmed, `null` if cancelled.
+class DeleteAccountDialog extends StatefulWidget {
   const DeleteAccountDialog({super.key});
 
-  /// Show the dialog and return whether the user confirmed.
-  static Future<bool?> show(BuildContext context) {
-    return showDialog<bool>(
+  /// Show the dialog and return the password if confirmed, null otherwise.
+  static Future<String?> show(BuildContext context) {
+    return showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => const DeleteAccountDialog(),
     );
+  }
+
+  @override
+  State<DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -24,16 +40,39 @@ class DeleteAccountDialog extends StatelessWidget {
 
     return AlertDialog(
       title: Text('settings.deleteConfirmTitle'.tr()),
-      content: Text(
-        'settings.deleteConfirmBody'.tr(),
-        style: theme.textTheme.bodyMedium,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'settings.deleteConfirmBody'.tr(),
+            style: theme.textTheme.bodyMedium,
+          ),
+          const SizedBox(height: Spacing.s4),
+          TextField(
+            controller: _passwordController,
+            obscureText: _obscurePassword,
+            autofocus: true,
+            decoration: InputDecoration(
+              labelText: 'form.pass_field'.tr(),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: () {
+                  setState(() => _obscurePassword = !_obscurePassword);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(bottom: Spacing.s2),
           child: DeelButton(
             label: 'action.cancel'.tr(),
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(context).pop(),
             variant: DeelButtonVariant.ghost,
             size: DeelButtonSize.medium,
             fullWidth: false,
@@ -43,7 +82,12 @@ class DeleteAccountDialog extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: Spacing.s2),
           child: DeelButton(
             label: 'settings.deleteAccount'.tr(),
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () {
+              final password = _passwordController.text;
+              if (password.isNotEmpty) {
+                Navigator.of(context).pop(password);
+              }
+            },
             variant: DeelButtonVariant.destructive,
             size: DeelButtonSize.medium,
             fullWidth: false,

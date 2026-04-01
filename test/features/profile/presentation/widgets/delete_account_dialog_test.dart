@@ -23,15 +23,16 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('renders title and body', (tester) async {
+    testWidgets('renders title, body, and password field', (tester) async {
       await pumpDialog(tester);
 
       expect(find.text('settings.deleteConfirmTitle'), findsOneWidget);
       expect(find.text('settings.deleteConfirmBody'), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
     });
 
-    testWidgets('cancel returns false', (tester) async {
-      bool? result;
+    testWidgets('cancel returns null', (tester) async {
+      String? result;
       await pumpTestWidget(
         tester,
         Builder(
@@ -48,15 +49,14 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      // Tap the cancel button (ghost variant with 'action.cancel' text)
       await tester.tap(find.text('action.cancel'));
       await tester.pumpAndSettle();
 
-      expect(result, isFalse);
+      expect(result, isNull);
     });
 
-    testWidgets('confirm returns true', (tester) async {
-      bool? result;
+    testWidgets('confirm with password returns password', (tester) async {
+      String? result;
       await pumpTestWidget(
         tester,
         Builder(
@@ -73,11 +73,23 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      // Tap the confirm/delete button (destructive variant)
+      // Enter password
+      await tester.enterText(find.byType(TextField), 'my-password');
       await tester.tap(find.text('settings.deleteAccount'));
       await tester.pumpAndSettle();
 
-      expect(result, isTrue);
+      expect(result, 'my-password');
+    });
+
+    testWidgets('confirm without password does not dismiss', (tester) async {
+      await pumpDialog(tester);
+
+      // Tap delete without entering password
+      await tester.tap(find.text('settings.deleteAccount'));
+      await tester.pumpAndSettle();
+
+      // Dialog should still be visible
+      expect(find.text('settings.deleteConfirmTitle'), findsOneWidget);
     });
 
     testWidgets('uses DeelButton destructive variant', (tester) async {

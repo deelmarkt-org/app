@@ -78,10 +78,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
     try {
       await _repo.updateNotificationPreferences(prefs);
-    } catch (e, st) {
-      state = state.copyWith(notificationPrefs: previous, error: e.toString());
-      // Re-throw so Riverpod error listeners can react
-      Error.throwWithStackTrace(e, st);
+    } on Exception {
+      state = state.copyWith(
+        notificationPrefs: previous,
+        error: 'error.generic',
+      );
     }
   }
 
@@ -90,9 +91,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       await _repo.saveAddress(address);
       final addresses = await _repo.getAddresses();
       state = state.copyWith(addresses: AsyncValue.data(addresses));
-    } catch (e, st) {
-      state = state.copyWith(error: e.toString());
-      Error.throwWithStackTrace(e, st);
+    } on Exception {
+      state = state.copyWith(error: 'error.generic');
     }
   }
 
@@ -101,40 +101,56 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       await _repo.deleteAddress(address);
       final addresses = await _repo.getAddresses();
       state = state.copyWith(addresses: AsyncValue.data(addresses));
-    } catch (e, st) {
-      state = state.copyWith(error: e.toString());
-      Error.throwWithStackTrace(e, st);
+    } on Exception {
+      state = state.copyWith(error: 'error.generic');
     }
   }
+
+  /// Allowed hosts for GDPR export download URLs.
+  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 
   Future<void> exportUserData() async {
     state = state.copyWith(isExporting: true);
     try {
       final url = await _repo.exportUserData();
+      // HIGH-1: Validate export URL against allowlist before storing
+      final uri = Uri.tryParse(url);
+      if (uri == null ||
+          uri.scheme != 'https' ||
+          !_exportAllowedHosts.any((host) => uri.host.endsWith(host))) {
+        state = state.copyWith(isExporting: false, error: 'error.generic');
+        return;
+      }
       state = state.copyWith(isExporting: false, exportUrl: url);
-    } catch (e, st) {
-      state = state.copyWith(isExporting: false, error: e.toString());
-      Error.throwWithStackTrace(e, st);
+    } on Exception {
+      state = state.copyWith(isExporting: false, error: 'error.generic');
     }
   }
 
-  Future<void> deleteAccount() async {
+  /// Delete account — requires password re-authentication (OWASP ASVS §4.2.1).
+  Future<void> deleteAccount({required String password}) async {
     state = state.copyWith(isDeleting: true);
     try {
-      await _repo.deleteAccount();
+      await _repo.deleteAccount(password: password);
       state = state.copyWith(isDeleting: false);
-    } catch (e, st) {
-      state = state.copyWith(isDeleting: false, error: e.toString());
-      Error.throwWithStackTrace(e, st);
+    } on Exception {
+      state = state.copyWith(isDeleting: false, error: 'error.generic');
     }
   }
 }
 
 /// Settings repository provider — mock or real.
+///
+/// WARNING: Both branches currently return mock. The real Supabase
+/// implementation must be added before production launch — deleteAccount()
+/// is a no-op in mock mode.
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSettingsRepository();
-  // TODO(reso): Add SupabaseSettingsRepository when settings table is ready
+  // TODO(reso): Replace with SupabaseSettingsRepository before production.
+  // Current mock deleteAccount() is a no-op — users will see success
+  // feedback but nothing is deleted server-side. This is a P0 blocker
+  // for production launch.
   return MockSettingsRepository();
 });
 
