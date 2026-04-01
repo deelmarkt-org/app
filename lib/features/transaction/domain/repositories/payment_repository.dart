@@ -1,4 +1,4 @@
-import '../entities/payment_entity.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/payment_entity.dart';
 
 /// Repository interface for Mollie payment operations.
 ///

@@ -1,8 +1,8 @@
 import 'package:deelmarkt/core/models/transaction_status.dart';
-import '../entities/ledger_entry.dart';
-import '../exceptions.dart';
-import '../repositories/ledger_repository.dart';
-import '../repositories/transaction_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/ledger_entry.dart';
+import 'package:deelmarkt/features/transaction/domain/exceptions.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/ledger_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 
 /// Records buyer→escrow ledger entry when payment completes.
 ///

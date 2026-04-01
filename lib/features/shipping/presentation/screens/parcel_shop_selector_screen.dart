@@ -8,9 +8,9 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
-import '../../domain/entities/parcel_shop.dart';
-import '../widgets/parcel_shop_detail_panel.dart';
-import '../widgets/parcel_shop_list_item.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/parcel_shop.dart';
+import 'package:deelmarkt/features/shipping/presentation/widgets/parcel_shop_detail_panel.dart';
+import 'package:deelmarkt/features/shipping/presentation/widgets/parcel_shop_list_item.dart';
 
 /// Screen for selecting a PostNL/DHL service point.
 ///
@@ -113,7 +113,6 @@ class _ParcelShopSelectorScreenState extends State<ParcelShopSelectorScreen> {
         child: DeelButton(
           label: 'shipping.selectThisShop'.tr(),
           leadingIcon: PhosphorIcons.checkCircle(),
-          variant: DeelButtonVariant.primary,
           onPressed: () => Navigator.of(context).pop(_selected),
         ),
       ),

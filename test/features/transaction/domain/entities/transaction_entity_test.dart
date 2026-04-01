@@ -59,7 +59,7 @@ void main() {
     });
 
     test('false when deadline is in the future', () {
-      final deadline = DateTime(2026, 4, 1);
+      final deadline = DateTime(2026, 4);
       final txn = _createTransaction(escrowDeadline: deadline);
       expect(txn.isEscrowExpired(now: DateTime(2026, 3, 30)), isFalse);
     });

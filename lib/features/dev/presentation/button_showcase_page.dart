@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'widgets/showcase_state_sections.dart';
-import 'widgets/showcase_variant_sections.dart';
+import 'package:deelmarkt/features/dev/presentation/widgets/showcase_state_sections.dart';
+import 'package:deelmarkt/features/dev/presentation/widgets/showcase_variant_sections.dart';
 
 /// Showcase page for DeelButton — demonstrates all variants, sizes, and states.
 ///

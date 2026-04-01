@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
-import 'escrow_step_circle.dart';
+import 'package:deelmarkt/widgets/trust/escrow_step_circle.dart';
 
 /// Horizontal escrow timeline stepper.
 ///

@@ -6,7 +6,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
-import '../../domain/entities/parcel_shop.dart';
+import 'package:deelmarkt/features/shipping/domain/entities/parcel_shop.dart';
 
 /// List item for a parcel shop in the selector.
 ///

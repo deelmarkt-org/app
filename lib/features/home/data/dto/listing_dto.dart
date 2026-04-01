@@ -1,4 +1,4 @@
-import '../../domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
 /// DTO for converting Supabase REST JSON to [ListingEntity].
 ///

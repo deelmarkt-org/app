@@ -24,7 +24,7 @@ Widget buildResponsiveApp({
 void main() {
   group('ResponsiveBody compact layout', () {
     testWidgets('applies mobile margin at 375px', (tester) async {
-      await tester.pumpWidget(buildResponsiveApp(width: 375));
+      await tester.pumpWidget(buildResponsiveApp());
       final padding = tester.widget<Padding>(
         find.descendant(
           of: find.byType(ResponsiveBody),

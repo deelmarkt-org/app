@@ -73,9 +73,7 @@ void main() {
     testWidgets('paid status shows info row (funds held)', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(
-          transaction: _txn(status: TransactionStatus.paid),
-        ),
+        TransactionDetailScreen(transaction: _txn()),
       );
 
       // Should not show action buttons

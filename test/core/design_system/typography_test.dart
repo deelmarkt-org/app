@@ -10,7 +10,7 @@ void main() {
     });
 
     test('textTheme has all required styles', () {
-      final theme = DeelmarktTypography.textTheme;
+      const theme = DeelmarktTypography.textTheme;
 
       expect(theme.displayLarge, isNotNull);
       expect(theme.headlineLarge, isNotNull);

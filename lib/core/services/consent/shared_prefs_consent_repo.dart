@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'consent_record.dart';
-import 'consent_repository.dart';
+import 'package:deelmarkt/core/services/consent/consent_record.dart';
+import 'package:deelmarkt/core/services/consent/consent_repository.dart';
 
 /// SharedPreferences-backed consent persistence (MVP).
 ///
@@ -24,7 +24,7 @@ class SharedPrefsConsentRepository implements ConsentRepository {
       if (raw == null) return null;
       final json = jsonDecode(raw) as Map<String, dynamic>;
       return ConsentRecord.fromJson(json);
-    } catch (_) {
+    } on Exception catch (_) {
       // Corrupted data — delete and force re-consent.
       // Never log raw JSON (may contain PII metadata).
       await _prefs.remove(_key);

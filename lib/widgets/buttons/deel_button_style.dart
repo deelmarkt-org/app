@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
-import 'deel_button.dart';
-import 'deel_button_tokens.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button_tokens.dart';
 
 /// Resolves [ButtonStyle] for [DeelButton] based on variant, size, and theme.
 ///

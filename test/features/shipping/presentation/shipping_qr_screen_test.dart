@@ -17,7 +17,7 @@ ShippingLabel _label() {
     qrData: 'https://postnl.nl/qr/3SDEVC1234567',
     trackingNumber: '3SDEVC1234567',
     carrier: ShippingCarrier.postnl,
-    shipByDeadline: DateTime(2026, 3, 25, 18, 0),
+    shipByDeadline: DateTime(2026, 3, 25, 18),
     createdAt: DateTime(2026, 3, 23),
   );
 }

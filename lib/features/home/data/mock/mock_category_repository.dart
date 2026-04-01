@@ -1,5 +1,5 @@
-import '../../domain/entities/category_entity.dart';
-import '../../domain/repositories/category_repository.dart';
+import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
+import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 
 /// Mock category repository — 8 L1 categories per design system.
 class MockCategoryRepository implements CategoryRepository {

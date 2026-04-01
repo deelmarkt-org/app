@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import '../design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
 
 /// Minimal splash screen shown while auth state loads.
 ///

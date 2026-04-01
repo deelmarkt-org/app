@@ -34,7 +34,7 @@ abstract final class Formatters {
     try {
       final format = DateFormat('d MMM y HH:mm', locale);
       return format.format(dt);
-    } catch (_) {
+    } on Exception catch (_) {
       // Fallback if locale data not initialized (e.g. in tests)
       final h = dt.hour.toString().padLeft(2, '0');
       final m = dt.minute.toString().padLeft(2, '0');

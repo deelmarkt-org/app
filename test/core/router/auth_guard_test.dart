@@ -164,7 +164,7 @@ void main() {
       expect(controller.hasListener, isTrue);
 
       stream.dispose();
-      controller.close();
+      await controller.close();
     });
 
     test('disposes without error', () {

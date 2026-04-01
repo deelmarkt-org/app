@@ -8,16 +8,13 @@ import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 
 void main() {
   group('Repository Providers', () {
-    test(
-      'useMockDataProvider defaults to true when Supabase not initialized',
-      () {
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
+    test('useMockDataProvider defaults to false (production mode)', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
 
-        final useMock = container.read(useMockDataProvider);
-        expect(useMock, true);
-      },
-    );
+      final useMock = container.read(useMockDataProvider);
+      expect(useMock, false);
+    });
 
     test(
       'listingRepositoryProvider returns MockListingRepository when mock=true',

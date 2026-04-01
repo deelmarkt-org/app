@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
-import 'core/design_system/spacing.dart';
-import 'core/design_system/theme.dart';
-import 'core/l10n/l10n.dart';
-import 'core/router/app_router.dart';
-import 'core/services/firebase_service.dart';
-import 'core/services/supabase_service.dart';
-import 'core/services/shared_prefs_provider.dart';
-import 'core/services/unleash_service.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/core/l10n/l10n.dart';
+import 'package:deelmarkt/core/router/app_router.dart';
+import 'package:deelmarkt/core/services/firebase_service.dart';
+import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 
 /// Fatal error message shown when app crashes before l10n is available.
 /// NL + EN fallback — extracted for testing and accessibility.
@@ -89,7 +89,6 @@ class DeelMarktApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: DeelmarktTheme.light,
       darkTheme: DeelmarktTheme.dark,
-      themeMode: ThemeMode.system,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,

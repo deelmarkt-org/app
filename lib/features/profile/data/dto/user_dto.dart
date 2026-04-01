@@ -1,4 +1,4 @@
-import '../../domain/entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 
 /// DTO for converting Supabase REST JSON to [UserEntity].
 ///

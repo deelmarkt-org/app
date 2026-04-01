@@ -1,4 +1,4 @@
-import '../entities/ledger_entry.dart';
+import 'package:deelmarkt/features/transaction/domain/entities/ledger_entry.dart';
 
 /// Repository interface for the double-entry escrow ledger.
 ///

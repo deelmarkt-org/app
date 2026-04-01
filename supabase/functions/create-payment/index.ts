@@ -11,6 +11,8 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -102,6 +104,39 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const { data: { user }, error: authError } = await userClient.auth.getUser();
     if (authError || !user) {
       return jsonError("Unauthorized", 401);
+    }
+
+    // M-01: Per-user rate limiting — max 10 payment creations per hour.
+    // Prevents abuse (spam payment objects at Mollie) and credential stuffing.
+    // Fails open if Redis is unavailable — payment availability > rate limiting.
+    try {
+      const redisCreds = getRedisCredentials();
+      const { allowed, remaining, resetSeconds } = await checkRateLimit(
+        redisCreds, user.id, "create-payment",
+        { maxRequests: 10, windowSeconds: 3600 },
+      );
+      if (!allowed) {
+        return new Response(
+          JSON.stringify({
+            error: "Too many payment requests. Please wait before trying again.",
+            retry_after_seconds: resetSeconds,
+          }),
+          {
+            status: 429,
+            headers: {
+              "Content-Type": "application/json",
+              "Retry-After": String(resetSeconds),
+              "X-RateLimit-Remaining": "0",
+            },
+          },
+        );
+      }
+      // Expose remaining quota in response headers (informational)
+      // Note: headers added to success response below
+      console.log(`[create-payment] Rate limit: ${remaining} remaining for user ${user.id.slice(0, 8)}`);
+    } catch (rateLimitErr) {
+      // Fail open — log and continue
+      console.warn(`[create-payment] Rate limit check failed, proceeding:`, rateLimitErr);
     }
 
     const { data: txn, error: txnError } = await serviceClient

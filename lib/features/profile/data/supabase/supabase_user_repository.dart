@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../domain/entities/user_entity.dart';
-import '../../domain/repositories/user_repository.dart';
-import '../dto/user_dto.dart';
+import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/profile/data/dto/user_dto.dart';
 
 /// Supabase implementation of [UserRepository].
 ///

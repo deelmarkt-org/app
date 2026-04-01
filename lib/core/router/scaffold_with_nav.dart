@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../design_system/breakpoints.dart';
-import '../design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/colors.dart';
 
 /// Shared navigation item data — single source of truth for both bar and rail.
 class _NavItem {

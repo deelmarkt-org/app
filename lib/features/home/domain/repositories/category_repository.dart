@@ -1,4 +1,4 @@
-import '../entities/category_entity.dart';
+import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 
 /// Category repository interface — domain layer.
 abstract class CategoryRepository {

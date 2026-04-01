@@ -26,7 +26,7 @@ void main() {
   // ── PriceInputFormatter ───────────────────────────────────────────────
 
   group('PriceInputFormatter (NL comma)', () {
-    final formatter = PriceInputFormatter(decimalSeparator: ',');
+    final formatter = PriceInputFormatter();
 
     test('allows digits', () {
       final result = applyFormat(formatter, '', '123');
@@ -153,7 +153,7 @@ void main() {
   // ── PostcodeInputFormatter ────────────────────────────────────────────
 
   group('PostcodeInputFormatter', () {
-    final formatter = PostcodeInputFormatter();
+    const formatter = PostcodeInputFormatter();
 
     test('allows valid digits 1-9 as first char', () {
       final result = applyFormat(formatter, '', '1');
@@ -258,7 +258,7 @@ void main() {
     });
 
     test('PostcodeInputFormatter handles emoji without crash', () {
-      final formatter = PostcodeInputFormatter();
+      const formatter = PostcodeInputFormatter();
       final result = applyFormat(formatter, '', '😀1012AB');
       expect(result.text, '1012 AB');
     });
@@ -272,8 +272,8 @@ void main() {
     });
 
     test('PostcodeInputFormatter handles very long input', () {
-      final formatter = PostcodeInputFormatter();
-      final longInput = '1234ABCDEF'; // pragma: allowlist secret
+      const formatter = PostcodeInputFormatter();
+      const longInput = '1234ABCDEF'; // pragma: allowlist secret
       final result = applyFormat(formatter, '', longInput);
       expect(result.text, '1234 AB');
     });

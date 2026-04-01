@@ -1,4 +1,4 @@
-import '../entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 
 /// User repository interface — domain layer.
 abstract class UserRepository {

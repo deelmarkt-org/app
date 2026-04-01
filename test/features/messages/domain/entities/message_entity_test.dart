@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 
 void main() {
-  final now = DateTime(2026, 3, 25, 14, 0);
+  final now = DateTime(2026, 3, 25, 14);
 
   group('MessageEntity', () {
     test('creates with required fields', () {
@@ -65,7 +65,6 @@ void main() {
         conversationId: 'conv-1',
         senderId: 'user-1',
         text: 'offer',
-        type: MessageType.text,
         createdAt: now,
       );
 

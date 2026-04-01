@@ -76,11 +76,7 @@ void main() {
       await tester.pumpWidget(
         buildButtonApp(
           theme: DeelmarktTheme.dark,
-          button: DeelButton(
-            label: 'Dark',
-            onPressed: () {},
-            variant: DeelButtonVariant.primary,
-          ),
+          button: DeelButton(label: 'Dark', onPressed: () {}),
         ),
       );
 

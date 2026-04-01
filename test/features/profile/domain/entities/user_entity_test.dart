@@ -9,13 +9,13 @@ void main() {
         id: 'u1',
         displayName: 'Alice',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
       final b = UserEntity(
         id: 'u1',
         displayName: 'Alice',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(a, equals(b));
@@ -27,13 +27,13 @@ void main() {
         id: 'u1',
         displayName: 'Alice',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
       final b = UserEntity(
         id: 'u1',
         displayName: 'Alice',
         kycLevel: KycLevel.level2,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(a, isNot(equals(b)));
@@ -44,13 +44,13 @@ void main() {
         id: 'u1',
         displayName: 'Alice',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
       final b = UserEntity(
         id: 'u2',
         displayName: 'Alice',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(a, isNot(equals(b)));
@@ -61,7 +61,7 @@ void main() {
         id: 'u1',
         displayName: 'Test',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(user.badges, isEmpty);
@@ -72,7 +72,7 @@ void main() {
         id: 'u1',
         displayName: 'Test',
         kycLevel: KycLevel.level0,
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(user.avatarUrl, isNull);
@@ -87,7 +87,7 @@ void main() {
       id: 'u1',
       displayName: 'Alice',
       kycLevel: KycLevel.level0,
-      createdAt: DateTime(2026, 1, 1),
+      createdAt: DateTime(2026),
       avatarUrl: 'https://example.com/avatar.png',
       location: 'Amsterdam',
       badges: const [BadgeType.emailVerified],

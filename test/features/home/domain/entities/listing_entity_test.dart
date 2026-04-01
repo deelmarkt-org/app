@@ -13,7 +13,7 @@ void main() {
     condition: ListingCondition.good,
     categoryId: 'cat-1',
     imageUrls: const ['https://example.com/img.jpg'],
-    createdAt: DateTime(2026, 1, 1),
+    createdAt: DateTime(2026),
     location: 'Amsterdam',
     distanceKm: 5.0,
   );
@@ -30,7 +30,7 @@ void main() {
         condition: ListingCondition.good,
         categoryId: 'cat-1',
         imageUrls: const ['https://example.com/img.jpg'],
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
         location: 'Amsterdam',
         distanceKm: 5.0,
       );
@@ -50,7 +50,7 @@ void main() {
         condition: ListingCondition.good,
         categoryId: 'cat-1',
         imageUrls: const ['https://example.com/img.jpg'],
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
         location: 'Amsterdam',
         distanceKm: 5.0,
       );
@@ -69,7 +69,7 @@ void main() {
         condition: ListingCondition.good,
         categoryId: 'cat-1',
         imageUrls: const [],
-        createdAt: DateTime(2026, 1, 1),
+        createdAt: DateTime(2026),
       );
 
       expect(listing, isNot(equals(different)));
@@ -139,14 +139,14 @@ void main() {
         sellerId: 'user-2',
         sellerName: 'Other User',
         categoryId: 'cat-2',
-        createdAt: DateTime(2026, 6, 1),
+        createdAt: DateTime(2026, 6),
       );
       expect(updated.title, 'Updated');
       expect(updated.priceInCents, 100);
       expect(updated.sellerId, 'user-2');
       expect(updated.sellerName, 'Other User');
       expect(updated.categoryId, 'cat-2');
-      expect(updated.createdAt, DateTime(2026, 6, 1));
+      expect(updated.createdAt, DateTime(2026, 6));
     });
 
     test('overrides description', () {

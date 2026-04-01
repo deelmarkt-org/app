@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../domain/entities/category_entity.dart';
-import '../../domain/repositories/category_repository.dart';
-import '../dto/category_dto.dart';
+import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
+import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/features/home/data/dto/category_dto.dart';
 
 /// Supabase implementation of [CategoryRepository].
 ///
