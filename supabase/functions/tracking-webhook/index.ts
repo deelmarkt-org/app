@@ -26,12 +26,12 @@ import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts
 // ---------------------------------------------------------------------------
 
 const TrackingEventSchema = z.object({
-  barcode: z.string().min(1, "Barcode is required"),
-  status: z.string().min(1, "Status is required"),
-  description: z.string().optional(),
-  location: z.string().optional(),
+  barcode: z.string().min(1, "Barcode is required").max(100),
+  status: z.string().min(1, "Status is required").max(50),
+  description: z.string().max(500).optional(),
+  location: z.string().max(200).optional(),
   occurred_at: z.string().datetime({ message: "Invalid datetime" }),
-  event_id: z.string().min(1, "Event ID is required"),
+  event_id: z.string().min(1, "Event ID is required").max(50),
   carrier: z.enum(["postnl", "dhl"]),
 });
 

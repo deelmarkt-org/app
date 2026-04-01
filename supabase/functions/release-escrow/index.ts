@@ -77,7 +77,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
         // Fallback: RPC not available (migration not yet applied)
-        console.warn(`[release-escrow] fetch_releasable_confirmed RPC unavailable, falling back to standard query: ${err}`);
+        console.warn(`[release-escrow] fetch_releasable_confirmed RPC unavailable, falling back:`, err);
         return supabase
           .from("transactions")
           .select("id, seller_id, item_amount_cents, shipping_cost_cents")
@@ -106,7 +106,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .rpc("fetch_releasable_expired", {})
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
-        console.warn(`[release-escrow] fetch_releasable_expired RPC unavailable, falling back to standard query: ${err}`);
+        console.warn(`[release-escrow] fetch_releasable_expired RPC unavailable, falling back:`, err);
         return supabase
           .from("transactions")
           .select("id, seller_id, item_amount_cents, shipping_cost_cents")
@@ -147,7 +147,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .rpc("fetch_releasable_stale", { hard_limit_iso: hardLimitDate.toISOString() })
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
-        console.warn(`[release-escrow] fetch_releasable_stale RPC unavailable, falling back to standard query: ${err}`);
+        console.warn(`[release-escrow] fetch_releasable_stale RPC unavailable, falling back:`, err);
         return supabase
           .from("transactions")
           .select("id, seller_id, buyer_id, status, item_amount_cents, shipping_cost_cents, paid_at")

@@ -11,15 +11,29 @@ void main() {
 
   group('Formatters.euroFromCents', () {
     test('formats whole euros', () {
-      expect(Formatters.euroFromCents(4500), '\u20AC45,00');
+      expect(Formatters.euroFromCents(4500), '\u20AC\u00A045,00');
     });
 
     test('formats cents', () {
-      expect(Formatters.euroFromCents(113), '\u20AC1,13');
+      expect(Formatters.euroFromCents(113), '\u20AC\u00A01,13');
     });
 
     test('formats zero', () {
-      expect(Formatters.euroFromCents(0), '\u20AC0,00');
+      expect(Formatters.euroFromCents(0), '\u20AC\u00A00,00');
+    });
+  });
+
+  group('Formatters.distanceKm', () {
+    test('formats with Dutch comma decimal', () {
+      expect(Formatters.distanceKm(3.2), '3,2 km');
+    });
+
+    test('formats whole number', () {
+      expect(Formatters.distanceKm(5.0), '5,0 km');
+    });
+
+    test('formats long decimal', () {
+      expect(Formatters.distanceKm(12.567), '12,6 km');
     });
   });
 

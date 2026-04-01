@@ -83,11 +83,14 @@ class _OtpVerificationViewState extends State<OtpVerificationView> {
         Text(widget.subtitle, style: theme.textTheme.bodyLarge),
         const SizedBox(height: Spacing.s8),
         if (widget.isLoading)
-          const Center(child: CircularProgressIndicator.adaptive())
+          Semantics(
+            label: 'a11y.loading'.tr(),
+            child: const Center(child: CircularProgressIndicator.adaptive()),
+          )
         else
           OtpInputField(
             onCompleted: widget.onCompleted,
-            errorText: widget.errorText?.tr(),
+            errorText: widget.errorText,
             semanticLabel: 'auth.otp_field_label'.tr(),
           ),
         const SizedBox(height: Spacing.s6),

@@ -167,14 +167,14 @@ The agent will:
 - [x] `B-44` Location/distance query (haversine) — distance sorting works *(was R-28)*
 
 **Phase B — Flutter Data Layer (Week 2):**
-- [ ] `B-45` DTOs: ListingDto, CategoryDto, UserDto — fromJson/toJson for Supabase
-- [ ] `B-46` `SupabaseListingRepository` — implements `ListingRepository` against real DB
-- [ ] `B-47` `SupabaseCategoryRepository` — implements `CategoryRepository` against real DB
-- [ ] `B-48` `SupabaseUserRepository` — implements `UserRepository` against real DB
-- [ ] `B-49` Provider wiring — Riverpod overrides to swap mock ↔ Supabase repos by env
+- [x] `B-45` DTOs: ListingDto, CategoryDto, UserDto — fromJson/toJson for Supabase ✅ PR #29
+- [x] `B-46` `SupabaseListingRepository` — implements `ListingRepository` against real DB ✅ PR #29
+- [x] `B-47` `SupabaseCategoryRepository` — implements `CategoryRepository` against real DB ✅ PR #29
+- [x] `B-48` `SupabaseUserRepository` — implements `UserRepository` against real DB ✅ PR #29
+- [x] `B-49` Provider wiring — Riverpod overrides to swap mock ↔ Supabase repos by env ✅ PR #29
 
 **Phase C — Connected Screens (Week 3):**
-- [ ] `B-50` Home screen (buyer mode) — categories + recent + nearby, real Supabase data *(was P-29)*
+- [x] `B-50` Home screen (buyer mode) — categories + recent + nearby, real Supabase data *(was P-29)*
 - [ ] `B-51` Listing detail screen — gallery, trust banner, seller card, CTA, deep linked *(was P-25)*
 - [ ] `B-52` Search screen — FTS integration, results grid + filters *(was P-26)*
 

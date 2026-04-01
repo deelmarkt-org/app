@@ -8,11 +8,8 @@ part 'register_viewmodel.g.dart';
 
 const _kGenericErrorKey = 'error.generic';
 
-/// ViewModel for the multi-step registration flow.
-///
-/// State machine: emailForm → emailVerification → phoneForm → phoneVerification → complete.
-/// Each transition sets [isLoading] while the use case runs, then advances the step
-/// or sets [errorKey] on failure. Password is never stored in state.
+/// Multi-step registration ViewModel.
+/// Steps: emailForm → emailVerification → phoneForm → phoneVerification → complete.
 @riverpod
 class RegisterViewModel extends _$RegisterViewModel {
   @override
@@ -54,20 +51,10 @@ class RegisterViewModel extends _$RegisterViewModel {
   }
 
   /// Resend the email OTP without re-triggering full registration.
-  Future<void> resendEmailOtp() async {
-    state = state.copyWith(isLoading: true, errorKey: () => null);
-    try {
-      await ref.read(resendEmailOtpUseCaseProvider).call(email: state.email!);
-      state = state.copyWith(isLoading: false);
-    } on AppException catch (e) {
-      state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
-    } on Exception catch (_) {
-      state = state.copyWith(
-        isLoading: false,
-        errorKey: () => _kGenericErrorKey,
-      );
-    }
-  }
+  Future<void> resendEmailOtp() => _runAction(() async {
+    await ref.read(resendEmailOtpUseCaseProvider).call(email: state.email!);
+    state = state.copyWith(isLoading: false);
+  });
 
   /// Step 2: Verify email OTP.
   Future<void> verifyEmail(String otp) async {
@@ -118,6 +105,27 @@ class RegisterViewModel extends _$RegisterViewModel {
           .read(verifyPhoneOtpUseCaseProvider)
           .call(phone: state.phone!, token: otp);
       state = state.copyWith(step: RegistrationStep.complete, isLoading: false);
+    } on AppException catch (e) {
+      state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
+    } on Exception catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: () => _kGenericErrorKey,
+      );
+    }
+  }
+
+  /// Resend the phone OTP without re-triggering full phone submission.
+  Future<void> resendPhoneOtp() async => _runAction(() async {
+    await ref.read(sendPhoneOtpUseCaseProvider).call(phone: state.phone!);
+    state = state.copyWith(isLoading: false);
+  });
+
+  /// Shared error-handling wrapper for simple actions (resend OTP).
+  Future<void> _runAction(Future<void> Function() action) async {
+    state = state.copyWith(isLoading: true, errorKey: () => null);
+    try {
+      await action();
     } on AppException catch (e) {
       state = state.copyWith(isLoading: false, errorKey: () => e.messageKey);
     } on Exception catch (_) {
