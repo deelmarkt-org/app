@@ -11,18 +11,21 @@ import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
-/// Price, condition chip, title, description (expandable), category,
-/// and location row. Layout matches stitch design:
-/// Title (left) + Price (right-aligned), condition chip below.
+import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_chips.dart';
+
+/// Price, title, chips, description, own-listing stats, and location
+/// with map placeholder. Layout per stitch design.
 class DetailInfoSection extends StatefulWidget {
   const DetailInfoSection({
     required this.listing,
     this.categoryName,
+    this.isOwnListing = false,
     super.key,
   });
 
   final ListingEntity listing;
   final String? categoryName;
+  final bool isOwnListing;
 
   @override
   State<DetailInfoSection> createState() => _DetailInfoSectionState();
@@ -32,6 +35,7 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
   bool _expanded = false;
 
   static const int _maxCollapsedLines = 4;
+  static const double _mapPlaceholderHeight = 120;
 
   @override
   Widget build(BuildContext context) {
@@ -65,19 +69,19 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
           ),
           const SizedBox(height: Spacing.s2),
 
-          // Condition chip + category
+          // Condition + category chips
           Wrap(
             spacing: Spacing.s2,
             runSpacing: Spacing.s1,
             children: [
-              _ConditionChip(condition: listing.condition),
+              ConditionChip(condition: listing.condition),
               if (widget.categoryName != null)
-                _CategoryChip(name: widget.categoryName!),
+                CategoryChip(name: widget.categoryName!),
             ],
           ),
           const SizedBox(height: Spacing.s4),
 
-          // Description header
+          // Description
           Text(
             'listing_detail.description'.tr(),
             style: theme.textTheme.titleSmall?.copyWith(
@@ -85,8 +89,6 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
             ),
           ),
           const SizedBox(height: Spacing.s1),
-
-          // Description body (expandable, respects reduced motion)
           AnimatedCrossFade(
             firstChild: Text(
               listing.description,
@@ -124,7 +126,7 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
           ),
           const SizedBox(height: Spacing.s3),
 
-          // Location section with header
+          // Location with map placeholder
           if (listing.location != null) ...[
             Text(
               'listing_detail.locationHeader'.tr(),
@@ -156,64 +158,25 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
                   ),
               ],
             ),
+            const SizedBox(height: Spacing.s3),
+            // Map placeholder (per stitch design)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+              child: Container(
+                height: _mapPlaceholderHeight,
+                width: double.infinity,
+                color: DeelmarktColors.neutral100,
+                child: Center(
+                  child: Icon(
+                    PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
+                    size: DeelmarktIconSize.lg,
+                    color: DeelmarktColors.neutral500,
+                  ),
+                ),
+              ),
+            ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _ConditionChip extends StatelessWidget {
-  const _ConditionChip({required this.condition});
-
-  final ListingCondition condition;
-
-  @override
-  Widget build(BuildContext context) {
-    final label = 'condition.${condition.name}'.tr();
-    return Semantics(
-      label: label,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.s2,
-          vertical: Spacing.s1,
-        ),
-        decoration: BoxDecoration(
-          color: DeelmarktColors.neutral100,
-          borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-        ),
-        child: Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral700),
-        ),
-      ),
-    );
-  }
-}
-
-class _CategoryChip extends StatelessWidget {
-  const _CategoryChip({required this.name});
-
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.s2,
-        vertical: Spacing.s1,
-      ),
-      decoration: BoxDecoration(
-        color: DeelmarktColors.secondarySurface,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-      ),
-      child: Text(
-        name,
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.secondary),
       ),
     );
   }

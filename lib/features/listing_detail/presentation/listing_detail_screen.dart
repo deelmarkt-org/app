@@ -7,20 +7,18 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
-import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
 
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_notifier.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_action_bar.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_image_gallery.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_info_section.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_loading_view.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_seller_card.dart';
 
 /// Listing detail screen — B-51.
 ///
 /// Route: `/listings/:id` (deep link + in-app navigation).
-/// Shows gallery, trust banner, price, description, seller card, action bar.
-/// Handles sold and own-listing variants.
 class ListingDetailScreen extends ConsumerWidget {
   const ListingDetailScreen({required this.listingId, super.key});
 
@@ -28,14 +26,18 @@ class ListingDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final detailState = ref.watch(listingDetailNotifierProvider(listingId));
+    final state = ref.watch(listingDetailNotifierProvider(listingId));
 
-    return detailState.when(
-      loading: () => const _LoadingView(),
+    return state.when(
+      loading: () => const DetailLoadingView(),
       error:
-          (error, _) => _ErrorView(
-            onRetry:
-                () => ref.invalidate(listingDetailNotifierProvider(listingId)),
+          (_, _) => Scaffold(
+            appBar: AppBar(),
+            body: ErrorState(
+              onRetry:
+                  () =>
+                      ref.invalidate(listingDetailNotifierProvider(listingId)),
+            ),
           ),
       data:
           (data) => _DataView(
@@ -48,63 +50,6 @@ class ListingDetailScreen extends ConsumerWidget {
                         .toggleFavourite(),
           ),
     );
-  }
-}
-
-class _LoadingView extends StatelessWidget {
-  const _LoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      body: SafeArea(
-        child: Semantics(
-          label: 'a11y.loading'.tr(),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Image skeleton
-                      AspectRatio(
-                        aspectRatio: 4 / 3,
-                        child: Container(
-                          color: theme.colorScheme.surfaceContainerLow,
-                        ),
-                      ),
-                      const SizedBox(height: Spacing.s4),
-                      // Content skeletons
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Spacing.s4),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [SkeletonListingCard()],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: ErrorState(onRetry: onRetry));
   }
 }
 
@@ -129,7 +74,6 @@ class _DataView extends StatelessWidget {
           Expanded(
             child: CustomScrollView(
               slivers: [
-                // Image gallery (replaces AppBar)
                 SliverToBoxAdapter(
                   child: SafeArea(
                     bottom: false,
@@ -148,8 +92,6 @@ class _DataView extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Trust banner
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(
@@ -159,16 +101,13 @@ class _DataView extends StatelessWidget {
                     child: EscrowTrustBanner(),
                   ),
                 ),
-
-                // Info section (price, condition, title, description, category, location)
                 SliverToBoxAdapter(
                   child: DetailInfoSection(
                     listing: listing,
                     categoryName: data.category?.name,
+                    isOwnListing: data.isOwnListing,
                   ),
                 ),
-
-                // Seller card
                 if (data.seller != null)
                   SliverToBoxAdapter(
                     child: Padding(
@@ -186,20 +125,15 @@ class _DataView extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                // Bottom padding for scroll clearance above action bar
                 const SliverPadding(
                   padding: EdgeInsets.only(bottom: Spacing.s8),
                 ),
               ],
             ),
           ),
-
-          // Sticky action bar
           DetailActionBar(
             priceInCents: listing.priceInCents,
             isOwnListing: data.isOwnListing,
-            // onMessage, onBuy, onEdit, onDelete: wired in Phase 2 (E03/E04)
           ),
         ],
       ),
