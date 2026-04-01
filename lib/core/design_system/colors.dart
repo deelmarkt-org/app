@@ -40,6 +40,17 @@ class DeelmarktColors {
   static const trustPending = Color(0xFFF59E0B);
   static const trustShield = Color(0xFFF0FDF4);
 
+  // Badge-specific
+  static const badgeGold = Color(0xFFD97706);
+  static const badgeVerifiedBg = Color(0xFFDCFCE7);
+  static const badgeEscrowBg = Color(0xFFDBEAFE);
+  static const badgeGoldBg = Color(0xFFFEF3C7);
+
+  // Accent
+  static const accentPurple = Color(0xFF7C3AED);
+  static const accentPink = Color(0xFFDB2777);
+  static const accentEmerald = Color(0xFF059669);
+
   // Dark mode overrides (tokens.md §Dark Mode)
   static const darkScaffold = Color(0xFF121212);
   static const darkSurface = Color(0xFF1E1E1E);
@@ -66,6 +77,12 @@ class DeelmarktColors {
   static const darkErrorSurface = Color(0xFF450A0A);
   static const darkWarningSurface = Color(0xFF422006);
   static const darkInfoSurface = Color(0xFF172554);
+
+  // Dark mode badge
+  static const darkBadgeGold = Color(0xFFFBBF24);
+  static const darkBadgeVerifiedBg = Color(0xFF052E16);
+  static const darkBadgeEscrowBg = Color(0xFF172554);
+  static const darkBadgeGoldBg = Color(0xFF422006);
 
   // Dark mode trust (dedicated — never for general UI)
   static const darkTrustVerified = Color(0xFF4ADE80);

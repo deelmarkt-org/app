@@ -78,8 +78,14 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        ListingsTabView(listings: state.listings),
-                        ReviewsTabView(reviews: state.reviews),
+                        ListingsTabView(
+                          listings: state.listings,
+                          onRetry: () => ref.invalidate(profileProvider),
+                        ),
+                        ReviewsTabView(
+                          reviews: state.reviews,
+                          onRetry: () => ref.invalidate(profileProvider),
+                        ),
                       ],
                     ),
                   ),

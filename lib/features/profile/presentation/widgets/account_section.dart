@@ -11,12 +11,13 @@ class AccountSection extends StatelessWidget {
   final String email;
   final String phone;
 
-  /// Masks a Dutch phone number: "+31 6 1234 5678" → "+31 6 •••• 5678"
+  /// Masks a phone number, preserving format: "+31 6 1234 5678" → "+31 6 •••• 5678"
   static String maskPhone(String phone) {
     final digits = phone.replaceAll(RegExp(r'\D'), '');
     if (digits.length < 4) return phone;
     final lastFour = digits.substring(digits.length - 4);
-    return '+31 6 \u2022\u2022\u2022\u2022 $lastFour';
+    final prefix = phone.substring(0, phone.length - 4);
+    return '${prefix.replaceAll(RegExp(r'\d'), '\u2022')}$lastFour';
   }
 
   @override

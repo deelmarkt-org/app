@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/kyc_prompt_viewmodel.dart';
 import 'package:deelmarkt/features/auth/presentation/widgets/kyc_faq_expandable.dart';
@@ -55,7 +56,7 @@ class KycBottomSheet extends ConsumerWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: DeelmarktColors.neutral300,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(DeelmarktRadius.xxs),
               ),
             ),
           ),

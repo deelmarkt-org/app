@@ -207,24 +207,13 @@ class SupabaseListingRepository implements ListingRepository {
     String? cursor,
   }) async {
     try {
-      var request = _client
-          .from(_view)
-          .select()
-          .eq('seller_id', userId)
+      var query = _client.from(_view).select().eq('seller_id', userId);
+      if (cursor != null) {
+        query = query.lt('created_at', cursor);
+      }
+      final response = await query
           .order('created_at', ascending: false)
           .limit(limit);
-
-      if (cursor != null) {
-        request = _client
-            .from(_view)
-            .select()
-            .eq('seller_id', userId)
-            .lt('created_at', cursor)
-            .order('created_at', ascending: false)
-            .limit(limit);
-      }
-
-      final response = await request;
       return ListingDto.fromJsonList(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch user listings: ${e.message}');

@@ -163,7 +163,7 @@ class DeelAvatar extends StatelessWidget {
   Widget _buildEditOverlay() {
     return ClipOval(
       child: Container(
-        color: Colors.black.withValues(
+        color: DeelmarktColors.neutral900.withValues(
           alpha: DeelAvatarTokens.editOverlayOpacity,
         ),
         alignment: Alignment.center,
@@ -195,15 +195,15 @@ class DeelAvatar extends StatelessWidget {
   }
 
   static Color _backgroundFromName(String name) {
-    final colors = [
-      const Color(0xFF1E4F7A), // secondary
-      const Color(0xFFF15A24), // primary
-      const Color(0xFF16A34A), // verified green
-      const Color(0xFF2563EB), // escrow blue
-      const Color(0xFFD97706), // gold
-      const Color(0xFF7C3AED), // purple
-      const Color(0xFFDB2777), // pink
-      const Color(0xFF059669), // emerald
+    const colors = [
+      DeelmarktColors.secondary,
+      DeelmarktColors.primary,
+      DeelmarktColors.trustVerified,
+      DeelmarktColors.trustEscrow,
+      DeelmarktColors.badgeGold,
+      DeelmarktColors.accentPurple,
+      DeelmarktColors.accentPink,
+      DeelmarktColors.accentEmerald,
     ];
     final hash = name.codeUnits.fold<int>(0, (h, c) => h + c);
     return colors[hash % colors.length];

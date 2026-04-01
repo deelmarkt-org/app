@@ -4,8 +4,6 @@ import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
-import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
-import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 
 /// Independent async state for each profile section.
 ///
@@ -52,37 +50,30 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     final listingRepo = _ref.read(listingRepositoryProvider);
     final reviewRepo = _ref.read(reviewRepositoryProvider);
 
-    // Load all three in parallel, each independent
-    final userFuture = AsyncValue.guard(() => userRepo.getCurrentUser());
-    final listingsFuture = AsyncValue.guard(() async {
-      final user = await userRepo.getCurrentUser();
-      if (user == null) return <ListingEntity>[];
-      return listingRepo.getByUserId(user.id);
-    });
-    final reviewsFuture = AsyncValue.guard(() async {
-      final user = await userRepo.getCurrentUser();
-      if (user == null) return <ReviewEntity>[];
-      return reviewRepo.getByUserId(user.id);
-    });
+    final userResult = await AsyncValue.guard(() => userRepo.getCurrentUser());
+    final user = userResult.valueOrNull;
+
+    if (user == null) {
+      state = ProfileState(
+        user: userResult,
+        listings: const AsyncValue.data([]),
+        reviews: const AsyncValue.data([]),
+      );
+      return;
+    }
 
     final results = await Future.wait([
-      userFuture,
-      listingsFuture,
-      reviewsFuture,
+      AsyncValue.guard(() => listingRepo.getByUserId(user.id)),
+      AsyncValue.guard(() => reviewRepo.getByUserId(user.id)),
     ]);
+
     state = ProfileState(
-      user: results[0] as AsyncValue<UserEntity?>,
-      listings: results[1] as AsyncValue<List<ListingEntity>>,
-      reviews: results[2] as AsyncValue<List<ReviewEntity>>,
+      user: AsyncValue.data(user),
+      listings: results[0] as AsyncValue<List<ListingEntity>>,
+      reviews: results[1] as AsyncValue<List<ReviewEntity>>,
     );
   }
 }
-
-/// Review repository provider — mock or real.
-final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
-  // TODO(reso): Add SupabaseReviewRepository when reviews table is ready
-  return MockReviewRepository();
-});
 
 /// Profile viewmodel provider.
 final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>(

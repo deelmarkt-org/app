@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 
@@ -21,15 +22,15 @@ class ProfileSkeleton extends StatelessWidget {
               height: 80,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: DeelmarktColors.white,
               ),
             ),
             const SizedBox(height: Spacing.s3),
             // Name skeleton
-            Container(width: 120, height: 20, color: Colors.white),
+            Container(width: 120, height: 20, color: DeelmarktColors.white),
             const SizedBox(height: Spacing.s2),
             // Member since skeleton
-            Container(width: 80, height: 14, color: Colors.white),
+            Container(width: 80, height: 14, color: DeelmarktColors.white),
             const SizedBox(height: Spacing.s6),
             // Stats row skeleton
             Row(
@@ -38,16 +39,28 @@ class ProfileSkeleton extends StatelessWidget {
                 3,
                 (_) => Column(
                   children: [
-                    Container(width: 40, height: 24, color: Colors.white),
+                    Container(
+                      width: 40,
+                      height: 24,
+                      color: DeelmarktColors.white,
+                    ),
                     const SizedBox(height: Spacing.s1),
-                    Container(width: 60, height: 14, color: Colors.white),
+                    Container(
+                      width: 60,
+                      height: 14,
+                      color: DeelmarktColors.white,
+                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: Spacing.s6),
             // Tab bar skeleton
-            Container(width: double.infinity, height: 48, color: Colors.white),
+            Container(
+              width: double.infinity,
+              height: 48,
+              color: DeelmarktColors.white,
+            ),
           ],
         ),
       ),

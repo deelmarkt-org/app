@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_card.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
@@ -9,9 +10,10 @@ import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 
 /// List of user reviews.
 class ReviewsTabView extends StatelessWidget {
-  const ReviewsTabView({required this.reviews, super.key});
+  const ReviewsTabView({required this.reviews, this.onRetry, super.key});
 
   final AsyncValue<List<ReviewEntity>> reviews;
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,10 @@ class ReviewsTabView extends StatelessWidget {
             ),
           ),
       error:
-          (_, _) => ErrorState(message: 'error.generic'.tr(), onRetry: () {}),
+          (_, _) => ErrorState(
+            message: 'error.generic'.tr(),
+            onRetry: onRetry ?? () {},
+          ),
       data: (items) {
         if (items.isEmpty) {
           return Center(
@@ -57,7 +62,7 @@ class _ReviewSkeleton extends StatelessWidget {
             height: 32,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white,
+              color: DeelmarktColors.white,
             ),
           ),
           const SizedBox(width: 12),
@@ -65,12 +70,12 @@ class _ReviewSkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(width: 100, height: 14, color: Colors.white),
+                Container(width: 100, height: 14, color: DeelmarktColors.white),
                 const SizedBox(height: 4),
                 Container(
                   width: double.infinity,
                   height: 12,
-                  color: Colors.white,
+                  color: DeelmarktColors.white,
                 ),
               ],
             ),

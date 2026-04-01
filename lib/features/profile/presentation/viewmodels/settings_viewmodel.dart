@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
@@ -138,21 +137,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     }
   }
 }
-
-/// Settings repository provider — mock or real.
-///
-/// WARNING: Both branches currently return mock. The real Supabase
-/// implementation must be added before production launch — deleteAccount()
-/// is a no-op in mock mode.
-final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
-  final useMock = ref.watch(useMockDataProvider);
-  if (useMock) return MockSettingsRepository();
-  // TODO(reso): Replace with SupabaseSettingsRepository before production.
-  // Current mock deleteAccount() is a no-op — users will see success
-  // feedback but nothing is deleted server-side. This is a P0 blocker
-  // for production launch.
-  return MockSettingsRepository();
-});
 
 /// Settings viewmodel provider.
 final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(

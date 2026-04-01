@@ -20,7 +20,10 @@ void main() {
         const AccountSection(email: 'jan@deelmarkt.nl', phone: '+31612345678'),
       );
 
-      expect(find.text('+31 6 \u2022\u2022\u2022\u2022 5678'), findsOneWidget);
+      expect(
+        find.text('+\u2022\u2022\u2022\u2022\u2022\u2022\u20225678'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders section header', (tester) async {
@@ -37,14 +40,14 @@ void main() {
     test('masks Dutch phone number', () {
       expect(
         AccountSection.maskPhone('+31612345678'),
-        '+31 6 \u2022\u2022\u2022\u2022 5678',
+        '+\u2022\u2022\u2022\u2022\u2022\u2022\u20225678',
       );
     });
 
     test('masks formatted phone number', () {
       expect(
         AccountSection.maskPhone('+31 6 1234 5678'),
-        '+31 6 \u2022\u2022\u2022\u2022 5678',
+        '+\u2022\u2022 \u2022 \u2022\u2022\u2022\u2022 5678',
       );
     });
 
