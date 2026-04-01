@@ -37,159 +37,24 @@ class DetailLoadingView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image skeleton
                         AspectRatio(
                           aspectRatio: 4 / 3,
                           child: DecoratedBox(
                             decoration: BoxDecoration(color: boneColor),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(Spacing.s4),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Trust banner
-                              _bone(
-                                double.infinity,
-                                56,
-                                DeelmarktRadius.sm,
-                                boneColor,
-                              ),
-                              const SizedBox(height: Spacing.s4),
-                              // Title + price
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _bone(
-                                      double.infinity,
-                                      24,
-                                      DeelmarktRadius.sm,
-                                      boneColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: Spacing.s4),
-                                  _bone(80, 24, DeelmarktRadius.sm, boneColor),
-                                ],
-                              ),
-                              const SizedBox(height: Spacing.s3),
-                              // Chips
-                              Row(
-                                children: [
-                                  _bone(
-                                    72,
-                                    24,
-                                    DeelmarktRadius.full,
-                                    boneColor,
-                                  ),
-                                  const SizedBox(width: Spacing.s2),
-                                  _bone(
-                                    64,
-                                    24,
-                                    DeelmarktRadius.full,
-                                    boneColor,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: Spacing.s4),
-                              // Description lines
-                              _bone(
-                                double.infinity,
-                                14,
-                                DeelmarktRadius.xs,
-                                boneColor,
-                              ),
-                              const SizedBox(height: Spacing.s2),
-                              _bone(
-                                double.infinity,
-                                14,
-                                DeelmarktRadius.xs,
-                                boneColor,
-                              ),
-                              const SizedBox(height: Spacing.s2),
-                              _bone(200, 14, DeelmarktRadius.xs, boneColor),
-                              const SizedBox(height: Spacing.s6),
-                              // Seller card
-                              Container(
-                                padding: const EdgeInsets.all(Spacing.s4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    DeelmarktRadius.lg,
-                                  ),
-                                  border: Border.all(color: borderColor),
-                                ),
-                                child: Row(
-                                  children: [
-                                    _bone(
-                                      48,
-                                      48,
-                                      DeelmarktRadius.full,
-                                      boneColor,
-                                    ),
-                                    const SizedBox(width: Spacing.s3),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          _bone(
-                                            120,
-                                            16,
-                                            DeelmarktRadius.xs,
-                                            boneColor,
-                                          ),
-                                          const SizedBox(height: Spacing.s2),
-                                          _bone(
-                                            80,
-                                            12,
-                                            DeelmarktRadius.xs,
-                                            boneColor,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                        _ContentSkeleton(
+                          boneColor: boneColor,
+                          borderColor: borderColor,
                         ),
                       ],
                     ),
                   ),
                 ),
-                // Action bar skeleton
-                Container(
-                  height: 72,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.s4,
-                    vertical: Spacing.s3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    border: Border(top: BorderSide(color: borderColor)),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _bone(
-                          double.infinity,
-                          52,
-                          DeelmarktRadius.lg,
-                          boneColor,
-                        ),
-                      ),
-                      const SizedBox(width: Spacing.s3),
-                      Expanded(
-                        child: _bone(
-                          double.infinity,
-                          52,
-                          DeelmarktRadius.lg,
-                          boneColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                _ActionBarSkeleton(
+                  boneColor: boneColor,
+                  borderColor: borderColor,
+                  surfaceColor: theme.colorScheme.surface,
                 ),
               ],
             ),
@@ -198,15 +63,126 @@ class DetailLoadingView extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Skeleton bone shape — a rounded rectangle picked up by the shimmer.
-  static Widget _bone(double width, double height, double radius, Color color) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(radius),
+class _ContentSkeleton extends StatelessWidget {
+  const _ContentSkeleton({required this.boneColor, required this.borderColor});
+
+  final Color boneColor;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.s4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _bone(double.infinity, 56, DeelmarktRadius.sm, boneColor),
+          const SizedBox(height: Spacing.s4),
+          Row(
+            children: [
+              Expanded(
+                child: _bone(
+                  double.infinity,
+                  24,
+                  DeelmarktRadius.sm,
+                  boneColor,
+                ),
+              ),
+              const SizedBox(width: Spacing.s4),
+              _bone(80, 24, DeelmarktRadius.sm, boneColor),
+            ],
+          ),
+          const SizedBox(height: Spacing.s3),
+          Row(
+            children: [
+              _bone(72, 24, DeelmarktRadius.full, boneColor),
+              const SizedBox(width: Spacing.s2),
+              _bone(64, 24, DeelmarktRadius.full, boneColor),
+            ],
+          ),
+          const SizedBox(height: Spacing.s4),
+          _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
+          const SizedBox(height: Spacing.s2),
+          _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
+          const SizedBox(height: Spacing.s2),
+          _bone(200, 14, DeelmarktRadius.xs, boneColor),
+          const SizedBox(height: Spacing.s6),
+          Container(
+            padding: const EdgeInsets.all(Spacing.s4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+              border: Border.all(color: borderColor),
+            ),
+            child: Row(
+              children: [
+                _bone(48, 48, DeelmarktRadius.full, boneColor),
+                const SizedBox(width: Spacing.s3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _bone(120, 16, DeelmarktRadius.xs, boneColor),
+                      const SizedBox(height: Spacing.s2),
+                      _bone(80, 12, DeelmarktRadius.xs, boneColor),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      child: SizedBox(width: width, height: height),
     );
   }
+}
+
+class _ActionBarSkeleton extends StatelessWidget {
+  const _ActionBarSkeleton({
+    required this.boneColor,
+    required this.borderColor,
+    required this.surfaceColor,
+  });
+
+  final Color boneColor;
+  final Color borderColor;
+  final Color surfaceColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 72,
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.s4,
+        vertical: Spacing.s3,
+      ),
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        border: Border(top: BorderSide(color: borderColor)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _bone(double.infinity, 52, DeelmarktRadius.lg, boneColor),
+          ),
+          const SizedBox(width: Spacing.s3),
+          Expanded(
+            child: _bone(double.infinity, 52, DeelmarktRadius.lg, boneColor),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Skeleton bone shape — a rounded rectangle picked up by the shimmer.
+Widget _bone(double width, double height, double radius, Color color) {
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(radius),
+    ),
+    child: SizedBox(width: width, height: height),
+  );
 }

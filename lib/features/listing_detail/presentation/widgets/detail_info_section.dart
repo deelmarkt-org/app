@@ -35,7 +35,6 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
   bool _expanded = false;
 
   static const int _maxCollapsedLines = 4;
-  static const double _mapPlaceholderHeight = 120;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +42,14 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
     final isDark = theme.brightness == Brightness.dark;
     final listing = widget.listing;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final accentColor =
+        isDark ? DeelmarktColors.darkSecondary : DeelmarktColors.secondary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title + Price (side by side per design)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -72,8 +72,6 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
             ],
           ),
           const SizedBox(height: Spacing.s2),
-
-          // Condition + category chips
           Wrap(
             spacing: Spacing.s2,
             runSpacing: Spacing.s1,
@@ -84,8 +82,6 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
             ],
           ),
           const SizedBox(height: Spacing.s4),
-
-          // Description
           Text(
             'listing_detail.description'.tr(),
             style: theme.textTheme.titleSmall?.copyWith(
@@ -131,10 +127,7 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
                         ? 'listing_detail.readLess'.tr()
                         : 'listing_detail.readMore'.tr(),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          isDark
-                              ? DeelmarktColors.darkSecondary
-                              : DeelmarktColors.secondary,
+                      color: accentColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -143,74 +136,94 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
             ),
           ),
           const SizedBox(height: Spacing.s3),
-
-          // Location with map placeholder
-          if (listing.location != null) ...[
-            Text(
-              'listing_detail.locationHeader'.tr(),
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          if (listing.location != null)
+            _LocationBlock(
+              location: listing.location!,
+              distanceKm: listing.distanceKm,
+              isDark: isDark,
             ),
-            const SizedBox(height: Spacing.s2),
-            Row(
-              children: [
-                Icon(
-                  PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
-                  size: DeelmarktIconSize.xs,
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkOnSurfaceSecondary
-                          : DeelmarktColors.neutral500,
-                ),
-                const SizedBox(width: Spacing.s1),
-                Text(
-                  listing.location!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color:
-                        isDark
-                            ? DeelmarktColors.darkOnSurface
-                            : DeelmarktColors.neutral700,
-                  ),
-                ),
-                if (listing.distanceKm != null)
-                  Text(
-                    ' · ${Formatters.distanceKm(listing.distanceKm!)}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          isDark
-                              ? DeelmarktColors.darkOnSurfaceSecondary
-                              : DeelmarktColors.neutral500,
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: Spacing.s3),
-            // Map placeholder (per stitch design)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-              child: Container(
-                height: _mapPlaceholderHeight,
-                width: double.infinity,
-                color:
-                    isDark
-                        ? DeelmarktColors.darkSurfaceElevated
-                        : DeelmarktColors.neutral100,
-                child: Center(
-                  child: Icon(
-                    PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
-                    size: DeelmarktIconSize.lg,
-                    color:
-                        isDark
-                            ? DeelmarktColors.darkOnSurfaceSecondary
-                            : DeelmarktColors.neutral500,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ],
       ),
+    );
+  }
+}
+
+/// Location row + map placeholder, extracted for line-limit compliance.
+class _LocationBlock extends StatelessWidget {
+  const _LocationBlock({
+    required this.location,
+    required this.isDark,
+    this.distanceKm,
+  });
+
+  final String location;
+  final double? distanceKm;
+  final bool isDark;
+
+  static const double _mapPlaceholderHeight = 120;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final mutedColor =
+        isDark
+            ? DeelmarktColors.darkOnSurfaceSecondary
+            : DeelmarktColors.neutral500;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'listing_detail.locationHeader'.tr(),
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: Spacing.s2),
+        Row(
+          children: [
+            Icon(
+              PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
+              size: DeelmarktIconSize.xs,
+              color: mutedColor,
+            ),
+            const SizedBox(width: Spacing.s1),
+            Text(
+              location,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color:
+                    isDark
+                        ? DeelmarktColors.darkOnSurface
+                        : DeelmarktColors.neutral700,
+              ),
+            ),
+            if (distanceKm != null)
+              Text(
+                ' · ${Formatters.distanceKm(distanceKm!)}',
+                style: theme.textTheme.bodyMedium?.copyWith(color: mutedColor),
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.s3),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+          child: Container(
+            height: _mapPlaceholderHeight,
+            width: double.infinity,
+            color:
+                isDark
+                    ? DeelmarktColors.darkSurfaceElevated
+                    : DeelmarktColors.neutral100,
+            child: Center(
+              child: Icon(
+                PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
+                size: DeelmarktIconSize.lg,
+                color: mutedColor,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
