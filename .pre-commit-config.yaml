@@ -61,7 +61,17 @@ repos:
       - id: flutter-test
         name: flutter test (full)
         language: system
-        entry: bash -c 'flutter test --no-pub'
+        entry: bash -c 'flutter test --coverage --no-pub'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-push]
+
+      # New-code coverage gate — mirrors SonarCloud quality gate locally
+      # Ensures changed files have ≥80% coverage before push
+      - id: new-code-coverage
+        name: new-code coverage (≥80%)
+        language: system
+        entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]
