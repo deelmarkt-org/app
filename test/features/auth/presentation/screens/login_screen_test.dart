@@ -229,6 +229,54 @@ void main() {
     });
   });
 
+  group('LoginScreen — expanded layout', () {
+    testWidgets('wraps content in Card on expanded screens', (tester) async {
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await pumpLoginScreen(tester);
+
+      expect(find.byType(Card), findsOneWidget);
+    });
+
+    testWidgets('no Card on compact screens', (tester) async {
+      tester.view.physicalSize = const Size(375, 812);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await pumpLoginScreen(tester);
+
+      expect(find.byType(Card), findsNothing);
+    });
+  });
+
+  group('LoginScreen — social login buttons', () {
+    testWidgets('Google button shows coming soon SnackBar', (tester) async {
+      await pumpLoginScreen(tester);
+
+      await tester.tap(find.text('auth.continueWithGoogle'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+    });
+
+    testWidgets('Apple button shows coming soon SnackBar', (tester) async {
+      await pumpLoginScreen(tester);
+
+      await tester.tap(find.text('auth.continueWithApple'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+    });
+  });
+
   group('LoginScreen — accessibility', () {
     testWidgets('login button meets minimum touch target', (tester) async {
       await pumpLoginScreen(tester);

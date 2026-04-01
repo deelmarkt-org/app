@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
@@ -95,39 +97,60 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
 
+    final isExpanded = Breakpoints.isExpanded(context);
+    final theme = Theme.of(context);
+
+    Widget content = AutofillGroup(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: Spacing.s12),
+          const LoginLogoSection(),
+          const SizedBox(height: Spacing.s8),
+          const LoginWelcomeSection(),
+          const SizedBox(height: Spacing.s8),
+          const LoginSocialButtons(),
+          const SizedBox(height: Spacing.s8),
+          const LoginOrDivider(),
+          const SizedBox(height: Spacing.s8),
+          LoginForm(
+            emailController: _emailController,
+            passwordController: _passwordController,
+            passwordFocusNode: _passwordFocusNode,
+            onSubmit: _submit,
+          ),
+          const SizedBox(height: Spacing.s8),
+          const BiometricSection(),
+          const SizedBox(height: Spacing.s10),
+          const LoginRegisterLink(),
+          const SizedBox(height: Spacing.s12),
+        ],
+      ),
+    );
+
+    // Wrap in elevated card on expanded (tablet/desktop) layouts.
+    if (isExpanded) {
+      content = Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+          side: BorderSide(color: theme.dividerColor),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.s8,
+            vertical: Spacing.s4,
+          ),
+          child: content,
+        ),
+      );
+    }
+
     return Scaffold(
       body: SafeArea(
         child: ResponsiveBody(
           maxWidth: 480,
-          child: SingleChildScrollView(
-            child: AutofillGroup(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: Spacing.s12),
-                  const LoginLogoSection(),
-                  const SizedBox(height: Spacing.s8),
-                  const LoginWelcomeSection(),
-                  const SizedBox(height: Spacing.s8),
-                  const LoginSocialButtons(),
-                  const SizedBox(height: Spacing.s8),
-                  const LoginOrDivider(),
-                  const SizedBox(height: Spacing.s8),
-                  LoginForm(
-                    emailController: _emailController,
-                    passwordController: _passwordController,
-                    passwordFocusNode: _passwordFocusNode,
-                    onSubmit: _submit,
-                  ),
-                  const SizedBox(height: Spacing.s8),
-                  const BiometricSection(),
-                  const SizedBox(height: Spacing.s10),
-                  const LoginRegisterLink(),
-                  const SizedBox(height: Spacing.s12),
-                ],
-              ),
-            ),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       ),
     );

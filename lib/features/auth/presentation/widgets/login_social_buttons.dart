@@ -7,9 +7,18 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Google + Apple social login buttons (stub — P-44).
 ///
+/// Buttons are tappable and show a "coming soon" SnackBar instead of
+/// being disabled, so users understand the feature is planned.
+///
 /// Reference: docs/screens/01-auth/03-login.md
 class LoginSocialButtons extends StatelessWidget {
   const LoginSocialButtons({super.key});
+
+  void _showComingSoon(BuildContext context) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('auth.socialLoginComingSoon'.tr())));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +28,14 @@ class LoginSocialButtons extends StatelessWidget {
           label: 'auth.continueWithGoogle'.tr(),
           variant: DeelButtonVariant.outline,
           leadingIcon: PhosphorIconsDuotone.googleLogo,
-          onPressed: null, // Stub — P-44 social login
+          onPressed: () => _showComingSoon(context), // Stub — P-44
         ),
         const SizedBox(height: Spacing.s3),
         DeelButton(
           label: 'auth.continueWithApple'.tr(),
           variant: DeelButtonVariant.outline,
           leadingIcon: PhosphorIconsDuotone.appleLogo,
-          onPressed: null, // Stub — P-44 social login
+          onPressed: () => _showComingSoon(context), // Stub — P-44
         ),
       ],
     );

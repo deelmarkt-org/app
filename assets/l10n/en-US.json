@@ -114,7 +114,8 @@
     "welcomeBack": "Welcome back",
     "welcomeSubtitle": "Log in to continue safe trading.",
     "invalidCredentials": "Incorrect email or password",
-    "forgotPasswordComingSoon": "Password reset is coming soon!"
+    "forgotPasswordComingSoon": "Password reset is coming soon!",
+    "socialLoginComingSoon": "Social login is coming soon!"
   },
   "validation": {
     "email_required": "Enter your email address",

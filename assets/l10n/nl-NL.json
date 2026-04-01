@@ -114,7 +114,8 @@
     "welcomeBack": "Welkom terug",
     "welcomeSubtitle": "Log in om verder te gaan met veilig handelen.",
     "invalidCredentials": "Onjuist e-mailadres of wachtwoord",
-    "forgotPasswordComingSoon": "Wachtwoord resetten komt binnenkort!"
+    "forgotPasswordComingSoon": "Wachtwoord resetten komt binnenkort!",
+    "socialLoginComingSoon": "Inloggen via social media komt binnenkort!"
   },
   "validation": {
     "email_required": "Voer je e-mailadres in",
