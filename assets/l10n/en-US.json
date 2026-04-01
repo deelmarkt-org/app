@@ -301,6 +301,8 @@
     "phone": "Phone",
     "addresses": "Addresses",
     "addAddress": "Add address",
+    "editAddress": "Edit address",
+    "addressSaved": "Address saved",
     "notifications": "Notifications",
     "messages": "Messages",
     "offers": "Offers",
@@ -349,7 +351,11 @@
     "statusDraft": "Draft",
     "firstListing": "Place your first listing",
     "noReviews": "No reviews yet",
-    "editAvatar": "Change photo"
+    "editAvatar": "Change photo",
+    "pickPhoto": "Choose a photo",
+    "takePhoto": "Take a photo",
+    "chooseFromGallery": "Choose from gallery",
+    "photoSelected": "Photo selected"
   },
   "kyc": {
     "bannerTitle": "Verify your identity",

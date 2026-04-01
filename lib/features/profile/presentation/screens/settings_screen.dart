@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/settings_view
 import 'package:deelmarkt/features/profile/presentation/widgets/account_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/addresses_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/address_form_modal.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_account_dialog.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/notifications_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/privacy_section.dart';
@@ -102,11 +103,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       data:
           (addresses) => AddressesSection(
             addresses: addresses,
-            onAdd: () {
-              // Tracked: #50
+            onAdd: () async {
+              final address = await AddressFormModal.show(context);
+              if (address != null && mounted) {
+                await ref.read(settingsProvider.notifier).saveAddress(address);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('settings.addressSaved'.tr())),
+                  );
+                }
+              }
             },
-            onEdit: (address) {
-              // Tracked: #50
+            onEdit: (address) async {
+              final updated = await AddressFormModal.show(
+                context,
+                address: address,
+              );
+              if (updated != null && mounted) {
+                await ref.read(settingsProvider.notifier).saveAddress(updated);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('settings.addressSaved'.tr())),
+                  );
+                }
+              }
             },
             onDelete:
                 (address) =>

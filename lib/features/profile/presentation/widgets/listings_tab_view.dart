@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
@@ -42,7 +43,7 @@ class ListingsTabView extends StatelessWidget {
           return EmptyState(
             variant: EmptyStateVariant.myListings,
             onAction: () {
-              // Tracked: #51
+              StatefulNavigationShell.of(context).goBranch(2);
             },
           );
         }
@@ -66,7 +67,7 @@ class ListingsTabView extends StatelessWidget {
                   '\u20AC ${(listing.priceInCents / 100).toStringAsFixed(2)}',
               title: listing.title,
               onTap: () {
-                // Tracked: #52
+                context.push('/listings/${listing.id}');
               },
               location: listing.location,
             );

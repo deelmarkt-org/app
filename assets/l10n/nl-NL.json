@@ -193,6 +193,8 @@
     "phone": "Telefoon",
     "addresses": "Adressen",
     "addAddress": "Adres toevoegen",
+    "editAddress": "Adres bewerken",
+    "addressSaved": "Adres opgeslagen",
     "notifications": "Meldingen",
     "messages": "Berichten",
     "offers": "Biedingen",
@@ -349,7 +351,11 @@
     "statusDraft": "Concept",
     "firstListing": "Plaats je eerste advertentie",
     "noReviews": "Nog geen reviews",
-    "editAvatar": "Foto wijzigen"
+    "editAvatar": "Foto wijzigen",
+    "pickPhoto": "Kies een foto",
+    "takePhoto": "Maak een foto",
+    "chooseFromGallery": "Kies uit galerij",
+    "photoSelected": "Foto geselecteerd"
   },
   "kyc": {
     "bannerTitle": "Verifieer je identiteit",
