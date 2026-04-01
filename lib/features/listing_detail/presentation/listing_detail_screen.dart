@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
@@ -141,7 +142,7 @@ class _DataView extends StatelessWidget {
   }
 
   void _shareListing(BuildContext context) {
-    final url = 'https://deelmarkt.com/listings/$listingId';
+    final url = '${AppConstants.deepLinkBase}/listings/$listingId';
     Clipboard.setData(ClipboardData(text: url));
     ScaffoldMessenger.of(
       context,
