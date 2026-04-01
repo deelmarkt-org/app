@@ -25,12 +25,15 @@ class MockReviewRepository implements ReviewRepository {
   }
 }
 
+/// Mock user ID used as the reviewee across all test reviews.
+const _mockRevieweeId = 'user-001';
+
 final _mockReviews = [
   ReviewEntity(
     id: 'review-001',
     reviewerId: 'user-002',
     reviewerName: 'Maria Jansen',
-    revieweeId: 'user-001',
+    revieweeId: _mockRevieweeId,
     listingId: 'listing-001',
     rating: 5.0,
     text: 'Snelle verzending en precies zoals beschreven. Top verkoper!',
@@ -40,7 +43,7 @@ final _mockReviews = [
     id: 'review-002',
     reviewerId: 'user-003',
     reviewerName: 'Pieter Bakker',
-    revieweeId: 'user-001',
+    revieweeId: _mockRevieweeId,
     listingId: 'listing-002',
     rating: 4.0,
     text: 'Goede communicatie, item was in orde. Aanrader.',
@@ -50,7 +53,7 @@ final _mockReviews = [
     id: 'review-003',
     reviewerId: 'user-004',
     reviewerName: 'Sophie Visser',
-    revieweeId: 'user-001',
+    revieweeId: _mockRevieweeId,
     listingId: 'listing-003',
     rating: 4.5,
     text: 'Fijne transactie, goed verpakt. Bedankt!',
