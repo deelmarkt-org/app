@@ -66,6 +66,10 @@ dependencies:
   # App info — version display in settings
   package_info_plus: ^8.2.1
 
+  # Image picker — camera + gallery for avatar upload (P-53)
+  image_picker: ^1.1.2
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
@@ -49,6 +52,13 @@ void main() {
     reviews: const AsyncValue.data([]),
   );
 
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+    await initializeDateFormatting('en');
+    await initializeDateFormatting('nl');
+  });
+
   group('OwnProfileScreen', () {
     final origOnError = FlutterError.onError;
     setUp(() => FlutterError.onError = _suppressOverflow);
@@ -62,7 +72,12 @@ void main() {
               () => _StubProfileNotifier(const ProfileState()),
             ),
           ],
-          child: const MaterialApp(home: OwnProfileScreen()),
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: const MaterialApp(home: OwnProfileScreen()),
+          ),
         ),
       );
       await tester.pump();
@@ -75,7 +90,7 @@ void main() {
         user: AsyncValue.error(Exception('fail'), StackTrace.current),
       );
 
-      await pumpTestScreenWithProviders(
+      await pumpLocalizedScreenWithProviders(
         tester,
         const OwnProfileScreen(),
         overrides: [
@@ -93,7 +108,7 @@ void main() {
     ) async {
       const nullUserState = ProfileState(user: AsyncValue.data(null));
 
-      await pumpTestScreenWithProviders(
+      await pumpLocalizedScreenWithProviders(
         tester,
         const OwnProfileScreen(),
         overrides: [
@@ -114,7 +129,12 @@ void main() {
               () => _StubProfileNotifier(loadedState),
             ),
           ],
-          child: const MaterialApp(home: OwnProfileScreen()),
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: const MaterialApp(home: OwnProfileScreen()),
+          ),
         ),
       );
       await tester.pump();
@@ -136,7 +156,12 @@ void main() {
               () => _StubProfileNotifier(loadedState),
             ),
           ],
-          child: const MaterialApp(home: OwnProfileScreen()),
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: const MaterialApp(home: OwnProfileScreen()),
+          ),
         ),
       );
       await tester.pump();

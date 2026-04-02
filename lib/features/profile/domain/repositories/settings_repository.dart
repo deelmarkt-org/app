@@ -1,5 +1,5 @@
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
-import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 
 /// Settings repository interface — domain layer.
 abstract class SettingsRepository {

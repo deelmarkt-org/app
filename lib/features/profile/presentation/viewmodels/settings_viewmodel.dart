@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
-import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 
 part 'settings_viewmodel.g.dart';
 

@@ -223,7 +223,7 @@ void main() {
 
       await container
           .read(settingsNotifierProvider.notifier)
-          .deleteAccount(password: 'test123');
+          .deleteAccount(password: 'test123'); // pragma: allowlist secret
 
       final state = container.read(settingsNotifierProvider);
       expect(state.isDeleting, isFalse);
@@ -239,7 +239,7 @@ void main() {
       // load() will fail, but deleteAccount should still set error.
       await container
           .read(settingsNotifierProvider.notifier)
-          .deleteAccount(password: 'wrong');
+          .deleteAccount(password: 'wrong'); // pragma: allowlist secret
 
       final state = container.read(settingsNotifierProvider);
       expect(state.isDeleting, isFalse);

@@ -7,6 +7,8 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/account_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/addresses_section.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/address_form_modal.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_account_dialog.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/notifications_section.dart';
@@ -15,7 +17,7 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewm
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
 
-/// App version provider — replaces setState for version loading.
+/// App version provider — uses manual FutureProvider (leaf provider, no notifier dependencies).
 final appVersionProvider = FutureProvider<String>((ref) async {
   try {
     final info = await PackageInfo.fromPlatform();
@@ -50,7 +52,7 @@ class SettingsScreen extends ConsumerWidget {
               const LanguageSwitch(),
               const SizedBox(height: Spacing.s4),
               _buildAccountSection(profileState),
-              _buildAddressesSection(state, ref),
+              _buildAddressesSection(state, ref, context),
               _buildNotificationsSection(state, ref),
               _buildPrivacySection(context, state, ref),
               AppInfoSection(version: version.valueOrNull ?? ''),
@@ -73,19 +75,37 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildAddressesSection(SettingsState state, WidgetRef ref) {
+  Future<void> _saveAddressFromModal(
+    BuildContext context,
+    WidgetRef ref, {
+    DutchAddress? existing,
+  }) async {
+    final result = await AddressFormModal.show(context, address: existing);
+    if (result != null && context.mounted) {
+      await ref.read(settingsNotifierProvider.notifier).saveAddress(result);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('settings.addressSaved'.tr())));
+      }
+    }
+  }
+
+  Widget _buildAddressesSection(
+    SettingsState state,
+    WidgetRef ref,
+    BuildContext context,
+  ) {
     return state.addresses.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (_, _) => Text('error.generic'.tr()),
       data:
           (addresses) => AddressesSection(
             addresses: addresses,
-            onAdd: () {
-              // Tracked: #50
-            },
-            onEdit: (address) {
-              // Tracked: #50
-            },
+            onAdd: () => _saveAddressFromModal(context, ref),
+            onEdit:
+                (address) =>
+                    _saveAddressFromModal(context, ref, existing: address),
             onDelete:
                 (address) => ref
                     .read(settingsNotifierProvider.notifier)

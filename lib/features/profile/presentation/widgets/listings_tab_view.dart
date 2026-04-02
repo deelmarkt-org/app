@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
@@ -43,7 +46,9 @@ class ListingsTabView extends StatelessWidget {
           return EmptyState(
             variant: EmptyStateVariant.myListings,
             onAction: () {
-              // Tracked: #51
+              StatefulNavigationShell.of(
+                context,
+              ).goBranch(AppRoutes.sellTabIndex);
             },
           );
         }
@@ -60,16 +65,23 @@ class ListingsTabView extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final listing = items[index];
-            return DeelCard.grid(
-              imageUrl:
-                  listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-              priceFormatted:
-                  '\u20AC ${(listing.priceInCents / 100).toStringAsFixed(2)}',
-              title: listing.title,
-              onTap: () {
-                // Tracked: #52
-              },
-              location: listing.location,
+            return Semantics(
+              button: true,
+              label:
+                  '${'listing.price'.tr()} ${Formatters.euroFromCents(listing.priceInCents)}, ${listing.title}',
+              child: DeelCard.grid(
+                imageUrl:
+                    listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
+                priceFormatted: Formatters.euroFromCents(listing.priceInCents),
+                title: listing.title,
+                onTap: () {
+                  context.pushNamed(
+                    'listing-detail',
+                    pathParameters: {'id': listing.id},
+                  );
+                },
+                location: listing.location,
+              ),
             );
           },
         );

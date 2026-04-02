@@ -194,6 +194,8 @@
     "phone": "Telefoon",
     "addresses": "Adressen",
     "addAddress": "Adres toevoegen",
+    "editAddress": "Adres bewerken",
+    "addressSaved": "Adres opgeslagen",
     "notifications": "Meldingen",
     "messages": "Berichten",
     "offers": "Biedingen",
@@ -262,7 +264,9 @@
     "city": "Plaats",
     "autoFilled": "Automatisch ingevuld",
     "lookingUp": "Adres opzoeken...",
-    "notFound": "Adres niet gevonden"
+    "notFound": "Adres niet gevonden",
+    "streetRequired": "Vul een straatnaam in",
+    "cityRequired": "Vul een stad in"
   },
   "shipping": {
     "sendPackage": "Verzend je pakket",
@@ -338,6 +342,8 @@
     "removeFavourite": "Verwijderen uit favorieten"
   },
   "profile": {
+    "title": "Profiel",
+    "notLoggedIn": "Niet ingelogd",
     "memberSince": "Lid sinds",
     "verifyIdentity": "Verifieer je identiteit",
     "sold": "Verkocht",
@@ -350,7 +356,11 @@
     "statusDraft": "Concept",
     "firstListing": "Plaats je eerste advertentie",
     "noReviews": "Nog geen reviews",
-    "editAvatar": "Foto wijzigen"
+    "editAvatar": "Foto wijzigen",
+    "pickPhoto": "Kies een foto",
+    "takePhoto": "Maak een foto",
+    "chooseFromGallery": "Kies uit galerij",
+    "photoSelected": "Foto geselecteerd"
   },
   "kyc": {
     "bannerTitle": "Verifieer je identiteit",
