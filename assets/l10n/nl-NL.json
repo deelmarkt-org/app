@@ -20,7 +20,8 @@
     "share": "Delen",
     "edit": "Bewerken",
     "confirm": "Bevestigen",
-    "close": "Sluiten"
+    "close": "Sluiten",
+    "comingSoon": "Binnenkort beschikbaar"
   },
   "form": {
     "email": "E-mailadres",
@@ -382,5 +383,26 @@
     "escrowProtectedTip": "Betaling beschermd door DeelMarkt Escrow",
     "topSellerTip": "Consistent hoog beoordeelde verkoper",
     "row": "{} verificatiebadges"
+  },
+  "listing_detail": {
+    "description": "Beschrijving",
+    "readMore": "Lees meer",
+    "readLess": "Toon minder",
+    "viewProfile": "Bekijk profiel",
+    "respondsWithin": "Reageert binnen {time}",
+    "respondsWithinHours": "{count}u",
+    "respondsWithinMinutes": "{count}m",
+    "similarListings": "Vergelijkbare advertenties",
+    "messageButton": "Bericht",
+    "buyButton": "Koop — {price}",
+    "soldBadge": "VERKOCHT",
+    "notFound": "Advertentie niet gevonden",
+    "notFoundAction": "Terug naar home",
+    "photoCount": "Foto {current} van {total}",
+    "memberSince": "Lid sinds {date}",
+    "reviews": "{count} beoordelingen",
+    "noReviews": "Nog geen beoordelingen",
+    "verified": "Geverifieerd",
+    "locationHeader": "Locatie"
   }
 }

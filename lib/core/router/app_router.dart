@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
@@ -181,7 +182,7 @@ GoRouter _buildRouter({
         },
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return _Placeholder('Listing $id');
+          return ListingDetailScreen(listingId: id);
         },
       ),
       GoRoute(

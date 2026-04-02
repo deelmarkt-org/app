@@ -190,7 +190,7 @@ The agent will:
 
 **Phase C — Connected Screens (Week 3):**
 - [x] `B-50` Home screen (buyer mode) — categories + recent + nearby, real Supabase data *(was P-29)*
-- [ ] `B-51` Listing detail screen — gallery, trust banner, seller card, CTA, deep linked *(was P-25)*
+- [x] `B-51` Listing detail screen — gallery, trust banner, seller card, CTA, deep linked *(was P-25)*
 - [ ] `B-52` Search screen — FTS integration, results grid + filters *(was P-26)*
 
 **Escrow + Shipping (COMPLETED):**

@@ -29,6 +29,18 @@ class SupabaseCategoryRepository implements CategoryRepository {
   }
 
   @override
+  Future<CategoryEntity?> getById(String id) async {
+    try {
+      final response =
+          await _client.from('categories').select().eq('id', id).maybeSingle();
+      if (response == null) return null;
+      return CategoryDto.fromJson(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch category: ${e.message}');
+    }
+  }
+
+  @override
   Future<List<CategoryEntity>> getSubcategories(String parentId) async {
     try {
       final response = await _client
