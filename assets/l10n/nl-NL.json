@@ -414,5 +414,31 @@
     "noReviews": "Nog geen beoordelingen",
     "verified": "Geverifieerd",
     "locationHeader": "Locatie"
+  },
+  "search": {
+    "placeholder": "Zoek op DeelMarkt",
+    "recentSearches": "Recente zoekopdrachten",
+    "clearAll": "Alles wissen",
+    "popularCategories": "Populaire categorieën",
+    "resultsFor": "{count} resultaten voor \"{query}\"",
+    "noResults": "Geen resultaten gevonden",
+    "tryDifferent": "Probeer andere trefwoorden of pas je filters aan",
+    "filter": {
+      "price": "Prijs",
+      "condition": "Conditie",
+      "distance": "Afstand",
+      "category": "Categorie",
+      "sort": "Sorteer op",
+      "filters": "Filters",
+      "apply": "Toepassen",
+      "reset": "Wissen"
+    },
+    "sort": {
+      "relevance": "Relevantie",
+      "priceLowHigh": "Prijs: laag naar hoog",
+      "priceHighLow": "Prijs: hoog naar laag",
+      "newest": "Nieuwste eerst",
+      "nearest": "Dichtstbijzijnde eerst"
+    }
   }
 }

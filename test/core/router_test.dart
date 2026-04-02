@@ -115,11 +115,16 @@ void main() {
       authedRouter.dispose();
     });
 
-    testWidgets('search route receives query param', (tester) async {
-      router.go('/search?q=fiets');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    testWidgets('search route renders search screen', (tester) async {
+      router.go('/search');
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
       await tester.pumpAndSettle();
-      expect(find.text('Search: fiets'), findsWidgets);
+      expect(find.byType(TextField), findsWidgets);
     });
 
     testWidgets('unknown route shows error page', (tester) async {
