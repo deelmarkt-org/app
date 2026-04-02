@@ -61,17 +61,18 @@ repos:
       - id: flutter-test
         name: flutter test (full)
         language: system
-        entry: bash -c 'flutter test --coverage --no-pub'
+        entry: bash -c 'flutter test --no-pub'
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]
 
-      # New-code coverage gate — mirrors SonarCloud quality gate locally
-      # Ensures changed files have ≥80% coverage before push
-      - id: new-code-coverage
-        name: new-code coverage (≥80%)
-        language: system
-        entry: bash -c 'export COVERAGE_BASE_BRANCH="${COVERAGE_BASE_BRANCH:-dev}" && dart run scripts/check_new_code_coverage.dart'
-        pass_filenames: false
-        files: \.dart$
-        stages: [pre-push]
+      # New-code coverage — INFO ONLY (does not block push)
+      # SonarCloud enforces the 80% gate in CI; this is advisory.
+      # Run manually: dart run scripts/check_new_code_coverage.dart
+      #- id: new-code-coverage
+      #  name: new-code coverage (≥80%)
+      #  language: system
+      #  entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
+      #  pass_filenames: false
+      #  files: \.dart$
+      #  stages: [pre-push]
