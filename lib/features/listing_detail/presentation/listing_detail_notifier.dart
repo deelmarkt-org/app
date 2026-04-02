@@ -47,6 +47,8 @@ final listingDetailNotifierProvider = AsyncNotifierProvider.autoDispose
 
 class ListingDetailNotifier
     extends AutoDisposeFamilyAsyncNotifier<ListingDetailState, String> {
+  static const _logTag = 'listing-detail';
+
   @override
   Future<ListingDetailState> build(String arg) async {
     final listingRepo = ref.watch(listingRepositoryProvider);
@@ -74,7 +76,7 @@ class ListingDetailNotifier
           AppLogger.warning(
             'Failed to load seller profile',
             error: e,
-            tag: 'listing-detail',
+            tag: _logTag,
           );
         }
       }(),
@@ -82,11 +84,7 @@ class ListingDetailNotifier
         try {
           category = await categoryRepo.getById(listing.categoryId);
         } on Exception catch (e) {
-          AppLogger.warning(
-            'Failed to load category',
-            error: e,
-            tag: 'listing-detail',
-          );
+          AppLogger.warning('Failed to load category', error: e, tag: _logTag);
         }
       }(),
     ]);
@@ -114,11 +112,7 @@ class ListingDetailNotifier
       final updated = await repo.toggleFavourite(current.listing.id);
       state = AsyncValue.data(current.copyWith(listing: updated));
     } on Exception catch (e) {
-      AppLogger.error(
-        'Failed to toggle favourite',
-        error: e,
-        tag: 'listing-detail',
-      );
+      AppLogger.error('Failed to toggle favourite', error: e, tag: _logTag);
       state = AsyncValue.data(current);
     }
   }

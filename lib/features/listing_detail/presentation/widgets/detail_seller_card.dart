@@ -110,14 +110,13 @@ class _Avatar extends StatelessWidget {
               ? DeelmarktColors.darkSurfaceElevated
               : DeelmarktColors.neutral200,
       backgroundImage: url != null ? NetworkImage(url!) : null,
-      child:
-          url == null
-              ? Text(
-                name.isNotEmpty ? name[0].toUpperCase() : '?',
-                style: Theme.of(context).textTheme.headlineSmall,
-              )
-              : null,
+      child: url == null ? _buildInitial(context) : null,
     );
+  }
+
+  Widget _buildInitial(BuildContext context) {
+    final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    return Text(initial, style: Theme.of(context).textTheme.headlineSmall);
   }
 }
 
