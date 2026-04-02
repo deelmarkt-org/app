@@ -17,7 +17,10 @@ library;
 import 'dart:io';
 
 const int _minCoveragePercent = 80;
-const String _baseBranch = 'dev';
+
+/// Base branch for coverage diff. Override: COVERAGE_BASE_BRANCH=feature/foo
+final String _baseBranch =
+    Platform.environment['COVERAGE_BASE_BRANCH'] ?? 'dev';
 
 /// Files to skip (generated code, constants, interfaces, barrel exports).
 bool _shouldSkip(String path) {
