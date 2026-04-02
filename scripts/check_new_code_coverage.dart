@@ -18,10 +18,6 @@ import 'dart:io';
 
 const int _minCoveragePercent = 80;
 
-/// Base branch for coverage diff. Override: COVERAGE_BASE_BRANCH=feature/foo
-final String _baseBranch =
-    Platform.environment['COVERAGE_BASE_BRANCH'] ?? 'dev';
-
 /// Files to skip (generated code, constants, interfaces, barrel exports).
 bool _shouldSkip(String path) {
   if (path.endsWith('.g.dart')) return true;
@@ -66,19 +62,57 @@ Map<String, (int hit, int total)> _parseLcov(String lcovContent) {
   return result;
 }
 
+/// Detect the best base ref for diffing.
+///
+/// Priority:
+/// 1. COVERAGE_BASE_BRANCH env var (explicit override)
+/// 2. The upstream tracking branch of the current branch
+/// 3. Fallback to origin/dev
+Future<String> _detectBaseRef() async {
+  // 1. Explicit override
+  final envBase = Platform.environment['COVERAGE_BASE_BRANCH'];
+  if (envBase != null && envBase.isNotEmpty) {
+    final ref = envBase.startsWith('origin/') ? envBase : 'origin/$envBase';
+    stdout.writeln('Using base from COVERAGE_BASE_BRANCH: $ref');
+    return ref;
+  }
+
+  // 2. Try the upstream tracking branch
+  final trackResult = await Process.run('git', [
+    'rev-parse',
+    '--abbrev-ref',
+    '--symbolic-full-name',
+    '@{upstream}',
+  ]);
+
+  if (trackResult.exitCode == 0) {
+    final upstream = (trackResult.stdout as String).trim();
+    if (upstream.isNotEmpty && upstream != '@{upstream}') {
+      stdout.writeln('Using upstream tracking branch: $upstream');
+      return upstream;
+    }
+  }
+
+  // 3. Fallback
+  stdout.writeln('Using default base: origin/dev');
+  return 'origin/dev';
+}
+
 Future<void> main() async {
   stdout.writeln('Checking new-code coverage (≥$_minCoveragePercent%)...');
 
-  // 1. Get changed lib/*.dart files vs base branch
+  final baseRef = await _detectBaseRef();
+
+  // 1. Get changed lib/*.dart files vs base
   final diffResult = await Process.run('git', [
     'diff',
     '--name-only',
     '--diff-filter=ACMR', // Added, Copied, Modified, Renamed
-    'origin/$_baseBranch...HEAD',
+    '$baseRef...HEAD',
   ]);
 
   if (diffResult.exitCode != 0) {
-    stderr.writeln('Failed to get git diff: ${diffResult.stderr}');
+    stderr.writeln('Failed to get git diff against $baseRef: ${diffResult.stderr}');
     exit(1);
   }
 
