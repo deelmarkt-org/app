@@ -319,5 +319,44 @@ void main() {
       expect(find.byTooltip('action.edit'), findsOneWidget);
       expect(find.byTooltip('action.delete'), findsOneWidget);
     });
+
+    testWidgets('tapping add address opens AddressFormModal', (tester) async {
+      await _pumpSettingsScreen(tester);
+
+      // Tap the "Add address" button
+      await tester.tap(find.text('settings.addAddress'));
+      await tester.pumpAndSettle();
+
+      // AddressFormModal should be shown as a bottom sheet
+      expect(find.text('settings.addAddress'), findsWidgets);
+    });
+
+    testWidgets('tapping edit opens AddressFormModal with address', (
+      tester,
+    ) async {
+      await _pumpSettingsScreen(tester);
+
+      await tester.tap(find.byTooltip('action.edit'));
+      await tester.pumpAndSettle();
+
+      // Edit modal should show editAddress title
+      expect(find.text('settings.editAddress'), findsOneWidget);
+    });
+
+    testWidgets('notification toggle renders switches', (tester) async {
+      await _pumpSettingsScreen(tester);
+
+      final switches =
+          tester
+              .widgetList<SwitchListTile>(find.byType(SwitchListTile))
+              .toList();
+      expect(switches.length, 4);
+    });
+
+    testWidgets('version displays in app info section', (tester) async {
+      await _pumpSettingsScreen(tester);
+
+      expect(find.byType(AppInfoSection), findsOneWidget);
+    });
   });
 }

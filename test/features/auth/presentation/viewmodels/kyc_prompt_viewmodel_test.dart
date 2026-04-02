@@ -73,7 +73,7 @@ void main() {
       expect(notifier.state.promptType, KycPromptType.none);
     });
 
-    test('initiateIdin sets isSuccess on success', () async {
+    test('initiateIdin captures redirectUrl on success', () async {
       when(
         () => mockInitiateIdin.call(),
       ).thenAnswer((_) async => 'https://www.idin.nl/verify');
@@ -81,7 +81,7 @@ void main() {
       await notifier.initiateIdin();
 
       expect(notifier.state.isLoading, isFalse);
-      expect(notifier.state.isSuccess, isTrue);
+      expect(notifier.state.redirectUrl, 'https://www.idin.nl/verify');
       expect(notifier.state.error, isNull);
     });
 

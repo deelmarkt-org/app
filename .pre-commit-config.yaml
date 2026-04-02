@@ -71,7 +71,7 @@ repos:
       - id: new-code-coverage
         name: new-code coverage (≥80%)
         language: system
-        entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
+        entry: bash -c 'export COVERAGE_BASE_BRANCH="${COVERAGE_BASE_BRANCH:-dev}" && dart run scripts/check_new_code_coverage.dart'
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]
