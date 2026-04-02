@@ -7,6 +7,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/account_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/addresses_section.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/address_form_modal.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_account_dialog.dart';
@@ -16,7 +17,7 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewm
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
 
-/// App version provider — replaces setState for version loading.
+/// App version provider — uses manual FutureProvider (leaf provider, no notifier dependencies).
 final appVersionProvider = FutureProvider<String>((ref) async {
   try {
     final info = await PackageInfo.fromPlatform();
@@ -74,6 +75,22 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _saveAddressFromModal(
+    BuildContext context,
+    WidgetRef ref, {
+    DutchAddress? existing,
+  }) async {
+    final result = await AddressFormModal.show(context, address: existing);
+    if (result != null && context.mounted) {
+      await ref.read(settingsNotifierProvider.notifier).saveAddress(result);
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('settings.addressSaved'.tr())));
+      }
+    }
+  }
+
   Widget _buildAddressesSection(
     SettingsState state,
     WidgetRef ref,
@@ -85,35 +102,10 @@ class SettingsScreen extends ConsumerWidget {
       data:
           (addresses) => AddressesSection(
             addresses: addresses,
-            onAdd: () async {
-              final address = await AddressFormModal.show(context);
-              if (address != null && context.mounted) {
-                await ref
-                    .read(settingsNotifierProvider.notifier)
-                    .saveAddress(address);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('settings.addressSaved'.tr())),
-                  );
-                }
-              }
-            },
-            onEdit: (address) async {
-              final updated = await AddressFormModal.show(
-                context,
-                address: address,
-              );
-              if (updated != null && context.mounted) {
-                await ref
-                    .read(settingsNotifierProvider.notifier)
-                    .saveAddress(updated);
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('settings.addressSaved'.tr())),
-                  );
-                }
-              }
-            },
+            onAdd: () => _saveAddressFromModal(context, ref),
+            onEdit:
+                (address) =>
+                    _saveAddressFromModal(context, ref, existing: address),
             onDelete:
                 (address) => ref
                     .read(settingsNotifierProvider.notifier)

@@ -11,6 +11,9 @@ abstract final class AppRoutes {
   static const messages = '/messages';
   static const profile = '/profile';
 
+  /// Bottom nav tab indices — must match StatefulShellBranch order in app_router.
+  static const sellTabIndex = 2;
+
   static const settings = '/profile/settings';
 
   // ── Auth flow ──

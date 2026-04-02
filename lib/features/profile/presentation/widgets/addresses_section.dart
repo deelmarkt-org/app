@@ -4,7 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/settings_section_header.dart';
-import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Addresses section — list of saved addresses with add/edit/delete.

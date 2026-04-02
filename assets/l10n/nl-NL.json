@@ -264,7 +264,9 @@
     "city": "Plaats",
     "autoFilled": "Automatisch ingevuld",
     "lookingUp": "Adres opzoeken...",
-    "notFound": "Adres niet gevonden"
+    "notFound": "Adres niet gevonden",
+    "streetRequired": "Vul een straatnaam in",
+    "cityRequired": "Vul een stad in"
   },
   "shipping": {
     "sendPackage": "Verzend je pakket",

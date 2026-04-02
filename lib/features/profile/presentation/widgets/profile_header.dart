@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -56,10 +57,12 @@ class ProfileHeader extends StatelessWidget {
     final image = await picker.pickImage(source: source);
 
     if (image != null && context.mounted) {
-      developer.log(
-        'Avatar image selected: ${image.path}',
-        name: 'ProfileHeader',
-      );
+      if (kDebugMode) {
+        developer.log(
+          'Avatar image selected: ${image.path}',
+          name: 'ProfileHeader',
+        );
+      }
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('profile.photoSelected'.tr())));
@@ -68,7 +71,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final memberSince = '${user.createdAt.month}/${user.createdAt.year}';
+    final locale = context.locale.languageCode;
+    final memberSince = DateFormat.yMMM(locale).format(user.createdAt);
 
     return Column(
       children: [

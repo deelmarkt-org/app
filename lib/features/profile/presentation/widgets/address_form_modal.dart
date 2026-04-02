@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
-import 'package:deelmarkt/features/shipping/presentation/widgets/dutch_address_input.dart';
+import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
+import 'package:deelmarkt/widgets/inputs/dutch_address_input.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 /// Modal bottom sheet for adding or editing a Dutch address.
@@ -44,10 +44,12 @@ class _AddressFormModalState extends State<AddressFormModal> {
   late final TextEditingController _postcodeController;
   late final TextEditingController _houseNumberController;
   late final TextEditingController _additionController;
-  String? _street;
-  String? _city;
+  late final TextEditingController _streetController;
+  late final TextEditingController _cityController;
   String? _postcodeError;
   String? _houseNumberError;
+  String? _streetError;
+  String? _cityError;
 
   bool get _isEditMode => widget.address != null;
 
@@ -60,8 +62,8 @@ class _AddressFormModalState extends State<AddressFormModal> {
       text: address?.houseNumber ?? '',
     );
     _additionController = TextEditingController(text: address?.addition ?? '');
-    _street = address?.street;
-    _city = address?.city;
+    _streetController = TextEditingController(text: address?.street ?? '');
+    _cityController = TextEditingController(text: address?.city ?? '');
   }
 
   @override
@@ -69,16 +71,22 @@ class _AddressFormModalState extends State<AddressFormModal> {
     _postcodeController.dispose();
     _houseNumberController.dispose();
     _additionController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
   void _handleSave() {
     final postcode = _postcodeController.text.trim();
     final houseNumber = _houseNumberController.text.trim();
+    final street = _streetController.text.trim();
+    final city = _cityController.text.trim();
 
     // Validate required fields
     String? postcodeErr;
     String? houseNumberErr;
+    String? streetErr;
+    String? cityErr;
 
     if (postcode.isEmpty || postcode.length < 6) {
       postcodeErr = 'address.postcodeInvalid'.tr();
@@ -86,11 +94,22 @@ class _AddressFormModalState extends State<AddressFormModal> {
     if (houseNumber.isEmpty) {
       houseNumberErr = 'address.houseNumberInvalid'.tr();
     }
+    if (street.isEmpty) {
+      streetErr = 'address.streetRequired'.tr();
+    }
+    if (city.isEmpty) {
+      cityErr = 'address.cityRequired'.tr();
+    }
 
-    if (postcodeErr != null || houseNumberErr != null) {
+    if (postcodeErr != null ||
+        houseNumberErr != null ||
+        streetErr != null ||
+        cityErr != null) {
       setState(() {
         _postcodeError = postcodeErr;
         _houseNumberError = houseNumberErr;
+        _streetError = streetErr;
+        _cityError = cityErr;
       });
       return;
     }
@@ -100,8 +119,8 @@ class _AddressFormModalState extends State<AddressFormModal> {
       postcode: postcode,
       houseNumber: houseNumber,
       addition: addition.isNotEmpty ? addition : null,
-      street: _street ?? '',
-      city: _city ?? '',
+      street: street,
+      city: city,
     );
 
     widget.onSave(address);
@@ -133,20 +152,49 @@ class _AddressFormModalState extends State<AddressFormModal> {
               postcodeController: _postcodeController,
               houseNumberController: _houseNumberController,
               additionController: _additionController,
-              street: _street,
-              city: _city,
+              street:
+                  _streetController.text.isNotEmpty
+                      ? _streetController.text
+                      : null,
+              city:
+                  _cityController.text.isNotEmpty ? _cityController.text : null,
               postcodeError: _postcodeError,
               houseNumberError: _houseNumberError,
               onPostcodeChanged: (value) {
                 if (_postcodeError != null) {
                   setState(() => _postcodeError = null);
                 }
-                // TODO: Wire postcode API lookup to auto-fill street/city
-                // when postcode + house number are both valid.
+                // Tracked: postcode API auto-fill deferred to R-27
               },
               onHouseNumberChanged: (value) {
                 if (_houseNumberError != null) {
                   setState(() => _houseNumberError = null);
+                }
+              },
+            ),
+            const SizedBox(height: Spacing.s3),
+            TextFormField(
+              controller: _streetController,
+              decoration: InputDecoration(
+                labelText: 'address.street'.tr(),
+                errorText: _streetError,
+              ),
+              onChanged: (_) {
+                if (_streetError != null) {
+                  setState(() => _streetError = null);
+                }
+              },
+            ),
+            const SizedBox(height: Spacing.s3),
+            TextFormField(
+              controller: _cityController,
+              decoration: InputDecoration(
+                labelText: 'address.city'.tr(),
+                errorText: _cityError,
+              ),
+              onChanged: (_) {
+                if (_cityError != null) {
+                  setState(() => _cityError = null);
                 }
               },
             ),

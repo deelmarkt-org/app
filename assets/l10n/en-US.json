@@ -238,7 +238,9 @@
     "city": "City",
     "autoFilled": "Auto-filled",
     "lookingUp": "Looking up address...",
-    "notFound": "Address not found"
+    "notFound": "Address not found",
+    "streetRequired": "Enter a street name",
+    "cityRequired": "Enter a city"
   },
   "shipping": {
     "sendPackage": "Send your package",
