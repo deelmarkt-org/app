@@ -416,10 +416,11 @@
     "locationHeader": "Locatie"
   },
   "search": {
-    "placeholder": "Zoek op DeelMarkt",
+    "placeholder": "Zoek op trefwoord...",
     "recentSearches": "Recente zoekopdrachten",
     "clearAll": "Alles wissen",
     "popularCategories": "Populaire categorieën",
+    "results": "{count} resultaten",
     "resultsFor": "{count} resultaten voor \"{query}\"",
     "noResults": "Geen resultaten gevonden",
     "tryDifferent": "Probeer andere trefwoorden of pas je filters aan",
@@ -431,7 +432,8 @@
       "sort": "Sorteer op",
       "filters": "Filters",
       "apply": "Toepassen",
-      "reset": "Wissen"
+      "reset": "Wissen",
+      "anyDistance": "Elke afstand"
     },
     "sort": {
       "relevance": "Relevantie",

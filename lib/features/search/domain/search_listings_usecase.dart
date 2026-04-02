@@ -1,4 +1,4 @@
-import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/core/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 
 /// Executes a filtered search against the listing repository.
@@ -16,7 +16,8 @@ class SearchListingsUseCase {
       SearchSortOrder.priceLowHigh => 'price_cents',
       SearchSortOrder.priceHighLow => 'price_cents',
       SearchSortOrder.newest => 'created_at',
-      SearchSortOrder.nearest => 'created_at',
+      // Distance sort not yet supported by backend — fall back to relevance
+      SearchSortOrder.nearest => null,
       SearchSortOrder.relevance => null,
     };
     final ascending = filter.sortOrder == SearchSortOrder.priceLowHigh;

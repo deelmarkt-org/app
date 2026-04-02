@@ -1,11 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/core/utils/formatters.dart';
+import 'package:deelmarkt/core/domain/entities/category_entity.dart';
+import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/filter_condition_section.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/filter_distance_section.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/filter_price_section.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Shows the search filter bottom sheet.
@@ -13,6 +17,7 @@ void showFilterBottomSheet({
   required BuildContext context,
   required SearchFilter currentFilter,
   required ValueChanged<SearchFilter> onApply,
+  bool reduceMotion = false,
 }) {
   showModalBottomSheet<void>(
     context: context,
@@ -22,30 +27,39 @@ void showFilterBottomSheet({
         top: Radius.circular(DeelmarktRadius.xl),
       ),
     ),
+    transitionAnimationController:
+        reduceMotion
+            ? AnimationController(
+              vsync: Navigator.of(context),
+              duration: Duration.zero,
+            )
+            : null,
     builder:
         (_) => _FilterSheet(currentFilter: currentFilter, onApply: onApply),
   );
 }
 
-class _FilterSheet extends StatefulWidget {
+class _FilterSheet extends ConsumerStatefulWidget {
   const _FilterSheet({required this.currentFilter, required this.onApply});
 
   final SearchFilter currentFilter;
   final ValueChanged<SearchFilter> onApply;
 
   @override
-  State<_FilterSheet> createState() => _FilterSheetState();
+  ConsumerState<_FilterSheet> createState() => _FilterSheetState();
 }
 
-class _FilterSheetState extends State<_FilterSheet> {
+class _FilterSheetState extends ConsumerState<_FilterSheet> {
   late SearchFilter _filter;
-
-  static const _maxPriceCents = 500000;
 
   @override
   void initState() {
     super.initState();
     _filter = widget.currentFilter;
+  }
+
+  void _updateFilter(SearchFilter updated) {
+    setState(() => _filter = updated);
   }
 
   @override
@@ -75,9 +89,13 @@ class _FilterSheetState extends State<_FilterSheet> {
                 ),
               ),
               const SizedBox(height: Spacing.s4),
-              _buildPriceSection(theme),
+              FilterPriceSection(filter: _filter, onChanged: _updateFilter),
               const Divider(height: Spacing.s6),
-              _buildConditionSection(theme),
+              FilterConditionSection(filter: _filter, onChanged: _updateFilter),
+              const Divider(height: Spacing.s6),
+              FilterDistanceSection(filter: _filter, onChanged: _updateFilter),
+              const Divider(height: Spacing.s6),
+              _buildCategorySection(theme),
               const Divider(height: Spacing.s6),
               _buildSortSection(theme),
               const SizedBox(height: Spacing.s6),
@@ -90,82 +108,51 @@ class _FilterSheetState extends State<_FilterSheet> {
     );
   }
 
-  Widget _buildPriceSection(ThemeData theme) {
-    final min = (_filter.minPriceCents ?? 0).toDouble();
-    final max = (_filter.maxPriceCents ?? _maxPriceCents).toDouble();
+  Widget _buildCategorySection(ThemeData theme) {
+    final categories = ref.watch(categoryRepositoryProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'search.filter.price'.tr(),
+          'search.filter.category'.tr(),
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: Spacing.s2),
-        RangeSlider(
-          values: RangeValues(min, max),
-          max: _maxPriceCents.toDouble(),
-          divisions: 100,
-          labels: RangeLabels(
-            Formatters.euroFromCents(min.round()),
-            Formatters.euroFromCents(max.round()),
-          ),
-          onChanged: (values) {
-            setState(() {
-              _filter = _filter.copyWith(
-                minPriceCents:
-                    () => values.start > 0 ? values.start.round() : null,
-                maxPriceCents:
-                    () =>
-                        values.end < _maxPriceCents ? values.end.round() : null,
-              );
-            });
+        FutureBuilder<List<CategoryEntity>>(
+          future: categories.getTopLevel(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox(height: 48);
+            }
+            return Wrap(
+              spacing: Spacing.s2,
+              runSpacing: Spacing.s2,
+              children:
+                  snapshot.data!.map((cat) {
+                    final isSelected = _filter.categoryId == cat.id;
+                    return FilterChip(
+                      label: Text(cat.name),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        _updateFilter(
+                          _filter.copyWith(
+                            categoryId: () => selected ? cat.id : null,
+                          ),
+                        );
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          DeelmarktRadius.xxl,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            );
           },
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              Formatters.euroFromCents(min.round()),
-              style: theme.textTheme.bodySmall,
-            ),
-            Text(
-              Formatters.euroFromCents(max.round()),
-              style: theme.textTheme.bodySmall,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildConditionSection(ThemeData theme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'search.filter.condition'.tr(),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        ...ListingCondition.values.map((c) {
-          return CheckboxListTile(
-            title: Text('condition.${c.name}'.tr()),
-            value: _filter.condition == c,
-            onChanged: (checked) {
-              setState(() {
-                _filter = _filter.copyWith(
-                  condition: () => checked == true ? c : null,
-                );
-              });
-            },
-            contentPadding: EdgeInsets.zero,
-            controlAffinity: ListTileControlAffinity.leading,
-          );
-        }),
       ],
     );
   }
@@ -183,9 +170,7 @@ class _FilterSheetState extends State<_FilterSheet> {
         RadioGroup<SearchSortOrder>(
           groupValue: _filter.sortOrder,
           onChanged: (value) {
-            setState(() {
-              _filter = _filter.copyWith(sortOrder: value);
-            });
+            _updateFilter(_filter.copyWith(sortOrder: value));
           },
           child: Column(
             children:
@@ -206,24 +191,30 @@ class _FilterSheetState extends State<_FilterSheet> {
     return Row(
       children: [
         Expanded(
-          child: DeelButton(
+          child: Semantics(
+            button: true,
             label: 'search.filter.reset'.tr(),
-            onPressed: () {
-              setState(() {
-                _filter = SearchFilter(query: _filter.query);
-              });
-            },
-            variant: DeelButtonVariant.outline,
+            child: DeelButton(
+              label: 'search.filter.reset'.tr(),
+              onPressed: () {
+                _updateFilter(SearchFilter(query: _filter.query));
+              },
+              variant: DeelButtonVariant.outline,
+            ),
           ),
         ),
         const SizedBox(width: Spacing.s3),
         Expanded(
-          child: DeelButton(
+          child: Semantics(
+            button: true,
             label: 'search.filter.apply'.tr(),
-            onPressed: () {
-              widget.onApply(_filter);
-              Navigator.of(context).pop();
-            },
+            child: DeelButton(
+              label: 'search.filter.apply'.tr(),
+              onPressed: () {
+                widget.onApply(_filter);
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         ),
       ],

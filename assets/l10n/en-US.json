@@ -416,10 +416,11 @@
     "locationHeader": "Location"
   },
   "search": {
-    "placeholder": "Search DeelMarkt",
+    "placeholder": "Search by keyword...",
     "recentSearches": "Recent searches",
     "clearAll": "Clear all",
     "popularCategories": "Popular categories",
+    "results": "{count} results",
     "resultsFor": "{count} results for \"{query}\"",
     "noResults": "No results found",
     "tryDifferent": "Try different keywords or adjust your filters",
@@ -431,7 +432,8 @@
       "sort": "Sort by",
       "filters": "Filters",
       "apply": "Apply",
-      "reset": "Reset"
+      "reset": "Reset",
+      "anyDistance": "Any distance"
     },
     "sort": {
       "relevance": "Relevance",

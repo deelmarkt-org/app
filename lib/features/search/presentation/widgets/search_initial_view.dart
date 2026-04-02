@@ -2,12 +2,21 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
+
+part 'search_initial_view.g.dart';
+
+/// Fetches top-level categories via Riverpod — avoids raw FutureBuilder.
+@riverpod
+Future<List<CategoryEntity>> topLevelCategories(Ref ref) {
+  return ref.watch(categoryRepositoryProvider).getTopLevel();
+}
 
 /// Initial search view — recent searches + popular categories.
 class SearchInitialView extends ConsumerWidget {
@@ -29,7 +38,7 @@ class SearchInitialView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final categories = ref.watch(categoryRepositoryProvider);
+    final categoriesAsync = ref.watch(topLevelCategoriesProvider);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -37,55 +46,73 @@ class SearchInitialView extends ConsumerWidget {
         if (recentSearches.isNotEmpty) ...[
           _SectionHeader(
             title: 'search.recentSearches'.tr(),
-            action: TextButton(
-              onPressed: onClearAll,
-              child: Text('search.clearAll'.tr()),
+            action: Semantics(
+              button: true,
+              label: 'search.clearAll'.tr(),
+              child: TextButton(
+                onPressed: onClearAll,
+                child: Text('search.clearAll'.tr()),
+              ),
             ),
           ),
           ...recentSearches.map(
-            (q) => ListTile(
-              leading: Icon(
-                PhosphorIcons.clockCounterClockwise(),
-                size: DeelmarktIconSize.sm,
+            (q) => Semantics(
+              button: true,
+              label: q,
+              child: ListTile(
+                leading: Icon(
+                  PhosphorIcons.clockCounterClockwise(),
+                  size: DeelmarktIconSize.sm,
+                ),
+                title: Text(q),
+                trailing: Semantics(
+                  button: true,
+                  label: 'action.delete'.tr(),
+                  child: IconButton(
+                    icon: Icon(PhosphorIcons.x(), size: DeelmarktIconSize.sm),
+                    onPressed: () => onRemoveRecent(q),
+                    constraints: const BoxConstraints(
+                      minWidth: 44,
+                      minHeight: 44,
+                    ),
+                  ),
+                ),
+                onTap: () => onRecentTap(q),
+                contentPadding: EdgeInsets.zero,
               ),
-              title: Text(q),
-              trailing: IconButton(
-                icon: Icon(PhosphorIcons.x(), size: DeelmarktIconSize.sm),
-                onPressed: () => onRemoveRecent(q),
-                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-              ),
-              onTap: () => onRecentTap(q),
-              contentPadding: EdgeInsets.zero,
             ),
           ),
           const SizedBox(height: Spacing.s4),
         ],
         _SectionHeader(title: 'search.popularCategories'.tr()),
         const SizedBox(height: Spacing.s2),
-        FutureBuilder<List<CategoryEntity>>(
-          future: categories.getTopLevel(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const SizedBox.shrink();
-            return Wrap(
-              spacing: Spacing.s2,
-              runSpacing: Spacing.s2,
-              children:
-                  snapshot.data!.map((cat) {
-                    return ActionChip(
-                      label: Text(cat.name),
-                      onPressed: () => onCategoryTap(cat.id),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          DeelmarktRadius.xxl,
+        categoriesAsync.when(
+          loading: () => const SizedBox(height: 48),
+          error: (_, _) => const SizedBox.shrink(),
+          data:
+              (categories) => Wrap(
+                spacing: Spacing.s2,
+                runSpacing: Spacing.s2,
+                children:
+                    categories.map((cat) {
+                      return Semantics(
+                        button: true,
+                        label: cat.name,
+                        child: ActionChip(
+                          label: Text(cat.name),
+                          onPressed: () => onCategoryTap(cat.id),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              DeelmarktRadius.xxl,
+                            ),
+                            side: BorderSide(
+                              color: theme.colorScheme.outlineVariant,
+                            ),
+                          ),
                         ),
-                        side: BorderSide(
-                          color: theme.colorScheme.outlineVariant,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-            );
-          },
+                      );
+                    }).toList(),
+              ),
         ),
       ],
     );

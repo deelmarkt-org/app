@@ -1,15 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/listing_card.dart';
-import 'package:deelmarkt/features/search/presentation/search_notifier.dart';
+import 'package:deelmarkt/features/search/domain/search_filter.dart';
+import 'package:deelmarkt/features/search/presentation/search_state.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
+import 'package:deelmarkt/widgets/listing_card.dart';
 
 /// Search results grid with filter chips, result count, and infinite scroll.
 class SearchResultsView extends StatelessWidget {
@@ -65,7 +64,6 @@ class SearchResultsView extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final filterCount = data.filter.activeFilterCount;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
@@ -90,34 +88,10 @@ class SearchResultsView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Spacing.s2),
-          ActionChip(
-            avatar: Icon(
-              PhosphorIcons.funnelSimple(),
-              size: DeelmarktIconSize.sm,
-            ),
-            label: Text(
-              filterCount > 0
-                  ? '${'search.filter.filters'.tr()} ($filterCount)'
-                  : 'search.filter.filters'.tr(),
-            ),
-            onPressed: onFilterTap,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
-              side: BorderSide(
-                color:
-                    filterCount > 0
-                        ? (isDark
-                            ? DeelmarktColors.darkPrimary
-                            : DeelmarktColors.primary)
-                        : theme.colorScheme.outlineVariant,
-              ),
-            ),
-            backgroundColor:
-                filterCount > 0
-                    ? (isDark
-                        ? DeelmarktColors.darkPrimary.withValues(alpha: 0.12)
-                        : DeelmarktColors.primarySurface)
-                    : null,
+          _FilterChipBar(
+            filter: data.filter,
+            onTap: onFilterTap,
+            isDark: isDark,
           ),
           const SizedBox(height: Spacing.s3),
         ],
@@ -148,6 +122,92 @@ class SearchResultsView extends StatelessWidget {
                 onFavouriteTap: () => onFavouriteTap(listing.id),
               );
             }).toList(),
+      ),
+    );
+  }
+}
+
+/// Horizontal scrollable row of individual filter chips per spec.
+class _FilterChipBar extends StatelessWidget {
+  const _FilterChipBar({
+    required this.filter,
+    required this.onTap,
+    required this.isDark,
+  });
+
+  final SearchFilter filter;
+  final VoidCallback onTap;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 44,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          _chip(
+            context,
+            label: 'search.filter.price'.tr(),
+            isActive:
+                filter.minPriceCents != null || filter.maxPriceCents != null,
+          ),
+          const SizedBox(width: Spacing.s2),
+          _chip(
+            context,
+            label: 'search.filter.condition'.tr(),
+            isActive: filter.condition != null,
+          ),
+          const SizedBox(width: Spacing.s2),
+          _chip(
+            context,
+            label: 'search.filter.distance'.tr(),
+            isActive: filter.maxDistanceKm != null,
+          ),
+          const SizedBox(width: Spacing.s2),
+          _chip(
+            context,
+            label: 'search.filter.category'.tr(),
+            isActive: filter.categoryId != null,
+          ),
+          const SizedBox(width: Spacing.s2),
+          _chip(
+            context,
+            label: 'search.filter.sort'.tr(),
+            isActive: filter.sortOrder != SearchSortOrder.relevance,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _chip(
+    BuildContext context, {
+    required String label,
+    required bool isActive,
+  }) {
+    final theme = Theme.of(context);
+    final activeColor =
+        isDark ? DeelmarktColors.darkPrimary : DeelmarktColors.primary;
+
+    return Semantics(
+      button: true,
+      label: label,
+      child: ActionChip(
+        label: Text(label),
+        onPressed: onTap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
+          side: BorderSide(
+            color: isActive ? activeColor : theme.colorScheme.outlineVariant,
+          ),
+        ),
+        backgroundColor:
+            isActive
+                ? (isDark
+                    ? DeelmarktColors.darkPrimary.withValues(alpha: 0.12)
+                    : DeelmarktColors.primarySurface)
+                : null,
       ),
     );
   }

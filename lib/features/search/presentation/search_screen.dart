@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
+import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 import 'package:deelmarkt/widgets/inputs/deel_search_input.dart';
 
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_notifier.dart';
+import 'package:deelmarkt/features/search/presentation/search_state.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_bottom_sheet.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/search_initial_view.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/search_results_view.dart';
@@ -61,18 +64,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 Spacing.s4,
                 0,
               ),
-              child: DeelSearchInput(
+              child: Semantics(
                 label: 'search.placeholder'.tr(),
-                hint: 'search.placeholder'.tr(),
-                controller: _controller,
-                onDebouncedChanged: (query) {
-                  if (query.trim().isEmpty) {
-                    ref.invalidate(searchNotifierProvider);
-                  } else {
-                    ref.read(searchNotifierProvider.notifier).search(query);
-                  }
-                },
-                onFilterTap: () => _showFilterSheet(context),
+                textField: true,
+                child: DeelSearchInput(
+                  label: 'search.placeholder'.tr(),
+                  hint: 'search.placeholder'.tr(),
+                  controller: _controller,
+                  onDebouncedChanged: (query) {
+                    if (query.trim().isEmpty) {
+                      ref.invalidate(searchNotifierProvider);
+                    } else {
+                      ref.read(searchNotifierProvider.notifier).search(query);
+                    }
+                  },
+                  onFilterTap: () => _showFilterSheet(context),
+                ),
               ),
             ),
             const SizedBox(height: Spacing.s3),
@@ -85,7 +92,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildBody(AsyncValue<SearchState> state) {
     return state.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => _SearchLoadingView(),
       error:
           (_, _) =>
               ErrorState(onRetry: () => ref.invalidate(searchNotifierProvider)),
@@ -126,25 +133,53 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _onCategoryTap(String categoryId) {
+    _controller.text = '';
     ref
         .read(searchNotifierProvider.notifier)
-        .updateFilter(
-          const SearchFilter().copyWith(
-            query: ' ',
-            categoryId: () => categoryId,
-          ),
-        );
+        .updateFilter(SearchFilter(categoryId: categoryId));
   }
 
   void _showFilterSheet(BuildContext context) {
     final current = ref.read(searchNotifierProvider).valueOrNull;
     if (current == null) return;
+    final reduceMotion = MediaQuery.of(context).disableAnimations;
     showFilterBottomSheet(
       context: context,
       currentFilter: current.filter,
       onApply:
           (filter) =>
               ref.read(searchNotifierProvider.notifier).updateFilter(filter),
+      reduceMotion: reduceMotion,
+    );
+  }
+}
+
+class _SearchLoadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    int crossAxisCount = 4;
+    if (Breakpoints.isCompact(context)) {
+      crossAxisCount = 2;
+    } else if (Breakpoints.isMedium(context)) {
+      crossAxisCount = 3;
+    }
+
+    return Semantics(
+      label: 'a11y.loading'.tr(),
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(Spacing.s4),
+            sliver: SliverGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: Spacing.s3,
+              crossAxisSpacing: Spacing.s3,
+              childAspectRatio: 0.7,
+              children: List.generate(6, (_) => const SkeletonListingCard()),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
