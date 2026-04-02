@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/home/domain/repositories/category_repository.
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
@@ -52,11 +53,9 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   return MockReviewRepository();
 });
 
-/// Settings repository — mock or real.
-/// WARNING: Both branches currently return mock. Real Supabase impl needed before production.
+/// Settings repository — mock or Supabase based on [useMockDataProvider].
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSettingsRepository();
-  // Tracked: #47 — P0 launch blocker: SupabaseSettingsRepository
-  return MockSettingsRepository();
+  return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
 });

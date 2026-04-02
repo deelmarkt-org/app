@@ -145,7 +145,7 @@ The agent will:
 | Issue | Task | Owner | Blocked By | Sprint |
 |:------|:-----|:------|:-----------|:-------|
 | [#46](https://github.com/deelmarkt-org/app/issues/46) | `[R]` Implement SupabaseReviewRepository | reso | R-36 reviews table | 9–10 |
-| [#47](https://github.com/deelmarkt-org/app/issues/47) | `[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)** | reso | — | 5–8 |
+| [#47](https://github.com/deelmarkt-org/app/issues/47) | ~~`[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)**~~ | belengaz | — | ✅ PR #57 |
 | [#48](https://github.com/deelmarkt-org/app/issues/48) | `[R]` Wire iDIN to Edge Function | reso | R-18 iDIN integration | 3–4 |
 | [#49](https://github.com/deelmarkt-org/app/issues/49) | `[R]` 30-day soft-delete grace period | reso | — | 5–8 |
 | [#50](https://github.com/deelmarkt-org/app/issues/50) | `[P]` Wire address form navigation in Settings | pizmam | — | 5–8 |
