@@ -28,6 +28,8 @@ abstract class ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   });

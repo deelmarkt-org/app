@@ -48,6 +48,8 @@ class MockListingRepository implements ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   }) async {
@@ -70,6 +72,22 @@ class MockListingRepository implements ListingRepository {
               matchesPrice &&
               matchesCondition;
         }).toList();
+
+    if (sortBy == 'price_cents') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.priceInCents.compareTo(b.priceInCents)
+                : b.priceInCents.compareTo(a.priceInCents),
+      );
+    } else if (sortBy == 'created_at') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.createdAt.compareTo(b.createdAt)
+                : b.createdAt.compareTo(a.createdAt),
+      );
+    }
 
     return ListingSearchResult(
       listings: results.skip(offset).take(limit).toList(),

@@ -414,5 +414,33 @@
     "noReviews": "No reviews yet",
     "verified": "Verified",
     "locationHeader": "Location"
+  },
+  "search": {
+    "placeholder": "Search by keyword...",
+    "recentSearches": "Recent searches",
+    "clearAll": "Clear all",
+    "popularCategories": "Popular categories",
+    "results": "{count} results",
+    "resultsFor": "{count} results for \"{query}\"",
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords or adjust your filters",
+    "filter": {
+      "price": "Price",
+      "condition": "Condition",
+      "distance": "Distance",
+      "category": "Category",
+      "sort": "Sort by",
+      "filters": "Filters",
+      "apply": "Apply",
+      "reset": "Reset",
+      "anyDistance": "Any distance"
+    },
+    "sort": {
+      "relevance": "Relevance",
+      "priceLowHigh": "Price: low to high",
+      "priceHighLow": "Price: high to low",
+      "newest": "Newest first",
+      "nearest": "Nearest first"
+    }
   }
 }

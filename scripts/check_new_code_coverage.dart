@@ -1,222 +1,211 @@
-/// Pre-push coverage gate — ensures new/changed Dart files have ≥80% test coverage.
-///
-/// Mirrors SonarCloud's "Coverage on New Code" quality gate locally so coverage
-/// issues are caught before PR creation, not after CI runs.
-///
-/// Usage: `dart run scripts/check_new_code_coverage.dart`
-///
-/// How it works:
-/// 1. Runs `flutter test --coverage` to generate coverage/lcov.info
-/// 2. Identifies new/changed lib/*.dart files via `git diff` against base branch
-/// 3. Checks each file's line coverage in lcov.info
-/// 4. Fails if any new file has <80% coverage (matching SonarCloud threshold)
-///
-/// Skips: generated files (.g.dart, .freezed.dart), barrel exports, constants-only files.
-library;
+#!/usr/bin/env dart
+// ignore_for_file: avoid_print
 
+// Pre-push coverage gate — mirrors SonarCloud's "Coverage on New Code" gate.
+//
+// Reads sonar.coverage.exclusions from sonar-project.properties so
+// both local and CI measure the exact same file set.
+//
+// Usage:
+//   dart run scripts/check_new_code_coverage.dart          # default 80%
+//   dart run scripts/check_new_code_coverage.dart --min=70  # custom threshold
 import 'dart:io';
 
-const int _minCoveragePercent = 80;
-const String _baseBranch = 'dev';
+const _defaultThreshold = 80;
+const _baseBranch = 'origin/dev';
 
-/// Files to skip (generated code, constants, interfaces, barrel exports).
-bool _shouldSkip(String path) {
-  if (path.endsWith('.g.dart')) return true;
-  if (path.endsWith('.freezed.dart')) return true;
-  if (!path.startsWith('lib/')) return true;
-  // Barrel exports (only contain `export` statements)
-  if (RegExp(r'/(?:badges|cards)\.dart$').hasMatch(path)) return true;
-  // Token/constant-only files (no logic to test)
-  if (path.contains('_tokens.dart')) return true;
-  // Abstract interfaces (domain repositories) — no executable code
-  if (path.contains('domain/repositories/')) return true;
-  // Design system constants (colors, spacing, radius, typography)
-  if (path.contains('core/design_system/') && !path.contains('theme.dart')) {
-    return true;
-  }
-  // Route constants
-  if (path.endsWith('routes.dart')) return true;
-  // Supabase repositories — require live DB, tested via integration tests
-  if (path.contains('data/supabase/')) return true;
-  return false;
-}
+void main(List<String> args) async {
+  final threshold = _parseThreshold(args);
+  final sonarExclusions = _loadSonarCoverageExclusions();
 
-/// Parse lcov.info into a map of file path → (hit, total) line counts.
-Map<String, (int hit, int total)> _parseLcov(String lcovContent) {
-  final result = <String, (int, int)>{};
-  String? currentFile;
-  int hit = 0;
-  int total = 0;
-
-  for (final line in lcovContent.split('\n')) {
-    if (line.startsWith('SF:')) {
-      currentFile = line.substring(3).replaceAll('\\', '/');
-    } else if (line.startsWith('LH:')) {
-      hit = int.tryParse(line.substring(3)) ?? 0;
-    } else if (line.startsWith('LF:')) {
-      total = int.tryParse(line.substring(3)) ?? 0;
-    } else if (line == 'end_of_record' && currentFile != null) {
-      result[currentFile] = (hit, total);
-      currentFile = null;
-      hit = 0;
-      total = 0;
-    }
-  }
-  return result;
-}
-
-/// Detect the best base ref for diffing.
-///
-/// Priority:
-/// 1. COVERAGE_BASE_BRANCH env var (explicit override)
-/// 2. The upstream tracking branch of the current branch
-/// 3. Fallback to origin/dev
-Future<String> _detectBaseRef() async {
-  // 1. Explicit override
-  final envBase = Platform.environment['COVERAGE_BASE_BRANCH'];
-  if (envBase != null && envBase.isNotEmpty) {
-    final ref = envBase.startsWith('origin/') ? envBase : 'origin/$envBase';
-    stdout.writeln('Using base from COVERAGE_BASE_BRANCH: $ref');
-    return ref;
-  }
-
-  // 2. Try the upstream tracking branch
-  final trackResult = await Process.run('git', [
-    'rev-parse',
-    '--abbrev-ref',
-    '--symbolic-full-name',
-    '@{upstream}',
-  ]);
-
-  if (trackResult.exitCode == 0) {
-    final upstream = (trackResult.stdout as String).trim();
-    if (upstream.isNotEmpty && upstream != '@{upstream}') {
-      stdout.writeln('Using upstream tracking branch: $upstream');
-      return upstream;
-    }
-  }
-
-  // 3. Fallback
-  stdout.writeln('Using default base: origin/$_baseBranch');
-  return 'origin/$_baseBranch';
-}
-
-Future<void> main() async {
-  stdout.writeln('Checking new-code coverage (≥$_minCoveragePercent%)...');
-
-  final baseRef = await _detectBaseRef();
-
-  // 1. Get changed lib/*.dart files vs base
-  final diffResult = await Process.run('git', [
-    'diff',
-    '--name-only',
-    '--diff-filter=ACMR', // Added, Copied, Modified, Renamed
-    '$baseRef...HEAD',
-  ]);
-
-  if (diffResult.exitCode != 0) {
-    stderr.writeln(
-      'Failed to get git diff against $baseRef: ${diffResult.stderr}',
-    );
-
+  // 1. Run flutter test with coverage
+  print('Running flutter test --coverage ...');
+  final testResult = await Process.run('flutter', [
+    'test',
+    '--no-pub',
+    '--coverage',
+  ], runInShell: true);
+  if (testResult.exitCode != 0) {
+    print('Tests failed — cannot check coverage.');
+    print(testResult.stderr);
     exit(1);
   }
 
+  // 2. Get changed lib/ files vs base branch
+  final diffResult = await Process.run('git', [
+    'diff',
+    '--name-only',
+    '--diff-filter=ACMR',
+    _baseBranch,
+    '--',
+    'lib/',
+  ]);
   final changedFiles =
       (diffResult.stdout as String)
           .split('\n')
-          .map((f) => f.trim())
-          .where((f) => f.endsWith('.dart') && f.startsWith('lib/'))
-          .where((f) => !_shouldSkip(f))
+          .map((l) => l.trim())
+          .where(
+            (l) =>
+                l.endsWith('.dart') &&
+                !l.endsWith('.g.dart') &&
+                !l.endsWith('.freezed.dart') &&
+                !_matchesAnyGlob(l, sonarExclusions),
+          )
           .toList();
 
   if (changedFiles.isEmpty) {
-    stdout.writeln(
-      'No new/changed lib/*.dart files — skipping coverage check.',
-    );
+    print('No changed lib/ files found — skipping coverage check.');
     exit(0);
   }
 
-  stdout.writeln('Found ${changedFiles.length} changed file(s) to check.');
-
-  // 2. Check if coverage/lcov.info exists (generated by flutter test --coverage)
+  // 3. Parse lcov.info
   final lcovFile = File('coverage/lcov.info');
   if (!lcovFile.existsSync()) {
-    stderr.writeln(
-      'coverage/lcov.info not found. Running flutter test --coverage...',
-    );
-    final testResult = await Process.run('flutter', [
-      'test',
-      '--coverage',
-      '--no-pub',
-    ]);
-    if (testResult.exitCode != 0) {
-      stderr.writeln('Tests failed:\n${testResult.stderr}');
-      exit(1);
-    }
+    print('coverage/lcov.info not found.');
+    exit(1);
   }
 
-  // 3. Parse coverage data
-  final lcovContent = lcovFile.readAsStringSync();
-  final coverage = _parseLcov(lcovContent);
+  final coverage = _parseLcov(lcovFile.readAsStringSync());
 
-  // 4. Check each changed file — compute AGGREGATE coverage (like SonarCloud)
-  final warnings = <String>[];
+  // 4. Calculate coverage for changed files only
   var totalHit = 0;
-  var totalLines = 0;
+  var totalFound = 0;
+  final uncovered = <String, double>{};
 
   for (final file in changedFiles) {
-    // Normalize path for matching (lcov may use backslashes on Windows)
-    final normalizedFile = file.replaceAll('\\', '/');
-    final entry = coverage.entries.where((e) {
-      final lcovPath = e.key.replaceAll('\\', '/');
-      return lcovPath.endsWith(normalizedFile) || lcovPath == normalizedFile;
-    });
-
-    if (entry.isEmpty) {
-      warnings.add('  0.0%  $file (NO COVERAGE DATA — missing tests?)');
+    final data = coverage[file];
+    if (data == null) {
+      uncovered[file] = 0;
       continue;
     }
-
-    final (hit, total) = entry.first.value;
-    if (total == 0) continue; // Skip files with no executable lines
-
-    totalHit += hit;
-    totalLines += total;
-    final pct = (hit / total * 100).round();
-    if (pct < _minCoveragePercent) {
-      warnings.add('  $pct%  $file ($hit/$total lines)');
+    totalHit += data.hit;
+    totalFound += data.found;
+    final pct =
+        data.found > 0 ? (data.hit / data.found * 100).toDouble() : 100.0;
+    if (pct < threshold) {
+      uncovered[file] = pct;
     }
   }
 
-  // 5. Report — gate on AGGREGATE, warn on per-file
-  final aggregatePct =
-      totalLines > 0 ? (totalHit / totalLines * 100).round() : 100;
+  final overallPct = totalFound > 0 ? (totalHit / totalFound * 100) : 100;
 
-  stdout.writeln(
-    '\nAggregate new-code coverage: $aggregatePct% ($totalHit/$totalLines lines)',
+  // 5. Report
+  print('');
+  print(
+    'New code coverage: ${overallPct.toStringAsFixed(1)}% '
+    '($totalHit/$totalFound lines)',
   );
+  print('Threshold: $threshold%');
+  print('Changed files: ${changedFiles.length}');
 
-  if (warnings.isNotEmpty) {
-    stderr.writeln(
-      '\nWARNING — ${warnings.length} file(s) individually below $_minCoveragePercent%:\n',
-    );
-    for (final w in warnings) {
-      stderr.writeln(w);
+  if (uncovered.isNotEmpty) {
+    print('');
+    print('Files below threshold:');
+    for (final entry in uncovered.entries) {
+      print('  ${entry.value.toStringAsFixed(1)}%  ${entry.key}');
     }
   }
 
-  if (aggregatePct >= _minCoveragePercent) {
-    stdout.writeln(
-      '\nCoverage gate PASSED — aggregate $aggregatePct% ≥ $_minCoveragePercent% threshold.',
+  if (overallPct < threshold) {
+    print('');
+    print(
+      'FAIL: New code coverage ${overallPct.toStringAsFixed(1)}% '
+      'is below $threshold% threshold.',
     );
-    exit(0);
+    exit(1);
   }
 
-  stderr.writeln(
-    '\nCoverage gate FAILED — aggregate $aggregatePct% < $_minCoveragePercent% threshold.\n'
-    'Fix: Write tests for low-coverage files above, then re-run.\n'
-    'This mirrors SonarCloud\'s "Coverage on New Code" quality gate.',
-  );
-  exit(1);
+  print('');
+  print('PASS: New code coverage meets $threshold% threshold.');
+}
+
+// Read sonar.coverage.exclusions from sonar-project.properties.
+List<String> _loadSonarCoverageExclusions() {
+  final file = File('sonar-project.properties');
+  if (!file.existsSync()) return [];
+
+  final lines = file.readAsLinesSync();
+  final result = <String>[];
+  var capturing = false;
+
+  for (final line in lines) {
+    final trimmed = line.trim();
+    if (trimmed.startsWith('sonar.coverage.exclusions=') ||
+        trimmed.startsWith('sonar.coverage.exclusions =')) {
+      capturing = true;
+      // Value may start on same line after =
+      final afterEq = trimmed.split('=').skip(1).join('=').trim();
+      final value = afterEq.replaceAll(r'\', '').trim();
+      if (value.isNotEmpty) {
+        result.addAll(
+          value.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty),
+        );
+      }
+      if (!trimmed.endsWith(r'\')) capturing = false;
+      continue;
+    }
+    if (capturing) {
+      final value = trimmed.replaceAll(r'\', '').trim();
+      if (value.isNotEmpty) {
+        result.addAll(
+          value.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty),
+        );
+      }
+      if (!trimmed.endsWith(r'\')) capturing = false;
+    }
+  }
+
+  return result;
+}
+
+// Matches a file path against a glob pattern (simple ** and * support).
+bool _matchesAnyGlob(String path, List<String> patterns) {
+  for (final pattern in patterns) {
+    var regex = pattern
+        .replaceAll('.', r'\.')
+        .replaceAll('**/', '(.+/)?')
+        .replaceAll('**', '.*')
+        .replaceAll('*', '[^/]*');
+    // Allow pattern to match anywhere in path (SonarCloud behavior)
+    if (!regex.startsWith('lib/')) {
+      regex = '(.*/)?$regex';
+    }
+    if (RegExp(regex).hasMatch(path)) return true;
+  }
+  return false;
+}
+
+int _parseThreshold(List<String> args) {
+  for (final arg in args) {
+    if (arg.startsWith('--min=')) {
+      return int.tryParse(arg.substring(6)) ?? _defaultThreshold;
+    }
+  }
+  return _defaultThreshold;
+}
+
+class _FileCoverage {
+  int hit = 0;
+  int found = 0;
+}
+
+Map<String, _FileCoverage> _parseLcov(String content) {
+  final result = <String, _FileCoverage>{};
+  String? currentFile;
+
+  for (final line in content.split('\n')) {
+    if (line.startsWith('SF:')) {
+      currentFile = line.substring(3);
+    } else if (line.startsWith('LH:') && currentFile != null) {
+      result.putIfAbsent(currentFile, _FileCoverage.new).hit =
+          int.tryParse(line.substring(3)) ?? 0;
+    } else if (line.startsWith('LF:') && currentFile != null) {
+      result.putIfAbsent(currentFile, _FileCoverage.new).found =
+          int.tryParse(line.substring(3)) ?? 0;
+    } else if (line == 'end_of_record') {
+      currentFile = null;
+    }
+  }
+
+  return result;
 }

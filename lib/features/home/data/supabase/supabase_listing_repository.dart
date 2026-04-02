@@ -109,6 +109,8 @@ class SupabaseListingRepository implements ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   }) async {
@@ -138,8 +140,9 @@ class SupabaseListingRepository implements ListingRepository {
         request = request.eq('condition', condition.toDb());
       }
 
+      final orderColumn = sortBy ?? 'created_at';
       final response = await request
-          .order('created_at', ascending: false)
+          .order(orderColumn, ascending: ascending)
           .range(offset, offset + limit - 1);
 
       final listings = ListingDto.fromJsonList(response);

@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
+import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
@@ -125,7 +126,7 @@ GoRouter _buildRouter({
                 name: 'search',
                 builder: (context, state) {
                   final query = state.uri.queryParameters['q'] ?? '';
-                  return _Placeholder('Search: $query'); // l10n: P-task
+                  return SearchScreen(initialQuery: query);
                 },
               ),
             ],

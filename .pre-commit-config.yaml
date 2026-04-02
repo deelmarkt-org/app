@@ -66,13 +66,11 @@ repos:
         files: \.dart$
         stages: [pre-push]
 
-      # New-code coverage — INFO ONLY (does not block push)
-      # SonarCloud enforces the 80% gate in CI; this is advisory.
-      # Run manually: dart run scripts/check_new_code_coverage.dart
-      #- id: new-code-coverage
-      #  name: new-code coverage (≥80%)
-      #  language: system
-      #  entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
-      #  pass_filenames: false
-      #  files: \.dart$
-      #  stages: [pre-push]
+      # New-code coverage gate — blocks push if changed files < 80% covered
+      - id: coverage-gate
+        name: new-code coverage (≥80%)
+        language: system
+        entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-push]
