@@ -17,6 +17,7 @@ library;
 import 'dart:io';
 
 const int _minCoveragePercent = 80;
+const String _baseBranch = 'dev';
 
 /// Files to skip (generated code, constants, interfaces, barrel exports).
 bool _shouldSkip(String path) {
@@ -96,8 +97,8 @@ Future<String> _detectBaseRef() async {
   }
 
   // 3. Fallback
-  stdout.writeln('Using default base: origin/dev');
-  return 'origin/dev';
+  stdout.writeln('Using default base: origin/$_baseBranch');
+  return 'origin/$_baseBranch';
 }
 
 Future<void> main() async {
@@ -117,6 +118,7 @@ Future<void> main() async {
     stderr.writeln(
       'Failed to get git diff against $baseRef: ${diffResult.stderr}',
     );
+
     exit(1);
   }
 

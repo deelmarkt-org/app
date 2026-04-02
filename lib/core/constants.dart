@@ -3,4 +3,7 @@ abstract final class AppConstants {
   /// Legal URLs
   static const String termsUrl = 'https://deelmarkt.nl/terms';
   static const String privacyUrl = 'https://deelmarkt.nl/privacy';
+
+  /// Deep link base URL — matches AASA / assetlinks.json host.
+  static const String deepLinkBase = 'https://deelmarkt.com';
 }

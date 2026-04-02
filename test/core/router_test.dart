@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
 
 /// Creates a test router with pre-set auth state (no real Supabase).
 GoRouter _createTestRouter({bool isLoggedIn = false, bool isLoading = false}) {
@@ -71,9 +73,16 @@ void main() {
 
     testWidgets('navigates to listing detail via deep link', (tester) async {
       router.go('/listings/abc-123');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-      await tester.pumpAndSettle();
-      expect(find.text('Listing abc-123'), findsWidgets);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pump();
+      expect(find.byType(ListingDetailScreen), findsOneWidget);
+      // Flush pending mock-repo timers to satisfy test invariants.
+      await tester.pumpAndSettle(const Duration(seconds: 1));
     });
 
     testWidgets('navigates to user profile via deep link', (tester) async {

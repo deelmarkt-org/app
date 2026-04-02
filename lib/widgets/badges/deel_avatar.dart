@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/widgets/badges/deel_avatar_helpers.dart';
 import 'package:deelmarkt/widgets/badges/deel_avatar_tokens.dart';
 import 'package:deelmarkt/widgets/badges/deel_badge.dart';
 import 'package:deelmarkt/widgets/badges/deel_badge_data.dart';
@@ -142,8 +143,8 @@ class DeelAvatar extends StatelessWidget {
   }
 
   Widget _buildInitialsAvatar(BuildContext context) {
-    final initials = _extractInitials(displayName);
-    final bgColor = _backgroundFromName(displayName);
+    final initials = DeelAvatarHelpers.extractInitials(displayName);
+    final bgColor = DeelAvatarHelpers.backgroundFromName(displayName);
     final textStyle = _initialsTextStyle(context);
 
     return ClipOval(
@@ -185,27 +186,5 @@ class DeelAvatar extends StatelessWidget {
       DeelAvatarSize.large =>
         theme.headlineMedium ?? const TextStyle(fontSize: 24),
     };
-  }
-
-  static String _extractInitials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.isEmpty || parts.first.isEmpty) return '?';
-    if (parts.length == 1) return parts.first[0].toUpperCase();
-    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
-  }
-
-  static Color _backgroundFromName(String name) {
-    const colors = [
-      DeelmarktColors.secondary,
-      DeelmarktColors.primary,
-      DeelmarktColors.trustVerified,
-      DeelmarktColors.trustEscrow,
-      DeelmarktColors.badgeGold,
-      DeelmarktColors.accentPurple,
-      DeelmarktColors.accentPink,
-      DeelmarktColors.accentEmerald,
-    ];
-    final hash = name.codeUnits.fold<int>(0, (h, c) => h + c);
-    return colors[hash % colors.length];
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -25,6 +26,17 @@ void main() {
     ).thenAnswer((_) async => 'https://www.idin.nl/verify');
   });
 
+  /// Common overrides that inject mock use cases into the KYC notifier.
+  List<Override> buildOverrides() {
+    return [
+      checkKycRequiredProvider.overrideWithValue(
+        const CheckKycRequiredUseCase(),
+      ),
+      initiateIdinVerificationProvider.overrideWithValue(mockInitiateIdin),
+      kycPromptNotifierProvider.overrideWith(KycPromptNotifier.new),
+    ];
+  }
+
   group('KycBottomSheet', () {
     testWidgets('renders content state with title and subtitle', (
       tester,
@@ -32,14 +44,7 @@ void main() {
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [
-          kycPromptProvider.overrideWith(
-            (ref) => KycPromptNotifier(
-              checkKycRequired: const CheckKycRequiredUseCase(),
-              initiateIdin: mockInitiateIdin,
-            ),
-          ),
-        ],
+        overrides: buildOverrides(),
       );
 
       expect(find.text('kyc.sheetTitle'), findsOneWidget);
@@ -50,14 +55,7 @@ void main() {
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [
-          kycPromptProvider.overrideWith(
-            (ref) => KycPromptNotifier(
-              checkKycRequired: const CheckKycRequiredUseCase(),
-              initiateIdin: mockInitiateIdin,
-            ),
-          ),
-        ],
+        overrides: buildOverrides(),
       );
 
       expect(find.byType(KycProgressBar), findsOneWidget);
@@ -67,14 +65,7 @@ void main() {
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [
-          kycPromptProvider.overrideWith(
-            (ref) => KycPromptNotifier(
-              checkKycRequired: const CheckKycRequiredUseCase(),
-              initiateIdin: mockInitiateIdin,
-            ),
-          ),
-        ],
+        overrides: buildOverrides(),
       );
 
       expect(find.byType(KycFaqExpandable), findsOneWidget);
@@ -84,14 +75,7 @@ void main() {
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [
-          kycPromptProvider.overrideWith(
-            (ref) => KycPromptNotifier(
-              checkKycRequired: const CheckKycRequiredUseCase(),
-              initiateIdin: mockInitiateIdin,
-            ),
-          ),
-        ],
+        overrides: buildOverrides(),
       );
 
       expect(find.byType(KycTrustFooter), findsOneWidget);
@@ -101,14 +85,7 @@ void main() {
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [
-          kycPromptProvider.overrideWith(
-            (ref) => KycPromptNotifier(
-              checkKycRequired: const CheckKycRequiredUseCase(),
-              initiateIdin: mockInitiateIdin,
-            ),
-          ),
-        ],
+        overrides: buildOverrides(),
       );
 
       expect(find.text('kyc.verifyWithIdin'), findsOneWidget);
@@ -116,17 +93,12 @@ void main() {
     });
 
     testWidgets('shows error text when state has error', (tester) async {
-      final notifier = KycPromptNotifier(
-        checkKycRequired: const CheckKycRequiredUseCase(),
-        initiateIdin: mockInitiateIdin,
-      );
-
       when(() => mockInitiateIdin()).thenThrow(Exception('fail'));
 
       await pumpTestScreenWithProviders(
         tester,
         const Scaffold(body: SingleChildScrollView(child: KycBottomSheet())),
-        overrides: [kycPromptProvider.overrideWith((ref) => notifier)],
+        overrides: buildOverrides(),
       );
 
       await tester.tap(find.text('kyc.verifyWithIdin'));

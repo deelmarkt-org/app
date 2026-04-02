@@ -69,6 +69,7 @@ dependencies:
   # Image picker — camera + gallery for avatar upload (P-53)
   image_picker: ^1.1.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
