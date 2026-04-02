@@ -24,8 +24,9 @@ void main() {
     testWidgets('loading state shows SkeletonLoader', (tester) async {
       await tester.pumpWidget(
         _wrapWidget(
-          const ReviewsTabView(
-            reviews: AsyncValue<List<ReviewEntity>>.loading(),
+          ReviewsTabView(
+            reviews: const AsyncValue<List<ReviewEntity>>.loading(),
+            onRetry: () {},
           ),
         ),
       );
@@ -38,7 +39,10 @@ void main() {
     testWidgets('empty data shows no-reviews text', (tester) async {
       await pumpTestWidget(
         tester,
-        const ReviewsTabView(reviews: AsyncValue<List<ReviewEntity>>.data([])),
+        ReviewsTabView(
+          reviews: const AsyncValue<List<ReviewEntity>>.data([]),
+          onRetry: () {},
+        ),
       );
 
       // .tr() returns the key path in tests.
@@ -53,6 +57,7 @@ void main() {
             Exception('fail'),
             StackTrace.current,
           ),
+          onRetry: () {},
         ),
       );
 
@@ -87,7 +92,10 @@ void main() {
 
       await pumpTestWidget(
         tester,
-        ReviewsTabView(reviews: AsyncValue<List<ReviewEntity>>.data(reviews)),
+        ReviewsTabView(
+          reviews: AsyncValue<List<ReviewEntity>>.data(reviews),
+          onRetry: () {},
+        ),
       );
 
       expect(find.byType(ReviewCard), findsNWidgets(2));
@@ -111,7 +119,10 @@ void main() {
 
       await pumpTestWidget(
         tester,
-        ReviewsTabView(reviews: AsyncValue<List<ReviewEntity>>.data(reviews)),
+        ReviewsTabView(
+          reviews: AsyncValue<List<ReviewEntity>>.data(reviews),
+          onRetry: () {},
+        ),
       );
 
       expect(find.text('Okay transaction'), findsOneWidget);
