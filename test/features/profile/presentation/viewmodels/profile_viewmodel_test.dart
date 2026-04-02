@@ -9,7 +9,7 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewm
 Future<ProviderContainer> _loadedContainer() async {
   final container = ProviderContainer(
     overrides: [useMockDataProvider.overrideWithValue(true)],
-  )..listen(profileProvider, (_, _) {});
+  )..listen(profileNotifierProvider, (_, _) {});
   // User fetched first (200ms), then listings+reviews in parallel (≤500ms).
   await Future<void>.delayed(const Duration(milliseconds: 800));
   return container;
@@ -21,7 +21,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final state = container.read(profileProvider);
+      final state = container.read(profileNotifierProvider);
       expect(state.user.hasValue, isTrue);
       expect(state.user.requireValue, isNotNull);
     });
@@ -30,7 +30,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final state = container.read(profileProvider);
+      final state = container.read(profileNotifierProvider);
       expect(state.listings.hasValue, isTrue);
       expect(state.listings.requireValue, isNotEmpty);
     });
@@ -39,7 +39,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final state = container.read(profileProvider);
+      final state = container.read(profileNotifierProvider);
       expect(state.reviews.hasValue, isTrue);
       expect(state.reviews.requireValue, isNotEmpty);
     });
@@ -47,9 +47,9 @@ void main() {
     test('initial state is loading for all sections', () async {
       final container = ProviderContainer(
         overrides: [useMockDataProvider.overrideWithValue(true)],
-      )..listen(profileProvider, (_, _) {});
+      )..listen(profileNotifierProvider, (_, _) {});
 
-      final state = container.read(profileProvider);
+      final state = container.read(profileNotifierProvider);
       expect(state.user.isLoading, isTrue);
       expect(state.listings.isLoading, isTrue);
       expect(state.reviews.isLoading, isTrue);
@@ -64,7 +64,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final user = container.read(profileProvider).user.requireValue!;
+      final user = container.read(profileNotifierProvider).user.requireValue!;
       expect(user.id, isNotEmpty);
       expect(user.displayName, isNotEmpty);
     });

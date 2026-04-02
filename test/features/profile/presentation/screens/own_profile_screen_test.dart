@@ -17,9 +17,12 @@ void _suppressOverflow(FlutterErrorDetails details) {
 
 /// Stub [ProfileNotifier] that does not auto-load.
 class _StubProfileNotifier extends ProfileNotifier {
-  _StubProfileNotifier(this._initialState, {required super.ref});
+  _StubProfileNotifier(this._initialState);
 
   final ProfileState _initialState;
+
+  @override
+  ProfileState build() => _initialState;
 
   @override
   Future<void> load() async {
@@ -55,8 +58,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            profileProvider.overrideWith(
-              (ref) => _StubProfileNotifier(const ProfileState(), ref: ref),
+            profileNotifierProvider.overrideWith(
+              () => _StubProfileNotifier(const ProfileState()),
             ),
           ],
           child: const MaterialApp(home: OwnProfileScreen()),
@@ -76,8 +79,8 @@ void main() {
         tester,
         const OwnProfileScreen(),
         overrides: [
-          profileProvider.overrideWith(
-            (ref) => _StubProfileNotifier(errorState, ref: ref),
+          profileNotifierProvider.overrideWith(
+            () => _StubProfileNotifier(errorState),
           ),
         ],
       );
@@ -94,8 +97,8 @@ void main() {
         tester,
         const OwnProfileScreen(),
         overrides: [
-          profileProvider.overrideWith(
-            (ref) => _StubProfileNotifier(nullUserState, ref: ref),
+          profileNotifierProvider.overrideWith(
+            () => _StubProfileNotifier(nullUserState),
           ),
         ],
       );
@@ -107,8 +110,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            profileProvider.overrideWith(
-              (ref) => _StubProfileNotifier(loadedState, ref: ref),
+            profileNotifierProvider.overrideWith(
+              () => _StubProfileNotifier(loadedState),
             ),
           ],
           child: const MaterialApp(home: OwnProfileScreen()),
@@ -129,8 +132,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            profileProvider.overrideWith(
-              (ref) => _StubProfileNotifier(loadedState, ref: ref),
+            profileNotifierProvider.overrideWith(
+              () => _StubProfileNotifier(loadedState),
             ),
           ],
           child: const MaterialApp(home: OwnProfileScreen()),

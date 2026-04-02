@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/features/auth/domain/usecases/check_kyc_required_usecase.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/initiate_idin_verification_usecase.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+
+part 'kyc_prompt_viewmodel.g.dart';
 
 /// State for the KYC prompt flow.
 class KycPromptState {
@@ -38,24 +41,33 @@ class KycPromptState {
   }
 }
 
-/// ViewModel for KYC prompt — manages prompt type determination and iDIN flow.
-class KycPromptNotifier extends StateNotifier<KycPromptState> {
-  KycPromptNotifier({
-    required CheckKycRequiredUseCase checkKycRequired,
-    required InitiateIdinVerificationUseCase initiateIdin,
-  }) : _checkKycRequired = checkKycRequired,
-       _initiateIdin = initiateIdin,
-       super(const KycPromptState());
+/// Provider for [CheckKycRequiredUseCase].
+@riverpod
+CheckKycRequiredUseCase checkKycRequired(Ref ref) {
+  return const CheckKycRequiredUseCase();
+}
 
-  final CheckKycRequiredUseCase _checkKycRequired;
-  final InitiateIdinVerificationUseCase _initiateIdin;
+/// Provider for [InitiateIdinVerificationUseCase].
+@riverpod
+InitiateIdinVerificationUseCase initiateIdinVerification(Ref ref) {
+  return InitiateIdinVerificationUseCase(ref.watch(authRepositoryProvider));
+}
+
+/// ViewModel for KYC prompt — manages prompt type determination and iDIN flow.
+@riverpod
+class KycPromptNotifier extends _$KycPromptNotifier {
+  @override
+  KycPromptState build() {
+    return const KycPromptState();
+  }
 
   /// Check what KYC prompt (if any) to show.
   void checkRequired({
     required KycLevel kycLevel,
     int? transactionAmountCents,
   }) {
-    final promptType = _checkKycRequired(
+    final checkKyc = ref.read(checkKycRequiredProvider);
+    final promptType = checkKyc(
       kycLevel: kycLevel,
       transactionAmountCents: transactionAmountCents,
     );
@@ -66,7 +78,8 @@ class KycPromptNotifier extends StateNotifier<KycPromptState> {
   Future<void> initiateIdin() async {
     state = state.copyWith(isLoading: true);
     try {
-      final url = await _initiateIdin();
+      final idin = ref.read(initiateIdinVerificationProvider);
+      final url = await idin();
       state = state.copyWith(isLoading: false, redirectUrl: url);
     } on Exception {
       state = state.copyWith(isLoading: false, error: 'error.generic');
@@ -78,22 +91,3 @@ class KycPromptNotifier extends StateNotifier<KycPromptState> {
     state = const KycPromptState();
   }
 }
-
-/// Provider for [CheckKycRequiredUseCase].
-final checkKycRequiredProvider = Provider<CheckKycRequiredUseCase>(
-  (ref) => const CheckKycRequiredUseCase(),
-);
-
-/// Provider for [InitiateIdinVerificationUseCase].
-final initiateIdinProvider = Provider<InitiateIdinVerificationUseCase>(
-  (ref) => InitiateIdinVerificationUseCase(ref.watch(authRepositoryProvider)),
-);
-
-/// Provider for [KycPromptNotifier].
-final kycPromptProvider =
-    StateNotifierProvider<KycPromptNotifier, KycPromptState>(
-      (ref) => KycPromptNotifier(
-        checkKycRequired: ref.watch(checkKycRequiredProvider),
-        initiateIdin: ref.watch(initiateIdinProvider),
-      ),
-    );

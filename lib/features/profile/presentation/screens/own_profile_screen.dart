@@ -42,7 +42,7 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(profileProvider);
+    final state = ref.watch(profileNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -82,11 +82,13 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
                       children: [
                         ListingsTabView(
                           listings: state.listings,
-                          onRetry: () => ref.invalidate(profileProvider),
+                          onRetry:
+                              () => ref.invalidate(profileNotifierProvider),
                         ),
                         ReviewsTabView(
                           reviews: state.reviews,
-                          onRetry: () => ref.invalidate(profileProvider),
+                          onRetry:
+                              () => ref.invalidate(profileNotifierProvider),
                         ),
                       ],
                     ),

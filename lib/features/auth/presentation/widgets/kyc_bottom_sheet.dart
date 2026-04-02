@@ -35,7 +35,7 @@ class KycBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(kycPromptProvider);
+    final state = ref.watch(kycPromptNotifierProvider);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     return Padding(
@@ -123,7 +123,10 @@ class KycBottomSheet extends ConsumerWidget {
           onPressed:
               state.isLoading
                   ? null
-                  : () => ref.read(kycPromptProvider.notifier).initiateIdin(),
+                  : () =>
+                      ref
+                          .read(kycPromptNotifierProvider.notifier)
+                          .initiateIdin(),
           isLoading: state.isLoading,
           variant: DeelButtonVariant.secondary,
         ),
@@ -132,7 +135,7 @@ class KycBottomSheet extends ConsumerWidget {
           label: 'kyc.later'.tr(),
           variant: DeelButtonVariant.ghost,
           onPressed: () {
-            ref.read(kycPromptProvider.notifier).dismiss();
+            ref.read(kycPromptNotifierProvider.notifier).dismiss();
             Navigator.of(context).pop();
           },
         ),

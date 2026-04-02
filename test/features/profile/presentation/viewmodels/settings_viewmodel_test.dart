@@ -49,7 +49,7 @@ Future<ProviderContainer> _loadedContainer({
       settingsRepositoryProvider.overrideWithValue(repoOverride),
   ];
   final container = ProviderContainer(overrides: overrides)
-    ..listen(settingsProvider, (_, _) {});
+    ..listen(settingsNotifierProvider, (_, _) {});
   // Mock repos use 500ms delays — wait for initial load.
   await Future<void>.delayed(const Duration(milliseconds: 600));
   return container;
@@ -61,7 +61,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.notificationPrefs.hasValue, isTrue);
     });
 
@@ -69,7 +69,7 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.addresses.hasValue, isTrue);
       expect(state.addresses.requireValue, isNotEmpty);
     });
@@ -86,11 +86,11 @@ void main() {
 
       // Fire the update (don't await — check optimistic state immediately).
       final future = container
-          .read(settingsProvider.notifier)
+          .read(settingsNotifierProvider.notifier)
           .updateNotificationPrefs(newPrefs);
 
       // Optimistic: state should reflect new prefs immediately.
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.notificationPrefs.requireValue, equals(newPrefs));
 
       await future;
@@ -103,7 +103,10 @@ void main() {
       addTearDown(container.dispose);
 
       final before =
-          container.read(settingsProvider).notificationPrefs.requireValue;
+          container
+              .read(settingsNotifierProvider)
+              .notificationPrefs
+              .requireValue;
 
       const newPrefs = NotificationPreferences(
         messages: false,
@@ -113,11 +116,11 @@ void main() {
       );
 
       await container
-          .read(settingsProvider.notifier)
+          .read(settingsNotifierProvider.notifier)
           .updateNotificationPrefs(newPrefs);
 
       // Should have rolled back to previous value.
-      final after = container.read(settingsProvider);
+      final after = container.read(settingsNotifierProvider);
       expect(after.notificationPrefs.requireValue, equals(before));
       expect(after.error, equals('error.generic'));
     });
@@ -127,7 +130,11 @@ void main() {
       addTearDown(container.dispose);
 
       final initialCount =
-          container.read(settingsProvider).addresses.requireValue.length;
+          container
+              .read(settingsNotifierProvider)
+              .addresses
+              .requireValue
+              .length;
 
       const newAddress = DutchAddress(
         postcode: '2511 DP',
@@ -136,9 +143,11 @@ void main() {
         city: 'Den Haag',
       );
 
-      await container.read(settingsProvider.notifier).saveAddress(newAddress);
+      await container
+          .read(settingsNotifierProvider.notifier)
+          .saveAddress(newAddress);
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.addresses.requireValue.length, equals(initialCount + 1));
     });
 
@@ -146,13 +155,16 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      final addresses = container.read(settingsProvider).addresses.requireValue;
+      final addresses =
+          container.read(settingsNotifierProvider).addresses.requireValue;
       final initialCount = addresses.length;
       final toDelete = addresses.first;
 
-      await container.read(settingsProvider.notifier).deleteAddress(toDelete);
+      await container
+          .read(settingsNotifierProvider.notifier)
+          .deleteAddress(toDelete);
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.addresses.requireValue.length, equals(initialCount - 1));
     });
 
@@ -160,9 +172,9 @@ void main() {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
 
-      await container.read(settingsProvider.notifier).exportUserData();
+      await container.read(settingsNotifierProvider.notifier).exportUserData();
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.isExporting, isFalse);
       expect(state.exportUrl, isNotNull);
       expect(state.exportUrl, contains('deelmarkt.nl'));
@@ -173,9 +185,9 @@ void main() {
       final container = await _loadedContainer(repoOverride: badUrlRepo);
       addTearDown(container.dispose);
 
-      await container.read(settingsProvider.notifier).exportUserData();
+      await container.read(settingsNotifierProvider.notifier).exportUserData();
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.isExporting, isFalse);
       expect(state.exportUrl, isNull);
       expect(state.error, equals('error.generic'));
@@ -186,9 +198,9 @@ void main() {
       final container = await _loadedContainer(repoOverride: httpRepo);
       addTearDown(container.dispose);
 
-      await container.read(settingsProvider.notifier).exportUserData();
+      await container.read(settingsNotifierProvider.notifier).exportUserData();
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.exportUrl, isNull);
       expect(state.error, equals('error.generic'));
     });
@@ -198,9 +210,9 @@ void main() {
       final container = await _loadedContainer(repoOverride: failRepo);
       addTearDown(container.dispose);
 
-      await container.read(settingsProvider.notifier).exportUserData();
+      await container.read(settingsNotifierProvider.notifier).exportUserData();
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.isExporting, isFalse);
       expect(state.error, equals('error.generic'));
     });
@@ -210,10 +222,10 @@ void main() {
       addTearDown(container.dispose);
 
       await container
-          .read(settingsProvider.notifier)
+          .read(settingsNotifierProvider.notifier)
           .deleteAccount(password: 'test123');
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.isDeleting, isFalse);
       expect(state.error, isNull);
     });
@@ -226,10 +238,10 @@ void main() {
 
       // load() will fail, but deleteAccount should still set error.
       await container
-          .read(settingsProvider.notifier)
+          .read(settingsNotifierProvider.notifier)
           .deleteAccount(password: 'wrong');
 
-      final state = container.read(settingsProvider);
+      final state = container.read(settingsNotifierProvider);
       expect(state.isDeleting, isFalse);
       expect(state.error, equals('error.generic'));
     });

@@ -1,9 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+
+part 'profile_viewmodel.g.dart';
 
 /// Independent async state for each profile section.
 ///
@@ -36,19 +38,18 @@ class ProfileState {
 ///
 /// Loads user, listings, and reviews as independent [AsyncValue]s
 /// so partial data renders and one failure doesn't block others.
-class ProfileNotifier extends StateNotifier<ProfileState> {
-  ProfileNotifier({required Ref ref})
-    : _ref = ref,
-      super(const ProfileState()) {
+@riverpod
+class ProfileNotifier extends _$ProfileNotifier {
+  @override
+  ProfileState build() {
     load();
+    return const ProfileState();
   }
 
-  final Ref _ref;
-
   Future<void> load() async {
-    final userRepo = _ref.read(userRepositoryProvider);
-    final listingRepo = _ref.read(listingRepositoryProvider);
-    final reviewRepo = _ref.read(reviewRepositoryProvider);
+    final userRepo = ref.read(userRepositoryProvider);
+    final listingRepo = ref.read(listingRepositoryProvider);
+    final reviewRepo = ref.read(reviewRepositoryProvider);
 
     final userResult = await AsyncValue.guard(() => userRepo.getCurrentUser());
     final user = userResult.valueOrNull;
@@ -74,8 +75,3 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
   }
 }
-
-/// Profile viewmodel provider.
-final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>(
-  (ref) => ProfileNotifier(ref: ref),
-);

@@ -32,8 +32,8 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(settingsProvider);
-    final profileState = ref.watch(profileProvider);
+    final state = ref.watch(settingsNotifierProvider);
+    final profileState = ref.watch(profileNotifierProvider);
     final version = ref.watch(appVersionProvider);
 
     return Scaffold(
@@ -87,8 +87,9 @@ class SettingsScreen extends ConsumerWidget {
               // Tracked: #50
             },
             onDelete:
-                (address) =>
-                    ref.read(settingsProvider.notifier).deleteAddress(address),
+                (address) => ref
+                    .read(settingsNotifierProvider.notifier)
+                    .deleteAddress(address),
           ),
     );
   }
@@ -102,7 +103,7 @@ class SettingsScreen extends ConsumerWidget {
             prefs: prefs,
             onChanged:
                 (updated) => ref
-                    .read(settingsProvider.notifier)
+                    .read(settingsNotifierProvider.notifier)
                     .updateNotificationPrefs(updated),
           ),
     );
@@ -114,12 +115,13 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return PrivacySection(
-      onExport: () => ref.read(settingsProvider.notifier).exportUserData(),
+      onExport:
+          () => ref.read(settingsNotifierProvider.notifier).exportUserData(),
       onDeleteAccount: () async {
         final password = await DeleteAccountDialog.show(context);
         if (password != null && password.isNotEmpty && context.mounted) {
           await ref
-              .read(settingsProvider.notifier)
+              .read(settingsNotifierProvider.notifier)
               .deleteAccount(password: password);
         }
       },

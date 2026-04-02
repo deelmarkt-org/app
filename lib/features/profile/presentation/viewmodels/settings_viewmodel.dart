@@ -1,9 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/shipping/domain/entities/dutch_address.dart';
+
+part 'settings_viewmodel.g.dart';
 
 /// Settings screen state — independent async values per section.
 class SettingsState {
@@ -46,18 +48,19 @@ class SettingsState {
 ///
 /// Notification toggles use optimistic updates: the UI flips immediately
 /// and rolls back on failure. Export and delete show loading states.
-class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier({required Ref ref})
-    : _ref = ref,
-      super(const SettingsState()) {
-    load();
+@riverpod
+class SettingsNotifier extends _$SettingsNotifier {
+  static const _errorKey = 'error.generic';
+
+  @override
+  SettingsState build() {
+    _load();
+    return const SettingsState();
   }
 
-  final Ref _ref;
+  SettingsRepository get _repo => ref.read(settingsRepositoryProvider);
 
-  SettingsRepository get _repo => _ref.read(settingsRepositoryProvider);
-
-  Future<void> load() async {
+  Future<void> _load() async {
     final prefsFuture = AsyncValue.guard(
       () => _repo.getNotificationPreferences(),
     );
@@ -78,10 +81,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     try {
       await _repo.updateNotificationPreferences(prefs);
     } on Exception {
-      state = state.copyWith(
-        notificationPrefs: previous,
-        error: 'error.generic',
-      );
+      state = state.copyWith(notificationPrefs: previous, error: _errorKey);
     }
   }
 
@@ -91,7 +91,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final addresses = await _repo.getAddresses();
       state = state.copyWith(addresses: AsyncValue.data(addresses));
     } on Exception {
-      state = state.copyWith(error: 'error.generic');
+      state = state.copyWith(error: _errorKey);
     }
   }
 
@@ -101,7 +101,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final addresses = await _repo.getAddresses();
       state = state.copyWith(addresses: AsyncValue.data(addresses));
     } on Exception {
-      state = state.copyWith(error: 'error.generic');
+      state = state.copyWith(error: _errorKey);
     }
   }
 
@@ -119,12 +119,12 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
           !_exportAllowedHosts.any(
             (host) => uri.host == host || uri.host.endsWith('.$host'),
           )) {
-        state = state.copyWith(isExporting: false, error: 'error.generic');
+        state = state.copyWith(isExporting: false, error: _errorKey);
         return;
       }
       state = state.copyWith(isExporting: false, exportUrl: url);
     } on Exception {
-      state = state.copyWith(isExporting: false, error: 'error.generic');
+      state = state.copyWith(isExporting: false, error: _errorKey);
     }
   }
 
@@ -135,12 +135,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       await _repo.deleteAccount(password: password);
       state = state.copyWith(isDeleting: false);
     } on Exception {
-      state = state.copyWith(isDeleting: false, error: 'error.generic');
+      state = state.copyWith(isDeleting: false, error: _errorKey);
     }
   }
 }
-
-/// Settings viewmodel provider.
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>(
-  (ref) => SettingsNotifier(ref: ref),
-);
