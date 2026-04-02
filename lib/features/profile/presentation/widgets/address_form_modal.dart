@@ -137,12 +137,14 @@ class _AddressFormModalState extends State<AddressFormModal> {
               city: _city,
               postcodeError: _postcodeError,
               houseNumberError: _houseNumberError,
-              onPostcodeChanged: (_) {
+              onPostcodeChanged: (value) {
                 if (_postcodeError != null) {
                   setState(() => _postcodeError = null);
                 }
+                // TODO: Wire postcode API lookup to auto-fill street/city
+                // when postcode + house number are both valid.
               },
-              onHouseNumberChanged: (_) {
+              onHouseNumberChanged: (value) {
                 if (_houseNumberError != null) {
                   setState(() => _houseNumberError = null);
                 }

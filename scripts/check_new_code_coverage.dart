@@ -114,7 +114,9 @@ Future<void> main() async {
   ]);
 
   if (diffResult.exitCode != 0) {
-    stderr.writeln('Failed to get git diff against $baseRef: ${diffResult.stderr}');
+    stderr.writeln(
+      'Failed to get git diff against $baseRef: ${diffResult.stderr}',
+    );
     exit(1);
   }
 
