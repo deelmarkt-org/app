@@ -21,7 +21,9 @@ class InitiateIdinVerificationUseCase {
     final uri = Uri.tryParse(url);
     if (uri == null ||
         uri.scheme != 'https' ||
-        !_allowedHosts.any((host) => uri.host.endsWith(host))) {
+        !_allowedHosts.any(
+          (host) => uri.host == host || uri.host.endsWith('.$host'),
+        )) {
       throw StateError('iDIN redirect URL failed allowlist validation');
     }
     return url;

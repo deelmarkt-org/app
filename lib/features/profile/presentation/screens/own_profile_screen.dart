@@ -46,7 +46,7 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text('profile.title'.tr()),
         actions: [
           IconButton(
             icon: Icon(PhosphorIcons.gear()),
@@ -58,7 +58,9 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
         loading: () => const ProfileSkeleton(),
         error: (_, _) => Center(child: Text('error.generic'.tr())),
         data: (user) {
-          if (user == null) return const Center(child: Text('Not logged in'));
+          if (user == null) {
+            return Center(child: Text('profile.notLoggedIn'.tr()));
+          }
 
           return ResponsiveBody(
             child: SingleChildScrollView(
