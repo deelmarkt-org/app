@@ -105,6 +105,52 @@ void main() {
       expect(after.filter.sortOrder, SearchSortOrder.priceLowHigh);
       expect(after.filter.query, before.filter.query);
     });
+    test('loadMore() does nothing when no data', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).loadMore();
+      final data = container.read(searchNotifierProvider).requireValue;
+      expect(data.listings, isEmpty);
+    });
+
+    test('loadMore() does nothing when not hasMore', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      final before = container.read(searchNotifierProvider).requireValue;
+      // Mock has only 4 items — all returned in first page
+      expect(before.hasMore, isFalse);
+
+      await container.read(searchNotifierProvider.notifier).loadMore();
+      final after = container.read(searchNotifierProvider).requireValue;
+      expect(after.listings.length, before.listings.length);
+    });
+
+    test('updateFilter() does nothing without prior search', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container
+          .read(searchNotifierProvider.notifier)
+          .updateFilter(const SearchFilter(categoryId: 'cat-1'));
+      final data = container.read(searchNotifierProvider).requireValue;
+      expect(data.filter.hasQuery, isFalse);
+    });
+
+    test('removeRecentSearch() removes specific query', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('iPhone');
+      await container.read(searchNotifierProvider.notifier).search('fiets');
+      await container
+          .read(searchNotifierProvider.notifier)
+          .removeRecentSearch('iPhone');
+      final data = container.read(searchNotifierProvider).requireValue;
+      expect(data.recentSearches, isNot(contains('iPhone')));
+    });
   });
 
   group('SearchState', () {
@@ -119,6 +165,34 @@ void main() {
       final copy = original.copyWith(hasMore: true);
       expect(copy.total, 42);
       expect(copy.hasMore, isTrue);
+    });
+
+    test('copyWith updates all fields', () {
+      const original = SearchState();
+      final copy = original.copyWith(
+        listings: const [],
+        filter: const SearchFilter(query: 'x'),
+        total: 5,
+        hasMore: true,
+        isLoadingMore: true,
+        recentSearches: const ['a'],
+      );
+      expect(copy.filter.query, 'x');
+      expect(copy.total, 5);
+      expect(copy.hasMore, isTrue);
+      expect(copy.isLoadingMore, isTrue);
+      expect(copy.recentSearches, ['a']);
+    });
+
+    test('props includes all fields for Equatable diffing', () {
+      const state = SearchState(total: 1, hasMore: true);
+      expect(state.props.length, 6);
+    });
+
+    test('inequality when total differs', () {
+      const a = SearchState(total: 1);
+      const b = SearchState(total: 2);
+      expect(a, isNot(equals(b)));
     });
   });
 }

@@ -1,12 +1,10 @@
 #!/usr/bin/env dart
 // ignore_for_file: avoid_print
 
-// Checks test coverage on new/changed Dart source files in the current branch.
+// Pre-push coverage gate — mirrors SonarCloud's "Coverage on New Code" gate.
 //
-// Compares the current branch against `dev` (or the branch passed as arg)
-// and reports coverage only for changed `lib/` files.
-//
-// Exit code 0 = pass, 1 = below threshold.
+// Reads sonar.coverage.exclusions from sonar-project.properties so
+// both local and CI measure the exact same file set.
 //
 // Usage:
 //   dart run scripts/check_new_code_coverage.dart          # default 80%
@@ -18,6 +16,7 @@ const _baseBranch = 'origin/dev';
 
 void main(List<String> args) async {
   final threshold = _parseThreshold(args);
+  final sonarExclusions = _loadSonarCoverageExclusions();
 
   // 1. Run flutter test with coverage
   print('Running flutter test --coverage ...');
@@ -49,10 +48,8 @@ void main(List<String> args) async {
             (l) =>
                 l.endsWith('.dart') &&
                 !l.endsWith('.g.dart') &&
-                !l.contains(
-                  '/supabase/',
-                ) && // Supabase repos need integration tests
-                !_isBarrelReexport(l),
+                !l.endsWith('.freezed.dart') &&
+                !_matchesAnyGlob(l, sonarExclusions),
           )
           .toList();
 
@@ -64,7 +61,7 @@ void main(List<String> args) async {
   // 3. Parse lcov.info
   final lcovFile = File('coverage/lcov.info');
   if (!lcovFile.existsSync()) {
-    print('coverage/lcov.info not found — run flutter test --coverage first.');
+    print('coverage/lcov.info not found.');
     exit(1);
   }
 
@@ -78,7 +75,6 @@ void main(List<String> args) async {
   for (final file in changedFiles) {
     final data = coverage[file];
     if (data == null) {
-      // File has no coverage data at all (0%)
       uncovered[file] = 0;
       continue;
     }
@@ -123,17 +119,60 @@ void main(List<String> args) async {
   print('PASS: New code coverage meets $threshold% threshold.');
 }
 
-// Barrel re-export files have no executable code — exclude from coverage.
-bool _isBarrelReexport(String filePath) {
-  final file = File(filePath);
-  if (!file.existsSync()) return false;
-  final content = file.readAsStringSync().trim();
-  final lines =
-      content
-          .split('\n')
-          .where((l) => l.trim().isNotEmpty && !l.trim().startsWith('//'))
-          .toList();
-  return lines.length == 1 && lines.first.startsWith('export ');
+// Read sonar.coverage.exclusions from sonar-project.properties.
+List<String> _loadSonarCoverageExclusions() {
+  final file = File('sonar-project.properties');
+  if (!file.existsSync()) return [];
+
+  final lines = file.readAsLinesSync();
+  final result = <String>[];
+  var capturing = false;
+
+  for (final line in lines) {
+    final trimmed = line.trim();
+    if (trimmed.startsWith('sonar.coverage.exclusions=') ||
+        trimmed.startsWith('sonar.coverage.exclusions =')) {
+      capturing = true;
+      // Value may start on same line after =
+      final afterEq = trimmed.split('=').skip(1).join('=').trim();
+      final value = afterEq.replaceAll(r'\', '').trim();
+      if (value.isNotEmpty) {
+        result.addAll(
+          value.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty),
+        );
+      }
+      if (!trimmed.endsWith(r'\')) capturing = false;
+      continue;
+    }
+    if (capturing) {
+      final value = trimmed.replaceAll(r'\', '').trim();
+      if (value.isNotEmpty) {
+        result.addAll(
+          value.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty),
+        );
+      }
+      if (!trimmed.endsWith(r'\')) capturing = false;
+    }
+  }
+
+  return result;
+}
+
+// Matches a file path against a glob pattern (simple ** and * support).
+bool _matchesAnyGlob(String path, List<String> patterns) {
+  for (final pattern in patterns) {
+    var regex = pattern
+        .replaceAll('.', r'\.')
+        .replaceAll('**/', '(.+/)?')
+        .replaceAll('**', '.*')
+        .replaceAll('*', '[^/]*');
+    // Allow pattern to match anywhere in path (SonarCloud behavior)
+    if (!regex.startsWith('lib/')) {
+      regex = '(.*/)?$regex';
+    }
+    if (RegExp(regex).hasMatch(path)) return true;
+  }
+  return false;
 }
 
 int _parseThreshold(List<String> args) {
