@@ -127,8 +127,8 @@ void main() {
         ),
       );
 
-      // Price is formatted as "euro-sign 45.00"
-      expect(find.textContaining('45.00'), findsOneWidget);
+      // Formatters.euroFromCents uses Dutch locale: "€ 45,00"
+      expect(find.textContaining('45,00'), findsOneWidget);
     });
 
     testWidgets('error state calls onRetry when retry tapped', (tester) async {

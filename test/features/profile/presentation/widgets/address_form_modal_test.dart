@@ -56,6 +56,8 @@ void main() {
 
       expect(find.text('address.postcodeInvalid'), findsOneWidget);
       expect(find.text('address.houseNumberInvalid'), findsOneWidget);
+      expect(find.text('address.streetRequired'), findsOneWidget);
+      expect(find.text('address.cityRequired'), findsOneWidget);
     });
 
     testWidgets('calls onSave with valid input', (tester) async {
@@ -66,8 +68,11 @@ void main() {
         AddressFormModal(onSave: (address) => savedAddress = address),
       );
 
-      await tester.enterText(find.byType(TextFormField).first, '1012 AB');
+      // TextFormFields: 0=postcode, 1=houseNumber, 2=addition, 3=street, 4=city
+      await tester.enterText(find.byType(TextFormField).at(0), '1012 AB');
       await tester.enterText(find.byType(TextFormField).at(1), '42');
+      await tester.enterText(find.byType(TextFormField).at(3), 'Damstraat');
+      await tester.enterText(find.byType(TextFormField).at(4), 'Amsterdam');
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('action.save'));
@@ -76,6 +81,8 @@ void main() {
       expect(savedAddress, isNotNull);
       expect(savedAddress!.postcode, '1012 AB');
       expect(savedAddress!.houseNumber, '42');
+      expect(savedAddress!.street, 'Damstraat');
+      expect(savedAddress!.city, 'Amsterdam');
     });
 
     testWidgets('pre-fills fields in edit mode', (tester) async {

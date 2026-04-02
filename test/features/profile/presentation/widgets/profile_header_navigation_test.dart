@@ -1,4 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/profile_header.dart';
@@ -7,6 +10,13 @@ import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
 import '../../../../helpers/pump_app.dart';
 
 void main() {
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+    await initializeDateFormatting('en');
+    await initializeDateFormatting('nl');
+  });
+
   final testUser = UserEntity(
     id: 'user-001',
     displayName: 'Jan de Vries',
@@ -21,7 +31,7 @@ void main() {
 
   group('ProfileHeader avatar picker wiring (#53)', () {
     testWidgets('edit overlay is enabled on avatar', (tester) async {
-      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+      await pumpLocalizedWidget(tester, ProfileHeader(user: testUser));
 
       final avatar = tester.widget<DeelAvatar>(find.byType(DeelAvatar));
       expect(avatar.showEditOverlay, isTrue);
@@ -31,7 +41,7 @@ void main() {
     testWidgets('tapping avatar opens image picker bottom sheet', (
       tester,
     ) async {
-      await pumpTestWidget(tester, ProfileHeader(user: testUser));
+      await pumpLocalizedWidget(tester, ProfileHeader(user: testUser));
 
       await tester.tap(find.byType(DeelAvatar));
       await tester.pumpAndSettle();
