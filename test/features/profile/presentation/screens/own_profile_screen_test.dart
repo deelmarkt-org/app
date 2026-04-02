@@ -100,7 +100,7 @@ void main() {
         ],
       );
 
-      expect(find.text('profile.notLoggedIn'), findsOneWidget);
+      expect(find.text('Not logged in'), findsOneWidget);
     });
 
     testWidgets('shows title and gear icon when loaded', (tester) async {
@@ -119,7 +119,7 @@ void main() {
       // Consume RenderFlex overflow from narrow test viewport.
       tester.takeException();
 
-      expect(find.text('profile.title'), findsOneWidget);
+      expect(find.text('Profile'), findsOneWidget);
       expect(find.byType(IconButton), findsOneWidget);
     });
 

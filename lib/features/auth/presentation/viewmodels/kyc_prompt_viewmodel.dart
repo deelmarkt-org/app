@@ -11,28 +11,24 @@ class KycPromptState {
     this.promptType = KycPromptType.none,
     this.isLoading = false,
     this.isSuccess = false,
-    this.redirectUrl,
     this.error,
   });
 
   final KycPromptType promptType;
   final bool isLoading;
   final bool isSuccess;
-  final String? redirectUrl;
   final String? error;
 
   KycPromptState copyWith({
     KycPromptType? promptType,
     bool? isLoading,
     bool? isSuccess,
-    String? redirectUrl,
     String? error,
   }) {
     return KycPromptState(
       promptType: promptType ?? this.promptType,
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
-      redirectUrl: redirectUrl,
       error: error,
     );
   }
@@ -66,8 +62,8 @@ class KycPromptNotifier extends StateNotifier<KycPromptState> {
   Future<void> initiateIdin() async {
     state = state.copyWith(isLoading: true);
     try {
-      final url = await _initiateIdin();
-      state = state.copyWith(isLoading: false, redirectUrl: url);
+      await _initiateIdin();
+      state = state.copyWith(isLoading: false, isSuccess: true);
     } on Exception {
       state = state.copyWith(isLoading: false, error: 'error.generic');
     }

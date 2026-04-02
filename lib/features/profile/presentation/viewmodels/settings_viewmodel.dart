@@ -116,9 +116,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||
-          !_exportAllowedHosts.any(
-            (host) => uri.host == host || uri.host.endsWith('.$host'),
-          )) {
+          !_exportAllowedHosts.any((host) => uri.host.endsWith(host))) {
         state = state.copyWith(isExporting: false, error: 'error.generic');
         return;
       }
