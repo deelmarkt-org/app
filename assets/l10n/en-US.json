@@ -20,7 +20,8 @@
     "share": "Share",
     "edit": "Edit",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "comingSoon": "Coming soon"
   },
   "form": {
     "email": "Email address",
@@ -316,5 +317,26 @@
     "distanceKm": "{} km",
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
+  },
+  "listing_detail": {
+    "description": "Description",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "viewProfile": "View profile",
+    "respondsWithin": "Responds within {time}",
+    "respondsWithinHours": "{count}h",
+    "respondsWithinMinutes": "{count}m",
+    "similarListings": "Similar listings",
+    "messageButton": "Message",
+    "buyButton": "Buy — {price}",
+    "soldBadge": "SOLD",
+    "notFound": "Listing not found",
+    "notFoundAction": "Go back to home",
+    "photoCount": "Photo {current} of {total}",
+    "memberSince": "Member since {date}",
+    "reviews": "{count} reviews",
+    "noReviews": "No reviews yet",
+    "verified": "Verified",
+    "locationHeader": "Location"
   }
 }
