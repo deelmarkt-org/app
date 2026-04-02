@@ -77,4 +77,10 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<BiometricMethod?> get availableBiometricMethod async => null;
+
+  @override
+  Future<String> initiateIdinVerification() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    return 'https://www.idin.nl/mock-verify?session=test-123';
+  }
 }

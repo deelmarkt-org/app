@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/deel_badge_theme.dart';
 import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
@@ -18,6 +19,7 @@ class DeelmarktTheme {
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
     extensions: <ThemeExtension>[
+      DeelBadgeThemeData.light(),
       DeelButtonThemeData.light(),
       DeelmarktTrustTheme.light(),
     ],
@@ -137,6 +139,7 @@ class DeelmarktTheme {
     useMaterial3: true,
     fontFamily: DeelmarktTypography.fontFamily,
     extensions: <ThemeExtension>[
+      DeelBadgeThemeData.dark(),
       DeelButtonThemeData.dark(),
       DeelmarktTrustTheme.dark(),
     ],

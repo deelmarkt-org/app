@@ -199,4 +199,24 @@ class SupabaseListingRepository implements ListingRepository {
       throw Exception('Failed to fetch favourites: ${e.message}');
     }
   }
+
+  @override
+  Future<List<ListingEntity>> getByUserId(
+    String userId, {
+    int limit = 10,
+    String? cursor,
+  }) async {
+    try {
+      var query = _client.from(_view).select().eq('seller_id', userId);
+      if (cursor != null) {
+        query = query.lt('created_at', cursor);
+      }
+      final response = await query
+          .order('created_at', ascending: false)
+          .limit(limit);
+      return ListingDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch user listings: ${e.message}');
+    }
+  }
 }

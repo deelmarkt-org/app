@@ -23,6 +23,7 @@ class ListingEntity extends Equatable {
     this.distanceKm,
     this.isFavourited = false,
     this.qualityScore,
+    this.status = ListingStatus.active,
   });
 
   final String id;
@@ -44,6 +45,9 @@ class ListingEntity extends Equatable {
   /// Listing quality score (0–100) from quality-score Edge Function.
   final int? qualityScore;
 
+  /// Current status of the listing.
+  final ListingStatus status;
+
   final DateTime createdAt;
 
   ListingEntity copyWith({
@@ -60,6 +64,7 @@ class ListingEntity extends Equatable {
     double? distanceKm,
     bool? isFavourited,
     int? qualityScore,
+    ListingStatus? status,
     DateTime? createdAt,
   }) {
     return ListingEntity(
@@ -76,6 +81,7 @@ class ListingEntity extends Equatable {
       distanceKm: distanceKm ?? this.distanceKm,
       isFavourited: isFavourited ?? this.isFavourited,
       qualityScore: qualityScore ?? this.qualityScore,
+      status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -95,8 +101,30 @@ class ListingEntity extends Equatable {
     distanceKm,
     isFavourited,
     qualityScore,
+    status,
     createdAt,
   ];
+}
+
+/// Listing publication status — matches DB `listing_status` enum.
+///
+/// DB values: active, sold, draft
+enum ListingStatus {
+  active,
+  sold,
+  draft;
+
+  /// Convert to DB snake_case value.
+  String toDb() => name;
+
+  /// Parse from DB value.
+  /// Unknown values default to [active] for forward-compatibility.
+  static ListingStatus fromDb(String value) => switch (value) {
+    'active' => ListingStatus.active,
+    'sold' => ListingStatus.sold,
+    'draft' => ListingStatus.draft,
+    _ => ListingStatus.active,
+  };
 }
 
 /// Item condition — matches DB `listing_condition` enum.
