@@ -189,6 +189,10 @@ class _FilterChipBar extends StatelessWidget {
     final theme = Theme.of(context);
     final activeColor =
         isDark ? DeelmarktColors.darkPrimary : DeelmarktColors.primary;
+    final activeBg =
+        isDark
+            ? DeelmarktColors.darkPrimary.withValues(alpha: 0.12)
+            : DeelmarktColors.primarySurface;
 
     return Semantics(
       button: true,
@@ -202,12 +206,7 @@ class _FilterChipBar extends StatelessWidget {
             color: isActive ? activeColor : theme.colorScheme.outlineVariant,
           ),
         ),
-        backgroundColor:
-            isActive
-                ? (isDark
-                    ? DeelmarktColors.darkPrimary.withValues(alpha: 0.12)
-                    : DeelmarktColors.primarySurface)
-                : null,
+        backgroundColor: isActive ? activeBg : null,
       ),
     );
   }

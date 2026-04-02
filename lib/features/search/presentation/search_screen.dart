@@ -52,6 +52,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchNotifierProvider);
+    final placeholder = 'search.placeholder'.tr();
 
     return Scaffold(
       body: SafeArea(
@@ -65,11 +66,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 0,
               ),
               child: Semantics(
-                label: 'search.placeholder'.tr(),
+                label: placeholder,
                 textField: true,
                 child: DeelSearchInput(
-                  label: 'search.placeholder'.tr(),
-                  hint: 'search.placeholder'.tr(),
+                  label: placeholder,
+                  hint: placeholder,
                   controller: _controller,
                   onDebouncedChanged: (query) {
                     if (query.trim().isEmpty) {
