@@ -15,8 +15,8 @@ import 'package:deelmarkt/widgets/buttons/circle_icon_button.dart';
 class DetailImageGallery extends StatefulWidget {
   const DetailImageGallery({
     required this.imageUrls,
-    required this.isFavourited,
-    required this.onFavouriteTap,
+    this.isFavourited = false,
+    this.onFavouriteTap,
     required this.onBack,
     this.onShare,
     super.key,
@@ -24,7 +24,9 @@ class DetailImageGallery extends StatefulWidget {
 
   final List<String> imageUrls;
   final bool isFavourited;
-  final VoidCallback onFavouriteTap;
+
+  /// When null, the favourite button is hidden (e.g. sold listings).
+  final VoidCallback? onFavouriteTap;
   final VoidCallback onBack;
   final VoidCallback? onShare;
 
@@ -119,12 +121,13 @@ class _DetailImageGalleryState extends State<DetailImageGallery> {
                 ),
                 const SizedBox(width: Spacing.s2),
               ],
-              CircleIconButton(
-                icon: favIcon,
-                onTap: widget.onFavouriteTap,
-                label: favLabel,
-                iconColor: widget.isFavourited ? DeelmarktColors.error : null,
-              ),
+              if (widget.onFavouriteTap != null)
+                CircleIconButton(
+                  icon: favIcon,
+                  onTap: widget.onFavouriteTap!,
+                  label: favLabel,
+                  iconColor: widget.isFavourited ? DeelmarktColors.error : null,
+                ),
             ],
           ),
         ),

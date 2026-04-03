@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/constants.dart';
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
@@ -16,10 +18,9 @@ import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_im
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_info_section.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_loading_view.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_seller_card.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/widgets/sold_overlay.dart';
 
-/// Listing detail screen — B-51.
-///
-/// Route: `/listings/:id` (deep link + in-app navigation).
+/// Listing detail screen — route: `/listings/:id` (deep link + in-app).
 class ListingDetailScreen extends ConsumerWidget {
   const ListingDetailScreen({required this.listingId, super.key});
 
@@ -65,10 +66,18 @@ class _DataView extends StatelessWidget {
   final String listingId;
   final VoidCallback onFavouriteTap;
 
+  bool get _isSold => data.listing.status == ListingStatus.sold;
+
   @override
   Widget build(BuildContext context) {
     final listing = data.listing;
+    final isExpanded = Breakpoints.isExpanded(context);
 
+    if (isExpanded) return _expandedLayout(context, listing);
+    return _compactLayout(context, listing);
+  }
+
+  Widget _compactLayout(BuildContext context, ListingEntity listing) {
     return Scaffold(
       body: Column(
         children: [
@@ -78,70 +87,103 @@ class _DataView extends StatelessWidget {
                 SliverToBoxAdapter(
                   child: SafeArea(
                     bottom: false,
-                    child: DetailImageGallery(
-                      imageUrls: listing.imageUrls,
-                      isFavourited: listing.isFavourited,
-                      onFavouriteTap: onFavouriteTap,
-                      onBack: () {
-                        if (context.canPop()) {
-                          context.pop();
-                        } else {
-                          context.go(AppRoutes.home);
-                        }
-                      },
-                      onShare: () => _shareListing(context),
-                    ),
+                    child: _buildGallery(context, listing),
                   ),
                 ),
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Spacing.s4,
-                      vertical: Spacing.s4,
-                    ),
-                    child: TrustBanner.escrow(),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: DetailInfoSection(
-                    listing: listing,
-                    categoryName: data.category?.name,
-                    isOwnListing: data.isOwnListing,
-                  ),
-                ),
-                if (data.seller != null)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.s4,
-                        vertical: Spacing.s4,
-                      ),
-                      child: DetailSellerCard(
-                        seller: data.seller!,
-                        onViewProfile:
-                            () => context.goNamed(
-                              'user-profile',
-                              pathParameters: {'id': data.seller!.id},
-                            ),
-                      ),
-                    ),
-                  ),
-                const SliverPadding(
-                  padding: EdgeInsets.only(bottom: Spacing.s8),
-                ),
+                ..._detailSlivers(context),
               ],
             ),
           ),
-          DetailActionBar(
-            priceInCents: listing.priceInCents,
-            isOwnListing: data.isOwnListing,
-            onMessage: () => _showComingSoon(context),
-            onBuy: () => _showComingSoon(context),
-            onEdit: () => _showComingSoon(context),
-            onDelete: () => _showComingSoon(context),
-          ),
+          if (!_isSold) _actionBar(context),
         ],
       ),
+    );
+  }
+
+  Widget _expandedLayout(BuildContext context, ListingEntity listing) {
+    return Scaffold(
+      body: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(
+              flex: 3,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: _buildGallery(context, listing),
+              ),
+            ),
+            Flexible(
+              flex: 2,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CustomScrollView(slivers: _detailSlivers(context)),
+                  ),
+                  if (!_isSold) _actionBar(context),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _detailSlivers(BuildContext context) {
+    final listing = data.listing;
+    return [
+      const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.all(Spacing.s4),
+          child: TrustBanner.escrow(),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: DetailInfoSection(
+          listing: listing,
+          categoryName: data.category?.name,
+          isOwnListing: data.isOwnListing,
+        ),
+      ),
+      if (data.seller != null)
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.s4),
+            child: DetailSellerCard(
+              seller: data.seller!,
+              onViewProfile:
+                  () => context.goNamed(
+                    'user-profile',
+                    pathParameters: {'id': data.seller!.id},
+                  ),
+            ),
+          ),
+        ),
+      const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
+    ];
+  }
+
+  Widget _buildGallery(BuildContext context, ListingEntity listing) {
+    final gallery = DetailImageGallery(
+      imageUrls: listing.imageUrls,
+      isFavourited: listing.isFavourited,
+      onFavouriteTap: _isSold ? null : onFavouriteTap,
+      onBack:
+          () => context.canPop() ? context.pop() : context.go(AppRoutes.home),
+      onShare: _isSold ? null : () => _shareListing(context),
+    );
+    return _isSold ? SoldOverlay(child: gallery) : gallery;
+  }
+
+  Widget _actionBar(BuildContext context) {
+    return DetailActionBar(
+      priceInCents: data.listing.priceInCents,
+      isOwnListing: data.isOwnListing,
+      onMessage: () => _showComingSoon(context),
+      onBuy: () => _showComingSoon(context),
+      onEdit: () => _showComingSoon(context),
+      onDelete: () => _showComingSoon(context),
     );
   }
 

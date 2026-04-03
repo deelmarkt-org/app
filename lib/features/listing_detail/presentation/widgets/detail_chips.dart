@@ -53,25 +53,28 @@ class CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.s2,
-        vertical: Spacing.s1,
-      ),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? DeelmarktColors.darkInfoSurface
-                : DeelmarktColors.secondarySurface,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-      ),
-      child: Text(
-        name,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+    return Semantics(
+      label: name,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.s2,
+          vertical: Spacing.s1,
+        ),
+        decoration: BoxDecoration(
           color:
               isDark
-                  ? DeelmarktColors.darkSecondary
-                  : DeelmarktColors.secondary,
+                  ? DeelmarktColors.darkInfoSurface
+                  : DeelmarktColors.secondarySurface,
+          borderRadius: BorderRadius.circular(DeelmarktRadius.full),
+        ),
+        child: Text(
+          name,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color:
+                isDark
+                    ? DeelmarktColors.darkSecondary
+                    : DeelmarktColors.secondary,
+          ),
         ),
       ),
     );

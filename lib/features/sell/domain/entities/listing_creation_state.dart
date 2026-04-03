@@ -13,6 +13,8 @@ enum ListingCreationStep { photos, details, quality, publishing, success }
 /// Pure domain entity — no Flutter/Supabase imports.
 /// Extends [Equatable] for Riverpod state diffing.
 ///
+/// 14-field wizard state + nullable copyWith — exceeds 100-line limit by design.
+///
 /// Uses the `String? Function()?` pattern for nullable [errorKey]
 /// in [copyWith] to distinguish "keep current value" from "clear to null".
 class ListingCreationState extends Equatable {

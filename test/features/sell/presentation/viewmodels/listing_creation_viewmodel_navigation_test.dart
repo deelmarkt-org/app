@@ -83,7 +83,8 @@ void main() {
         notifier
           ..nextStep()
           ..updateTitle('Test Listing Title')
-          ..updatePrice(2500);
+          ..updatePrice(2500)
+          ..updateCategoryL2('sub-cat-1');
 
         final result = notifier.nextStep();
 
@@ -117,6 +118,7 @@ void main() {
         ..nextStep()
         ..updateTitle('Title for test')
         ..updatePrice(1000)
+        ..updateCategoryL2('sub-cat-1')
         ..nextStep()
         ..previousStep();
 
@@ -166,6 +168,7 @@ void main() {
         ..nextStep()
         ..updateTitle('Title')
         ..updatePrice(1000)
+        ..updateCategoryL2('sub-cat-1')
         ..nextStep();
 
       final result = notifier.nextStep();

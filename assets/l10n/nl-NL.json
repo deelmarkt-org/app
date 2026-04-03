@@ -512,6 +512,7 @@
     "errorNoPhotos": "Voeg minstens een foto toe om door te gaan",
     "errorNoTitle": "Vul een titel in om door te gaan",
     "errorNoPrice": "Stel een prijs in om door te gaan",
+    "errorNoCategory": "Kies een categorie om door te gaan",
     "publishError": "Kon je advertentie niet publiceren. Probeer het opnieuw.",
     "draftError": "Kon je concept niet opslaan. Probeer het opnieuw.",
     "fileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
