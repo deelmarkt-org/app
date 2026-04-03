@@ -409,6 +409,7 @@ setState_allowlist:
   - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
   - lib/features/dev/**
   - lib/widgets/inputs/deel_search_input.dart
+  - lib/features/profile/presentation/widgets/delete_account_dialog.dart
 
 file_length_exempt:
   - lib/core/design_system/theme.dart

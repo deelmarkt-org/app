@@ -342,7 +342,10 @@ void _checkDuplicateStrings(
   List<String> lines,
   List<String> violations,
 ) {
-  final stringPattern = RegExp(r"""'([^']{4,})'|'([^']{4,})'""");
+  final stringPattern = RegExp(
+    r"'([^']{4,})'|"
+    r'"([^"]{4,})"',
+  );
   final counts = <String, int>{};
 
   for (final line in lines) {

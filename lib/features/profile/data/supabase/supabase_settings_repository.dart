@@ -141,6 +141,9 @@ class SupabaseSettingsRepository implements SettingsRepository {
   Future<String> exportUserData() async {
     try {
       final response = await _client.functions.invoke('export-user-data');
+      if (response.status != 200) {
+        throw Exception('Export failed with status ${response.status}');
+      }
       final url = (response.data as Map<String, dynamic>?)?['url'];
       if (url is! String || url.isEmpty) {
         throw Exception('Export function returned no URL');
@@ -161,17 +164,26 @@ class SupabaseSettingsRepository implements SettingsRepository {
     }
   }
 
-  /// The `delete-account` Edge Function MUST:
-  /// 1. Verify password via `supabase.auth.signInWithPassword`
-  /// 2. Soft-delete the user (set `deleted_at` timestamp)
-  /// 3. Trigger 30-day PII cleanup (see issue #49)
+  /// Deletes user account after client-side password re-authentication.
+  ///
+  /// Re-authenticates via `signInWithPassword` first (OWASP ASVS §4.2.1),
+  /// then invokes the `delete-account` Edge Function with the refreshed JWT.
+  /// Password is NOT sent to the Edge Function.
   @override
   Future<void> deleteAccount({required String password}) async {
     try {
-      await _client.functions.invoke(
-        'delete-account',
-        body: {'password': password},
-      );
+      // Re-authenticate client-side — password stays local
+      final email = _client.auth.currentUser?.email;
+      if (email == null) throw Exception('Not authenticated');
+      await _client.auth.signInWithPassword(email: email, password: password);
+
+      // Invoke with refreshed JWT only — no password in body
+      final response = await _client.functions.invoke('delete-account');
+      if (response.status != 200) {
+        throw Exception('Delete failed with status ${response.status}');
+      }
+    } on AuthException catch (e) {
+      throw Exception('Authentication failed: ${e.message}');
     } on FunctionException catch (e) {
       throw Exception('Failed to delete account: ${e.reasonPhrase}');
     }
