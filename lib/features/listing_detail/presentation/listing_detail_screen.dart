@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_notifier.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_action_bar.dart';
@@ -99,7 +99,7 @@ class _DataView extends StatelessWidget {
                       horizontal: Spacing.s4,
                       vertical: Spacing.s4,
                     ),
-                    child: EscrowTrustBanner(),
+                    child: TrustBanner.escrow(),
                   ),
                 ),
                 SliverToBoxAdapter(

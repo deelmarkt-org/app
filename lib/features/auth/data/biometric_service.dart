@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
@@ -70,6 +71,6 @@ class BiometricService {
 }
 
 @Riverpod(keepAlive: true)
-BiometricService biometricService(BiometricServiceRef ref) {
+BiometricService biometricService(Ref ref) {
   return BiometricService();
 }
