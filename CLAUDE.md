@@ -339,15 +339,41 @@ The European Accessibility Act is enforceable. These are not optional:
 
 1. Follow §7 pre-implementation checklist before each screen
 2. Run `flutter analyze` after each file change
-3. Keep files under line limits (§2.1)
-4. Use design system tokens, never raw values (§3.3)
+3. Run `dart run scripts/check_quality.dart --all` to catch CLAUDE.md violations early
+4. Keep files under line limits (§2.1)
+5. Use design system tokens, never raw values (§3.3)
+6. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
+7. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
+8. All interactive widgets MUST have `Semantics()` labels
+9. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
+10. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
 
 ### Before Ending
 
 1. Run `flutter analyze` — zero warnings
-2. Run `flutter test` — all passing
-3. Commit with proper message format
-4. Update epic acceptance criteria checkboxes if applicable
+2. Run `dart run scripts/check_quality.dart` — zero violations on your files
+3. Run `flutter test` — all passing
+4. Commit with proper message format
+5. Update epic acceptance criteria checkboxes if applicable
+
+### Quality Gate Scripts
+
+| Script | When | What |
+|:-------|:-----|:-----|
+| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder |
+| `dart run scripts/check_quality.dart --thorough` | Pre-push (auto) | + duplicate strings, nested ternaries, long methods |
+| `dart run scripts/check_quality.dart --all` | Manual | Check entire codebase |
+| `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
+
+### Setup for New or Existing Developers
+
+```bash
+# New developer — full setup:
+bash scripts/setup.sh
+
+# Existing developer — just update hooks after pulling:
+bash scripts/setup_hooks.sh
+```
 
 ---
 
