@@ -21,7 +21,12 @@ class SearchNotifier extends _$SearchNotifier {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
 
-    final filter = SearchFilter(query: trimmed);
+    // Preserve active filters when user types a new query
+    final current = state.valueOrNull;
+    final filter =
+        current != null && current.filter.hasActiveFilters
+            ? current.filter.copyWith(query: trimmed)
+            : SearchFilter(query: trimmed);
     state = const AsyncValue.loading();
 
     try {
@@ -73,9 +78,11 @@ class SearchNotifier extends _$SearchNotifier {
 
   Future<void> updateFilter(SearchFilter filter) async {
     final current = state.valueOrNull;
-    if (current == null || !current.filter.hasQuery) return;
+    if (current == null) return;
 
-    final updated = filter.copyWith(query: current.filter.query);
+    // Preserve current query if the new filter doesn't specify one
+    final query = filter.query.isNotEmpty ? filter.query : current.filter.query;
+    final updated = filter.copyWith(query: query);
     state = const AsyncValue.loading();
 
     try {

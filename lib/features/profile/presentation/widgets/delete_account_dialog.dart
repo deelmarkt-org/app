@@ -1,17 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+
+/// Whether the password is visible in the delete account dialog.
+final _obscurePasswordProvider = StateProvider.autoDispose<bool>((_) => true);
 
 /// Destructive confirmation dialog for account deletion.
 ///
 /// Requires password re-entry before confirming (OWASP ASVS L2 §4.2.1).
 /// Returns the entered password if confirmed, `null` if cancelled.
-class DeleteAccountDialog extends StatefulWidget {
+class DeleteAccountDialog extends ConsumerWidget {
   const DeleteAccountDialog({super.key});
 
-  /// Show the dialog and return the password if confirmed, null otherwise.
   static Future<String?> show(BuildContext context) {
     return showDialog<String>(
       context: context,
@@ -21,22 +24,10 @@ class DeleteAccountDialog extends StatefulWidget {
   }
 
   @override
-  State<DeleteAccountDialog> createState() => _DeleteAccountDialogState();
-}
-
-class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final obscure = ref.watch(_obscurePasswordProvider);
+    final controller = TextEditingController();
 
     return AlertDialog(
       title: Text('settings.deleteConfirmTitle'.tr()),
@@ -50,17 +41,15 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
           ),
           const SizedBox(height: Spacing.s4),
           TextField(
-            controller: _passwordController,
-            obscureText: _obscurePassword,
+            controller: controller,
+            obscureText: obscure,
             autofocus: true,
             decoration: InputDecoration(
               labelText: 'form.pass_field'.tr(),
               suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                ),
+                icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
                 onPressed: () {
-                  setState(() => _obscurePassword = !_obscurePassword);
+                  ref.read(_obscurePasswordProvider.notifier).state = !obscure;
                 },
               ),
             ),
@@ -83,7 +72,7 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
           child: DeelButton(
             label: 'settings.deleteAccount'.tr(),
             onPressed: () {
-              final password = _passwordController.text;
+              final password = controller.text;
               if (password.isNotEmpty) {
                 Navigator.of(context).pop(password);
               }

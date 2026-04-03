@@ -5,20 +5,26 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../helpers/pump_app.dart';
 
+Widget _dialogOpener({ValueChanged<String?>? onResult}) {
+  return Scaffold(
+    body: Builder(
+      builder: (context) {
+        return ElevatedButton(
+          onPressed: () async {
+            final result = await DeleteAccountDialog.show(context);
+            onResult?.call(result);
+          },
+          child: const Text('Open'),
+        );
+      },
+    ),
+  );
+}
+
 void main() {
   group('DeleteAccountDialog', () {
     Future<void> pumpDialog(WidgetTester tester) async {
-      await pumpTestWidget(
-        tester,
-        Builder(
-          builder: (context) {
-            return ElevatedButton(
-              onPressed: () => DeleteAccountDialog.show(context),
-              child: const Text('Open'),
-            );
-          },
-        ),
-      );
+      await pumpTestScreenWithProviders(tester, _dialogOpener());
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
     }
@@ -32,19 +38,10 @@ void main() {
     });
 
     testWidgets('cancel returns null', (tester) async {
-      String? result;
-      await pumpTestWidget(
+      String? result = 'not-null';
+      await pumpTestScreenWithProviders(
         tester,
-        Builder(
-          builder: (context) {
-            return ElevatedButton(
-              onPressed: () async {
-                result = await DeleteAccountDialog.show(context);
-              },
-              child: const Text('Open'),
-            );
-          },
-        ),
+        _dialogOpener(onResult: (r) => result = r),
       );
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
@@ -57,23 +54,13 @@ void main() {
 
     testWidgets('confirm with password returns password', (tester) async {
       String? result;
-      await pumpTestWidget(
+      await pumpTestScreenWithProviders(
         tester,
-        Builder(
-          builder: (context) {
-            return ElevatedButton(
-              onPressed: () async {
-                result = await DeleteAccountDialog.show(context);
-              },
-              child: const Text('Open'),
-            );
-          },
-        ),
+        _dialogOpener(onResult: (r) => result = r),
       );
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      // Enter password
       await tester.enterText(find.byType(TextField), 'my-password');
       await tester.tap(find.text('settings.deleteAccount'));
       await tester.pumpAndSettle();
@@ -84,11 +71,9 @@ void main() {
     testWidgets('confirm without password does not dismiss', (tester) async {
       await pumpDialog(tester);
 
-      // Tap delete without entering password
       await tester.tap(find.text('settings.deleteAccount'));
       await tester.pumpAndSettle();
 
-      // Dialog should still be visible
       expect(find.text('settings.deleteConfirmTitle'), findsOneWidget);
     });
 

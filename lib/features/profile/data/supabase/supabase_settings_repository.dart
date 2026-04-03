@@ -6,33 +6,23 @@ import 'package:deelmarkt/features/profile/domain/repositories/settings_reposito
 
 /// Supabase implementation of [SettingsRepository].
 ///
-/// Tables:
-///   - `notification_preferences` — one row per user (upsert pattern)
-///   - `user_addresses` — multiple per user, unique on
-///     (user_id, postcode, house_number, addition)
+/// Tables: `notification_preferences`, `user_addresses`.
+/// Edge Functions: `export-user-data`, `delete-account`.
 ///
-/// Edge Functions:
-///   - `export-user-data` — returns signed URL for GDPR export ZIP.
-///     URL validated against [_exportAllowedHosts] before returning.
-///   - `delete-account` — re-authenticates via `signInWithPassword`
-///     server-side (OWASP ASVS L2 §4.2.1), then soft-deletes user
-///     with 30-day PII cleanup. See issue #49.
-///
-/// Reference: CLAUDE.md §9 (RLS on all tables), issue #47
+/// Reference: CLAUDE.md §9 (RLS on all tables), issue #47.
 class SupabaseSettingsRepository implements SettingsRepository {
   const SupabaseSettingsRepository(this._client);
 
   final SupabaseClient _client;
 
-  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
+  /// Allowed hosts for GDPR export URLs (defense-in-depth).
+  static const exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 
   String get _userId {
     final id = _client.auth.currentUser?.id;
     if (id == null) throw Exception('Not authenticated');
     return id;
   }
-
-  // ── Notification Preferences ─────────────────────────────────────────
 
   @override
   Future<NotificationPreferences> getNotificationPreferences() async {
@@ -45,13 +35,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
               .maybeSingle();
 
       if (response == null) return const NotificationPreferences();
-
-      return NotificationPreferences(
-        messages: response['messages'] as bool? ?? true,
-        offers: response['offers'] as bool? ?? true,
-        shippingUpdates: response['shipping_updates'] as bool? ?? true,
-        marketing: response['marketing'] as bool? ?? false,
-      );
+      return _prefsFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch notification preferences: ${e.message}');
     }
@@ -75,20 +59,13 @@ class SupabaseSettingsRepository implements SettingsRepository {
               .select()
               .single();
 
-      return NotificationPreferences(
-        messages: response['messages'] as bool? ?? true,
-        offers: response['offers'] as bool? ?? true,
-        shippingUpdates: response['shipping_updates'] as bool? ?? true,
-        marketing: response['marketing'] as bool? ?? false,
-      );
+      return _prefsFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception(
         'Failed to update notification preferences: ${e.message}',
       );
     }
   }
-
-  // ── Addresses ────────────────────────────────────────────────────────
 
   @override
   Future<List<DutchAddress>> getAddresses() async {
@@ -152,8 +129,6 @@ class SupabaseSettingsRepository implements SettingsRepository {
     }
   }
 
-  // ── GDPR ─────────────────────────────────────────────────────────────
-
   @override
   Future<String> exportUserData() async {
     try {
@@ -163,11 +138,10 @@ class SupabaseSettingsRepository implements SettingsRepository {
         throw Exception('Export function returned no URL');
       }
 
-      // Validate URL against allowlist (defense-in-depth, HIGH-1 audit fix)
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||
-          !_exportAllowedHosts.any(
+          !exportAllowedHosts.any(
             (h) => uri.host == h || uri.host.endsWith('.$h'),
           )) {
         throw Exception('Export returned untrusted URL');
@@ -179,14 +153,10 @@ class SupabaseSettingsRepository implements SettingsRepository {
     }
   }
 
-  /// Permanently delete user account.
-  ///
   /// The `delete-account` Edge Function MUST:
-  /// 1. Verify the password via `supabase.auth.signInWithPassword`
+  /// 1. Verify password via `supabase.auth.signInWithPassword`
   /// 2. Soft-delete the user (set `deleted_at` timestamp)
   /// 3. Trigger 30-day PII cleanup (see issue #49)
-  ///
-  /// The password is sent over HTTPS (Supabase Edge Functions enforce TLS).
   @override
   Future<void> deleteAccount({required String password}) async {
     try {
@@ -199,7 +169,16 @@ class SupabaseSettingsRepository implements SettingsRepository {
     }
   }
 
-  DutchAddress _addressFromJson(Map<String, dynamic> json) {
+  static NotificationPreferences _prefsFromJson(Map<String, dynamic> json) {
+    return NotificationPreferences(
+      messages: json['messages'] as bool? ?? true,
+      offers: json['offers'] as bool? ?? true,
+      shippingUpdates: json['shipping_updates'] as bool? ?? true,
+      marketing: json['marketing'] as bool? ?? false,
+    );
+  }
+
+  static DutchAddress _addressFromJson(Map<String, dynamic> json) {
     return DutchAddress(
       postcode: json['postcode'] as String,
       houseNumber: json['house_number'] as String,

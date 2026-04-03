@@ -98,7 +98,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           (_, _) =>
               ErrorState(onRetry: () => ref.invalidate(searchNotifierProvider)),
       data: (data) {
-        if (!data.filter.hasQuery) {
+        if (!data.filter.hasQuery && !data.filter.hasActiveFilters) {
           return SearchInitialView(
             recentSearches: data.recentSearches,
             onRecentTap: _onRecentTap,
@@ -119,7 +119,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onListingTap:
               (id) =>
                   context.push(AppRoutes.listingDetail.replaceFirst(':id', id)),
-          onFavouriteTap: (_) {},
+          onFavouriteTap: (id) {
+            // TODO: Wire to toggleFavourite when search notifier supports it
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('action.comingSoon'.tr())));
+          },
           onLoadMore:
               () => ref.read(searchNotifierProvider.notifier).loadMore(),
           onFilterTap: () => _showFilterSheet(context),

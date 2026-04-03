@@ -51,6 +51,7 @@ class SettingsState {
 @riverpod
 class SettingsNotifier extends _$SettingsNotifier {
   static const _errorKey = 'error.generic';
+  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 
   @override
   SettingsState build() {
@@ -105,14 +106,11 @@ class SettingsNotifier extends _$SettingsNotifier {
     }
   }
 
-  /// Allowed hosts for GDPR export download URLs.
-  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
-
   Future<void> exportUserData() async {
     state = state.copyWith(isExporting: true);
     try {
       final url = await _repo.exportUserData();
-      // HIGH-1: Validate export URL against allowlist before storing
+      // Defense-in-depth: validate URL in both repo and viewmodel layers
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||

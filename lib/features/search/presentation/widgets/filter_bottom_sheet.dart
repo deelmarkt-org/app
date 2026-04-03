@@ -4,8 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/domain/entities/category_entity.dart';
-import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/search_initial_view.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_condition_section.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_distance_section.dart';
@@ -109,7 +108,7 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
   }
 
   Widget _buildCategorySection(ThemeData theme) {
-    final categories = ref.watch(categoryRepositoryProvider);
+    final categoriesAsync = ref.watch(topLevelCategoriesProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,37 +120,34 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
           ),
         ),
         const SizedBox(height: Spacing.s2),
-        FutureBuilder<List<CategoryEntity>>(
-          future: categories.getTopLevel(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox(height: 48);
-            }
-            return Wrap(
-              spacing: Spacing.s2,
-              runSpacing: Spacing.s2,
-              children:
-                  snapshot.data!.map((cat) {
-                    final isSelected = _filter.categoryId == cat.id;
-                    return FilterChip(
-                      label: Text(cat.name),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        _updateFilter(
-                          _filter.copyWith(
-                            categoryId: () => selected ? cat.id : null,
+        categoriesAsync.when(
+          loading: () => const SizedBox(height: 48),
+          error: (_, _) => const SizedBox.shrink(),
+          data:
+              (categories) => Wrap(
+                spacing: Spacing.s2,
+                runSpacing: Spacing.s2,
+                children:
+                    categories.map((cat) {
+                      final isSelected = _filter.categoryId == cat.id;
+                      return FilterChip(
+                        label: Text(cat.name),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          _updateFilter(
+                            _filter.copyWith(
+                              categoryId: () => selected ? cat.id : null,
+                            ),
+                          );
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            DeelmarktRadius.xxl,
                           ),
-                        );
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          DeelmarktRadius.xxl,
                         ),
-                      ),
-                    );
-                  }).toList(),
-            );
-          },
+                      );
+                    }).toList(),
+              ),
         ),
       ],
     );
