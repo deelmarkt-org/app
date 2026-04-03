@@ -10,7 +10,7 @@ import 'dart:io';
 void main(List<String> args) {
   if (args.isEmpty) exit(0);
 
-  final filePath = args.first;
+  final filePath = args.first.replaceAll(r'\', '/');
   if (!filePath.endsWith('.dart') || !filePath.startsWith('lib/')) exit(0);
   if (filePath.endsWith('.g.dart') || filePath.endsWith('.freezed.dart')) {
     exit(0);

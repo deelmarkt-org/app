@@ -75,19 +75,21 @@ Future<List<String>> _stagedFiles() async {
   ]);
   return (result.stdout as String)
       .split('\n')
-      .map((l) => l.trim())
+      .map((l) => l.trim().replaceAll(r'\', '/'))
       .where((l) => l.startsWith('lib/') && l.endsWith('.dart'))
       .where((l) => !l.endsWith('.g.dart') && !l.endsWith('.freezed.dart'))
       .toList();
 }
 
 Future<List<String>> _allLibFiles() async {
-  final result = await Process.run('find', ['lib', '-name', '*.dart']);
-  return (result.stdout as String)
-      .split('\n')
-      .map((l) => l.trim())
-      .where((l) => l.endsWith('.dart'))
-      .where((l) => !l.endsWith('.g.dart') && !l.endsWith('.freezed.dart'))
+  final libDir = Directory('lib');
+  if (!libDir.existsSync()) return [];
+  return libDir
+      .listSync(recursive: true)
+      .whereType<File>()
+      .map((f) => f.path.replaceAll(r'\', '/'))
+      .where((p) => p.endsWith('.dart'))
+      .where((p) => !p.endsWith('.g.dart') && !p.endsWith('.freezed.dart'))
       .toList();
 }
 

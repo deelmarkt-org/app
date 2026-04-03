@@ -368,11 +368,17 @@ The European Accessibility Act is enforceable. These are not optional:
 ### Setup for New or Existing Developers
 
 ```bash
-# New developer — full setup:
+# macOS/Linux — new developer (full setup):
 bash scripts/setup.sh
 
-# Existing developer — just update hooks after pulling:
+# macOS/Linux — existing developer (just update hooks after pulling):
 bash scripts/setup_hooks.sh
+
+# Windows — new developer (full setup):
+.\scripts\setup.ps1
+
+# Windows — existing developer (just update hooks after pulling):
+.\scripts\setup_hooks.ps1
 ```
 
 ---

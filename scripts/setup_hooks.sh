@@ -26,7 +26,7 @@ if [[ ! -f .claude/settings.json ]]; then
         "hooks": [
           {
             "type": "command",
-            "command": "dart run scripts/check_single_file.dart $CLAUDE_FILE_PATH 2>&1 || true"
+            "command": "dart run scripts/check_single_file.dart $CLAUDE_FILE_PATH"
           }
         ]
       }
