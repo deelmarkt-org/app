@@ -7,12 +7,14 @@ import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_im
 import 'package:deelmarkt/widgets/buttons/circle_icon_button.dart';
 
 void main() {
+  /// [hideFavourite] passes null to onFavouriteTap, hiding the button.
   Widget buildGallery({
     List<String> imageUrls = const [],
     bool isFavourited = false,
     VoidCallback? onFavouriteTap,
     VoidCallback? onBack,
     VoidCallback? onShare,
+    bool hideFavourite = false,
   }) {
     return MaterialApp(
       theme: DeelmarktTheme.light,
@@ -20,7 +22,7 @@ void main() {
         body: DetailImageGallery(
           imageUrls: imageUrls,
           isFavourited: isFavourited,
-          onFavouriteTap: onFavouriteTap ?? () {},
+          onFavouriteTap: hideFavourite ? null : (onFavouriteTap ?? () {}),
           onBack: onBack ?? () {},
           onShare: onShare,
         ),
@@ -141,6 +143,16 @@ void main() {
 
       expect(countWithout, 2);
       expect(countWith, 3);
+    });
+
+    testWidgets('favourite button hidden when onFavouriteTap is null', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildGallery(hideFavourite: true));
+      await tester.pump();
+
+      // Only back button visible (no favourite, no share)
+      expect(tester.widgetList(find.byType(CircleIconButton)).length, 1);
     });
   });
 }

@@ -106,7 +106,13 @@ class _DataView extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(flex: 3, child: _buildGallery(context, listing)),
+            Flexible(
+              flex: 3,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: _buildGallery(context, listing),
+              ),
+            ),
             Flexible(
               flex: 2,
               child: Column(

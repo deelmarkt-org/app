@@ -69,10 +69,12 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      // Allow layout overflow warnings (pre-existing seller_info_row issue)
+      // Filter overflow warnings only (pre-existing seller_info_row issue)
       final originalHandler = FlutterError.onError;
-      final errors = <FlutterErrorDetails>[];
-      FlutterError.onError = (d) => errors.add(d);
+      FlutterError.onError = (details) {
+        if (details.toString().contains('overflowed')) return;
+        originalHandler?.call(details);
+      };
       addTearDown(() => FlutterError.onError = originalHandler);
 
       await tester.pumpWidget(buildScreen());
