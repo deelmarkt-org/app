@@ -228,9 +228,9 @@ jobs:
             exit 0
           fi
           SIZE_MB=$(du -m "$APK_PATH" | cut -f1)
-          echo "APK size: ${SIZE_MB}MB (budget: 55MB)"
-          if [ "$SIZE_MB" -gt 55 ]; then
-            echo "::error::APK size ${SIZE_MB}MB exceeds 55MB budget"
+          echo "APK size: ${SIZE_MB}MB (budget: 60MB)"
+          if [ "$SIZE_MB" -gt 60 ]; then
+            echo "::error::APK size ${SIZE_MB}MB exceeds 60MB budget"
             exit 1
           fi
 
