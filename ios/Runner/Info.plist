@@ -61,6 +61,10 @@
 	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>DeelMarkt uses Face ID to securely log you in.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>DeelMarkt needs camera access to photograph items you want to sell.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DeelMarkt needs photo library access to add photos to your listing.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

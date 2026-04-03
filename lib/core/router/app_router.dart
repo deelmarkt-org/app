@@ -13,6 +13,7 @@ import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.d
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:deelmarkt/features/sell/presentation/screens/listing_creation_screen.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -136,9 +137,7 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.sell,
                 name: 'sell',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Sell'), // l10n: P-task
+                builder: (context, state) => const ListingCreationScreen(),
               ),
             ],
           ),
