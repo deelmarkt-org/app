@@ -2,10 +2,8 @@
 -- Permanently removes data for users past the 30-day grace period.
 -- Transactions and ledger entries are preserved (PSD2 / 7-year audit).
 
--- Enable pg_cron extension (requires Supabase Pro plan)
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- Create the hard-delete function
 CREATE OR REPLACE FUNCTION gdpr_hard_delete_expired()
 RETURNS void
 LANGUAGE plpgsql
@@ -16,26 +14,30 @@ DECLARE
   deleted_count INT := 0;
 BEGIN
   FOR rec IN
-    SELECT id, user_id
+    SELECT id, user_id, requested_at
     FROM gdpr_deletion_queue
     WHERE status = 'pending'
       AND delete_after < now()
   LOOP
     BEGIN
-      -- Delete remaining user data (addresses/prefs already deleted by EF)
-      -- These are safety catches in case the Edge Function missed any
+      -- Safety: delete any remaining user data (EF may have missed some)
       DELETE FROM user_addresses WHERE user_id = rec.user_id;
       DELETE FROM notification_preferences WHERE user_id = rec.user_id;
       DELETE FROM favourites WHERE user_id = rec.user_id;
 
-      -- Anonymize listings (keep for marketplace history, remove PII)
+      -- Anonymize listings — keep for marketplace history, null out seller FK
+      -- (seller_id references auth.users which will be deleted next)
       UPDATE listings
-      SET seller_id = '00000000-0000-0000-0000-000000000000',
+      SET seller_id = NULL,
           deleted_at = COALESCE(deleted_at, now())
       WHERE seller_id = rec.user_id;
 
-      -- Delete user profile (if not already cascade-deleted)
+      -- Delete user profile
       DELETE FROM user_profiles WHERE id = rec.user_id;
+
+      -- Delete auth user (disables login, cascades remaining FKs)
+      -- This is the final step — all FK references must be cleared first
+      DELETE FROM auth.users WHERE id = rec.user_id;
 
       -- Mark queue entry as completed
       UPDATE gdpr_deletion_queue
@@ -52,7 +54,6 @@ BEGIN
       deleted_count := deleted_count + 1;
 
     EXCEPTION WHEN OTHERS THEN
-      -- Mark as failed but continue with next user
       UPDATE gdpr_deletion_queue
       SET status = 'failed', error_message = SQLERRM
       WHERE id = rec.id;
@@ -78,7 +79,5 @@ SELECT cron.schedule(
   'SELECT gdpr_hard_delete_expired()'
 );
 
--- Add a sentinel row for the anonymized seller references
-INSERT INTO user_profiles (id, display_name, kyc_level)
-VALUES ('00000000-0000-0000-0000-000000000000', 'Verwijderd account', 'level0')
-ON CONFLICT (id) DO NOTHING;
+-- Allow listings.seller_id to be NULL (for anonymized deleted sellers)
+ALTER TABLE listings ALTER COLUMN seller_id DROP NOT NULL;

@@ -2,18 +2,22 @@
  * R-20: Account deletion Edge Function (GDPR right-to-erasure).
  *
  * Flow:
- *   1. Verify JWT (user must be authenticated — re-auth done client-side)
- *   2. Check for existing pending deletion request (prevent duplicates)
- *   3. Soft-delete: anonymize user_profiles PII, mark deleted_at
- *   4. Soft-delete: hide user's listings (set deleted_at)
- *   5. Queue hard-delete in gdpr_deletion_queue (30 days)
- *   6. Log to audit_logs
- *   7. Delete Supabase Auth user (disables login immediately)
+ *   1. Verify JWT
+ *   2. Check for active transactions (block if any)
+ *   3. Check for existing pending deletion (409 on duplicate)
+ *   4. Soft-delete: anonymize user_profiles PII, mark deleted_at
+ *   5. Soft-delete: hide user's listings (set deleted_at)
+ *   6. Delete addresses, notification_preferences, favourites
+ *   7. Queue hard-delete in gdpr_deletion_queue (30 days)
+ *   8. Log to audit_logs (HMAC-SHA256 hashed email)
+ *   9. Return 200 — auth user deletion deferred to cron job
  *
- * The client calls this with NO body — only the JWT from signInWithPassword.
- * Password is never sent to this function (OWASP ASVS §4.2.1).
+ * Auth user is NOT deleted here to avoid CASCADE conflicts with
+ * user_profiles and listings FK references to auth.users.
+ * The cron job handles auth.admin.deleteUser() after 30 days.
  *
- * Reference: docs/COMPLIANCE.md, docs/epics/E02-user-auth-kyc.md
+ * Password re-auth is done client-side (OWASP ASVS §4.2.1).
+ * No password is sent to this function.
  */
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -22,8 +26,13 @@ import { jsonResponse } from "../_shared/response.ts";
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+// HMAC key for email hashing — loaded from env (set via Supabase Vault)
+const hmacKey = Deno.env.get("AUDIT_HMAC_KEY") ?? serviceRoleKey;
+
+// Active transaction statuses that block account deletion
+const ACTIVE_STATUSES = ["created", "paid", "shipped", "delivered"];
+
 Deno.serve(async (req: Request) => {
-  // ── Method check ───────────────────────────────────────────────────
   if (req.method !== "POST") {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
@@ -35,8 +44,6 @@ Deno.serve(async (req: Request) => {
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-  // Verify JWT and extract user_id
   const token = authHeader.replace("Bearer ", "");
   const {
     data: { user },
@@ -51,7 +58,26 @@ Deno.serve(async (req: Request) => {
   const userEmail = user.email ?? "unknown";
 
   try {
+    // ── Check for active transactions ──────────────────────────────────
+    const { data: activeTxns } = await supabase
+      .from("transactions")
+      .select("id")
+      .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+      .in("status", ACTIVE_STATUSES)
+      .limit(1);
+
+    if (activeTxns && activeTxns.length > 0) {
+      return jsonResponse(
+        {
+          error: "Cannot delete account while transactions are in progress",
+          code: "ACTIVE_TRANSACTIONS",
+        },
+        409,
+      );
+    }
+
     // ── Check for existing pending deletion ────────────────────────────
+    // Partial unique index also prevents duplicates at DB level (TOCTOU safe)
     const { data: existing } = await supabase
       .from("gdpr_deletion_queue")
       .select("id")
@@ -92,56 +118,37 @@ Deno.serve(async (req: Request) => {
       .eq("seller_id", userId)
       .is("deleted_at", null);
 
-    // ── Delete user addresses ──────────────────────────────────────────
-    await supabase
-      .from("user_addresses")
-      .delete()
-      .eq("user_id", userId);
-
-    // ── Delete notification preferences ────────────────────────────────
+    // ── Delete user data ───────────────────────────────────────────────
+    await supabase.from("user_addresses").delete().eq("user_id", userId);
     await supabase
       .from("notification_preferences")
       .delete()
       .eq("user_id", userId);
-
-    // ── Delete favourites ──────────────────────────────────────────────
-    await supabase
-      .from("favourites")
-      .delete()
-      .eq("user_id", userId);
+    await supabase.from("favourites").delete().eq("user_id", userId);
 
     // ── Queue hard-delete (30 days) ────────────────────────────────────
     const { error: queueError } = await supabase
       .from("gdpr_deletion_queue")
-      .insert({
-        user_id: userId,
-        status: "pending",
-      });
+      .insert({ user_id: userId, status: "pending" });
 
     if (queueError) {
       console.error("Failed to queue deletion:", queueError);
-      // Non-fatal — soft-delete already happened
     }
 
-    // ── Audit log ──────────────────────────────────────────────────────
+    // ── Audit log (HMAC-SHA256 hashed email — no raw PII) ──────────────
     await supabase.from("audit_logs").insert({
       user_id: userId,
       action: "account_deletion_requested",
       metadata: {
-        email_hash: await hashEmail(userEmail),
+        email_hash: await hmacHashEmail(userEmail),
         ip: req.headers.get("x-forwarded-for") ?? "unknown",
         user_agent: req.headers.get("user-agent") ?? "unknown",
       },
     });
 
-    // ── Delete auth user (disables login immediately) ──────────────────
-    const { error: deleteAuthError } =
-      await supabase.auth.admin.deleteUser(userId);
-
-    if (deleteAuthError) {
-      console.error("Failed to delete auth user:", deleteAuthError);
-      // Profile is already soft-deleted — cron will clean up auth later
-    }
+    // Auth user NOT deleted here — deferred to cron job to avoid
+    // CASCADE conflicts (user_profiles, listings FK to auth.users).
+    // Soft-delete + anonymized profile prevents meaningful access.
 
     return jsonResponse({
       status: "deleted",
@@ -154,14 +161,24 @@ Deno.serve(async (req: Request) => {
 });
 
 /**
- * Hash email for audit log — preserves audit trail without storing PII.
- * Uses SHA-256 to allow pattern matching in investigations.
+ * HMAC-SHA256 hash of email for audit log.
+ * Uses a server-side key to prevent rainbow table reversal.
  */
-async function hashEmail(email: string): Promise<string> {
+async function hmacHashEmail(email: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(email.toLowerCase());
-  const hash = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hash))
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(hmacKey),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    encoder.encode(email.toLowerCase()),
+  );
+  return Array.from(new Uint8Array(signature))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
