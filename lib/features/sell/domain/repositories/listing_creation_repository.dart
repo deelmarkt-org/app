@@ -1,4 +1,4 @@
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 
 /// Contract for persisting listing creation data.

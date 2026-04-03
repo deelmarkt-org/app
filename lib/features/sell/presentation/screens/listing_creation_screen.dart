@@ -4,12 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/details_step/details_step_view.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/listing_creation_success_view.dart';
+import 'package:deelmarkt/features/sell/presentation/widgets/live_preview_panel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_step_view.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/quality_step/quality_step_view.dart';
 
@@ -50,6 +50,13 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
           next.step == ListingCreationStep.success &&
           next.createdListingId != null) {
         context.go('/listings/${next.createdListingId}');
+      }
+
+      // Show error SnackBar when errorKey changes.
+      if (next.errorKey != null && prev?.errorKey != next.errorKey) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(next.errorKey!.tr())));
       }
     });
 
@@ -108,7 +115,7 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _buildLivePreview(state)),
+          Expanded(child: LivePreviewPanel(state: state)),
           Expanded(child: _buildStepView(state)),
         ],
       );
@@ -138,7 +145,7 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
             child: Text(
               'sell.stepIndicator'.tr(args: ['$stepNumber', '3']),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: DeelmarktColors.neutral500,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -157,77 +164,6 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildLivePreview(ListingCreationState state) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(Spacing.s4),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.s4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'sell.livePreview'.tr(),
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: Spacing.s3),
-              // Preview image placeholder or first photo.
-              AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: DeelmarktColors.neutral100,
-                    borderRadius: BorderRadius.circular(Spacing.s2),
-                  ),
-                  child:
-                      state.imageFiles.isNotEmpty
-                          ? ClipRRect(
-                            borderRadius: BorderRadius.circular(Spacing.s2),
-                            child: Image.asset(
-                              state.imageFiles.first,
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (_, e, st) => const Center(
-                                    child: Icon(Icons.image, size: 48),
-                                  ),
-                            ),
-                          )
-                          : const Center(
-                            child: Icon(
-                              Icons.image_outlined,
-                              size: 48,
-                              color: DeelmarktColors.neutral500,
-                            ),
-                          ),
-                ),
-              ),
-              const SizedBox(height: Spacing.s3),
-              // Preview title.
-              Text(
-                state.title.isNotEmpty
-                    ? state.title
-                    : 'sell.previewTitlePlaceholder'.tr(),
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: Spacing.s1),
-              // Preview price.
-              Text(
-                state.priceInCents > 0
-                    ? '\u20AC ${(state.priceInCents / 100).toStringAsFixed(2)}'
-                    : '\u20AC 0,00',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: DeelmarktColors.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 

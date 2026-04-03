@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
-import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/details_step/category_selector.dart';
@@ -19,7 +19,7 @@ class _MockCategoryRepository implements CategoryRepository {
     CategoryEntity(id: 'cat-2', name: 'Fashion', icon: 'tshirt'),
   ];
 
-  List<CategoryEntity> subcategories = const [
+  List<CategoryEntity> subcategoriesList = const [
     CategoryEntity(
       id: 'sub-1',
       name: 'Phones',
@@ -44,7 +44,7 @@ class _MockCategoryRepository implements CategoryRepository {
 
   @override
   Future<List<CategoryEntity>> getSubcategories(String parentId) async {
-    return subcategories;
+    return subcategoriesList;
   }
 }
 
@@ -76,6 +76,12 @@ void main() {
     topLevelCategoriesProvider.overrideWith(
       (ref) async => mockCategoryRepo.topLevel,
     ),
+    subcategoriesProvider(
+      'cat-1',
+    ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
+    subcategoriesProvider(
+      'cat-2',
+    ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
   ];
 
   Widget buildWidget({
@@ -117,8 +123,6 @@ void main() {
     testWidgets('shows loading indicator before categories resolve', (
       tester,
     ) async {
-      // Override with a synchronous AsyncValue.loading() to avoid pending
-      // timers. Use the provider override to force loading state.
       final overrides = [
         sharedPreferencesProvider.overrideWithValue(prefs),
         useMockDataProvider.overrideWithValue(true),
@@ -126,11 +130,16 @@ void main() {
         topLevelCategoriesProvider.overrideWith(
           (ref) async => mockCategoryRepo.topLevel,
         ),
+        subcategoriesProvider(
+          'cat-1',
+        ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
+        subcategoriesProvider(
+          'cat-2',
+        ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
       ];
 
       await tester.pumpWidget(buildWidget(overrides: overrides));
-      // First pump: the FutureProvider has not yet resolved, so
-      // the widget shows the loading state.
+      // First pump: the FutureProvider has not yet resolved.
       await tester.pump();
 
       // After the future resolves and we settle, the dropdown appears.
@@ -146,6 +155,12 @@ void main() {
         topLevelCategoriesProvider.overrideWith(
           (ref) async => throw Exception('fail'),
         ),
+        subcategoriesProvider(
+          'cat-1',
+        ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
+        subcategoriesProvider(
+          'cat-2',
+        ).overrideWith((ref) async => mockCategoryRepo.subcategoriesList),
       ];
 
       await tester.pumpWidget(buildWidget(overrides: overrides));
@@ -193,21 +208,14 @@ void main() {
       expect(find.byType(Column), findsWidgets);
     });
 
-    testWidgets(
-      'L2 shows LinearProgressIndicator while loading subcategories',
-      (tester) async {
-        // Start with L1 set but subcategories will resolve immediately.
-        // Just verify that the widget builds correctly with L1 selected.
-        await tester.pumpWidget(buildWidget(categoryL1Id: 'cat-1'));
-        // First pump — initState triggers _loadSubcategories which sets
-        // _loadingL2 = true before the future resolves.
-        await tester.pump();
+    testWidgets('L2 shows subcategories after loading', (tester) async {
+      await tester.pumpWidget(buildWidget(categoryL1Id: 'cat-1'));
+      // First pump -- providers loading.
+      await tester.pump();
 
-        // The loading indicator may or may not be visible depending on timing.
-        // After settling, the L2 dropdown should appear.
-        await tester.pumpAndSettle();
-        expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(2));
-      },
-    );
+      // After settling, the L2 dropdown should appear.
+      await tester.pumpAndSettle();
+      expect(find.byType(DropdownButtonFormField<String>), findsNWidgets(2));
+    });
   });
 }

@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
-import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
+import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/sell/data/mock/mock_listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/data/services/draft_persistence_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
@@ -65,4 +65,10 @@ QualityScoreResult qualityScore(Ref ref) {
 @riverpod
 Future<List<CategoryEntity>> topLevelCategories(Ref ref) async {
   return ref.read(categoryRepositoryProvider).getTopLevel();
+}
+
+/// Subcategories for a given parent L1 category.
+@riverpod
+Future<List<CategoryEntity>> subcategories(Ref ref, String parentId) async {
+  return ref.read(categoryRepositoryProvider).getSubcategories(parentId);
 }

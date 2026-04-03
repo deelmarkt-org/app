@@ -1,39 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/sell/domain/entities/shipping_types.dart';
+
+export 'package:deelmarkt/features/sell/domain/entities/shipping_types.dart';
 
 /// Steps in the listing creation wizard.
 enum ListingCreationStep { photos, details, quality, publishing, success }
-
-/// Supported shipping carriers — matches DB `shipping_carrier` enum.
-enum ShippingCarrier {
-  postnl,
-  dhl,
-  none;
-
-  /// Convert to DB snake_case value.
-  String toDb() => name;
-}
-
-/// Package weight range for shipping cost calculation.
-///
-/// Labels are in Dutch for display in the shipping step.
-enum WeightRange {
-  zeroToTwo,
-  twoToFive,
-  fiveToTen,
-  tenToTwentyThree,
-  twentyThreeToThirtyOne;
-
-  /// Dutch label for display in the UI.
-  String get label => switch (this) {
-    WeightRange.zeroToTwo => '0-2 kg',
-    WeightRange.twoToFive => '2-5 kg',
-    WeightRange.fiveToTen => '5-10 kg',
-    WeightRange.tenToTwentyThree => '10-23 kg',
-    WeightRange.twentyThreeToThirtyOne => '23-31 kg',
-  };
-}
 
 /// Immutable state for the listing creation wizard.
 ///
@@ -129,32 +102,33 @@ class ListingCreationState extends Equatable {
     List<String>? imageFiles,
     String? title,
     String? description,
-    String? categoryL1Id,
-    String? categoryL2Id,
-    ListingCondition? condition,
+    String? Function()? categoryL1Id,
+    String? Function()? categoryL2Id,
+    ListingCondition? Function()? condition,
     int? priceInCents,
     ShippingCarrier? shippingCarrier,
-    WeightRange? weightRange,
-    String? location,
+    WeightRange? Function()? weightRange,
+    String? Function()? location,
     bool? isLoading,
     String? Function()? errorKey,
-    String? createdListingId,
+    String? Function()? createdListingId,
   }) {
     return ListingCreationState(
       step: step ?? this.step,
       imageFiles: imageFiles ?? this.imageFiles,
       title: title ?? this.title,
       description: description ?? this.description,
-      categoryL1Id: categoryL1Id ?? this.categoryL1Id,
-      categoryL2Id: categoryL2Id ?? this.categoryL2Id,
-      condition: condition ?? this.condition,
+      categoryL1Id: categoryL1Id != null ? categoryL1Id() : this.categoryL1Id,
+      categoryL2Id: categoryL2Id != null ? categoryL2Id() : this.categoryL2Id,
+      condition: condition != null ? condition() : this.condition,
       priceInCents: priceInCents ?? this.priceInCents,
       shippingCarrier: shippingCarrier ?? this.shippingCarrier,
-      weightRange: weightRange ?? this.weightRange,
-      location: location ?? this.location,
+      weightRange: weightRange != null ? weightRange() : this.weightRange,
+      location: location != null ? location() : this.location,
       isLoading: isLoading ?? this.isLoading,
       errorKey: errorKey != null ? errorKey() : this.errorKey,
-      createdListingId: createdListingId ?? this.createdListingId,
+      createdListingId:
+          createdListingId != null ? createdListingId() : this.createdListingId,
     );
   }
 

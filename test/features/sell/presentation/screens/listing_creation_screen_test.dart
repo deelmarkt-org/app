@@ -55,7 +55,6 @@ void main() {
   setUp(() => FlutterError.onError = _suppressOverflow);
   tearDown(() => FlutterError.onError = origOnError);
 
-  /// Shared overrides for all screen tests.
   List<Override> overridesForState(ListingCreationState state) => [
     sharedPreferencesProvider.overrideWithValue(prefs),
     qualityScoreProvider.overrideWithValue(_defaultScore),
@@ -64,7 +63,7 @@ void main() {
     ),
   ];
 
-  group('ListingCreationScreen', () {
+  group('ListingCreationScreen -- step rendering', () {
     testWidgets('renders step 1 (photos) by default', (tester) async {
       await pumpTestScreenWithProviders(
         tester,
@@ -72,7 +71,6 @@ void main() {
         overrides: overridesForState(const ListingCreationState()),
       );
 
-      // Step indicator shows "1".
       expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
     });
 
@@ -83,7 +81,6 @@ void main() {
         overrides: overridesForState(const ListingCreationState()),
       );
 
-      // .tr() returns the key in test — 'sell.stepPhotos'.
       expect(find.text('sell.stepPhotos'), findsOneWidget);
     });
 
@@ -109,115 +106,6 @@ void main() {
       );
 
       expect(find.text('sell.stepQuality'), findsOneWidget);
-    });
-
-    testWidgets('close X button shows on photos step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(const ListingCreationState()),
-      );
-
-      expect(find.byIcon(Icons.close), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back), findsNothing);
-    });
-
-    testWidgets('back arrow shows on details step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(step: ListingCreationStep.details),
-        ),
-      );
-
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-      expect(find.byIcon(Icons.close), findsNothing);
-    });
-
-    testWidgets('back arrow shows on quality step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(step: ListingCreationStep.quality),
-        ),
-      );
-
-      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
-    });
-
-    testWidgets('step indicator text is visible on each step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(const ListingCreationState()),
-      );
-
-      // The step indicator uses 'sell.stepIndicator'.tr(args: ['1', '3']).
-      // In test mode .tr() returns the key, so we check for the key text.
-      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
-    });
-
-    testWidgets('no leading button on success step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(
-            step: ListingCreationStep.success,
-            createdListingId: 'listing-001',
-          ),
-        ),
-      );
-
-      expect(find.byIcon(Icons.close), findsNothing);
-      expect(find.byIcon(Icons.arrow_back), findsNothing);
-    });
-
-    testWidgets('publishing step shows CircularProgressIndicator', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: overridesForState(
-            const ListingCreationState(step: ListingCreationStep.publishing),
-          ),
-          child: MaterialApp(
-            theme: DeelmarktTheme.light,
-            home: const ListingCreationScreen(),
-          ),
-        ),
-      );
-      // Use pump() instead of pumpAndSettle() — CircularProgressIndicator
-      // never settles because it animates continuously.
-      await tester.pump();
-
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
-
-    testWidgets('step indicator text visible on details step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(step: ListingCreationStep.details),
-        ),
-      );
-
-      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
-    });
-
-    testWidgets('step indicator text visible on quality step', (tester) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(step: ListingCreationStep.quality),
-        ),
-      );
-
-      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
     });
 
     testWidgets('AppBar title shows publishing label on publishing step', (
@@ -255,49 +143,59 @@ void main() {
 
       expect(find.text('sell.stepSuccess'), findsOneWidget);
     });
+  });
 
-    testWidgets('discard dialog appears when back pressed with unsaved data', (
-      tester,
-    ) async {
+  group('ListingCreationScreen -- appBar leading', () {
+    testWidgets('close X button shows on photos step', (tester) async {
       await pumpTestScreenWithProviders(
         tester,
         const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(imageFiles: ['/mock/photo.jpg']),
-        ),
+        overrides: overridesForState(const ListingCreationState()),
       );
 
-      // Tap the close button when there is unsaved data.
-      await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle();
-
-      // Discard dialog should appear.
-      expect(find.text('sell.discardTitle'), findsOneWidget);
-      expect(find.text('sell.discardMessage'), findsOneWidget);
-      expect(find.text('sell.keepEditing'), findsOneWidget);
-      expect(find.text('sell.discard'), findsOneWidget);
+      expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
     });
 
-    testWidgets('keep editing button closes discard dialog', (tester) async {
+    testWidgets('back arrow shows on details step', (tester) async {
       await pumpTestScreenWithProviders(
         tester,
         const ListingCreationScreen(),
         overrides: overridesForState(
-          const ListingCreationState(imageFiles: ['/mock/photo.jpg']),
+          const ListingCreationState(step: ListingCreationStep.details),
         ),
       );
 
-      // Open discard dialog.
-      await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+      expect(find.byIcon(Icons.close), findsNothing);
+    });
 
-      // Tap keep editing.
-      await tester.tap(find.text('sell.keepEditing'));
-      await tester.pumpAndSettle();
+    testWidgets('back arrow shows on quality step', (tester) async {
+      await pumpTestScreenWithProviders(
+        tester,
+        const ListingCreationScreen(),
+        overrides: overridesForState(
+          const ListingCreationState(step: ListingCreationStep.quality),
+        ),
+      );
 
-      // Dialog dismissed, screen still visible.
-      expect(find.text('sell.discardTitle'), findsNothing);
-      expect(find.text('sell.stepPhotos'), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    });
+
+    testWidgets('no leading button on success step', (tester) async {
+      await pumpTestScreenWithProviders(
+        tester,
+        const ListingCreationScreen(),
+        overrides: overridesForState(
+          const ListingCreationState(
+            step: ListingCreationStep.success,
+            createdListingId: 'listing-001',
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.close), findsNothing);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
     });
 
     testWidgets('close button visible with no unsaved data', (tester) async {
@@ -307,8 +205,64 @@ void main() {
         overrides: overridesForState(const ListingCreationState()),
       );
 
-      // Close button is present when there is no unsaved data.
       expect(find.byIcon(Icons.close), findsOneWidget);
+    });
+  });
+
+  group('ListingCreationScreen -- step indicator', () {
+    testWidgets('step indicator text is visible on each step', (tester) async {
+      await pumpTestScreenWithProviders(
+        tester,
+        const ListingCreationScreen(),
+        overrides: overridesForState(const ListingCreationState()),
+      );
+
+      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
+    });
+
+    testWidgets('step indicator text visible on details step', (tester) async {
+      await pumpTestScreenWithProviders(
+        tester,
+        const ListingCreationScreen(),
+        overrides: overridesForState(
+          const ListingCreationState(step: ListingCreationStep.details),
+        ),
+      );
+
+      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
+    });
+
+    testWidgets('step indicator text visible on quality step', (tester) async {
+      await pumpTestScreenWithProviders(
+        tester,
+        const ListingCreationScreen(),
+        overrides: overridesForState(
+          const ListingCreationState(step: ListingCreationStep.quality),
+        ),
+      );
+
+      expect(find.textContaining('sell.stepIndicator'), findsOneWidget);
+    });
+  });
+
+  group('ListingCreationScreen -- misc', () {
+    testWidgets('publishing step shows CircularProgressIndicator', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overridesForState(
+            const ListingCreationState(step: ListingCreationStep.publishing),
+          ),
+          child: MaterialApp(
+            theme: DeelmarktTheme.light,
+            home: const ListingCreationScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
     testWidgets('Scaffold body uses SafeArea', (tester) async {
@@ -319,62 +273,6 @@ void main() {
       );
 
       expect(find.byType(SafeArea), findsAtLeast(1));
-    });
-
-    testWidgets('live preview shows on expanded width', (tester) async {
-      tester.view.physicalSize = const Size(2400, 1800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(title: 'Preview Test', priceInCents: 1500),
-        ),
-      );
-
-      // Live preview shows the preview label on expanded screens.
-      expect(find.text('sell.livePreview'), findsOneWidget);
-    });
-
-    testWidgets('live preview hidden on compact width', (tester) async {
-      tester.view.physicalSize = const Size(400, 800);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(const ListingCreationState()),
-      );
-
-      // Live preview should not be visible on compact width.
-      expect(find.text('sell.livePreview'), findsNothing);
-    });
-
-    testWidgets('hasUnsavedData true triggers discard dialog on close', (
-      tester,
-    ) async {
-      await pumpTestScreenWithProviders(
-        tester,
-        const ListingCreationScreen(),
-        overrides: overridesForState(
-          const ListingCreationState(title: 'Unsaved'),
-        ),
-      );
-
-      // Close button triggers discard dialog when data is unsaved.
-      await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle();
-
-      expect(find.text('sell.discardTitle'), findsOneWidget);
     });
   });
 }

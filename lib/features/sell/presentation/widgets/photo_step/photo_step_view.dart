@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
@@ -28,11 +27,14 @@ class PhotoStepView extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          child: Text(
-            'sell.photosCount'.tr(
-              args: ['${state.imageFiles.length}', '$_maxPhotos'],
+          child: Semantics(
+            liveRegion: true,
+            child: Text(
+              'sell.photosCount'.tr(
+                args: ['${state.imageFiles.length}', '$_maxPhotos'],
+              ),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         const SizedBox(height: Spacing.s3),
@@ -73,15 +75,21 @@ class PhotoStepView extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(
-                  leading: const Icon(PhosphorIconsRegular.camera),
-                  title: Text('sell.takePhoto'.tr()),
-                  onTap: () => Navigator.pop(context, 'camera'),
+                Semantics(
+                  label: 'sell.takePhoto'.tr(),
+                  child: ListTile(
+                    leading: const Icon(PhosphorIconsRegular.camera),
+                    title: Text('sell.takePhoto'.tr()),
+                    onTap: () => Navigator.pop(context, 'camera'),
+                  ),
                 ),
-                ListTile(
-                  leading: const Icon(PhosphorIconsRegular.images),
-                  title: Text('sell.chooseFromGallery'.tr()),
-                  onTap: () => Navigator.pop(context, 'gallery'),
+                Semantics(
+                  label: 'sell.chooseFromGallery'.tr(),
+                  child: ListTile(
+                    leading: const Icon(PhosphorIconsRegular.images),
+                    title: Text('sell.chooseFromGallery'.tr()),
+                    onTap: () => Navigator.pop(context, 'gallery'),
+                  ),
                 ),
               ],
             ),
@@ -113,17 +121,11 @@ class PhotoStepView extends ConsumerWidget {
         builder:
             (context) => AlertDialog(
               title: Text('sell.cameraPermissionDenied'.tr()),
+              content: Text('sell.openSettingsHint'.tr()),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text('action.cancel'.tr()),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    launchUrl(Uri.parse('app-settings:'));
-                  },
-                  child: Text('sell.openSettings'.tr()),
                 ),
               ],
             ),
@@ -133,7 +135,7 @@ class PhotoStepView extends ConsumerWidget {
 
     final message = switch (errorKey) {
       'sell.errorPermissionDenied' => 'sell.cameraPermissionDenied'.tr(),
-      'sell.errorFileTooLarge' => 'sell.unsupportedImageFormat'.tr(),
+      'sell.errorFileTooLarge' => 'sell.fileTooLarge'.tr(),
       'sell.errorUnsupportedFormat' => 'sell.unsupportedImageFormat'.tr(),
       _ => 'sell.galleryPermissionDenied'.tr(),
     };

@@ -23,6 +23,14 @@ class ShippingSelector extends StatelessWidget {
   final void Function(ShippingCarrier) onCarrierChanged;
   final void Function(WeightRange?) onWeightRangeChanged;
 
+  String _labelFor(WeightRange w) => switch (w) {
+    WeightRange.zeroToTwo => 'sell.weight0to2'.tr(),
+    WeightRange.twoToFive => 'sell.weight2to5'.tr(),
+    WeightRange.fiveToTen => 'sell.weight5to10'.tr(),
+    WeightRange.tenToTwentyThree => 'sell.weight10to23'.tr(),
+    WeightRange.twentyThreeToThirtyOne => 'sell.weight23to31'.tr(),
+  };
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,7 +67,10 @@ class ShippingSelector extends StatelessWidget {
           decoration: InputDecoration(labelText: 'sell.weightRange'.tr()),
           items:
               WeightRange.values
-                  .map((w) => DropdownMenuItem(value: w, child: Text(w.label)))
+                  .map(
+                    (w) =>
+                        DropdownMenuItem(value: w, child: Text(_labelFor(w))),
+                  )
                   .toList(),
           onChanged: onWeightRangeChanged,
         ),

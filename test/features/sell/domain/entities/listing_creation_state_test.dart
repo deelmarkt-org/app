@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 
 void main() {
@@ -46,6 +46,8 @@ void main() {
       final copy = state.copyWith();
 
       expect(copy, equals(state));
+      expect(copy.categoryL1Id, 'cat1');
+      expect(copy.createdListingId, 'listing-1');
     });
 
     test('errorKey nullable pattern can set to null', () {
@@ -100,21 +102,21 @@ void main() {
 
     test('returns true when categoryL1Id is set', () {
       final state = ListingCreationState.initial().copyWith(
-        categoryL1Id: 'electronics',
+        categoryL1Id: () => 'electronics',
       );
       expect(state.hasUnsavedData, true);
     });
 
     test('returns true when categoryL2Id is set', () {
       final state = ListingCreationState.initial().copyWith(
-        categoryL2Id: 'phones',
+        categoryL2Id: () => 'phones',
       );
       expect(state.hasUnsavedData, true);
     });
 
     test('returns true when condition is set', () {
       final state = ListingCreationState.initial().copyWith(
-        condition: ListingCondition.likeNew,
+        condition: () => ListingCondition.likeNew,
       );
       expect(state.hasUnsavedData, true);
     });
@@ -133,13 +135,15 @@ void main() {
 
     test('returns true when weightRange is set', () {
       final state = ListingCreationState.initial().copyWith(
-        weightRange: WeightRange.zeroToTwo,
+        weightRange: () => WeightRange.zeroToTwo,
       );
       expect(state.hasUnsavedData, true);
     });
 
     test('returns true when location is set', () {
-      final state = ListingCreationState.initial().copyWith(location: '1012AB');
+      final state = ListingCreationState.initial().copyWith(
+        location: () => '1012AB',
+      );
       expect(state.hasUnsavedData, true);
     });
   });
@@ -167,13 +171,35 @@ void main() {
     });
   });
 
-  group('WeightRange.label', () {
-    test('returns correct Dutch labels', () {
-      expect(WeightRange.zeroToTwo.label, '0-2 kg');
-      expect(WeightRange.twoToFive.label, '2-5 kg');
-      expect(WeightRange.fiveToTen.label, '5-10 kg');
-      expect(WeightRange.tenToTwentyThree.label, '10-23 kg');
-      expect(WeightRange.twentyThreeToThirtyOne.label, '23-31 kg');
+  group('copyWith nullable fields can be cleared', () {
+    test('categoryL1Id can be cleared to null', () {
+      const state = ListingCreationState(categoryL1Id: 'cat1');
+      final cleared = state.copyWith(categoryL1Id: () => null);
+      expect(cleared.categoryL1Id, isNull);
+    });
+
+    test('condition can be cleared to null', () {
+      const state = ListingCreationState(condition: ListingCondition.good);
+      final cleared = state.copyWith(condition: () => null);
+      expect(cleared.condition, isNull);
+    });
+
+    test('weightRange can be cleared to null', () {
+      const state = ListingCreationState(weightRange: WeightRange.twoToFive);
+      final cleared = state.copyWith(weightRange: () => null);
+      expect(cleared.weightRange, isNull);
+    });
+
+    test('location can be cleared to null', () {
+      const state = ListingCreationState(location: '1012AB');
+      final cleared = state.copyWith(location: () => null);
+      expect(cleared.location, isNull);
+    });
+
+    test('createdListingId can be cleared to null', () {
+      const state = ListingCreationState(createdListingId: 'listing-1');
+      final cleared = state.copyWith(createdListingId: () => null);
+      expect(cleared.createdListingId, isNull);
     });
   });
 }

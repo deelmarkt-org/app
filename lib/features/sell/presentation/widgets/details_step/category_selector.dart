@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 
-/// Cascading L1 → L2 category dropdown pair.
+/// Cascading L1 -> L2 category dropdown pair.
 ///
 /// L1 categories are cached via [topLevelCategoriesProvider].
-/// When L1 changes, L2 resets and reloads via repository.
-class CategorySelector extends ConsumerStatefulWidget {
+/// When L1 changes, L2 resets and reloads via [subcategoriesProvider].
+class CategorySelector extends ConsumerWidget {
   const CategorySelector({
     required this.categoryL1Id,
     required this.categoryL2Id,
@@ -26,35 +24,7 @@ class CategorySelector extends ConsumerStatefulWidget {
   final void Function(String?) onL2Changed;
 
   @override
-  ConsumerState<CategorySelector> createState() => _CategorySelectorState();
-}
-
-class _CategorySelectorState extends ConsumerState<CategorySelector> {
-  List<CategoryEntity> _subcategories = const [];
-  bool _loadingL2 = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.categoryL1Id != null) {
-      _loadSubcategories(widget.categoryL1Id!);
-    }
-  }
-
-  Future<void> _loadSubcategories(String parentId) async {
-    setState(() => _loadingL2 = true);
-    final repo = ref.read(categoryRepositoryProvider);
-    final subs = await repo.getSubcategories(parentId);
-    if (mounted) {
-      setState(() {
-        _subcategories = subs;
-        _loadingL2 = false;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l1Async = ref.watch(topLevelCategoriesProvider);
 
     return Column(
@@ -64,7 +34,7 @@ class _CategorySelectorState extends ConsumerState<CategorySelector> {
         l1Async.when(
           data:
               (categories) => DropdownButtonFormField<String>(
-                initialValue: widget.categoryL1Id,
+                initialValue: categoryL1Id,
                 decoration: InputDecoration(
                   labelText: 'sell.category'.tr(),
                   hintText: 'sell.categoryL1Hint'.tr(),
@@ -79,13 +49,8 @@ class _CategorySelectorState extends ConsumerState<CategorySelector> {
                         )
                         .toList(),
                 onChanged: (id) {
-                  widget.onL1Changed(id);
-                  widget.onL2Changed(null);
-                  if (id != null) {
-                    _loadSubcategories(id);
-                  } else {
-                    setState(() => _subcategories = const []);
-                  }
+                  onL1Changed(id);
+                  onL2Changed(null);
                 },
               ),
           loading: () => const LinearProgressIndicator(),
@@ -93,25 +58,32 @@ class _CategorySelectorState extends ConsumerState<CategorySelector> {
         ),
 
         // L2 subcategory dropdown (visible when L1 is selected).
-        if (widget.categoryL1Id != null) ...[
+        if (categoryL1Id != null) ...[
           const SizedBox(height: Spacing.s3),
-          if (_loadingL2)
-            const LinearProgressIndicator()
-          else
-            DropdownButtonFormField<String>(
-              initialValue: widget.categoryL2Id,
-              decoration: InputDecoration(hintText: 'sell.categoryL2Hint'.tr()),
-              items:
-                  _subcategories
-                      .map(
-                        (c) =>
-                            DropdownMenuItem(value: c.id, child: Text(c.name)),
-                      )
-                      .toList(),
-              onChanged: widget.onL2Changed,
-            ),
+          _buildL2Dropdown(ref),
         ],
       ],
+    );
+  }
+
+  Widget _buildL2Dropdown(WidgetRef ref) {
+    final l2Async = ref.watch(subcategoriesProvider(categoryL1Id!));
+
+    return l2Async.when(
+      data:
+          (subcategories) => DropdownButtonFormField<String>(
+            initialValue: categoryL2Id,
+            decoration: InputDecoration(hintText: 'sell.categoryL2Hint'.tr()),
+            items:
+                subcategories
+                    .map(
+                      (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
+                    )
+                    .toList(),
+            onChanged: onL2Changed,
+          ),
+      loading: () => const LinearProgressIndicator(),
+      error: (_, _) => Text('error.generic'.tr()),
     );
   }
 }

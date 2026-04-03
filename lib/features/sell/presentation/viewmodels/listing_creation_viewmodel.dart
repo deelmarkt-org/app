@@ -2,23 +2,17 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 
 part 'listing_creation_viewmodel.g.dart';
 
-/// Maximum number of images allowed per listing.
 const _maxImages = 12;
-
-/// Debounce duration for auto-saving drafts.
 const _draftDebounce = Duration(seconds: 2);
 
 /// ViewModel for the listing creation wizard.
-///
-/// Manages step navigation, form state, photo operations,
-/// and draft auto-saving with a 2-second debounce.
 @riverpod
 class ListingCreationNotifier extends _$ListingCreationNotifier {
   Timer? _draftTimer;
@@ -26,26 +20,19 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   @override
   ListingCreationState build() {
     ref.onDispose(() => _draftTimer?.cancel());
-
     final draftService = ref.read(draftPersistenceServiceProvider);
-    final restored = draftService.restore();
-    return restored ?? ListingCreationState.initial();
+    return draftService.restore() ?? ListingCreationState.initial();
   }
 
   // ── Photo operations ──
 
-  /// Adds a single photo from the device camera.
   Future<void> addFromCamera() async {
     if (state.imageFiles.length >= _maxImages) return;
-
-    final picker = ref.read(imagePickerServiceProvider);
-    final result = await picker.pickFromCamera();
-
+    final result = await ref.read(imagePickerServiceProvider).pickFromCamera();
     if (!result.isSuccess) {
       state = state.copyWith(errorKey: () => _errorKeyForResult(result.type));
       return;
     }
-
     state = state.copyWith(
       imageFiles: [...state.imageFiles, ...result.paths],
       errorKey: () => null,
@@ -53,19 +40,16 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     _scheduleDraftSave();
   }
 
-  /// Adds one or more photos from the device gallery.
   Future<void> addFromGallery() async {
     final remaining = _maxImages - state.imageFiles.length;
     if (remaining <= 0) return;
-
-    final picker = ref.read(imagePickerServiceProvider);
-    final result = await picker.pickFromGallery(maxCount: remaining);
-
+    final result = await ref
+        .read(imagePickerServiceProvider)
+        .pickFromGallery(maxCount: remaining);
     if (!result.isSuccess) {
       state = state.copyWith(errorKey: () => _errorKeyForResult(result.type));
       return;
     }
-
     state = state.copyWith(
       imageFiles: [...state.imageFiles, ...result.paths],
       errorKey: () => null,
@@ -73,10 +57,8 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     _scheduleDraftSave();
   }
 
-  /// Removes the photo at [index].
   void removePhoto(int index) {
     if (index < 0 || index >= state.imageFiles.length) return;
-
     final updated = [
       ...state.imageFiles.sublist(0, index),
       ...state.imageFiles.sublist(index + 1),
@@ -85,22 +67,17 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     _scheduleDraftSave();
   }
 
-  /// Reorders photos from [oldIndex] to [newIndex].
   void reorderPhotos(int oldIndex, int newIndex) {
     final photos = [...state.imageFiles];
     final adjustedNew = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final item = photos.removeAt(oldIndex);
     photos.insert(adjustedNew, item);
-
     state = state.copyWith(imageFiles: photos);
     _scheduleDraftSave();
   }
 
   // ── Navigation ──
 
-  /// Validates the current step and advances to the next.
-  ///
-  /// Returns true if navigation succeeded, false if validation failed.
   bool nextStep() {
     switch (state.step) {
       case ListingCreationStep.photos:
@@ -113,7 +90,6 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
           errorKey: () => null,
         );
         return true;
-
       case ListingCreationStep.details:
         if (state.title.trim().isEmpty) {
           state = state.copyWith(errorKey: () => 'sell.errorNoTitle');
@@ -128,7 +104,6 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
           errorKey: () => null,
         );
         return true;
-
       case ListingCreationStep.quality:
       case ListingCreationStep.publishing:
       case ListingCreationStep.success:
@@ -136,7 +111,6 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     }
   }
 
-  /// Goes back one step. Minimum: photos.
   void previousStep() {
     final previous = switch (state.step) {
       ListingCreationStep.details => ListingCreationStep.photos,
@@ -150,28 +124,28 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
 
   // ── Form updates ──
 
-  void updateTitle(String value) {
-    state = state.copyWith(title: value);
+  void updateTitle(String v) {
+    state = state.copyWith(title: v);
     _scheduleDraftSave();
   }
 
-  void updateDescription(String value) {
-    state = state.copyWith(description: value);
+  void updateDescription(String v) {
+    state = state.copyWith(description: v);
     _scheduleDraftSave();
   }
 
   void updateCategoryL1(String? id) {
-    state = state.copyWith(categoryL1Id: id);
+    state = state.copyWith(categoryL1Id: () => id);
     _scheduleDraftSave();
   }
 
   void updateCategoryL2(String? id) {
-    state = state.copyWith(categoryL2Id: id);
+    state = state.copyWith(categoryL2Id: () => id);
     _scheduleDraftSave();
   }
 
-  void updateCondition(ListingCondition? condition) {
-    state = state.copyWith(condition: condition);
+  void updateCondition(ListingCondition? c) {
+    state = state.copyWith(condition: () => c);
     _scheduleDraftSave();
   }
 
@@ -181,30 +155,28 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   }
 
   void updateShipping(ShippingCarrier carrier, WeightRange? range) {
-    state = state.copyWith(shippingCarrier: carrier, weightRange: range);
+    state = state.copyWith(shippingCarrier: carrier, weightRange: () => range);
     _scheduleDraftSave();
   }
 
   void updateLocation(String? postcode) {
-    state = state.copyWith(location: postcode);
+    state = state.copyWith(location: () => postcode);
     _scheduleDraftSave();
   }
 
   // ── Publish / Draft ──
 
-  /// Publishes the listing. On success, clears draft and sets step to success.
   Future<void> publish() async {
     state = state.copyWith(isLoading: true, errorKey: () => null);
-
     try {
-      final useCase = ref.read(createListingUseCaseProvider);
-      final listing = await useCase.call(state: state);
-
+      final listing = await ref
+          .read(createListingUseCaseProvider)
+          .call(state: state);
       _clearDraft();
       state = state.copyWith(
         isLoading: false,
         step: ListingCreationStep.success,
-        createdListingId: listing.id,
+        createdListingId: () => listing.id,
       );
     } on Object catch (_) {
       state = state.copyWith(
@@ -214,14 +186,10 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     }
   }
 
-  /// Saves the current state as a server-side draft.
   Future<void> saveDraft() async {
     state = state.copyWith(isLoading: true, errorKey: () => null);
-
     try {
-      final useCase = ref.read(saveDraftUseCaseProvider);
-      await useCase.call(state: state);
-
+      await ref.read(saveDraftUseCaseProvider).call(state: state);
       _clearDraft();
       state = state.copyWith(
         isLoading: false,

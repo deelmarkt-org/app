@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/repositories/listing_creation_repository.dart';
 
