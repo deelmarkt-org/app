@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
@@ -51,7 +52,6 @@ class SettingsState {
 @riverpod
 class SettingsNotifier extends _$SettingsNotifier {
   static const _errorKey = 'error.generic';
-  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 
   @override
   SettingsState build() {
@@ -114,7 +114,7 @@ class SettingsNotifier extends _$SettingsNotifier {
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||
-          !_exportAllowedHosts.any(
+          !AppConstants.trustedHosts.any(
             (host) => uri.host == host || uri.host.endsWith('.$host'),
           )) {
         state = state.copyWith(isExporting: false, error: _errorKey);

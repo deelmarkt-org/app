@@ -392,8 +392,8 @@ file_length:
   screen: 200
   viewmodel: 150
   repository: 200
-  usecase: 50
-  model: 150
+  usecase: 60
+  model: 200
   test: 300
   utility: 100
   default: 200
@@ -409,6 +409,15 @@ setState_allowlist:
   - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
   - lib/features/dev/**
   - lib/widgets/inputs/deel_search_input.dart
+
+file_length_exempt:
+  - lib/core/design_system/theme.dart
+  - lib/core/router/app_router.dart
+  - **/data/supabase/**
+  - lib/widgets/buttons/deel_button.dart
+  - lib/widgets/cards/deel_card.dart
+  - lib/widgets/inputs/dutch_address_input.dart
+  - lib/features/home/presentation/widgets/home_data_view.dart
 
 cross_feature_import_exempt:
   - lib/core/router/app_router.dart

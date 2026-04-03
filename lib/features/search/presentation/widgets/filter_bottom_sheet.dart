@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/search/presentation/widgets/search_initial_view.dart';
+import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_condition_section.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_distance_section.dart';
@@ -122,7 +122,12 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
         const SizedBox(height: Spacing.s2),
         categoriesAsync.when(
           loading: () => const SizedBox(height: 48),
-          error: (_, _) => const SizedBox.shrink(),
+          error:
+              (_, _) => TextButton.icon(
+                onPressed: () => ref.invalidate(topLevelCategoriesProvider),
+                icon: const Icon(Icons.refresh, size: 16),
+                label: Text('action.retry'.tr()),
+              ),
           data:
               (categories) => Wrap(
                 spacing: Spacing.s2,

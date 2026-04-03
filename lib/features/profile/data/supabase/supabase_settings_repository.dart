@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
@@ -14,9 +15,6 @@ class SupabaseSettingsRepository implements SettingsRepository {
   const SupabaseSettingsRepository(this._client);
 
   final SupabaseClient _client;
-
-  /// Allowed hosts for GDPR export URLs (defense-in-depth).
-  static const exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 
   String get _userId {
     final id = _client.auth.currentUser?.id;
@@ -38,6 +36,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
       return _prefsFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch notification preferences: ${e.message}');
+    } on TypeError {
+      throw Exception('Unexpected data format from server');
     }
   }
 
@@ -64,6 +64,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
       throw Exception(
         'Failed to update notification preferences: ${e.message}',
       );
+    } on TypeError {
+      throw Exception('Unexpected data format from server');
     }
   }
 
@@ -79,6 +81,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
       return response.map(_addressFromJson).toList();
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch addresses: ${e.message}');
+    } on TypeError {
+      throw Exception('Unexpected data format from server');
     }
   }
 
@@ -104,6 +108,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
       return _addressFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to save address: ${e.message}');
+    } on TypeError {
+      throw Exception('Unexpected data format from server');
     }
   }
 
@@ -141,7 +147,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||
-          !exportAllowedHosts.any(
+          !AppConstants.trustedHosts.any(
             (h) => uri.host == h || uri.host.endsWith('.$h'),
           )) {
         throw Exception('Export returned untrusted URL');

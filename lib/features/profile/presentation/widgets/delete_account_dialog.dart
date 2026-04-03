@@ -12,7 +12,7 @@ final _obscurePasswordProvider = StateProvider.autoDispose<bool>((_) => true);
 ///
 /// Requires password re-entry before confirming (OWASP ASVS L2 §4.2.1).
 /// Returns the entered password if confirmed, `null` if cancelled.
-class DeleteAccountDialog extends ConsumerWidget {
+class DeleteAccountDialog extends ConsumerStatefulWidget {
   const DeleteAccountDialog({super.key});
 
   static Future<String?> show(BuildContext context) {
@@ -24,10 +24,23 @@ class DeleteAccountDialog extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DeleteAccountDialog> createState() =>
+      _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends ConsumerState<DeleteAccountDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final obscure = ref.watch(_obscurePasswordProvider);
-    final controller = TextEditingController();
 
     return AlertDialog(
       title: Text('settings.deleteConfirmTitle'.tr()),
@@ -40,17 +53,31 @@ class DeleteAccountDialog extends ConsumerWidget {
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: Spacing.s4),
-          TextField(
-            controller: controller,
-            obscureText: obscure,
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: 'form.pass_field'.tr(),
-              suffixIcon: IconButton(
-                icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
-                onPressed: () {
-                  ref.read(_obscurePasswordProvider.notifier).state = !obscure;
-                },
+          Semantics(
+            textField: true,
+            label: 'form.pass_field'.tr(),
+            child: TextField(
+              controller: _controller,
+              obscureText: obscure,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: 'form.pass_field'.tr(),
+                suffixIcon: Semantics(
+                  button: true,
+                  label:
+                      obscure
+                          ? 'a11y.showPassword'.tr()
+                          : 'a11y.hidePassword'.tr(),
+                  child: IconButton(
+                    icon: Icon(
+                      obscure ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      ref.read(_obscurePasswordProvider.notifier).state =
+                          !obscure;
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -72,7 +99,7 @@ class DeleteAccountDialog extends ConsumerWidget {
           child: DeelButton(
             label: 'settings.deleteAccount'.tr(),
             onPressed: () {
-              final password = controller.text;
+              final password = _controller.text;
               if (password.isNotEmpty) {
                 Navigator.of(context).pop(password);
               }

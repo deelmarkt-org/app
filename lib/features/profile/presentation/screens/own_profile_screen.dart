@@ -50,6 +50,7 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
         actions: [
           IconButton(
             icon: Icon(PhosphorIcons.gear()),
+            tooltip: 'settings.title'.tr(),
             onPressed: () => context.push('${AppRoutes.profile}/settings'),
           ),
         ],

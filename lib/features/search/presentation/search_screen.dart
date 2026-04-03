@@ -120,7 +120,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               (id) =>
                   context.push(AppRoutes.listingDetail.replaceFirst(':id', id)),
           onFavouriteTap: (id) {
-            // TODO: Wire to toggleFavourite when search notifier supports it
+            // TODO(#58): Wire to toggleFavourite when search notifier supports it
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text('action.comingSoon'.tr())));

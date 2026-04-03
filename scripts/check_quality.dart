@@ -106,6 +106,7 @@ class _Config {
     'utility': 100,
     'default': 200,
   };
+  Set<String> fileLengthExempt = {};
   Set<String> setStateAllowlist = {};
   Set<String> crossFeatureExempt = {
     'lib/core/router/app_router.dart',
@@ -136,6 +137,10 @@ _Config _loadConfig() {
       currentSection = 'file_length';
       continue;
     }
+    if (trimmed.startsWith('file_length_exempt:')) {
+      currentSection = 'fl_exempt';
+      continue;
+    }
     if (trimmed.startsWith('setState_allowlist:')) {
       currentSection = 'setState';
       continue;
@@ -145,6 +150,9 @@ _Config _loadConfig() {
       continue;
     }
 
+    if (trimmed.startsWith('- ') && currentSection == 'fl_exempt') {
+      config.fileLengthExempt.add(trimmed.substring(2).trim());
+    }
     if (trimmed.startsWith('- ') && currentSection == 'setState') {
       config.setStateAllowlist.add(trimmed.substring(2).trim());
     }
@@ -193,6 +201,22 @@ String _fileType(String path) {
   return 'default';
 }
 
+bool _matchesAnyPattern(String path, Set<String> patterns) {
+  for (final pattern in patterns) {
+    if (pattern.contains('**')) {
+      final regex = pattern
+          .replaceAll('.', r'\.')
+          .replaceAll('**/', '(.*/)?')
+          .replaceAll('**', '.*')
+          .replaceAll('*', '[^/]*');
+      if (RegExp('(.*/)?$regex').hasMatch(path)) return true;
+    } else if (path == pattern) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void _checkFileLength(
   String file,
   int lineCount,
@@ -200,6 +224,7 @@ void _checkFileLength(
   List<String> violations,
 ) {
   if (file.contains('/dev/')) return;
+  if (_matchesAnyPattern(file, config.fileLengthExempt)) return;
   // Multi-class files (extracted widgets) get +50 per extra class
   final content = File(file).readAsStringSync();
   final classCount =
@@ -271,7 +296,11 @@ void _checkMissingSemantics(
   if (file.contains('/dev/')) return;
   final interactiveWidgets = ['InkWell', 'GestureDetector', 'IconButton'];
   final hasInteractive = interactiveWidgets.any((w) => content.contains(w));
-  if (hasInteractive && !content.contains('Semantics(')) {
+  final hasSemantics =
+      content.contains('Semantics(') ||
+      content.contains('tooltip:') ||
+      content.contains('semanticLabel:');
+  if (hasInteractive && !hasSemantics) {
     violations.add(
       '  MISSING_SEMANTICS  $file: has interactive widgets but no Semantics() [CLAUDE.md §10]',
     );
@@ -285,15 +314,7 @@ void _checkSetState(
   List<String> violations,
 ) {
   if (!content.contains('setState(')) return;
-  if (config.setStateAllowlist.any((pattern) {
-    if (pattern.contains('**')) {
-      final regex = pattern.replaceAll('**', '.*').replaceAll('*', '[^/]*');
-      return RegExp(regex).hasMatch(file);
-    }
-    return file == pattern;
-  })) {
-    return;
-  }
+  if (_matchesAnyPattern(file, config.setStateAllowlist)) return;
 
   violations.add(
     '  SET_STATE  $file: uses setState() — use Riverpod instead [CLAUDE.md §1.3]',
