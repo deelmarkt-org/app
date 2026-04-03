@@ -2,49 +2,49 @@
  * R-20: Account deletion Edge Function (GDPR right-to-erasure).
  *
  * Flow:
- *   1. Verify JWT
+ *   1. Verify JWT + rate limit
  *   2. Check for active transactions (block if any)
  *   3. Check for existing pending deletion (409 on duplicate)
- *   4. Soft-delete: anonymize user_profiles PII, mark deleted_at
- *   5. Soft-delete: hide user's listings (set deleted_at)
- *   6. Delete addresses, notification_preferences, favourites
- *   7. Queue hard-delete in gdpr_deletion_queue (30 days)
- *   8. Log to audit_logs (HMAC-SHA256 hashed email)
- *   9. Return 200 — auth user deletion deferred to cron job
+ *   4. Call soft_delete_account RPC (atomic transaction):
+ *      - Anonymize profile PII, soft-delete listings
+ *      - Delete addresses, notification prefs, favourites
+ *      - Queue hard-delete (30 days), audit log
+ *   5. Return 200 — auth user deletion deferred to cron job
  *
- * Auth user is NOT deleted here to avoid CASCADE conflicts with
- * user_profiles and listings FK references to auth.users.
- * The cron job handles auth.admin.deleteUser() after 30 days.
+ * Auth user NOT deleted here — deferred to cron to avoid CASCADE
+ * conflicts. Soft-delete + RLS hides the anonymized profile.
  *
  * Password re-auth is done client-side (OWASP ASVS §4.2.1).
- * No password is sent to this function.
  */
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { jsonResponse } from "../_shared/response.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-// HMAC key for email hashing — loaded from env (set via Supabase Vault)
 const hmacKey = Deno.env.get("AUDIT_HMAC_KEY") ?? serviceRoleKey;
 
-// Active transaction statuses that block account deletion
 const ACTIVE_STATUSES = ["created", "paid", "shipped", "delivered"];
+
+const AuthHeaderSchema = z.string().startsWith("Bearer ").min(8);
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
-  // ── Extract user from JWT ──────────────────────────────────────────
+  // ── Validate + extract JWT ─────────────────────────────────────────
   const authHeader = req.headers.get("authorization");
-  if (!authHeader) {
-    return jsonResponse({ error: "Missing authorization header" }, 401);
+  const parsed = AuthHeaderSchema.safeParse(authHeader);
+  if (!parsed.success) {
+    return jsonResponse({ error: "Invalid authorization header" }, 401);
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
-  const token = authHeader.replace("Bearer ", "");
+  const token = parsed.data.replace("Bearer ", "");
   const {
     data: { user },
     error: authError,
@@ -57,8 +57,25 @@ Deno.serve(async (req: Request) => {
   const userId = user.id;
   const userEmail = user.email ?? "unknown";
 
+  // ── Rate limit ─────────────────────────────────────────────────────
   try {
-    // ── Check for active transactions ──────────────────────────────────
+    const redisCreds = await getRedisCredentials(supabase);
+    const { allowed } = await checkRateLimit(
+      redisCreds,
+      userId,
+      "delete-account",
+      { maxRequests: 3, windowSeconds: 3600 },
+    );
+    if (!allowed) {
+      return jsonResponse({ error: "Too many requests" }, 429);
+    }
+  } catch (rateLimitErr) {
+    // Rate limit failure is non-blocking — log and continue
+    console.warn("Rate limit check failed:", rateLimitErr);
+  }
+
+  try {
+    // ── Check for active transactions ────────────────────────────────
     const { data: activeTxns } = await supabase
       .from("transactions")
       .select("id")
@@ -76,8 +93,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ── Check for existing pending deletion ────────────────────────────
-    // Partial unique index also prevents duplicates at DB level (TOCTOU safe)
+    // ── Check for existing pending deletion ──────────────────────────
     const { data: existing } = await supabase
       .from("gdpr_deletion_queue")
       .select("id")
@@ -92,63 +108,23 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // ── Soft-delete user profile ───────────────────────────────────────
-    const now = new Date().toISOString();
+    // ── Atomic soft-delete via RPC (all-or-nothing transaction) ──────
+    const emailHash = await hmacHashEmail(userEmail);
 
-    const { error: profileError } = await supabase
-      .from("user_profiles")
-      .update({
-        display_name: "Verwijderd account",
-        avatar_url: null,
-        location: null,
-        deleted_at: now,
-        updated_at: now,
-      })
-      .eq("id", userId);
+    const { error: rpcError } = await supabase.rpc("soft_delete_account", {
+      p_user_id: userId,
+      p_email_hash: emailHash,
+      p_ip: req.headers.get("x-forwarded-for") ?? "unknown",
+      p_user_agent: req.headers.get("user-agent") ?? "unknown",
+    });
 
-    if (profileError) {
-      console.error("Failed to soft-delete profile:", profileError);
+    if (rpcError) {
+      console.error("soft_delete_account RPC failed:", rpcError);
       return jsonResponse({ error: "Failed to delete account" }, 500);
     }
 
-    // ── Soft-delete user's listings ────────────────────────────────────
-    await supabase
-      .from("listings")
-      .update({ deleted_at: now })
-      .eq("seller_id", userId)
-      .is("deleted_at", null);
-
-    // ── Delete user data ───────────────────────────────────────────────
-    await supabase.from("user_addresses").delete().eq("user_id", userId);
-    await supabase
-      .from("notification_preferences")
-      .delete()
-      .eq("user_id", userId);
-    await supabase.from("favourites").delete().eq("user_id", userId);
-
-    // ── Queue hard-delete (30 days) ────────────────────────────────────
-    const { error: queueError } = await supabase
-      .from("gdpr_deletion_queue")
-      .insert({ user_id: userId, status: "pending" });
-
-    if (queueError) {
-      console.error("Failed to queue deletion:", queueError);
-    }
-
-    // ── Audit log (HMAC-SHA256 hashed email — no raw PII) ──────────────
-    await supabase.from("audit_logs").insert({
-      user_id: userId,
-      action: "account_deletion_requested",
-      metadata: {
-        email_hash: await hmacHashEmail(userEmail),
-        ip: req.headers.get("x-forwarded-for") ?? "unknown",
-        user_agent: req.headers.get("user-agent") ?? "unknown",
-      },
-    });
-
     // Auth user NOT deleted here — deferred to cron job to avoid
-    // CASCADE conflicts (user_profiles, listings FK to auth.users).
-    // Soft-delete + anonymized profile prevents meaningful access.
+    // CASCADE conflicts. Soft-delete + RLS hides the profile.
 
     return jsonResponse({
       status: "deleted",
@@ -160,10 +136,6 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-/**
- * HMAC-SHA256 hash of email for audit log.
- * Uses a server-side key to prevent rainbow table reversal.
- */
 async function hmacHashEmail(email: string): Promise<string> {
   const encoder = new TextEncoder();
   const key = await crypto.subtle.importKey(

@@ -98,6 +98,61 @@ CREATE POLICY listings_select ON listings
     OR auth.uid() = seller_id
   );
 
+-- ── Atomic soft-delete RPC (called by Edge Function) ───────────────────
+-- All-or-nothing: if any step fails, the entire transaction rolls back.
+-- This prevents partial deletion leaving inconsistent state (C-02 audit).
+CREATE OR REPLACE FUNCTION soft_delete_account(
+  p_user_id UUID,
+  p_email_hash TEXT,
+  p_ip TEXT DEFAULT 'unknown',
+  p_user_agent TEXT DEFAULT 'unknown'
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Anonymize profile PII
+  UPDATE user_profiles
+  SET display_name = 'Verwijderd account',
+      avatar_url = NULL,
+      location = NULL,
+      deleted_at = now(),
+      updated_at = now()
+  WHERE id = p_user_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'User profile not found';
+  END IF;
+
+  -- Soft-delete listings
+  UPDATE listings SET deleted_at = now()
+  WHERE seller_id = p_user_id AND deleted_at IS NULL;
+
+  -- Delete PII tables
+  DELETE FROM user_addresses WHERE user_id = p_user_id;
+  DELETE FROM notification_preferences WHERE user_id = p_user_id;
+  DELETE FROM favourites WHERE user_id = p_user_id;
+
+  -- Queue hard-delete (MUST succeed — GDPR compliance)
+  INSERT INTO gdpr_deletion_queue (user_id, status)
+  VALUES (p_user_id, 'pending');
+
+  -- Audit log
+  INSERT INTO audit_logs (user_id, action, metadata)
+  VALUES (p_user_id, 'account_deletion_requested', jsonb_build_object(
+    'email_hash', p_email_hash,
+    'ip', p_ip,
+    'user_agent', p_user_agent
+  ));
+END;
+$$;
+
+-- Fix: UNIQUE constraint with COALESCE for nullable addition
+DROP INDEX IF EXISTS user_addresses_user_id_postcode_house_number_addition_key;
+CREATE UNIQUE INDEX idx_user_addresses_unique
+  ON user_addresses(user_id, postcode, house_number, COALESCE(addition, ''));
+
 -- ── Indexes ────────────────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_gdpr_queue_pending
   ON gdpr_deletion_queue(status, delete_after)
@@ -108,4 +163,8 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_user
 
 CREATE INDEX IF NOT EXISTS idx_user_profiles_deleted
   ON user_profiles(deleted_at)
+  WHERE deleted_at IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_listings_deleted
+  ON listings(deleted_at)
   WHERE deleted_at IS NOT NULL;
