@@ -39,6 +39,60 @@ void main() {
       await tester.pump();
       expect(find.byType(ConditionChip), findsOneWidget);
     });
+
+    testWidgets('renders newWithTags condition', (tester) async {
+      await tester.pumpWidget(
+        buildChip(condition: ListingCondition.newWithTags),
+      );
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('renders newWithoutTags condition', (tester) async {
+      await tester.pumpWidget(
+        buildChip(condition: ListingCondition.newWithoutTags),
+      );
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('renders likeNew condition', (tester) async {
+      await tester.pumpWidget(buildChip(condition: ListingCondition.likeNew));
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('renders good condition', (tester) async {
+      await tester.pumpWidget(buildChip());
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('renders fair condition', (tester) async {
+      await tester.pumpWidget(buildChip(condition: ListingCondition.fair));
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('renders poor condition', (tester) async {
+      await tester.pumpWidget(buildChip(condition: ListingCondition.poor));
+      await tester.pump();
+      expect(find.byType(Text), findsOneWidget);
+    });
+
+    testWidgets('all 6 ListingCondition variants render a Text widget', (
+      tester,
+    ) async {
+      for (final condition in ListingCondition.values) {
+        await tester.pumpWidget(buildChip(condition: condition));
+        await tester.pump();
+        expect(
+          find.byType(Text),
+          findsOneWidget,
+          reason: 'Expected Text for condition ${condition.name}',
+        );
+      }
+    });
   });
 
   group('CategoryChip', () {
@@ -64,6 +118,21 @@ void main() {
       );
       await tester.pump();
       expect(find.text('Sport'), findsOneWidget);
+    });
+
+    testWidgets('has Semantics label', (tester) async {
+      await tester.pumpWidget(buildChip(name: 'Elektronica'));
+      await tester.pump();
+
+      expect(find.byType(Semantics), findsWidgets);
+
+      final semanticsWidgets = tester.widgetList<Semantics>(
+        find.byType(Semantics),
+      );
+      final hasNameLabel = semanticsWidgets.any(
+        (s) => s.properties.label == 'Elektronica',
+      );
+      expect(hasNameLabel, isTrue);
     });
   });
 }

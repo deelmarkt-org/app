@@ -81,7 +81,28 @@ class SellerInfoRow extends StatelessWidget {
 
     if (parts.isEmpty) return const SizedBox.shrink();
 
-    return Row(mainAxisSize: MainAxisSize.min, children: parts);
+    return Semantics(
+      label: _semanticLabel(),
+      child: Row(mainAxisSize: MainAxisSize.min, children: parts),
+    );
+  }
+
+  String _semanticLabel() {
+    final parts = <String>[];
+    if (seller.averageRating != null) {
+      parts.add(seller.averageRating!.toStringAsFixed(1));
+      if (seller.reviewCount > 0) {
+        parts.add(
+          'listing_detail.reviews'.tr(
+            namedArgs: {'count': '${seller.reviewCount}'},
+          ),
+        );
+      }
+    }
+    if (seller.responseTimeMinutes != null) {
+      parts.add(_formatResponseTime(seller.responseTimeMinutes!));
+    }
+    return parts.join(', ');
   }
 
   String _formatResponseTime(int minutes) {
