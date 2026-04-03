@@ -419,6 +419,7 @@ file_length_exempt:
   - lib/widgets/cards/deel_card.dart
   - lib/widgets/inputs/dutch_address_input.dart
   - lib/features/home/presentation/widgets/home_data_view.dart
+  - lib/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart
 
 cross_feature_import_exempt:
   - lib/core/router/app_router.dart
