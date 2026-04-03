@@ -128,15 +128,30 @@ The agent will:
 **Branch:** `feature/pizmam-E02-auth-screens` | **Epic:** [E02](epics/E02-user-auth-kyc.md)
 
 - [x] `P-14` Onboarding screen (first launch) — language selection + value proposition ✅ PR #28
-- [ ] `P-15` Registration screen (email + phone) — form validation, OTP flow
-- [ ] `P-16` Login screen (email + biometric) — both flows, error states
-- [ ] `P-17` Profile screen (public view) — badges, ratings placeholder, response time
-- [ ] `P-18` Settings screen (language, addresses, notifications) — settings persist
-- [ ] `P-19` `DeelBadge` widget (verification badges) — all 7 types render
-- [ ] `P-20` `DeelAvatar` widget (with badge overlay) — avatar + badge positioning
-- [ ] `P-21` `TrustBanner` widget (escrow protection) — matches spec
-- [ ] `P-22` `DeelCard` — listing card (grid + list) — both variants, shimmer loading
-- [ ] `P-23` KYC prompt bottom sheet (Level 1→2) — triggers on first listing
+- [x] `P-15` Registration screen (email + phone) — form validation, OTP flow ✅ PR #40
+- [x] `P-16` Login screen (email + biometric) — both flows, error states ✅ PR #43
+- [x] `P-17` Profile screen (public view) — badges, ratings placeholder, response time ✅ PR #45
+- [x] `P-18` Settings screen (language, addresses, notifications) — settings persist ✅ PR #45
+- [x] `P-19` `DeelBadge` widget (verification badges) — all 7 types render ✅ PR #45
+- [x] `P-20` `DeelAvatar` widget (with badge overlay) — avatar + badge positioning ✅ PR #45
+- [x] `P-21` `TrustBanner` widget (escrow protection) — matches spec ✅ PR #45
+- [x] `P-22` `DeelCard` — listing card (grid + list) — both variants, shimmer loading ✅ PR #45
+- [x] `P-23` KYC prompt bottom sheet (Level 1→2) — triggers on first listing ✅ PR #45
+
+### Deferred Items from PR #45 (Tracked as GitHub Issues)
+
+> These were identified during Tier-1 audit and PR review. Each has a GitHub Issue with owner.
+
+| Issue | Task | Owner | Blocked By | Sprint |
+|:------|:-----|:------|:-----------|:-------|
+| [#46](https://github.com/deelmarkt-org/app/issues/46) | `[R]` Implement SupabaseReviewRepository | reso | R-36 reviews table | 9–10 |
+| [#47](https://github.com/deelmarkt-org/app/issues/47) | `[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)** | reso | — | 5–8 |
+| [#48](https://github.com/deelmarkt-org/app/issues/48) | `[R]` Wire iDIN to Edge Function | reso | R-18 iDIN integration | 3–4 |
+| [#49](https://github.com/deelmarkt-org/app/issues/49) | `[R]` 30-day soft-delete grace period | reso | — | 5–8 |
+| [#50](https://github.com/deelmarkt-org/app/issues/50) | `[P]` Wire address form navigation in Settings | pizmam | — | 5–8 |
+| [#51](https://github.com/deelmarkt-org/app/issues/51) | `[P]` Wire sell screen navigation from empty listings | pizmam | P-24 | 5–8 |
+| [#52](https://github.com/deelmarkt-org/app/issues/52) | `[P]` Wire listing detail navigation from profile | pizmam | B-51 | 5–8 |
+| [#53](https://github.com/deelmarkt-org/app/issues/53) | `[P]` Wire avatar picker navigation | pizmam | — | 9–10 |
 
 ---
 
@@ -167,16 +182,16 @@ The agent will:
 - [x] `B-44` Location/distance query (haversine) — distance sorting works *(was R-28)*
 
 **Phase B — Flutter Data Layer (Week 2):**
-- [ ] `B-45` DTOs: ListingDto, CategoryDto, UserDto — fromJson/toJson for Supabase
-- [ ] `B-46` `SupabaseListingRepository` — implements `ListingRepository` against real DB
-- [ ] `B-47` `SupabaseCategoryRepository` — implements `CategoryRepository` against real DB
-- [ ] `B-48` `SupabaseUserRepository` — implements `UserRepository` against real DB
-- [ ] `B-49` Provider wiring — Riverpod overrides to swap mock ↔ Supabase repos by env
+- [x] `B-45` DTOs: ListingDto, CategoryDto, UserDto — fromJson/toJson for Supabase ✅ PR #29
+- [x] `B-46` `SupabaseListingRepository` — implements `ListingRepository` against real DB ✅ PR #29
+- [x] `B-47` `SupabaseCategoryRepository` — implements `CategoryRepository` against real DB ✅ PR #29
+- [x] `B-48` `SupabaseUserRepository` — implements `UserRepository` against real DB ✅ PR #29
+- [x] `B-49` Provider wiring — Riverpod overrides to swap mock ↔ Supabase repos by env ✅ PR #29
 
 **Phase C — Connected Screens (Week 3):**
-- [ ] `B-50` Home screen (buyer mode) — categories + recent + nearby, real Supabase data *(was P-29)*
-- [ ] `B-51` Listing detail screen — gallery, trust banner, seller card, CTA, deep linked *(was P-25)*
-- [ ] `B-52` Search screen — FTS integration, results grid + filters *(was P-26)*
+- [x] `B-50` Home screen (buyer mode) — categories + recent + nearby, real Supabase data *(was P-29)*
+- [x] `B-51` Listing detail screen — gallery, trust banner, seller card, CTA, deep linked *(was P-25)*
+- [x] `B-52` Search screen — FTS integration, results grid + filters *(was P-26)*
 
 **Escrow + Shipping (COMPLETED):**
 - [x] `B-20` Split payment flow (buyer → escrow → seller) — commission split correct

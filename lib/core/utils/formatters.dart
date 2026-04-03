@@ -7,12 +7,22 @@ import 'package:intl/intl.dart';
 abstract final class Formatters {
   static bool _dateLocalesInitialized = false;
 
-  /// Format cents to Euro string with Dutch locale (€45,00).
-  ///
-  /// Uses comma as decimal separator per Dutch convention.
+  static final _eurFormat = NumberFormat.currency(
+    locale: 'nl_NL',
+    symbol: '\u20AC',
+    decimalDigits: 2,
+  );
+
+  static final _distFormat = NumberFormat('0.0', 'nl_NL');
+
+  /// Format cents to Euro string with Dutch locale (€ 45,00).
   static String euroFromCents(int cents) {
-    final euros = cents / 100;
-    return '\u20AC${euros.toStringAsFixed(2).replaceAll('.', ',')}';
+    return _eurFormat.format(cents / 100);
+  }
+
+  /// Format distance in kilometres with Dutch locale (e.g. "3,2 km").
+  static String distanceKm(double km) {
+    return '${_distFormat.format(km)} km';
   }
 
   /// Initialize date locale data. Safe to call multiple times.

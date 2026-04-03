@@ -12,6 +12,8 @@ class UserEntity extends Equatable {
     required this.displayName,
     required this.kycLevel,
     required this.createdAt,
+    this.email,
+    this.phone,
     this.avatarUrl,
     this.location,
     this.badges = const [],
@@ -22,6 +24,13 @@ class UserEntity extends Equatable {
 
   final String id;
   final String displayName;
+
+  /// Email address — only visible to the user themselves, never on public profile.
+  final String? email;
+
+  /// Phone number — only visible to the user themselves (masked in UI).
+  final String? phone;
+
   final String? avatarUrl;
   final String? location;
   final KycLevel kycLevel;
@@ -38,6 +47,8 @@ class UserEntity extends Equatable {
   List<Object?> get props => [
     id,
     displayName,
+    email,
+    phone,
     avatarUrl,
     location,
     kycLevel,
@@ -51,6 +62,8 @@ class UserEntity extends Equatable {
   UserEntity copyWith({
     String? id,
     String? displayName,
+    String? email,
+    String? phone,
     String? avatarUrl,
     String? location,
     KycLevel? kycLevel,
@@ -63,6 +76,8 @@ class UserEntity extends Equatable {
     return UserEntity(
       id: id ?? this.id,
       displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       location: location ?? this.location,
       kycLevel: kycLevel ?? this.kycLevel,

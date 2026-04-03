@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// ignore: deprecated_member_use_from_same_package
 import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import '../../helpers/pump_app.dart';
 
 void main() {
-  group('EscrowTrustBanner', () {
+  group('EscrowTrustBanner (backward compatibility)', () {
     testWidgets('renders without errors', (tester) async {
+      // ignore: deprecated_member_use_from_same_package
       await pumpTestWidget(tester, const EscrowTrustBanner());
+      // ignore: deprecated_member_use_from_same_package
       expect(find.byType(EscrowTrustBanner), findsOneWidget);
     });
 
-    testWidgets('contains shield icon', (tester) async {
+    testWidgets('delegates to TrustBanner.escrow', (tester) async {
+      // ignore: deprecated_member_use_from_same_package
       await pumpTestWidget(tester, const EscrowTrustBanner());
-      expect(find.byType(Icon), findsWidgets);
+      expect(find.byType(TrustBanner), findsOneWidget);
     });
 
     testWidgets('shows more info button when callback provided', (
       tester,
     ) async {
       var tapped = false;
+      // ignore: deprecated_member_use_from_same_package
       await pumpTestWidget(
         tester,
         EscrowTrustBanner(onMoreInfo: () => tapped = true),
@@ -33,18 +39,9 @@ void main() {
     });
 
     testWidgets('hides more info button when no callback', (tester) async {
+      // ignore: deprecated_member_use_from_same_package
       await pumpTestWidget(tester, const EscrowTrustBanner());
       expect(find.byType(TextButton), findsNothing);
-    });
-
-    testWidgets('has Semantics wrapper', (tester) async {
-      await pumpTestWidget(tester, const EscrowTrustBanner());
-      // Verify Semantics exists in the widget tree
-      final semantics = find.descendant(
-        of: find.byType(EscrowTrustBanner),
-        matching: find.byType(Semantics),
-      );
-      expect(semantics, findsWidgets);
     });
   });
 }

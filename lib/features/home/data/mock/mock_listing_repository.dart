@@ -48,6 +48,8 @@ class MockListingRepository implements ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   }) async {
@@ -70,6 +72,22 @@ class MockListingRepository implements ListingRepository {
               matchesPrice &&
               matchesCondition;
         }).toList();
+
+    if (sortBy == 'price_cents') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.priceInCents.compareTo(b.priceInCents)
+                : b.priceInCents.compareTo(a.priceInCents),
+      );
+    } else if (sortBy == 'created_at') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.createdAt.compareTo(b.createdAt)
+                : b.createdAt.compareTo(a.createdAt),
+      );
+    }
 
     return ListingSearchResult(
       listings: results.skip(offset).take(limit).toList(),
@@ -95,6 +113,19 @@ class MockListingRepository implements ListingRepository {
   Future<List<ListingEntity>> getFavourites() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return _mockListings.where((l) => favouriteIds.contains(l.id)).toList();
+  }
+
+  @override
+  Future<List<ListingEntity>> getByUserId(
+    String userId, {
+    int limit = 10,
+    String? cursor,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    return _mockListings
+        .where((l) => l.sellerId == userId)
+        .take(limit)
+        .toList();
   }
 }
 
@@ -129,6 +160,7 @@ final _mockListings = [
     imageUrls: const [_sampleImageUrl],
     location: 'Rotterdam',
     distanceKm: 12.5,
+    status: ListingStatus.sold,
     createdAt: DateTime(2026, 3, 22),
   ),
   ListingEntity(
@@ -158,6 +190,7 @@ final _mockListings = [
     imageUrls: const [_sampleImageUrl],
     location: 'Den Haag',
     distanceKm: 5.1,
+    status: ListingStatus.draft,
     createdAt: DateTime(2026, 3, 25),
   ),
 ];

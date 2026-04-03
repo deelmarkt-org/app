@@ -4,12 +4,13 @@
     "tagline": "Second-hand with confidence"
   },
   "nav": {
+    "back": "Back",
     "home": "Home",
-    "search": "Search",
-    "sell": "Sell",
     "messages": "Messages",
+    "notifications": "Notifications",
     "profile": "Profile",
-    "back": "Back"
+    "search": "Search",
+    "sell": "Sell"
   },
   "action": {
     "save": "Save",
@@ -19,7 +20,8 @@
     "share": "Share",
     "edit": "Edit",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "comingSoon": "Coming soon"
   },
   "form": {
     "email": "Email address",
@@ -98,7 +100,23 @@
     "terms_agree_prefix": "I agree to the ",
     "privacy_agree_prefix": "I agree to the ",
     "verify_phone_subtitle": "We sent a code to {phone}",
-    "otp_field_label": "Verification code"
+    "otp_field_label": "Verification code",
+    "biometricReason": "Verify your identity to log in to DeelMarkt",
+    "continueWithApple": "Continue with Apple",
+    "continueWithGoogle": "Continue with Google",
+    "errorBiometricFailed": "Biometric verification failed. Try your password instead.",
+    "errorRateLimited": "Too many attempts. Try again in {0} minutes.",
+    "errorSessionExpired": "Your session has expired. Please log in with your password.",
+    "logIn": "Log in",
+    "newToDeelMarkt": "New to DeelMarkt?",
+    "or": "or",
+    "useFaceId": "Use Face ID",
+    "useFingerprint": "Use fingerprint",
+    "welcomeBack": "Welcome back",
+    "welcomeSubtitle": "Log in to continue safe trading.",
+    "invalidCredentials": "Incorrect email or password",
+    "forgotPasswordComingSoon": "Password reset is coming soon!",
+    "socialLoginComingSoon": "Social login is coming soon!"
   },
   "validation": {
     "email_required": "Enter your email address",
@@ -220,9 +238,10 @@
     "city": "City",
     "autoFilled": "Auto-filled",
     "lookingUp": "Looking up address...",
-    "notFound": "Address not found"
+    "notFound": "Address not found",
+    "streetRequired": "Enter a street name",
+    "cityRequired": "Enter a city"
   },
-
   "shipping": {
     "sendPackage": "Send your package",
     "scanAtServicePoint": "Scan this QR code at a PostNL or DHL service point",
@@ -278,7 +297,28 @@
   "settings": {
     "language": "Language",
     "languageEn": "EN",
-    "languageNl": "NL"
+    "languageNl": "NL",
+    "title": "Settings",
+    "account": "Account",
+    "email": "Email",
+    "phone": "Phone",
+    "addresses": "Addresses",
+    "addAddress": "Add address",
+    "editAddress": "Edit address",
+    "addressSaved": "Address saved",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "offers": "Offers",
+    "shippingUpdates": "Shipping updates",
+    "marketing": "Marketing",
+    "privacy": "Privacy",
+    "exportData": "Export my data",
+    "deleteAccount": "Delete account",
+    "deleteConfirmTitle": "Delete your account?",
+    "deleteConfirmBody": "This will permanently delete your account, listings, and all associated data. This action cannot be undone.",
+    "appInfo": "App info",
+    "version": "Version",
+    "licenses": "Open-source licenses"
   },
   "consent": {
     "title": "We respect your privacy",
@@ -286,5 +326,121 @@
     "accept_all": "Accept all",
     "necessary_only": "Necessary only",
     "privacy_policy": "Read our privacy policy"
+  },
+  "home": {
+    "nearby": "Nearby",
+    "viewAll": "View all",
+    "recentlyAdded": "Recently added",
+    "categories": "Categories",
+    "emptyNearby": "No listings nearby",
+    "emptyNearbyAction": "Start searching"
+  },
+  "listing_card": {
+    "escrowAvailable": "Escrow available",
+    "distanceKm": "{} km",
+    "addFavourite": "Add to favourites",
+    "removeFavourite": "Remove from favourites"
+  },
+  "profile": {
+    "title": "Profile",
+    "notLoggedIn": "Not logged in",
+    "memberSince": "Member since",
+    "verifyIdentity": "Verify your identity",
+    "sold": "Sold",
+    "reviews": "Reviews",
+    "responseTime": "Response time",
+    "listings": "Listings",
+    "reviewsTab": "Reviews",
+    "active": "Active",
+    "statusSold": "Sold",
+    "statusDraft": "Draft",
+    "firstListing": "Place your first listing",
+    "noReviews": "No reviews yet",
+    "editAvatar": "Change photo",
+    "pickPhoto": "Choose a photo",
+    "takePhoto": "Take a photo",
+    "chooseFromGallery": "Choose from gallery",
+    "photoSelected": "Photo selected"
+  },
+  "kyc": {
+    "bannerTitle": "Verify your identity",
+    "bannerSubtitle": "Add your phone number for extra security on your account",
+    "bannerAction": "Verify",
+    "sheetTitle": "Identity verification required",
+    "sheetSubtitle": "For transactions of €500 or more, we need to verify your identity via iDIN",
+    "whatIsIdin": "What is iDIN?",
+    "idinExplanation": "iDIN is a secure identification method through your own bank. Your bank confirms your identity — DeelMarkt never sees your banking details.",
+    "step": "Step {current} of {total}",
+    "verifyWithIdin": "Verify with iDIN",
+    "later": "Later",
+    "trustFooter": "Your data is processed securely",
+    "success": "Identity verified!",
+    "error": "Verification failed — please try again"
+  },
+  "badge": {
+    "emailVerified": "Email verified",
+    "phoneVerified": "Phone verified",
+    "idinVerified": "iDIN verified",
+    "idVerified": "ID verified",
+    "businessSeller": "Business seller",
+    "escrowProtected": "Escrow protected",
+    "topSeller": "Top seller",
+    "emailVerifiedTip": "Email address has been verified",
+    "phoneVerifiedTip": "Phone number has been verified",
+    "idinVerifiedTip": "Identity verified via iDIN bank verification",
+    "idVerifiedTip": "Identity document has been verified",
+    "businessSellerTip": "Registered business seller (KVK verified)",
+    "escrowProtectedTip": "Payment protected by DeelMarkt Escrow",
+    "topSellerTip": "Consistently high-rated seller",
+    "row": "{} verification badges"
+  },
+  "listing_detail": {
+    "description": "Description",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "viewProfile": "View profile",
+    "respondsWithin": "Responds within {time}",
+    "respondsWithinHours": "{count}h",
+    "respondsWithinMinutes": "{count}m",
+    "similarListings": "Similar listings",
+    "messageButton": "Message",
+    "buyButton": "Buy — {price}",
+    "soldBadge": "SOLD",
+    "notFound": "Listing not found",
+    "notFoundAction": "Go back to home",
+    "photoCount": "Photo {current} of {total}",
+    "memberSince": "Member since {date}",
+    "reviews": "{count} reviews",
+    "noReviews": "No reviews yet",
+    "verified": "Verified",
+    "locationHeader": "Location"
+  },
+  "search": {
+    "placeholder": "Search by keyword...",
+    "recentSearches": "Recent searches",
+    "clearAll": "Clear all",
+    "popularCategories": "Popular categories",
+    "results": "{count} results",
+    "resultsFor": "{count} results for \"{query}\"",
+    "noResults": "No results found",
+    "tryDifferent": "Try different keywords or adjust your filters",
+    "filter": {
+      "price": "Price",
+      "condition": "Condition",
+      "distance": "Distance",
+      "category": "Category",
+      "sort": "Sort by",
+      "filters": "Filters",
+      "apply": "Apply",
+      "reset": "Reset",
+      "anyDistance": "Any distance"
+    },
+    "sort": {
+      "relevance": "Relevance",
+      "priceLowHigh": "Price: low to high",
+      "priceHighLow": "Price: high to low",
+      "newest": "Newest first",
+      "nearest": "Nearest first"
+    }
   }
 }

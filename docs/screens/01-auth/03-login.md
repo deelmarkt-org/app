@@ -1,6 +1,6 @@
 # Login Screen
 
-> Task: P-16 | Epic: E02 | Status: Not started | Priority: #5
+> Task: P-16 | Epic: E02 | Status: In progress | Priority: #5
 
 ---
 
@@ -60,9 +60,24 @@ Biometric prompt (system Face ID dialog overlaid)
 ## l10n keys
 ```
 auth.welcomeBack: "Welkom terug" / "Welcome back"
+auth.welcomeSubtitle: "Log in om verder te gaan" / "Log in to continue"
 auth.forgotPassword: "Wachtwoord vergeten?" / "Forgot password?"  # pragma: allowlist secret
+auth.forgotPasswordComingSoon: "Binnenkort beschikbaar" / "Coming soon"  # pragma: allowlist secret
 auth.logIn: "Inloggen" / "Log in"
-auth.biometricLogin: "Inloggen met Face ID" / "Log in with Face ID"
+auth.useFaceId: "Inloggen met Face ID" / "Log in with Face ID"
+auth.useFingerprint: "Inloggen met vingerafdruk" / "Log in with fingerprint"
+auth.biometricReason: "Log in op DeelMarkt" / "Log in to DeelMarkt"
+auth.invalidCredentials: "Onjuist e-mailadres of wachtwoord" / "Incorrect email or password"  # pragma: allowlist secret
 auth.newToDeelMarkt: "Nieuw bij DeelMarkt?" / "New to DeelMarkt?"
-auth.wrongPassword: "Onjuist wachtwoord" / "Incorrect password"  # pragma: allowlist secret
+auth.continueWithGoogle: "Doorgaan met Google" / "Continue with Google"
+auth.continueWithApple: "Doorgaan met Apple" / "Continue with Apple"
+auth.errorBiometricFailed: "Biometrische verificatie mislukt" / "Biometric verification failed"
+auth.errorRateLimited: "Te veel pogingen. Probeer opnieuw over {0} minuten" / "Too many attempts. Try again in {0} minutes"
+auth.errorSessionExpired: "Sessie verlopen. Log opnieuw in" / "Session expired. Please log in again"
 ```
+
+### Notes
+- `auth.invalidCredentials` replaces the spec's original `auth.wrongPassword` key.
+  This is intentional (security fix H-2): a generic message prevents user enumeration.
+- `auth.useFaceId` / `auth.useFingerprint` replace `auth.biometricLogin` to provide
+  device-specific labels with matching icons.

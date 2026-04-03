@@ -1,16 +1,25 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
-import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:deelmarkt/features/auth/data/biometric_service.dart';
+import 'package:deelmarkt/features/auth/data/repositories/auth_error_mapper.dart';
 
 /// Supabase-backed [AuthRepository] implementation.
 ///
 /// Catches platform exceptions and translates them to domain
 /// [AppException] subtypes with l10n error keys.
-class AuthRepositoryImpl implements AuthRepository {
-  const AuthRepositoryImpl(this._datasource);
+///
+/// Login methods return [AuthResult] (sealed class) instead of throwing,
+/// enabling exhaustive `switch` in the ViewModel.
+///
+/// Error mapping is extracted to [AuthErrorMapper] to keep this file
+/// under the 200-line limit per CLAUDE.md §2.1.
+class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
+  AuthRepositoryImpl(this._datasource, {required this.biometricService});
   final AuthRemoteDatasource _datasource;
+  final BiometricService biometricService;
 
   @override
   Future<void> registerWithEmail({
@@ -33,9 +42,9 @@ class AuthRepositoryImpl implements AuthRepository {
         },
       );
     } on sb.AuthException catch (e) {
-      throw _mapAuthError(e);
+      throw mapAuthError(e);
     } catch (e) {
-      throw _mapGenericError(e);
+      throw mapGenericError(e);
     }
   }
 
@@ -47,9 +56,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _datasource.verifyEmailOtp(email: email, token: token);
     } on sb.AuthException catch (e) {
-      throw _mapAuthError(e);
+      throw mapAuthError(e);
     } catch (e) {
-      throw _mapGenericError(e);
+      throw mapGenericError(e);
     }
   }
 
@@ -58,9 +67,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _datasource.resendEmailOtp(email: email);
     } on sb.AuthException catch (e) {
-      throw _mapAuthError(e);
+      throw mapAuthError(e);
     } catch (e) {
-      throw _mapGenericError(e);
+      throw mapGenericError(e);
     }
   }
 
@@ -69,9 +78,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _datasource.sendPhoneOtp(phone: phone);
     } on sb.AuthException catch (e) {
-      throw _mapAuthError(e);
+      throw mapAuthError(e);
     } catch (e) {
-      throw _mapGenericError(e);
+      throw mapGenericError(e);
     }
   }
 
@@ -83,64 +92,85 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       await _datasource.verifyPhoneOtp(phone: phone, token: token);
     } on sb.AuthException catch (e) {
-      throw _mapAuthError(e);
+      throw mapAuthError(e);
     } catch (e) {
-      throw _mapGenericError(e);
+      throw mapGenericError(e);
     }
   }
 
-  AppException _mapAuthError(sb.AuthException e) {
-    // Prefer status codes over message string matching for robustness.
-    // Status codes are stable API contract; messages may change between
-    // Supabase versions or be localised.
-    final code = e.statusCode;
-
-    // 429 — rate limited (check first, most actionable)
-    if (code == '429') {
-      return const AuthException('error.rate_limited');
+  @override
+  Future<String> initiateIdinVerification() async {
+    try {
+      // Tracked: #48 — iDIN Edge Function blocked by R-14
+      // Returns redirect URL — must be validated against allowlist client-side.
+      throw UnimplementedError('iDIN integration pending R-14');
+    } on sb.AuthException catch (e) {
+      throw mapAuthError(e);
+    } catch (e) {
+      throw mapGenericError(e);
     }
-    // 422 — validation error (invalid OTP, expired token, etc.)
-    if (code == '422') {
-      final msg = e.message.toLowerCase();
-      if (msg.contains('expired')) {
-        return const AuthException('error.otp_expired');
+  }
+
+  // ── Login (P-16) ──
+
+  @override
+  Future<AuthResult> loginWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _datasource.signInWithPassword(
+        email: email,
+        password: password,
+      );
+      final userId = response.user?.id;
+      if (userId == null) {
+        return const AuthFailureUnknown(message: 'No user returned');
       }
-      return const AuthException('error.otp_invalid');
+      return AuthSuccess(userId: userId);
+    } on sb.AuthException catch (e) {
+      return mapLoginAuthError(e);
+    } on Object catch (e) {
+      return mapLoginGenericError(e);
     }
+  }
 
-    // Fall back to message matching for cases without distinct status codes
-    final msg = e.message.toLowerCase();
-    if (msg.contains('already registered') ||
-        msg.contains('already been registered')) {
-      return const AuthException('error.email_taken');
-    }
-    // C-4 fix: explicit parentheses for correct operator precedence
-    if (msg.contains('invalid') &&
-        (msg.contains('otp') || msg.contains('token'))) {
-      return const AuthException('error.otp_invalid');
-    }
-    if (msg.contains('expired')) {
-      return const AuthException('error.otp_expired');
-    }
-    if (msg.contains('rate')) {
-      return const AuthException('error.rate_limited');
-    }
-    // H-7: sanitize — never pass raw Supabase message (may contain PII)
-    return AuthException(
-      'error.generic',
-      debugMessage: 'auth_error_status_$code',
+  @override
+  Future<AuthResult> loginWithBiometric({
+    required String localizedReason,
+  }) async {
+    final available = await biometricService.isAvailable;
+    if (!available) return const AuthFailureBiometricUnavailable();
+
+    final session = _datasource.currentSession;
+    if (session == null) return const AuthFailureBiometricUnavailable();
+
+    final authenticated = await biometricService.authenticate(
+      localizedReason: localizedReason,
     );
+    if (!authenticated) return const AuthFailureBiometricFailed();
+
+    try {
+      final response = await _datasource.refreshSession();
+      final userId = response.user?.id;
+      if (userId == null) return const AuthFailureSessionExpired();
+      return AuthSuccess(userId: userId);
+    } on sb.AuthException {
+      return const AuthFailureSessionExpired();
+    } on Object {
+      return const AuthFailureSessionExpired();
+    }
   }
 
-  // H-5: platform-agnostic network error handling (no dart:io)
-  AppException _mapGenericError(Object e) {
-    final msg = e.toString().toLowerCase();
-    if (msg.contains('socket') ||
-        msg.contains('connection') ||
-        msg.contains('network') ||
-        msg.contains('timeout')) {
-      return const NetworkException();
-    }
-    return const AuthException('error.generic');
+  @override
+  Future<bool> get isBiometricAvailable async {
+    final available = await biometricService.isAvailable;
+    if (!available) return false;
+    // Biometric login requires an existing session to refresh
+    return _datasource.currentSession != null;
   }
+
+  @override
+  Future<BiometricMethod?> get availableBiometricMethod =>
+      biometricService.availableMethod;
 }

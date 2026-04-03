@@ -39,6 +39,8 @@ final _mockUsers = [
   UserEntity(
     id: 'user-001',
     displayName: 'Jan de Vries',
+    email: 'jan@deelmarkt.nl',
+    phone: '+31612345678',
     kycLevel: KycLevel.level1,
     avatarUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
     location: 'Amsterdam',
@@ -55,6 +57,8 @@ final _mockUsers = [
   UserEntity(
     id: 'user-002',
     displayName: 'Maria Jansen',
+    email: 'maria@deelmarkt.nl',
+    phone: '+31698765432',
     kycLevel: KycLevel.level2,
     location: 'Rotterdam',
     badges: const [

@@ -28,6 +28,8 @@ abstract class ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   });
@@ -37,6 +39,13 @@ abstract class ListingRepository {
 
   /// Get user's favourited listings.
   Future<List<ListingEntity>> getFavourites();
+
+  /// Get listings by a specific user.
+  Future<List<ListingEntity>> getByUserId(
+    String userId, {
+    int limit = 10,
+    String? cursor,
+  });
 }
 
 /// Search result with pagination metadata.

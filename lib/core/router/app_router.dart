@@ -4,8 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
+import 'package:deelmarkt/features/home/presentation/home_screen.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
+import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
@@ -90,7 +96,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.login,
         name: 'login',
-        builder: (_, _) => const _Placeholder('Login'),
+        builder: (_, _) => const LoginScreen(),
       ),
       GoRoute(
         path: AppRoutes.register,
@@ -109,9 +115,7 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.home,
                 name: 'home',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Home'), // l10n: P-task
+                builder: (context, state) => const HomeScreen(),
               ),
             ],
           ),
@@ -122,7 +126,7 @@ GoRouter _buildRouter({
                 name: 'search',
                 builder: (context, state) {
                   final query = state.uri.queryParameters['q'] ?? '';
-                  return _Placeholder('Search: $query'); // l10n: P-task
+                  return SearchScreen(initialQuery: query);
                 },
               ),
             ],
@@ -154,9 +158,14 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.profile,
                 name: 'profile',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Profile'), // l10n: P-task
+                builder: (context, state) => const OwnProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'settings',
+                    name: 'settings',
+                    builder: (context, state) => const SettingsScreen(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -174,7 +183,7 @@ GoRouter _buildRouter({
         },
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return _Placeholder('Listing $id');
+          return ListingDetailScreen(listingId: id);
         },
       ),
       GoRoute(

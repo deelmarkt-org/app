@@ -109,6 +109,8 @@ class SupabaseListingRepository implements ListingRepository {
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
+    String? sortBy,
+    bool ascending = false,
     int offset = 0,
     int limit = 20,
   }) async {
@@ -138,8 +140,9 @@ class SupabaseListingRepository implements ListingRepository {
         request = request.eq('condition', condition.toDb());
       }
 
+      final orderColumn = sortBy ?? 'created_at';
       final response = await request
-          .order('created_at', ascending: false)
+          .order(orderColumn, ascending: ascending)
           .range(offset, offset + limit - 1);
 
       final listings = ListingDto.fromJsonList(response);
@@ -197,6 +200,26 @@ class SupabaseListingRepository implements ListingRepository {
       return ListingDto.fromJsonList(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch favourites: ${e.message}');
+    }
+  }
+
+  @override
+  Future<List<ListingEntity>> getByUserId(
+    String userId, {
+    int limit = 10,
+    String? cursor,
+  }) async {
+    try {
+      var query = _client.from(_view).select().eq('seller_id', userId);
+      if (cursor != null) {
+        query = query.lt('created_at', cursor);
+      }
+      final response = await query
+          .order('created_at', ascending: false)
+          .limit(limit);
+      return ListingDto.fromJsonList(response);
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to fetch user listings: ${e.message}');
     }
   }
 }

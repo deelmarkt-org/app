@@ -65,3 +65,12 @@ repos:
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]
+
+      # New-code coverage gate — blocks push if changed files < 80% covered
+      - id: coverage-gate
+        name: new-code coverage (≥80%)
+        language: system
+        entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-push]
