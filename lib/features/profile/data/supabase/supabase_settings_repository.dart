@@ -16,6 +16,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
 
   final SupabaseClient _client;
 
+  static const _formatError = 'Unexpected data format from server';
+
   String get _userId {
     final id = _client.auth.currentUser?.id;
     if (id == null) throw Exception('Not authenticated');
@@ -37,7 +39,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch notification preferences: ${e.message}');
     } on TypeError {
-      throw Exception('Unexpected data format from server');
+      throw Exception(_formatError);
     }
   }
 
@@ -65,7 +67,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
         'Failed to update notification preferences: ${e.message}',
       );
     } on TypeError {
-      throw Exception('Unexpected data format from server');
+      throw Exception(_formatError);
     }
   }
 
@@ -82,7 +84,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch addresses: ${e.message}');
     } on TypeError {
-      throw Exception('Unexpected data format from server');
+      throw Exception(_formatError);
     }
   }
 
@@ -109,7 +111,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
     } on PostgrestException catch (e) {
       throw Exception('Failed to save address: ${e.message}');
     } on TypeError {
-      throw Exception('Unexpected data format from server');
+      throw Exception(_formatError);
     }
   }
 
