@@ -208,7 +208,7 @@ The agent will:
 
 **Branch:** `feature/pizmam-E01-listing-screens` | **Epic:** [E01](epics/E01-listing-management.md)
 
-- [ ] `P-24` Listing creation screen (photo-first) — camera → form → score → publish
+- [x] `P-24` Listing creation screen (photo-first) — camera → form → score → publish
 - [ ] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list
 - [ ] `P-28` Favourites screen — save/unsave toggle, list view
 - [ ] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition
