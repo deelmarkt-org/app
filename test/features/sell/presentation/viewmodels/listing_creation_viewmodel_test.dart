@@ -521,4 +521,286 @@ void main() {
       expect(state.isLoading, isFalse);
     });
   });
+
+  group('ListingCreationNotifier — additional photo error handling', () {
+    test('addFromGallery() sets error on permission denied', () async {
+      final mockPicker =
+          _MockImagePickerService()
+            ..galleryResult = const ImagePickerResult(
+              type: ImagePickerResultType.permissionDenied,
+            );
+
+      final (:container, picker: _, :repo) = buildContainer(picker: mockPicker);
+      addTearDown(container.dispose);
+
+      await container
+          .read(listingCreationNotifierProvider.notifier)
+          .addFromGallery();
+
+      final state = container.read(listingCreationNotifierProvider);
+      expect(state.errorKey, equals('sell.errorPermissionDenied'));
+      expect(state.imageFiles, isEmpty);
+    });
+
+    test(
+      'addFromCamera() sets errorPermissionPermanent on permanent denial',
+      () async {
+        final mockPicker =
+            _MockImagePickerService()
+              ..cameraResult = const ImagePickerResult(
+                type: ImagePickerResultType.permissionPermanentlyDenied,
+              );
+
+        final (:container, picker: _, :repo) = buildContainer(
+          picker: mockPicker,
+        );
+        addTearDown(container.dispose);
+
+        await container
+            .read(listingCreationNotifierProvider.notifier)
+            .addFromCamera();
+
+        final state = container.read(listingCreationNotifierProvider);
+        expect(state.errorKey, equals('sell.errorPermissionPermanent'));
+      },
+    );
+
+    test('addFromCamera() sets errorFileTooLarge on file too large', () async {
+      final mockPicker =
+          _MockImagePickerService()
+            ..cameraResult = const ImagePickerResult(
+              type: ImagePickerResultType.fileTooLarge,
+            );
+
+      final (:container, picker: _, :repo) = buildContainer(picker: mockPicker);
+      addTearDown(container.dispose);
+
+      await container
+          .read(listingCreationNotifierProvider.notifier)
+          .addFromCamera();
+
+      final state = container.read(listingCreationNotifierProvider);
+      expect(state.errorKey, equals('sell.errorFileTooLarge'));
+    });
+
+    test(
+      'addFromCamera() sets errorUnsupportedFormat on unsupported format',
+      () async {
+        final mockPicker =
+            _MockImagePickerService()
+              ..cameraResult = const ImagePickerResult(
+                type: ImagePickerResultType.unsupportedFormat,
+              );
+
+        final (:container, picker: _, :repo) = buildContainer(
+          picker: mockPicker,
+        );
+        addTearDown(container.dispose);
+
+        await container
+            .read(listingCreationNotifierProvider.notifier)
+            .addFromCamera();
+
+        final state = container.read(listingCreationNotifierProvider);
+        expect(state.errorKey, equals('sell.errorUnsupportedFormat'));
+      },
+    );
+
+    test('addFromCamera() no-ops when cancelled', () async {
+      final mockPicker =
+          _MockImagePickerService()
+            ..cameraResult = const ImagePickerResult(
+              type: ImagePickerResultType.cancelled,
+            );
+
+      final (:container, picker: _, :repo) = buildContainer(picker: mockPicker);
+      addTearDown(container.dispose);
+
+      await container
+          .read(listingCreationNotifierProvider.notifier)
+          .addFromCamera();
+
+      final state = container.read(listingCreationNotifierProvider);
+      expect(state.errorKey, equals('sell.errorImagePicker'));
+      expect(state.imageFiles, isEmpty);
+    });
+
+    test(
+      'addFromGallery() respects remaining slots and no-ops at max',
+      () async {
+        final mockPicker =
+            _MockImagePickerService()
+              ..cameraResult = const ImagePickerResult(
+                type: ImagePickerResultType.success,
+                paths: ['/mock/cam.jpg'],
+              );
+
+        final (:container, picker: _, :repo) = buildContainer(
+          picker: mockPicker,
+        );
+        addTearDown(container.dispose);
+
+        final notifier = container.read(
+          listingCreationNotifierProvider.notifier,
+        );
+
+        // Fill to 12 via camera.
+        for (var i = 0; i < 12; i++) {
+          await notifier.addFromCamera();
+        }
+
+        // Gallery should be a no-op at max.
+        await notifier.addFromGallery();
+        expect(
+          container.read(listingCreationNotifierProvider).imageFiles,
+          hasLength(12),
+        );
+      },
+    );
+  });
+
+  group('ListingCreationNotifier — form updates (extended)', () {
+    test('updateCategoryL1 changes categoryL1Id', () {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      container
+          .read(listingCreationNotifierProvider.notifier)
+          .updateCategoryL1('cat-1');
+
+      expect(
+        container.read(listingCreationNotifierProvider).categoryL1Id,
+        equals('cat-1'),
+      );
+    });
+
+    test('updateCategoryL2 changes categoryL2Id', () {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      container
+          .read(listingCreationNotifierProvider.notifier)
+          .updateCategoryL2('sub-1');
+
+      expect(
+        container.read(listingCreationNotifierProvider).categoryL2Id,
+        equals('sub-1'),
+      );
+    });
+
+    test('updateShipping changes carrier and weight range', () {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      container
+          .read(listingCreationNotifierProvider.notifier)
+          .updateShipping(ShippingCarrier.postnl, WeightRange.twoToFive);
+
+      final state = container.read(listingCreationNotifierProvider);
+      expect(state.shippingCarrier, equals(ShippingCarrier.postnl));
+      expect(state.weightRange, equals(WeightRange.twoToFive));
+    });
+
+    test('updateLocation changes location', () {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      container
+          .read(listingCreationNotifierProvider.notifier)
+          .updateLocation('1234AB');
+
+      expect(
+        container.read(listingCreationNotifierProvider).location,
+        equals('1234AB'),
+      );
+    });
+  });
+
+  group('ListingCreationNotifier — step validation (extended)', () {
+    test(
+      'nextStep() from details without price stays and sets error',
+      () async {
+        final (:container, :picker, :repo) = buildContainer();
+        addTearDown(container.dispose);
+
+        final notifier = container.read(
+          listingCreationNotifierProvider.notifier,
+        );
+        await notifier.addFromCamera();
+        notifier
+          ..nextStep() // photos -> details
+          ..updateTitle('Has title');
+
+        final result = notifier.nextStep();
+
+        expect(result, isFalse);
+        final state = container.read(listingCreationNotifierProvider);
+        expect(state.errorKey, equals('sell.errorNoPrice'));
+      },
+    );
+
+    test('nextStep() from quality is a no-op', () async {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(listingCreationNotifierProvider.notifier);
+      await notifier.addFromCamera();
+      notifier
+        ..nextStep() // photos -> details
+        ..updateTitle('Title')
+        ..updatePrice(1000)
+        ..nextStep(); // details -> quality
+
+      final result = notifier.nextStep(); // quality -> should be no-op
+
+      expect(result, isFalse);
+      expect(
+        container.read(listingCreationNotifierProvider).step,
+        equals(ListingCreationStep.quality),
+      );
+    });
+
+    test('removePhoto with invalid index is a no-op', () async {
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      await container
+          .read(listingCreationNotifierProvider.notifier)
+          .addFromCamera();
+
+      // Remove at invalid index.
+      container.read(listingCreationNotifierProvider.notifier).removePhoto(-1);
+      expect(
+        container.read(listingCreationNotifierProvider).imageFiles,
+        hasLength(1),
+      );
+
+      container.read(listingCreationNotifierProvider.notifier).removePhoto(5);
+      expect(
+        container.read(listingCreationNotifierProvider).imageFiles,
+        hasLength(1),
+      );
+    });
+  });
+
+  group('ListingCreationNotifier — draft persistence integration', () {
+    test('build restores state from draft persistence', () async {
+      // Pre-populate a draft in SharedPreferences.
+      SharedPreferences.setMockInitialValues({
+        'listing_creation_draft':
+            '{"imageFiles":["/saved/photo.jpg"],"title":"Saved Draft","description":"desc","priceInCents":5000}',
+      });
+      prefs = await SharedPreferences.getInstance();
+
+      final (:container, :picker, :repo) = buildContainer();
+      addTearDown(container.dispose);
+
+      final state = container.read(listingCreationNotifierProvider);
+      expect(state.title, equals('Saved Draft'));
+      expect(state.imageFiles, contains('/saved/photo.jpg'));
+      expect(state.priceInCents, equals(5000));
+      // Always restarts from photos step.
+      expect(state.step, equals(ListingCreationStep.photos));
+    });
+  });
 }
