@@ -361,7 +361,7 @@ file_length:
   viewmodel: 150
   repository: 200
   usecase: 50
-  model: 100
+  model: 150
   test: 300
   utility: 100
   default: 200

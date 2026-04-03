@@ -162,6 +162,39 @@ fi
 
 echo ""
 
+# ── 7. Claude Code quality hooks ────────────────────────────────────────────
+info "Setting up Claude Code quality hooks..."
+
+CLAUDE_DIR=".claude"
+CLAUDE_SETTINGS="$CLAUDE_DIR/settings.json"
+
+mkdir -p "$CLAUDE_DIR"
+
+if [[ ! -f "$CLAUDE_SETTINGS" ]]; then
+  cat > "$CLAUDE_SETTINGS" << 'SETTINGS_EOF'
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "dart run scripts/check_single_file.dart $CLAUDE_FILE_PATH 2>&1 || true"
+          }
+        ]
+      }
+    ]
+  }
+}
+SETTINGS_EOF
+  ok "Claude Code quality hooks configured"
+else
+  ok "Claude Code settings already exist"
+fi
+
+echo ""
+
 # ── Done ─────────────────────────────────────────────────────────────────────
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}  Setup complete!${NC}"

@@ -1,4 +1,4 @@
-import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 
 /// Result of KYC requirement check.
 enum KycPromptType {

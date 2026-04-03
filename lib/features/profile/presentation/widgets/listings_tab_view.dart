@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';

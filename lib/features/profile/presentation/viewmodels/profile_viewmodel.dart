@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 

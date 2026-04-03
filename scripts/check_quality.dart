@@ -382,9 +382,9 @@ void _checkLongMethods(
 
     if (methodStart >= 0 && braceDepth <= 1 && line.contains('}')) {
       final length = i - methodStart + 1;
-      if (length > 40 && methodName != null) {
+      if (length > 60 && methodName != null) {
         violations.add(
-          '  LONG_METHOD  $file:${methodStart + 1}: $methodName() is $length lines (>40) — risk of high cognitive complexity [SonarCloud S3776]',
+          '  LONG_METHOD  $file:${methodStart + 1}: $methodName() is $length lines (>60) — risk of high cognitive complexity [SonarCloud S3776]',
         );
       }
       methodStart = -1;

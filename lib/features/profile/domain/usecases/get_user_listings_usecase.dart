@@ -1,5 +1,5 @@
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/repositories/listing_repository.dart';
 
 /// Retrieves listings created by a specific user.
 class GetUserListingsUseCase {
