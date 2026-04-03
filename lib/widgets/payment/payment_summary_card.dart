@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 /// Payment summary card shown before checkout.
 ///
@@ -117,7 +117,7 @@ class PaymentSummaryCard extends StatelessWidget {
           const SizedBox(height: Spacing.s2),
 
           // Escrow trust banner
-          const EscrowTrustBanner(),
+          const TrustBanner.escrow(),
 
           const SizedBox(height: Spacing.s4),
 

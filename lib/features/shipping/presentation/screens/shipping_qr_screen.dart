@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart';
@@ -34,7 +34,7 @@ class ShippingQrScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const EscrowTrustBanner(),
+                const TrustBanner.escrow(),
                 const SizedBox(height: Spacing.s4),
                 ShippingQrCard(label: label),
                 const SizedBox(height: Spacing.s4),

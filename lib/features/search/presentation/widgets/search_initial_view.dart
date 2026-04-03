@@ -2,21 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/domain/entities/category_entity.dart';
-import 'package:deelmarkt/core/services/repository_providers.dart';
-
-part 'search_initial_view.g.dart';
-
-/// Fetches top-level categories via Riverpod — avoids raw FutureBuilder.
-@riverpod
-Future<List<CategoryEntity>> topLevelCategories(Ref ref) {
-  return ref.watch(categoryRepositoryProvider).getTopLevel();
-}
+import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 
 /// Initial search view — recent searches + popular categories.
 class SearchInitialView extends ConsumerWidget {

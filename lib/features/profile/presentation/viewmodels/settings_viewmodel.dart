@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
@@ -105,18 +106,15 @@ class SettingsNotifier extends _$SettingsNotifier {
     }
   }
 
-  /// Allowed hosts for GDPR export download URLs.
-  static const _exportAllowedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
-
   Future<void> exportUserData() async {
     state = state.copyWith(isExporting: true);
     try {
       final url = await _repo.exportUserData();
-      // HIGH-1: Validate export URL against allowlist before storing
+      // Defense-in-depth: validate URL in both repo and viewmodel layers
       final uri = Uri.tryParse(url);
       if (uri == null ||
           uri.scheme != 'https' ||
-          !_exportAllowedHosts.any(
+          !AppConstants.trustedHosts.any(
             (host) => uri.host == host || uri.host.endsWith('.$host'),
           )) {
         state = state.copyWith(isExporting: false, error: _errorKey);

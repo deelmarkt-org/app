@@ -116,6 +116,41 @@ if ($LASTEXITCODE -eq 0) {
 }
 
 Write-Host ""
+# -- 7. Claude Code quality hooks -----------------------------------------------
+Info "Setting up Claude Code quality hooks..."
+
+$claudeDir = ".claude"
+$claudeSettings = "$claudeDir\settings.json"
+
+if (-not (Test-Path $claudeDir)) {
+    New-Item -ItemType Directory -Path $claudeDir -Force | Out-Null
+}
+
+if (-not (Test-Path $claudeSettings)) {
+    @'
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "dart run scripts/check_single_file.dart $CLAUDE_FILE_PATH"
+          }
+        ]
+      }
+    ]
+  }
+}
+'@ | Out-File -Encoding utf8 $claudeSettings
+    Ok "Claude Code quality hooks configured"
+} else {
+    Ok "Claude Code settings already exist"
+}
+
+Write-Host ""
+
 Write-Host "  Setup complete!" -ForegroundColor Green
 Write-Host "  ===============" -ForegroundColor Green
 Write-Host ""

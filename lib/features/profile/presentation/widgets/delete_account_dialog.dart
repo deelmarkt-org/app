@@ -8,10 +8,12 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 ///
 /// Requires password re-entry before confirming (OWASP ASVS L2 §4.2.1).
 /// Returns the entered password if confirmed, `null` if cancelled.
+///
+/// Uses setState for ephemeral password-visibility toggle — this is
+/// purely local UI state, not app state (CLAUDE.md §12 setState_allowlist).
 class DeleteAccountDialog extends StatefulWidget {
   const DeleteAccountDialog({super.key});
 
-  /// Show the dialog and return the password if confirmed, null otherwise.
   static Future<String?> show(BuildContext context) {
     return showDialog<String>(
       context: context,
@@ -25,12 +27,12 @@ class DeleteAccountDialog extends StatefulWidget {
 }
 
 class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
-  final _passwordController = TextEditingController();
+  final _controller = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _passwordController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -49,19 +51,32 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: Spacing.s4),
-          TextField(
-            controller: _passwordController,
-            obscureText: _obscurePassword,
-            autofocus: true,
-            decoration: InputDecoration(
-              labelText: 'form.pass_field'.tr(),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+          Semantics(
+            textField: true,
+            label: 'form.pass_field'.tr(),
+            child: TextField(
+              controller: _controller,
+              obscureText: _obscurePassword,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: 'form.pass_field'.tr(),
+                suffixIcon: Semantics(
+                  button: true,
+                  label:
+                      _obscurePassword
+                          ? 'a11y.showPassword'.tr()
+                          : 'a11y.hidePassword'.tr(),
+                  child: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() => _obscurePassword = !_obscurePassword);
+                    },
+                  ),
                 ),
-                onPressed: () {
-                  setState(() => _obscurePassword = !_obscurePassword);
-                },
               ),
             ),
           ),
@@ -83,7 +98,7 @@ class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
           child: DeelButton(
             label: 'settings.deleteAccount'.tr(),
             onPressed: () {
-              final password = _passwordController.text;
+              final password = _controller.text;
               if (password.isNotEmpty) {
                 Navigator.of(context).pop(password);
               }

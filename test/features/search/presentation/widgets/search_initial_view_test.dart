@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/search_initial_view.dart';
 
 const _mockCategories = [

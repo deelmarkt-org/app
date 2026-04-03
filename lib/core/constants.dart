@@ -6,4 +6,8 @@ abstract final class AppConstants {
 
   /// Deep link base URL — matches AASA / assetlinks.json host.
   static const String deepLinkBase = 'https://deelmarkt.com';
+
+  /// Allowed hosts for GDPR export and other trusted URLs.
+  /// Used for defense-in-depth validation in both data and presentation layers.
+  static const Set<String> trustedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
 }

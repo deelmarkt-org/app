@@ -85,8 +85,8 @@ class ListingCard extends StatelessWidget {
                           distanceKm: listing.distanceKm,
                         ),
                       ],
-                      // TODO(escrow): Add EscrowBadge here when ListingEntity
-                      // gains an `isEscrowAvailable` field (E03 Phase 2).
+                      // TODO(#59): Add EscrowBadge when ListingEntity gains
+                      // isEscrowAvailable field (E03 Phase 2).
                     ],
                   ),
                 ),
@@ -121,7 +121,7 @@ class _ImageSection extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(DeelmarktRadius.xl),
             ),
-            // TODO: Replace with CachedNetworkImage when cached_network_image is added (coordinate with team).
+            // TODO(#60): Replace with CachedNetworkImage when cached_network_image is added.
             child:
                 imageUrl != null
                     ? Image.network(

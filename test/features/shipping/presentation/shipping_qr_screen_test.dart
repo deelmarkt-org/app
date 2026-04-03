@@ -6,7 +6,7 @@ import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart'
 import 'package:deelmarkt/features/shipping/presentation/screens/shipping_qr_screen.dart';
 import 'package:deelmarkt/features/shipping/presentation/widgets/shipping_qr_card.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import '../../../../test/helpers/pump_app.dart';
 
@@ -34,7 +34,7 @@ void main() {
     testWidgets('renders escrow trust banner', (tester) async {
       await pumpTestScreen(tester, ShippingQrScreen(label: _label()));
 
-      expect(find.byType(EscrowTrustBanner), findsOneWidget);
+      expect(find.byType(TrustBanner), findsOneWidget);
     });
 
     testWidgets('has app bar with title', (tester) async {

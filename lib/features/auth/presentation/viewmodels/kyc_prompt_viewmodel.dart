@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/check_kyc_required_usecase.dart';
 import 'package:deelmarkt/features/auth/domain/usecases/initiate_idin_verification_usecase.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
-import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 
 part 'kyc_prompt_viewmodel.g.dart';
 
