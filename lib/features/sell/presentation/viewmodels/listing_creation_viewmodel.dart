@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 
 part 'listing_creation_viewmodel.g.dart';
 
-const _maxImages = 12;
 const _draftDebounce = Duration(seconds: 2);
 
 /// ViewModel for the listing creation wizard.
@@ -20,190 +20,116 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   @override
   ListingCreationState build() {
     ref.onDispose(() => _draftTimer?.cancel());
-    final draftService = ref.read(draftPersistenceServiceProvider);
-    return draftService.restore() ?? ListingCreationState.initial();
+    return ref.read(draftPersistenceServiceProvider).restore() ??
+        ListingCreationState.initial();
   }
 
-  // ── Photo operations ──
-
   Future<void> addFromCamera() async {
-    if (state.imageFiles.length >= _maxImages) return;
+    if (state.imageFiles.length >= PhotoOperations.maxImages) return;
     final result = await ref.read(imagePickerServiceProvider).pickFromCamera();
-    if (!result.isSuccess) {
-      state = state.copyWith(errorKey: () => _errorKeyForResult(result.type));
-      return;
-    }
-    state = state.copyWith(
-      imageFiles: [...state.imageFiles, ...result.paths],
-      errorKey: () => null,
-    );
-    _scheduleDraftSave();
+    _apply(PhotoOperations.addPhotos(state, result));
   }
 
   Future<void> addFromGallery() async {
-    final remaining = _maxImages - state.imageFiles.length;
+    final remaining = PhotoOperations.maxImages - state.imageFiles.length;
     if (remaining <= 0) return;
-    final result = await ref
-        .read(imagePickerServiceProvider)
-        .pickFromGallery(maxCount: remaining);
-    if (!result.isSuccess) {
-      state = state.copyWith(errorKey: () => _errorKeyForResult(result.type));
-      return;
-    }
-    state = state.copyWith(
-      imageFiles: [...state.imageFiles, ...result.paths],
-      errorKey: () => null,
-    );
-    _scheduleDraftSave();
+    final picker = ref.read(imagePickerServiceProvider);
+    final result = await picker.pickFromGallery(maxCount: remaining);
+    _apply(PhotoOperations.addPhotos(state, result));
   }
 
-  void removePhoto(int index) {
-    if (index < 0 || index >= state.imageFiles.length) return;
-    final updated = [
-      ...state.imageFiles.sublist(0, index),
-      ...state.imageFiles.sublist(index + 1),
-    ];
-    state = state.copyWith(imageFiles: updated);
-    _scheduleDraftSave();
-  }
+  void removePhoto(int index) => _apply(PhotoOperations.remove(state, index));
+  void reorderPhotos(int old, int next) =>
+      _apply(PhotoOperations.reorder(state, old, next));
 
-  void reorderPhotos(int oldIndex, int newIndex) {
-    final photos = [...state.imageFiles];
-    final adjustedNew = newIndex > oldIndex ? newIndex - 1 : newIndex;
-    final item = photos.removeAt(oldIndex);
-    photos.insert(adjustedNew, item);
-    state = state.copyWith(imageFiles: photos);
-    _scheduleDraftSave();
-  }
-
-  // ── Navigation ──
-
-  bool nextStep() {
-    switch (state.step) {
-      case ListingCreationStep.photos:
-        if (state.imageFiles.isEmpty) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoPhotos');
-          return false;
-        }
-        state = state.copyWith(
-          step: ListingCreationStep.details,
-          errorKey: () => null,
-        );
-        return true;
-      case ListingCreationStep.details:
-        if (state.title.trim().isEmpty) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoTitle');
-          return false;
-        }
-        if (state.priceInCents <= 0) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoPrice');
-          return false;
-        }
-        state = state.copyWith(
-          step: ListingCreationStep.quality,
-          errorKey: () => null,
-        );
-        return true;
-      case ListingCreationStep.quality:
-      case ListingCreationStep.publishing:
-      case ListingCreationStep.success:
-        return false;
-    }
-  }
+  bool nextStep() => switch (state.step) {
+    ListingCreationStep.photos => _advanceFromPhotos(),
+    ListingCreationStep.details => _advanceFromDetails(),
+    _ => false,
+  };
 
   void previousStep() {
-    final previous = switch (state.step) {
+    final prev = switch (state.step) {
       ListingCreationStep.details => ListingCreationStep.photos,
       ListingCreationStep.quality => ListingCreationStep.details,
       _ => null,
     };
-    if (previous != null) {
-      state = state.copyWith(step: previous, errorKey: () => null);
-    }
+    if (prev != null) state = state.copyWith(step: prev, errorKey: () => null);
   }
 
-  // ── Form updates ──
+  void updateTitle(String v) => _apply(ListingFormUpdaters.title(state, v));
+  void updateDescription(String v) =>
+      _apply(ListingFormUpdaters.description(state, v));
+  void updateCategoryL1(String? id) =>
+      _apply(ListingFormUpdaters.categoryL1(state, id));
+  void updateCategoryL2(String? id) =>
+      _apply(ListingFormUpdaters.categoryL2(state, id));
+  void updateCondition(ListingCondition? c) =>
+      _apply(ListingFormUpdaters.condition(state, c));
+  void updatePrice(int cents) =>
+      _apply(ListingFormUpdaters.price(state, cents));
+  void updateShipping(ShippingCarrier carrier, WeightRange? range) =>
+      _apply(ListingFormUpdaters.shipping(state, carrier, range));
+  void updateLocation(String? postcode) =>
+      _apply(ListingFormUpdaters.location(state, postcode));
 
-  void updateTitle(String v) {
-    state = state.copyWith(title: v);
-    _scheduleDraftSave();
-  }
+  Future<void> publish() => _submit(() async {
+    final l = await ref.read(createListingUseCaseProvider).call(state: state);
+    return state.copyWith(
+      isLoading: false,
+      step: ListingCreationStep.success,
+      createdListingId: () => l.id,
+    );
+  }, 'sell.publishError');
 
-  void updateDescription(String v) {
-    state = state.copyWith(description: v);
-    _scheduleDraftSave();
-  }
+  Future<void> saveDraft() => _submit(() async {
+    await ref.read(saveDraftUseCaseProvider).call(state: state);
+    return state.copyWith(isLoading: false, step: ListingCreationStep.success);
+  }, 'sell.draftError');
 
-  void updateCategoryL1(String? id) {
-    state = state.copyWith(categoryL1Id: () => id);
-    _scheduleDraftSave();
-  }
-
-  void updateCategoryL2(String? id) {
-    state = state.copyWith(categoryL2Id: () => id);
-    _scheduleDraftSave();
-  }
-
-  void updateCondition(ListingCondition? c) {
-    state = state.copyWith(condition: () => c);
-    _scheduleDraftSave();
-  }
-
-  void updatePrice(int cents) {
-    state = state.copyWith(priceInCents: cents);
-    _scheduleDraftSave();
-  }
-
-  void updateShipping(ShippingCarrier carrier, WeightRange? range) {
-    state = state.copyWith(shippingCarrier: carrier, weightRange: () => range);
-    _scheduleDraftSave();
-  }
-
-  void updateLocation(String? postcode) {
-    state = state.copyWith(location: () => postcode);
-    _scheduleDraftSave();
-  }
-
-  // ── Publish / Draft ──
-
-  Future<void> publish() async {
+  Future<void> _submit(
+    Future<ListingCreationState> Function() action,
+    String errorKey,
+  ) async {
     state = state.copyWith(isLoading: true, errorKey: () => null);
     try {
-      final listing = await ref
-          .read(createListingUseCaseProvider)
-          .call(state: state);
+      state = await action();
       _clearDraft();
-      state = state.copyWith(
-        isLoading: false,
-        step: ListingCreationStep.success,
-        createdListingId: () => listing.id,
-      );
     } on Object catch (_) {
-      state = state.copyWith(
-        isLoading: false,
-        errorKey: () => 'sell.publishError',
-      );
+      state = state.copyWith(isLoading: false, errorKey: () => errorKey);
     }
   }
 
-  Future<void> saveDraft() async {
-    state = state.copyWith(isLoading: true, errorKey: () => null);
-    try {
-      await ref.read(saveDraftUseCaseProvider).call(state: state);
-      _clearDraft();
-      state = state.copyWith(
-        isLoading: false,
-        step: ListingCreationStep.success,
-      );
-    } on Object catch (_) {
-      state = state.copyWith(
-        isLoading: false,
-        errorKey: () => 'sell.draftError',
-      );
-    }
+  void _apply(ListingCreationState next) {
+    state = next;
+    _scheduleDraftSave();
   }
 
-  // ── Private helpers ──
+  bool _advanceFromPhotos() => _validateAndAdvance(
+    state.imageFiles.isEmpty ? 'sell.errorNoPhotos' : null,
+    ListingCreationStep.details,
+  );
+
+  bool _advanceFromDetails() {
+    final error =
+        state.title.trim().isEmpty
+            ? 'sell.errorNoTitle'
+            : state.priceInCents <= 0
+            ? 'sell.errorNoPrice'
+            : state.categoryL2Id == null
+            ? 'sell.errorNoCategory'
+            : null;
+    return _validateAndAdvance(error, ListingCreationStep.quality);
+  }
+
+  bool _validateAndAdvance(String? error, ListingCreationStep next) {
+    if (error != null) {
+      state = state.copyWith(errorKey: () => error);
+      return false;
+    }
+    state = state.copyWith(step: next, errorKey: () => null);
+    return true;
+  }
 
   void _scheduleDraftSave() {
     _draftTimer?.cancel();
@@ -216,13 +142,4 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     _draftTimer?.cancel();
     ref.read(draftPersistenceServiceProvider).clear();
   }
-
-  String _errorKeyForResult(ImagePickerResultType type) => switch (type) {
-    ImagePickerResultType.permissionDenied => 'sell.errorPermissionDenied',
-    ImagePickerResultType.permissionPermanentlyDenied =>
-      'sell.errorPermissionPermanent',
-    ImagePickerResultType.fileTooLarge => 'sell.errorFileTooLarge',
-    ImagePickerResultType.unsupportedFormat => 'sell.errorUnsupportedFormat',
-    _ => 'sell.errorImagePicker',
-  };
 }

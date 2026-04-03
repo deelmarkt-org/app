@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 
@@ -37,12 +38,14 @@ class LivePreviewPanel extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: DeelmarktColors.neutral100,
-                    borderRadius: BorderRadius.circular(Spacing.s2),
+                    borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
                   ),
                   child:
                       state.imageFiles.isNotEmpty
                           ? ClipRRect(
-                            borderRadius: BorderRadius.circular(Spacing.s2),
+                            borderRadius: BorderRadius.circular(
+                              DeelmarktRadius.sm,
+                            ),
                             child: Image.file(
                               File(state.imageFiles.first),
                               fit: BoxFit.cover,

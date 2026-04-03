@@ -52,8 +52,12 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
         context.go('/listings/${next.createdListingId}');
       }
 
-      // Show error SnackBar when errorKey changes.
-      if (next.errorKey != null && prev?.errorKey != next.errorKey) {
+      // Show error SnackBar only for publish/draft errors (picker errors
+      // are handled locally in PhotoStepView).
+      if (next.errorKey != null &&
+          prev?.errorKey != next.errorKey &&
+          (next.errorKey == 'sell.publishError' ||
+              next.errorKey == 'sell.draftError')) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(next.errorKey!.tr())));

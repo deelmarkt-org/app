@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid_tile.dart';
 
@@ -49,7 +50,7 @@ class PhotoGrid extends StatelessWidget {
       data: index,
       feedback: Material(
         elevation: 4,
-        borderRadius: BorderRadius.circular(Spacing.s2),
+        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
         child: SizedBox(
           width: 120,
           height: 120,
@@ -67,7 +68,7 @@ class PhotoGrid extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   width: 2,
                 ),
-                borderRadius: BorderRadius.circular(Spacing.s2),
+                borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
               ),
               child: tile,
             );

@@ -512,6 +512,7 @@
     "errorNoPhotos": "Add at least one photo to continue",
     "errorNoTitle": "Enter a title to continue",
     "errorNoPrice": "Set a price to continue",
+    "errorNoCategory": "Select a category to continue",
     "publishError": "Could not publish your listing. Please try again.",
     "draftError": "Could not save your draft. Please try again.",
     "fileTooLarge": "This photo exceeds the 15 MB size limit",
