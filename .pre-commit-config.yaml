@@ -47,6 +47,15 @@ repos:
         files: \.dart$
         stages: [pre-commit]
 
+      # CLAUDE.md quality gate — file length, imports, l10n, semantics, patterns
+      - id: quality-check
+        name: quality check (CLAUDE.md rules)
+        language: system
+        entry: bash -c 'dart run scripts/check_quality.dart'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-commit]
+
       # Targeted tests — only runs tests for changed files (cross-platform)
       # Maps lib/X.dart → test/X_test.dart, also runs directly changed test files
       - id: flutter-test-affected
@@ -62,6 +71,15 @@ repos:
         name: flutter test (full)
         language: system
         entry: bash -c 'flutter test --no-pub'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-push]
+
+      # Thorough quality check — SonarCloud proxy (duplicate strings, nested ternaries, long methods)
+      - id: quality-check-thorough
+        name: quality check (SonarCloud proxy)
+        language: system
+        entry: bash -c 'dart run scripts/check_quality.dart --thorough'
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]

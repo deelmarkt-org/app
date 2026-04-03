@@ -348,3 +348,37 @@ The European Accessibility Act is enforceable. These are not optional:
 2. Run `flutter test` — all passing
 3. Commit with proper message format
 4. Update epic acceptance criteria checkboxes if applicable
+
+---
+
+## §12 — Machine-Readable Quality Gates
+
+> Parsed by `scripts/check_quality.dart`. Edit here to update rules.
+
+<!-- QUALITY_RULES_START
+file_length:
+  screen: 200
+  viewmodel: 150
+  repository: 200
+  usecase: 50
+  model: 100
+  test: 300
+  utility: 100
+  default: 200
+
+setState_allowlist:
+  - lib/features/listing_detail/presentation/widgets/detail_image_gallery.dart
+  - lib/features/listing_detail/presentation/widgets/detail_info_section.dart
+  - lib/features/auth/presentation/widgets/registration_form.dart
+  - lib/features/auth/presentation/widgets/otp_verification_view.dart
+  - lib/features/search/presentation/widgets/filter_bottom_sheet.dart
+  - lib/features/profile/presentation/widgets/address_form_modal.dart
+  - lib/features/transaction/presentation/screens/mollie_checkout_screen.dart
+  - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
+  - lib/features/dev/**
+  - lib/widgets/inputs/deel_search_input.dart
+
+cross_feature_import_exempt:
+  - lib/core/router/app_router.dart
+  - lib/core/services/repository_providers.dart
+QUALITY_RULES_END -->
