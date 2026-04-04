@@ -37,6 +37,7 @@ class ImageGalleryZoomablePageState extends State<ImageGalleryZoomablePage>
   final TransformationController _controller = TransformationController();
   late final AnimationController _doubleTapController;
   Animation<Matrix4>? _doubleTapAnim;
+  VoidCallback? _doubleTapListener;
   TapDownDetails? _doubleTapDetails;
   bool _isZoomed = false;
 
@@ -51,6 +52,9 @@ class ImageGalleryZoomablePageState extends State<ImageGalleryZoomablePage>
 
   @override
   void dispose() {
+    if (_doubleTapListener != null) {
+      _doubleTapAnim?.removeListener(_doubleTapListener!);
+    }
     _controller.dispose();
     _doubleTapController.dispose();
     super.dispose();
@@ -94,19 +98,28 @@ class ImageGalleryZoomablePageState extends State<ImageGalleryZoomablePage>
             ..scaleByDouble(scale, scale, scale, 1);
     }
 
+    // Remove any previous listener before rebinding to avoid accumulating
+    // stale listeners across successive double-taps.
+    if (_doubleTapListener != null) {
+      _doubleTapAnim?.removeListener(_doubleTapListener!);
+    }
     _doubleTapAnim = Matrix4Tween(begin: _controller.value, end: end).animate(
       CurvedAnimation(
         parent: _doubleTapController,
         curve: DeelmarktAnimation.curveStandard,
       ),
     );
-    _doubleTapAnim!.addListener(() {
+    _doubleTapListener = () {
       _controller.value = _doubleTapAnim!.value;
-    });
+    };
+    _doubleTapAnim!.addListener(_doubleTapListener!);
     _doubleTapController.forward(from: 0).whenComplete(() {
-      final zoomed = end != Matrix4.identity();
+      if (!mounted) return;
+      // Float-safe zoom detection (matches _onInteractionUpdate).
+      final zoomed = end.getMaxScaleOnAxis() > 1.01;
       setState(() => _isZoomed = zoomed);
       widget.onZoomChanged(zoomed);
+      _doubleTapDetails = null;
     });
   }
 

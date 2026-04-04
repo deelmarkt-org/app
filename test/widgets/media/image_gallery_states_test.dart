@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/widgets/media/image_gallery.dart';
+import 'package:deelmarkt/widgets/media/image_gallery_fullscreen.dart';
 
 import 'image_gallery_test_helper.dart';
 
@@ -135,11 +136,28 @@ void main() {
       );
       await tester.tap(find.byType(PageView));
       await tester.pumpAndSettle();
-      // A new route should have been pushed — verify via presence of
-      // Navigator's currently active route being not the initial home.
-      // A simpler assertion: verify no exceptions and that the fullscreen
-      // Scaffold is now present in the tree.
-      expect(tester.takeException(), isNull);
+      // Verify the fullscreen widget was actually mounted by the default
+      // tap handler — meaningful assertion, not just exception absence.
+      expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
+    });
+
+    testWidgets('external controller is NOT disposed when widget unmounts', (
+      tester,
+    ) async {
+      final controller = PageController();
+      await tester.pumpWidget(
+        buildGalleryApp(
+          child: ImageGallery(
+            imageUrls: sampleImageUrls,
+            controller: controller,
+          ),
+        ),
+      );
+      // Unmount the widget — the parent-supplied controller must survive.
+      await tester.pumpWidget(const SizedBox.shrink());
+      // If the controller were disposed, accessing hasClients would throw.
+      expect(() => controller.hasClients, returnsNormally);
+      controller.dispose();
     });
   });
 }

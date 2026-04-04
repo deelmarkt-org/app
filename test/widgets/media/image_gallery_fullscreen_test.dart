@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/widgets/buttons/circle_icon_button.dart';
@@ -78,7 +79,7 @@ void main() {
       expect(btnSize.height, greaterThanOrEqualTo(44));
     });
 
-    testWidgets('wraps content in PopScope for Android back button', (
+    testWidgets('wraps content in AnnotatedRegion for status bar style', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -86,9 +87,13 @@ void main() {
           child: const ImageGalleryFullscreen(imageUrls: sampleImageUrls),
         ),
       );
-      // PopScope is generic so we search by any PopScope descendant.
-      final popScopes = find.byWidgetPredicate((w) => w is PopScope);
-      expect(popScopes, findsAtLeastNWidgets(1));
+      // Status bar overlay style is scoped via AnnotatedRegion (preferred
+      // over imperative SystemChrome push/pop because it auto-restores
+      // whatever the parent route had set).
+      final annotated = find.byWidgetPredicate(
+        (w) => w is AnnotatedRegion<SystemUiOverlayStyle>,
+      );
+      expect(annotated, findsAtLeastNWidgets(1));
     });
 
     testWidgets('InteractiveViewer present per image for zoom', (tester) async {

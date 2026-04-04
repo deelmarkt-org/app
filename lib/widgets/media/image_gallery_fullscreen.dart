@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
@@ -72,18 +72,20 @@ class _ImageGalleryFullscreenState extends State<ImageGalleryFullscreen> {
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.initialIndex.clamp(
-      0,
-      (widget.imageUrls.length - 1).clamp(0, 1 << 30),
+    assert(
+      widget.imageUrls.isNotEmpty,
+      'ImageGalleryFullscreen requires at least one image',
     );
+    _currentPage =
+        widget.imageUrls.isEmpty
+            ? 0
+            : widget.initialIndex.clamp(0, widget.imageUrls.length - 1);
     _pageController = PageController(initialPage: _currentPage);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     super.dispose();
   }
 
@@ -127,9 +129,12 @@ class _ImageGalleryFullscreenState extends State<ImageGalleryFullscreen> {
 
   @override
   Widget build(BuildContext context) {
-    final opacity = (1.0 - (_dragOffset / 400)).clamp(0.3, 1.0);
+    final opacity = (1.0 -
+            (_dragOffset / ImageGalleryTokens.dragOpacityDivisor))
+        .clamp(ImageGalleryTokens.dragOpacityFloor, 1.0);
 
-    return PopScope(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
       child: Semantics(
         container: true,
         label: 'image_gallery.fullscreenLabel'.tr(),
