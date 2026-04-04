@@ -64,6 +64,14 @@ CREATE TABLE IF NOT EXISTS gdpr_deletion_queue (
                   CHECK (status IN ('pending', 'completed', 'cancelled', 'failed')),
   completed_at    TIMESTAMPTZ,
   error_message   TEXT,
+  -- Separate flag for auth.users erasure — the DB cron handles profile/PII
+  -- cleanup (status='completed'), but auth.users deletion requires the
+  -- Supabase admin API and is done asynchronously by the gdpr-cleanup-auth
+  -- Edge Function. Two stages prevent a failed auth API call from blocking
+  -- PII erasure (GDPR priority).
+  auth_deleted    BOOLEAN NOT NULL DEFAULT false,
+  auth_deleted_at TIMESTAMPTZ,
+  auth_error      TEXT,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -226,6 +234,11 @@ GRANT EXECUTE ON FUNCTION soft_delete_account(UUID, TEXT, TEXT, TEXT) TO authent
 CREATE INDEX IF NOT EXISTS idx_gdpr_queue_pending
   ON gdpr_deletion_queue(status, delete_after)
   WHERE status = 'pending';
+
+-- Index for gdpr-cleanup-auth Edge Function: entries needing auth deletion
+CREATE INDEX IF NOT EXISTS idx_gdpr_queue_auth_pending
+  ON gdpr_deletion_queue(completed_at)
+  WHERE status = 'completed' AND auth_deleted = false;
 
 CREATE INDEX IF NOT EXISTS idx_audit_logs_user
   ON audit_logs(user_id, created_at);

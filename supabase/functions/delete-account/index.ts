@@ -9,10 +9,13 @@
  *      - Anonymize profile PII, soft-delete listings
  *      - Delete addresses, notification prefs, favourites
  *      - Queue hard-delete (30 days), audit log
- *   5. Return 200 — auth user deletion deferred to cron job
+ *   5. Return 200 — hard erasure happens in the two-stage GDPR cron:
+ *      Stage 1 (SQL cron, 30 days later): deletes profile + related PII.
+ *      Stage 2 (gdpr-cleanup-auth Edge Function): deletes auth.users row.
  *
- * Auth user NOT deleted here — deferred to cron to avoid CASCADE
- * conflicts. Soft-delete + RLS hides the anonymized profile.
+ * Auth user NOT deleted here — immediate deletion would CASCADE-wipe the
+ * anonymized user_profiles row and destroy the 30-day grace period. RLS
+ * hides the soft-deleted profile from reads in the interim.
  *
  * Password re-auth is done client-side (OWASP ASVS §4.2.1).
  */

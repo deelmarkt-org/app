@@ -2,10 +2,16 @@
 -- Permanently removes data for users past the 30-day grace period.
 -- Transactions and ledger entries are preserved (PSD2 / 7-year audit).
 --
--- C-4: auth.users deletion requires admin API (not accessible via SQL
--- on Supabase Cloud). The cron marks entries for a separate cleanup
--- Edge Function that calls auth.admin.deleteUser(). For self-hosted,
--- GRANT DELETE ON auth.users TO postgres; enables direct SQL.
+-- Two-stage GDPR erasure:
+--   Stage 1 (this function): delete profile/addresses/prefs/favourites +
+--           anonymize listings. Marks status='completed', auth_deleted=false.
+--   Stage 2 (gdpr-cleanup-auth Edge Function, scheduled separately):
+--           calls auth.admin.deleteUser() and sets auth_deleted=true.
+--
+-- auth.users deletion requires the Supabase admin API and cannot run from
+-- SQL on Supabase Cloud, hence the split. Keeping PII erasure independent
+-- of auth API availability is intentional — GDPR compliance prioritizes
+-- the removal of personal data over credential record cleanup.
 
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
@@ -42,9 +48,8 @@ BEGIN
       -- Delete user profile
       DELETE FROM user_profiles WHERE id = rec.user_id;
 
-      -- C-4: Mark as 'auth_pending' — a cleanup Edge Function
-      -- (triggered by cron) calls auth.admin.deleteUser() for these.
-      -- On self-hosted Supabase: replace with DELETE FROM auth.users.
+      -- Mark PII erasure complete. auth_deleted remains false until the
+      -- gdpr-cleanup-auth Edge Function runs the admin API call (Stage 2).
       UPDATE gdpr_deletion_queue
       SET status = 'completed', completed_at = now()
       WHERE id = rec.id;

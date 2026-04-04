@@ -473,6 +473,13 @@ verify_jwt = true
 import_map = "./functions/delete-account/deno.json"
 entrypoint = "./functions/delete-account/index.ts"
 
+# R-20 Stage 2: GDPR auth.users cleanup — cron-triggered, service_role auth
+[functions.gdpr-cleanup-auth]
+enabled = true
+verify_jwt = false
+import_map = "./functions/gdpr-cleanup-auth/deno.json"
+entrypoint = "./functions/gdpr-cleanup-auth/index.ts"
+
 [functions.tracking-webhook]
 enabled = true
 verify_jwt = false
