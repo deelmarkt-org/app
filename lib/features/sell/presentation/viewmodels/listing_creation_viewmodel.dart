@@ -7,6 +7,7 @@ import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.d
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/step_validator.dart';
 
 part 'listing_creation_viewmodel.g.dart';
 
@@ -42,18 +43,22 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   void reorderPhotos(int old, int next) =>
       _apply(PhotoOperations.reorder(state, old, next));
 
-  bool nextStep() => switch (state.step) {
-    ListingCreationStep.photos => _advanceFromPhotos(),
-    ListingCreationStep.details => _advanceFromDetails(),
-    _ => false,
-  };
+  // ── Navigation ──
+
+  bool nextStep() {
+    final error = StepValidator.validate(state);
+    if (error != null) {
+      state = state.copyWith(errorKey: () => error);
+      return false;
+    }
+    final next = StepValidator.next(state.step);
+    if (next == null) return false;
+    state = state.copyWith(step: next, errorKey: () => null);
+    return true;
+  }
 
   void previousStep() {
-    final prev = switch (state.step) {
-      ListingCreationStep.details => ListingCreationStep.photos,
-      ListingCreationStep.quality => ListingCreationStep.details,
-      _ => null,
-    };
+    final prev = StepValidator.previous(state.step);
     if (prev != null) state = state.copyWith(step: prev, errorKey: () => null);
   }
 
@@ -103,32 +108,6 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   void _apply(ListingCreationState next) {
     state = next;
     _scheduleDraftSave();
-  }
-
-  bool _advanceFromPhotos() => _validateAndAdvance(
-    state.imageFiles.isEmpty ? 'sell.errorNoPhotos' : null,
-    ListingCreationStep.details,
-  );
-
-  bool _advanceFromDetails() {
-    final error =
-        state.title.trim().isEmpty
-            ? 'sell.errorNoTitle'
-            : state.priceInCents <= 0
-            ? 'sell.errorNoPrice'
-            : state.categoryL2Id == null
-            ? 'sell.errorNoCategory'
-            : null;
-    return _validateAndAdvance(error, ListingCreationStep.quality);
-  }
-
-  bool _validateAndAdvance(String? error, ListingCreationStep next) {
-    if (error != null) {
-      state = state.copyWith(errorKey: () => error);
-      return false;
-    }
-    state = state.copyWith(step: next, errorKey: () => null);
-    return true;
   }
 
   void _scheduleDraftSave() {

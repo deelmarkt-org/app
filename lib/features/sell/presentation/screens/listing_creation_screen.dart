@@ -52,12 +52,19 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
         context.go('/listings/${next.createdListingId}');
       }
 
-      // Show error SnackBar only for publish/draft errors (picker errors
-      // are handled locally in PhotoStepView).
+      // Show all errors except photo picker errors (handled locally
+      // in PhotoStepView). Excludelist is safe by default — new errors
+      // are shown unless explicitly excluded here.
+      const locallyHandledErrors = {
+        'sell.errorPermissionDenied',
+        'sell.errorPermissionPermanent',
+        'sell.errorFileTooLarge',
+        'sell.errorUnsupportedFormat',
+        'sell.errorImagePicker',
+      };
       if (next.errorKey != null &&
           prev?.errorKey != next.errorKey &&
-          (next.errorKey == 'sell.publishError' ||
-              next.errorKey == 'sell.draftError')) {
+          !locallyHandledErrors.contains(next.errorKey)) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text(next.errorKey!.tr())));
