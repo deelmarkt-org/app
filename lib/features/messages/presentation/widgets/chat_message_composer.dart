@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// P-36 — Sticky bottom composer for the chat thread.
 ///
@@ -54,30 +55,14 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final bg = isDark ? DeelmarktColors.darkSurface : DeelmarktColors.white;
-    final border =
-        isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200;
-    final fieldBg =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral50;
-    final hintColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral500;
-    final iconColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral700;
+    final colors = ChatThemeColors.of(context);
 
     return SafeArea(
       top: false,
       child: Container(
         decoration: BoxDecoration(
-          color: bg,
-          border: Border(top: BorderSide(color: border)),
+          color: colors.surface,
+          border: Border(top: BorderSide(color: colors.border)),
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: Spacing.s3,
@@ -88,7 +73,10 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
           children: [
             IconButton(
               onPressed: widget.onCameraTap,
-              icon: Icon(Icons.camera_alt_outlined, color: iconColor),
+              icon: Icon(
+                Icons.camera_alt_outlined,
+                color: colors.textSecondary,
+              ),
               tooltip: 'chat.cameraA11y'.tr(),
               constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             ),
@@ -99,9 +87,9 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
                   maxHeight: 120,
                 ),
                 decoration: BoxDecoration(
-                  color: fieldBg,
+                  color: colors.surfaceMuted,
                   borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-                  border: Border.all(color: border),
+                  border: Border.all(color: colors.border),
                 ),
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.s4,
@@ -124,7 +112,7 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
                     counterText: '',
                     hintText: 'chat.typeMessage'.tr(),
                     hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                      color: hintColor,
+                      color: colors.textTertiary,
                     ),
                   ),
                 ),
@@ -134,10 +122,7 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
             TextButton(
               onPressed: widget.onMakeOfferTap,
               style: TextButton.styleFrom(
-                foregroundColor:
-                    isDark
-                        ? DeelmarktColors.darkPrimary
-                        : DeelmarktColors.primary,
+                foregroundColor: colors.primary,
                 minimumSize: const Size(44, 44),
               ),
               child: Text('chat.offer'.tr()),

@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_screen.dart';
 import 'package:deelmarkt/features/messages/presentation/screens/conversation_list_screen.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/no_thread_selected.dart';
 
 /// Single entry point for `/messages` and `/messages/:conversationId`.
@@ -25,13 +25,10 @@ class MessagesResponsiveShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final bg =
-        isDark ? DeelmarktColors.darkScaffold : DeelmarktColors.neutral50;
+    final colors = ChatThemeColors.of(context);
 
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: colors.scaffold,
       body: SafeArea(
         bottom: false,
         child: LayoutBuilder(
@@ -81,10 +78,7 @@ class _ExpandedLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final divider =
-        isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200;
+    final colors = ChatThemeColors.of(context);
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -96,7 +90,7 @@ class _ExpandedLayout extends StatelessWidget {
             onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
           ),
         ),
-        Container(width: 1, color: divider),
+        Container(width: 1, color: colors.border),
         Expanded(
           child:
               conversationId == null

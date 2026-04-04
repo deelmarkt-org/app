@@ -220,12 +220,12 @@ Used the threat list from the plan §7.1 plus OWASP Mobile Top 10 mapping. Each 
 
 | Threat | Method | Evidence |
 |:-------|:-------|:---------|
-| Offer CTAs do NOT call payment/transaction API | `grep -rn "transactionRepository\|paymentRepository\|mollieService\|escrowService" lib/features/messages/` | 0 matches |
-| No Flutter imports in domain layer | `grep -rln "flutter/material\|flutter/widgets" lib/features/messages/domain/` | 0 matches |
+| Offer CTAs do NOT call payment/transaction API | `grep -rnE "transactionRepository\|paymentRepository\|mollieService\|escrowService" lib/features/messages/` | 0 matches |
+| No Flutter imports in domain layer | `grep -rlnE "flutter/material\|flutter/widgets" lib/features/messages/domain/` | 0 matches |
 | No Supabase imports in domain | `grep -rln "supabase" lib/features/messages/domain/` | 0 matches |
 | No hardcoded colors | `grep -rn "Color(0x" lib/features/messages/` | 0 matches |
-| No hardcoded UI strings | `grep -rEn "Text\('[A-Z][a-z ]" lib/features/messages/` | 0 matches |
-| No debug `print()` calls | `grep -rn "^\s*print(\|debugPrint(" lib/features/messages/ lib/core/utils/chat_date_formatter.dart` | 0 matches |
+| No hardcoded UI strings | `grep -rnE "Text\('[A-Z][a-z ]" lib/features/messages/` | 0 matches |
+| No debug `print()` calls | `grep -rnE "^\s*print\(\|debugPrint\(" lib/features/messages/ lib/core/utils/chat_date_formatter.dart` | 0 matches |
 | No localisation key injection | `grep -rn "'\$" lib/features/messages/` + manual review | All `.tr()` keys are string literals |
 | Cross-conversation state bleed prevented | `messages_responsive_shell.dart:105,108` | `ValueKey(conversationId)` on `ChatThreadScreen` ensures notifier dispose on switch |
 | Optimistic send rollback atomic | `chat_thread_notifier.dart:110-143` | `try/catch/rethrow` with explicit `copyWith(messages: current.messages, …)` restoring pre-send state |

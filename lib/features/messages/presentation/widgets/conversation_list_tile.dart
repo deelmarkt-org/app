@@ -6,6 +6,7 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/chat_date_formatter.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// P-35 — Single row in the conversation list.
 ///
@@ -41,33 +42,7 @@ class ConversationListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final nameStyle = theme.textTheme.titleMedium?.copyWith(
-      fontWeight: _isUnread ? FontWeight.w800 : FontWeight.w700,
-      color:
-          isDark ? DeelmarktColors.darkOnSurface : DeelmarktColors.neutral900,
-    );
-    final previewColor =
-        _isUnread
-            ? (isDark ? DeelmarktColors.darkPrimary : DeelmarktColors.primary)
-            : (isDark
-                ? DeelmarktColors.darkOnSurfaceSecondary
-                : DeelmarktColors.neutral700);
-    final previewStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: previewColor,
-      fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w400,
-    );
-
-    final rowBg =
-        selected
-            ? (isDark
-                ? DeelmarktColors.darkSurfaceElevated
-                : DeelmarktColors.primarySurface)
-            : (isDark ? DeelmarktColors.darkSurface : DeelmarktColors.white);
-    final rowBorder =
-        isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200;
+    final colors = ChatThemeColors.of(context);
 
     return Semantics(
       button: true,
@@ -81,91 +56,21 @@ class ConversationListTile extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 72),
             padding: const EdgeInsets.all(Spacing.s5),
             decoration: BoxDecoration(
-              color: rowBg,
+              color: _rowBg(colors),
               borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-              border: Border.all(color: rowBorder),
+              border: Border.all(color: colors.border),
             ),
             child: Row(
               children: [
                 _Avatar(
                   url: conversation.otherUserAvatarUrl,
                   isOnline: _isOnline,
-                  isDark: isDark,
+                  colors: colors,
                 ),
                 const SizedBox(width: Spacing.s4),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              conversation.otherUserName,
-                              style: nameStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: Spacing.s2),
-                          Text(
-                            ChatDateFormatter.relativeRowTimestamp(
-                              conversation.lastMessageAt,
-                              now: now,
-                            ),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color:
-                                  _isUnread
-                                      ? (isDark
-                                          ? DeelmarktColors.darkPrimary
-                                          : DeelmarktColors.primary)
-                                      : (isDark
-                                          ? DeelmarktColors
-                                              .darkOnSurfaceSecondary
-                                          : DeelmarktColors.neutral500),
-                              fontWeight:
-                                  _isUnread ? FontWeight.w700 : FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: Spacing.s1),
-                      Text(
-                        conversation.lastMessageText,
-                        style: previewStyle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: Spacing.s2),
-                      _ListingChip(
-                        title: conversation.listingTitle,
-                        isDark: isDark,
-                      ),
-                    ],
-                  ),
-                ),
+                Expanded(child: _buildBody(context, colors)),
                 const SizedBox(width: Spacing.s3),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (_isUnread)
-                      // Parent Semantics already announces the count via
-                      // messages.unreadA11y — suppress the raw badge text
-                      // so TalkBack doesn't read it twice (review M#6).
-                      ExcludeSemantics(
-                        child: _UnreadBadge(count: conversation.unreadCount),
-                      )
-                    else
-                      const SizedBox(height: 20),
-                    const SizedBox(height: Spacing.s2),
-                    _ListingThumb(
-                      url: conversation.listingImageUrl,
-                      isDark: isDark,
-                    ),
-                  ],
-                ),
+                _buildTrailing(colors),
               ],
             ),
           ),
@@ -173,6 +78,84 @@ class ConversationListTile extends StatelessWidget {
       ),
     );
   }
+
+  Color _rowBg(ChatThemeColors colors) =>
+      selected ? colors.selectedRowBg : colors.surface;
+
+  Widget _buildBody(BuildContext context, ChatThemeColors colors) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildNameRow(theme, colors),
+        const SizedBox(height: Spacing.s1),
+        Text(
+          conversation.lastMessageText,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: _previewColor(colors),
+            fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w400,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: Spacing.s2),
+        _ListingChip(title: conversation.listingTitle, colors: colors),
+      ],
+    );
+  }
+
+  Widget _buildNameRow(ThemeData theme, ChatThemeColors colors) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            conversation.otherUserName,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: _isUnread ? FontWeight.w800 : FontWeight.w700,
+              color: colors.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: Spacing.s2),
+        Text(
+          ChatDateFormatter.relativeRowTimestamp(
+            conversation.lastMessageAt,
+            now: now,
+          ),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: _timestampColor(colors),
+            fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTrailing(ChatThemeColors colors) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Parent Semantics already announces the count via messages.unreadA11y
+        // — suppress the raw badge text so TalkBack doesn't read it twice.
+        if (_isUnread)
+          ExcludeSemantics(child: _UnreadBadge(count: conversation.unreadCount))
+        else
+          const SizedBox(height: 20),
+        const SizedBox(height: Spacing.s2),
+        _ListingThumb(url: conversation.listingImageUrl, colors: colors),
+      ],
+    );
+  }
+
+  Color _previewColor(ChatThemeColors colors) =>
+      _isUnread ? colors.primary : colors.textSecondary;
+
+  Color _timestampColor(ChatThemeColors colors) =>
+      _isUnread ? colors.primary : colors.textTertiary;
 
   String _semanticLabel() {
     final parts = <String>[
@@ -194,109 +177,85 @@ class _Avatar extends StatelessWidget {
   const _Avatar({
     required this.url,
     required this.isOnline,
-    required this.isDark,
+    required this.colors,
   });
 
   final String? url;
   final bool isOnline;
-  final bool isDark;
+  final ChatThemeColors colors;
+
+  bool get _hasImage => url != null && url!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    final bg =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral100;
     return SizedBox(
       width: 64,
       height: 64,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: bg,
-              shape: BoxShape.circle,
-              image:
-                  url != null && url!.isNotEmpty
-                      ? DecorationImage(
-                        image: NetworkImage(url!),
-                        fit: BoxFit.cover,
-                      )
-                      : null,
-            ),
-            child:
-                url == null || url!.isEmpty
-                    ? Icon(
-                      Icons.person,
-                      size: 32,
-                      color:
-                          isDark
-                              ? DeelmarktColors.darkOnSurfaceSecondary
-                              : DeelmarktColors.neutral500,
-                    )
-                    : null,
-          ),
-          Positioned(
-            right: 2,
-            bottom: 2,
-            child: Container(
-              width: 14,
-              height: 14,
-              decoration: BoxDecoration(
-                color:
-                    isOnline
-                        ? (isDark
-                            ? DeelmarktColors.darkSuccess
-                            : DeelmarktColors.success)
-                        : DeelmarktColors.neutral300,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkSurface
-                          : DeelmarktColors.white,
-                  width: 2,
-                ),
-              ),
-            ),
-          ),
+          _buildBase(),
+          Positioned(right: 2, bottom: 2, child: _buildPresenceDot()),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBase() {
+    return Container(
+      width: 64,
+      height: 64,
+      decoration: BoxDecoration(
+        color: colors.surfaceElevated,
+        shape: BoxShape.circle,
+        image:
+            _hasImage
+                ? DecorationImage(image: NetworkImage(url!), fit: BoxFit.cover)
+                : null,
+      ),
+      child:
+          _hasImage
+              ? null
+              : Icon(Icons.person, size: 32, color: colors.textTertiary),
+    );
+  }
+
+  Widget _buildPresenceDot() {
+    final dotColor = isOnline ? colors.success : DeelmarktColors.neutral300;
+    return Container(
+      width: 14,
+      height: 14,
+      decoration: BoxDecoration(
+        color: dotColor,
+        shape: BoxShape.circle,
+        border: Border.all(color: colors.surface, width: 2),
       ),
     );
   }
 }
 
 class _ListingChip extends StatelessWidget {
-  const _ListingChip({required this.title, required this.isDark});
+  const _ListingChip({required this.title, required this.colors});
 
   final String title;
-  final bool isDark;
+  final ChatThemeColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final bg =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral100;
-    final fg =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral700;
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.s2,
         vertical: Spacing.s1,
       ),
       decoration: BoxDecoration(
-        color: bg,
+        color: colors.surfaceElevated,
         borderRadius: BorderRadius.circular(DeelmarktRadius.full),
       ),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: fg),
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: colors.textSecondary),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -305,43 +264,35 @@ class _ListingChip extends StatelessWidget {
 }
 
 class _ListingThumb extends StatelessWidget {
-  const _ListingThumb({required this.url, required this.isDark});
+  const _ListingThumb({required this.url, required this.colors});
 
   final String? url;
-  final bool isDark;
+  final ChatThemeColors colors;
+
+  bool get _hasImage => url != null && url!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
-    final bg =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral100;
     return Container(
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: bg,
+        color: colors.surfaceElevated,
         borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
         image:
-            url != null && url!.isNotEmpty
+            _hasImage
                 ? DecorationImage(image: NetworkImage(url!), fit: BoxFit.cover)
                 : null,
-        border: Border.all(
-          color:
-              isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200,
-        ),
+        border: Border.all(color: colors.border),
       ),
       child:
-          url == null || url!.isEmpty
-              ? Icon(
+          _hasImage
+              ? null
+              : Icon(
                 Icons.image_outlined,
                 size: 20,
-                color:
-                    isDark
-                        ? DeelmarktColors.darkOnSurfaceSecondary
-                        : DeelmarktColors.neutral500,
-              )
-              : null,
+                color: colors.textTertiary,
+              ),
     );
   }
 }

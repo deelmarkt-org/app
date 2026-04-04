@@ -7,6 +7,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// P-35 — Empty state for the conversation list.
 ///
@@ -17,22 +18,7 @@ class ConversationListEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final bg =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral100;
-    final iconColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral500;
-    final titleColor =
-        isDark ? DeelmarktColors.darkOnSurface : DeelmarktColors.neutral900;
-    final subtitleColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral700;
+    final colors = ChatThemeColors.of(context);
 
     return Center(
       child: ConstrainedBox(
@@ -46,18 +32,21 @@ class ConversationListEmptyState extends StatelessWidget {
               Container(
                 width: 96,
                 height: 96,
-                decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: colors.surfaceElevated,
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(
                   PhosphorIcons.chatCircleText(PhosphorIconsStyle.duotone),
                   size: 48,
-                  color: iconColor,
+                  color: colors.textTertiary,
                 ),
               ),
               const SizedBox(height: Spacing.s6),
               Text(
                 'messages.noConversations'.tr(),
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: titleColor,
+                  color: colors.textPrimary,
                   fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.center,
@@ -66,7 +55,7 @@ class ConversationListEmptyState extends StatelessWidget {
               Text(
                 'messages.startConversation'.tr(),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: subtitleColor,
+                  color: colors.textSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),

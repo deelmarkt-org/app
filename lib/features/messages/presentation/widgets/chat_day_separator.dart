@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/chat_date_formatter.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// P-36 — Centred day separator between message groups in the thread.
 ///
@@ -16,11 +16,7 @@ class ChatDaySeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final color =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral500;
+    final colors = ChatThemeColors.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.s3),
@@ -28,7 +24,7 @@ class ChatDaySeparator extends StatelessWidget {
         child: Text(
           ChatDateFormatter.daySeparator(moment, now: now),
           style: theme.textTheme.bodySmall?.copyWith(
-            color: color,
+            color: colors.textTertiary,
             fontWeight: FontWeight.w600,
           ),
         ),

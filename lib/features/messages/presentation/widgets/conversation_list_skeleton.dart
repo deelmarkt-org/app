@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// P-35 — Shimmer skeleton used while conversations load.
 ///
@@ -18,46 +18,31 @@ class ConversationListSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colors = ChatThemeColors.of(context);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    final baseColor =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral100;
-    final highlightColor =
-        isDark
-            ? DeelmarktColors.darkShimmerHighlight
-            : DeelmarktColors.neutral50;
-
     final rows = Column(
-      children: List.generate(itemCount, (_) => _SkeletonRow(isDark: isDark)),
+      children: List.generate(itemCount, (_) => _SkeletonRow(colors: colors)),
     );
 
-    if (reduceMotion) {
-      return rows;
-    }
+    if (reduceMotion) return rows;
 
     return Shimmer.fromColors(
-      baseColor: baseColor,
-      highlightColor: highlightColor,
+      baseColor: colors.shimmerBase,
+      highlightColor: colors.shimmerHighlight,
       child: rows,
     );
   }
 }
 
 class _SkeletonRow extends StatelessWidget {
-  const _SkeletonRow({required this.isDark});
+  const _SkeletonRow({required this.colors});
 
-  final bool isDark;
+  final ChatThemeColors colors;
 
   @override
   Widget build(BuildContext context) {
-    final placeholder =
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral200;
+    final placeholder = colors.shimmerPlaceholder;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.s4,
@@ -66,14 +51,9 @@ class _SkeletonRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(Spacing.s5),
         decoration: BoxDecoration(
-          color: isDark ? DeelmarktColors.darkSurface : DeelmarktColors.white,
+          color: colors.surface,
           borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-          border: Border.all(
-            color:
-                isDark
-                    ? DeelmarktColors.darkBorder
-                    : DeelmarktColors.neutral200,
-          ),
+          border: Border.all(color: colors.border),
         ),
         child: Row(
           children: [
