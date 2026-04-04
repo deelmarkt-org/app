@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_empty_state.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_skeleton.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_tile.dart';
@@ -31,13 +33,12 @@ class ConversationListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final async = ref.watch(conversationListNotifierProvider);
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final colors = ChatThemeColors.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Header(isDark: isDark),
+        _Header(colors: colors),
         Expanded(
           child: async.when(
             loading: () => const ConversationListSkeleton(),
@@ -49,65 +50,53 @@ class ConversationListScreen extends ConsumerWidget {
                               .read(conversationListNotifierProvider.notifier)
                               .refresh(),
                 ),
-            data: (conversations) {
-              if (conversations.isEmpty) {
-                return const ConversationListEmptyState();
-              }
-              // Single `now` per frame so all row timestamps render consistently
-              // (review finding M#3).
-              final now = DateTime.now();
-              return RefreshIndicator(
-                onRefresh:
-                    () =>
-                        ref
-                            .read(conversationListNotifierProvider.notifier)
-                            .refresh(),
-                child: ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.s4,
-                    vertical: Spacing.s3,
-                  ),
-                  itemCount: conversations.length,
-                  separatorBuilder:
-                      (_, _) => const SizedBox(height: Spacing.s3),
-                  itemBuilder: (context, index) {
-                    final c = conversations[index];
-                    return ConversationListTile(
-                      conversation: c,
-                      selected: c.id == selectedConversationId,
-                      now: now,
-                      onTap: () {
-                        if (onConversationTap != null) {
-                          onConversationTap!(c.id);
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
-            },
+            data: (conversations) => _buildDataBody(ref, conversations),
           ),
         ),
       ],
     );
   }
+
+  Widget _buildDataBody(WidgetRef ref, List<ConversationEntity> conversations) {
+    if (conversations.isEmpty) {
+      return const ConversationListEmptyState();
+    }
+    // Single `now` per frame so all row timestamps render consistently.
+    final now = DateTime.now();
+    return RefreshIndicator(
+      onRefresh:
+          () => ref.read(conversationListNotifierProvider.notifier).refresh(),
+      child: ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.s4,
+          vertical: Spacing.s3,
+        ),
+        itemCount: conversations.length,
+        separatorBuilder: (_, _) => const SizedBox(height: Spacing.s3),
+        itemBuilder: (context, index) {
+          final c = conversations[index];
+          return ConversationListTile(
+            conversation: c,
+            selected: c.id == selectedConversationId,
+            now: now,
+            // Sonar S6582 — null-aware invocation instead of explicit null check.
+            onTap: () => onConversationTap?.call(c.id),
+          );
+        },
+      ),
+    );
+  }
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.isDark});
+  const _Header({required this.colors});
 
-  final bool isDark;
+  final ChatThemeColors colors;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final titleColor =
-        isDark ? DeelmarktColors.darkOnSurface : DeelmarktColors.neutral900;
-    final subtitleColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral700;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -122,14 +111,16 @@ class _Header extends StatelessWidget {
           Text(
             'messages.title'.tr(),
             style: theme.textTheme.displayLarge?.copyWith(
-              color: titleColor,
+              color: colors.textPrimary,
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: Spacing.s1),
           Text(
             'messages.subtitle'.tr(),
-            style: theme.textTheme.bodyLarge?.copyWith(color: subtitleColor),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: colors.textSecondary,
+            ),
           ),
         ],
       ),

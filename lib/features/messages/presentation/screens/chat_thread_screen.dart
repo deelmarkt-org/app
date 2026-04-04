@@ -5,11 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_notifier.dart'
-    show chatThreadNotifierProvider, kCurrentUserIdStub;
+    show ChatThreadState, chatThreadNotifierProvider, kCurrentUserIdStub;
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_composer.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_list.dart';
+
+/// Pixel threshold beneath which the user is considered "at the bottom"
+/// for the purposes of sticky auto-scroll (Gemini code review G2).
+const double _kAutoScrollThresholdPx = 100;
 
 /// P-36 — Chat thread screen.
 ///
@@ -39,6 +44,16 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     super.dispose();
   }
 
+  /// Returns `true` if the user is currently scrolled within
+  /// [_kAutoScrollThresholdPx] of the bottom of the thread. Defaults to
+  /// `true` when the controller has no clients yet (first render) — we
+  /// want new messages to land at the bottom on initial load.
+  bool _isNearBottom() {
+    if (!_scrollController.hasClients) return true;
+    final position = _scrollController.position;
+    return position.maxScrollExtent - position.pixels < _kAutoScrollThresholdPx;
+  }
+
   void _scrollToBottom({required bool animated}) {
     if (!_scrollController.hasClients) return;
     final target = _scrollController.position.maxScrollExtent;
@@ -62,21 +77,40 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     );
   }
 
+  void _handleSend(String text) {
+    // Capture the messenger synchronously — avoids touching BuildContext
+    // after the async gap (use_build_context_synchronously lint).
+    final messenger = ScaffoldMessenger.of(context);
+    final errorLabel = 'messages.errorTitle'.tr();
+    ref
+        .read(chatThreadNotifierProvider(widget.conversationId).notifier)
+        .sendText(text)
+        .catchError((_) {
+          if (!mounted) return;
+          messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     final async = ref.watch(chatThreadNotifierProvider(widget.conversationId));
-    final theme = Theme.of(context);
+    final colors = ChatThemeColors.of(context);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Auto-scroll whenever message count changes.
+    // Auto-scroll whenever new messages arrive, but only if the user is
+    // already near the bottom — don't jerk the viewport away from someone
+    // reading older messages (Gemini code review G2).
     ref.listen(chatThreadNotifierProvider(widget.conversationId), (prev, next) {
       final prevCount = prev?.valueOrNull?.messages.length ?? 0;
       final nextCount = next.valueOrNull?.messages.length ?? 0;
-      if (nextCount != prevCount) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollToBottom(animated: !reduceMotion);
-        });
-      }
+      if (nextCount <= prevCount) return;
+      // Capture the position decision BEFORE the post-frame callback so
+      // that the user's scroll position at "now" is what drives the rule.
+      final shouldStick = _isNearBottom();
+      if (!shouldStick) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom(animated: !reduceMotion);
+      });
     });
 
     return async.when(
@@ -88,54 +122,38 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
                   chatThreadNotifierProvider(widget.conversationId),
                 ),
           ),
-      data: (state) {
-        final bodyColor =
-            theme.brightness == Brightness.dark
-                ? DeelmarktColors.darkScaffold
-                : DeelmarktColors.neutral50;
-        return Container(
-          color: bodyColor,
-          child: Column(
-            children: [
-              ChatHeader(
-                conversation: state.conversation,
-                showBackButton: widget.showBackButton,
-              ),
-              ChatListingEmbedCard(conversation: state.conversation),
-              // P-37 SCOPE BOUNDARY: scam-alert banner reserved slot.
-              // The widget for this slot ships with P-37.
-              const SizedBox.shrink(),
-              Expanded(
-                child: ChatThreadList(
-                  scrollController: _scrollController,
-                  messages: state.messages,
-                  currentUserId: kCurrentUserIdStub,
-                ),
-              ),
-              ChatMessageComposer(
-                isSending: state.isSending,
-                onSend: (text) {
-                  ref
-                      .read(
-                        chatThreadNotifierProvider(
-                          widget.conversationId,
-                        ).notifier,
-                      )
-                      .sendText(text)
-                      .catchError((_) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('messages.errorTitle'.tr())),
-                        );
-                      });
-                },
-                onCameraTap: () => _showComingSoon(context),
-                onMakeOfferTap: () => _showComingSoon(context),
-              ),
-            ],
+      data: (state) => _buildLoaded(state, colors),
+    );
+  }
+
+  Widget _buildLoaded(ChatThreadState state, ChatThemeColors colors) {
+    return Container(
+      color: colors.scaffold,
+      child: Column(
+        children: [
+          ChatHeader(
+            conversation: state.conversation,
+            showBackButton: widget.showBackButton,
           ),
-        );
-      },
+          ChatListingEmbedCard(conversation: state.conversation),
+          // P-37 SCOPE BOUNDARY: scam-alert banner reserved slot.
+          // The widget for this slot ships with P-37.
+          const SizedBox.shrink(),
+          Expanded(
+            child: ChatThreadList(
+              scrollController: _scrollController,
+              messages: state.messages,
+              currentUserId: kCurrentUserIdStub,
+            ),
+          ),
+          ChatMessageComposer(
+            isSending: state.isSending,
+            onSend: _handleSend,
+            onCameraTap: () => _showComingSoon(context),
+            onMakeOfferTap: () => _showComingSoon(context),
+          ),
+        ],
+      ),
     );
   }
 }

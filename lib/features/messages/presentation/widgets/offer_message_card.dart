@@ -7,6 +7,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
 /// Render state for an [OfferMessageCard].
 enum OfferStatus { pending, accepted, declined }
@@ -54,15 +55,7 @@ class OfferMessageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardBg =
-        isDark ? DeelmarktColors.darkSurfaceElevated : DeelmarktColors.white;
-    final border =
-        isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200;
-    final amountColor =
-        isDark ? DeelmarktColors.darkOnSurface : DeelmarktColors.neutral900;
+    final colors = ChatThemeColors.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -78,9 +71,9 @@ class OfferMessageCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(Spacing.s4),
             decoration: BoxDecoration(
-              color: cardBg,
+              color: colors.surface,
               borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-              border: Border.all(color: border, width: 1.5),
+              border: Border.all(color: colors.border, width: 1.5),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +82,7 @@ class OfferMessageCard extends StatelessWidget {
                 Text(
                   'chat.offerOf'.tr(namedArgs: {'amount': _amountOrFallback()}),
                   style: DeelmarktTypography.priceSm.copyWith(
-                    color: amountColor,
+                    color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: Spacing.s3),
@@ -98,7 +91,7 @@ class OfferMessageCard extends StatelessWidget {
                     onTap: (action) => _showComingSoon(context, action),
                   )
                 else
-                  _StatusRow(status: status, isDark: isDark),
+                  _StatusRow(status: status, colors: colors),
               ],
             ),
           ),
@@ -162,20 +155,15 @@ class _PendingActions extends StatelessWidget {
 }
 
 class _StatusRow extends StatelessWidget {
-  const _StatusRow({required this.status, required this.isDark});
+  const _StatusRow({required this.status, required this.colors});
 
   final OfferStatus status;
-  final bool isDark;
+  final ChatThemeColors colors;
 
   @override
   Widget build(BuildContext context) {
     final accepted = status == OfferStatus.accepted;
-    final color =
-        accepted
-            ? (isDark ? DeelmarktColors.darkSuccess : DeelmarktColors.success)
-            : (isDark
-                ? DeelmarktColors.darkOnSurfaceSecondary
-                : DeelmarktColors.neutral500);
+    final color = accepted ? colors.success : colors.textTertiary;
     final icon = accepted ? Icons.check_circle : Icons.cancel;
     final label = accepted ? 'chat.accepted'.tr() : 'chat.declined'.tr();
     return Row(
