@@ -515,7 +515,6 @@
     "errorNoCategory": "Selecteer een categorie om door te gaan",
     "publishError": "Kon je advertentie niet publiceren. Probeer het opnieuw.",
     "draftError": "Kon je concept niet opslaan. Probeer het opnieuw.",
-    "fileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
     "openSettingsHint": "Ga naar Instellingen om cameratoegang in te schakelen voor DeelMarkt",
     "errorPermissionDenied": "Toegang tot camera of fotobibliotheek is geweigerd",

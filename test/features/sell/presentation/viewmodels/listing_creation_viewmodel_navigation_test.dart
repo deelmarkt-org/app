@@ -94,6 +94,32 @@ void main() {
       },
     );
 
+    test(
+      'nextStep() from details blocked when category not selected',
+      () async {
+        final (:container, :picker, :repo) = buildContainer(prefs);
+        addTearDown(container.dispose);
+
+        final notifier = container.read(
+          listingCreationNotifierProvider.notifier,
+        );
+
+        await notifier.addFromCamera();
+        notifier
+          ..nextStep()
+          ..updateTitle('Test Title')
+          ..updatePrice(2500);
+        // No updateCategoryL1() call
+
+        final result = notifier.nextStep();
+
+        expect(result, isFalse);
+        final state = container.read(listingCreationNotifierProvider);
+        expect(state.step, equals(ListingCreationStep.details));
+        expect(state.errorKey, equals('sell.errorNoCategory'));
+      },
+    );
+
     test('previousStep() from details goes to photos', () async {
       final (:container, :picker, :repo) = buildContainer(prefs);
       addTearDown(container.dispose);

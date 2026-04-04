@@ -135,7 +135,7 @@ class PhotoStepView extends ConsumerWidget {
 
     final message = switch (errorKey) {
       'sell.errorPermissionDenied' => 'sell.cameraPermissionDenied'.tr(),
-      'sell.errorFileTooLarge' => 'sell.fileTooLarge'.tr(),
+      'sell.errorFileTooLarge' => 'sell.errorFileTooLarge'.tr(),
       'sell.errorUnsupportedFormat' => 'sell.unsupportedImageFormat'.tr(),
       _ => 'sell.galleryPermissionDenied'.tr(),
     };
