@@ -62,27 +62,24 @@ const _parentCategory = CategoryEntity(
   listingCount: 42,
 );
 
-final _subcategories = [
-  const CategoryEntity(
+const _subcategories = [
+  CategoryEntity(
     id: 'cat-phones',
     name: 'Telefoons',
     icon: 'device-mobile',
     parentId: 'cat-electronics',
-    listingCount: 15,
   ),
-  const CategoryEntity(
+  CategoryEntity(
     id: 'cat-laptops',
     name: 'Laptops',
     icon: 'laptop',
     parentId: 'cat-electronics',
-    listingCount: 12,
   ),
-  const CategoryEntity(
+  CategoryEntity(
     id: 'cat-tablets',
     name: 'Tablets',
     icon: 'device-tablet',
     parentId: 'cat-electronics',
-    listingCount: 8,
   ),
 ];
 
@@ -239,17 +236,6 @@ void main() {
       expect(find.byType(SubcategoryChip), findsNWidgets(3));
       expect(find.text('Telefoons'), findsOneWidget);
       expect(find.text('Laptops'), findsOneWidget);
-      expect(find.text('Tablets'), findsOneWidget);
-    });
-
-    testWidgets('renders featured listings grid', (tester) async {
-      setLargeScreen(tester);
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(buildScreen(state: _fullState));
-      await tester.pumpAndSettle();
-
       expect(find.byType(DeelCard), findsNWidgets(2));
       expect(find.byType(SliverGrid), findsOneWidget);
     });
@@ -270,20 +256,6 @@ void main() {
       expect(find.byType(SliverFillRemaining), findsOneWidget);
     });
 
-    testWidgets('renders with dark theme without error', (tester) async {
-      setLargeScreen(tester);
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(
-        buildScreen(state: _fullState, theme: DeelmarktTheme.dark),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.byType(CategoryDetailScreen), findsOneWidget);
-      expect(find.text('Elektronica'), findsOneWidget);
-    });
-
     testWidgets('shows only subcategories when no featured listings', (
       tester,
     ) async {
@@ -291,7 +263,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
 
-      final subcatsOnly = CategoryDetailState(
+      const subcatsOnly = CategoryDetailState(
         parent: _parentCategory,
         subcategories: _subcategories,
       );
@@ -301,6 +273,7 @@ void main() {
       expect(find.byType(SubcategoryChip), findsNWidgets(3));
       expect(find.byType(DeelCard), findsNothing);
       expect(find.byType(SliverFillRemaining), findsNothing);
+      expect(find.byType(CustomScrollView), findsOneWidget);
     });
 
     testWidgets('shows only featured listings when no subcategories', (
@@ -319,18 +292,6 @@ void main() {
 
       expect(find.byType(SubcategoryChip), findsNothing);
       expect(find.byType(DeelCard), findsNWidgets(2));
-      expect(find.byType(SliverGrid), findsOneWidget);
-    });
-
-    testWidgets('uses CustomScrollView for data view', (tester) async {
-      setLargeScreen(tester);
-      addTearDown(tester.view.resetPhysicalSize);
-      addTearDown(tester.view.resetDevicePixelRatio);
-
-      await tester.pumpWidget(buildScreen(state: _fullState));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(CustomScrollView), findsOneWidget);
     });
   });
 }

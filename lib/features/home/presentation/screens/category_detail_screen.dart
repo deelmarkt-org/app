@@ -4,18 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/utils/formatters.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/widgets/cards/deel_card.dart';
-import 'package:deelmarkt/widgets/feedback/error_state.dart';
-import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
-import 'package:deelmarkt/widgets/feedback/skeleton_shapes.dart';
-
 import 'package:deelmarkt/features/home/presentation/category_detail_notifier.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/category_detail_loading.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/featured_listings_grid.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/subcategory_chip.dart';
+import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 /// Category detail screen — hero, subcategory chips, and featured listings.
 ///
@@ -45,7 +41,7 @@ class CategoryDetailScreen extends ConsumerWidget {
         ),
       ),
       body: state.when(
-        loading: () => const _LoadingView(),
+        loading: () => const CategoryDetailLoading(),
         error:
             (_, _) => ErrorState(
               onRetry:
@@ -76,6 +72,7 @@ class _DataView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
+        // Hero section
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -90,10 +87,12 @@ class _DataView extends StatelessWidget {
             ),
           ),
         ),
+        // Subcategory chips
         if (state.subcategories.isNotEmpty)
           SliverToBoxAdapter(
-            child: _SubcategoryChipsSection(subcategories: state.subcategories),
+            child: _SubcategoryChips(subcategories: state.subcategories),
           ),
+        // Featured listings header + grid
         if (state.featuredListings.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
@@ -109,11 +108,12 @@ class _DataView extends StatelessWidget {
               ),
             ),
           ),
-          _FeaturedListingsGrid(
+          FeaturedListingsGrid(
             listings: state.featuredListings,
             onToggleFavourite: onToggleFavourite,
           ),
         ],
+        // Empty state
         if (state.featuredListings.isEmpty && state.subcategories.isEmpty)
           SliverFillRemaining(
             child: Center(
@@ -129,8 +129,8 @@ class _DataView extends StatelessWidget {
   }
 }
 
-class _SubcategoryChipsSection extends StatelessWidget {
-  const _SubcategoryChipsSection({required this.subcategories});
+class _SubcategoryChips extends StatelessWidget {
+  const _SubcategoryChips({required this.subcategories});
   final List<CategoryEntity> subcategories;
 
   @override
@@ -161,81 +161,6 @@ class _SubcategoryChipsSection extends StatelessWidget {
           ),
           const SizedBox(height: Spacing.s6),
         ],
-      ),
-    );
-  }
-}
-
-class _FeaturedListingsGrid extends StatelessWidget {
-  const _FeaturedListingsGrid({
-    required this.listings,
-    required this.onToggleFavourite,
-  });
-
-  final List<ListingEntity> listings;
-  final ValueChanged<String> onToggleFavourite;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-      sliver: SliverGrid(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: Spacing.listingCardGap,
-          crossAxisSpacing: Spacing.listingCardGap,
-          childAspectRatio: 0.7,
-        ),
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final listing = listings[index];
-          return DeelCard.grid(
-            imageUrl:
-                listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-            priceFormatted: Formatters.euroFromCents(listing.priceInCents),
-            title: listing.title,
-            location: listing.location,
-            isFavourited: listing.isFavourited,
-            onFavouriteTap: () => onToggleFavourite(listing.id),
-            onTap:
-                () => context.push(
-                  AppRoutes.listingDetail.replaceAll(':id', listing.id),
-                ),
-          );
-        }, childCount: listings.length),
-      ),
-    );
-  }
-}
-
-class _LoadingView extends StatelessWidget {
-  const _LoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    return SkeletonLoader(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.s4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SkeletonBox(height: 28, width: 200),
-            const SizedBox(height: Spacing.s6),
-            const SkeletonBox(height: 16, width: 120),
-            const SizedBox(height: Spacing.s3),
-            Wrap(
-              spacing: Spacing.s2,
-              runSpacing: Spacing.s2,
-              children: List.generate(
-                5,
-                (_) => const SkeletonBox(height: 44, width: 100),
-              ),
-            ),
-            const SizedBox(height: Spacing.s6),
-            const SkeletonBox(height: 16, width: 160),
-            const SizedBox(height: Spacing.s3),
-            const Expanded(child: SkeletonBox(height: double.infinity)),
-          ],
-        ),
       ),
     );
   }
