@@ -37,27 +37,37 @@ class ImageGalleryZoomablePageState extends State<ImageGalleryZoomablePage>
   final TransformationController _controller = TransformationController();
   late final AnimationController _doubleTapController;
   Animation<Matrix4>? _doubleTapAnim;
-  VoidCallback? _doubleTapListener;
   TapDownDetails? _doubleTapDetails;
   bool _isZoomed = false;
 
   @override
   void initState() {
     super.initState();
+    // Attach the tween driver exactly ONCE to the AnimationController.
+    // Per-double-tap we only swap the Matrix4Tween referenced via
+    // [_doubleTapAnim]; the listener reads from whatever tween is
+    // currently installed. This avoids accumulating listeners on
+    // CurvedAnimation proxies (which forward to the parent controller)
+    // — a memory leak pattern flagged by the Gemini code review.
     _doubleTapController = AnimationController(
       vsync: this,
       duration: DeelmarktAnimation.standard,
-    );
+    )..addListener(_applyDoubleTapTween);
   }
 
   @override
   void dispose() {
-    if (_doubleTapListener != null) {
-      _doubleTapAnim?.removeListener(_doubleTapListener!);
-    }
+    _doubleTapController.removeListener(_applyDoubleTapTween);
     _controller.dispose();
     _doubleTapController.dispose();
     super.dispose();
+  }
+
+  void _applyDoubleTapTween() {
+    final tween = _doubleTapAnim;
+    if (tween != null) {
+      _controller.value = tween.value;
+    }
   }
 
   /// Reset the zoom transformation to identity. Called by the parent
@@ -98,21 +108,14 @@ class ImageGalleryZoomablePageState extends State<ImageGalleryZoomablePage>
             ..scaleByDouble(scale, scale, scale, 1);
     }
 
-    // Remove any previous listener before rebinding to avoid accumulating
-    // stale listeners across successive double-taps.
-    if (_doubleTapListener != null) {
-      _doubleTapAnim?.removeListener(_doubleTapListener!);
-    }
+    // Swap the tween — the single listener installed in initState on
+    // _doubleTapController reads from [_doubleTapAnim] on each tick.
     _doubleTapAnim = Matrix4Tween(begin: _controller.value, end: end).animate(
       CurvedAnimation(
         parent: _doubleTapController,
         curve: DeelmarktAnimation.curveStandard,
       ),
     );
-    _doubleTapListener = () {
-      _controller.value = _doubleTapAnim!.value;
-    };
-    _doubleTapAnim!.addListener(_doubleTapListener!);
     _doubleTapController.forward(from: 0).whenComplete(() {
       if (!mounted) return;
       // Float-safe zoom detection (matches _onInteractionUpdate).

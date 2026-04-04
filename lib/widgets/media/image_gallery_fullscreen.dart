@@ -129,8 +129,7 @@ class _ImageGalleryFullscreenState extends State<ImageGalleryFullscreen> {
 
   @override
   Widget build(BuildContext context) {
-    final opacity = (1.0 -
-            (_dragOffset / ImageGalleryTokens.dragOpacityDivisor))
+    final opacity = (1.0 - (_dragOffset / ImageGalleryTokens.dragOpacityRange))
         .clamp(ImageGalleryTokens.dragOpacityFloor, 1.0);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

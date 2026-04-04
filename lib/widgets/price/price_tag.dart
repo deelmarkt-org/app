@@ -167,14 +167,24 @@ class PriceTag extends StatelessWidget {
   String _buildSemanticsLabel() {
     if (_isFree) return 'price_tag.semanticsFree'.tr();
 
-    final priceText = (priceInCents / 100).toStringAsFixed(2);
+    final priceText = _humanReadableEuros(priceInCents);
     if (_isDiscounted) {
-      final originalText = (originalPriceInCents! / 100).toStringAsFixed(2);
+      final originalText = _humanReadableEuros(originalPriceInCents!);
       return 'price_tag.semanticsDiscounted'.tr(
         namedArgs: {'price': priceText, 'original': originalText},
       );
     }
     return 'price_tag.semanticsPrice'.tr(namedArgs: {'price': priceText});
+  }
+
+  /// Formats a cent value for screen reader announcement.
+  ///
+  /// Whole-euro amounts drop the decimals so TTS reads "forty-five euro"
+  /// instead of "forty-five point zero zero euro". Addresses the Gemini
+  /// code review recommendation for natural VoiceOver / TalkBack output.
+  static String _humanReadableEuros(int cents) {
+    final euros = cents / 100;
+    return euros.toStringAsFixed(cents % 100 == 0 ? 0 : 2);
   }
 }
 

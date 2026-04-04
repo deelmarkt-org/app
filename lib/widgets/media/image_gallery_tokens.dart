@@ -37,9 +37,9 @@ abstract final class ImageGalleryTokens {
   /// Vertical drag distance (px) to dismiss fullscreen.
   static const double dragDismissThreshold = 120;
 
-  /// Divisor for computing opacity from drag offset. A drag of this many
-  /// pixels reduces opacity by 1.0 (before clamping to [dragOpacityFloor]).
-  static const double dragOpacityDivisor = 400;
+  /// Vertical drag distance (px) over which the background fades from
+  /// opaque to [dragOpacityFloor]. Larger values = slower fade.
+  static const double dragOpacityRange = 400;
 
   /// Minimum opacity during drag-to-dismiss (lower bound of the clamp).
   static const double dragOpacityFloor = 0.3;
