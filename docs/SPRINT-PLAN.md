@@ -215,7 +215,7 @@ The agent will:
 - [ ] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough
 - [ ] `P-32` `LocationBadge` widget — distance + pin icon
 - [ ] `P-33` `EscrowTimeline` widget — horizontal stepper with states
-- [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
+- [x] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
 
