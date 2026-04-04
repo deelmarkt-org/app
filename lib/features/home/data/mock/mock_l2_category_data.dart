@@ -2,218 +2,52 @@ import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
 
 import 'package:deelmarkt/features/home/data/mock/mock_category_data.dart';
 
+/// Helper to reduce per-entry boilerplate and eliminate SonarCloud duplication.
+CategoryEntity _sub(String id, String name, String icon, String parent) =>
+    CategoryEntity(id: id, name: name, icon: icon, parentId: parent);
+
 /// L2 subcategories for all 8 L1 categories.
-const l2Categories = [
+final l2Categories = [
   // ── Voertuigen ──
-  CategoryEntity(
-    id: 'cat-cars',
-    name: "Auto's",
-    icon: 'car',
-    parentId: catVehicles,
-  ),
-  CategoryEntity(
-    id: 'cat-motorcycles',
-    name: 'Motoren',
-    icon: 'motorcycle',
-    parentId: catVehicles,
-  ),
-  CategoryEntity(
-    id: 'cat-scooters',
-    name: 'Scooters',
-    icon: 'scooter',
-    parentId: catVehicles,
-  ),
-  CategoryEntity(
-    id: 'cat-parts',
-    name: 'Onderdelen',
-    icon: 'wrench',
-    parentId: catVehicles,
-  ),
+  _sub('cat-cars', "Auto's", 'car', catVehicles),
+  _sub('cat-motorcycles', 'Motoren', 'motorcycle', catVehicles),
+  _sub('cat-scooters', 'Scooters', 'scooter', catVehicles),
+  _sub('cat-parts', 'Onderdelen', 'wrench', catVehicles),
   // ── Elektronica ──
-  CategoryEntity(
-    id: 'cat-phones',
-    name: 'Telefoons',
-    icon: 'phone',
-    parentId: catElectronics,
-  ),
-  CategoryEntity(
-    id: 'cat-laptops',
-    name: 'Laptops',
-    icon: 'laptop',
-    parentId: catElectronics,
-  ),
-  CategoryEntity(
-    id: 'cat-gaming',
-    name: 'Gaming',
-    icon: 'game-controller',
-    parentId: catElectronics,
-  ),
+  _sub('cat-phones', 'Telefoons', 'phone', catElectronics),
+  _sub('cat-laptops', 'Laptops', 'laptop', catElectronics),
+  _sub('cat-gaming', 'Gaming', 'game-controller', catElectronics),
   // ── Huis & Meubels ──
-  CategoryEntity(
-    id: 'cat-furniture',
-    name: 'Meubels',
-    icon: 'armchair',
-    parentId: catHome,
-  ),
-  CategoryEntity(
-    id: 'cat-kitchen',
-    name: 'Keuken',
-    icon: 'cooking-pot',
-    parentId: catHome,
-  ),
-  CategoryEntity(
-    id: 'cat-garden',
-    name: 'Tuin',
-    icon: 'flower',
-    parentId: catHome,
-  ),
-  CategoryEntity(
-    id: 'cat-decor',
-    name: 'Decoratie',
-    icon: 'paint-roller',
-    parentId: catHome,
-  ),
+  _sub('cat-furniture', 'Meubels', 'armchair', catHome),
+  _sub('cat-kitchen', 'Keuken', 'cooking-pot', catHome),
+  _sub('cat-garden', 'Tuin', 'flower', catHome),
+  _sub('cat-decor', 'Decoratie', 'paint-roller', catHome),
   // ── Kleding & Mode ──
-  CategoryEntity(
-    id: 'cat-women',
-    name: 'Dameskleding',
-    icon: 'dress',
-    parentId: catClothing,
-  ),
-  CategoryEntity(
-    id: 'cat-men',
-    name: 'Herenkleding',
-    icon: 'pants',
-    parentId: catClothing,
-  ),
-  CategoryEntity(
-    id: 'cat-shoes',
-    name: 'Schoenen',
-    icon: 'sneaker',
-    parentId: catClothing,
-  ),
-  CategoryEntity(
-    id: 'cat-accessories',
-    name: 'Accessoires',
-    icon: 'handbag',
-    parentId: catClothing,
-  ),
+  _sub('cat-women', 'Dameskleding', 'dress', catClothing),
+  _sub('cat-men', 'Herenkleding', 'pants', catClothing),
+  _sub('cat-shoes', 'Schoenen', 'sneaker', catClothing),
+  _sub('cat-accessories', 'Accessoires', 'handbag', catClothing),
   // ── Sport & Vrije tijd ──
-  CategoryEntity(
-    id: 'cat-bikes',
-    name: 'Fietsen',
-    icon: 'bicycle',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-fitness',
-    name: 'Fitness',
-    icon: 'barbell',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-football',
-    name: 'Voetbal',
-    icon: 'soccer-ball',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-tennis',
-    name: 'Tennis',
-    icon: 'tennis-ball',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-running',
-    name: 'Hardlopen',
-    icon: 'running',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-watersport',
-    name: 'Watersport',
-    icon: 'waves',
-    parentId: catSport,
-  ),
-  CategoryEntity(
-    id: 'cat-wintersport',
-    name: 'Wintersport',
-    icon: 'snowflake',
-    parentId: catSport,
-  ),
+  _sub('cat-bikes', 'Fietsen', 'bicycle', catSport),
+  _sub('cat-fitness', 'Fitness', 'barbell', catSport),
+  _sub('cat-football', 'Voetbal', 'soccer-ball', catSport),
+  _sub('cat-tennis', 'Tennis', 'tennis-ball', catSport),
+  _sub('cat-running', 'Hardlopen', 'running', catSport),
+  _sub('cat-watersport', 'Watersport', 'waves', catSport),
+  _sub('cat-wintersport', 'Wintersport', 'snowflake', catSport),
   // ── Kinderen & Baby's ──
-  CategoryEntity(
-    id: 'cat-toys',
-    name: 'Speelgoed',
-    icon: 'toy-brick',
-    parentId: catKids,
-  ),
-  CategoryEntity(
-    id: 'cat-kids-clothing',
-    name: 'Kinderkleding',
-    icon: 't-shirt',
-    parentId: catKids,
-  ),
-  CategoryEntity(
-    id: 'cat-strollers',
-    name: 'Kinderwagens',
-    icon: 'baby-carriage',
-    parentId: catKids,
-  ),
-  CategoryEntity(
-    id: 'cat-school',
-    name: 'Schoolspullen',
-    icon: 'backpack',
-    parentId: catKids,
-  ),
+  _sub('cat-toys', 'Speelgoed', 'toy-brick', catKids),
+  _sub('cat-kids-clothing', 'Kinderkleding', 't-shirt', catKids),
+  _sub('cat-strollers', 'Kinderwagens', 'baby-carriage', catKids),
+  _sub('cat-school', 'Schoolspullen', 'backpack', catKids),
   // ── Diensten ──
-  CategoryEntity(
-    id: 'cat-handyman',
-    name: 'Klussen',
-    icon: 'hammer',
-    parentId: catServices,
-  ),
-  CategoryEntity(
-    id: 'cat-tutoring',
-    name: 'Les & Bijles',
-    icon: 'chalkboard-teacher',
-    parentId: catServices,
-  ),
-  CategoryEntity(
-    id: 'cat-moving',
-    name: 'Verhuizen',
-    icon: 'truck',
-    parentId: catServices,
-  ),
-  CategoryEntity(
-    id: 'cat-services-other',
-    name: 'Overig',
-    icon: 'dots-three',
-    parentId: catServices,
-  ),
+  _sub('cat-handyman', 'Klussen', 'hammer', catServices),
+  _sub('cat-tutoring', 'Les & Bijles', 'chalkboard-teacher', catServices),
+  _sub('cat-moving', 'Verhuizen', 'truck', catServices),
+  _sub('cat-services-other', 'Overig', 'dots-three', catServices),
   // ── Overig ──
-  CategoryEntity(
-    id: 'cat-collectibles',
-    name: 'Verzamelingen',
-    icon: 'vinyl-record',
-    parentId: catOther,
-  ),
-  CategoryEntity(
-    id: 'cat-music',
-    name: 'Muziek',
-    icon: 'music-notes',
-    parentId: catOther,
-  ),
-  CategoryEntity(
-    id: 'cat-art',
-    name: 'Kunst',
-    icon: 'paint-brush',
-    parentId: catOther,
-  ),
-  CategoryEntity(
-    id: 'cat-misc',
-    name: 'Diversen',
-    icon: 'dots-three',
-    parentId: catOther,
-  ),
+  _sub('cat-collectibles', 'Verzamelingen', 'vinyl-record', catOther),
+  _sub('cat-music', 'Muziek', 'music-notes', catOther),
+  _sub('cat-art', 'Kunst', 'paint-brush', catOther),
+  _sub('cat-misc', 'Diversen', 'dots-three', catOther),
 ];
