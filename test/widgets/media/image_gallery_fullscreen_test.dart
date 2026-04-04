@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/widgets/buttons/circle_icon_button.dart';
 import 'package:deelmarkt/widgets/media/image_gallery_fullscreen.dart';
@@ -137,6 +138,136 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
       expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
+    });
+
+    testWidgets('close button taps Navigator.maybePop', (tester) async {
+      // Mount inside a Navigator so pop has a parent route to pop from.
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder:
+                (context) => Scaffold(
+                  body: ElevatedButton(
+                    onPressed:
+                        () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder:
+                                (_) => const ImageGalleryFullscreen(
+                                  imageUrls: sampleImageUrls,
+                                ),
+                          ),
+                        ),
+                    child: const Text('Open'),
+                  ),
+                ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
+
+      // Tap close — pops route.
+      await tester.tap(find.byIcon(PhosphorIcons.x()));
+      await tester.pumpAndSettle();
+      expect(find.byType(ImageGalleryFullscreen), findsNothing);
+    });
+
+    testWidgets('vertical fling past threshold dismisses the route', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder:
+                (context) => Scaffold(
+                  body: ElevatedButton(
+                    onPressed:
+                        () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder:
+                                (_) => const ImageGalleryFullscreen(
+                                  imageUrls: sampleImageUrls,
+                                ),
+                          ),
+                        ),
+                    child: const Text('Open'),
+                  ),
+                ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      // Fling down far beyond the 120px threshold — exercises
+      // _handleVerticalDragUpdate + _handleVerticalDragEnd dismissal path.
+      await tester.drag(find.byType(PageView), const Offset(0, 500));
+      await tester.pumpAndSettle();
+      expect(find.byType(ImageGalleryFullscreen), findsNothing);
+    });
+
+    testWidgets(
+      'short vertical drag below threshold snaps back and does NOT dismiss',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder:
+                  (context) => Scaffold(
+                    body: ElevatedButton(
+                      onPressed:
+                          () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder:
+                                  (_) => const ImageGalleryFullscreen(
+                                    imageUrls: sampleImageUrls,
+                                  ),
+                            ),
+                          ),
+                      child: const Text('Open'),
+                    ),
+                  ),
+            ),
+          ),
+        );
+        await tester.tap(find.text('Open'));
+        await tester.pumpAndSettle();
+
+        // Drag far below the 120px threshold — snap-back branch fires.
+        await tester.drag(find.byType(PageView), const Offset(0, 40));
+        await tester.pumpAndSettle();
+        expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
+      },
+    );
+
+    testWidgets('page change updates counter display', (tester) async {
+      await tester.pumpWidget(
+        buildGalleryApp(
+          child: const ImageGalleryFullscreen(imageUrls: sampleImageUrls),
+        ),
+      );
+
+      // Fling horizontally to advance the page — exercises _onPageChanged
+      // (reset + setState) and the counter rebuild.
+      await tester.fling(find.byType(PageView), const Offset(-600, 0), 2000);
+      await tester.pumpAndSettle();
+
+      // No exception, fullscreen still mounted, counter still present.
+      expect(tester.takeException(), isNull);
+      expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
+      expect(find.text('image_gallery.photoCount'), findsOneWidget);
+    });
+
+    testWidgets('single-image fullscreen hides counter pill', (tester) async {
+      await tester.pumpWidget(
+        buildGalleryApp(
+          child: const ImageGalleryFullscreen(
+            imageUrls: ['https://example.com/only.jpg'],
+          ),
+        ),
+      );
+      expect(find.text('image_gallery.photoCount'), findsNothing);
     });
   });
 }
