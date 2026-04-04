@@ -16,10 +16,17 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
 
 ALTER TABLE notification_preferences ENABLE ROW LEVEL SECURITY;
 
+-- H-5: Use (SELECT auth.uid()) for per-query evaluation, not per-row
 CREATE POLICY notification_preferences_own ON notification_preferences
-  FOR ALL USING (auth.uid() = user_id);
+  FOR ALL USING ((SELECT auth.uid()) = user_id);
+
+-- M-1: updated_at trigger
+CREATE TRIGGER set_notification_preferences_updated_at
+  BEFORE UPDATE ON notification_preferences
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ── user_addresses ─────────────────────────────────────────────────────
+-- C-3: No UNIQUE constraint in table def — use COALESCE index instead
 CREATE TABLE IF NOT EXISTS user_addresses (
   id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id         UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -31,14 +38,21 @@ CREATE TABLE IF NOT EXISTS user_addresses (
   latitude        DOUBLE PRECISION,
   longitude       DOUBLE PRECISION,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (user_id, postcode, house_number, addition)
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- COALESCE index handles NULL addition correctly
+CREATE UNIQUE INDEX idx_user_addresses_unique
+  ON user_addresses(user_id, postcode, house_number, COALESCE(addition, ''));
 
 ALTER TABLE user_addresses ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY user_addresses_own ON user_addresses
-  FOR ALL USING (auth.uid() = user_id);
+  FOR ALL USING ((SELECT auth.uid()) = user_id);
+
+CREATE TRIGGER set_user_addresses_updated_at
+  BEFORE UPDATE ON user_addresses
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ── gdpr_deletion_queue ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS gdpr_deletion_queue (
@@ -58,7 +72,6 @@ ALTER TABLE gdpr_deletion_queue ENABLE ROW LEVEL SECURITY;
 CREATE POLICY gdpr_queue_service_only ON gdpr_deletion_queue
   FOR ALL USING (false);
 
--- Prevent duplicate pending deletions for same user (TOCTOU race fix)
 CREATE UNIQUE INDEX idx_gdpr_queue_pending_user
   ON gdpr_deletion_queue(user_id)
   WHERE status = 'pending';
@@ -77,30 +90,76 @@ ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY audit_logs_service_only ON audit_logs
   FOR ALL USING (false);
 
--- ── Soft-delete column on user_profiles ────────────────────────────────
+-- ── Soft-delete columns ────────────────────────────────────────────────
 ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
-
--- Replace existing SELECT policy to filter soft-deleted profiles
--- Original policy: user_profiles_select FOR SELECT USING (true)
-DROP POLICY IF EXISTS user_profiles_select ON user_profiles;
-CREATE POLICY user_profiles_select ON user_profiles
-  FOR SELECT USING (deleted_at IS NULL OR auth.uid() = id);
-
--- ── Soft-delete on listings ────────────────────────────────────────────
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
 
--- Replace existing SELECT policy to filter soft-deleted listings
--- Original policy: listings_select FOR SELECT USING ((is_active AND NOT is_sold) OR auth.uid() = seller_id)
+-- H-4: Allow NULL seller_id for anonymized deleted sellers (cron sets to NULL)
+ALTER TABLE listings ALTER COLUMN seller_id DROP NOT NULL;
+
+-- ── RLS policy updates (H-5: use SELECT auth.uid()) ───────────────────
+DROP POLICY IF EXISTS user_profiles_select ON user_profiles;
+CREATE POLICY user_profiles_select ON user_profiles
+  FOR SELECT USING (deleted_at IS NULL OR (SELECT auth.uid()) = id);
+
 DROP POLICY IF EXISTS listings_select ON listings;
 CREATE POLICY listings_select ON listings
   FOR SELECT USING (
     (deleted_at IS NULL AND is_active = true AND is_sold = false)
-    OR auth.uid() = seller_id
+    OR (SELECT auth.uid()) = seller_id
   );
 
--- ── Atomic soft-delete RPC (called by Edge Function) ───────────────────
--- All-or-nothing: if any step fails, the entire transaction rolls back.
--- This prevents partial deletion leaving inconsistent state (C-02 audit).
+-- ── H-2: Update view to filter soft-deleted listings ───────────────────
+CREATE OR REPLACE VIEW listings_with_favourites AS
+SELECT
+  l.*,
+  up.display_name AS seller_name,
+  up.avatar_url AS seller_avatar_url,
+  up.average_rating AS seller_rating,
+  up.kyc_level AS seller_kyc_level,
+  CASE
+    WHEN (SELECT auth.uid()) IS NULL THEN false
+    ELSE EXISTS(
+      SELECT 1 FROM favourites f
+      WHERE f.listing_id = l.id AND f.user_id = (SELECT auth.uid())
+    )
+  END AS is_favourited
+FROM listings l
+LEFT JOIN user_profiles up ON up.id = l.seller_id
+WHERE l.deleted_at IS NULL;
+
+GRANT SELECT ON listings_with_favourites TO authenticated, anon;
+
+-- ── H-3: Update nearby_listings to filter soft-deleted ─────────────────
+CREATE OR REPLACE FUNCTION nearby_listings(
+  user_lat DOUBLE PRECISION,
+  user_lon DOUBLE PRECISION,
+  radius_km DOUBLE PRECISION DEFAULT 25.0,
+  max_results INTEGER DEFAULT 50
+)
+RETURNS TABLE (listing_id UUID, distance_km DOUBLE PRECISION)
+LANGUAGE sql STABLE
+AS $$
+  SELECT sub.listing_id, sub.distance_km
+  FROM (
+    SELECT l.id AS listing_id,
+           haversine_km(user_lat, user_lon, l.latitude, l.longitude) AS distance_km
+    FROM listings l
+    WHERE l.is_active = true
+      AND l.deleted_at IS NULL
+      AND l.latitude BETWEEN (user_lat - radius_km / 111.0)
+                         AND (user_lat + radius_km / 111.0)
+      AND l.longitude BETWEEN (user_lon - radius_km / (111.0 * cos(radians(user_lat))))
+                          AND (user_lon + radius_km / (111.0 * cos(radians(user_lat))))
+  ) sub
+  WHERE sub.distance_km <= radius_km
+  ORDER BY sub.distance_km
+  LIMIT max_results;
+$$;
+
+-- ── Atomic soft-delete RPC ─────────────────────────────────────────────
+-- C-1: Verify caller matches target user
+-- C-2: Hardened search_path, restricted to authenticated role
 CREATE OR REPLACE FUNCTION soft_delete_account(
   p_user_id UUID,
   p_email_hash TEXT,
@@ -110,8 +169,19 @@ CREATE OR REPLACE FUNCTION soft_delete_account(
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public, pg_catalog
 AS $$
 BEGIN
+  -- C-1: Caller must be the target user
+  IF (SELECT auth.uid()) IS NULL OR (SELECT auth.uid()) != p_user_id THEN
+    RAISE EXCEPTION 'Forbidden: caller does not match target user';
+  END IF;
+
+  -- M-2: Guard against already-deleted accounts
+  IF EXISTS (SELECT 1 FROM user_profiles WHERE id = p_user_id AND deleted_at IS NOT NULL) THEN
+    RAISE EXCEPTION 'Account already scheduled for deletion';
+  END IF;
+
   -- Anonymize profile PII
   UPDATE user_profiles
   SET display_name = 'Verwijderd account',
@@ -148,10 +218,9 @@ BEGIN
 END;
 $$;
 
--- Fix: UNIQUE constraint with COALESCE for nullable addition
-DROP INDEX IF EXISTS user_addresses_user_id_postcode_house_number_addition_key;
-CREATE UNIQUE INDEX idx_user_addresses_unique
-  ON user_addresses(user_id, postcode, house_number, COALESCE(addition, ''));
+-- C-2: Restrict RPC to authenticated users only
+REVOKE ALL ON FUNCTION soft_delete_account(UUID, TEXT, TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION soft_delete_account(UUID, TEXT, TEXT, TEXT) TO authenticated;
 
 -- ── Indexes ────────────────────────────────────────────────────────────
 CREATE INDEX IF NOT EXISTS idx_gdpr_queue_pending
@@ -162,9 +231,7 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_user
   ON audit_logs(user_id, created_at);
 
 CREATE INDEX IF NOT EXISTS idx_user_profiles_deleted
-  ON user_profiles(deleted_at)
-  WHERE deleted_at IS NOT NULL;
+  ON user_profiles(deleted_at) WHERE deleted_at IS NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_listings_deleted
-  ON listings(deleted_at)
-  WHERE deleted_at IS NOT NULL;
+  ON listings(deleted_at) WHERE deleted_at IS NOT NULL;

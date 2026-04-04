@@ -25,7 +25,11 @@ import { getRedisCredentials } from "../_shared/redis.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const hmacKey = Deno.env.get("AUDIT_HMAC_KEY") ?? serviceRoleKey;
+const hmacKey = Deno.env.get("AUDIT_HMAC_KEY");
+if (!hmacKey) {
+  console.error("FATAL: AUDIT_HMAC_KEY not configured");
+  Deno.exit(1);
+}
 
 const ACTIVE_STATUSES = ["created", "paid", "shipped", "delivered"];
 
