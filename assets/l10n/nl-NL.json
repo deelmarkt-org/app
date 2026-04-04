@@ -182,6 +182,7 @@
     "loading": "Laden...",
     "menu": "Menu openen",
     "skipToContent": "Ga naar inhoud",
+    "back": "Terug",
     "consent_banner": "Privacytoestemming"
   },
   "settings": {
@@ -326,6 +327,31 @@
     "accept_all": "Alles accepteren",
     "necessary_only": "Alleen noodzakelijk",
     "privacy_policy": "Lees ons privacybeleid"
+  },
+  "category": {
+    "title": "Categorieën",
+    "allCategories": "Alle categorieën",
+    "refineSearch": "Verfijn je zoekopdracht",
+    "recommendedIn": "Aanbevolen in {category}",
+    "viewAll": "Alles bekijken",
+    "heroTitle": "Alles voor jouw\n{category}",
+    "heroSubtitle": "Vind kwalitatieve artikelen van andere enthousiastelingen in jouw buurt.",
+    "emptySubcategories": "Geen subcategorieën beschikbaar",
+    "empty": "Nog geen advertenties in deze categorie",
+    "featured": "Uitgelichte Collectie"
+  },
+  "favourites": {
+    "title": "Favorieten",
+    "subtitle": "Jouw Verzameling",
+    "savedItems": "Opgeslagen items",
+    "empty": "Nog geen favorieten",
+    "tapHeart": "Tik op het hartje bij een advertentie om deze hier te bewaren.",
+    "removed": "Verwijderd uit favorieten",
+    "undo": "Ongedaan maken",
+    "discover": "Start met ontdekken",
+    "inspiration": "Inspiratie voor jou",
+    "search": "Advertenties zoeken",
+    "menu": "Meer opties"
   },
   "home": {
     "nearby": "In de buurt",

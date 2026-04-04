@@ -415,6 +415,7 @@ file_length_exempt:
   - lib/core/design_system/theme.dart
   - lib/core/router/app_router.dart
   - **/data/supabase/**
+  - **/data/mock/*_data.dart
   - lib/widgets/buttons/deel_button.dart
   - lib/widgets/cards/deel_card.dart
   - lib/widgets/inputs/dutch_address_input.dart

@@ -182,6 +182,7 @@
     "loading": "Loading...",
     "menu": "Open menu",
     "skipToContent": "Skip to content",
+    "back": "Go back",
     "consent_banner": "Privacy consent"
   },
   "payment": {
@@ -326,6 +327,31 @@
     "accept_all": "Accept all",
     "necessary_only": "Necessary only",
     "privacy_policy": "Read our privacy policy"
+  },
+  "category": {
+    "title": "Categories",
+    "allCategories": "All categories",
+    "refineSearch": "Refine your search",
+    "recommendedIn": "Recommended in {category}",
+    "viewAll": "View all",
+    "heroTitle": "Everything for your\n{category}",
+    "heroSubtitle": "Find quality items from other enthusiasts in your area.",
+    "emptySubcategories": "No subcategories available",
+    "empty": "No listings in this category yet",
+    "featured": "Featured Collection"
+  },
+  "favourites": {
+    "title": "Favourites",
+    "subtitle": "Your Collection",
+    "savedItems": "Saved items",
+    "empty": "No favourites yet",
+    "tapHeart": "Tap the heart on a listing to save it here.",
+    "removed": "Removed from favourites",
+    "undo": "Undo",
+    "discover": "Start discovering",
+    "inspiration": "Inspiration for you",
+    "search": "Search listings",
+    "menu": "More options"
   },
   "home": {
     "nearby": "Nearby",

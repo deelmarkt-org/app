@@ -21,6 +21,11 @@ abstract final class AppRoutes {
   static const login = '/login';
   static const register = '/register';
 
+  // ── Category & Favourites ──
+  static const categories = '/categories';
+  static const categoryDetail = '/categories/:id';
+  static const favourites = '/favourites';
+
   // ── Deep link targets ──
   static const listingDetail = '/listings/:id';
   static const userProfile = '/users/:id';

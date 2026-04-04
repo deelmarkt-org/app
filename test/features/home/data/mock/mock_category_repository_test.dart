@@ -40,10 +40,22 @@ void main() {
       }
     });
 
-    test('getSubcategories returns empty for category with no subs', () async {
-      final subs = await repo.getSubcategories('cat-services');
+    test('getSubcategories returns empty for unknown parent', () async {
+      final subs = await repo.getSubcategories('cat-nonexistent');
 
       expect(subs, isEmpty);
+    });
+
+    test('getSubcategories returns L2 for all 8 L1 categories', () async {
+      final l1 = await repo.getTopLevel();
+      for (final cat in l1) {
+        final subs = await repo.getSubcategories(cat.id);
+        expect(
+          subs,
+          isNotEmpty,
+          reason: '${cat.name} should have subcategories',
+        );
+      }
     });
   });
 

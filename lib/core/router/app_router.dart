@@ -7,6 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/category_browse_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/category_detail_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/favourites_screen.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
 import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
@@ -169,6 +172,31 @@ GoRouter _buildRouter({
             ],
           ),
         ],
+      ),
+
+      // ── Category & Favourites (outside shell, deep-linkable) ──
+      GoRoute(
+        path: AppRoutes.categories,
+        name: 'categories',
+        builder: (context, state) => const CategoryBrowseScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.categoryDetail,
+        name: 'category-detail',
+        redirect: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          if (id.isEmpty || id.length > 64) return AppRoutes.categories;
+          return null;
+        },
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return CategoryDetailScreen(categoryId: id);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.favourites,
+        name: 'favourites',
+        builder: (context, state) => const FavouritesScreen(),
       ),
 
       // ── Deep link routes (outside shell) ──

@@ -48,6 +48,7 @@ class DeelmarktColors {
 
   // Accent
   static const accentPurple = Color(0xFF7C3AED);
+  static const accentPurpleSurface = Color(0xFFF3EAFF);
   static const accentPink = Color(0xFFDB2777);
   static const accentEmerald = Color(0xFF059669);
 
