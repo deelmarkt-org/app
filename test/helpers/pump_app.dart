@@ -7,11 +7,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 
+/// Wraps [child] in a MediaQuery that inherits physical size / device pixel
+/// ratio etc. from the test binding, then flips `disableAnimations` on.
+///
+/// Using a fresh `const MediaQueryData(disableAnimations: true)` would clobber
+/// the test binding's size, which breaks responsive widgets that branch on
+/// `MediaQuery.sizeOf(context).width`. A `Builder` defers reading the
+/// ambient MediaQuery until the MaterialApp has installed its own ancestor.
+Widget _withDisabledAnimations(Widget child) {
+  return Builder(
+    builder:
+        (context) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child,
+        ),
+  );
+}
+
 /// Pump a widget wrapped in MaterialApp + Theme for widget tests.
 ///
-/// Does NOT use EasyLocalization — `.tr()` calls return the key path
-/// in tests, which is sufficient for verifying widget structure.
-/// This avoids async translation loading issues in test environments.
+/// Does NOT use EasyLocalization — `.tr()` calls return the key path in
+/// tests, which is sufficient for verifying widget structure. Avoids async
+/// translation loading issues in test environments.
+///
+/// `disableAnimations: true` is wired in so widgets with repeating
+/// animations (e.g. `EscrowStepCircle` pulse) don't starve `pumpAndSettle`.
 Future<void> pumpTestWidget(
   WidgetTester tester,
   Widget child, {
@@ -20,7 +40,9 @@ Future<void> pumpTestWidget(
   await tester.pumpWidget(
     MaterialApp(
       theme: theme ?? DeelmarktTheme.light,
-      home: Scaffold(body: SingleChildScrollView(child: child)),
+      home: _withDisabledAnimations(
+        Scaffold(body: SingleChildScrollView(child: child)),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -33,7 +55,10 @@ Future<void> pumpTestScreen(
   ThemeData? theme,
 }) async {
   await tester.pumpWidget(
-    MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+    MaterialApp(
+      theme: theme ?? DeelmarktTheme.light,
+      home: _withDisabledAnimations(screen),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -61,7 +86,9 @@ Future<void> pumpLocalizedWidget(
       path: 'assets/l10n',
       child: MaterialApp(
         theme: theme ?? DeelmarktTheme.light,
-        home: Scaffold(body: SingleChildScrollView(child: child)),
+        home: _withDisabledAnimations(
+          Scaffold(body: SingleChildScrollView(child: child)),
+        ),
       ),
     ),
   );
@@ -80,7 +107,10 @@ Future<void> pumpTestScreenWithProviders(
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
-      child: MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+      child: MaterialApp(
+        theme: theme ?? DeelmarktTheme.light,
+        home: _withDisabledAnimations(screen),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -107,7 +137,10 @@ Future<void> pumpLocalizedScreenWithProviders(
         supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
         fallbackLocale: const Locale('en', 'US'),
         path: 'assets/l10n',
-        child: MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+        child: MaterialApp(
+          theme: theme ?? DeelmarktTheme.light,
+          home: _withDisabledAnimations(screen),
+        ),
       ),
     ),
   );
