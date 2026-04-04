@@ -410,6 +410,9 @@ setState_allowlist:
   - lib/features/dev/**
   - lib/widgets/inputs/deel_search_input.dart
   - lib/features/profile/presentation/widgets/delete_account_dialog.dart
+  - lib/widgets/media/image_gallery.dart
+  - lib/widgets/media/image_gallery_fullscreen.dart
+  - lib/widgets/media/image_gallery_zoomable_page.dart
 
 file_length_exempt:
   - lib/core/design_system/theme.dart
