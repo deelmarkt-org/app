@@ -72,6 +72,11 @@ class HomeDataView extends ConsumerWidget {
       ),
       actions: [
         IconButton(
+          icon: Icon(PhosphorIcons.heart()),
+          tooltip: 'favourites.title'.tr(),
+          onPressed: () => context.push(AppRoutes.favourites),
+        ),
+        IconButton(
           icon: Icon(PhosphorIcons.magnifyingGlass()),
           tooltip: 'nav.search'.tr(),
           onPressed: () => context.go(AppRoutes.search),
@@ -92,7 +97,7 @@ class HomeDataView extends ConsumerWidget {
         child: CategoryCarousel(
           categories: data.categories,
           onCategoryTap: (cat) {
-            context.go('${AppRoutes.search}?category=${cat.id}');
+            context.push('${AppRoutes.categories}/${cat.id}');
           },
         ),
       ),

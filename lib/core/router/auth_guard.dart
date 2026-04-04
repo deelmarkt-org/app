@@ -14,6 +14,7 @@ const _protectedRoutes = [
   AppRoutes.sell,
   AppRoutes.messages,
   AppRoutes.profile,
+  AppRoutes.favourites,
   '/transactions',
   '/shipping',
 ];
