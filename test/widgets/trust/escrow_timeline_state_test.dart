@@ -119,16 +119,18 @@ void main() {
   });
 
   group('EscrowTimelineStep', () {
-    test('each step maps to its matching TransactionStatus', () {
-      expect(EscrowTimelineStep.paid.status, TransactionStatus.paid);
-      expect(EscrowTimelineStep.shipped.status, TransactionStatus.shipped);
-      expect(EscrowTimelineStep.delivered.status, TransactionStatus.delivered);
-      expect(EscrowTimelineStep.confirmed.status, TransactionStatus.confirmed);
-      expect(EscrowTimelineStep.released.status, TransactionStatus.released);
-    });
-
     test('values length matches the visible timeline length', () {
       expect(EscrowTimelineStep.values.length, 5);
+    });
+
+    test('each step name is used as the escrow.* l10n key suffix', () {
+      // The widget builds labels via `'escrow.${step.name}'.tr()`, so step
+      // names must match the keys in assets/l10n/*.json.
+      expect(EscrowTimelineStep.paid.name, 'paid');
+      expect(EscrowTimelineStep.shipped.name, 'shipped');
+      expect(EscrowTimelineStep.delivered.name, 'delivered');
+      expect(EscrowTimelineStep.confirmed.name, 'confirmed');
+      expect(EscrowTimelineStep.released.name, 'released');
     });
   });
 

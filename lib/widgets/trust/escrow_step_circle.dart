@@ -144,15 +144,21 @@ class _EscrowStepCircleState extends State<EscrowStepCircle>
 Color _accentForTone(EscrowStepTone tone) => switch (tone) {
   EscrowStepTone.trust => DeelmarktColors.trustEscrow,
   EscrowStepTone.warning => DeelmarktColors.trustWarning,
-  EscrowStepTone.muted => DeelmarktColors.neutral500,
+  // muted accent is effectively unreachable in the current mapper
+  // (muted states have no complete/active steps) — kept for
+  // exhaustive-switch coverage and future-proofing.
+  EscrowStepTone.muted => DeelmarktColors.neutral700,
 };
 
 Color _pendingBorderForTone(BuildContext context, EscrowStepTone tone) {
-  // Current design uses the same neutral across tones; a dedicated muted
-  // variant can diverge here if the design system introduces one later.
-  return Theme.of(context).brightness == Brightness.dark
-      ? DeelmarktColors.neutral500
-      : DeelmarktColors.neutral300;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  // Muted (cancelled / refunded / awaiting-payment) gets a distinctly
+  // dimmer border than happy-path pending so the two visual states remain
+  // distinguishable under both themes (fixes PR #67 review finding #3).
+  if (tone == EscrowStepTone.muted) {
+    return isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral500;
+  }
+  return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
 }
 
 class _CompleteCircle extends StatelessWidget {

@@ -16,17 +16,9 @@ import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/widgets/trust/escrow_step_circle.dart';
 
 /// Ordered happy-path timeline steps. Off-path states still anchor to one
-/// of these via [EscrowTimelineVisualState.activeStepIndex].
-enum EscrowTimelineStep {
-  paid(TransactionStatus.paid),
-  shipped(TransactionStatus.shipped),
-  delivered(TransactionStatus.delivered),
-  confirmed(TransactionStatus.confirmed),
-  released(TransactionStatus.released);
-
-  const EscrowTimelineStep(this.status);
-  final TransactionStatus status;
-}
+/// of these via [EscrowTimelineVisualState.activeStepIndex]. The enum name
+/// is the localisation key suffix (`escrow.${step.name}`).
+enum EscrowTimelineStep { paid, shipped, delivered, confirmed, released }
 
 /// High-level timeline shape: happy path, dispute, or terminal failure.
 enum EscrowTimelineShape {
@@ -105,12 +97,16 @@ class EscrowTimelineVisualState {
     required bool isActive,
     required bool isComplete,
   }) {
-    if (isMuted) return DeelmarktColors.neutral500;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isMuted) {
+      // Muted labels sit at a distinctly dimmer shade than happy-path
+      // pending labels so the two states are distinguishable under dark
+      // theme (fixes PR #67 review finding #3).
+      return isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral500;
+    }
     if (_isDisputedAnchor(stepIndex)) return DeelmarktColors.trustWarning;
     if (isActive || isComplete) return DeelmarktColors.trustEscrow;
-    return Theme.of(context).brightness == Brightness.dark
-        ? DeelmarktColors.neutral500
-        : DeelmarktColors.neutral300;
+    return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
   }
 }
 
