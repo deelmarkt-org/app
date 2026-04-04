@@ -39,14 +39,17 @@ class EscrowTimeline extends StatelessWidget {
         builder: (context, constraints) {
           final isNarrow = constraints.maxWidth < _narrowBreakpoint;
           return SizedBox(
-            height: isNarrow ? 120 : 104,
+            height:
+                isNarrow
+                    ? EscrowStepTokens.rowHeightNarrow
+                    : EscrowStepTokens.rowHeightWide,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
                 EscrowTimelineStep.values.length * 2 - 1,
                 (i) =>
                     i.isOdd
-                        ? _buildConnector(i ~/ 2, state)
+                        ? _buildConnector(context, i ~/ 2, state)
                         : _buildStep(context, i ~/ 2, state, isNarrow),
               ),
             ),
@@ -64,12 +67,12 @@ class EscrowTimeline extends StatelessWidget {
   ) {
     final step = EscrowTimelineStep.values[stepIndex];
     final isAtIndex = state.activeStepIndex == stepIndex;
-    final isComplete = state.completedStepCount > stepIndex;
-    final isActive =
-        (isAtIndex && !state.isTerminal) ||
-        (isAtIndex && state.shape == EscrowTimelineShape.disputed);
+    final rawComplete = state.completedStepCount > stepIndex;
+    // `disputed` is NOT in `isTerminal` so a single `!isTerminal` check is
+    // sufficient — no extra disputed disjunct needed (M1).
+    final isActive = isAtIndex && !state.isTerminal;
     final showAsComplete =
-        isComplete ||
+        rawComplete ||
         (isAtIndex && state.shape == EscrowTimelineShape.terminalResolved);
     final labelText = 'escrow.${step.name}'.tr();
     final onTap = onStepTapped;
@@ -98,15 +101,20 @@ class EscrowTimeline extends StatelessWidget {
                   Text(
                     labelText,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      // Pass `showAsComplete` so the label colour tracks the
+                      // circle's visual state in terminal `resolved` (M2).
                       color: state.labelColor(
                         context,
                         stepIndex,
                         isActive: isActive,
-                        isComplete: isComplete,
+                        isComplete: showAsComplete,
                       ),
                       fontWeight:
                           isActive ? FontWeight.w600 : FontWeight.normal,
-                      fontSize: isNarrow ? 10 : null,
+                      fontSize:
+                          isNarrow
+                              ? EscrowStepTokens.narrowLabelFontSize
+                              : null,
                     ),
                     textAlign: TextAlign.center,
                     maxLines: isNarrow ? 2 : 1,
@@ -123,16 +131,28 @@ class EscrowTimeline extends StatelessWidget {
     );
   }
 
-  Widget _buildConnector(int stepIndex, EscrowTimelineVisualState state) {
+  Widget _buildConnector(
+    BuildContext context,
+    int stepIndex,
+    EscrowTimelineVisualState state,
+  ) {
+    // Theme-aware pending colour so dark mode doesn't render a pale-grey line
+    // on darkSurface (M4).
+    final pendingColor =
+        Theme.of(context).brightness == Brightness.dark
+            ? DeelmarktColors.neutral500
+            : DeelmarktColors.neutral300;
     return SizedBox(
       width: Spacing.s4,
       child: Padding(
-        padding: const EdgeInsets.only(top: 21),
+        padding: const EdgeInsets.only(
+          top: EscrowStepTokens.connectorTopOffset,
+        ),
         child: CustomPaint(
           painter: EscrowConnectorPainter(
             isComplete: state.completedStepCount > stepIndex,
             completeColor: state.accentAt(stepIndex),
-            pendingColor: DeelmarktColors.neutral300,
+            pendingColor: pendingColor,
           ),
           size: const Size(Spacing.s4, EscrowStepTokens.connectorHeight),
         ),
@@ -148,14 +168,16 @@ class _DeadlineHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 2),
+      padding: const EdgeInsets.only(
+        top: EscrowStepTokens.deadlineHintTopPadding,
+      ),
       child: Text(
         'escrow.deadlineHint'.tr(
           namedArgs: {'date': Formatters.shortDateTime(deadline)},
         ),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
           color: DeelmarktColors.primary,
-          fontSize: 10,
+          fontSize: EscrowStepTokens.deadlineHintFontSize,
         ),
         textAlign: TextAlign.center,
         maxLines: 2,

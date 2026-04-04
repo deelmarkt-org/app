@@ -1,9 +1,10 @@
-/// Pure-Dart mapper from [TransactionStatus] to the visual state that the
-/// [EscrowTimeline] widget should render.
+/// Visual-state model for the [EscrowTimeline] widget.
 ///
-/// Extracted so the state logic can reach 100% branch coverage without
-/// Flutter dependencies (E03 payment paths require 100% coverage per
-/// CLAUDE.md §6.1).
+/// `computeEscrowTimelineState` is the pure-Dart single source of truth for
+/// every [TransactionStatus] branch (E03 payment path requires 100% coverage
+/// per CLAUDE.md §6.1). The surrounding [EscrowTimelineVisualState] extension
+/// methods expose theme-aware colour helpers so the widget itself can stay
+/// declarative.
 ///
 /// Reference: docs/design-system/patterns.md §Escrow Timeline
 library;

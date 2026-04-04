@@ -21,6 +21,24 @@ abstract final class EscrowStepTokens {
 
   /// Pulse animation scale range — 1.0 → 1.12 → 1.0.
   static const double pulseMaxScale = 1.12;
+
+  /// Stepper row height at wide layouts (≥ 360 px).
+  static const double rowHeightWide = 104;
+
+  /// Stepper row height at narrow layouts (< 360 px) — extra space for the
+  /// 2-line label wrap plus the deadline hint.
+  static const double rowHeightNarrow = 120;
+
+  /// Connector vertical offset so the line aligns with the middle of the
+  /// circle, regardless of tap-target padding.
+  static const double connectorTopOffset = (minTapTarget - connectorHeight) / 2;
+
+  /// Step label font size at narrow layouts.
+  static const double narrowLabelFontSize = 10;
+
+  /// Deadline-hint font size + top padding.
+  static const double deadlineHintFontSize = 10;
+  static const double deadlineHintTopPadding = 2;
 }
 
 /// Visual tone for an [EscrowStepCircle].
@@ -130,11 +148,11 @@ Color _accentForTone(EscrowStepTone tone) => switch (tone) {
 };
 
 Color _pendingBorderForTone(BuildContext context, EscrowStepTone tone) {
-  final isDark = Theme.of(context).brightness == Brightness.dark;
-  if (tone == EscrowStepTone.muted) {
-    return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
-  }
-  return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
+  // Current design uses the same neutral across tones; a dedicated muted
+  // variant can diverge here if the design system introduces one later.
+  return Theme.of(context).brightness == Brightness.dark
+      ? DeelmarktColors.neutral500
+      : DeelmarktColors.neutral300;
 }
 
 class _CompleteCircle extends StatelessWidget {
