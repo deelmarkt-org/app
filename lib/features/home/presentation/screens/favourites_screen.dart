@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/router/routes.dart';
+
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
@@ -44,7 +46,7 @@ class FavouritesScreen extends ConsumerWidget {
             label: 'favourites.search'.tr(),
             child: IconButton(
               icon: Icon(PhosphorIcons.magnifyingGlass()),
-              onPressed: () => context.push('/search'),
+              onPressed: () => context.push(AppRoutes.search),
             ),
           ),
           Semantics(
@@ -70,7 +72,7 @@ class FavouritesScreen extends ConsumerWidget {
                       icon: PhosphorIcons.heart(),
                       message: 'favourites.tapHeart'.tr(),
                       actionLabel: 'favourites.discover'.tr(),
-                      onAction: () => context.go('/'),
+                      onAction: () => context.go(AppRoutes.home),
                     )
                     : _DataView(listings: listings),
       ),
@@ -185,7 +187,10 @@ class _FavouriteCard extends ConsumerWidget {
           listing.distanceKm != null
               ? Formatters.distanceKm(listing.distanceKm!)
               : null,
-      onTap: () => context.push('/listings/${listing.id}'),
+      onTap:
+          () => context.push(
+            AppRoutes.listingDetail.replaceAll(':id', listing.id),
+          ),
       onFavouriteTap: () => _handleRemove(context, ref),
     );
   }

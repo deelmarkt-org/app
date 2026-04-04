@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_shapes.dart';
@@ -66,7 +67,10 @@ class _DataView extends StatelessWidget {
           final category = categories[index];
           return CategoryCard(
             category: category,
-            onTap: () => context.push('/categories/${category.id}'),
+            onTap:
+                () => context.push(
+                  AppRoutes.categoryDetail.replaceAll(':id', category.id),
+                ),
           );
         },
       ),

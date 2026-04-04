@@ -2,73 +2,90 @@ import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 
+/// Record type for category tint colour sets.
+typedef CategoryTint =
+    ({Color background, Color iconBackground, Color iconForeground});
+
+/// Builds a tint record from a light surface colour and a dark accent colour.
+///
+/// Used by most categories that follow the standard light/dark pattern:
+/// - Light mode: surface colour for background + icon background
+/// - Dark mode: accent with low alpha for background, medium alpha for icon
+CategoryTint _tint({
+  required Color lightSurface,
+  required Color darkSurface,
+  required Color accent,
+  required Color lightForeground,
+  required Color darkForeground,
+  required bool isDark,
+}) => (
+  background: isDark ? darkSurface.withAlpha(128) : lightSurface,
+  iconBackground: isDark ? accent.withAlpha(51) : lightSurface,
+  iconForeground: isDark ? darkForeground : lightForeground,
+);
+
+/// Neutral tint used for services, other, and unknown categories.
+CategoryTint _neutralTint({
+  required bool isDark,
+  required Color darkForeground,
+  required Color lightForeground,
+}) => (
+  background:
+      isDark ? DeelmarktColors.darkSurfaceElevated : DeelmarktColors.neutral100,
+  iconBackground:
+      isDark
+          ? DeelmarktColors.neutral700.withAlpha(51)
+          : DeelmarktColors.neutral100,
+  iconForeground: isDark ? darkForeground : lightForeground,
+);
+
 /// Tint colour set for category cards and detail screens.
 ///
 /// Returns background, icon background, and icon foreground colours
 /// mapped to each L1 category ID, using design system tokens.
-({Color background, Color iconBackground, Color iconForeground})
-categoryTintFor(String categoryId, Brightness brightness) {
+CategoryTint categoryTintFor(String categoryId, Brightness brightness) {
   final isDark = brightness == Brightness.dark;
 
   return switch (categoryId) {
-    'cat-electronics' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkInfoSurface.withAlpha(128)
-              : DeelmarktColors.secondarySurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.secondary.withAlpha(51)
-              : DeelmarktColors.secondarySurface,
-      iconForeground:
-          isDark ? DeelmarktColors.darkSecondary : DeelmarktColors.secondary,
+    'cat-electronics' => _tint(
+      lightSurface: DeelmarktColors.secondarySurface,
+      darkSurface: DeelmarktColors.darkInfoSurface,
+      accent: DeelmarktColors.secondary,
+      lightForeground: DeelmarktColors.secondary,
+      darkForeground: DeelmarktColors.darkSecondary,
+      isDark: isDark,
     ),
-    'cat-clothing' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkErrorSurface.withAlpha(128)
-              : DeelmarktColors.errorSurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.error.withAlpha(51)
-              : DeelmarktColors.errorSurface,
-      iconForeground:
-          isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
+    'cat-clothing' => _tint(
+      lightSurface: DeelmarktColors.errorSurface,
+      darkSurface: DeelmarktColors.darkErrorSurface,
+      accent: DeelmarktColors.error,
+      lightForeground: DeelmarktColors.error,
+      darkForeground: DeelmarktColors.darkError,
+      isDark: isDark,
     ),
-    'cat-home' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkSuccessSurface.withAlpha(128)
-              : DeelmarktColors.successSurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.success.withAlpha(51)
-              : DeelmarktColors.successSurface,
-      iconForeground:
-          isDark ? DeelmarktColors.darkSuccess : DeelmarktColors.success,
+    'cat-home' => _tint(
+      lightSurface: DeelmarktColors.successSurface,
+      darkSurface: DeelmarktColors.darkSuccessSurface,
+      accent: DeelmarktColors.success,
+      lightForeground: DeelmarktColors.success,
+      darkForeground: DeelmarktColors.darkSuccess,
+      isDark: isDark,
     ),
-    'cat-sport' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkWarningSurface.withAlpha(128)
-              : DeelmarktColors.primarySurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.primary.withAlpha(51)
-              : DeelmarktColors.primarySurface,
-      iconForeground:
-          isDark ? DeelmarktColors.darkPrimary : DeelmarktColors.primary,
+    'cat-sport' => _tint(
+      lightSurface: DeelmarktColors.primarySurface,
+      darkSurface: DeelmarktColors.darkWarningSurface,
+      accent: DeelmarktColors.primary,
+      lightForeground: DeelmarktColors.primary,
+      darkForeground: DeelmarktColors.darkPrimary,
+      isDark: isDark,
     ),
-    'cat-vehicles' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkInfoSurface.withAlpha(128)
-              : DeelmarktColors.infoSurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.info.withAlpha(51)
-              : DeelmarktColors.infoSurface,
-      iconForeground: isDark ? DeelmarktColors.darkInfo : DeelmarktColors.info,
+    'cat-vehicles' => _tint(
+      lightSurface: DeelmarktColors.infoSurface,
+      darkSurface: DeelmarktColors.darkInfoSurface,
+      accent: DeelmarktColors.info,
+      lightForeground: DeelmarktColors.info,
+      darkForeground: DeelmarktColors.darkInfo,
+      isDark: isDark,
     ),
     'cat-kids' => (
       background:
@@ -81,48 +98,20 @@ categoryTintFor(String categoryId, Brightness brightness) {
               : DeelmarktColors.accentPurpleSurface,
       iconForeground: DeelmarktColors.accentPurple,
     ),
-    'cat-services' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkSurfaceElevated
-              : DeelmarktColors.neutral100,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.neutral700.withAlpha(51)
-              : DeelmarktColors.neutral100,
-      iconForeground:
-          isDark
-              ? DeelmarktColors.darkOnSurfaceSecondary
-              : DeelmarktColors.neutral700,
+    'cat-services' => _neutralTint(
+      isDark: isDark,
+      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
+      lightForeground: DeelmarktColors.neutral700,
     ),
-    'cat-other' => (
-      background:
-          isDark
-              ? DeelmarktColors.darkSurfaceElevated
-              : DeelmarktColors.neutral100,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.neutral700.withAlpha(51)
-              : DeelmarktColors.neutral100,
-      iconForeground:
-          isDark
-              ? DeelmarktColors.darkOnSurfaceSecondary
-              : DeelmarktColors.neutral700,
+    'cat-other' => _neutralTint(
+      isDark: isDark,
+      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
+      lightForeground: DeelmarktColors.neutral700,
     ),
-    // Fallback for unknown category IDs
-    _ => (
-      background:
-          isDark
-              ? DeelmarktColors.darkSurfaceElevated
-              : DeelmarktColors.neutral100,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.neutral700.withAlpha(51)
-              : DeelmarktColors.neutral100,
-      iconForeground:
-          isDark
-              ? DeelmarktColors.darkOnSurfaceSecondary
-              : DeelmarktColors.neutral500,
+    _ => _neutralTint(
+      isDark: isDark,
+      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
+      lightForeground: DeelmarktColors.neutral500,
     ),
   };
 }

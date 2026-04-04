@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
@@ -151,7 +152,10 @@ class _SubcategoryChipsSection extends StatelessWidget {
               for (final subcat in subcategories)
                 SubcategoryChip(
                   category: subcat,
-                  onTap: () => context.push('/search?category=${subcat.id}'),
+                  onTap:
+                      () => context.push(
+                        '${AppRoutes.search}?category=${subcat.id}',
+                      ),
                 ),
             ],
           ),
@@ -192,7 +196,10 @@ class _FeaturedListingsGrid extends StatelessWidget {
             location: listing.location,
             isFavourited: listing.isFavourited,
             onFavouriteTap: () => onToggleFavourite(listing.id),
-            onTap: () => context.push('/listings/${listing.id}'),
+            onTap:
+                () => context.push(
+                  AppRoutes.listingDetail.replaceAll(':id', listing.id),
+                ),
           );
         }, childCount: listings.length),
       ),

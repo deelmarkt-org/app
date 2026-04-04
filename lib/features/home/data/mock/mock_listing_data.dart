@@ -4,6 +4,26 @@ import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 const sampleImageUrl =
     'https://res.cloudinary.com/demo/image/upload/sample.jpg';
 
+// ── Seller constants ──────────────────────────────────────────────────────────
+
+const _user001 = 'user-001';
+const _janDeVries = 'Jan de Vries';
+
+const _user002 = 'user-002';
+const _mariaJansen = 'Maria Jansen';
+
+const _user003 = 'user-003';
+const _pieterBakker = 'Pieter Bakker';
+
+const _user004 = 'user-004';
+const _sophieVisser = 'Sophie Visser';
+
+const _user005 = 'user-005';
+const _ahmedElAmrani = 'Ahmed El Amrani';
+
+const _user006 = 'user-006';
+const _henkDeGroot = 'Henk de Groot';
+
 /// Mock listing data — 13 listings across categories.
 final mockListings = [
   ListingEntity(
@@ -12,8 +32,8 @@ final mockListings = [
     description:
         'Carbon frame, Shimano 105 groepset. 2 jaar oud, weinig gereden.',
     priceInCents: 89500,
-    sellerId: 'user-001',
-    sellerName: 'Jan de Vries',
+    sellerId: _user001,
+    sellerName: _janDeVries,
     condition: ListingCondition.good,
     categoryId: 'cat-sport',
     imageUrls: const [sampleImageUrl],
@@ -26,8 +46,8 @@ final mockListings = [
     title: 'iPhone 15 Pro 256GB',
     description: 'Inclusief originele doos en oplader. Geen kratjes.',
     priceInCents: 75000,
-    sellerId: 'user-002',
-    sellerName: 'Maria Jansen',
+    sellerId: _user002,
+    sellerName: _mariaJansen,
     condition: ListingCondition.likeNew,
     categoryId: 'cat-electronics',
     imageUrls: const [sampleImageUrl],
@@ -41,8 +61,8 @@ final mockListings = [
     title: 'IKEA Kallax Kast 4x4',
     description: 'Wit, goede staat. Zelf ophalen in Utrecht.',
     priceInCents: 4500,
-    sellerId: 'user-003',
-    sellerName: 'Pieter Bakker',
+    sellerId: _user003,
+    sellerName: _pieterBakker,
     condition: ListingCondition.fair,
     categoryId: 'cat-home',
     imageUrls: const [sampleImageUrl],
@@ -56,8 +76,8 @@ final mockListings = [
     description:
         'Nieuw met labels, nooit gedragen. Cadeau gekregen maar verkeerde maat.',
     priceInCents: 8900,
-    sellerId: 'user-004',
-    sellerName: 'Sophie Visser',
+    sellerId: _user004,
+    sellerName: _sophieVisser,
     condition: ListingCondition.newWithTags,
     categoryId: 'cat-shoes',
     imageUrls: const [sampleImageUrl],
@@ -70,8 +90,8 @@ final mockListings = [
     title: 'Samsung Galaxy S24 Ultra 512GB',
     description: 'Titanium Black, compleet met doos en garantie tot december.',
     priceInCents: 95000,
-    sellerId: 'user-005',
-    sellerName: 'Ahmed El Amrani',
+    sellerId: _user005,
+    sellerName: _ahmedElAmrani,
     condition: ListingCondition.likeNew,
     categoryId: 'cat-phones',
     imageUrls: const [sampleImageUrl],
@@ -84,8 +104,8 @@ final mockListings = [
     title: 'Gazelle Ultimate T10 HMB E-bike',
     description: 'Elektrische fiets, 2 jaar oud, accu in goede staat.',
     priceInCents: 210000,
-    sellerId: 'user-006',
-    sellerName: 'Henk de Groot',
+    sellerId: _user006,
+    sellerName: _henkDeGroot,
     condition: ListingCondition.good,
     categoryId: 'cat-bikes',
     imageUrls: const [sampleImageUrl],
@@ -98,8 +118,8 @@ final mockListings = [
     title: 'Vintage IKEA Moments salontafel',
     description: 'Glazen tafel met metalen frame. Retro jaren 90 design.',
     priceInCents: 12500,
-    sellerId: 'user-003',
-    sellerName: 'Pieter Bakker',
+    sellerId: _user003,
+    sellerName: _pieterBakker,
     condition: ListingCondition.good,
     categoryId: 'cat-furniture',
     imageUrls: const [sampleImageUrl],
@@ -112,8 +132,8 @@ final mockListings = [
     title: 'PlayStation 5 Slim + 2 controllers',
     description: 'Digitale editie met extra controller en 3 games.',
     priceInCents: 42500,
-    sellerId: 'user-002',
-    sellerName: 'Maria Jansen',
+    sellerId: _user002,
+    sellerName: _mariaJansen,
     condition: ListingCondition.good,
     categoryId: 'cat-gaming',
     imageUrls: const [sampleImageUrl],
@@ -126,8 +146,8 @@ final mockListings = [
     title: 'Dumbbells set 2x 20kg verstelbaar',
     description: 'Professionele set, nauwelijks gebruikt. Inclusief standaard.',
     priceInCents: 7500,
-    sellerId: 'user-001',
-    sellerName: 'Jan de Vries',
+    sellerId: _user001,
+    sellerName: _janDeVries,
     condition: ListingCondition.likeNew,
     categoryId: 'cat-fitness',
     imageUrls: const [sampleImageUrl],
@@ -140,8 +160,8 @@ final mockListings = [
     title: 'LEGO Technic Porsche 911 GT3 RS',
     description: 'Compleet met doos en handleiding. Tentoongesteld geweest.',
     priceInCents: 28000,
-    sellerId: 'user-004',
-    sellerName: 'Sophie Visser',
+    sellerId: _user004,
+    sellerName: _sophieVisser,
     condition: ListingCondition.good,
     categoryId: 'cat-toys',
     imageUrls: const [sampleImageUrl],
@@ -154,8 +174,8 @@ final mockListings = [
     title: 'Rapha Core wielrenshirt maat M',
     description: 'Marineblauw, gedragen maar in prima staat.',
     priceInCents: 4500,
-    sellerId: 'user-006',
-    sellerName: 'Henk de Groot',
+    sellerId: _user006,
+    sellerName: _henkDeGroot,
     condition: ListingCondition.good,
     categoryId: 'cat-men',
     imageUrls: const [sampleImageUrl],
@@ -168,8 +188,8 @@ final mockListings = [
     title: 'Sonos Era 100 speaker wit',
     description: 'Perfecte staat, werkt foutloos. Originele verpakking.',
     priceInCents: 22000,
-    sellerId: 'user-005',
-    sellerName: 'Ahmed El Amrani',
+    sellerId: _user005,
+    sellerName: _ahmedElAmrani,
     condition: ListingCondition.likeNew,
     categoryId: 'cat-phones',
     imageUrls: const [sampleImageUrl],
@@ -182,8 +202,8 @@ final mockListings = [
     title: 'Tuinset 4 stoelen + tafel',
     description: 'Teakhout, weerbestendig. Past op elk balkon of in de tuin.',
     priceInCents: 35000,
-    sellerId: 'user-003',
-    sellerName: 'Pieter Bakker',
+    sellerId: _user003,
+    sellerName: _pieterBakker,
     condition: ListingCondition.fair,
     categoryId: 'cat-garden',
     imageUrls: const [sampleImageUrl],
