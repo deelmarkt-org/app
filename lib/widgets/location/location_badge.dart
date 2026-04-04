@@ -29,13 +29,20 @@ const double _kMinTapTarget = 44;
 /// Pin icon sizes per variant.
 const double _kPinCompact = 14;
 const double _kPinDetail = 18;
+const double _kPinMapPlaceholder = 32;
 
-/// Shared shared-widget replacing `ListingLocationRow`.
+/// Shared widget replacing the feature-local `ListingLocationRow`.
 ///
 /// Exposes pin + city + optional distance in three visual densities:
-/// compact (card), detail (screen), skeleton (loading). `postalCode` is
-/// accepted for screen-reader context only and is NEVER rendered in the UI
-/// to respect GDPR (PII minimisation in scam-adjacent surfaces).
+/// compact (card), detail (screen), skeleton (loading).
+///
+/// **GDPR note**: this widget deliberately does NOT accept a postal
+/// code parameter. Postal code + city + distance can triangulate a
+/// seller's home within ~100 m; combined with the scam surface of
+/// listings, that is unjustified under AVG/GDPR Art. 5(1)(c) (data
+/// minimisation). If a legitimate a11y or mapping use case ever
+/// appears, add the field together with a test that asserts it never
+/// reaches a visible surface (Text, Tooltip, or Semantics label).
 ///
 /// Reference:
 /// - `docs/design-system/components.md` §LocationBadge
@@ -44,7 +51,6 @@ class LocationBadge extends StatelessWidget {
   const LocationBadge({
     required this.city,
     this.distanceKm,
-    this.postalCode,
     this.variant = LocationBadgeVariant.compact,
     this.showMapPlaceholder = false,
     this.onTap,
@@ -56,7 +62,6 @@ class LocationBadge extends StatelessWidget {
   const LocationBadge.skeleton({super.key})
     : city = '',
       distanceKm = null,
-      postalCode = null,
       variant = LocationBadgeVariant.skeleton,
       showMapPlaceholder = false,
       onTap = null,
@@ -64,9 +69,6 @@ class LocationBadge extends StatelessWidget {
 
   final String city;
   final double? distanceKm;
-
-  /// Accessibility-only context. Never rendered as text (GDPR / scam risk).
-  final String? postalCode;
 
   final LocationBadgeVariant variant;
 
@@ -105,7 +107,10 @@ class LocationBadge extends StatelessWidget {
     if (onTap == null) return body;
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: _kMinTapTarget),
+      constraints: const BoxConstraints(
+        minHeight: _kMinTapTarget,
+        minWidth: _kMinTapTarget,
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -242,7 +247,7 @@ class _MapPlaceholder extends StatelessWidget {
           child: Center(
             child: Icon(
               PhosphorIcons.mapPin(),
-              size: 32,
+              size: _kPinMapPlaceholder,
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
@@ -257,13 +262,17 @@ class _LocationBadgeSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SkeletonLoader(
-      child: Row(
-        children: [
-          SkeletonCircle(size: _kPinCompact),
-          SizedBox(width: Spacing.s1),
-          Expanded(child: SkeletonLine(height: 12)),
-        ],
+    return Semantics(
+      label: 'a11y.loading'.tr(),
+      liveRegion: true,
+      child: const SkeletonLoader(
+        child: Row(
+          children: [
+            SkeletonCircle(size: _kPinCompact),
+            SizedBox(width: Spacing.s1),
+            Expanded(child: SkeletonLine(height: 12)),
+          ],
+        ),
       ),
     );
   }

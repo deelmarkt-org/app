@@ -7,19 +7,6 @@ import 'package:deelmarkt/widgets/location/location_badge.dart';
 
 import '../../helpers/pump_app.dart';
 
-/// Asserts `postalCode` never appears in the rendered text tree anywhere
-/// under the widget (GDPR / PII minimisation guard).
-void _expectPostalCodeAbsent(WidgetTester tester, String postalCode) {
-  final matches = find.byWidgetPredicate(
-    (w) => w is Text && (w.data ?? '').contains(postalCode),
-  );
-  expect(
-    matches,
-    findsNothing,
-    reason: 'postalCode must never be rendered in Text widgets',
-  );
-}
-
 void main() {
   group('LocationBadge — compact variant', () {
     testWidgets('renders city name only when distance is null', (tester) async {
@@ -182,24 +169,21 @@ void main() {
       );
     });
 
-    testWidgets('postalCode is never rendered as text (GDPR)', (tester) async {
-      const pc = '1012AB';
-      await pumpTestWidget(
-        tester,
-        const LocationBadge(city: 'Amsterdam', distanceKm: 2.1, postalCode: pc),
-      );
-      _expectPostalCodeAbsent(tester, pc);
-    });
-
-    testWidgets('tappable variant has ≥44px tap target', (tester) async {
+    testWidgets('tappable variant fires onTap and meets ≥44×44 tap target', (
+      tester,
+    ) async {
       var tapped = false;
       await pumpTestWidget(
         tester,
         LocationBadge(city: 'Tilburg', onTap: () => tapped = true),
       );
-      // Hit-test the InkWell — must exist and respond.
+      // Tap dispatch
       await tester.tap(find.byType(InkWell));
       expect(tapped, isTrue);
+      // WCAG 2.2 AA — geometry assertion (fix L4 from code-reviewer)
+      final size = tester.getSize(find.byType(InkWell));
+      expect(size.height, greaterThanOrEqualTo(44));
+      expect(size.width, greaterThanOrEqualTo(44));
     });
 
     testWidgets('non-tappable variant does not create an InkWell', (
