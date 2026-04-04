@@ -182,6 +182,9 @@ class SupabaseSettingsRepository implements SettingsRepository {
       if (response.status != 200) {
         throw Exception('Delete failed with status ${response.status}');
       }
+
+      // Sign out locally — auth user stays in Supabase until cron hard-deletes
+      await _client.auth.signOut();
     } on AuthException catch (e) {
       throw Exception('Authentication failed: ${e.message}');
     } on FunctionException catch (e) {

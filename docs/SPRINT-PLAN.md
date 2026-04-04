@@ -110,7 +110,7 @@ The agent will:
 - [ ] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts
 - [ ] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it
 - [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing
-- [ ] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log
+- [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
 - [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
