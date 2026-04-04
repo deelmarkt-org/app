@@ -10,7 +10,7 @@ import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
-import 'package:deelmarkt/features/home/presentation/widgets/listing_location_row.dart';
+import 'package:deelmarkt/widgets/location/location_badge.dart';
 
 /// Minimum touch target size (44x44) per WCAG / EAA requirements.
 const _kTouchTargetSize = 44.0;
@@ -80,8 +80,8 @@ class ListingCard extends StatelessWidget {
                       ),
                       if (listing.location != null) ...[
                         const SizedBox(height: Spacing.s1),
-                        ListingLocationRow(
-                          location: listing.location!,
+                        LocationBadge(
+                          city: listing.location!,
                           distanceKm: listing.distanceKm,
                         ),
                       ],

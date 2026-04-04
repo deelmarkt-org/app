@@ -367,6 +367,11 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "location_badge": {
+    "a11yWithDistance": "Location: {city}, {distance} away",
+    "a11yCityOnly": "Location: {city}",
+    "mapPlaceholder": "Map preview"
+  },
   "profile": {
     "title": "Profile",
     "notLoggedIn": "Not logged in",
