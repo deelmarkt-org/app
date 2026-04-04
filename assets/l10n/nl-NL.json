@@ -544,5 +544,21 @@
     "fileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
     "openSettingsHint": "Ga naar Instellingen om cameratoegang in te schakelen voor DeelMarkt"
+  },
+  "image_gallery": {
+    "close": "Sluiten",
+    "fullscreenLabel": "Foto op volledig scherm",
+    "noImages": "Geen afbeeldingen",
+    "photoCount": "{current} / {total}",
+    "photoSemantics": "Foto {current} van {total}"
+  },
+  "price_tag": {
+    "exclBtw": "excl. BTW",
+    "free": "Gratis",
+    "inclBtw": "incl. BTW",
+    "semanticsDiscounted": "{price} euro, was {original} euro",
+    "semanticsFree": "Gratis",
+    "semanticsPrice": "{price} euro",
+    "wasPrice": "Was {price}"
   }
 }
