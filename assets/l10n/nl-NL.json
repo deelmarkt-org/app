@@ -367,6 +367,11 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "location_badge": {
+    "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
+    "a11yCityOnly": "Locatie: {city}",
+    "mapPlaceholder": "Kaartweergave"
+  },
   "profile": {
     "title": "Profiel",
     "notLoggedIn": "Niet ingelogd",
