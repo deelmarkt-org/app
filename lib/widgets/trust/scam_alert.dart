@@ -43,6 +43,12 @@ class ScamAlert extends StatefulWidget {
          '(onDismiss must be null).',
        ),
        assert(
+         confidence == ScamAlertConfidence.low || onReport != null,
+         'High-confidence scam alerts must provide onReport — the '
+         'Report action is the only recovery path for the user '
+         '(non-dismissible banners with no action become dead UI).',
+       ),
+       assert(
          // ignore: prefer_is_empty
          reasons.length > 0,
          'ScamAlert requires at least one reason — use '
@@ -52,8 +58,8 @@ class ScamAlert extends StatefulWidget {
   final ScamAlertConfidence confidence;
   final List<ScamAlertReason> reasons;
 
-  /// Fires when the user taps the Report action. Required for high
-  /// confidence, optional for low.
+  /// Fires when the user taps the Report action. **Required** for
+  /// high confidence (asserted at construction), optional for low.
   final VoidCallback? onReport;
 
   /// Only honoured for [ScamAlertConfidence.low]. Asserted at
