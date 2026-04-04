@@ -15,59 +15,168 @@ abstract final class EscrowStepTokens {
 
   /// Minimum tappable area — WCAG 2.2 AA (44x44px).
   static const double minTapTarget = 44;
+
+  /// Pulse animation duration for the active state (fix A8).
+  static const Duration pulseDuration = Duration(milliseconds: 1200);
+
+  /// Pulse animation scale range — 1.0 → 1.12 → 1.0.
+  static const double pulseMaxScale = 1.12;
 }
 
-/// Step circle for [EscrowTimeline] — complete, active, or pending.
-class EscrowStepCircle extends StatelessWidget {
+/// Visual tone for an [EscrowStepCircle].
+///
+/// Drives colour selection so the widget stays theme- and state-aware
+/// without hard-coding brand tokens for every branch (fix A3).
+enum EscrowStepTone { trust, warning, muted }
+
+/// Step circle for `EscrowTimeline` — complete, active, or pending.
+///
+/// Active state pulses with [TweenAnimationBuilder] unless
+/// `MediaQuery.disableAnimations` is true (§10).
+class EscrowStepCircle extends StatefulWidget {
   const EscrowStepCircle({
     required this.isComplete,
     required this.isActive,
+    this.tone = EscrowStepTone.trust,
     this.semanticLabel,
     super.key,
   });
 
   final bool isComplete;
   final bool isActive;
+  final EscrowStepTone tone;
   final String? semanticLabel;
 
   @override
+  State<EscrowStepCircle> createState() => _EscrowStepCircleState();
+}
+
+class _EscrowStepCircleState extends State<EscrowStepCircle>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncController();
+  }
+
+  @override
+  void didUpdateWidget(covariant EscrowStepCircle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncController();
+  }
+
+  void _syncController() {
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+    if (widget.isActive && !reduceMotion) {
+      _controller ??= AnimationController(
+        vsync: this,
+        duration: EscrowStepTokens.pulseDuration,
+      );
+      if (!_controller!.isAnimating) {
+        _controller!.repeat(reverse: true);
+      }
+    } else {
+      _controller?.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final reduceMotion = MediaQuery.disableAnimationsOf(context);
+
     return Semantics(
-      label: semanticLabel,
+      label: widget.semanticLabel,
       child: SizedBox(
         width: EscrowStepTokens.minTapTarget,
         height: EscrowStepTokens.minTapTarget,
-        child: Center(child: _buildCircle()),
+        child: Center(child: _buildCircle(context, reduceMotion)),
       ),
     );
   }
 
-  Widget _buildCircle() {
-    if (isComplete) {
-      return Container(
-        width: EscrowStepTokens.circleSize,
-        height: EscrowStepTokens.circleSize,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: DeelmarktColors.trustEscrow,
-        ),
-        child: Icon(
-          PhosphorIcons.check(PhosphorIconsStyle.bold),
-          size: EscrowStepTokens.checkIconSize,
-          color: DeelmarktColors.white,
-        ),
+  Widget _buildCircle(BuildContext context, bool reduceMotion) {
+    if (widget.isComplete) {
+      return _CompleteCircle(tone: widget.tone);
+    }
+    if (widget.isActive) {
+      if (reduceMotion || _controller == null) {
+        return _ActiveCircle(scale: 1, tone: widget.tone);
+      }
+      return AnimatedBuilder(
+        animation: _controller!,
+        builder: (context, _) {
+          final t = Curves.easeInOut.transform(_controller!.value);
+          final scale = 1 + ((EscrowStepTokens.pulseMaxScale - 1) * t);
+          return _ActiveCircle(scale: scale, tone: widget.tone);
+        },
       );
     }
+    return _PendingCircle(tone: widget.tone);
+  }
+}
 
-    if (isActive) {
-      return Container(
+Color _accentForTone(EscrowStepTone tone) => switch (tone) {
+  EscrowStepTone.trust => DeelmarktColors.trustEscrow,
+  EscrowStepTone.warning => DeelmarktColors.trustWarning,
+  EscrowStepTone.muted => DeelmarktColors.neutral500,
+};
+
+Color _pendingBorderForTone(BuildContext context, EscrowStepTone tone) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  if (tone == EscrowStepTone.muted) {
+    return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
+  }
+  return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
+}
+
+class _CompleteCircle extends StatelessWidget {
+  const _CompleteCircle({required this.tone});
+  final EscrowStepTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: EscrowStepTokens.circleSize,
+      height: EscrowStepTokens.circleSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: _accentForTone(tone),
+      ),
+      child: Icon(
+        PhosphorIcons.check(PhosphorIconsStyle.bold),
+        size: EscrowStepTokens.checkIconSize,
+        color: DeelmarktColors.white,
+      ),
+    );
+  }
+}
+
+class _ActiveCircle extends StatelessWidget {
+  const _ActiveCircle({required this.scale, required this.tone});
+  final double scale;
+  final EscrowStepTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final accent = _accentForTone(tone);
+    return Transform.scale(
+      scale: scale,
+      child: Container(
         width: EscrowStepTokens.circleSize,
         height: EscrowStepTokens.circleSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: DeelmarktColors.primary.withValues(alpha: 0.15),
+          color: accent.withValues(alpha: 0.15),
           border: Border.all(
-            color: DeelmarktColors.primary,
+            color: accent,
             width: EscrowStepTokens.borderWidth,
           ),
         ),
@@ -75,22 +184,27 @@ class EscrowStepCircle extends StatelessWidget {
           child: Container(
             width: EscrowStepTokens.innerDotSize,
             height: EscrowStepTokens.innerDotSize,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: DeelmarktColors.primary,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: accent),
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
+}
 
+class _PendingCircle extends StatelessWidget {
+  const _PendingCircle({required this.tone});
+  final EscrowStepTone tone;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: EscrowStepTokens.circleSize,
       height: EscrowStepTokens.circleSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: DeelmarktColors.neutral300,
+          color: _pendingBorderForTone(context, tone),
           width: EscrowStepTokens.borderWidth,
         ),
       ),

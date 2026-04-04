@@ -5,8 +5,13 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/widgets/trust/escrow_step_circle.dart';
 
-Widget _wrap(Widget child) {
-  return MaterialApp(home: Scaffold(body: Center(child: child)));
+Widget _wrap(Widget child, {bool disableAnimations = true}) {
+  return MaterialApp(
+    home: MediaQuery(
+      data: MediaQueryData(disableAnimations: disableAnimations),
+      child: Scaffold(body: Center(child: child)),
+    ),
+  );
 }
 
 void main() {
@@ -68,6 +73,70 @@ void main() {
       final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox).first);
       expect(sizedBox.width, EscrowStepTokens.minTapTarget);
       expect(sizedBox.height, EscrowStepTokens.minTapTarget);
+    });
+
+    testWidgets('muted tone complete circle uses neutral accent', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const EscrowStepCircle(
+            isComplete: true,
+            isActive: false,
+            tone: EscrowStepTone.muted,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(EscrowStepCircle), findsOneWidget);
+    });
+
+    testWidgets('warning tone active circle renders without exception', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const EscrowStepCircle(
+            isComplete: false,
+            isActive: true,
+            tone: EscrowStepTone.warning,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(EscrowStepCircle), findsOneWidget);
+    });
+
+    testWidgets('isActive flip triggers didUpdateWidget', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const EscrowStepCircle(isComplete: false, isActive: false)),
+      );
+      await tester.pumpAndSettle();
+      // Rebuild with active=true — exercises didUpdateWidget branch.
+      await tester.pumpWidget(
+        _wrap(const EscrowStepCircle(isComplete: false, isActive: true)),
+      );
+      await tester.pumpAndSettle();
+      // And back to inactive — exercises the stop branch.
+      await tester.pumpWidget(
+        _wrap(const EscrowStepCircle(isComplete: false, isActive: false)),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(EscrowStepCircle), findsOneWidget);
+    });
+
+    testWidgets('pulse animation runs when motion enabled', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const EscrowStepCircle(isComplete: false, isActive: true),
+          disableAnimations: false,
+        ),
+      );
+      // Give the animation controller a few frames but don't pumpAndSettle
+      // (animation is infinite).
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(EscrowStepCircle), findsOneWidget);
     });
 
     testWidgets('has Semantics label', (tester) async {

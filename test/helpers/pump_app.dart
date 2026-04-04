@@ -12,6 +12,10 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 /// Does NOT use EasyLocalization — `.tr()` calls return the key path
 /// in tests, which is sufficient for verifying widget structure.
 /// This avoids async translation loading issues in test environments.
+///
+/// `MediaQuery(disableAnimations: true)` is wired in so widgets with
+/// repeating animations (e.g. `EscrowStepCircle` pulse) don't starve
+/// `pumpAndSettle`.
 Future<void> pumpTestWidget(
   WidgetTester tester,
   Widget child, {
@@ -20,20 +24,32 @@ Future<void> pumpTestWidget(
   await tester.pumpWidget(
     MaterialApp(
       theme: theme ?? DeelmarktTheme.light,
-      home: Scaffold(body: SingleChildScrollView(child: child)),
+      home: MediaQuery(
+        data: const MediaQueryData(disableAnimations: true),
+        child: Scaffold(body: SingleChildScrollView(child: child)),
+      ),
     ),
   );
   await tester.pumpAndSettle();
 }
 
 /// Pump a full-screen widget (one that contains its own Scaffold).
+///
+/// `MediaQuery(disableAnimations: true)` is wired in so widgets with
+/// repeating animations don't starve `pumpAndSettle`.
 Future<void> pumpTestScreen(
   WidgetTester tester,
   Widget screen, {
   ThemeData? theme,
 }) async {
   await tester.pumpWidget(
-    MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+    MaterialApp(
+      theme: theme ?? DeelmarktTheme.light,
+      home: MediaQuery(
+        data: const MediaQueryData(disableAnimations: true),
+        child: screen,
+      ),
+    ),
   );
   await tester.pumpAndSettle();
 }
@@ -61,7 +77,10 @@ Future<void> pumpLocalizedWidget(
       path: 'assets/l10n',
       child: MaterialApp(
         theme: theme ?? DeelmarktTheme.light,
-        home: Scaffold(body: SingleChildScrollView(child: child)),
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: Scaffold(body: SingleChildScrollView(child: child)),
+        ),
       ),
     ),
   );
@@ -80,7 +99,13 @@ Future<void> pumpTestScreenWithProviders(
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
-      child: MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+      child: MaterialApp(
+        theme: theme ?? DeelmarktTheme.light,
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: screen,
+        ),
+      ),
     ),
   );
   await tester.pumpAndSettle();
@@ -107,7 +132,13 @@ Future<void> pumpLocalizedScreenWithProviders(
         supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
         fallbackLocale: const Locale('en', 'US'),
         path: 'assets/l10n',
-        child: MaterialApp(theme: theme ?? DeelmarktTheme.light, home: screen),
+        child: MaterialApp(
+          theme: theme ?? DeelmarktTheme.light,
+          home: MediaQuery(
+            data: const MediaQueryData(disableAnimations: true),
+            child: screen,
+          ),
+        ),
       ),
     ),
   );

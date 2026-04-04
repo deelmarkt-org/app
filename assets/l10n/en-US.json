@@ -215,6 +215,11 @@
     "confirmDeliveryDescription": "Confirm that you have received the item",
     "disputeOrder": "Report issue",
     "countdownHint": "48 hours to confirm",
+    "deadlineHint": "Confirm before {date}",
+    "disputed": "In dispute",
+    "cancelled": "Cancelled",
+    "terminalRefunded": "Refunded",
+    "terminalResolved": "Dispute resolved",
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller"
   },
