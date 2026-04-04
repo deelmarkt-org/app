@@ -7,6 +7,7 @@ import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.d
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/step_validator.dart';
 
 part 'listing_creation_viewmodel.g.dart';
 
@@ -45,48 +46,19 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   // ── Navigation ──
 
   bool nextStep() {
-    switch (state.step) {
-      case ListingCreationStep.photos:
-        if (state.imageFiles.isEmpty) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoPhotos');
-          return false;
-        }
-        state = state.copyWith(
-          step: ListingCreationStep.details,
-          errorKey: () => null,
-        );
-        return true;
-      case ListingCreationStep.details:
-        if (state.title.trim().isEmpty) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoTitle');
-          return false;
-        }
-        if (state.priceInCents <= 0) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoPrice');
-          return false;
-        }
-        if (state.categoryL1Id == null) {
-          state = state.copyWith(errorKey: () => 'sell.errorNoCategory');
-          return false;
-        }
-        state = state.copyWith(
-          step: ListingCreationStep.quality,
-          errorKey: () => null,
-        );
-        return true;
-      case ListingCreationStep.quality:
-      case ListingCreationStep.publishing:
-      case ListingCreationStep.success:
-        return false;
+    final error = StepValidator.validate(state);
+    if (error != null) {
+      state = state.copyWith(errorKey: () => error);
+      return false;
     }
+    final next = StepValidator.next(state.step);
+    if (next == null) return false;
+    state = state.copyWith(step: next, errorKey: () => null);
+    return true;
   }
 
   void previousStep() {
-    final prev = switch (state.step) {
-      ListingCreationStep.details => ListingCreationStep.photos,
-      ListingCreationStep.quality => ListingCreationStep.details,
-      _ => null,
-    };
+    final prev = StepValidator.previous(state.step);
     if (prev != null) state = state.copyWith(step: prev, errorKey: () => null);
   }
 
