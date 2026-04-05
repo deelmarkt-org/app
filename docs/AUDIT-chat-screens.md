@@ -220,8 +220,8 @@ Used the threat list from the plan §7.1 plus OWASP Mobile Top 10 mapping. Each 
 
 | Threat | Method | Evidence |
 |:-------|:-------|:---------|
-| Offer CTAs do NOT call payment/transaction API | `grep -rnE "transactionRepository\|paymentRepository\|mollieService\|escrowService" lib/features/messages/` | 0 matches |
-| No Flutter imports in domain layer | `grep -rlnE "flutter/material\|flutter/widgets" lib/features/messages/domain/` | 0 matches |
+| Offer CTAs do NOT call payment/transaction API | `grep -rn -E "transactionRepository|paymentRepository|mollieService|escrowService" lib/features/messages/` | 0 matches |
+| No Flutter imports in domain layer | `grep -rln -E "flutter/material|flutter/widgets" lib/features/messages/domain/` | 0 matches |
 | No Supabase imports in domain | `grep -rln "supabase" lib/features/messages/domain/` | 0 matches |
 | No hardcoded colors | `grep -rn "Color(0x" lib/features/messages/` | 0 matches |
 | No hardcoded UI strings | `grep -rnE "Text\('[A-Z][a-z ]" lib/features/messages/` | 0 matches |
