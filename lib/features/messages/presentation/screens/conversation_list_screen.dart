@@ -2,10 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
+
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_error_view.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_empty_state.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_skeleton.dart';
@@ -43,7 +44,7 @@ class ConversationListScreen extends ConsumerWidget {
           child: async.when(
             loading: () => const ConversationListSkeleton(),
             error:
-                (err, _) => _ErrorView(
+                (err, _) => ChatErrorView(
                   onRetry:
                       () =>
                           ref
@@ -123,47 +124,6 @@ class _Header extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.onRetry});
-
-  // Raw exception message is intentionally NOT exposed here — renders a
-  // localised title only. Future developers: do not add an `err.toString()`
-  // text widget in this view; it can leak Supabase table names, RLS policy
-  // identifiers, or stack fragments to end users (security finding F-04).
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.s6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 56,
-              color: DeelmarktColors.error,
-            ),
-            const SizedBox(height: Spacing.s4),
-            Text(
-              'messages.errorTitle'.tr(),
-              style: theme.textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: Spacing.s4),
-            FilledButton(
-              onPressed: onRetry,
-              child: Text('messages.errorRetry'.tr()),
-            ),
-          ],
-        ),
       ),
     );
   }
