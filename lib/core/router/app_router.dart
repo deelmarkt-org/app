@@ -15,6 +15,7 @@ import 'package:deelmarkt/features/messages/presentation/screens/messages_respon
 import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/public_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/review_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
@@ -244,7 +245,7 @@ GoRouter _buildRouter({
         },
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return _Placeholder('User $id');
+          return PublicProfileScreen(userId: id);
         },
       ),
       GoRoute(

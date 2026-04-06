@@ -462,6 +462,8 @@
     "blockedTitle": "Je hebt deze gebruiker geblokkeerd",
     "blockedUnblock": "Deblokkeer",
     "notFound": "Gebruiker bestaat niet",
+    "loadMore": "Meer laden",
+    "moreActions": "Meer opties",
     "responseTime": {
       "under1h": "Reageert binnen 1 uur",
       "under4h": "Reageert binnen 4 uur",
@@ -473,6 +475,20 @@
   "rating": {
     "a11y": {
       "summary": "{average} van 5 sterren, {count} beoordelingen"
+    }
+  },
+  "report": {
+    "title": "Melden",
+    "submitted": "Melding ingediend",
+    "reason": {
+      "scam": "Oplichting",
+      "harassment": "Intimidatie",
+      "hateSpeech": "Haatdragend taalgebruik",
+      "sexualContent": "Seksuele inhoud",
+      "violence": "Geweld",
+      "illegalContent": "Illegale inhoud",
+      "spam": "Spam",
+      "other": "Anders"
     }
   },
   "kyc": {

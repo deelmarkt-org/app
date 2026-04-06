@@ -462,6 +462,8 @@
     "blockedTitle": "You have blocked this user",
     "blockedUnblock": "Unblock",
     "notFound": "User not found",
+    "loadMore": "Load more",
+    "moreActions": "More options",
     "responseTime": {
       "under1h": "Responds within 1 hour",
       "under4h": "Responds within 4 hours",
@@ -473,6 +475,20 @@
   "rating": {
     "a11y": {
       "summary": "{average} out of 5 stars, {count} reviews"
+    }
+  },
+  "report": {
+    "title": "Report",
+    "submitted": "Report submitted",
+    "reason": {
+      "scam": "Scam",
+      "harassment": "Harassment",
+      "hateSpeech": "Hate speech",
+      "sexualContent": "Sexual content",
+      "violence": "Violence",
+      "illegalContent": "Illegal content",
+      "spam": "Spam",
+      "other": "Other"
     }
   },
   "kyc": {

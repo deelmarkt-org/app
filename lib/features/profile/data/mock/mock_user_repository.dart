@@ -72,4 +72,43 @@ final _mockUsers = [
     responseTimeMinutes: 8,
     createdAt: DateTime(2025, 3, 15),
   ),
+  // P-39: Too-few reviews (< 3, rating hidden)
+  UserEntity(
+    id: 'user-003',
+    displayName: 'Pieter Bakker',
+    kycLevel: KycLevel.level1,
+    location: 'Utrecht',
+    badges: const [BadgeType.emailVerified, BadgeType.newUser],
+    averageRating: 5.0,
+    reviewCount: 2,
+    createdAt: DateTime(2026, 2),
+  ),
+  // P-39: No listings, many reviews
+  UserEntity(
+    id: 'user-004',
+    displayName: 'Sophie van Dijk',
+    kycLevel: KycLevel.level1,
+    location: 'Den Haag',
+    badges: const [BadgeType.emailVerified, BadgeType.phoneVerified],
+    averageRating: 3.8,
+    reviewCount: 12,
+    responseTimeMinutes: 120,
+    createdAt: DateTime(2025, 9),
+  ),
+  // P-39: Seller profile (current user as seller)
+  UserEntity(
+    id: 'user-seller',
+    displayName: 'Verkoper Test',
+    kycLevel: KycLevel.level2,
+    location: 'Eindhoven',
+    badges: const [
+      BadgeType.emailVerified,
+      BadgeType.phoneVerified,
+      BadgeType.idVerified,
+    ],
+    averageRating: 4.5,
+    reviewCount: 15,
+    responseTimeMinutes: 30,
+    createdAt: DateTime(2025, 5),
+  ),
 ];
