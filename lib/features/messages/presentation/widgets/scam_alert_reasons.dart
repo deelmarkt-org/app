@@ -29,8 +29,6 @@ class ScamAlertReasons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reducedMotion = MediaQuery.of(context).disableAnimations;
-
     return ValueListenableBuilder<bool>(
       valueListenable: _expanded,
       builder: (context, isExpanded, _) {
@@ -70,54 +68,40 @@ class ScamAlertReasons extends StatelessWidget {
                 ),
               ),
             ),
-            AnimatedSize(
-              duration:
-                  reducedMotion
-                      ? Duration.zero
-                      : const Duration(milliseconds: 200),
-              alignment: Alignment.topCenter,
-              child:
-                  isExpanded
-                      ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            reasons.map((reason) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: Spacing.s2,
+            if (isExpanded)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    reasons.map((reason) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: Spacing.s2),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 4,
+                                right: Spacing.s2,
+                              ),
+                              child: Icon(
+                                PhosphorIcons.dotOutline(
+                                  PhosphorIconsStyle.fill,
                                 ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 4,
-                                        right: Spacing.s2,
-                                      ),
-                                      child: Icon(
-                                        PhosphorIcons.dotOutline(
-                                          PhosphorIconsStyle.fill,
-                                        ),
-                                        size: 8,
-                                        color: accentColor,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        reason.localizationKey.tr(),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                      )
-                      : const SizedBox.shrink(),
-            ),
+                                size: 8,
+                                color: accentColor,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                reason.localizationKey.tr(),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+              ),
           ],
         );
       },
