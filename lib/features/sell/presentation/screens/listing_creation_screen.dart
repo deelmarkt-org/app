@@ -29,11 +29,8 @@ class ListingCreationScreen extends ConsumerStatefulWidget {
 }
 
 class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
-  final _focusNode = FocusNode();
-
   @override
   void dispose() {
-    _focusNode.dispose();
     super.dispose();
   }
 
