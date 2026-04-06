@@ -10,7 +10,7 @@ import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
-import 'package:deelmarkt/widgets/location/location_badge.dart';
+import 'package:deelmarkt/widgets/location/location.dart';
 
 /// Minimum touch target size (44x44) per WCAG / EAA requirements.
 const _kTouchTargetSize = 44.0;

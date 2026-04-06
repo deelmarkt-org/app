@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
@@ -19,7 +18,8 @@ enum LocationBadgeVariant {
   /// distance subtitle, optionally followed by a placeholder map rect.
   detail,
 
-  /// Shimmer placeholder — use via [LocationBadge.skeleton].
+  /// Shimmer placeholder — use via [LocationBadge.skeletonCompact].
+  /// Models the compact layout only.
   skeleton,
 }
 
@@ -55,17 +55,17 @@ class LocationBadge extends StatelessWidget {
     this.showMapPlaceholder = false,
     this.onTap,
     super.key,
-  }) : _isSkeleton = false;
+  });
 
-  /// Loading placeholder. Renders inside a [SkeletonLoader] so the ambient
-  /// shimmer sweep cascades into the shapes.
-  const LocationBadge.skeleton({super.key})
+  /// Compact loading placeholder. Renders inside a [SkeletonLoader] so the
+  /// ambient shimmer sweep cascades into the shapes. Named `skeletonCompact`
+  /// to make clear the skeleton only models the compact layout.
+  const LocationBadge.skeletonCompact({super.key})
     : city = '',
       distanceKm = null,
       variant = LocationBadgeVariant.skeleton,
       showMapPlaceholder = false,
-      onTap = null,
-      _isSkeleton = true;
+      onTap = null;
 
   final String city;
   final double? distanceKm;
@@ -78,11 +78,9 @@ class LocationBadge extends StatelessWidget {
 
   final VoidCallback? onTap;
 
-  final bool _isSkeleton;
-
   @override
   Widget build(BuildContext context) {
-    if (_isSkeleton || variant == LocationBadgeVariant.skeleton) {
+    if (variant == LocationBadgeVariant.skeleton) {
       return const _LocationBadgeSkeleton();
     }
 
@@ -238,10 +236,7 @@ class _MapPlaceholder extends StatelessWidget {
         aspectRatio: 16 / 9,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? DeelmarktColors.darkSurfaceElevated
-                    : DeelmarktColors.neutral100,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(DeelmarktRadius.md),
           ),
           child: Center(

@@ -84,13 +84,39 @@ void main() {
           ..nextStep()
           ..updateTitle('Test Listing Title')
           ..updatePrice(2500)
-          ..updateCategoryL2('sub-cat-1');
+          ..updateCategoryL1('cat-electronics');
 
         final result = notifier.nextStep();
 
         expect(result, isTrue);
         final state = container.read(listingCreationNotifierProvider);
         expect(state.step, equals(ListingCreationStep.quality));
+      },
+    );
+
+    test(
+      'nextStep() from details blocked when category not selected',
+      () async {
+        final (:container, :picker, :repo) = buildContainer(prefs);
+        addTearDown(container.dispose);
+
+        final notifier = container.read(
+          listingCreationNotifierProvider.notifier,
+        );
+
+        await notifier.addFromCamera();
+        notifier
+          ..nextStep()
+          ..updateTitle('Test Title')
+          ..updatePrice(2500);
+        // No updateCategoryL1() call
+
+        final result = notifier.nextStep();
+
+        expect(result, isFalse);
+        final state = container.read(listingCreationNotifierProvider);
+        expect(state.step, equals(ListingCreationStep.details));
+        expect(state.errorKey, equals('sell.errorNoCategory'));
       },
     );
 
@@ -118,7 +144,7 @@ void main() {
         ..nextStep()
         ..updateTitle('Title for test')
         ..updatePrice(1000)
-        ..updateCategoryL2('sub-cat-1')
+        ..updateCategoryL1('cat-electronics')
         ..nextStep()
         ..previousStep();
 
@@ -168,7 +194,7 @@ void main() {
         ..nextStep()
         ..updateTitle('Title')
         ..updatePrice(1000)
-        ..updateCategoryL2('sub-cat-1')
+        ..updateCategoryL1('cat-electronics')
         ..nextStep();
 
       final result = notifier.nextStep();

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
-import 'package:deelmarkt/widgets/location/location_badge.dart';
+import 'package:deelmarkt/widgets/location/location.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -104,7 +104,7 @@ void main() {
   });
 
   group('LocationBadge — skeleton variant', () {
-    testWidgets('skeleton constructor renders shimmer placeholder', (
+    testWidgets('skeletonCompact constructor renders shimmer placeholder', (
       tester,
     ) async {
       // Skeleton wraps a Shimmer animation — use pump() with a finite frame
@@ -114,7 +114,7 @@ void main() {
           home: Scaffold(
             body: MediaQuery(
               data: MediaQueryData(disableAnimations: true),
-              child: LocationBadge.skeleton(),
+              child: LocationBadge.skeletonCompact(),
             ),
           ),
         ),
