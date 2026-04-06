@@ -386,7 +386,79 @@
     "pickPhoto": "Choose a photo",
     "takePhoto": "Take a photo",
     "chooseFromGallery": "Choose from gallery",
-    "photoSelected": "Photo selected"
+    "photoSelected": "Photo selected",
+    "deletedUser": "Deleted user"
+  },
+  "review": {
+    "title": "Review",
+    "howWasExperience": "How was your experience with {name}?",
+    "tellAbout": "Tell about your experience...",
+    "charCounter": "{current}/500",
+    "blindReview": "Blind review",
+    "blindExplanation": "The other party can only see your review after submitting theirs",
+    "submit": "Submit review",
+    "submitting": "Submitting...",
+    "thankYou": "Thank you!",
+    "waitingForOther": "Waiting for the {role}'s review",
+    "bothVisible": "Both reviews are now visible",
+    "close": "Close",
+    "urlWarning": "Links are not allowed in reviews",
+    "reportReview": "Report this review",
+    "unsavedDiscard": "Discard your draft?",
+    "unsavedKeep": "Keep",
+    "a11y": {
+      "rating": "Star {star} of {total}",
+      "counter": "Character counter"
+    },
+    "error": {
+      "network": "No connection. Please try again.",
+      "conflict": "You have already submitted a review",
+      "expired": "The review window has expired",
+      "cancelled": "This transaction was cancelled",
+      "rateLimit": "Too many attempts. Try again in {seconds} seconds.",
+      "moderationBlocked": "This review has been blocked by moderation",
+      "unknown": "Something went wrong. Please try again."
+    },
+    "reportReason": {
+      "scam": "Scam",
+      "harassment": "Harassment",
+      "hateSpeech": "Hate speech",
+      "sexualContent": "Sexual content",
+      "violence": "Violence",
+      "illegalContent": "Illegal content",
+      "spam": "Spam",
+      "other": "Other"
+    }
+  },
+  "sellerProfile": {
+    "title": "Profile",
+    "memberSince": "Member since {date}",
+    "reviewCount": "{count} reviews",
+    "soldCount": "{count} sold",
+    "messageAction": "Send message",
+    "shareAction": "Share",
+    "shareCopied": "Link copied",
+    "reportAction": "Report user",
+    "tabListings": "Listings",
+    "tabReviews": "Reviews",
+    "tooFewReviews": "Too few reviews to show average",
+    "noListings": "This seller has no listings",
+    "noReviews": "No reviews yet",
+    "blockedTitle": "You have blocked this user",
+    "blockedUnblock": "Unblock",
+    "notFound": "User not found",
+    "responseTime": {
+      "under1h": "Responds within 1 hour",
+      "under4h": "Responds within 4 hours",
+      "under24h": "Responds within 24 hours",
+      "over24h": "Responds after 24 hours",
+      "unknown": "Response time unknown"
+    }
+  },
+  "rating": {
+    "a11y": {
+      "summary": "{average} out of 5 stars, {count} reviews"
+    }
   },
   "kyc": {
     "bannerTitle": "Verify your identity",

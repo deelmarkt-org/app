@@ -3,6 +3,8 @@ import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 /// DTO for converting Supabase REST JSON to [ReviewEntity].
 ///
 /// Defensive parsing — validates required fields, uses tryParse for dates.
+/// P-38: extended to parse [transactionId], [role], [isHidden],
+/// [isReviewerDeleted], and [updatedAt].
 class ReviewDto {
   const ReviewDto._();
 
@@ -29,19 +31,29 @@ class ReviewDto {
       );
     }
 
+    final roleRaw = json['role'] as String?;
+    final role = roleRaw == 'seller' ? ReviewRole.seller : ReviewRole.buyer;
+
+    final updatedAtRaw = json['updated_at'] as String?;
+
     return ReviewEntity(
       id: id,
+      transactionId: json['transaction_id'] as String?,
       reviewerId: reviewerId,
       reviewerName: reviewerName,
       revieweeId: revieweeId,
       listingId: listingId,
+      role: role,
       rating: rating.toDouble(),
       text: text,
+      isHidden: json['is_hidden'] as bool? ?? false,
+      isReviewerDeleted: json['is_reviewer_deleted'] as bool? ?? false,
       reviewerAvatarUrl: json['reviewer_avatar_url'] as String?,
       createdAt:
           createdAtRaw is String
               ? (DateTime.tryParse(createdAtRaw) ?? DateTime.now())
               : DateTime.now(),
+      updatedAt: updatedAtRaw != null ? DateTime.tryParse(updatedAtRaw) : null,
     );
   }
 

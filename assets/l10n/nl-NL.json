@@ -386,7 +386,79 @@
     "pickPhoto": "Kies een foto",
     "takePhoto": "Maak een foto",
     "chooseFromGallery": "Kies uit galerij",
-    "photoSelected": "Foto geselecteerd"
+    "photoSelected": "Foto geselecteerd",
+    "deletedUser": "Verwijderde gebruiker"
+  },
+  "review": {
+    "title": "Beoordeling",
+    "howWasExperience": "Hoe was je ervaring met {name}?",
+    "tellAbout": "Vertel over je ervaring...",
+    "charCounter": "{current}/500",
+    "blindReview": "Blinde beoordeling",
+    "blindExplanation": "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling",
+    "submit": "Beoordeling plaatsen",
+    "submitting": "Verzenden...",
+    "thankYou": "Bedankt!",
+    "waitingForOther": "Wacht op de beoordeling van de {role}",
+    "bothVisible": "Jullie beoordelingen zijn nu zichtbaar",
+    "close": "Sluiten",
+    "urlWarning": "Links zijn niet toegestaan in beoordelingen",
+    "reportReview": "Meld deze beoordeling",
+    "unsavedDiscard": "Wil je je concept weggooien?",
+    "unsavedKeep": "Bewaren",
+    "a11y": {
+      "rating": "Ster {star} van {total}",
+      "counter": "Tekenteller"
+    },
+    "error": {
+      "network": "Geen verbinding. Probeer het opnieuw.",
+      "conflict": "Je hebt al een beoordeling geplaatst",
+      "expired": "Het reviewvenster is verstreken",
+      "cancelled": "Deze transactie is geannuleerd",
+      "rateLimit": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
+      "moderationBlocked": "Deze beoordeling is geblokkeerd door moderatie",
+      "unknown": "Er is iets misgegaan. Probeer het opnieuw."
+    },
+    "reportReason": {
+      "scam": "Oplichting",
+      "harassment": "Intimidatie",
+      "hateSpeech": "Haatdragend taalgebruik",
+      "sexualContent": "Seksuele inhoud",
+      "violence": "Geweld",
+      "illegalContent": "Illegale inhoud",
+      "spam": "Spam",
+      "other": "Anders"
+    }
+  },
+  "sellerProfile": {
+    "title": "Profiel",
+    "memberSince": "Lid sinds {date}",
+    "reviewCount": "{count} beoordelingen",
+    "soldCount": "{count} verkocht",
+    "messageAction": "Bericht sturen",
+    "shareAction": "Delen",
+    "shareCopied": "Link gekopieerd",
+    "reportAction": "Meld gebruiker",
+    "tabListings": "Advertenties",
+    "tabReviews": "Beoordelingen",
+    "tooFewReviews": "Te weinig beoordelingen om gemiddelde te tonen",
+    "noListings": "Deze verkoper heeft geen advertenties",
+    "noReviews": "Nog geen beoordelingen",
+    "blockedTitle": "Je hebt deze gebruiker geblokkeerd",
+    "blockedUnblock": "Deblokkeer",
+    "notFound": "Gebruiker bestaat niet",
+    "responseTime": {
+      "under1h": "Reageert binnen 1 uur",
+      "under4h": "Reageert binnen 4 uur",
+      "under24h": "Reageert binnen 24 uur",
+      "over24h": "Reageert na 24 uur",
+      "unknown": "Reactietijd onbekend"
+    }
+  },
+  "rating": {
+    "a11y": {
+      "summary": "{average} van 5 sterren, {count} beoordelingen"
+    }
   },
   "kyc": {
     "bannerTitle": "Verifieer je identiteit",
