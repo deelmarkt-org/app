@@ -43,9 +43,9 @@ LAYOUT:
   "Beschermd door DeelMarkt Escrow" on trust-shield bg (#F0FDF4)
 - EscrowTimeline: horizontal 5-step stepper:
   Steps: "Betaald" → "Verzonden" → "Afgeleverd" → "Bevestigd" → "Vrijgegeven"
-  Active step: primary orange circle with current icon
-  Completed: green circle with checkmark
-  Pending: grey dashed circle
+  Active step: primary orange (#F15A24) circle with current icon, pulsing
+  Completed: trust-escrow blue (#2563EB) circle with checkmark
+  Pending: grey dashed circle (neutral-300 light, neutral-500 dark)
   Connected by horizontal lines (solid for completed, dashed for pending)
   If escrow deadline set: "Bevestig voor 28 mrt 2026" subtitle under active step
 - AmountSection: bordered card (1px neutral-200, radius xl 16px):
