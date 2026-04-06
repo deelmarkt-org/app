@@ -387,6 +387,11 @@
       "other": "verdachte patronen gedetecteerd"
     }
   },
+  "location_badge": {
+    "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
+    "a11yCityOnly": "Locatie: {city}",
+    "mapPlaceholder": "Kaartweergave"
+  },
   "profile": {
     "title": "Profiel",
     "notLoggedIn": "Niet ingelogd",
