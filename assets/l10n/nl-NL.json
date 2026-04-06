@@ -423,7 +423,16 @@
       "cancelled": "Deze transactie is geannuleerd",
       "rateLimit": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
       "moderationBlocked": "Deze beoordeling is geblokkeerd door moderatie",
-      "unknown": "Er is iets misgegaan. Probeer het opnieuw."
+      "unknown": "Er is iets misgegaan. Probeer het opnieuw.",
+      "ineligible": {
+        "auth": "Je moet ingelogd zijn om een beoordeling te plaatsen",
+        "notFound": "Transactie niet gevonden",
+        "pending": "De betaling is nog niet afgerond",
+        "escrowHeld": "Escrow is nog niet vrijgegeven",
+        "delivered": "Bevestig eerst de ontvangst voordat je een beoordeling plaatst",
+        "disputed": "Er loopt een geschil over deze transactie",
+        "cancelled": "Deze transactie is geannuleerd"
+      }
     },
     "reportReason": {
       "scam": "Oplichting",
