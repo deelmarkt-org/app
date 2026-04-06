@@ -60,7 +60,7 @@ class ConversationListTileAvatar extends StatelessWidget {
   }
 
   Widget _buildPresenceDot() {
-    final dotColor = isOnline ? colors.success : DeelmarktColors.neutral300;
+    final dotColor = isOnline ? colors.success : colors.textTertiary;
     return Container(
       width: 14,
       height: 14,
@@ -145,18 +145,30 @@ class ConversationListTileListingThumb extends StatelessWidget {
 }
 
 class ConversationListTileUnreadBadge extends StatelessWidget {
-  const ConversationListTileUnreadBadge({required this.count, super.key});
+  const ConversationListTileUnreadBadge({
+    required this.count,
+    required this.colors,
+    super.key,
+  });
 
   final int count;
+  final ChatThemeColors colors;
+
+  /// Shared constant so the placeholder [SizedBox] in the trailing column
+  /// stays in sync with the badge height, preventing layout shifts.
+  static const double minBadgeHeight = 20;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+      constraints: const BoxConstraints(
+        minWidth: minBadgeHeight,
+        minHeight: minBadgeHeight,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s2),
-      decoration: const BoxDecoration(
-        color: DeelmarktColors.primary,
-        shape: BoxShape.circle,
+      decoration: BoxDecoration(
+        color: colors.primary,
+        borderRadius: BorderRadius.circular(DeelmarktRadius.full),
       ),
       alignment: Alignment.center,
       child: Text(

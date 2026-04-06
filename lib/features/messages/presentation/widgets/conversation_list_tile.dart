@@ -70,7 +70,7 @@ class ConversationListTile extends StatelessWidget {
                 const SizedBox(width: Spacing.s4),
                 Expanded(child: _buildBody(context, colors)),
                 const SizedBox(width: Spacing.s3),
-                _buildTrailing(context, colors),
+                _buildTrailing(colors),
               ],
             ),
           ),
@@ -137,7 +137,7 @@ class ConversationListTile extends StatelessWidget {
     );
   }
 
-  Widget _buildTrailing(BuildContext context, ChatThemeColors colors) {
+  Widget _buildTrailing(ChatThemeColors colors) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,10 +148,13 @@ class ConversationListTile extends StatelessWidget {
           ExcludeSemantics(
             child: ConversationListTileUnreadBadge(
               count: conversation.unreadCount,
+              colors: colors,
             ),
           )
         else
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: ConversationListTileUnreadBadge.minBadgeHeight,
+          ),
         const SizedBox(height: Spacing.s2),
         ConversationListTileListingThumb(
           url: conversation.listingImageUrl,
