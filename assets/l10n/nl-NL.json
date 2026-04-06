@@ -548,5 +548,15 @@
     "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorUnsupportedFormat": "Dit afbeeldingsformaat wordt niet ondersteund",
     "errorImagePicker": "Kon de fotokiezer niet openen"
+  },
+  "scam_alert": {
+    "reason": {
+      "external_payment_link": "Dit bericht bevat een link naar een externe betaalsite",
+      "off_site_contact": "Dit bericht vraagt om het gesprek buiten het platform voort te zetten",
+      "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
+      "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
+      "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
+    }
   }
 }

@@ -36,11 +36,11 @@ enum ScamReason {
   ///
   /// Uses `snake_case` dot-separated keys per CLAUDE.md §2.2.
   String get localizationKey => switch (this) {
-    ScamReason.externalPaymentLink => 'scam_alert.reason.externalPaymentLink',
-    ScamReason.offSiteContact => 'scam_alert.reason.offSiteContact',
-    ScamReason.phoneNumberRequest => 'scam_alert.reason.phoneNumberRequest',
-    ScamReason.suspiciousPricing => 'scam_alert.reason.suspiciousPricing',
-    ScamReason.urgencyPressure => 'scam_alert.reason.urgencyPressure',
+    ScamReason.externalPaymentLink => 'scam_alert.reason.external_payment_link',
+    ScamReason.offSiteContact => 'scam_alert.reason.off_site_contact',
+    ScamReason.phoneNumberRequest => 'scam_alert.reason.phone_number_request',
+    ScamReason.suspiciousPricing => 'scam_alert.reason.suspicious_pricing',
+    ScamReason.urgencyPressure => 'scam_alert.reason.urgency_pressure',
     ScamReason.other => 'scam_alert.reason.other',
   };
 }

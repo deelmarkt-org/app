@@ -548,5 +548,15 @@
     "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
     "errorUnsupportedFormat": "This image format is not supported",
     "errorImagePicker": "Could not open the photo picker"
+  },
+  "scam_alert": {
+    "reason": {
+      "external_payment_link": "This message contains a link to an external payment site",
+      "off_site_contact": "This message asks to move the conversation off-platform",
+      "phone_number_request": "This message asks for your phone number or messaging app",
+      "suspicious_pricing": "This price seems suspiciously low for this item",
+      "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
+      "other": "This message was flagged by our scam detector"
+    }
   }
 }

@@ -234,12 +234,12 @@ void main() {
     });
 
     test(
-      'each value has a unique localizationKey under scam_alert.reason.*',
+      'each value has a unique snake_case localizationKey under scam_alert.reason.*',
       () {
         final keys = ScamReason.values.map((r) => r.localizationKey).toSet();
         expect(keys, hasLength(ScamReason.values.length));
         for (final key in keys) {
-          expect(key, startsWith('scam_alert.reason.'));
+          expect(key, matches(RegExp(r'^scam_alert\.reason\.[a-z][a-z_]+$')));
         }
       },
     );

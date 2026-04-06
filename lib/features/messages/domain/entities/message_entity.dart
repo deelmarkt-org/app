@@ -9,6 +9,7 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 ///
 /// Reference: docs/epics/E04-messaging.md, docs/epics/E06-trust-moderation.md
 class MessageEntity extends Equatable {
+  // Non-const: runtime asserts on scamReasons/scamFlaggedAt disqualify const.
   // ignore: prefer_const_constructors_in_immutables
   MessageEntity({
     required this.id,
