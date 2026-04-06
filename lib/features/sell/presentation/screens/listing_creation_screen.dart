@@ -9,6 +9,7 @@ import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.d
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/details_step/details_step_view.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/listing_creation_success_view.dart';
+import 'package:deelmarkt/features/sell/presentation/widgets/listing_creation_discard_dialog.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/live_preview_panel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_step_view.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/quality_step/quality_step_view.dart';
@@ -76,7 +77,7 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
           !state.hasUnsavedData || state.step == ListingCreationStep.success,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        final shouldDiscard = await _showDiscardDialog();
+        final shouldDiscard = await showDiscardDialog(context);
         if (shouldDiscard && context.mounted) {
           context.pop();
         }
@@ -102,7 +103,7 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
         icon: const Icon(Icons.close),
         onPressed: () async {
           if (state.hasUnsavedData) {
-            final shouldDiscard = await _showDiscardDialog();
+            final shouldDiscard = await showDiscardDialog(context);
             if (shouldDiscard && mounted) context.pop();
           } else {
             context.pop();
@@ -176,28 +177,6 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
         ),
       ],
     );
-  }
-
-  Future<bool> _showDiscardDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('sell.discardTitle'.tr()),
-            content: Text('sell.discardMessage'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text('sell.keepEditing'.tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text('sell.discard'.tr()),
-              ),
-            ],
-          ),
-    );
-    return result ?? false;
   }
 
   String _titleForStep(ListingCreationStep step) => switch (step) {
