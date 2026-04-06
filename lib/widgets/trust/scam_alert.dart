@@ -10,6 +10,15 @@ import 'package:deelmarkt/widgets/trust/scam_alert_reason.dart';
 part 'scam_alert_header.dart';
 part 'scam_alert_actions.dart';
 
+/// Left-border accent width for the alert card.
+const double _kAlertBorderWidth = 4;
+
+/// Minimum tappable area — WCAG 2.2 AA (44×44 px).
+const double _kMinTapTarget = 44;
+
+/// Bullet dot icon size in the reason list.
+const double _kBulletIconSize = 14;
+
 /// Inline chat banner surfaced above a suspicious message.
 ///
 /// Two confidence tiers:
@@ -47,9 +56,10 @@ class ScamAlert extends StatefulWidget {
        ),
        assert(
          confidence == ScamAlertConfidence.low || onReport != null,
-         'High-confidence scam alerts must provide onReport — the '
-         'Report action is the only recovery path for the user '
-         '(non-dismissible banners with no action become dead UI).',
+         'Pass a non-null `onReport` callback for high-confidence '
+         'alerts — the Report action is the only user-facing '
+         'recovery path (non-dismissible banners with no action '
+         'become dead UI).',
        ),
        assert(
          // ignore: prefer_is_empty
@@ -109,7 +119,9 @@ class _ScamAlertState extends State<ScamAlert> {
         decoration: BoxDecoration(
           color: palette.surface,
           borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          border: Border(left: BorderSide(color: palette.accent, width: 4)),
+          border: Border(
+            left: BorderSide(color: palette.accent, width: _kAlertBorderWidth),
+          ),
         ),
         padding: const EdgeInsets.all(Spacing.s3),
         child: ValueListenableBuilder<bool>(
@@ -130,6 +142,11 @@ class _ScamAlertState extends State<ScamAlert> {
                     const SizedBox(height: Spacing.s3),
                     _ReasonList(reasons: widget.reasons),
                   ],
+                  // _Actions is only rendered when at least one button
+                  // would be visible: high-confidence always shows Report,
+                  // low-confidence only when onReport is non-null. When
+                  // isHigh=false AND onReport=null the guard skips _Actions
+                  // entirely — the Row would otherwise render empty.
                   if (_isHigh || widget.onReport != null) ...[
                     const SizedBox(height: Spacing.s3),
                     _Actions(

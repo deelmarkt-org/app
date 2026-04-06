@@ -44,7 +44,7 @@ class _ReportButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(DeelmarktRadius.md),
           child: Container(
-            height: 44,
+            height: _kMinTapTarget,
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: Spacing.s3),
             child: Text(
@@ -79,7 +79,7 @@ class _InlineDismissButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(DeelmarktRadius.md),
           child: Container(
-            height: 44,
+            height: _kMinTapTarget,
             alignment: Alignment.center,
             child: Text(
               'scam_alert.dismiss'.tr(),

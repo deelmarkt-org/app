@@ -102,6 +102,12 @@ class _EscrowStepCircleState extends State<EscrowStepCircle>
 }
 
 /// Circle-fill colour for the currently **active** step.
+///
+/// Per `docs/design-system/patterns.md:49` and
+/// `docs/screens/04-payments/03-transaction-detail.md:46` the active step
+/// uses `primary` orange (pulsing) — distinct from `trust-escrow` blue,
+/// which is reserved for completed segments and the escrow protection
+/// banner.
 Color escrowActiveColor(EscrowStepTone tone) => switch (tone) {
   EscrowStepTone.trust => DeelmarktColors.primary,
   EscrowStepTone.warning => DeelmarktColors.trustWarning,
@@ -109,7 +115,8 @@ Color escrowActiveColor(EscrowStepTone tone) => switch (tone) {
 };
 
 /// Circle-fill colour for **completed** steps and for the connector
-/// between two completed steps.
+/// between two completed steps. Matches `trust-escrow` blue per
+/// `patterns.md:48` ("Complete: filled + checkmark `trust-escrow` blue").
 Color escrowCompleteColor(EscrowStepTone tone) => switch (tone) {
   EscrowStepTone.trust => DeelmarktColors.trustEscrow,
   EscrowStepTone.warning => DeelmarktColors.trustWarning,
@@ -117,6 +124,13 @@ Color escrowCompleteColor(EscrowStepTone tone) => switch (tone) {
 };
 
 /// Border / connector colour for **pending** steps.
+///
+/// `muted` (cancelled / refunded / awaiting-payment) returns a distinctly
+/// dimmer shade than happy-path pending so the two visual states remain
+/// distinguishable under both light and dark themes (PR #67 review #3).
+/// Shared between [EscrowStepCircle] pending borders and
+/// [EscrowTimeline] pending connectors so there is a single source of
+/// truth (PR #67 review #4).
 Color escrowPendingColor(BuildContext context, {bool muted = false}) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   if (muted) {

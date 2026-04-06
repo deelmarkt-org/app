@@ -373,6 +373,7 @@
     "titleLow": "Heads up: be careful with external links",
     "subtitleLow": "DeelMarkt never asks you to pay outside our platform.",
     "whyWarning": "Why this warning?",
+    "reasonsHeader": "Detected risks",
     "whyWarningHide": "Hide explanation",
     "aiDetectedPrefix": "AI detected:",
     "report": "Report this message",

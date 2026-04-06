@@ -24,7 +24,7 @@ class _Header extends StatelessWidget {
         Icon(
           PhosphorIcons.warning(PhosphorIconsStyle.fill),
           color: accent,
-          size: 24,
+          size: Spacing.s6,
         ),
         const SizedBox(width: Spacing.s2),
         Expanded(
@@ -40,7 +40,7 @@ class _Header extends StatelessWidget {
                 ),
               ),
               if (!isHigh) ...[
-                const SizedBox(height: 2),
+                const SizedBox(height: Spacing.s1 / 2),
                 Text(
                   'scam_alert.subtitleLow'.tr(),
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -81,8 +81,8 @@ class _ExpandToggle extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: onTap,
           child: SizedBox(
-            width: 44,
-            height: 44,
+            width: _kMinTapTarget,
+            height: _kMinTapTarget,
             child: Icon(
               expanded ? PhosphorIcons.caretUp() : PhosphorIcons.caretDown(),
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -110,8 +110,8 @@ class _DismissButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: onTap,
           child: SizedBox(
-            width: 44,
-            height: 44,
+            width: _kMinTapTarget,
+            height: _kMinTapTarget,
             child: Icon(
               PhosphorIcons.x(),
               color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -134,7 +134,7 @@ class _ReasonList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'scam_alert.whyWarning'.tr(),
+          'scam_alert.reasonsHeader'.tr(),
           style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colorScheme.onSurface,
@@ -160,10 +160,10 @@ class _ReasonRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.only(top: Spacing.s1),
             child: Icon(
               PhosphorIcons.dotOutline(PhosphorIconsStyle.bold),
-              size: 14,
+              size: _kBulletIconSize,
               color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
