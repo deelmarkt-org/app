@@ -46,11 +46,12 @@ class RatingInput extends StatelessWidget {
 
           return Semantics(
             button: !readOnly,
+            enabled: !readOnly,
             label: 'review.a11y.rating'.tr(
               namedArgs: {'star': '$starNumber', 'total': '5'},
             ),
             value: isFilled ? 'selected' : 'unselected',
-            child: GestureDetector(
+            child: InkResponse(
               onTap:
                   readOnly
                       ? null
@@ -60,6 +61,7 @@ class RatingInput extends StatelessWidget {
                           onChanged(starNumber.toDouble());
                         }
                       },
+              radius: starSize / 2,
               child: SizedBox(
                 width: starSize,
                 height: starSize,

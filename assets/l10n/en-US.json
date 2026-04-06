@@ -406,6 +406,8 @@
     "reportReview": "Report this review",
     "unsavedDiscard": "Discard your draft?",
     "unsavedKeep": "Keep",
+    "roleBuyer": "buyer",
+    "roleSeller": "seller",
     "a11y": {
       "rating": "Star {star} of {total}",
       "counter": "Character counter"
@@ -557,7 +559,6 @@
     "dismissAction": "Dismiss",
     "expandAction": "Why this warning?",
     "collapseAction": "Hide details",
-    "whyTitle": "Why this warning?",
     "feedbackSubmitted": "Thank you for your report",
     "statementOfReasons": "Why this warning?",
     "reason": {

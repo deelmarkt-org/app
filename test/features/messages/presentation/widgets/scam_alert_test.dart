@@ -13,7 +13,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -29,7 +28,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -43,7 +41,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () => reported = true,
         ),
@@ -57,7 +54,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [
             ScamReason.externalPaymentLink,
             ScamReason.urgencyPressure,
@@ -69,16 +65,16 @@ void main() {
       // Initially collapsed — reason keys not visible
       expect(find.text('scamAlert.reason.externalPaymentLink'), findsNothing);
 
-      // Tap expand
-      await tester.tap(find.text('scamAlert.whyTitle'));
+      // Tap expand — button shows expandAction text when collapsed
+      await tester.tap(find.text('scamAlert.expandAction'));
       await tester.pumpAndSettle();
 
       // Reasons now visible
       expect(find.text('scamAlert.reason.externalPaymentLink'), findsOneWidget);
       expect(find.text('scamAlert.reason.urgencyPressure'), findsOneWidget);
 
-      // Tap collapse
-      await tester.tap(find.text('scamAlert.whyTitle'));
+      // Tap collapse — button now shows collapseAction text when expanded
+      await tester.tap(find.text('scamAlert.collapseAction'));
       await tester.pumpAndSettle();
 
       expect(find.text('scamAlert.reason.externalPaymentLink'), findsNothing);
@@ -88,7 +84,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -110,7 +105,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -130,7 +124,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -150,11 +143,7 @@ void main() {
     testWidgets('renders with dismiss button', (tester) async {
       await pumpTestWidget(
         tester,
-        ScamAlert.lowConfidence(
-          primaryReason: ScamReason.phoneNumberSolicitation,
-          onReport: () {},
-          onDismiss: () {},
-        ),
+        ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
       );
 
       expect(find.text('scamAlert.lowTitle'), findsOneWidget);
@@ -166,7 +155,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.lowConfidence(
-          primaryReason: ScamReason.phoneNumberSolicitation,
           onReport: () {},
           onDismiss: () => dismissed = true,
         ),
@@ -179,11 +167,7 @@ void main() {
     testWidgets('dismiss target meets 44×44 minimum', (tester) async {
       await pumpTestWidget(
         tester,
-        ScamAlert.lowConfidence(
-          primaryReason: ScamReason.phoneNumberSolicitation,
-          onReport: () {},
-          onDismiss: () {},
-        ),
+        ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
       );
 
       final buttonSize = tester.getSize(find.byType(IconButton));
@@ -194,14 +178,10 @@ void main() {
     testWidgets('does NOT show expand/collapse controls', (tester) async {
       await pumpTestWidget(
         tester,
-        ScamAlert.lowConfidence(
-          primaryReason: ScamReason.offPlatformRequest,
-          onReport: () {},
-          onDismiss: () {},
-        ),
+        ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
       );
 
-      expect(find.text('scamAlert.whyTitle'), findsNothing);
+      expect(find.text('scamAlert.expandAction'), findsNothing);
     });
   });
 
@@ -210,7 +190,6 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert.highConfidence(
-          primaryReason: ScamReason.externalPaymentLink,
           allReasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
@@ -224,11 +203,7 @@ void main() {
     testWidgets('low confidence renders in dark theme', (tester) async {
       await pumpTestWidget(
         tester,
-        ScamAlert.lowConfidence(
-          primaryReason: ScamReason.tooGoodToBeTrue,
-          onReport: () {},
-          onDismiss: () {},
-        ),
+        ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
         theme: DeelmarktTheme.dark,
       );
 

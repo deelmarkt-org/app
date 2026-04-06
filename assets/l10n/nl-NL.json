@@ -406,6 +406,8 @@
     "reportReview": "Meld deze beoordeling",
     "unsavedDiscard": "Wil je je concept weggooien?",
     "unsavedKeep": "Bewaren",
+    "roleBuyer": "koper",
+    "roleSeller": "verkoper",
     "a11y": {
       "rating": "Ster {star} van {total}",
       "counter": "Tekenteller"
@@ -557,7 +559,6 @@
     "dismissAction": "Negeer",
     "expandAction": "Waarom deze waarschuwing?",
     "collapseAction": "Verberg details",
-    "whyTitle": "Waarom deze waarschuwing?",
     "feedbackSubmitted": "Bedankt voor je melding",
     "statementOfReasons": "Waarom deze waarschuwing?",
     "reason": {

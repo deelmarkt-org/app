@@ -66,7 +66,9 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'scamAlert.whyTitle'.tr(),
+                          isExpanded
+                              ? 'scamAlert.collapseAction'.tr()
+                              : 'scamAlert.expandAction'.tr(),
                           style: Theme.of(
                             context,
                           ).textTheme.labelSmall?.copyWith(

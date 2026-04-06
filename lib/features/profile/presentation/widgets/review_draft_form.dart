@@ -13,7 +13,7 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 ///
 /// Contains rating stars, text input with character counter,
 /// blind review explanation banner, and submit bar.
-class ReviewDraftForm extends StatelessWidget {
+class ReviewDraftForm extends StatefulWidget {
   const ReviewDraftForm({
     required this.draft,
     required this.onRatingChanged,
@@ -28,8 +28,39 @@ class ReviewDraftForm extends StatelessWidget {
   final VoidCallback onSubmit;
 
   @override
+  State<ReviewDraftForm> createState() => _ReviewDraftFormState();
+}
+
+class _ReviewDraftFormState extends State<ReviewDraftForm> {
+  late TextEditingController _bodyController;
+
+  @override
+  void initState() {
+    super.initState();
+    _bodyController = TextEditingController(text: widget.draft.body);
+  }
+
+  @override
+  void didUpdateWidget(ReviewDraftForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.draft.body != widget.draft.body &&
+        _bodyController.text != widget.draft.body) {
+      _bodyController.value = TextEditingValue(
+        text: widget.draft.body,
+        selection: TextSelection.collapsed(offset: widget.draft.body.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _bodyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final charCount = draft.body.length;
+    final charCount = widget.draft.body.length;
     final counterColor = _counterColor(charCount);
 
     return Column(
@@ -42,7 +73,7 @@ class ReviewDraftForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (draft.hasRestoredDraft) ...[
+                  if (widget.draft.hasRestoredDraft) ...[
                     TrustBanner.info(
                       title: 'review.blindReview'.tr(),
                       description: 'review.blindExplanation'.tr(),
@@ -52,26 +83,22 @@ class ReviewDraftForm extends StatelessWidget {
                   ],
                   Text(
                     'review.howWasExperience'.tr(
-                      namedArgs: {'name': draft.revieweeName},
+                      namedArgs: {'name': widget.draft.revieweeName.tr()},
                     ),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: Spacing.s4),
-                  RatingInput(value: draft.rating, onChanged: onRatingChanged),
+                  RatingInput(
+                    value: widget.draft.rating,
+                    onChanged: widget.onRatingChanged,
+                  ),
                   const SizedBox(height: Spacing.s6),
                   DeelInput(
                     label: 'review.tellAbout'.tr(),
                     maxLines: 5,
                     maxLength: 500,
-                    controller: TextEditingController.fromValue(
-                      TextEditingValue(
-                        text: draft.body,
-                        selection: TextSelection.collapsed(
-                          offset: draft.body.length,
-                        ),
-                      ),
-                    ),
-                    onChanged: onBodyChanged,
+                    controller: _bodyController,
+                    onChanged: widget.onBodyChanged,
                   ),
                   const SizedBox(height: Spacing.s2),
                   Align(
@@ -88,12 +115,6 @@ class ReviewDraftForm extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: Spacing.s4),
-                  TrustBanner.info(
-                    title: 'review.blindReview'.tr(),
-                    description: 'review.blindExplanation'.tr(),
-                    icon: PhosphorIcons.shield(PhosphorIconsStyle.fill),
-                  ),
                 ],
               ),
             ),
@@ -103,7 +124,7 @@ class ReviewDraftForm extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: draft.canSubmit ? onSubmit : null,
+              onPressed: widget.draft.canSubmit ? widget.onSubmit : null,
               child: Text('review.submit'.tr()),
             ),
           ),
