@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 
@@ -31,6 +32,8 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
   late final ValueNotifier<bool> _expanded;
 
   static const _minTapTarget = 44.0;
+  static const _caretIconSize = 16.0;
+  static const _bulletSize = 8.0;
 
   @override
   void initState() {
@@ -61,18 +64,18 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                 button: true,
                 label:
                     isExpanded
-                        ? 'scamAlert.collapseAction'.tr()
-                        : 'scamAlert.expandAction'.tr(),
+                        ? 'scam_alert.why_warning_hide'.tr()
+                        : 'scam_alert.why_warning'.tr(),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
                   onTap: () => _expanded.value = !_expanded.value,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         isExpanded
-                            ? 'scamAlert.collapseAction'.tr()
-                            : 'scamAlert.expandAction'.tr(),
+                            ? 'scam_alert.why_warning_hide'.tr()
+                            : 'scam_alert.why_warning'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: widget.accentColor,
@@ -83,7 +86,7 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                         isExpanded
                             ? PhosphorIcons.caretUp()
                             : PhosphorIcons.caretDown(),
-                        size: 16,
+                        size: _caretIconSize,
                         color: widget.accentColor,
                       ),
                     ],
@@ -112,14 +115,14 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                        top: 4,
+                                        top: Spacing.s1,
                                         right: Spacing.s2,
                                       ),
                                       child: Icon(
                                         PhosphorIcons.dotOutline(
                                           PhosphorIconsStyle.fill,
                                         ),
-                                        size: 8,
+                                        size: _bulletSize,
                                         color: widget.accentColor,
                                       ),
                                     ),

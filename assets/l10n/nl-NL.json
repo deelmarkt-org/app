@@ -373,7 +373,7 @@
     "title_low": "Let op: wees voorzichtig met externe links",
     "subtitle_low": "DeelMarkt vraagt je nooit om betalingen buiten ons platform te voldoen.",
     "why_warning": "Waarom deze waarschuwing?",
-    "reasons_header": "Gedetecteerde risico\u2019s",
+    "reasons_header": "Gedetecteerde risico’s",
     "why_warning_hide": "Verberg uitleg",
     "ai_detected_prefix": "AI gedetecteerd:",
     "report": "Meld dit bericht",
@@ -387,7 +387,8 @@
       "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
       "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
       "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
-    }
+    },
+    "a11y_report_hint": "Tik om dit bericht te melden als verdacht"
   },
   "location_badge": {
     "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",

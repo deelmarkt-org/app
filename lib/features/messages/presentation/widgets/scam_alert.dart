@@ -66,8 +66,8 @@ class ScamAlert extends StatelessWidget {
         liveRegion: true,
         label:
             _isHighConfidence
-                ? 'scamAlert.a11y.highSeverity'.tr()
-                : 'scamAlert.a11y.lowSeverity'.tr(),
+                ? 'scam_alert.a11y_high'.tr()
+                : 'scam_alert.a11y_low'.tr(),
         child: Container(
           margin: const EdgeInsets.fromLTRB(
             Spacing.s4,
@@ -105,7 +105,7 @@ class ScamAlert extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 2),
+          padding: const EdgeInsets.only(top: Spacing.s1),
           child: Icon(
             PhosphorIcons.warning(PhosphorIconsStyle.fill),
             color: accent,
@@ -119,8 +119,8 @@ class ScamAlert extends StatelessWidget {
             children: [
               Text(
                 _isHighConfidence
-                    ? 'scamAlert.highTitle'.tr()
-                    : 'scamAlert.lowTitle'.tr(),
+                    ? 'scam_alert.title_high'.tr()
+                    : 'scam_alert.title_low'.tr(),
                 style: Theme.of(
                   context,
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
@@ -132,14 +132,16 @@ class ScamAlert extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: Semantics(
                     button: true,
-                    hint: 'scamAlert.a11y.reportHint'.tr(),
+                    hint: 'scam_alert.a11y_report_hint'.tr(),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
                       onTap: onReport,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Spacing.s1,
+                        ),
                         child: Text(
-                          'scamAlert.reportAction'.tr(),
+                          'scam_alert.report'.tr(),
                           style: Theme.of(
                             context,
                           ).textTheme.labelSmall?.copyWith(
@@ -162,7 +164,7 @@ class ScamAlert extends StatelessWidget {
             height: _minTapTarget,
             child: Semantics(
               button: true,
-              label: 'scamAlert.dismissAction'.tr(),
+              label: 'scam_alert.dismiss'.tr(),
               child: IconButton(
                 onPressed: onDismiss,
                 icon: Icon(PhosphorIcons.x(), size: _dismissIconSize),

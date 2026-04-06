@@ -387,7 +387,8 @@
       "suspicious_pricing": "This price seems suspiciously low for this item",
       "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
       "other": "This message was flagged by our scam detector"
-    }
+    },
+    "a11y_report_hint": "Tap to report this message as suspicious"
   },
   "location_badge": {
     "a11yWithDistance": "Location: {city}, {distance} away",

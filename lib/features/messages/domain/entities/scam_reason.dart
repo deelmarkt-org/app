@@ -1,8 +1,14 @@
 /// Reason the AI scam detector flagged a message.
 ///
-/// Used by [MessageEntity.scamReasons] and surfaced in the P-37 scam alert
-/// expanded panel. Each value maps to a localization key so the UI can render
-/// the reason in NL/EN.
+/// This is the **single source of truth** for scam reason types across the
+/// domain and widget layers (CLAUDE.md §3.3 — no duplication). The P-34
+/// `ScamAlert` widget in `lib/widgets/trust/` imports this enum; the P-37
+/// chat integration maps `MessageEntity.scamReasons` to `ScamAlert.reasons`
+/// via this shared type.
+///
+/// The values align with the E06 backend scam-detection classifier output.
+/// If the backend adds new reason types, extend this enum and add
+/// corresponding l10n keys under `scam_alert.reason.*`.
 ///
 /// Reference:
 /// - docs/epics/E06-trust-moderation.md §Scam Detection
@@ -12,38 +18,29 @@ enum ScamReason {
   externalPaymentLink,
 
   /// Message asks to move the conversation or transaction off-platform.
-  offPlatformRequest,
+  offSiteContact,
 
   /// Message solicits a phone number, WhatsApp, Telegram, etc.
-  phoneNumberSolicitation,
+  phoneNumberRequest,
 
   /// Price or offer is suspiciously below market value.
-  tooGoodToBeTrue,
+  suspiciousPricing,
 
   /// Message uses urgency pressure ("now", "today only", "limited time").
   urgencyPressure,
 
   /// Detector flagged the message but did not classify the reason.
-  unknown,
-}
+  other;
 
-/// Extension providing the localization key for each [ScamReason].
-extension ScamReasonLocalization on ScamReason {
-  /// Localization key under `scamAlert.reason.*` in l10n JSON files.
-  String get localizationKey {
-    switch (this) {
-      case ScamReason.externalPaymentLink:
-        return 'scamAlert.reason.externalPaymentLink';
-      case ScamReason.offPlatformRequest:
-        return 'scamAlert.reason.offPlatformRequest';
-      case ScamReason.phoneNumberSolicitation:
-        return 'scamAlert.reason.phoneNumberSolicitation';
-      case ScamReason.tooGoodToBeTrue:
-        return 'scamAlert.reason.tooGoodToBeTrue';
-      case ScamReason.urgencyPressure:
-        return 'scamAlert.reason.urgencyPressure';
-      case ScamReason.unknown:
-        return 'scamAlert.reason.unknown';
-    }
-  }
+  /// Localisation key under `scam_alert.reason.*` in l10n JSON files.
+  ///
+  /// Uses `snake_case` dot-separated keys per CLAUDE.md §2.2.
+  String get localizationKey => switch (this) {
+    ScamReason.externalPaymentLink => 'scam_alert.reason.external_payment_link',
+    ScamReason.offSiteContact => 'scam_alert.reason.off_site_contact',
+    ScamReason.phoneNumberRequest => 'scam_alert.reason.phone_number_request',
+    ScamReason.suspiciousPricing => 'scam_alert.reason.suspicious_pricing',
+    ScamReason.urgencyPressure => 'scam_alert.reason.urgency_pressure',
+    ScamReason.other => 'scam_alert.reason.other',
+  };
 }
