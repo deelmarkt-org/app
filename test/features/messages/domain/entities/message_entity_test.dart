@@ -5,6 +5,25 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 
 void main() {
   final now = DateTime(2026, 3, 25, 14);
+  final flaggedAt = DateTime(2026, 4, 1, 10);
+
+  /// Helper to build a flagged message with consistent metadata.
+  MessageEntity flaggedMsg({
+    ScamConfidence confidence = ScamConfidence.high,
+    List<ScamReason> reasons = const [ScamReason.externalPaymentLink],
+    DateTime? flagTime,
+  }) {
+    return MessageEntity(
+      id: 'msg-1',
+      conversationId: 'conv-1',
+      senderId: 'user-1',
+      text: 'suspicious',
+      createdAt: now,
+      scamConfidence: confidence,
+      scamReasons: reasons,
+      scamFlaggedAt: flagTime ?? flaggedAt,
+    );
+  }
 
   group('MessageEntity', () {
     test('creates with required fields', () {
@@ -103,19 +122,11 @@ void main() {
     });
 
     test('retains provided scam metadata', () {
-      final flaggedAt = DateTime(2026, 4, 1, 10);
-      final msg = MessageEntity(
-        id: 'msg-1',
-        conversationId: 'conv-1',
-        senderId: 'user-1',
-        text: 'Click bit.ly/pay-now',
-        createdAt: now,
-        scamConfidence: ScamConfidence.high,
-        scamReasons: const [
+      final msg = flaggedMsg(
+        reasons: const [
           ScamReason.externalPaymentLink,
           ScamReason.urgencyPressure,
         ],
-        scamFlaggedAt: flaggedAt,
       );
 
       expect(msg.scamConfidence, ScamConfidence.high);
@@ -125,20 +136,14 @@ void main() {
     });
 
     test('copyWith preserves unchanged scam metadata', () {
-      final original = MessageEntity(
-        id: 'msg-1',
-        conversationId: 'conv-1',
-        senderId: 'user-1',
-        text: 'x',
-        createdAt: now,
-        scamConfidence: ScamConfidence.low,
-        scamReasons: const [ScamReason.phoneNumberSolicitation],
+      final original = flaggedMsg(
+        confidence: ScamConfidence.low,
+        reasons: const [ScamReason.phoneNumberRequest],
       );
-
       final updated = original.copyWith(isRead: true);
 
       expect(updated.scamConfidence, ScamConfidence.low);
-      expect(updated.scamReasons, const [ScamReason.phoneNumberSolicitation]);
+      expect(updated.scamReasons, const [ScamReason.phoneNumberRequest]);
       expect(updated.isRead, true);
     });
 
@@ -153,26 +158,62 @@ void main() {
 
       final flagged = original.copyWith(
         scamConfidence: ScamConfidence.high,
-        scamReasons: const [ScamReason.tooGoodToBeTrue],
+        scamReasons: const [ScamReason.suspiciousPricing],
         scamFlaggedAt: DateTime(2026, 4, 5),
       );
 
       expect(flagged.scamConfidence, ScamConfidence.high);
-      expect(flagged.scamReasons, const [ScamReason.tooGoodToBeTrue]);
+      expect(flagged.scamReasons, const [ScamReason.suspiciousPricing]);
       expect(flagged.scamFlaggedAt, DateTime(2026, 4, 5));
     });
 
     test('equality distinguishes on scamConfidence', () {
-      final base = MessageEntity(
-        id: 'msg-1',
-        conversationId: 'conv-1',
-        senderId: 'user-1',
-        text: 'x',
-        createdAt: now,
-      );
-      final flagged = base.copyWith(scamConfidence: ScamConfidence.high);
+      final low = flaggedMsg(confidence: ScamConfidence.low);
+      final high = flaggedMsg();
+      expect(low, isNot(equals(high)));
+    });
 
-      expect(base, isNot(equals(flagged)));
+    test('equality distinguishes on scamReasons', () {
+      final a = flaggedMsg();
+      final b = flaggedMsg(reasons: const [ScamReason.phoneNumberRequest]);
+      expect(a, isNot(equals(b)));
+    });
+
+    test('equality distinguishes on scamFlaggedAt', () {
+      final a = flaggedMsg();
+      final b = flaggedMsg(flagTime: DateTime(2026, 4, 2));
+      expect(a, isNot(equals(b)));
+    });
+  });
+
+  group('MessageEntity scam asserts', () {
+    test('asserts when high confidence but scamReasons is null', () {
+      expect(
+        () => MessageEntity(
+          id: 'msg-1',
+          conversationId: 'conv-1',
+          senderId: 'user-1',
+          text: 'x',
+          createdAt: now,
+          scamConfidence: ScamConfidence.high,
+        ),
+        throwsAssertionError,
+      );
+    });
+
+    test('asserts when none confidence but scamReasons is provided', () {
+      expect(
+        () => MessageEntity(
+          id: 'msg-1',
+          conversationId: 'conv-1',
+          senderId: 'user-1',
+          text: 'x',
+          createdAt: now,
+          scamReasons: const [ScamReason.other],
+          scamFlaggedAt: now,
+        ),
+        throwsAssertionError,
+      );
     });
   });
 
@@ -183,23 +224,22 @@ void main() {
         ScamReason.values,
         containsAll([
           ScamReason.externalPaymentLink,
-          ScamReason.offPlatformRequest,
-          ScamReason.phoneNumberSolicitation,
-          ScamReason.tooGoodToBeTrue,
+          ScamReason.offSiteContact,
+          ScamReason.phoneNumberRequest,
+          ScamReason.suspiciousPricing,
           ScamReason.urgencyPressure,
-          ScamReason.unknown,
+          ScamReason.other,
         ]),
       );
     });
 
     test(
-      'each value has a unique localizationKey under scamAlert.reason.*',
+      'each value has a unique localizationKey under scam_alert.reason.*',
       () {
         final keys = ScamReason.values.map((r) => r.localizationKey).toSet();
-
         expect(keys, hasLength(ScamReason.values.length));
         for (final key in keys) {
-          expect(key, startsWith('scamAlert.reason.'));
+          expect(key, startsWith('scam_alert.reason.'));
         }
       },
     );

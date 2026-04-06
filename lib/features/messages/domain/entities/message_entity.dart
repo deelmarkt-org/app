@@ -9,7 +9,8 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 ///
 /// Reference: docs/epics/E04-messaging.md, docs/epics/E06-trust-moderation.md
 class MessageEntity extends Equatable {
-  const MessageEntity({
+  // ignore: prefer_const_constructors_in_immutables
+  MessageEntity({
     required this.id,
     required this.conversationId,
     required this.senderId,
@@ -20,7 +21,18 @@ class MessageEntity extends Equatable {
     this.scamConfidence = ScamConfidence.none,
     this.scamReasons,
     this.scamFlaggedAt,
-  });
+  }) : assert(
+         scamConfidence == ScamConfidence.none ||
+             (scamReasons != null && scamFlaggedAt != null),
+         'When scamConfidence is low or high, scamReasons and '
+         'scamFlaggedAt must be provided.',
+       ),
+       assert(
+         scamConfidence != ScamConfidence.none ||
+             (scamReasons == null && scamFlaggedAt == null),
+         'When scamConfidence is none, scamReasons and scamFlaggedAt '
+         'must be null.',
+       );
 
   final String id;
   final String conversationId;
@@ -30,7 +42,8 @@ class MessageEntity extends Equatable {
   final bool isRead;
   final DateTime createdAt;
 
-  /// E06 scam detector confidence on this message. Defaults to [ScamConfidence.none].
+  /// E06 scam detector confidence on this message.
+  /// Defaults to [ScamConfidence.none].
   final ScamConfidence scamConfidence;
 
   /// Reasons the detector flagged the message. Null when not flagged.
@@ -53,6 +66,14 @@ class MessageEntity extends Equatable {
     scamFlaggedAt,
   ];
 
+  /// Returns a copy with the given fields replaced.
+  ///
+  /// **Limitation:** `scamReasons` and `scamFlaggedAt` use the `??`
+  /// operator so they cannot be explicitly set back to `null` via this
+  /// method. To clear scam metadata (e.g. unflagging a false positive),
+  /// construct a new [MessageEntity] directly with
+  /// `scamConfidence: ScamConfidence.none` (the asserts will enforce the
+  /// null invariant).
   MessageEntity copyWith({
     String? id,
     String? conversationId,
@@ -82,12 +103,3 @@ class MessageEntity extends Equatable {
 
 /// Message types — per design system patterns.md §Chat.
 enum MessageType { text, offer, systemAlert, scamWarning }
-
-/// Confidence level assigned by the E06 scam detector to a message.
-///
-/// - [none]: not flagged
-/// - [low]: soft signal; UI shows dismissible amber banner
-/// - [high]: strong signal; UI shows non-dismissible red banner
-///
-/// Reference: docs/epics/E06-trust-moderation.md §Scam Detection
-enum ScamConfidence { none, low, high }
