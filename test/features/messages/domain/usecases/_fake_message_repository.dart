@@ -28,10 +28,16 @@ class FakeMessageRepository implements MessageRepository {
       _messages.where((m) => m.conversationId == conversationId).toList();
 
   @override
+  Stream<List<MessageEntity>> watchMessages(String conversationId) async* {
+    yield _messages.where((m) => m.conversationId == conversationId).toList();
+  }
+
+  @override
   Future<MessageEntity> sendMessage({
     required String conversationId,
     required String text,
     MessageType type = MessageType.text,
+    int? offerAmountCents,
   }) async {
     if (throwOnSend) {
       throw StateError('Network error');
@@ -42,10 +48,17 @@ class FakeMessageRepository implements MessageRepository {
       senderId: 'user-001',
       text: text,
       type: type,
+      offerAmountCents: offerAmountCents,
       createdAt: DateTime.now(),
     );
     sendCalls.add(msg);
     _messages.add(msg);
     return msg;
   }
+
+  @override
+  Future<String> getOrCreateConversation({
+    required String listingId,
+    required String buyerId,
+  }) async => 'conv-fake-001';
 }

@@ -58,6 +58,7 @@ void main() {
         senderId: 'user-1',
         text: 'offer',
         type: MessageType.offer,
+        offerAmountCents: 1000,
         createdAt: now,
       );
       final b = MessageEntity(

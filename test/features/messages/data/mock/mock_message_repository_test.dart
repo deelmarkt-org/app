@@ -51,6 +51,7 @@ void main() {
         conversationId: 'conv-001',
         text: '€45.00',
         type: MessageType.offer,
+        offerAmountCents: 4500,
       );
 
       expect(msg.type, MessageType.offer);

@@ -38,10 +38,30 @@ void main() {
       conversationId: 'conv-001',
       text: 'Bod: € 35,00',
       type: MessageType.offer,
+      offerAmountCents: 3500,
     );
 
     expect(repo.sendCalls.single.type, MessageType.offer);
+    expect(repo.sendCalls.single.offerAmountCents, 3500);
   });
+
+  test(
+    'throws ArgumentError when offer type is missing offerAmountCents',
+    () async {
+      final repo = FakeMessageRepository();
+      final usecase = SendMessageUseCase(repo);
+
+      expect(
+        () => usecase(
+          conversationId: 'conv-001',
+          text: 'Bod: € 35,00',
+          type: MessageType.offer,
+        ),
+        throwsArgumentError,
+      );
+      expect(repo.sendCalls, isEmpty);
+    },
+  );
 
   test('propagates repository failures', () async {
     final repo = FakeMessageRepository(throwOnSend: true);

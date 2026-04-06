@@ -21,6 +21,7 @@ void main() {
     senderId: 'u1',
     text: text,
     type: MessageType.offer,
+    offerAmountCents: 12000,
     createdAt: DateTime(2026, 3, 25, 14),
   );
 

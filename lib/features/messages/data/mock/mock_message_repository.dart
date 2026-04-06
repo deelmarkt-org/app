@@ -6,7 +6,7 @@ import 'package:deelmarkt/features/messages/domain/repositories/message_reposito
 const _currentUserId = 'user-001';
 const _convId001 = 'conv-001';
 
-/// Mock message repository — returns static data for Phase 1-2 widget development.
+/// Mock message repository — returns static data for USE_MOCK_DATA mode.
 class MockMessageRepository implements MessageRepository {
   @override
   Future<List<ConversationEntity>> getConversations() async {
@@ -23,10 +23,20 @@ class MockMessageRepository implements MessageRepository {
   }
 
   @override
+  Stream<List<MessageEntity>> watchMessages(String conversationId) async* {
+    // Yield initial snapshot, then keep stream open (no further events in mock).
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    yield _mockMessages
+        .where((m) => m.conversationId == conversationId)
+        .toList();
+  }
+
+  @override
   Future<MessageEntity> sendMessage({
     required String conversationId,
     required String text,
     MessageType type = MessageType.text,
+    int? offerAmountCents,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 100));
     return MessageEntity(
@@ -35,8 +45,18 @@ class MockMessageRepository implements MessageRepository {
       senderId: _currentUserId,
       text: text,
       type: type,
+      offerAmountCents: offerAmountCents,
       createdAt: DateTime.now(),
     );
+  }
+
+  @override
+  Future<String> getOrCreateConversation({
+    required String listingId,
+    required String buyerId,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    return _convId001;
   }
 }
 
