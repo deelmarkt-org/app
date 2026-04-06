@@ -217,7 +217,8 @@ The agent will:
 - [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `PaymentSummaryCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66)
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
 - [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
-- [ ] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
 - [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---

@@ -241,6 +241,7 @@
     "confirmDeliveryDescription": "Bevestig dat je het artikel hebt ontvangen",
     "disputeOrder": "Probleem melden",
     "countdownHint": "48 uur om te bevestigen",
+    "deadlineHint": "Bevestig voor {date}",
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
   },
