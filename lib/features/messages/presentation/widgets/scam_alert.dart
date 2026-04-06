@@ -134,8 +134,9 @@ class ScamAlert extends StatelessWidget {
                   child: Semantics(
                     button: true,
                     hint: 'scamAlert.a11y.reportHint'.tr(),
-                    child: GestureDetector(
+                    child: InkWell(
                       onTap: onReport,
+                      borderRadius: BorderRadius.circular(4),
                       child: Text(
                         'scamAlert.reportAction'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(

@@ -7,14 +7,15 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 
 /// Expandable reason list for the P-37 scam alert (high-confidence variant).
 ///
-/// Uses [ValueNotifier] + [ValueListenableBuilder] for local expand/collapse
-/// state (no setState per CLAUDE.md §1.3).
+/// Uses [ValueNotifier] + [ValueListenableBuilder] inside a [StatefulWidget]
+/// for local expand/collapse state (no setState per CLAUDE.md §1.3). The
+/// notifier is properly disposed when the widget leaves the tree.
 ///
 /// Respects [MediaQuery.disableAnimations] for the expand animation.
 ///
 /// Reference: docs/screens/06-chat/03-scam-alert.md §Expanded variant
-class ScamAlertReasons extends StatelessWidget {
-  ScamAlertReasons({
+class ScamAlertReasons extends StatefulWidget {
+  const ScamAlertReasons({
     required this.reasons,
     required this.accentColor,
     super.key,
@@ -23,9 +24,20 @@ class ScamAlertReasons extends StatelessWidget {
   final List<ScamReason> reasons;
   final Color accentColor;
 
+  @override
+  State<ScamAlertReasons> createState() => _ScamAlertReasonsState();
+}
+
+class _ScamAlertReasonsState extends State<ScamAlertReasons> {
   final ValueNotifier<bool> _expanded = ValueNotifier<bool>(false);
 
   static const _minTapTarget = 44.0;
+
+  @override
+  void dispose() {
+    _expanded.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,27 +57,33 @@ class ScamAlertReasons extends StatelessWidget {
                     isExpanded
                         ? 'scamAlert.collapseAction'.tr()
                         : 'scamAlert.expandAction'.tr(),
-                child: GestureDetector(
-                  onTap: () => _expanded.value = !_expanded.value,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'scamAlert.whyTitle'.tr(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: accentColor,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: () => _expanded.value = !_expanded.value,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'scamAlert.whyTitle'.tr(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: widget.accentColor,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: Spacing.s1),
-                      Icon(
-                        isExpanded
-                            ? PhosphorIcons.caretUp()
-                            : PhosphorIcons.caretDown(),
-                        size: 16,
-                        color: accentColor,
-                      ),
-                    ],
+                        const SizedBox(width: Spacing.s1),
+                        Icon(
+                          isExpanded
+                              ? PhosphorIcons.caretUp()
+                              : PhosphorIcons.caretDown(),
+                          size: 16,
+                          color: widget.accentColor,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -81,40 +99,43 @@ class ScamAlertReasons extends StatelessWidget {
                       ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children:
-                            reasons.map((reason) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                  bottom: Spacing.s2,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 4,
-                                        right: Spacing.s2,
-                                      ),
-                                      child: Icon(
-                                        PhosphorIcons.dotOutline(
-                                          PhosphorIconsStyle.fill,
+                            widget.reasons
+                                .map(
+                                  (reason) => Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: Spacing.s2,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 4,
+                                            right: Spacing.s2,
+                                          ),
+                                          child: Icon(
+                                            PhosphorIcons.dotOutline(
+                                              PhosphorIconsStyle.fill,
+                                            ),
+                                            size: 8,
+                                            color: widget.accentColor,
+                                          ),
                                         ),
-                                        size: 8,
-                                        color: accentColor,
-                                      ),
+                                        Expanded(
+                                          child: Text(
+                                            reason.localizationKey.tr(),
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        reason.localizationKey.tr(),
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                                  ),
+                                )
+                                .toList(),
                       )
                       : const SizedBox.shrink(),
             ),
