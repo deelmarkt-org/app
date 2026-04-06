@@ -16,9 +16,9 @@ class _Actions extends StatelessWidget {
       children: [
         if (onReport != null)
           Expanded(child: _ReportButton(isHigh: isHigh, onTap: onReport!)),
-        if (!isHigh && onReport != null && onDismiss != null)
+        if (onReport != null && onDismiss != null)
           const SizedBox(width: Spacing.s2),
-        if (!isHigh && onDismiss != null)
+        if (onDismiss != null)
           Expanded(child: _InlineDismissButton(onTap: onDismiss!)),
       ],
     );

@@ -135,7 +135,7 @@ class _ReasonList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'scam_alert.reasonsHeader'.tr(),
+          'scam_alert.reasons_header'.tr(),
           style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: theme.colorScheme.onSurface,

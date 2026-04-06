@@ -62,8 +62,7 @@ class ScamAlert extends StatefulWidget {
          'become dead UI).',
        ),
        assert(
-         // ignore: prefer_is_empty
-         reasons.length > 0,
+         reasons.isNotEmpty,
          'ScamAlert requires at least one reason — use '
          'ScamAlertReason.other if the backend flag is opaque.',
        );
