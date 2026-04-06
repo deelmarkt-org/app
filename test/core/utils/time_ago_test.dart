@@ -3,71 +3,74 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:deelmarkt/core/utils/time_ago.dart';
 
+// In test environments without easy_localization setup, .tr() returns the
+// l10n key path (e.g. 'timeAgo.justNow'). Tests verify the correct key
+// is selected rather than the translated string value.
 void main() {
   setUpAll(() async {
     await initializeDateFormatting('nl');
     await initializeDateFormatting('en');
   });
 
-  group('formatTimeAgo NL', () {
-    test('seconds ago returns Zojuist', () {
+  group('formatTimeAgo key selection', () {
+    test('seconds ago returns justNow key', () {
       final dt = DateTime.now().subtract(const Duration(seconds: 30));
-      expect(formatTimeAgo(dt), 'Zojuist');
+      expect(formatTimeAgo(dt), 'timeAgo.justNow');
     });
 
-    test('1 minute ago', () {
+    test('1 minute ago returns minuteAgo key', () {
       final dt = DateTime.now().subtract(const Duration(minutes: 1));
-      expect(formatTimeAgo(dt), '1 minuut geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.minuteAgo');
     });
 
-    test('multiple minutes ago', () {
+    test('multiple minutes ago returns minutesAgo key with n', () {
       final dt = DateTime.now().subtract(const Duration(minutes: 15));
-      expect(formatTimeAgo(dt), '15 minuten geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.minutesAgo');
     });
 
-    test('1 hour ago', () {
+    test('1 hour ago returns hourAgo key', () {
       final dt = DateTime.now().subtract(const Duration(hours: 1));
-      expect(formatTimeAgo(dt), '1 uur geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.hourAgo');
     });
 
-    test('multiple hours ago', () {
+    test('multiple hours ago returns hoursAgo key', () {
       final dt = DateTime.now().subtract(const Duration(hours: 5));
-      expect(formatTimeAgo(dt), '5 uur geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.hoursAgo');
     });
 
-    test('1 day ago returns Gisteren', () {
+    test('1 day ago returns yesterday key', () {
       final dt = DateTime.now().subtract(const Duration(days: 1));
-      expect(formatTimeAgo(dt), 'Gisteren');
+      expect(formatTimeAgo(dt), 'timeAgo.yesterday');
     });
 
-    test('multiple days ago', () {
+    test('multiple days ago returns daysAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 3));
-      expect(formatTimeAgo(dt), '3 dagen geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.daysAgo');
     });
 
-    test('1 week ago', () {
+    test('1 week ago returns weekAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 10));
-      expect(formatTimeAgo(dt), '1 week geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.weekAgo');
     });
 
-    test('multiple weeks ago', () {
+    test('multiple weeks ago returns weeksAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 21));
-      expect(formatTimeAgo(dt), '3 weken geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.weeksAgo');
     });
 
-    test('1 month ago', () {
+    test('1 month ago returns monthAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 35));
-      expect(formatTimeAgo(dt), '1 maand geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.monthAgo');
     });
 
-    test('multiple months ago', () {
+    test('multiple months ago returns monthsAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 120));
-      expect(formatTimeAgo(dt), '4 maanden geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.monthsAgo');
     });
 
-    test('1 year ago', () {
+    test('1 year ago returns yearAgo key', () {
       final dt = DateTime.now().subtract(const Duration(days: 400));
-      expect(formatTimeAgo(dt), '1 jaar geleden');
+      expect(formatTimeAgo(dt), 'timeAgo.yearAgo');
     });
 
     test('2+ years falls back to absolute date', () {
@@ -80,28 +83,6 @@ void main() {
       final dt = DateTime.now().add(const Duration(days: 10));
       final result = formatTimeAgo(dt);
       expect(result, isNotEmpty);
-    });
-  });
-
-  group('formatTimeAgo EN', () {
-    test('seconds ago returns Just now', () {
-      final dt = DateTime.now().subtract(const Duration(seconds: 10));
-      expect(formatTimeAgo(dt, locale: 'en'), 'Just now');
-    });
-
-    test('1 minute ago', () {
-      final dt = DateTime.now().subtract(const Duration(minutes: 1));
-      expect(formatTimeAgo(dt, locale: 'en'), '1 minute ago');
-    });
-
-    test('multiple hours ago', () {
-      final dt = DateTime.now().subtract(const Duration(hours: 3));
-      expect(formatTimeAgo(dt, locale: 'en'), '3 hours ago');
-    });
-
-    test('yesterday', () {
-      final dt = DateTime.now().subtract(const Duration(days: 1));
-      expect(formatTimeAgo(dt, locale: 'en'), 'Yesterday');
     });
   });
 

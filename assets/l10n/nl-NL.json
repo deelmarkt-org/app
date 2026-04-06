@@ -406,6 +406,10 @@
     "submitting": "Verzenden...",
     "thankYou": "Bedankt!",
     "waitingForOther": "Wacht op de beoordeling van de {role}",
+    "role": {
+      "buyer": "koper",
+      "seller": "verkoper"
+    },
     "bothVisible": "Jullie beoordelingen zijn nu zichtbaar",
     "close": "Sluiten",
     "urlWarning": "Links zijn niet toegestaan in beoordelingen",
@@ -732,5 +736,19 @@
     "selfBubbleA11y": "Jij zei: {text}",
     "otherBubbleA11y": "Zij zeiden: {text}",
     "readReceiptA11y": "Gelezen"
+  },
+  "timeAgo": {
+    "justNow": "Zojuist",
+    "minuteAgo": "1 minuut geleden",
+    "minutesAgo": "{n} minuten geleden",
+    "hourAgo": "1 uur geleden",
+    "hoursAgo": "{n} uur geleden",
+    "yesterday": "Gisteren",
+    "daysAgo": "{n} dagen geleden",
+    "weekAgo": "1 week geleden",
+    "weeksAgo": "{n} weken geleden",
+    "monthAgo": "1 maand geleden",
+    "monthsAgo": "{n} maanden geleden",
+    "yearAgo": "1 jaar geleden"
   }
 }

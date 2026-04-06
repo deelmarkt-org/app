@@ -49,7 +49,9 @@ class ReviewSubmittedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final roleLabel = role == ReviewRole.buyer ? 'verkoper' : 'koper';
+    final roleLabel =
+        (role == ReviewRole.buyer ? 'review.role.seller' : 'review.role.buyer')
+            .tr();
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.s6),

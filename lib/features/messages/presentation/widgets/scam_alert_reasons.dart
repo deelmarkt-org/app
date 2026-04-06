@@ -8,13 +8,13 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 /// Expandable reason list for the P-37 scam alert (high-confidence variant).
 ///
 /// Uses [ValueNotifier] + [ValueListenableBuilder] for local expand/collapse
-/// state (no setState per CLAUDE.md §1.3).
+/// state with proper lifecycle management.
 ///
 /// Respects [MediaQuery.disableAnimations] for the expand animation.
 ///
 /// Reference: docs/screens/06-chat/03-scam-alert.md §Expanded variant
-class ScamAlertReasons extends StatelessWidget {
-  ScamAlertReasons({
+class ScamAlertReasons extends StatefulWidget {
+  const ScamAlertReasons({
     required this.reasons,
     required this.accentColor,
     super.key,
@@ -23,9 +23,20 @@ class ScamAlertReasons extends StatelessWidget {
   final List<ScamReason> reasons;
   final Color accentColor;
 
+  @override
+  State<ScamAlertReasons> createState() => _ScamAlertReasonsState();
+}
+
+class _ScamAlertReasonsState extends State<ScamAlertReasons> {
   final ValueNotifier<bool> _expanded = ValueNotifier<bool>(false);
 
   static const _minTapTarget = 44.0;
+
+  @override
+  void dispose() {
+    _expanded.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +54,7 @@ class ScamAlertReasons extends StatelessWidget {
                     isExpanded
                         ? 'scamAlert.collapseAction'.tr()
                         : 'scamAlert.expandAction'.tr(),
-                child: GestureDetector(
+                child: InkWell(
                   onTap: () => _expanded.value = !_expanded.value,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -52,7 +63,7 @@ class ScamAlertReasons extends StatelessWidget {
                         'scamAlert.whyTitle'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: accentColor,
+                          color: widget.accentColor,
                         ),
                       ),
                       const SizedBox(width: Spacing.s1),
@@ -61,7 +72,7 @@ class ScamAlertReasons extends StatelessWidget {
                             ? PhosphorIcons.caretUp()
                             : PhosphorIcons.caretDown(),
                         size: 16,
-                        color: accentColor,
+                        color: widget.accentColor,
                       ),
                     ],
                   ),
@@ -72,7 +83,7 @@ class ScamAlertReasons extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:
-                    reasons.map((reason) {
+                    widget.reasons.map((reason) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: Spacing.s2),
                         child: Row(
@@ -88,7 +99,7 @@ class ScamAlertReasons extends StatelessWidget {
                                   PhosphorIconsStyle.fill,
                                 ),
                                 size: 8,
-                                color: accentColor,
+                                color: widget.accentColor,
                               ),
                             ),
                             Expanded(

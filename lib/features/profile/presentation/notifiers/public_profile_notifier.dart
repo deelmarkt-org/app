@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -100,16 +101,26 @@ class PublicProfileNotifier extends _$PublicProfileNotifier {
     }
   }
 
-  void shareProfile() {
+  Future<void> shareProfile() async {
     final url = '${AppConstants.deepLinkBase}/users/$userId';
-    Clipboard.setData(ClipboardData(text: url));
+    await Clipboard.setData(ClipboardData(text: url));
   }
 
   Future<void> reportUser(ReportReason reason) async {
-    await ref.read(userRepositoryProvider).reportUser(userId, reason);
+    try {
+      await ref.read(userRepositoryProvider).reportUser(userId, reason);
+    } on Exception catch (e, st) {
+      debugPrint('PublicProfileNotifier.reportUser failed: $e\n$st');
+      rethrow;
+    }
   }
 
   Future<void> reportReview(String reviewId, ReportReason reason) async {
-    await ref.read(reviewRepositoryProvider).reportReview(reviewId, reason);
+    try {
+      await ref.read(reviewRepositoryProvider).reportReview(reviewId, reason);
+    } on Exception catch (e, st) {
+      debugPrint('PublicProfileNotifier.reportReview failed: $e\n$st');
+      rethrow;
+    }
   }
 }

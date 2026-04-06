@@ -406,6 +406,10 @@
     "submitting": "Submitting...",
     "thankYou": "Thank you!",
     "waitingForOther": "Waiting for the {role}'s review",
+    "role": {
+      "buyer": "buyer",
+      "seller": "seller"
+    },
     "bothVisible": "Both reviews are now visible",
     "close": "Close",
     "urlWarning": "Links are not allowed in reviews",
@@ -732,5 +736,19 @@
     "selfBubbleA11y": "You said: {text}",
     "otherBubbleA11y": "They said: {text}",
     "readReceiptA11y": "Read"
+  },
+  "timeAgo": {
+    "justNow": "Just now",
+    "minuteAgo": "1 minute ago",
+    "minutesAgo": "{n} minutes ago",
+    "hourAgo": "1 hour ago",
+    "hoursAgo": "{n} hours ago",
+    "yesterday": "Yesterday",
+    "daysAgo": "{n} days ago",
+    "weekAgo": "1 week ago",
+    "weeksAgo": "{n} weeks ago",
+    "monthAgo": "1 month ago",
+    "monthsAgo": "{n} months ago",
+    "yearAgo": "1 year ago"
   }
 }

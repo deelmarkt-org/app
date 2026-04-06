@@ -93,42 +93,55 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
           return ResponsiveBody(
             child: RefreshIndicator(
               onRefresh: notifier.refresh,
-              child: SingleChildScrollView(
+              child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(Spacing.s4),
-                child: Column(
-                  children: [
-                    PublicProfileHeader(user: user, aggregate: state.aggregate),
-                    const SizedBox(height: Spacing.s6),
-                    _buildTabs(),
-                    const SizedBox(height: Spacing.s4),
-                    SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.6,
-                      child: TabBarView(
-                        controller: _tabController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        Spacing.s4,
+                        Spacing.s4,
+                        Spacing.s4,
+                        0,
+                      ),
+                      child: Column(
                         children: [
-                          ListingsTabView(
-                            listings: state.listings,
-                            onRetry: notifier.refresh,
+                          PublicProfileHeader(
+                            user: user,
+                            aggregate: state.aggregate,
                           ),
-                          ReviewsTabView(
-                            reviews: state.reviews,
-                            onRetry: notifier.refresh,
-                            hasMore: notifier.hasMoreReviews,
-                            isLoadingMore: notifier.isLoadingMore,
-                            onLoadMore: notifier.loadMoreReviews,
-                            onReport:
-                                (review) => _showReportSheet(
-                                  context,
-                                  (reason) =>
-                                      notifier.reportReview(review.id, reason),
-                                ),
-                          ),
+                          const SizedBox(height: Spacing.s6),
+                          _buildTabs(),
+                          const SizedBox(height: Spacing.s4),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  SliverFillRemaining(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        ListingsTabView(
+                          listings: state.listings,
+                          onRetry: notifier.refresh,
+                        ),
+                        ReviewsTabView(
+                          reviews: state.reviews,
+                          onRetry: notifier.refresh,
+                          hasMore: notifier.hasMoreReviews,
+                          isLoadingMore: notifier.isLoadingMore,
+                          onLoadMore: notifier.loadMoreReviews,
+                          onReport:
+                              (review) => _showReportSheet(
+                                context,
+                                (reason) =>
+                                    notifier.reportReview(review.id, reason),
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -147,10 +160,14 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
     );
   }
 
-  void _handleMenuAction(_MenuAction action, PublicProfileNotifier notifier) {
+  Future<void> _handleMenuAction(
+    _MenuAction action,
+    PublicProfileNotifier notifier,
+  ) async {
     switch (action) {
       case _MenuAction.share:
-        notifier.shareProfile();
+        await notifier.shareProfile();
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('sellerProfile.shareCopied'.tr())),
         );
