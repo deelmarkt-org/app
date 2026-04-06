@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
@@ -100,12 +101,12 @@ class PublicProfileNotifier extends _$PublicProfileNotifier {
   }
 
   void shareProfile() {
-    final url = 'https://deelmarkt.com/users/$userId';
+    final url = '${AppConstants.deepLinkBase}/users/$userId';
     Clipboard.setData(ClipboardData(text: url));
   }
 
   Future<void> reportUser(ReportReason reason) async {
-    await ref.read(reviewRepositoryProvider).reportReview(userId, reason);
+    await ref.read(userRepositoryProvider).reportUser(userId, reason);
   }
 
   Future<void> reportReview(String reviewId, ReportReason reason) async {

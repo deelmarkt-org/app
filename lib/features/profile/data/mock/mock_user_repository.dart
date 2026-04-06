@@ -1,3 +1,4 @@
+import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 
@@ -17,6 +18,11 @@ class MockUserRepository implements UserRepository {
   Future<UserEntity?> getCurrentUser() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return _mockUsers.first;
+  }
+
+  @override
+  Future<void> reportUser(String userId, ReportReason reason) async {
+    await Future<void>.delayed(const Duration(milliseconds: 200));
   }
 
   @override

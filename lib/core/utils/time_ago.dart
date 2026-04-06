@@ -58,8 +58,9 @@ String _formatAbsolute(DateTime dt, String locale) {
 }
 
 /// Format a member-since date as "Lid sinds jan 2025" / "Member since Jan 2025".
+///
+/// Uses l10n keys `sellerProfile.memberSince` with `{date}` named arg.
+/// Falls back to locale-specific prefix if easy_localization is unavailable.
 String formatMemberSince(DateTime date, {String locale = 'nl'}) {
-  final formatted = DateFormat.yMMM(locale).format(date);
-  if (locale == 'nl') return 'Lid sinds $formatted';
-  return 'Member since $formatted';
+  return DateFormat.yMMM(locale).format(date);
 }

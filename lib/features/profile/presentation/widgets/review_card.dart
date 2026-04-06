@@ -73,7 +73,9 @@ class ReviewCard extends StatelessWidget {
 
   Widget _buildStars(BuildContext context) {
     return Semantics(
-      label: '${review.rating} out of 5 stars',
+      label: 'review.a11y.ratingLabel'.tr(
+        namedArgs: {'rating': '${review.rating.round()}'},
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(5, (index) {

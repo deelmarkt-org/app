@@ -32,12 +32,22 @@ class ReportReasonSheet extends StatelessWidget {
           ...ReportReason.values.map(
             (reason) => ListTile(
               title: Text('report.reason.${reason.name}'.tr()),
-              onTap: () {
+              onTap: () async {
                 Navigator.of(context).pop();
-                onSubmit(reason);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('report.submitted'.tr())),
-                );
+                try {
+                  await onSubmit(reason);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('report.submitted'.tr())),
+                    );
+                  }
+                } on Exception {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('error.generic'.tr())),
+                    );
+                  }
+                }
               },
             ),
           ),

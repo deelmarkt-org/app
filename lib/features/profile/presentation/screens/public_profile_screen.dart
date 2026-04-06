@@ -103,7 +103,7 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
                     _buildTabs(),
                     const SizedBox(height: Spacing.s4),
                     SizedBox(
-                      height: 600,
+                      height: MediaQuery.sizeOf(context).height * 0.6,
                       child: TabBarView(
                         controller: _tabController,
                         children: [

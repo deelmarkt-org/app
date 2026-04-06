@@ -414,6 +414,7 @@
     "unsavedKeep": "Bewaren",
     "a11y": {
       "rating": "Ster {star} van {total}",
+      "ratingLabel": "{rating} van 5 sterren",
       "counter": "Tekenteller"
     },
     "error": {

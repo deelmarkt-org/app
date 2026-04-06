@@ -27,7 +27,10 @@ class PublicProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.locale.languageCode;
-    final memberSince = formatMemberSince(user.createdAt, locale: locale);
+    final dateFormatted = formatMemberSince(user.createdAt, locale: locale);
+    final memberSince = 'sellerProfile.memberSince'.tr(
+      namedArgs: {'date': dateFormatted},
+    );
 
     return Column(
       children: [

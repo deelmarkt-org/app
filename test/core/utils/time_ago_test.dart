@@ -106,17 +106,15 @@ void main() {
   });
 
   group('formatMemberSince', () {
-    test('NL locale', () {
+    test('NL locale returns formatted date', () {
       final dt = DateTime(2025, 6);
       final result = formatMemberSince(dt);
-      expect(result, startsWith('Lid sinds'));
       expect(result, contains('2025'));
     });
 
-    test('EN locale', () {
+    test('EN locale returns formatted date', () {
       final dt = DateTime(2025, 6);
       final result = formatMemberSince(dt, locale: 'en');
-      expect(result, startsWith('Member since'));
       expect(result, contains('2025'));
     });
   });

@@ -414,6 +414,7 @@
     "unsavedKeep": "Keep",
     "a11y": {
       "rating": "Star {star} of {total}",
+      "ratingLabel": "{rating} out of 5 stars",
       "counter": "Character counter"
     },
     "error": {
