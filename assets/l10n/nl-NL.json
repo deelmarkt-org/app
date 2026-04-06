@@ -469,6 +469,30 @@
       "nearest": "Dichtstbijzijnde eerst"
     }
   },
+  "scamAlert": {
+    "highTitle": "Dit bericht bevat mogelijk oplichting",
+    "lowTitle": "Dit bericht lijkt verdacht",
+    "reportAction": "MELD DIT BERICHT",
+    "dismissAction": "Negeer",
+    "expandAction": "Waarom deze waarschuwing?",
+    "collapseAction": "Verberg details",
+    "whyTitle": "Waarom deze waarschuwing?",
+    "feedbackSubmitted": "Bedankt voor je melding",
+    "statementOfReasons": "Waarom deze waarschuwing?",
+    "reason": {
+      "externalPaymentLink": "Bevat een link naar een externe betaalsite",
+      "offPlatformRequest": "Vraagt om de transactie buiten DeelMarkt af te handelen",
+      "phoneNumberSolicitation": "Vraagt om een telefoonnummer of WhatsApp",
+      "tooGoodToBeTrue": "Prijs of aanbod is verdacht laag",
+      "urgencyPressure": "Gebruikt druk of urgentie om snel te handelen",
+      "unknown": "Verdacht patroon gedetecteerd"
+    },
+    "a11y": {
+      "highSeverity": "Waarschuwing: dit bericht is gemarkeerd als mogelijke oplichting",
+      "lowSeverity": "Let op: dit bericht lijkt verdacht",
+      "reportHint": "Tik om dit bericht te melden als verdacht"
+    }
+  },
   "sell": {
     "newListing": "Nieuwe advertentie",
     "addPhotos": "Foto's toevoegen",

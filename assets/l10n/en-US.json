@@ -469,6 +469,30 @@
       "nearest": "Nearest first"
     }
   },
+  "scamAlert": {
+    "highTitle": "This message may contain a scam",
+    "lowTitle": "This message looks suspicious",
+    "reportAction": "REPORT THIS MESSAGE",
+    "dismissAction": "Dismiss",
+    "expandAction": "Why this warning?",
+    "collapseAction": "Hide details",
+    "whyTitle": "Why this warning?",
+    "feedbackSubmitted": "Thank you for your report",
+    "statementOfReasons": "Why this warning?",
+    "reason": {
+      "externalPaymentLink": "Contains a link to an external payment site",
+      "offPlatformRequest": "Asks to complete the transaction outside DeelMarkt",
+      "phoneNumberSolicitation": "Requests a phone number or WhatsApp",
+      "tooGoodToBeTrue": "Price or offer is suspiciously low",
+      "urgencyPressure": "Uses pressure or urgency to act quickly",
+      "unknown": "Suspicious pattern detected"
+    },
+    "a11y": {
+      "highSeverity": "Warning: this message has been flagged as a potential scam",
+      "lowSeverity": "Caution: this message looks suspicious",
+      "reportHint": "Tap to report this message as suspicious"
+    }
+  },
   "sell": {
     "newListing": "New listing",
     "addPhotos": "Add photos",
