@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 
 void main() {
   final now = DateTime(2026, 3, 25, 14);
@@ -81,6 +82,136 @@ void main() {
           MessageType.offer,
           MessageType.systemAlert,
           MessageType.scamWarning,
+        ]),
+      );
+    });
+  });
+
+  group('MessageEntity scam metadata', () {
+    test('defaults scamConfidence to none and reasons to null', () {
+      final msg = MessageEntity(
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        senderId: 'user-1',
+        text: 'Hello',
+        createdAt: now,
+      );
+
+      expect(msg.scamConfidence, ScamConfidence.none);
+      expect(msg.scamReasons, isNull);
+      expect(msg.scamFlaggedAt, isNull);
+    });
+
+    test('retains provided scam metadata', () {
+      final flaggedAt = DateTime(2026, 4, 1, 10);
+      final msg = MessageEntity(
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        senderId: 'user-1',
+        text: 'Click bit.ly/pay-now',
+        createdAt: now,
+        scamConfidence: ScamConfidence.high,
+        scamReasons: const [
+          ScamReason.externalPaymentLink,
+          ScamReason.urgencyPressure,
+        ],
+        scamFlaggedAt: flaggedAt,
+      );
+
+      expect(msg.scamConfidence, ScamConfidence.high);
+      expect(msg.scamReasons, hasLength(2));
+      expect(msg.scamReasons!.first, ScamReason.externalPaymentLink);
+      expect(msg.scamFlaggedAt, flaggedAt);
+    });
+
+    test('copyWith preserves unchanged scam metadata', () {
+      final original = MessageEntity(
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        senderId: 'user-1',
+        text: 'x',
+        createdAt: now,
+        scamConfidence: ScamConfidence.low,
+        scamReasons: const [ScamReason.phoneNumberSolicitation],
+      );
+
+      final updated = original.copyWith(isRead: true);
+
+      expect(updated.scamConfidence, ScamConfidence.low);
+      expect(updated.scamReasons, const [ScamReason.phoneNumberSolicitation]);
+      expect(updated.isRead, true);
+    });
+
+    test('copyWith overrides scam fields when provided', () {
+      final original = MessageEntity(
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        senderId: 'user-1',
+        text: 'x',
+        createdAt: now,
+      );
+
+      final flagged = original.copyWith(
+        scamConfidence: ScamConfidence.high,
+        scamReasons: const [ScamReason.tooGoodToBeTrue],
+        scamFlaggedAt: DateTime(2026, 4, 5),
+      );
+
+      expect(flagged.scamConfidence, ScamConfidence.high);
+      expect(flagged.scamReasons, const [ScamReason.tooGoodToBeTrue]);
+      expect(flagged.scamFlaggedAt, DateTime(2026, 4, 5));
+    });
+
+    test('equality distinguishes on scamConfidence', () {
+      final base = MessageEntity(
+        id: 'msg-1',
+        conversationId: 'conv-1',
+        senderId: 'user-1',
+        text: 'x',
+        createdAt: now,
+      );
+      final flagged = base.copyWith(scamConfidence: ScamConfidence.high);
+
+      expect(base, isNot(equals(flagged)));
+    });
+  });
+
+  group('ScamReason', () {
+    test('has all expected values', () {
+      expect(ScamReason.values, hasLength(6));
+      expect(
+        ScamReason.values,
+        containsAll([
+          ScamReason.externalPaymentLink,
+          ScamReason.offPlatformRequest,
+          ScamReason.phoneNumberSolicitation,
+          ScamReason.tooGoodToBeTrue,
+          ScamReason.urgencyPressure,
+          ScamReason.unknown,
+        ]),
+      );
+    });
+
+    test(
+      'each value has a unique localizationKey under scamAlert.reason.*',
+      () {
+        final keys = ScamReason.values.map((r) => r.localizationKey).toSet();
+
+        expect(keys, hasLength(ScamReason.values.length));
+        for (final key in keys) {
+          expect(key, startsWith('scamAlert.reason.'));
+        }
+      },
+    );
+
+    test('ScamConfidence has exactly none/low/high', () {
+      expect(ScamConfidence.values, hasLength(3));
+      expect(
+        ScamConfidence.values,
+        containsAll([
+          ScamConfidence.none,
+          ScamConfidence.low,
+          ScamConfidence.high,
         ]),
       );
     });
