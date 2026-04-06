@@ -14,6 +14,8 @@ import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repositor
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 
 /// Whether to use real Supabase or mock repositories.
@@ -51,6 +53,12 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   // Tracked: #46 — SupabaseReviewRepository blocked by R-36
   return MockReviewRepository();
+});
+
+/// Transaction repository — mock or real.
+final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
+  // Tracked: SupabaseTransactionRepository exists but mock used for reviews
+  return MockTransactionRepository();
 });
 
 /// Settings repository — mock or Supabase based on [useMockDataProvider].

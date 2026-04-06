@@ -14,6 +14,7 @@ import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_sc
 import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/review_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:deelmarkt/features/sell/presentation/screens/listing_creation_screen.dart';
@@ -238,6 +239,19 @@ GoRouter _buildRouter({
           final id = state.pathParameters['id']!;
           return _Placeholder('Transaction $id');
         },
+        routes: [
+          GoRoute(
+            path: 'review',
+            name: 'transaction-review',
+            pageBuilder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return MaterialPage(
+                fullscreenDialog: true,
+                child: ReviewScreen(transactionId: id),
+              );
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: AppRoutes.shippingDetail,

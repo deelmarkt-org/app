@@ -417,7 +417,16 @@
       "cancelled": "This transaction was cancelled",
       "rateLimit": "Too many attempts. Try again in {seconds} seconds.",
       "moderationBlocked": "This review has been blocked by moderation",
-      "unknown": "Something went wrong. Please try again."
+      "unknown": "Something went wrong. Please try again.",
+      "ineligible": {
+        "auth": "You must be logged in to submit a review",
+        "notFound": "Transaction not found",
+        "pending": "Payment has not been completed yet",
+        "escrowHeld": "Escrow has not been released yet",
+        "delivered": "Confirm receipt before leaving a review",
+        "disputed": "There is an ongoing dispute for this transaction",
+        "cancelled": "This transaction was cancelled"
+      }
     },
     "reportReason": {
       "scam": "Scam",
