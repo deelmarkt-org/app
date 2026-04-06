@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/widgets/price/price_tag.dart';
-import 'package:deelmarkt/widgets/price/price_tag_tokens.dart';
 
 import 'price_tag_test_helper.dart';
 
@@ -28,22 +28,26 @@ void main() {
       expect(find.textContaining('100,50'), findsOneWidget);
     });
 
-    testWidgets('normal size uses 20px font', (tester) async {
+    testWidgets('normal size uses 20px font (DeelmarktTypography.price)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildPriceTagApp(child: const PriceTag(priceInCents: 4500)),
       );
       final textWidget = tester.widget<Text>(find.textContaining('45,00'));
-      expect(textWidget.style?.fontSize, PriceTagTokens.normalFontSize);
+      expect(textWidget.style?.fontSize, DeelmarktTypography.price.fontSize);
     });
 
-    testWidgets('small size uses 16px font', (tester) async {
+    testWidgets('small size uses 16px font (DeelmarktTypography.priceSm)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildPriceTagApp(
           child: const PriceTag(priceInCents: 4500, size: PriceTagSize.small),
         ),
       );
       final textWidget = tester.widget<Text>(find.textContaining('45,00'));
-      expect(textWidget.style?.fontSize, PriceTagTokens.smallFontSize);
+      expect(textWidget.style?.fontSize, DeelmarktTypography.priceSm.fontSize);
     });
 
     testWidgets('zero price shows "Gratis" key', (tester) async {

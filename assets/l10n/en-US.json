@@ -541,9 +541,13 @@
     "errorNoCategory": "Select a category to continue",
     "publishError": "Could not publish your listing. Please try again.",
     "draftError": "Could not save your draft. Please try again.",
-    "fileTooLarge": "This photo exceeds the 15 MB size limit",
     "errorGeneric": "Something went wrong. Please try again.",
-    "openSettingsHint": "Go to Settings to enable camera access for DeelMarkt"
+    "openSettingsHint": "Go to Settings to enable camera access for DeelMarkt",
+    "errorPermissionDenied": "Camera or photo library access was denied",
+    "errorPermissionPermanent": "Camera access is permanently denied. Enable it in Settings.",
+    "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
+    "errorUnsupportedFormat": "This image format is not supported",
+    "errorImagePicker": "Could not open the photo picker"
   },
   "image_gallery": {
     "close": "Close",
@@ -558,7 +562,6 @@
     "inclBtw": "incl. VAT",
     "semanticsDiscounted": "{price} euro, was {original} euro",
     "semanticsFree": "Free",
-    "semanticsPrice": "{price} euro",
-    "wasPrice": "Was {price}"
+    "semanticsPrice": "{price} euro"
   }
 }

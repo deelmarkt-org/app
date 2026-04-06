@@ -110,7 +110,7 @@ The agent will:
 - [ ] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts
 - [ ] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it
 - [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing
-- [ ] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log
+- [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
 - [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
@@ -212,7 +212,9 @@ The agent will:
 - [ ] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list
 - [ ] `P-28` Favourites screen — save/unsave toggle, list view
 - [ ] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition
+- [ ] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` (follow-up to PR #66)
 - [ ] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough
+- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `PaymentSummaryCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66)
 - [ ] `P-32` `LocationBadge` widget — distance + pin icon
 - [ ] `P-33` `EscrowTimeline` widget — horizontal stepper with states
 - [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec

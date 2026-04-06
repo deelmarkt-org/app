@@ -17,7 +17,6 @@ import 'package:deelmarkt/widgets/media/image_gallery_zoomable_page.dart';
 /// - Pinch to zoom (1x–4x) via [InteractiveViewer]
 /// - Double-tap toggles 1x ↔ 2x with haptic feedback
 /// - Drag down to dismiss with opacity transition
-/// - Android back button handled via [PopScope]
 /// - Status bar style preserved and restored on exit
 /// - PageView swiping disabled while zoomed (gesture disambiguation)
 /// - Zoom reset on page change

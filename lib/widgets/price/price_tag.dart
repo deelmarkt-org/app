@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/widgets/price/price_tag_tokens.dart';
@@ -102,7 +101,7 @@ class PriceTag extends StatelessWidget {
       color: mutedColor,
       decoration: TextDecoration.lineThrough,
       decorationColor: mutedColor,
-      fontSize: PriceTagTokens.smallFontSize,
+      fontSize: PriceTagTokens.strikethroughFontSize,
       fontWeight: FontWeight.w600,
       fontFeatures: tabular,
     );
@@ -140,16 +139,14 @@ class PriceTag extends StatelessWidget {
   Widget _buildDiscountedRow(TextStyle current, TextStyle strikethrough) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
       children: [
         Text(_displayText(), style: current),
         const SizedBox(width: PriceTagTokens.strikethroughGap),
-        Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.s1),
-          child: Text(
-            Formatters.euroFromCents(originalPriceInCents!),
-            style: strikethrough,
-          ),
+        Text(
+          Formatters.euroFromCents(originalPriceInCents!),
+          style: strikethrough,
         ),
       ],
     );
