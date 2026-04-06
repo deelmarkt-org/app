@@ -148,7 +148,10 @@ void main() {
         tester,
         const EscrowTimeline(currentStatus: TransactionStatus.disputed),
       );
-      expect(find.bySemanticsLabel(RegExp('escrow.disputed')), findsWidgets);
+      expect(
+        find.bySemanticsLabel(RegExp('transaction.disputed')),
+        findsWidgets,
+      );
     });
   });
 

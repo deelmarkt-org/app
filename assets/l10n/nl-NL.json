@@ -242,10 +242,6 @@
     "disputeOrder": "Probleem melden",
     "countdownHint": "48 uur om te bevestigen",
     "deadlineHint": "Bevestig voor {date}",
-    "disputed": "In geschil",
-    "cancelled": "Geannuleerd",
-    "terminalRefunded": "Terugbetaald",
-    "terminalResolved": "Geschil opgelost",
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
   },

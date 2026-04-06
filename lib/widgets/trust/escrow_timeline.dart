@@ -136,12 +136,6 @@ class EscrowTimeline extends StatelessWidget {
     int stepIndex,
     EscrowTimelineVisualState state,
   ) {
-    // Theme-aware pending colour so dark mode doesn't render a pale-grey line
-    // on darkSurface (M4).
-    final pendingColor =
-        Theme.of(context).brightness == Brightness.dark
-            ? DeelmarktColors.neutral500
-            : DeelmarktColors.neutral300;
     return SizedBox(
       width: Spacing.s4,
       child: Padding(
@@ -152,7 +146,9 @@ class EscrowTimeline extends StatelessWidget {
           painter: EscrowConnectorPainter(
             isComplete: state.completedStepCount > stepIndex,
             completeColor: state.accentAt(stepIndex),
-            pendingColor: pendingColor,
+            // Shared helper — single source of truth between circle
+            // borders and connectors (PR #67 review #4).
+            pendingColor: state.pendingConnectorColor(context),
           ),
           size: const Size(Spacing.s4, EscrowStepTokens.connectorHeight),
         ),

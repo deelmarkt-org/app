@@ -3,18 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/widgets/trust/escrow_step_circle.dart';
 
 import '../../helpers/pump_app.dart';
-
-/// Bypasses the shared helper's `disableAnimations` wrapper for the single
-/// "motion enabled" test path. Relies on the test binding for `size` and
-/// `devicePixelRatio`.
-Widget _motionEnabledWrap(Widget child) => MaterialApp(
-  theme: DeelmarktTheme.light,
-  home: Scaffold(body: Center(child: child)),
-);
 
 void main() {
   group('EscrowStepCircle', () {
@@ -119,14 +110,14 @@ void main() {
     });
 
     testWidgets('pulse animation runs when motion enabled', (tester) async {
-      await tester.pumpWidget(
-        _motionEnabledWrap(
-          const EscrowStepCircle(isComplete: false, isActive: true),
-        ),
+      // Uses the shared escape hatch so the pulse AnimationController is
+      // actually driven — `pumpTestWidget` force-sets disableAnimations
+      // which would suppress the loop entirely.
+      await pumpTestWidgetAnimated(
+        tester,
+        const EscrowStepCircle(isComplete: false, isActive: true),
       );
-      // Give the animation controller a few frames but do NOT call
-      // pumpAndSettle — the pulse loop is infinite.
-      await tester.pump();
+      // Drive the clock manually — pumpAndSettle would never return.
       await tester.pump(const Duration(milliseconds: 100));
       expect(find.byType(EscrowStepCircle), findsOneWidget);
     });
@@ -152,6 +143,37 @@ void main() {
 
     test('circleSize is 24px', () {
       expect(EscrowStepTokens.circleSize, 24);
+    });
+  });
+
+  group('colour helpers', () {
+    test('escrowActiveColor maps each tone', () {
+      expect(escrowActiveColor(EscrowStepTone.trust), DeelmarktColors.primary);
+      expect(
+        escrowActiveColor(EscrowStepTone.warning),
+        DeelmarktColors.trustWarning,
+      );
+      // Muted never renders an active step in the current mapper but the
+      // switch branch is exercised here for exhaustive coverage.
+      expect(
+        escrowActiveColor(EscrowStepTone.muted),
+        DeelmarktColors.neutral700,
+      );
+    });
+
+    test('escrowCompleteColor maps each tone', () {
+      expect(
+        escrowCompleteColor(EscrowStepTone.trust),
+        DeelmarktColors.trustEscrow,
+      );
+      expect(
+        escrowCompleteColor(EscrowStepTone.warning),
+        DeelmarktColors.trustWarning,
+      );
+      expect(
+        escrowCompleteColor(EscrowStepTone.muted),
+        DeelmarktColors.neutral700,
+      );
     });
   });
 

@@ -63,6 +63,30 @@ Future<void> pumpTestScreen(
   await tester.pumpAndSettle();
 }
 
+/// Pump a widget WITHOUT disabling animations — use when the test needs
+/// to verify real animation behaviour (Hero transitions, AnimatedOpacity,
+/// EscrowStepCircle pulse, etc.). Caller MUST drive the clock manually
+/// (`tester.pump(Duration)`) instead of `pumpAndSettle`, which will
+/// never return for widgets with infinite animation loops.
+///
+/// Prefer [pumpTestWidget] for all other cases — it is the default
+/// because most widget tests only care about layout/content and the
+/// `disableAnimations: true` flag lets `pumpAndSettle` return quickly.
+Future<void> pumpTestWidgetAnimated(
+  WidgetTester tester,
+  Widget child, {
+  ThemeData? theme,
+}) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      theme: theme ?? DeelmarktTheme.light,
+      home: Scaffold(body: SingleChildScrollView(child: child)),
+    ),
+  );
+  // Intentionally NO pumpAndSettle — call sites must drive the clock.
+  await tester.pump();
+}
+
 /// Pump a widget wrapped in EasyLocalization + MaterialApp + Theme.
 ///
 /// Use this when the widget under test calls `context.locale` (e.g.

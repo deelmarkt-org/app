@@ -53,7 +53,8 @@ class EscrowTimelineVisualState {
   /// Whether a deadline countdown should render next to the active step.
   final bool showDeadline;
 
-  /// Localisation key for the status banner (e.g. `escrow.disputed`).
+  /// Localisation key for the status banner, rooted at `transaction.*`
+  /// (e.g. `transaction.disputed`, `transaction.paid`).
   final String statusLabelKey;
 
   /// Whether the timeline is in a terminal state (no further progression).
@@ -83,32 +84,60 @@ class EscrowTimelineVisualState {
     return EscrowStepTone.trust;
   }
 
-  /// Accent colour used by connectors between steps.
-  Color accentAt(int stepIndex) => switch (toneAt(stepIndex)) {
-    EscrowStepTone.trust => DeelmarktColors.trustEscrow,
-    EscrowStepTone.warning => DeelmarktColors.trustWarning,
-    EscrowStepTone.muted => DeelmarktColors.neutral500,
-  };
+  /// Accent colour used by **complete** connector segments between steps.
+  /// Reuses the shared [escrowCompleteColor] so the connector and circle
+  /// share a single source of truth (PR #67 review #4).
+  Color accentAt(int stepIndex) => escrowCompleteColor(toneAt(stepIndex));
+
+  /// Pending connector colour — delegates to the shared [escrowPendingColor]
+  /// helper so connectors and circle borders never drift (PR #67 review #4).
+  Color pendingConnectorColor(BuildContext context) =>
+      escrowPendingColor(context, muted: isMuted);
 
   /// Label colour for the step text at [stepIndex].
+  ///
+  /// Active and complete labels match the circle fill:
+  /// - active  → `primary` orange (patterns.md §Escrow Timeline)
+  /// - complete → `trustEscrow` blue
+  /// Muted labels get a distinctly dimmer shade than happy-path pending
+  /// so cancelled timelines remain distinguishable under dark theme
+  /// (PR #67 review #3).
   Color labelColor(
     BuildContext context,
     int stepIndex, {
     required bool isActive,
     required bool isComplete,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    if (isMuted) {
-      // Muted labels sit at a distinctly dimmer shade than happy-path
-      // pending labels so the two states are distinguishable under dark
-      // theme (fixes PR #67 review finding #3).
-      return isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral500;
-    }
+    if (isMuted) return escrowPendingColor(context, muted: true);
     if (_isDisputedAnchor(stepIndex)) return DeelmarktColors.trustWarning;
-    if (isActive || isComplete) return DeelmarktColors.trustEscrow;
-    return isDark ? DeelmarktColors.neutral500 : DeelmarktColors.neutral300;
+    if (isActive) return DeelmarktColors.primary;
+    if (isComplete) return DeelmarktColors.trustEscrow;
+    return escrowPendingColor(context);
   }
 }
+
+/// Happy-path factory — the five steps visible on screen. Reduces
+/// repetition inside [computeEscrowTimelineState].
+EscrowTimelineVisualState _happy(int index, {bool showDeadline = false}) =>
+    EscrowTimelineVisualState(
+      shape: EscrowTimelineShape.happyPath,
+      activeStepIndex: index,
+      completedStepCount: index,
+      showDeadline: showDeadline,
+      statusLabelKey: 'transaction.${EscrowTimelineStep.values[index].name}',
+    );
+
+/// Cancelled / expired / failed shape factory with a status-specific
+/// l10n key (review #9 — keep every statusLabelKey in the transaction.*
+/// namespace).
+EscrowTimelineVisualState _cancelled(String statusLabelKey) =>
+    EscrowTimelineVisualState(
+      shape: EscrowTimelineShape.cancelled,
+      activeStepIndex: -1,
+      completedStepCount: 0,
+      showDeadline: false,
+      statusLabelKey: statusLabelKey,
+    );
 
 /// Compute the [EscrowTimelineVisualState] for the given [status].
 ///
@@ -124,72 +153,36 @@ EscrowTimelineVisualState computeEscrowTimelineState(TransactionStatus status) {
       showDeadline: false,
       statusLabelKey: 'transaction.paymentPending',
     ),
-    TransactionStatus.paid => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.happyPath,
-      activeStepIndex: 0,
-      completedStepCount: 0,
-      showDeadline: false,
-      statusLabelKey: 'transaction.paid',
-    ),
-    TransactionStatus.shipped => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.happyPath,
-      activeStepIndex: 1,
-      completedStepCount: 1,
-      showDeadline: false,
-      statusLabelKey: 'transaction.shipped',
-    ),
-    TransactionStatus.delivered => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.happyPath,
-      activeStepIndex: 2,
-      completedStepCount: 2,
-      showDeadline: true,
-      statusLabelKey: 'transaction.delivered',
-    ),
-    TransactionStatus.confirmed => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.happyPath,
-      activeStepIndex: 3,
-      completedStepCount: 3,
-      showDeadline: false,
-      statusLabelKey: 'transaction.confirmed',
-    ),
-    TransactionStatus.released => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.happyPath,
-      activeStepIndex: 4,
-      completedStepCount: 4,
-      showDeadline: false,
-      statusLabelKey: 'transaction.released',
-    ),
-    // Dispute anchors on the `delivered` step — where the 48-hour
-    // confirmation window opens to the buyer.
+    TransactionStatus.paid => _happy(0),
+    TransactionStatus.shipped => _happy(1),
+    TransactionStatus.delivered => _happy(2, showDeadline: true),
+    TransactionStatus.confirmed => _happy(3),
+    TransactionStatus.released => _happy(4),
+    // Dispute anchors on the `delivered` step — the 48-hour confirmation
+    // window opens to the buyer there.
     TransactionStatus.disputed => const EscrowTimelineVisualState(
       shape: EscrowTimelineShape.disputed,
       activeStepIndex: 2,
       completedStepCount: 2,
       showDeadline: false,
-      statusLabelKey: 'escrow.disputed',
+      statusLabelKey: 'transaction.disputed',
     ),
     TransactionStatus.resolved => const EscrowTimelineVisualState(
       shape: EscrowTimelineShape.terminalResolved,
       activeStepIndex: 4,
       completedStepCount: 4,
       showDeadline: false,
-      statusLabelKey: 'escrow.terminalResolved',
+      statusLabelKey: 'transaction.resolved',
     ),
     TransactionStatus.refunded => const EscrowTimelineVisualState(
       shape: EscrowTimelineShape.terminalRefunded,
       activeStepIndex: -1,
       completedStepCount: 0,
       showDeadline: false,
-      statusLabelKey: 'escrow.terminalRefunded',
+      statusLabelKey: 'transaction.refunded',
     ),
-    TransactionStatus.expired ||
-    TransactionStatus.failed ||
-    TransactionStatus.cancelled => const EscrowTimelineVisualState(
-      shape: EscrowTimelineShape.cancelled,
-      activeStepIndex: -1,
-      completedStepCount: 0,
-      showDeadline: false,
-      statusLabelKey: 'escrow.cancelled',
-    ),
+    TransactionStatus.expired => _cancelled('transaction.expired'),
+    TransactionStatus.failed => _cancelled('transaction.failed'),
+    TransactionStatus.cancelled => _cancelled('transaction.cancelled'),
   };
 }

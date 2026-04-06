@@ -72,7 +72,7 @@ void main() {
       expect(state.shape, EscrowTimelineShape.disputed);
       expect(state.activeStepIndex, 2);
       expect(state.completedStepCount, 2);
-      expect(state.statusLabelKey, 'escrow.disputed');
+      expect(state.statusLabelKey, 'transaction.disputed');
       expect(state.isTerminal, isFalse);
       expect(state.isMuted, isFalse);
     });
@@ -83,7 +83,7 @@ void main() {
       expect(state.activeStepIndex, 4);
       expect(state.isTerminal, isTrue);
       expect(state.isMuted, isFalse);
-      expect(state.statusLabelKey, 'escrow.terminalResolved');
+      expect(state.statusLabelKey, 'transaction.resolved');
     });
 
     test('refunded → muted, terminal, no active step', () {
@@ -92,7 +92,7 @@ void main() {
       expect(state.activeStepIndex, -1);
       expect(state.isTerminal, isTrue);
       expect(state.isMuted, isTrue);
-      expect(state.statusLabelKey, 'escrow.terminalRefunded');
+      expect(state.statusLabelKey, 'transaction.refunded');
     });
   });
 
@@ -102,7 +102,7 @@ void main() {
       expect(state.shape, EscrowTimelineShape.cancelled);
       expect(state.isTerminal, isTrue);
       expect(state.isMuted, isTrue);
-      expect(state.statusLabelKey, 'escrow.cancelled');
+      expect(state.statusLabelKey, 'transaction.cancelled');
     });
 
     test('expired → same cancelled shape', () {
