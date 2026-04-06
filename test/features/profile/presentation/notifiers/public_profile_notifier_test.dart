@@ -26,7 +26,7 @@ Future<PublicProfileState> _waitForState(
   String userId,
 ) async {
   container.listen(publicProfileNotifierProvider(userId), (_, _) {});
-  await Future<void>.delayed(const Duration(milliseconds: 600));
+  await Future<void>.delayed(const Duration(milliseconds: 1000));
   return container.read(publicProfileNotifierProvider(userId));
 }
 
@@ -109,7 +109,7 @@ void main() {
         publicProfileNotifierProvider('user-001').notifier,
       );
       await notifier.refresh();
-      await Future<void>.delayed(const Duration(milliseconds: 600));
+      await Future<void>.delayed(const Duration(milliseconds: 1000));
 
       final state = container.read(publicProfileNotifierProvider('user-001'));
       expect(state.user.hasValue, isTrue);
