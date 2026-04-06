@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/trust_theme.dart';
 import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
@@ -20,7 +21,6 @@ import 'package:deelmarkt/features/messages/presentation/widgets/scam_alert_reas
 class ScamAlert extends StatelessWidget {
   /// High-confidence scam alert — non-dismissible red banner.
   const ScamAlert.highConfidence({
-    required this.primaryReason,
     required this.allReasons,
     required this.onReport,
     super.key,
@@ -29,14 +29,12 @@ class ScamAlert extends StatelessWidget {
 
   /// Low-confidence scam alert — dismissible amber banner.
   const ScamAlert.lowConfidence({
-    required this.primaryReason,
     required this.onReport,
     required VoidCallback this.onDismiss,
     super.key,
   }) : _isHighConfidence = false,
        allReasons = const [];
 
-  final ScamReason primaryReason;
   final List<ScamReason> allReasons;
   final VoidCallback onReport;
   final VoidCallback? onDismiss;
@@ -44,6 +42,7 @@ class ScamAlert extends StatelessWidget {
 
   static const _borderWidth = 4.0;
   static const _iconSize = 24.0;
+  static const _dismissIconSize = 20.0;
   static const _minTapTarget = 44.0;
 
   @override
@@ -83,8 +82,8 @@ class ScamAlert extends StatelessWidget {
               left: BorderSide(color: accent, width: _borderWidth),
             ),
             borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(12),
-              bottomRight: Radius.circular(12),
+              topRight: Radius.circular(DeelmarktRadius.lg),
+              bottomRight: Radius.circular(DeelmarktRadius.lg),
             ),
           ),
           child: Column(
@@ -134,14 +133,20 @@ class ScamAlert extends StatelessWidget {
                   child: Semantics(
                     button: true,
                     hint: 'scamAlert.a11y.reportHint'.tr(),
-                    child: GestureDetector(
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(4),
                       onTap: onReport,
-                      child: Text(
-                        'scamAlert.reportAction'.tr(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.secondary,
-                          letterSpacing: 0.8,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          'scamAlert.reportAction'.tr(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Theme.of(context).colorScheme.secondary,
+                            letterSpacing: 0.8,
+                          ),
                         ),
                       ),
                     ),
@@ -160,7 +165,7 @@ class ScamAlert extends StatelessWidget {
               label: 'scamAlert.dismissAction'.tr(),
               child: IconButton(
                 onPressed: onDismiss,
-                icon: Icon(PhosphorIcons.x(), size: 20),
+                icon: Icon(PhosphorIcons.x(), size: _dismissIconSize),
                 padding: EdgeInsets.zero,
               ),
             ),

@@ -586,9 +586,6 @@
     "dismissAction": "Negeer",
     "expandAction": "Waarom deze waarschuwing?",
     "collapseAction": "Verberg details",
-    "whyTitle": "Waarom deze waarschuwing?",
-    "feedbackSubmitted": "Bedankt voor je melding",
-    "statementOfReasons": "Waarom deze waarschuwing?",
     "reason": {
       "externalPaymentLink": "Bevat een link naar een externe betaalsite",
       "offPlatformRequest": "Vraagt om de transactie buiten DeelMarkt af te handelen",

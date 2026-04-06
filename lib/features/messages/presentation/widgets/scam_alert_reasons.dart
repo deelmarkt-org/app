@@ -8,13 +8,13 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 /// Expandable reason list for the P-37 scam alert (high-confidence variant).
 ///
 /// Uses [ValueNotifier] + [ValueListenableBuilder] for local expand/collapse
-/// state (no setState per CLAUDE.md §1.3).
+/// state — avoids raw setState while properly disposing the notifier.
 ///
 /// Respects [MediaQuery.disableAnimations] for the expand animation.
 ///
 /// Reference: docs/screens/06-chat/03-scam-alert.md §Expanded variant
-class ScamAlertReasons extends StatelessWidget {
-  ScamAlertReasons({
+class ScamAlertReasons extends StatefulWidget {
+  const ScamAlertReasons({
     required this.reasons,
     required this.accentColor,
     super.key,
@@ -23,9 +23,26 @@ class ScamAlertReasons extends StatelessWidget {
   final List<ScamReason> reasons;
   final Color accentColor;
 
-  final ValueNotifier<bool> _expanded = ValueNotifier<bool>(false);
+  @override
+  State<ScamAlertReasons> createState() => _ScamAlertReasonsState();
+}
+
+class _ScamAlertReasonsState extends State<ScamAlertReasons> {
+  late final ValueNotifier<bool> _expanded;
 
   static const _minTapTarget = 44.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _expanded = ValueNotifier<bool>(false);
+  }
+
+  @override
+  void dispose() {
+    _expanded.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,22 +56,26 @@ class ScamAlertReasons extends StatelessWidget {
           children: [
             SizedBox(
               height: _minTapTarget,
+              width: double.infinity,
               child: Semantics(
                 button: true,
                 label:
                     isExpanded
                         ? 'scamAlert.collapseAction'.tr()
                         : 'scamAlert.expandAction'.tr(),
-                child: GestureDetector(
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(4),
                   onTap: () => _expanded.value = !_expanded.value,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'scamAlert.whyTitle'.tr(),
+                        isExpanded
+                            ? 'scamAlert.collapseAction'.tr()
+                            : 'scamAlert.expandAction'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: accentColor,
+                          color: widget.accentColor,
                         ),
                       ),
                       const SizedBox(width: Spacing.s1),
@@ -63,7 +84,7 @@ class ScamAlertReasons extends StatelessWidget {
                             ? PhosphorIcons.caretUp()
                             : PhosphorIcons.caretDown(),
                         size: 16,
-                        color: accentColor,
+                        color: widget.accentColor,
                       ),
                     ],
                   ),
@@ -81,7 +102,7 @@ class ScamAlertReasons extends StatelessWidget {
                       ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children:
-                            reasons.map((reason) {
+                            widget.reasons.map((reason) {
                               return Padding(
                                 padding: const EdgeInsets.only(
                                   bottom: Spacing.s2,
@@ -99,7 +120,7 @@ class ScamAlertReasons extends StatelessWidget {
                                           PhosphorIconsStyle.fill,
                                         ),
                                         size: 8,
-                                        color: accentColor,
+                                        color: widget.accentColor,
                                       ),
                                     ),
                                     Expanded(

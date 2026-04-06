@@ -586,9 +586,6 @@
     "dismissAction": "Dismiss",
     "expandAction": "Why this warning?",
     "collapseAction": "Hide details",
-    "whyTitle": "Why this warning?",
-    "feedbackSubmitted": "Thank you for your report",
-    "statementOfReasons": "Why this warning?",
     "reason": {
       "externalPaymentLink": "Contains a link to an external payment site",
       "offPlatformRequest": "Asks to complete the transaction outside DeelMarkt",
