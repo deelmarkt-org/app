@@ -548,5 +548,20 @@
     "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
     "errorUnsupportedFormat": "This image format is not supported",
     "errorImagePicker": "Could not open the photo picker"
+  },
+  "image_gallery": {
+    "close": "Close",
+    "fullscreenLabel": "Fullscreen photo",
+    "noImages": "No images",
+    "photoCount": "{current} / {total}",
+    "photoSemantics": "Photo {current} of {total}"
+  },
+  "price_tag": {
+    "exclBtw": "excl. VAT",
+    "free": "Free",
+    "inclBtw": "incl. VAT",
+    "semanticsDiscounted": "{price} euro, was {original} euro",
+    "semanticsFree": "Free",
+    "semanticsPrice": "{price} euro"
   }
 }

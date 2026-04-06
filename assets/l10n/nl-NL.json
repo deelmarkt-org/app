@@ -548,5 +548,20 @@
     "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorUnsupportedFormat": "Dit afbeeldingsformaat wordt niet ondersteund",
     "errorImagePicker": "Kon de fotokiezer niet openen"
+  },
+  "image_gallery": {
+    "close": "Sluiten",
+    "fullscreenLabel": "Foto op volledig scherm",
+    "noImages": "Geen afbeeldingen",
+    "photoCount": "{current} / {total}",
+    "photoSemantics": "Foto {current} van {total}"
+  },
+  "price_tag": {
+    "exclBtw": "excl. BTW",
+    "free": "Gratis",
+    "inclBtw": "incl. BTW",
+    "semanticsDiscounted": "{price} euro, was {original} euro",
+    "semanticsFree": "Gratis",
+    "semanticsPrice": "{price} euro"
   }
 }
