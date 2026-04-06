@@ -19,7 +19,7 @@ void main() {
         ),
       );
       expect(
-        find.bySemanticsLabel(RegExp('scam_alert.a11yHigh')),
+        find.bySemanticsLabel(RegExp('scam_alert.a11y_high')),
         findsWidgets,
       );
     });
@@ -32,7 +32,10 @@ void main() {
           reasons: const [ScamAlertReason.other],
         ),
       );
-      expect(find.bySemanticsLabel(RegExp('scam_alert.a11yLow')), findsWidgets);
+      expect(
+        find.bySemanticsLabel(RegExp('scam_alert.a11y_low')),
+        findsWidgets,
+      );
     });
 
     testWidgets('Report button tap target (InkWell) is ≥ 44 high', (

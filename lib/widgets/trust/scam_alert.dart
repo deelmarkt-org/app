@@ -107,7 +107,7 @@ class _ScamAlertState extends State<ScamAlert> {
   Widget build(BuildContext context) {
     final palette = _palette(context);
     return Semantics(
-      label: (_isHigh ? 'scam_alert.a11yHigh' : 'scam_alert.a11yLow').tr(),
+      label: (_isHigh ? 'scam_alert.a11y_high' : 'scam_alert.a11y_low').tr(),
       liveRegion: true,
       container: true,
       explicitChildNodes: true,

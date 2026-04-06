@@ -17,11 +17,12 @@ enum ScamAlertReason {
   /// Localisation key under the `scam_alert.reasons.*` namespace.
   String get l10nKey => switch (this) {
     ScamAlertReason.externalPaymentLink =>
-      'scam_alert.reasons.externalPaymentLink',
+      'scam_alert.reasons.external_payment_link',
     ScamAlertReason.phoneNumberRequest =>
-      'scam_alert.reasons.phoneNumberRequest',
-    ScamAlertReason.offSiteContact => 'scam_alert.reasons.offSiteContact',
-    ScamAlertReason.suspiciousPricing => 'scam_alert.reasons.suspiciousPricing',
+      'scam_alert.reasons.phone_number_request',
+    ScamAlertReason.offSiteContact => 'scam_alert.reasons.off_site_contact',
+    ScamAlertReason.suspiciousPricing =>
+      'scam_alert.reasons.suspicious_pricing',
     ScamAlertReason.other => 'scam_alert.reasons.other',
   };
 }

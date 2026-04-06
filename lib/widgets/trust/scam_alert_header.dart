@@ -33,7 +33,8 @@ class _Header extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                (isHigh ? 'scam_alert.titleHigh' : 'scam_alert.titleLow').tr(),
+                (isHigh ? 'scam_alert.title_high' : 'scam_alert.title_low')
+                    .tr(),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: theme.colorScheme.onSurface,
@@ -42,7 +43,7 @@ class _Header extends StatelessWidget {
               if (!isHigh) ...[
                 const SizedBox(height: Spacing.s1 / 2),
                 Text(
-                  'scam_alert.subtitleLow'.tr(),
+                  'scam_alert.subtitle_low'.tr(),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -72,7 +73,7 @@ class _ExpandToggle extends StatelessWidget {
     return Semantics(
       button: true,
       label:
-          (expanded ? 'scam_alert.whyWarningHide' : 'scam_alert.whyWarning')
+          (expanded ? 'scam_alert.why_warning_hide' : 'scam_alert.why_warning')
               .tr(),
       child: Material(
         color: Colors.transparent,
@@ -170,7 +171,7 @@ class _ReasonRow extends StatelessWidget {
           const SizedBox(width: Spacing.s1),
           Expanded(
             child: Text(
-              '${'scam_alert.aiDetectedPrefix'.tr()} ${reason.l10nKey.tr()}',
+              '${'scam_alert.ai_detected_prefix'.tr()} ${reason.l10nKey.tr()}',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

@@ -20,8 +20,8 @@ void main() {
           onReport: () {},
         ),
       );
-      expect(find.textContaining('scam_alert.titleHigh'), findsOneWidget);
-      expect(find.textContaining('scam_alert.subtitleLow'), findsNothing);
+      expect(find.textContaining('scam_alert.title_high'), findsOneWidget);
+      expect(find.textContaining('scam_alert.subtitle_low'), findsNothing);
     });
 
     testWidgets('is non-dismissible (assert fires when onDismiss set)', (
@@ -85,8 +85,8 @@ void main() {
           reasons: const [ScamAlertReason.suspiciousPricing],
         ),
       );
-      expect(find.textContaining('scam_alert.titleLow'), findsOneWidget);
-      expect(find.textContaining('scam_alert.subtitleLow'), findsOneWidget);
+      expect(find.textContaining('scam_alert.title_low'), findsOneWidget);
+      expect(find.textContaining('scam_alert.subtitle_low'), findsOneWidget);
     });
 
     testWidgets('dismiss button fires onDismiss when provided', (tester) async {
@@ -128,7 +128,7 @@ void main() {
         ),
       );
       expect(
-        find.textContaining('scam_alert.reasons.externalPaymentLink'),
+        find.textContaining('scam_alert.reasons.external_payment_link'),
         findsNothing,
       );
     });
@@ -145,7 +145,7 @@ void main() {
       await tester.tap(find.byIcon(PhosphorIcons.caretDown()));
       await tester.pumpAndSettle();
       expect(
-        find.textContaining('scam_alert.reasons.externalPaymentLink'),
+        find.textContaining('scam_alert.reasons.external_payment_link'),
         findsOneWidget,
       );
     });
@@ -166,11 +166,11 @@ void main() {
         ),
       );
       expect(
-        find.textContaining('scam_alert.reasons.externalPaymentLink'),
+        find.textContaining('scam_alert.reasons.external_payment_link'),
         findsOneWidget,
       );
       expect(
-        find.textContaining('scam_alert.reasons.phoneNumberRequest'),
+        find.textContaining('scam_alert.reasons.phone_number_request'),
         findsOneWidget,
       );
     });
@@ -188,7 +188,7 @@ void main() {
       await tester.tap(find.byIcon(PhosphorIcons.caretDown()));
       await tester.pumpAndSettle();
       expect(
-        find.bySemanticsLabel(RegExp('scam_alert.whyWarningHide')),
+        find.bySemanticsLabel(RegExp('scam_alert.why_warning_hide')),
         findsWidgets,
       );
     });
