@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/chat_date_formatter.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/conversation_list_tile_support.dart';
 
 /// P-35 — Single row in the conversation list.
 ///
@@ -62,7 +62,7 @@ class ConversationListTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                _Avatar(
+                ConversationListTileAvatar(
                   url: conversation.otherUserAvatarUrl,
                   isOnline: _isOnline,
                   colors: colors,
@@ -70,7 +70,7 @@ class ConversationListTile extends StatelessWidget {
                 const SizedBox(width: Spacing.s4),
                 Expanded(child: _buildBody(context, colors)),
                 const SizedBox(width: Spacing.s3),
-                _buildTrailing(colors),
+                _buildTrailing(context, colors),
               ],
             ),
           ),
@@ -100,7 +100,10 @@ class ConversationListTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: Spacing.s2),
-        _ListingChip(title: conversation.listingTitle, colors: colors),
+        ConversationListTileListingChip(
+          title: conversation.listingTitle,
+          colors: colors,
+        ),
       ],
     );
   }
@@ -134,7 +137,7 @@ class ConversationListTile extends StatelessWidget {
     );
   }
 
-  Widget _buildTrailing(ChatThemeColors colors) {
+  Widget _buildTrailing(BuildContext context, ChatThemeColors colors) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,11 +145,18 @@ class ConversationListTile extends StatelessWidget {
         // Parent Semantics already announces the count via messages.unreadA11y
         // — suppress the raw badge text so TalkBack doesn't read it twice.
         if (_isUnread)
-          ExcludeSemantics(child: _UnreadBadge(count: conversation.unreadCount))
+          ExcludeSemantics(
+            child: ConversationListTileUnreadBadge(
+              count: conversation.unreadCount,
+            ),
+          )
         else
           const SizedBox(height: 20),
         const SizedBox(height: Spacing.s2),
-        _ListingThumb(url: conversation.listingImageUrl, colors: colors),
+        ConversationListTileListingThumb(
+          url: conversation.listingImageUrl,
+          colors: colors,
+        ),
       ],
     );
   }
@@ -170,156 +180,5 @@ class ConversationListTile extends StatelessWidget {
       );
     }
     return parts.join('. ');
-  }
-}
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({
-    required this.url,
-    required this.isOnline,
-    required this.colors,
-  });
-
-  final String? url;
-  final bool isOnline;
-  final ChatThemeColors colors;
-
-  bool get _hasImage => url != null && url!.isNotEmpty;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 64,
-      height: 64,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          _buildBase(),
-          Positioned(right: 2, bottom: 2, child: _buildPresenceDot()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBase() {
-    return Container(
-      width: 64,
-      height: 64,
-      decoration: BoxDecoration(
-        color: colors.surfaceElevated,
-        shape: BoxShape.circle,
-        image:
-            _hasImage
-                ? DecorationImage(image: NetworkImage(url!), fit: BoxFit.cover)
-                : null,
-      ),
-      child:
-          _hasImage
-              ? null
-              : Icon(Icons.person, size: 32, color: colors.textTertiary),
-    );
-  }
-
-  Widget _buildPresenceDot() {
-    final dotColor = isOnline ? colors.success : DeelmarktColors.neutral300;
-    return Container(
-      width: 14,
-      height: 14,
-      decoration: BoxDecoration(
-        color: dotColor,
-        shape: BoxShape.circle,
-        border: Border.all(color: colors.surface, width: 2),
-      ),
-    );
-  }
-}
-
-class _ListingChip extends StatelessWidget {
-  const _ListingChip({required this.title, required this.colors});
-
-  final String title;
-  final ChatThemeColors colors;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.s2,
-        vertical: Spacing.s1,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surfaceElevated,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-      ),
-      child: Text(
-        title,
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: colors.textSecondary),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
-
-class _ListingThumb extends StatelessWidget {
-  const _ListingThumb({required this.url, required this.colors});
-
-  final String? url;
-  final ChatThemeColors colors;
-
-  bool get _hasImage => url != null && url!.isNotEmpty;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: colors.surfaceElevated,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-        image:
-            _hasImage
-                ? DecorationImage(image: NetworkImage(url!), fit: BoxFit.cover)
-                : null,
-        border: Border.all(color: colors.border),
-      ),
-      child:
-          _hasImage
-              ? null
-              : Icon(
-                Icons.image_outlined,
-                size: 20,
-                color: colors.textTertiary,
-              ),
-    );
-  }
-}
-
-class _UnreadBadge extends StatelessWidget {
-  const _UnreadBadge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      decoration: const BoxDecoration(
-        color: DeelmarktColors.primary,
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        '$count',
-        style: const TextStyle(
-          color: DeelmarktColors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
   }
 }

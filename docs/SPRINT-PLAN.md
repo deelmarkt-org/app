@@ -263,8 +263,8 @@ The agent will:
 
 **Branch:** `feature/pizmam-E04-chat-screens` | **Epics:** [E04](epics/E04-messaging.md) + [E06](epics/E06-trust-moderation.md)
 
-- [ ] `P-35` Chat conversation list screen — unread badges, response time
-- [ ] `P-36` Chat thread screen — listing embed, bubbles, offer messages
+- [x] `P-35` Chat conversation list screen — unread badges, response time ✅ PR #71
+- [x] `P-36` Chat thread screen — listing embed, bubbles, offer messages ✅ PR #71
 - [ ] `P-37` Scam alert integration in chat — warning on flagged messages
 - [ ] `P-38` Rating/review screen (post-transaction) — star + text, blind
 - [ ] `P-39` Seller profile screen (public ratings) — average + reviews + badges
