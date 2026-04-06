@@ -48,7 +48,6 @@ class ChatThreadState extends Equatable {
   List<Object?> get props => [conversation, messages, isSending];
 }
 
-/// DI — reuses the same use-case providers as the list notifier where possible.
 final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
   (ref) => GetMessagesUseCase(ref.watch(messageRepositoryProvider)),
 );
@@ -56,8 +55,7 @@ final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
 final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
   (ref) => SendMessageUseCase(ref.watch(messageRepositoryProvider)),
 );
-
-/// Sentinel used when the conversation id in the URL cannot be resolved.
+// Fallback when the conversation id in the URL cannot be resolved.
 ConversationEntity _unknownConversation(String id) => ConversationEntity(
   id: id,
   listingId: '',
@@ -69,11 +67,8 @@ ConversationEntity _unknownConversation(String id) => ConversationEntity(
   lastMessageAt: DateTime.fromMillisecondsSinceEpoch(0),
 );
 
-/// Async view-model for the chat thread screen (P-36).
-///
-/// Loads the conversation header + messages and supports optimistic send.
-/// On send failure, the optimistic message is rolled back and the error
-/// is surfaced via the existing AsyncValue.error state.
+/// Async view-model for P-36. Loads conversation + messages in parallel;
+/// supports optimistic send with rollback on failure.
 @riverpod
 class ChatThreadNotifier extends _$ChatThreadNotifier {
   @override
@@ -83,7 +78,6 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
     final getConversations = ref.read(getConversationsUseCaseProvider);
     final getMessages = ref.read(getMessagesUseCaseProvider);
 
-    // Fetch header list and thread messages in parallel (review finding L#8).
     final results = await Future.wait([
       getConversations(),
       getMessages(conversationId),
@@ -111,11 +105,8 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
       return;
     }
 
-    // The `_optimistic_` prefix is a UI-only sentinel used for local
-    // deduplication. SECURITY (F-05): when `SupabaseMessageRepository`
-    // lands, it MUST generate server-side UUIDs and MUST reject any
-    // client-supplied id starting with `_optimistic_` to prevent the
-    // sentinel from ever reaching the database.
+    // SECURITY (F-05): prefix is a UI-only sentinel; server MUST reject
+    // ids starting with `_optimistic_` (never persisted to the database).
     final optimistic = MessageEntity(
       id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
       conversationId: current.conversation.id,
