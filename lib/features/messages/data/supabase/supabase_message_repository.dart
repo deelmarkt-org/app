@@ -112,10 +112,14 @@ class SupabaseMessageRepository implements MessageRepository {
     MessageType type = MessageType.text,
     int? offerAmountCents,
   }) async {
+    final userId = _client.auth.currentUser?.id;
+    if (userId == null) {
+      throw Exception('Cannot send message: user is not authenticated');
+    }
     try {
       final payload = {
         'conversation_id': conversationId,
-        'sender_id': _client.auth.currentUser!.id,
+        'sender_id': userId,
         'text': text,
         'type': type.toDb(),
         if (offerAmountCents != null) 'offer_amount_cents': offerAmountCents,

@@ -610,5 +610,15 @@
     "selfBubbleA11y": "You said: {text}",
     "otherBubbleA11y": "They said: {text}",
     "readReceiptA11y": "Read"
+  },
+  "scam_alert": {
+    "reason": {
+      "externalPaymentLink": "External payment link detected",
+      "offSiteContact": "Suggests moving conversation off-platform",
+      "phoneNumberRequest": "Requests personal phone number",
+      "suspiciousPricing": "Price seems suspiciously low",
+      "urgencyPressure": "Uses high-pressure urgency tactics",
+      "other": "Message flagged as suspicious"
+    }
   }
 }
