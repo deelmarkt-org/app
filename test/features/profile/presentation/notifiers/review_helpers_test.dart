@@ -177,6 +177,32 @@ void main() {
     });
   });
 
+  group('reviewBodyContainsUrl', () {
+    test('detects https:// URLs', () {
+      expect(reviewBodyContainsUrl('See https://scam.nl'), isTrue);
+    });
+
+    test('detects http:// URLs', () {
+      expect(reviewBodyContainsUrl('Visit http://example.com now'), isTrue);
+    });
+
+    test('detects www. prefix', () {
+      expect(reviewBodyContainsUrl('Go to www.example.com'), isTrue);
+    });
+
+    test('detects bare domain patterns', () {
+      expect(reviewBodyContainsUrl('Check out example.nl/item'), isTrue);
+    });
+
+    test('returns false for clean text', () {
+      expect(reviewBodyContainsUrl('Great seller, fast delivery!'), isFalse);
+    });
+
+    test('returns false for empty string', () {
+      expect(reviewBodyContainsUrl(''), isFalse);
+    });
+  });
+
   group('generateIdempotencyKey', () {
     test('generates a non-empty string', () {
       expect(generateIdempotencyKey(), isNotEmpty);

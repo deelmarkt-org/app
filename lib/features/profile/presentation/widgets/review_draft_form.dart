@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/profile/presentation/notifiers/review_helpers.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/rating_input.dart';
 import 'package:deelmarkt/widgets/inputs/deel_input.dart';
@@ -100,6 +101,15 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
                     controller: _bodyController,
                     onChanged: widget.onBodyChanged,
                   ),
+                  if (reviewBodyContainsUrl(widget.draft.body)) ...[
+                    const SizedBox(height: Spacing.s1),
+                    Text(
+                      'review.urlWarning'.tr(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: DeelmarktColors.warning,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: Spacing.s2),
                   Align(
                     alignment: Alignment.centerRight,

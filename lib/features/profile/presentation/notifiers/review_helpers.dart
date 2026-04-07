@@ -47,6 +47,17 @@ String sanitizeReviewBody(String body) {
       .replaceAll(RegExp(r'[\u200B-\u200F\u2028-\u202F\uFEFF]'), '');
 }
 
+/// Returns `true` if [body] contains a URL-like pattern.
+///
+/// Detects `http://`, `https://`, `www.` prefixes and bare domain patterns
+/// (e.g. `example.nl/path`). Used to surface [review.urlWarning] in the form.
+bool reviewBodyContainsUrl(String body) {
+  return RegExp(
+    r'https?://|www\.|\b\w+\.(com|nl|be|de|org|net|io|co|app)\b',
+    caseSensitive: false,
+  ).hasMatch(body);
+}
+
 /// Generates a client-side idempotency key.
 String generateIdempotencyKey() {
   final now = DateTime.now().microsecondsSinceEpoch;

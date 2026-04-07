@@ -139,6 +139,34 @@ void main() {
       expect(btn.onPressed, isNull);
     });
 
+    testWidgets('urlWarning is shown when body contains a link', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        ReviewDraftForm(
+          draft: _draft(rating: 4, body: 'Check https://scam.nl for this'),
+          onRatingChanged: (_) {},
+          onBodyChanged: (_) {},
+          onSubmit: () {},
+        ),
+      );
+      expect(find.text('review.urlWarning'), findsOneWidget);
+    });
+
+    testWidgets('urlWarning is hidden when body has no link', (tester) async {
+      await _pump(
+        tester,
+        ReviewDraftForm(
+          draft: _draft(rating: 4, body: 'Great seller, quick shipping'),
+          onRatingChanged: (_) {},
+          onBodyChanged: (_) {},
+          onSubmit: () {},
+        ),
+      );
+      expect(find.text('review.urlWarning'), findsNothing);
+    });
+
     testWidgets('submit is enabled when canSubmit is true', (tester) async {
       var submitted = false;
       await _pump(
@@ -175,6 +203,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byType(ReviewDraftForm), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   });
 }
