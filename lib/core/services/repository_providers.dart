@@ -20,6 +20,11 @@ import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_reposi
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 
+/// Re-export [currentUserProvider] so presentation-layer notifiers can import
+/// from this barrel instead of reaching into the raw infrastructure layer.
+export 'package:deelmarkt/core/services/supabase_service.dart'
+    show currentUserProvider;
+
 /// Whether to use real Supabase or mock repositories.
 ///
 /// Compile-time constant: `--dart-define=USE_MOCK_DATA=true` for mock mode.

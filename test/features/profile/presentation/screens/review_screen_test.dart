@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
-import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/review_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_draft_form.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_result_view.dart';
