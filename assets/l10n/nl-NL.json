@@ -613,11 +613,11 @@
   },
   "scam_alert": {
     "reason": {
-      "externalPaymentLink": "Externe betaallink gedetecteerd",
-      "offSiteContact": "Stelt voor om buiten het platform te communiceren",
-      "phoneNumberRequest": "Vraagt om persoonlijk telefoonnummer",
-      "suspiciousPricing": "Prijs lijkt verdacht laag",
-      "urgencyPressure": "Gebruikt hoge druk en urgentie",
+      "external_payment_link": "Externe betaallink gedetecteerd",
+      "off_site_contact": "Stelt voor om buiten het platform te communiceren",
+      "phone_number_request": "Vraagt om persoonlijk telefoonnummer",
+      "suspicious_pricing": "Prijs lijkt verdacht laag",
+      "urgency_pressure": "Gebruikt hoge druk en urgentie",
       "other": "Bericht gemarkeerd als verdacht"
     }
   }

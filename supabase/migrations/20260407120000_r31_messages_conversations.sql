@@ -37,6 +37,21 @@ CREATE INDEX idx_conversations_listing_id ON conversations (listing_id);
 CREATE INDEX idx_conversations_buyer_id ON conversations (buyer_id);
 CREATE INDEX idx_conversations_last_message_at ON conversations (last_message_at DESC);
 
+-- Prevent clients from spoofing timestamps via PostgREST INSERT (S-4).
+CREATE OR REPLACE FUNCTION conversations_set_timestamps()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.created_at := now();
+  NEW.last_message_at := now();
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER conversations_enforce_timestamps
+  BEFORE INSERT ON conversations
+  FOR EACH ROW
+  EXECUTE FUNCTION conversations_set_timestamps();
+
 -- =============================================================================
 -- 3. messages table
 -- =============================================================================
@@ -69,7 +84,7 @@ CREATE TABLE messages (
   -- offer_amount_cents must be present iff type = 'offer'
   CONSTRAINT offer_amount_required CHECK (
     (type = 'offer' AND offer_amount_cents IS NOT NULL)
-    OR type != 'offer'
+    OR (type != 'offer' AND offer_amount_cents IS NULL)
   )
 );
 
@@ -131,7 +146,7 @@ CREATE POLICY messages_participant_select ON messages
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM conversations c
-      LEFT JOIN listings l ON l.id = c.listing_id
+      JOIN listings l ON l.id = c.listing_id
       WHERE c.id = messages.conversation_id
         AND (c.buyer_id = auth.uid() OR l.seller_id = auth.uid())
     )
@@ -143,26 +158,10 @@ CREATE POLICY messages_participant_insert ON messages
     auth.uid() = sender_id
     AND EXISTS (
       SELECT 1 FROM conversations c
-      LEFT JOIN listings l ON l.id = c.listing_id
+      JOIN listings l ON l.id = c.listing_id
       WHERE c.id = messages.conversation_id
         AND (c.buyer_id = auth.uid() OR l.seller_id = auth.uid())
     )
-  );
-
--- Only the recipient can mark a message as read (not the sender)
-CREATE POLICY messages_mark_read ON messages
-  FOR UPDATE USING (
-    auth.uid() != sender_id
-    AND EXISTS (
-      SELECT 1 FROM conversations c
-      LEFT JOIN listings l ON l.id = c.listing_id
-      WHERE c.id = messages.conversation_id
-        AND (c.buyer_id = auth.uid() OR l.seller_id = auth.uid())
-    )
-  )
-  WITH CHECK (
-    -- Only allow toggling is_read; all other fields must stay unchanged
-    is_read = true
   );
 
 -- =============================================================================
@@ -173,6 +172,36 @@ CREATE POLICY messages_mark_read ON messages
 -- subscriber receives.
 
 ALTER PUBLICATION supabase_realtime ADD TABLE messages;
+
+-- =============================================================================
+-- 7.5. mark_message_read — secure RPC replacing the UPDATE RLS policy
+-- =============================================================================
+-- Replacing a permissive UPDATE policy: the old policy only constrained
+-- `is_read = true` via WITH CHECK but did not restrict which OTHER columns
+-- could be mutated. This RPC limits the UPDATE to a single column.
+
+CREATE OR REPLACE FUNCTION mark_message_read(p_message_id UUID)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+BEGIN
+  UPDATE public.messages
+  SET is_read = true
+  WHERE id = p_message_id
+    AND sender_id != auth.uid()
+    AND EXISTS (
+      SELECT 1 FROM public.conversations c
+      JOIN public.listings l ON l.id = c.listing_id
+      WHERE c.id = public.messages.conversation_id
+        AND (c.buyer_id = auth.uid() OR l.seller_id = auth.uid())
+    );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION mark_message_read(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION mark_message_read(UUID) TO authenticated;
 
 -- =============================================================================
 -- 8. Helper RPC: get_or_create_conversation
@@ -187,6 +216,7 @@ CREATE OR REPLACE FUNCTION get_or_create_conversation(
 RETURNS UUID
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = ''
 AS $$
 DECLARE
   v_conv_id UUID;
@@ -198,17 +228,24 @@ BEGIN
 
   -- Prevent buyer from messaging their own listing
   IF EXISTS (
-    SELECT 1 FROM listings WHERE id = p_listing_id AND seller_id = p_buyer_id
+    SELECT 1 FROM public.listings WHERE id = p_listing_id AND seller_id = p_buyer_id
   ) THEN
     RAISE EXCEPTION 'Cannot start a conversation on your own listing';
   END IF;
 
-  INSERT INTO conversations (listing_id, buyer_id)
+  -- Only allow conversations on published listings (S-3)
+  IF NOT EXISTS (
+    SELECT 1 FROM public.listings WHERE id = p_listing_id AND status = 'published'
+  ) THEN
+    RAISE EXCEPTION 'Listing is not available for messaging';
+  END IF;
+
+  INSERT INTO public.conversations (listing_id, buyer_id)
   VALUES (p_listing_id, p_buyer_id)
   ON CONFLICT (listing_id, buyer_id) DO NOTHING;
 
   SELECT id INTO v_conv_id
-  FROM conversations
+  FROM public.conversations
   WHERE listing_id = p_listing_id AND buyer_id = p_buyer_id;
 
   RETURN v_conv_id;
@@ -241,6 +278,7 @@ RETURNS TABLE (
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
+SET search_path = ''
 AS $$
   SELECT
     c.id,
@@ -262,18 +300,18 @@ AS $$
     last_msg.text              AS last_message_text,
     c.last_message_at,
     COALESCE(unread.cnt, 0)    AS unread_count
-  FROM conversations c
-  JOIN listings l ON l.id = c.listing_id
-  JOIN user_profiles buyer_profile ON buyer_profile.id = c.buyer_id
-  JOIN user_profiles seller_profile ON seller_profile.id = l.seller_id
+  FROM public.conversations c
+  JOIN public.listings l ON l.id = c.listing_id
+  JOIN public.user_profiles buyer_profile ON buyer_profile.id = c.buyer_id
+  JOIN public.user_profiles seller_profile ON seller_profile.id = l.seller_id
   LEFT JOIN LATERAL (
-    SELECT text FROM messages
+    SELECT text FROM public.messages
     WHERE conversation_id = c.id
     ORDER BY created_at DESC
     LIMIT 1
   ) last_msg ON true
   LEFT JOIN LATERAL (
-    SELECT COUNT(*) AS cnt FROM messages
+    SELECT COUNT(*) AS cnt FROM public.messages
     WHERE conversation_id = c.id
       AND is_read = false
       AND sender_id != auth.uid()

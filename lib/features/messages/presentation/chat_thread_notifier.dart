@@ -43,6 +43,7 @@ final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
 @riverpod
 class ChatThreadNotifier extends _$ChatThreadNotifier {
   StreamSubscription<List<MessageEntity>>? _realtimeSub;
+  List<MessageEntity>? _pendingSnapshot;
 
   @override
   Future<ChatThreadState> build(String conversationId) async {
@@ -68,9 +69,8 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
     return ChatThreadState(conversation: conversation, messages: messages);
   }
 
-  /// Subscribes to the repository Realtime stream. Incoming snapshots replace
-  /// the messages list while preserving isSending state, so optimistic messages
-  /// are not dropped mid-flight.
+  /// Subscribes to the repository Realtime stream; buffers snapshots during
+  /// isSending so optimistic messages are not dropped mid-flight.
   void _subscribeRealtime(String conversationId) {
     _realtimeSub?.cancel();
     _realtimeSub = ref
@@ -80,8 +80,10 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
           (messages) {
             final current = state.valueOrNull;
             if (current == null) return;
-            // Only update if not mid-send to avoid clobbering optimistic UI.
-            if (!current.isSending) {
+            if (current.isSending) {
+              // Buffer snapshot — apply once send completes.
+              _pendingSnapshot = messages;
+            } else {
               state = AsyncValue.data(current.copyWith(messages: messages));
             }
           },
@@ -96,17 +98,14 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
         );
   }
 
-  /// Optimistic send — appends the message to state immediately, then calls
-  /// the repository. On failure, rolls back and surfaces the error.
+  /// Optimistic send — appends immediately; rolls back on failure.
   Future<void> sendText(String text) async {
     final current = state.valueOrNull;
     if (current == null || current.isSending) return;
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
 
-    // The `_optimistic_` prefix is a UI-only sentinel. SECURITY (F-05):
-    // SupabaseMessageRepository MUST reject any client-supplied id starting
-    // with `_optimistic_` to prevent the sentinel reaching the database.
+    // UI-only sentinel id — never persisted to the database.
     final optimistic = MessageEntity(
       id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
       conversationId: current.conversation.id,
@@ -127,11 +126,10 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
         conversationId: current.conversation.id,
         text: trimmed,
       );
+      final after = _pendingSnapshot ?? [...current.messages, sent];
+      _pendingSnapshot = null;
       state = AsyncValue.data(
-        current.copyWith(
-          messages: [...current.messages, sent],
-          isSending: false,
-        ),
+        current.copyWith(messages: after, isSending: false),
       );
     } catch (e, st) {
       AppLogger.error(
@@ -140,8 +138,10 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
         error: e,
         stackTrace: st,
       );
+      final after = _pendingSnapshot ?? current.messages;
+      _pendingSnapshot = null;
       state = AsyncValue.data(
-        current.copyWith(messages: current.messages, isSending: false),
+        current.copyWith(messages: after, isSending: false),
       );
       rethrow;
     }

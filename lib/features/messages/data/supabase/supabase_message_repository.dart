@@ -6,6 +6,7 @@ import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
@@ -117,16 +118,20 @@ class SupabaseMessageRepository implements MessageRepository {
       throw Exception('Cannot send message: user is not authenticated');
     }
     try {
-      final payload = {
-        'conversation_id': conversationId,
-        'sender_id': userId,
-        'text': text,
-        'type': type.toDb(),
-        if (offerAmountCents != null) 'offer_amount_cents': offerAmountCents,
-      };
-
       final response =
-          await _client.from(_messagesTable).insert(payload).select().single();
+          await _client
+              .from(_messagesTable)
+              .insert(
+                MessageDto.toInsertJson(
+                  conversationId: conversationId,
+                  senderId: userId,
+                  text: text,
+                  type: type,
+                  offerAmountCents: offerAmountCents,
+                ),
+              )
+              .select()
+              .single();
 
       return MessageDto.fromJson(response);
     } on PostgrestException catch (e) {

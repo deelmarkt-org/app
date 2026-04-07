@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
 
 /// Single message in a conversation.
 ///
@@ -15,8 +16,7 @@ import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 ///
 /// Reference: docs/epics/E04-messaging.md, docs/epics/E06-trust-moderation.md
 class MessageEntity extends Equatable {
-  // ignore: prefer_const_constructors_in_immutables
-  MessageEntity({
+  const MessageEntity({
     required this.id,
     required this.conversationId,
     required this.senderId,
@@ -117,28 +117,4 @@ class MessageEntity extends Equatable {
       scamFlaggedAt: scamFlaggedAt ?? this.scamFlaggedAt,
     );
   }
-}
-
-/// Message types — per design system patterns.md §Chat.
-enum MessageType {
-  text,
-  offer,
-  systemAlert,
-  scamWarning;
-
-  /// Maps DB snake_case value to [MessageType]. Falls back to [text].
-  static MessageType fromDb(String value) => switch (value) {
-    'text' => MessageType.text,
-    'offer' => MessageType.offer,
-    'system_alert' => MessageType.systemAlert,
-    'scam_warning' => MessageType.scamWarning,
-    _ => MessageType.text,
-  };
-
-  String toDb() => switch (this) {
-    MessageType.text => 'text',
-    MessageType.offer => 'offer',
-    MessageType.systemAlert => 'system_alert',
-    MessageType.scamWarning => 'scam_warning',
-  };
 }

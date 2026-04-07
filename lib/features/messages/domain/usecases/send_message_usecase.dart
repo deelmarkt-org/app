@@ -1,4 +1,5 @@
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Sends a message in a conversation.
@@ -20,6 +21,13 @@ class SendMessageUseCase {
     final trimmed = text.trim();
     if (trimmed.isEmpty) {
       throw ArgumentError.value(text, 'text', 'Message text must not be empty');
+    }
+    if (trimmed.length > 2000) {
+      throw ArgumentError.value(
+        text,
+        'text',
+        'Message text must not exceed 2000 characters',
+      );
     }
     if (type == MessageType.offer && offerAmountCents == null) {
       throw ArgumentError.value(

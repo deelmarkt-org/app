@@ -1,3 +1,4 @@
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 
 /// DTO for converting Supabase RPC JSON to [ConversationEntity].
@@ -43,14 +44,17 @@ class ConversationDto {
     );
   }
 
-  /// Parse a list of RPC rows. Skips malformed entries.
+  /// Parse a list of RPC rows. Skips malformed entries and logs warnings.
   static List<ConversationEntity> fromJsonList(List<dynamic> jsonList) {
     final result = <ConversationEntity>[];
     for (final item in jsonList.whereType<Map<String, dynamic>>()) {
       try {
         result.add(fromJson(item));
-      } on FormatException {
-        // Skip rows that fail validation.
+      } on FormatException catch (e) {
+        AppLogger.warning(
+          'Skipped malformed conversation row: $e',
+          tag: 'ConversationDto',
+        );
       }
     }
     return result;

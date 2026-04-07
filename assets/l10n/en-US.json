@@ -613,11 +613,11 @@
   },
   "scam_alert": {
     "reason": {
-      "externalPaymentLink": "External payment link detected",
-      "offSiteContact": "Suggests moving conversation off-platform",
-      "phoneNumberRequest": "Requests personal phone number",
-      "suspiciousPricing": "Price seems suspiciously low",
-      "urgencyPressure": "Uses high-pressure urgency tactics",
+      "external_payment_link": "External payment link detected",
+      "off_site_contact": "Suggests moving conversation off-platform",
+      "phone_number_request": "Requests personal phone number",
+      "suspicious_pricing": "Price seems suspiciously low",
+      "urgency_pressure": "Uses high-pressure urgency tactics",
       "other": "Message flagged as suspicious"
     }
   }

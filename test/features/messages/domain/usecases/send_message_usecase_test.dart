@@ -1,4 +1,4 @@
-import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/usecases/send_message_usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,6 +25,17 @@ void main() {
 
     expect(
       () => usecase(conversationId: 'conv-001', text: '   '),
+      throwsArgumentError,
+    );
+    expect(repo.sendCalls, isEmpty);
+  });
+
+  test('throws ArgumentError when text exceeds 2000 characters', () {
+    final repo = FakeMessageRepository();
+    final usecase = SendMessageUseCase(repo);
+
+    expect(
+      () => usecase(conversationId: 'conv-001', text: 'a' * 2001),
       throwsArgumentError,
     );
     expect(repo.sendCalls, isEmpty);

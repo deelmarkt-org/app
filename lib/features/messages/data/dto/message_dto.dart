@@ -1,5 +1,7 @@
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
 
 /// DTO for converting Supabase REST/Realtime JSON to [MessageEntity].
 ///
@@ -54,7 +56,7 @@ class MessageDto {
     );
   }
 
-  /// Convert [MessageEntity] to Supabase INSERT JSON.
+  /// Convert [MessageEntity] to Supabase INSERT JSON (excludes server-generated fields).
   static Map<String, dynamic> toJson(MessageEntity entity) {
     return {
       'conversation_id': entity.conversationId,
@@ -66,14 +68,35 @@ class MessageDto {
     };
   }
 
-  /// Parse a list of JSON rows. Skips malformed entries.
+  /// Build an INSERT payload from discrete fields. Avoids constructing a full
+  /// [MessageEntity] just to serialise — used by [SupabaseMessageRepository.sendMessage].
+  static Map<String, dynamic> toInsertJson({
+    required String conversationId,
+    required String senderId,
+    required String text,
+    required MessageType type,
+    int? offerAmountCents,
+  }) {
+    return {
+      'conversation_id': conversationId,
+      'sender_id': senderId,
+      'text': text,
+      'type': type.toDb(),
+      if (offerAmountCents != null) 'offer_amount_cents': offerAmountCents,
+    };
+  }
+
+  /// Parse a list of JSON rows. Skips malformed entries and logs warnings.
   static List<MessageEntity> fromJsonList(List<dynamic> jsonList) {
     final result = <MessageEntity>[];
     for (final item in jsonList.whereType<Map<String, dynamic>>()) {
       try {
         result.add(fromJson(item));
-      } on FormatException {
-        // Skip rows that fail validation.
+      } on FormatException catch (e) {
+        AppLogger.warning(
+          'Skipped malformed message row: $e',
+          tag: 'MessageDto',
+        );
       }
     }
     return result;

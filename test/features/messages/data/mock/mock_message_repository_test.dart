@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
-import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 
 void main() {
   late MockMessageRepository repo;
