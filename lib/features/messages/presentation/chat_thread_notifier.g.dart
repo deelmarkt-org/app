@@ -37,38 +37,26 @@ abstract class _$ChatThreadNotifier
   FutureOr<ChatThreadState> build(String conversationId);
 }
 
-/// Async view-model for the chat thread screen (P-36).
-///
-/// Loads the conversation header + messages and supports optimistic send.
-/// On send failure, the optimistic message is rolled back and the error
-/// is surfaced via the existing AsyncValue.error state.
+/// Async view-model for P-36. Loads conversation + messages in parallel;
+/// supports optimistic send with rollback on failure.
 ///
 /// Copied from [ChatThreadNotifier].
 @ProviderFor(ChatThreadNotifier)
 const chatThreadNotifierProvider = ChatThreadNotifierFamily();
 
-/// Async view-model for the chat thread screen (P-36).
-///
-/// Loads the conversation header + messages and supports optimistic send.
-/// On send failure, the optimistic message is rolled back and the error
-/// is surfaced via the existing AsyncValue.error state.
+/// Async view-model for P-36. Loads conversation + messages in parallel;
+/// supports optimistic send with rollback on failure.
 ///
 /// Copied from [ChatThreadNotifier].
 class ChatThreadNotifierFamily extends Family<AsyncValue<ChatThreadState>> {
-  /// Async view-model for the chat thread screen (P-36).
-  ///
-  /// Loads the conversation header + messages and supports optimistic send.
-  /// On send failure, the optimistic message is rolled back and the error
-  /// is surfaced via the existing AsyncValue.error state.
+  /// Async view-model for P-36. Loads conversation + messages in parallel;
+  /// supports optimistic send with rollback on failure.
   ///
   /// Copied from [ChatThreadNotifier].
   const ChatThreadNotifierFamily();
 
-  /// Async view-model for the chat thread screen (P-36).
-  ///
-  /// Loads the conversation header + messages and supports optimistic send.
-  /// On send failure, the optimistic message is rolled back and the error
-  /// is surfaced via the existing AsyncValue.error state.
+  /// Async view-model for P-36. Loads conversation + messages in parallel;
+  /// supports optimistic send with rollback on failure.
   ///
   /// Copied from [ChatThreadNotifier].
   ChatThreadNotifierProvider call(String conversationId) {
@@ -97,11 +85,8 @@ class ChatThreadNotifierFamily extends Family<AsyncValue<ChatThreadState>> {
   String? get name => r'chatThreadNotifierProvider';
 }
 
-/// Async view-model for the chat thread screen (P-36).
-///
-/// Loads the conversation header + messages and supports optimistic send.
-/// On send failure, the optimistic message is rolled back and the error
-/// is surfaced via the existing AsyncValue.error state.
+/// Async view-model for P-36. Loads conversation + messages in parallel;
+/// supports optimistic send with rollback on failure.
 ///
 /// Copied from [ChatThreadNotifier].
 class ChatThreadNotifierProvider
@@ -110,11 +95,8 @@ class ChatThreadNotifierProvider
           ChatThreadNotifier,
           ChatThreadState
         > {
-  /// Async view-model for the chat thread screen (P-36).
-  ///
-  /// Loads the conversation header + messages and supports optimistic send.
-  /// On send failure, the optimistic message is rolled back and the error
-  /// is surfaced via the existing AsyncValue.error state.
+  /// Async view-model for P-36. Loads conversation + messages in parallel;
+  /// supports optimistic send with rollback on failure.
   ///
   /// Copied from [ChatThreadNotifier].
   ChatThreadNotifierProvider(String conversationId)
