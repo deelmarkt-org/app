@@ -55,8 +55,8 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                 button: true,
                 label:
                     isExpanded
-                        ? 'scamAlert.collapseAction'.tr()
-                        : 'scamAlert.expandAction'.tr(),
+                        ? 'scam_alert.collapseAction'.tr()
+                        : 'scam_alert.expandAction'.tr(),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -66,7 +66,7 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'scamAlert.expandAction'.tr(),
+                          'scam_alert.expandAction'.tr(),
                           style: Theme.of(
                             context,
                           ).textTheme.labelSmall?.copyWith(

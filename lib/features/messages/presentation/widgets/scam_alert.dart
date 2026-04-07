@@ -65,8 +65,8 @@ class ScamAlert extends StatelessWidget {
         liveRegion: true,
         label:
             _isHighConfidence
-                ? 'scamAlert.a11y.highSeverity'.tr()
-                : 'scamAlert.a11y.lowSeverity'.tr(),
+                ? 'scam_alert.a11y.highSeverity'.tr()
+                : 'scam_alert.a11y.lowSeverity'.tr(),
         child: Container(
           margin: const EdgeInsets.fromLTRB(
             Spacing.s4,
@@ -118,8 +118,8 @@ class ScamAlert extends StatelessWidget {
             children: [
               Text(
                 _isHighConfidence
-                    ? 'scamAlert.highTitle'.tr()
-                    : 'scamAlert.lowTitle'.tr(),
+                    ? 'scam_alert.highTitle'.tr()
+                    : 'scam_alert.lowTitle'.tr(),
                 style: Theme.of(
                   context,
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
@@ -131,12 +131,12 @@ class ScamAlert extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: Semantics(
                     button: true,
-                    hint: 'scamAlert.a11y.reportHint'.tr(),
+                    hint: 'scam_alert.a11y.reportHint'.tr(),
                     child: InkWell(
                       onTap: onReport,
                       borderRadius: BorderRadius.circular(4),
                       child: Text(
-                        'scamAlert.reportAction'.tr(),
+                        'scam_alert.reportAction'.tr(),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.secondary,
@@ -156,7 +156,7 @@ class ScamAlert extends StatelessWidget {
             height: _minTapTarget,
             child: Semantics(
               button: true,
-              label: 'scamAlert.dismissAction'.tr(),
+              label: 'scam_alert.dismissAction'.tr(),
               child: IconButton(
                 onPressed: onDismiss,
                 icon: Icon(PhosphorIcons.x(), size: 20),

@@ -4,6 +4,10 @@
 /// expanded panel. Each value maps to a localization key so the UI can render
 /// the reason in NL/EN.
 ///
+/// **Canonical set** — aligns with PR #72 (merged to dev):
+/// `externalPaymentLink`, `offSiteContact`, `phoneNumberRequest`,
+/// `suspiciousPricing`, `urgencyPressure`, `other`.
+///
 /// Reference:
 /// - docs/epics/E06-trust-moderation.md §Scam Detection
 /// - docs/screens/06-chat/03-scam-alert.md
@@ -12,38 +16,38 @@ enum ScamReason {
   externalPaymentLink,
 
   /// Message asks to move the conversation or transaction off-platform.
-  offPlatformRequest,
+  offSiteContact,
 
   /// Message solicits a phone number, WhatsApp, Telegram, etc.
-  phoneNumberSolicitation,
+  phoneNumberRequest,
 
   /// Price or offer is suspiciously below market value.
-  tooGoodToBeTrue,
+  suspiciousPricing,
 
   /// Message uses urgency pressure ("now", "today only", "limited time").
   urgencyPressure,
 
   /// Detector flagged the message but did not classify the reason.
-  unknown,
+  other,
 }
 
 /// Extension providing the localization key for each [ScamReason].
 extension ScamReasonLocalization on ScamReason {
-  /// Localization key under `scamAlert.reason.*` in l10n JSON files.
+  /// Localization key under `scam_alert.reason.*` in l10n JSON files.
   String get localizationKey {
     switch (this) {
       case ScamReason.externalPaymentLink:
-        return 'scamAlert.reason.externalPaymentLink';
-      case ScamReason.offPlatformRequest:
-        return 'scamAlert.reason.offPlatformRequest';
-      case ScamReason.phoneNumberSolicitation:
-        return 'scamAlert.reason.phoneNumberSolicitation';
-      case ScamReason.tooGoodToBeTrue:
-        return 'scamAlert.reason.tooGoodToBeTrue';
+        return 'scam_alert.reason.externalPaymentLink';
+      case ScamReason.offSiteContact:
+        return 'scam_alert.reason.offSiteContact';
+      case ScamReason.phoneNumberRequest:
+        return 'scam_alert.reason.phoneNumberRequest';
+      case ScamReason.suspiciousPricing:
+        return 'scam_alert.reason.suspiciousPricing';
       case ScamReason.urgencyPressure:
-        return 'scamAlert.reason.urgencyPressure';
-      case ScamReason.unknown:
-        return 'scamAlert.reason.unknown';
+        return 'scam_alert.reason.urgencyPressure';
+      case ScamReason.other:
+        return 'scam_alert.reason.other';
     }
   }
 }

@@ -132,13 +132,13 @@ void main() {
         text: 'x',
         createdAt: now,
         scamConfidence: ScamConfidence.low,
-        scamReasons: const [ScamReason.phoneNumberSolicitation],
+        scamReasons: const [ScamReason.phoneNumberRequest],
       );
 
       final updated = original.copyWith(isRead: true);
 
       expect(updated.scamConfidence, ScamConfidence.low);
-      expect(updated.scamReasons, const [ScamReason.phoneNumberSolicitation]);
+      expect(updated.scamReasons, const [ScamReason.phoneNumberRequest]);
       expect(updated.isRead, true);
     });
 
@@ -153,12 +153,12 @@ void main() {
 
       final flagged = original.copyWith(
         scamConfidence: ScamConfidence.high,
-        scamReasons: const [ScamReason.tooGoodToBeTrue],
+        scamReasons: const [ScamReason.suspiciousPricing],
         scamFlaggedAt: DateTime(2026, 4, 5),
       );
 
       expect(flagged.scamConfidence, ScamConfidence.high);
-      expect(flagged.scamReasons, const [ScamReason.tooGoodToBeTrue]);
+      expect(flagged.scamReasons, const [ScamReason.suspiciousPricing]);
       expect(flagged.scamFlaggedAt, DateTime(2026, 4, 5));
     });
 
@@ -183,23 +183,23 @@ void main() {
         ScamReason.values,
         containsAll([
           ScamReason.externalPaymentLink,
-          ScamReason.offPlatformRequest,
-          ScamReason.phoneNumberSolicitation,
-          ScamReason.tooGoodToBeTrue,
+          ScamReason.offSiteContact,
+          ScamReason.phoneNumberRequest,
+          ScamReason.suspiciousPricing,
           ScamReason.urgencyPressure,
-          ScamReason.unknown,
+          ScamReason.other,
         ]),
       );
     });
 
     test(
-      'each value has a unique localizationKey under scamAlert.reason.*',
+      'each value has a unique localizationKey under scam_alert.reason.*',
       () {
         final keys = ScamReason.values.map((r) => r.localizationKey).toSet();
 
         expect(keys, hasLength(ScamReason.values.length));
         for (final key in keys) {
-          expect(key, startsWith('scamAlert.reason.'));
+          expect(key, startsWith('scam_alert.reason.'));
         }
       },
     );

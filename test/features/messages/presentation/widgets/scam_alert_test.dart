@@ -20,8 +20,8 @@ void main() {
 
       expect(find.byType(ScamAlert), findsOneWidget);
       // .tr() returns the key path in tests
-      expect(find.text('scamAlert.highTitle'), findsOneWidget);
-      expect(find.text('scamAlert.reportAction'), findsOneWidget);
+      expect(find.text('scam_alert.highTitle'), findsOneWidget);
+      expect(find.text('scam_alert.reportAction'), findsOneWidget);
     });
 
     testWidgets('is non-dismissible (no X button)', (tester) async {
@@ -46,7 +46,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('scamAlert.reportAction'));
+      await tester.tap(find.text('scam_alert.reportAction'));
       expect(reported, isTrue);
     });
 
@@ -63,21 +63,24 @@ void main() {
       );
 
       // Initially collapsed — reason keys not visible
-      expect(find.text('scamAlert.reason.externalPaymentLink'), findsNothing);
+      expect(find.text('scam_alert.reason.externalPaymentLink'), findsNothing);
 
       // Tap expand — button shows expandAction text when collapsed
-      await tester.tap(find.text('scamAlert.expandAction'));
+      await tester.tap(find.text('scam_alert.expandAction'));
       await tester.pumpAndSettle();
 
       // Reasons now visible
-      expect(find.text('scamAlert.reason.externalPaymentLink'), findsOneWidget);
-      expect(find.text('scamAlert.reason.urgencyPressure'), findsOneWidget);
+      expect(
+        find.text('scam_alert.reason.externalPaymentLink'),
+        findsOneWidget,
+      );
+      expect(find.text('scam_alert.reason.urgencyPressure'), findsOneWidget);
 
       // Tap collapse — button always shows expandAction text (stable text avoids AnimatedSize layout assertion)
-      await tester.tap(find.text('scamAlert.expandAction'));
+      await tester.tap(find.text('scam_alert.expandAction'));
       await tester.pumpAndSettle();
 
-      expect(find.text('scamAlert.reason.externalPaymentLink'), findsNothing);
+      expect(find.text('scam_alert.reason.externalPaymentLink'), findsNothing);
     });
 
     testWidgets('has Semantics node with a11y label', (tester) async {
@@ -95,7 +98,7 @@ void main() {
         find.byWidgetPredicate(
           (w) =>
               w is Semantics &&
-              w.properties.label == 'scamAlert.a11y.highSeverity',
+              w.properties.label == 'scam_alert.a11y.highSeverity',
         ),
         findsOneWidget,
       );
@@ -111,7 +114,7 @@ void main() {
       );
 
       // The report action is inside a SizedBox(height: 44) wrapper
-      final reportFinder = find.text('scamAlert.reportAction');
+      final reportFinder = find.text('scam_alert.reportAction');
       expect(reportFinder, findsOneWidget);
 
       final reportSize = tester.getSize(
@@ -146,7 +149,7 @@ void main() {
         ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
       );
 
-      expect(find.text('scamAlert.lowTitle'), findsOneWidget);
+      expect(find.text('scam_alert.lowTitle'), findsOneWidget);
       expect(find.byType(IconButton), findsOneWidget);
     });
 
@@ -181,7 +184,7 @@ void main() {
         ScamAlert.lowConfidence(onReport: () {}, onDismiss: () {}),
       );
 
-      expect(find.text('scamAlert.expandAction'), findsNothing);
+      expect(find.text('scam_alert.expandAction'), findsNothing);
     });
   });
 
@@ -197,7 +200,7 @@ void main() {
       );
 
       expect(find.byType(ScamAlert), findsOneWidget);
-      expect(find.text('scamAlert.highTitle'), findsOneWidget);
+      expect(find.text('scam_alert.highTitle'), findsOneWidget);
     });
 
     testWidgets('low confidence renders in dark theme', (tester) async {
@@ -208,7 +211,7 @@ void main() {
       );
 
       expect(find.byType(ScamAlert), findsOneWidget);
-      expect(find.text('scamAlert.lowTitle'), findsOneWidget);
+      expect(find.text('scam_alert.lowTitle'), findsOneWidget);
     });
   });
 }
