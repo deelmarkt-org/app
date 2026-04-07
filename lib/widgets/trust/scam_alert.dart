@@ -5,7 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 part 'scam_alert_header.dart';
 part 'scam_alert_actions.dart';
@@ -170,7 +170,7 @@ class _ScamAlertState extends State<ScamAlert> {
   _Palette _palette(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (_isHigh) {
-      return _Palette(
+      return (
         surface:
             isDark
                 ? DeelmarktColors.darkErrorSurface
@@ -181,7 +181,7 @@ class _ScamAlertState extends State<ScamAlert> {
                 : DeelmarktColors.trustWarning,
       );
     }
-    return _Palette(
+    return (
       surface:
           isDark
               ? DeelmarktColors.darkWarningSurface
@@ -194,8 +194,4 @@ class _ScamAlertState extends State<ScamAlert> {
   }
 }
 
-class _Palette {
-  const _Palette({required this.surface, required this.accent});
-  final Color surface;
-  final Color accent;
-}
+typedef _Palette = ({Color surface, Color accent});

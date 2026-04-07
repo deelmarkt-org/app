@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
 
 import '../../helpers/pump_app.dart';
