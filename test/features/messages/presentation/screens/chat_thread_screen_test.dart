@@ -338,6 +338,78 @@ void main() {
       expect(find.byType(ScamAlert), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('tapping Report on high-confidence alert shows snackbar', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [
+          MessageEntity(
+            id: 'm1',
+            conversationId: 'c1',
+            senderId: 'other-c1',
+            text: 'Pay me externally',
+            createdAt: DateTime(2026, 3, 25, 10),
+            scamConfidence: ScamConfidence.high,
+            scamReasons: const [ScamReason.externalPaymentLink],
+            scamFlaggedAt: DateTime(2026, 3, 25, 10),
+          ),
+        ],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      // Tap the Report button inside the ScamAlert
+      await tester.tap(find.text('scam_alert.report'));
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('tapping Dismiss on low-confidence alert shows snackbar', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [
+          MessageEntity(
+            id: 'm1',
+            conversationId: 'c1',
+            senderId: 'other-c1',
+            text: 'Suspicious',
+            createdAt: DateTime(2026, 3, 25, 10),
+            scamConfidence: ScamConfidence.low,
+            scamReasons: const [ScamReason.urgencyPressure],
+            scamFlaggedAt: DateTime(2026, 3, 25, 10),
+          ),
+        ],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      // Tap the X dismiss button inside the ScamAlert (identified by
+      // Semantics label since _DismissButton uses an icon, not text).
+      final dismissFinder = find.byWidgetPredicate(
+        (w) =>
+            w is Semantics &&
+            w.properties.label != null &&
+            w.properties.label!.contains('scam_alert.dismiss'),
+      );
+      expect(dismissFinder, findsOneWidget);
+      await tester.tap(dismissFinder);
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
   });
 
   group('ChatMessageComposer', () {
