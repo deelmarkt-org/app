@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
-import 'package:deelmarkt/widgets/trust/scam_alert_reason.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -13,8 +13,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.other],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.other],
           onReport: () {},
         ),
       );
@@ -28,8 +28,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.other],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.other],
         ),
       );
       expect(
@@ -44,8 +44,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
       );
@@ -63,8 +63,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.other],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.other],
           onReport: () {},
         ),
       );
@@ -84,8 +84,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.externalPaymentLink],
           onDismiss: () {},
         ),
       );

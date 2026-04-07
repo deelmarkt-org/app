@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/features/messages/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
-import 'package:deelmarkt/widgets/trust/scam_alert_reason.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -15,8 +15,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
       );
@@ -29,8 +29,8 @@ void main() {
     ) async {
       expect(
         () => ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.phoneNumberRequest],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.phoneNumberRequest],
           onDismiss: () {},
         ),
         throwsAssertionError,
@@ -42,8 +42,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () => reported = true,
         ),
       );
@@ -55,8 +55,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.other],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.other],
           onReport: () {},
         ),
       );
@@ -68,8 +68,8 @@ void main() {
     ) async {
       expect(
         () => ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
         ),
         throwsAssertionError,
       );
@@ -81,8 +81,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.suspiciousPricing],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.suspiciousPricing],
         ),
       );
       expect(find.textContaining('scam_alert.title_low'), findsOneWidget);
@@ -94,8 +94,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.externalPaymentLink],
           onDismiss: () => dismissed = true,
         ),
       );
@@ -109,8 +109,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.externalPaymentLink],
         ),
       );
       expect(find.bySemanticsLabel('scam_alert.dismiss'), findsNothing);
@@ -122,13 +122,13 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
       );
       expect(
-        find.textContaining('scam_alert.reasons.external_payment_link'),
+        find.textContaining('scam_alert.reason.external_payment_link'),
         findsNothing,
       );
     });
@@ -137,15 +137,15 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
         ),
       );
       await tester.tap(find.byIcon(PhosphorIcons.caretDown()));
       await tester.pumpAndSettle();
       expect(
-        find.textContaining('scam_alert.reasons.external_payment_link'),
+        find.textContaining('scam_alert.reason.external_payment_link'),
         findsOneWidget,
       );
     });
@@ -156,21 +156,21 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
+          confidence: ScamConfidence.high,
           reasons: const [
-            ScamAlertReason.externalPaymentLink,
-            ScamAlertReason.phoneNumberRequest,
+            ScamReason.externalPaymentLink,
+            ScamReason.phoneNumberRequest,
           ],
           onReport: () {},
           initiallyExpanded: true,
         ),
       );
       expect(
-        find.textContaining('scam_alert.reasons.external_payment_link'),
+        find.textContaining('scam_alert.reason.external_payment_link'),
         findsOneWidget,
       );
       expect(
-        find.textContaining('scam_alert.reasons.phone_number_request'),
+        find.textContaining('scam_alert.reason.phone_number_request'),
         findsOneWidget,
       );
     });
@@ -179,8 +179,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.other],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.other],
           onReport: () {},
         ),
       );
@@ -197,8 +197,7 @@ void main() {
   group('ScamAlert — invariants', () {
     test('empty reasons list throws', () {
       expect(
-        () =>
-            ScamAlert(confidence: ScamAlertConfidence.high, reasons: const []),
+        () => ScamAlert(confidence: ScamConfidence.high, reasons: const []),
         throwsAssertionError,
       );
     });
@@ -209,8 +208,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.high,
-          reasons: const [ScamAlertReason.externalPaymentLink],
+          confidence: ScamConfidence.high,
+          reasons: const [ScamReason.externalPaymentLink],
           onReport: () {},
           initiallyExpanded: true,
         ),
@@ -223,8 +222,8 @@ void main() {
       await pumpTestWidget(
         tester,
         ScamAlert(
-          confidence: ScamAlertConfidence.low,
-          reasons: const [ScamAlertReason.phoneNumberRequest],
+          confidence: ScamConfidence.low,
+          reasons: const [ScamReason.phoneNumberRequest],
         ),
         theme: DeelmarktTheme.dark,
       );
@@ -232,17 +231,14 @@ void main() {
     });
   });
 
-  group('ScamAlertReason — l10n key mapping', () {
-    test(
-      'every enum value maps to a unique key under scam_alert.reasons.*',
-      () {
-        final keys = <String>{};
-        for (final r in ScamAlertReason.values) {
-          expect(r.l10nKey.startsWith('scam_alert.reasons.'), isTrue);
-          keys.add(r.l10nKey);
-        }
-        expect(keys.length, ScamAlertReason.values.length);
-      },
-    );
+  group('ScamReason — l10n key mapping', () {
+    test('every enum value maps to a unique key under scam_alert.reason.*', () {
+      final keys = <String>{};
+      for (final r in ScamReason.values) {
+        expect(r.localizationKey.startsWith('scam_alert.reason.'), isTrue);
+        keys.add(r.localizationKey);
+      }
+      expect(keys.length, ScamReason.values.length);
+    });
   });
 }
