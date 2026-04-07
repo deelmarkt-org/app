@@ -368,6 +368,26 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "scam_alert": {
+    "title_high": "Dit bericht bevat mogelijk oplichting",
+    "title_low": "Let op: wees voorzichtig met externe links",
+    "subtitle_low": "DeelMarkt vraagt je nooit om betalingen buiten ons platform te voldoen.",
+    "why_warning": "Waarom deze waarschuwing?",
+    "reasons_header": "Gedetecteerde risico\u2019s",
+    "why_warning_hide": "Verberg uitleg",
+    "ai_detected_prefix": "AI gedetecteerd:",
+    "report": "Meld dit bericht",
+    "dismiss": "Negeren",
+    "a11y_high": "Waarschuwing: mogelijke oplichting gedetecteerd",
+    "a11y_low": "Tip: wees voorzichtig met externe links",
+    "reasons": {
+      "external_payment_link": "externe betaallink buiten DeelMarkt Escrow",
+      "phone_number_request": "verzoek om telefoonnummer of contact buiten de app",
+      "off_site_contact": "voorstel om het gesprek buiten DeelMarkt voort te zetten",
+      "suspicious_pricing": "prijs die te mooi lijkt om waar te zijn",
+      "other": "verdachte patronen gedetecteerd"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
     "a11yCityOnly": "Locatie: {city}",

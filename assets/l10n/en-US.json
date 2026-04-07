@@ -368,6 +368,26 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "scam_alert": {
+    "title_high": "This message may contain a scam",
+    "title_low": "Heads up: be careful with external links",
+    "subtitle_low": "DeelMarkt never asks you to pay outside our platform.",
+    "why_warning": "Why this warning?",
+    "reasons_header": "Detected risks",
+    "why_warning_hide": "Hide explanation",
+    "ai_detected_prefix": "AI detected:",
+    "report": "Report this message",
+    "dismiss": "Dismiss",
+    "a11y_high": "Warning: possible scam detected",
+    "a11y_low": "Tip: be careful with external links",
+    "reasons": {
+      "external_payment_link": "external payment link outside DeelMarkt Escrow",
+      "phone_number_request": "request to share a phone number or chat outside the app",
+      "off_site_contact": "proposal to continue the conversation off-platform",
+      "suspicious_pricing": "price that looks too good to be true",
+      "other": "suspicious patterns detected"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Location: {city}, {distance} away",
     "a11yCityOnly": "Location: {city}",
