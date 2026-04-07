@@ -126,7 +126,7 @@ class _DismissButton extends StatelessWidget {
 
 class _ReasonList extends StatelessWidget {
   const _ReasonList({required this.reasons});
-  final List<ScamAlertReason> reasons;
+  final List<ScamReason> reasons;
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +150,7 @@ class _ReasonList extends StatelessWidget {
 
 class _ReasonRow extends StatelessWidget {
   const _ReasonRow({required this.reason});
-  final ScamAlertReason reason;
+  final ScamReason reason;
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +171,7 @@ class _ReasonRow extends StatelessWidget {
           const SizedBox(width: Spacing.s1),
           Expanded(
             child: Text(
-              '${'scam_alert.ai_detected_prefix'.tr()} ${reason.l10nKey.tr()}',
+              '${'scam_alert.ai_detected_prefix'.tr()} ${reason.localizationKey.tr()}',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),

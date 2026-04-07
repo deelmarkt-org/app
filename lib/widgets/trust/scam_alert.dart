@@ -5,7 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/widgets/trust/scam_alert_reason.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 part 'scam_alert_header.dart';
 part 'scam_alert_actions.dart';
@@ -22,13 +22,13 @@ const double _kBulletIconSize = 14;
 /// Inline chat banner surfaced above a suspicious message.
 ///
 /// Two confidence tiers:
-/// - [ScamAlertConfidence.high]: red `errorSurface` background, non-
+/// - [ScamConfidence.high]: red `errorSurface` background, non-
 ///   dismissible, Report button required.
-/// - [ScamAlertConfidence.low]: amber `warningSurface` background,
+/// - [ScamConfidence.low]: amber `warningSurface` background,
 ///   dismissible, no Report button required.
 ///
 /// The widget NEVER renders raw message content — only a localised
-/// reason string from the closed [ScamAlertReason] enum and the
+/// reason string from the closed [ScamReason] enum and the
 /// classifier confidence tier. Raw user input is a rendering /
 /// injection risk and belongs in the message bubble, not here.
 ///
@@ -50,12 +50,18 @@ class ScamAlert extends StatefulWidget {
     this.initiallyExpanded = false,
     super.key,
   }) : assert(
-         confidence == ScamAlertConfidence.low || onDismiss == null,
+         confidence != ScamConfidence.none,
+         'ScamAlert must not be shown for unflagged messages '
+         '(ScamConfidence.none). Only render the widget when '
+         'confidence is low or high.',
+       ),
+       assert(
+         confidence == ScamConfidence.low || onDismiss == null,
          'High-confidence scam alerts must NOT be dismissible '
          '(onDismiss must be null).',
        ),
        assert(
-         confidence == ScamAlertConfidence.low || onReport != null,
+         confidence == ScamConfidence.low || onReport != null,
          'Pass a non-null `onReport` callback for high-confidence '
          'alerts — the Report action is the only user-facing '
          'recovery path (non-dismissible banners with no action '
@@ -64,17 +70,17 @@ class ScamAlert extends StatefulWidget {
        assert(
          reasons.isNotEmpty,
          'ScamAlert requires at least one reason — use '
-         'ScamAlertReason.other if the backend flag is opaque.',
+         'ScamReason.other if the backend flag is opaque.',
        );
 
-  final ScamAlertConfidence confidence;
-  final List<ScamAlertReason> reasons;
+  final ScamConfidence confidence;
+  final List<ScamReason> reasons;
 
   /// Fires when the user taps the Report action. **Required** for
   /// high confidence (asserted at construction), optional for low.
   final VoidCallback? onReport;
 
-  /// Only honoured for [ScamAlertConfidence.low]. Asserted at
+  /// Only honoured for [ScamConfidence.low]. Asserted at
   /// construction time so a high-confidence alert cannot accept a
   /// dismiss handler.
   final VoidCallback? onDismiss;
@@ -94,7 +100,7 @@ class _ScamAlertState extends State<ScamAlert> {
     widget.initiallyExpanded,
   );
 
-  bool get _isHigh => widget.confidence == ScamAlertConfidence.high;
+  bool get _isHigh => widget.confidence == ScamConfidence.high;
 
   @override
   void dispose() {
@@ -164,7 +170,7 @@ class _ScamAlertState extends State<ScamAlert> {
   _Palette _palette(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (_isHigh) {
-      return _Palette(
+      return (
         surface:
             isDark
                 ? DeelmarktColors.darkErrorSurface
@@ -175,7 +181,7 @@ class _ScamAlertState extends State<ScamAlert> {
                 : DeelmarktColors.trustWarning,
       );
     }
-    return _Palette(
+    return (
       surface:
           isDark
               ? DeelmarktColors.darkWarningSurface
@@ -188,8 +194,4 @@ class _ScamAlertState extends State<ScamAlert> {
   }
 }
 
-class _Palette {
-  const _Palette({required this.surface, required this.accent});
-  final Color surface;
-  final Color accent;
-}
+typedef _Palette = ({Color surface, Color accent});
