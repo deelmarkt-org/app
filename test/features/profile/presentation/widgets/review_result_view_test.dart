@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_result_view.dart';
@@ -111,6 +112,21 @@ void main() {
       );
       // ReviewCard shows reviewerName — both use the same name in fixtures
       expect(find.text('Jan de Vries'), findsWidgets);
+    });
+
+    testWidgets('renders in dark theme without paint exceptions', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        ReviewBothVisibleView(
+          myReview: _review(),
+          theirReview: _review(id: 'r-2', reviewerId: 'user-2'),
+        ),
+        theme: DeelmarktTheme.dark,
+      );
+      expect(find.text('review.bothVisible'), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   });
 
