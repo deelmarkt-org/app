@@ -7,12 +7,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/category_browse_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/category_detail_screen.dart';
+import 'package:deelmarkt/features/home/presentation/screens/favourites_screen.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
+import 'package:deelmarkt/features/messages/presentation/screens/messages_responsive_shell.dart';
 import 'package:deelmarkt/features/search/presentation/search_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/own_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:deelmarkt/features/sell/presentation/screens/listing_creation_screen.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -136,9 +141,7 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.sell,
                 name: 'sell',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Sell'), // l10n: P-task
+                builder: (context, state) => const ListingCreationScreen(),
               ),
             ],
           ),
@@ -147,9 +150,28 @@ GoRouter _buildRouter({
               GoRoute(
                 path: AppRoutes.messages,
                 name: 'messages',
-                builder:
-                    (context, state) =>
-                        const _Placeholder('Messages'), // l10n: P-task
+                builder: (context, state) => const MessagesResponsiveShell(),
+                routes: [
+                  GoRoute(
+                    path: ':conversationId',
+                    name: 'chatThread',
+                    // Deep-link validation: reject empty or overly long ids
+                    // to prevent URL-pollution DOS and mirror the guard used
+                    // by sibling routes like categoryDetail.
+                    redirect: (context, state) {
+                      final id = state.pathParameters['conversationId'] ?? '';
+                      if (id.isEmpty || id.length > 64) {
+                        return AppRoutes.messages;
+                      }
+                      return null;
+                    },
+                    builder:
+                        (context, state) => MessagesResponsiveShell(
+                          conversationId:
+                              state.pathParameters['conversationId'],
+                        ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -170,6 +192,31 @@ GoRouter _buildRouter({
             ],
           ),
         ],
+      ),
+
+      // ── Category & Favourites (outside shell, deep-linkable) ──
+      GoRoute(
+        path: AppRoutes.categories,
+        name: 'categories',
+        builder: (context, state) => const CategoryBrowseScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.categoryDetail,
+        name: 'category-detail',
+        redirect: (context, state) {
+          final id = state.pathParameters['id'] ?? '';
+          if (id.isEmpty || id.length > 64) return AppRoutes.categories;
+          return null;
+        },
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return CategoryDetailScreen(categoryId: id);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.favourites,
+        name: 'favourites',
+        builder: (context, state) => const FavouritesScreen(),
       ),
 
       // ── Deep link routes (outside shell) ──

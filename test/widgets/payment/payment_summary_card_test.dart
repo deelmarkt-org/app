@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/payment/payment_summary_card.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -55,7 +55,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(EscrowTrustBanner), findsOneWidget);
+      expect(find.byType(TrustBanner), findsOneWidget);
     });
 
     testWidgets('contains pay button', (tester) async {

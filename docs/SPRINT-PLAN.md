@@ -110,7 +110,7 @@ The agent will:
 - [ ] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts
 - [ ] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it
 - [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing
-- [ ] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log
+- [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
 - [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
@@ -145,7 +145,7 @@ The agent will:
 | Issue | Task | Owner | Blocked By | Sprint |
 |:------|:-----|:------|:-----------|:-------|
 | [#46](https://github.com/deelmarkt-org/app/issues/46) | `[R]` Implement SupabaseReviewRepository | reso | R-36 reviews table | 9–10 |
-| [#47](https://github.com/deelmarkt-org/app/issues/47) | `[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)** | reso | — | 5–8 |
+| [#47](https://github.com/deelmarkt-org/app/issues/47) | ~~`[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)**~~ | belengaz | — | ✅ PR #57 |
 | [#48](https://github.com/deelmarkt-org/app/issues/48) | `[R]` Wire iDIN to Edge Function | reso | R-18 iDIN integration | 3–4 |
 | [#49](https://github.com/deelmarkt-org/app/issues/49) | `[R]` 30-day soft-delete grace period | reso | — | 5–8 |
 | [#50](https://github.com/deelmarkt-org/app/issues/50) | `[P]` Wire address form navigation in Settings | pizmam | — | 5–8 |
@@ -208,13 +208,17 @@ The agent will:
 
 **Branch:** `feature/pizmam-E01-listing-screens` | **Epic:** [E01](epics/E01-listing-management.md)
 
-- [ ] `P-24` Listing creation screen (photo-first) — camera → form → score → publish
+- [x] `P-24` Listing creation screen (photo-first) — camera → form → score → publish
 - [ ] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list
 - [ ] `P-28` Favourites screen — save/unsave toggle, list view
 - [ ] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition
+- [ ] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` (follow-up to PR #66)
 - [ ] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough
-- [ ] `P-32` `LocationBadge` widget — distance + pin icon
-- [ ] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `PaymentSummaryCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66)
+- [x] `P-32` `LocationBadge` widget — distance + pin icon
+- [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
+- [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
 - [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
@@ -259,8 +263,8 @@ The agent will:
 
 **Branch:** `feature/pizmam-E04-chat-screens` | **Epics:** [E04](epics/E04-messaging.md) + [E06](epics/E06-trust-moderation.md)
 
-- [ ] `P-35` Chat conversation list screen — unread badges, response time
-- [ ] `P-36` Chat thread screen — listing embed, bubbles, offer messages
+- [x] `P-35` Chat conversation list screen — unread badges, response time ✅ PR #71
+- [x] `P-36` Chat thread screen — listing embed, bubbles, offer messages ✅ PR #71
 - [ ] `P-37` Scam alert integration in chat — warning on flagged messages
 - [ ] `P-38` Rating/review screen (post-transaction) — star + text, blind
 - [ ] `P-39` Seller profile screen (public ratings) — average + reviews + badges

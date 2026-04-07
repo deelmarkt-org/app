@@ -24,6 +24,8 @@ class BiometricSection extends ConsumerWidget {
     if (!state.biometricAvailable) return const SizedBox.shrink();
 
     final isFace = state.biometricMethod == BiometricMethod.face;
+    final biometricLabel =
+        isFace ? 'auth.useFaceId'.tr() : 'auth.useFingerprint'.tr();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final secondaryColor =
@@ -36,7 +38,7 @@ class BiometricSection extends ConsumerWidget {
       children: [
         Semantics(
           button: true,
-          label: isFace ? 'auth.useFaceId'.tr() : 'auth.useFingerprint'.tr(),
+          label: biometricLabel,
           child: IconButton(
             constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             icon: Icon(
@@ -54,12 +56,11 @@ class BiometricSection extends ConsumerWidget {
                         .loginWithBiometric(
                           localizedReason: 'auth.biometricReason'.tr(),
                         ),
-            tooltip:
-                isFace ? 'auth.useFaceId'.tr() : 'auth.useFingerprint'.tr(),
+            tooltip: biometricLabel,
           ),
         ),
         Text(
-          isFace ? 'auth.useFaceId'.tr() : 'auth.useFingerprint'.tr(),
+          biometricLabel,
           style: theme.textTheme.labelSmall?.copyWith(color: secondaryColor),
         ),
       ],

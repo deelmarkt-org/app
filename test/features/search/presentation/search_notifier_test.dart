@@ -88,6 +88,37 @@ void main() {
       expect(data.recentSearches, isEmpty);
     });
 
+    test('search() preserves active filters on new query', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      await container
+          .read(searchNotifierProvider.notifier)
+          .updateFilter(
+            const SearchFilter(sortOrder: SearchSortOrder.priceLowHigh),
+          );
+
+      await container.read(searchNotifierProvider.notifier).search('iPhone');
+      final data = container.read(searchNotifierProvider).requireValue;
+      expect(data.filter.query, 'iPhone');
+      expect(data.filter.sortOrder, SearchSortOrder.priceLowHigh);
+    });
+
+    test(
+      'updateFilter() works without prior query (category browse)',
+      () async {
+        final container = await _loadedContainer();
+        addTearDown(container.dispose);
+
+        await container
+            .read(searchNotifierProvider.notifier)
+            .updateFilter(const SearchFilter(categoryId: 'cat-sport'));
+        final data = container.read(searchNotifierProvider).requireValue;
+        expect(data.filter.categoryId, 'cat-sport');
+      },
+    );
+
     test('updateFilter() preserves query from current state', () async {
       final container = await _loadedContainer();
       addTearDown(container.dispose);

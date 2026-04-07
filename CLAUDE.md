@@ -339,12 +339,92 @@ The European Accessibility Act is enforceable. These are not optional:
 
 1. Follow §7 pre-implementation checklist before each screen
 2. Run `flutter analyze` after each file change
-3. Keep files under line limits (§2.1)
-4. Use design system tokens, never raw values (§3.3)
+3. Run `dart run scripts/check_quality.dart --all` to catch CLAUDE.md violations early
+4. Keep files under line limits (§2.1)
+5. Use design system tokens, never raw values (§3.3)
+6. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
+7. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
+8. All interactive widgets MUST have `Semantics()` labels
+9. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
+10. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
 
 ### Before Ending
 
 1. Run `flutter analyze` — zero warnings
-2. Run `flutter test` — all passing
-3. Commit with proper message format
-4. Update epic acceptance criteria checkboxes if applicable
+2. Run `dart run scripts/check_quality.dart` — zero violations on your files
+3. Run `flutter test` — all passing
+4. Commit with proper message format
+5. Update epic acceptance criteria checkboxes if applicable
+
+### Quality Gate Scripts
+
+| Script | When | What |
+|:-------|:-----|:-----|
+| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder |
+| `dart run scripts/check_quality.dart --thorough` | Pre-push (auto) | + duplicate strings, nested ternaries, long methods |
+| `dart run scripts/check_quality.dart --all` | Manual | Check entire codebase |
+| `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
+
+### Setup for New or Existing Developers
+
+```bash
+# macOS/Linux — new developer (full setup):
+bash scripts/setup.sh
+
+# macOS/Linux — existing developer (just update hooks after pulling):
+bash scripts/setup_hooks.sh
+
+# Windows — new developer (full setup):
+.\scripts\setup.ps1
+
+# Windows — existing developer (just update hooks after pulling):
+.\scripts\setup_hooks.ps1
+```
+
+---
+
+## §12 — Machine-Readable Quality Gates
+
+> Parsed by `scripts/check_quality.dart`. Edit here to update rules.
+
+<!-- QUALITY_RULES_START
+file_length:
+  screen: 200
+  viewmodel: 150
+  repository: 200
+  usecase: 60
+  model: 200
+  test: 300
+  utility: 100
+  default: 200
+
+setState_allowlist:
+  - lib/features/listing_detail/presentation/widgets/detail_image_gallery.dart
+  - lib/features/listing_detail/presentation/widgets/detail_info_section.dart
+  - lib/features/auth/presentation/widgets/registration_form.dart
+  - lib/features/auth/presentation/widgets/otp_verification_view.dart
+  - lib/features/search/presentation/widgets/filter_bottom_sheet.dart
+  - lib/features/profile/presentation/widgets/address_form_modal.dart
+  - lib/features/transaction/presentation/screens/mollie_checkout_screen.dart
+  - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
+  - lib/features/dev/**
+  - lib/widgets/inputs/deel_search_input.dart
+  - lib/features/profile/presentation/widgets/delete_account_dialog.dart
+  - lib/widgets/media/image_gallery.dart
+  - lib/widgets/media/image_gallery_fullscreen.dart
+  - lib/widgets/media/image_gallery_zoomable_page.dart
+
+file_length_exempt:
+  - lib/core/design_system/theme.dart
+  - lib/core/router/app_router.dart
+  - **/data/supabase/**
+  - **/data/mock/*_data.dart
+  - lib/widgets/buttons/deel_button.dart
+  - lib/widgets/cards/deel_card.dart
+  - lib/widgets/inputs/dutch_address_input.dart
+  - lib/features/home/presentation/widgets/home_data_view.dart
+
+cross_feature_import_exempt:
+  - lib/core/router/app_router.dart
+  - lib/core/services/repository_providers.dart
+QUALITY_RULES_END -->

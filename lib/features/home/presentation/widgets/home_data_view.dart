@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
@@ -72,6 +72,11 @@ class HomeDataView extends ConsumerWidget {
       ),
       actions: [
         IconButton(
+          icon: Icon(PhosphorIcons.heart()),
+          tooltip: 'favourites.title'.tr(),
+          onPressed: () => context.push(AppRoutes.favourites),
+        ),
+        IconButton(
           icon: Icon(PhosphorIcons.magnifyingGlass()),
           tooltip: 'nav.search'.tr(),
           onPressed: () => context.go(AppRoutes.search),
@@ -92,7 +97,7 @@ class HomeDataView extends ConsumerWidget {
         child: CategoryCarousel(
           categories: data.categories,
           onCategoryTap: (cat) {
-            context.go('${AppRoutes.search}?category=${cat.id}');
+            context.push('${AppRoutes.categories}/${cat.id}');
           },
         ),
       ),
@@ -106,7 +111,7 @@ class HomeDataView extends ConsumerWidget {
           horizontal: Spacing.s4,
           vertical: Spacing.s4,
         ),
-        child: EscrowTrustBanner(),
+        child: TrustBanner.escrow(),
       ),
     );
   }

@@ -8,7 +8,7 @@ import 'package:deelmarkt/features/transaction/presentation/screens/transaction_
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
-import 'package:deelmarkt/widgets/trust/escrow_trust_banner.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import '../../../helpers/pump_app.dart';
 
@@ -35,7 +35,7 @@ void main() {
         TransactionDetailScreen(transaction: _txn()),
       );
 
-      expect(find.byType(EscrowTrustBanner), findsOneWidget);
+      expect(find.byType(TrustBanner), findsOneWidget);
     });
 
     testWidgets('renders escrow timeline', (tester) async {
@@ -117,7 +117,7 @@ void main() {
         theme: DeelmarktTheme.dark,
       );
 
-      expect(find.byType(EscrowTrustBanner), findsOneWidget);
+      expect(find.byType(TrustBanner), findsOneWidget);
       expect(find.byType(EscrowTimeline), findsOneWidget);
       expect(find.byType(ResponsiveBody), findsOneWidget);
     });

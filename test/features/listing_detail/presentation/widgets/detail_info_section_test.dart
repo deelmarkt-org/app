@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_info_section.dart';
 
 final _testListing = ListingEntity(
@@ -103,6 +103,60 @@ void main() {
       // Both title and price should be visible
       expect(find.text('Vintage Design Stoel'), findsOneWidget);
       expect(find.text(Formatters.euroFromCents(4500)), findsOneWidget);
+    });
+
+    // --- NEW TESTS ---
+
+    testWidgets('description expand/collapse', (tester) async {
+      await tester.pumpWidget(buildSection());
+      await tester.pump();
+
+      // Initially collapsed: "Read more" toggle is visible.
+      // easy_localization returns the key path when no locale is loaded.
+      expect(find.text('listing_detail.readMore'), findsOneWidget);
+      expect(find.text('listing_detail.readLess'), findsNothing);
+
+      // Tap "Read more" to expand.
+      await tester.tap(find.text('listing_detail.readMore'));
+      await tester.pumpAndSettle();
+
+      // After expanding: "Read less" is shown; "Read more" is gone.
+      expect(find.text('listing_detail.readLess'), findsOneWidget);
+      expect(find.text('listing_detail.readMore'), findsNothing);
+
+      // Tap "Read less" to collapse again.
+      await tester.tap(find.text('listing_detail.readLess'));
+      await tester.pumpAndSettle();
+
+      // Back to collapsed state.
+      expect(find.text('listing_detail.readMore'), findsOneWidget);
+      expect(find.text('listing_detail.readLess'), findsNothing);
+    });
+
+    // Parameterized test — one case per ListingCondition variant.
+    for (final condition in ListingCondition.values) {
+      testWidgets('condition chip renders for ${condition.name}', (
+        tester,
+      ) async {
+        final listing = _testListing.copyWith(condition: condition);
+        await tester.pumpWidget(buildSection(listing: listing));
+        await tester.pump();
+
+        // ConditionChip renders 'condition.<name>' via easy_localization;
+        // in test context the key is returned as-is.
+        expect(find.text('condition.${condition.name}'), findsOneWidget);
+      });
+    }
+
+    testWidgets('distanceKm renders formatted distance', (tester) async {
+      // _testListing already has distanceKm: 2.3 and location: 'Amsterdam'.
+      await tester.pumpWidget(buildSection());
+      await tester.pump();
+
+      // The widget renders distance as ' · <formatted>' inside a Text.
+      // Formatters.distanceKm uses Dutch locale: "2,3 km".
+      final formatted = Formatters.distanceKm(2.3);
+      expect(find.textContaining(formatted), findsOneWidget);
     });
   });
 }

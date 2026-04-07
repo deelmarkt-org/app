@@ -6,8 +6,11 @@ import 'package:deelmarkt/features/home/data/supabase/supabase_category_reposito
 import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
+import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
@@ -52,11 +55,29 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   return MockReviewRepository();
 });
 
-/// Settings repository — mock or real.
-/// WARNING: Both branches currently return mock. Real Supabase impl needed before production.
+/// Settings repository — mock or Supabase based on [useMockDataProvider].
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSettingsRepository();
-  // Tracked: #47 — P0 launch blocker: SupabaseSettingsRepository
-  return MockSettingsRepository();
+  return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Message repository — mock only for P-35/P-36.
+///
+/// Supabase Realtime implementation is planned as a backend-owned
+/// follow-up task (E04 §Technical Scope). The mock repo is wired
+/// unconditionally here — when `SupabaseMessageRepository` ships,
+/// switch to the same `useMockDataProvider` pattern the other
+/// providers in this file use:
+///
+/// ```dart
+/// final useMock = ref.watch(useMockDataProvider);
+/// if (useMock) return MockMessageRepository();
+/// return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
+/// ```
+///
+/// TODO(reso): replace with the conditional above once
+/// `SupabaseMessageRepository` lands (E04 backend tasks).
+final messageRepositoryProvider = Provider<MessageRepository>((ref) {
+  return MockMessageRepository();
 });

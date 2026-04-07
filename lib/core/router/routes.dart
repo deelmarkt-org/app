@@ -9,6 +9,15 @@ abstract final class AppRoutes {
   static const search = '/search';
   static const sell = '/sell';
   static const messages = '/messages';
+  static const chatThread = '/messages/:conversationId';
+
+  /// Builds the concrete path for a chat thread.
+  ///
+  /// Percent-encodes [conversationId] so path-significant characters
+  /// (`/`, `?`, `#`, etc.) cannot truncate or misroute the URL if a
+  /// non-UUID id ever reaches this helper (security finding F-06).
+  static String chatThreadFor(String conversationId) =>
+      '/messages/${Uri.encodeComponent(conversationId)}';
   static const profile = '/profile';
 
   /// Bottom nav tab indices — must match StatefulShellBranch order in app_router.
@@ -20,6 +29,11 @@ abstract final class AppRoutes {
   static const onboarding = '/onboarding';
   static const login = '/login';
   static const register = '/register';
+
+  // ── Category & Favourites ──
+  static const categories = '/categories';
+  static const categoryDetail = '/categories/:id';
+  static const favourites = '/favourites';
 
   // ── Deep link targets ──
   static const listingDetail = '/listings/:id';

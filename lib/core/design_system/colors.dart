@@ -48,6 +48,7 @@ class DeelmarktColors {
 
   // Accent
   static const accentPurple = Color(0xFF7C3AED);
+  static const accentPurpleSurface = Color(0xFFF3EAFF);
   static const accentPink = Color(0xFFDB2777);
   static const accentEmerald = Color(0xFF059669);
 
@@ -89,4 +90,10 @@ class DeelmarktColors {
   static const darkTrustEscrow = Color(0xFF60A5FA);
   static const darkTrustWarning = Color(0xFFF87171);
   static const darkTrustPending = Color(0xFFFBBF24);
+
+  // Chat bubble tokens (E04 — chat screens P-35/P-36)
+  // Light: self = primarySurface, other = neutral100 (reuse existing tokens)
+  // Dark: dedicated tinted surfaces for sufficient contrast against darkScaffold
+  static const darkChatSelfBubble = Color(0xFF3A1F14);
+  static const darkChatOtherBubble = Color(0xFF2C2C2C);
 }

@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/search/presentation/search_screen.dart';
-import 'package:deelmarkt/features/search/presentation/widgets/search_initial_view.dart';
+import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/inputs/deel_input.dart';
 
