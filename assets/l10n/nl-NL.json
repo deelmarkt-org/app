@@ -368,6 +368,27 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "scam_alert": {
+    "title_high": "Dit bericht bevat mogelijk oplichting",
+    "title_low": "Let op: wees voorzichtig met externe links",
+    "subtitle_low": "DeelMarkt vraagt je nooit om betalingen buiten ons platform te voldoen.",
+    "why_warning": "Waarom deze waarschuwing?",
+    "reasons_header": "Gedetecteerde risico\u2019s",
+    "why_warning_hide": "Verberg uitleg",
+    "ai_detected_prefix": "AI gedetecteerd:",
+    "report": "Meld dit bericht",
+    "dismiss": "Negeren",
+    "a11y_high": "Waarschuwing: mogelijke oplichting gedetecteerd",
+    "a11y_low": "Tip: wees voorzichtig met externe links",
+    "reason": {
+      "external_payment_link": "Dit bericht bevat een link naar een externe betaalsite",
+      "off_site_contact": "Dit bericht vraagt om het gesprek buiten het platform voort te zetten",
+      "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
+      "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
+      "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
     "a11yCityOnly": "Locatie: {city}",
@@ -610,15 +631,5 @@
     "selfBubbleA11y": "Jij zei: {text}",
     "otherBubbleA11y": "Zij zeiden: {text}",
     "readReceiptA11y": "Gelezen"
-  },
-  "scam_alert": {
-    "reason": {
-      "external_payment_link": "Externe betaallink gedetecteerd",
-      "off_site_contact": "Stelt voor om buiten het platform te communiceren",
-      "phone_number_request": "Vraagt om persoonlijk telefoonnummer",
-      "suspicious_pricing": "Prijs lijkt verdacht laag",
-      "urgency_pressure": "Gebruikt hoge druk en urgentie",
-      "other": "Bericht gemarkeerd als verdacht"
-    }
   }
 }

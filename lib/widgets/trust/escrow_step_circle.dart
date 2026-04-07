@@ -2,50 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/widgets/trust/escrow_step_tokens.dart';
 
-/// Size and style constants for escrow step circles.
-abstract final class EscrowStepTokens {
-  static const double circleSize = 24;
-  static const double innerDotSize = 8;
-  static const double borderWidth = 2;
-  static const double checkIconSize = 14;
-  static const double connectorDashWidth = 4;
-  static const double connectorDashGap = 3;
-  static const double connectorHeight = 2;
-
-  /// Minimum tappable area — WCAG 2.2 AA (44x44px).
-  static const double minTapTarget = 44;
-
-  /// Pulse animation duration for the active state (fix A8).
-  static const Duration pulseDuration = Duration(milliseconds: 1200);
-
-  /// Pulse animation scale range — 1.0 → 1.12 → 1.0.
-  static const double pulseMaxScale = 1.12;
-
-  /// Stepper row height at wide layouts (≥ 360 px).
-  static const double rowHeightWide = 104;
-
-  /// Stepper row height at narrow layouts (< 360 px) — extra space for the
-  /// 2-line label wrap plus the deadline hint.
-  static const double rowHeightNarrow = 120;
-
-  /// Connector vertical offset so the line aligns with the middle of the
-  /// circle, regardless of tap-target padding.
-  static const double connectorTopOffset = (minTapTarget - connectorHeight) / 2;
-
-  /// Step label font size at narrow layouts.
-  static const double narrowLabelFontSize = 10;
-
-  /// Deadline-hint font size + top padding.
-  static const double deadlineHintFontSize = 10;
-  static const double deadlineHintTopPadding = 2;
-}
-
-/// Visual tone for an [EscrowStepCircle].
-///
-/// Drives colour selection so the widget stays theme- and state-aware
-/// without hard-coding brand tokens for every branch (fix A3).
-enum EscrowStepTone { trust, warning, muted }
+export 'escrow_connector_painter.dart';
+export 'escrow_step_tokens.dart';
 
 /// Step circle for `EscrowTimeline` — complete, active, or pending.
 ///
@@ -151,8 +111,6 @@ class _EscrowStepCircleState extends State<EscrowStepCircle>
 Color escrowActiveColor(EscrowStepTone tone) => switch (tone) {
   EscrowStepTone.trust => DeelmarktColors.primary,
   EscrowStepTone.warning => DeelmarktColors.trustWarning,
-  // muted never renders an active step in the current mapper — kept for
-  // exhaustive-switch coverage.
   EscrowStepTone.muted => DeelmarktColors.neutral700,
 };
 
@@ -210,7 +168,6 @@ class _ActiveCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Active uses `primary` orange per patterns.md §Escrow Timeline.
     final accent = escrowActiveColor(tone);
     return Transform.scale(
       scale: scale,
@@ -258,50 +215,4 @@ class _PendingCircle extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Connector line between steps — solid (complete) or dashed (pending).
-class EscrowConnectorPainter extends CustomPainter {
-  const EscrowConnectorPainter({
-    required this.isComplete,
-    required this.completeColor,
-    required this.pendingColor,
-  });
-
-  final bool isComplete;
-  final Color completeColor;
-  final Color pendingColor;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = isComplete ? completeColor : pendingColor
-          ..strokeWidth = EscrowStepTokens.connectorHeight
-          ..style = isComplete ? PaintingStyle.fill : PaintingStyle.stroke;
-
-    if (isComplete) {
-      canvas.drawLine(
-        Offset(0, size.height / 2),
-        Offset(size.width, size.height / 2),
-        paint,
-      );
-    } else {
-      var x = 0.0;
-      while (x < size.width) {
-        canvas.drawLine(
-          Offset(x, size.height / 2),
-          Offset(x + EscrowStepTokens.connectorDashWidth, size.height / 2),
-          paint,
-        );
-        x +=
-            EscrowStepTokens.connectorDashWidth +
-            EscrowStepTokens.connectorDashGap;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant EscrowConnectorPainter oldDelegate) =>
-      isComplete != oldDelegate.isComplete;
 }
