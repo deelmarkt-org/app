@@ -368,6 +368,27 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "scam_alert": {
+    "title_high": "This message may contain a scam",
+    "title_low": "Heads up: be careful with external links",
+    "subtitle_low": "DeelMarkt never asks you to pay outside our platform.",
+    "why_warning": "Why this warning?",
+    "reasons_header": "Detected risks",
+    "why_warning_hide": "Hide explanation",
+    "ai_detected_prefix": "AI detected:",
+    "report": "Report this message",
+    "dismiss": "Dismiss",
+    "a11y_high": "Warning: possible scam detected",
+    "a11y_low": "Tip: be careful with external links",
+    "reason": {
+      "external_payment_link": "This message contains a link to an external payment site",
+      "off_site_contact": "This message asks to move the conversation off-platform",
+      "phone_number_request": "This message asks for your phone number or messaging app",
+      "suspicious_pricing": "This price seems suspiciously low for this item",
+      "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
+      "other": "This message was flagged by our scam detector"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Location: {city}, {distance} away",
     "a11yCityOnly": "Location: {city}",
@@ -556,27 +577,6 @@
       "priceHighLow": "Price: high to low",
       "newest": "Newest first",
       "nearest": "Nearest first"
-    }
-  },
-  "scam_alert": {
-    "highTitle": "This message may contain a scam",
-    "lowTitle": "This message looks suspicious",
-    "reportAction": "REPORT THIS MESSAGE",
-    "dismissAction": "Dismiss",
-    "expandAction": "Why this warning?",
-    "collapseAction": "Hide details",
-    "reason": {
-      "externalPaymentLink": "Contains a link to an external payment site",
-      "offSiteContact": "Asks to complete the transaction outside DeelMarkt",
-      "phoneNumberRequest": "Requests a phone number or WhatsApp",
-      "suspiciousPricing": "Price or offer is suspiciously low",
-      "urgencyPressure": "Uses pressure or urgency to act quickly",
-      "other": "Suspicious pattern detected"
-    },
-    "a11y": {
-      "highSeverity": "Warning: this message has been flagged as a potential scam",
-      "lowSeverity": "Caution: this message looks suspicious",
-      "reportHint": "Tap to report this message as suspicious"
     }
   },
   "sell": {

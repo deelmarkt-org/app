@@ -10,8 +10,9 @@ import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_em
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_composer.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_list.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
-import 'package:deelmarkt/features/messages/presentation/widgets/scam_alert.dart';
+import 'package:deelmarkt/widgets/trust/scam_alert.dart';
 
 /// Pixel threshold beneath which the user is considered "at the bottom"
 /// for the purposes of sticky auto-scroll (Gemini code review G2).
@@ -86,7 +87,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
   void _handleReport() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('scam_alert.reportAction'.tr()),
+        content: Text('scam_alert.report'.tr()),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -182,9 +183,15 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     }
     if (flagged == null) return const SizedBox.shrink();
 
+    final reasons =
+        flagged.scamReasons?.isNotEmpty == true
+            ? flagged.scamReasons!
+            : [ScamReason.other];
+
     if (flagged.scamConfidence == ScamConfidence.high) {
-      return ScamAlert.highConfidence(
-        allReasons: flagged.scamReasons ?? const [],
+      return ScamAlert(
+        confidence: ScamConfidence.high,
+        reasons: reasons,
         onReport: _handleReport,
       );
     }
@@ -193,7 +200,9 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
       valueListenable: _scamAlertDismissed,
       builder: (context, dismissed, child) {
         if (dismissed) return const SizedBox.shrink();
-        return ScamAlert.lowConfidence(
+        return ScamAlert(
+          confidence: ScamConfidence.low,
+          reasons: reasons,
           onReport: _handleReport,
           onDismiss: () => _scamAlertDismissed.value = true,
         );
