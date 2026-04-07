@@ -134,6 +134,8 @@ class SupabaseSettingsRepository implements SettingsRepository {
       await query;
     } on PostgrestException catch (e) {
       throw Exception('Failed to delete address: ${e.message}');
+    } on TypeError {
+      throw Exception(_formatError);
     }
   }
 

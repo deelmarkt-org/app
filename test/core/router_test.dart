@@ -131,7 +131,7 @@ void main() {
       router.go('/nonexistent/path');
       await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       await tester.pumpAndSettle();
-      expect(find.textContaining('Page not found'), findsWidgets);
+      expect(find.textContaining('error.notFound'), findsWidgets);
     });
   });
 
