@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
-import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
 
@@ -86,7 +85,7 @@ void main() {
       expect(state, isA<ReviewIneligible>());
       expect(
         (state as ReviewIneligible).reason,
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 

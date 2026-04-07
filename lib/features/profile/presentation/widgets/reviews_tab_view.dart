@@ -64,7 +64,7 @@ class ReviewsTabView extends StatelessWidget {
             if (hasMore && !isLoadingMore && onLoadMore != null)
               TextButton(
                 onPressed: onLoadMore,
-                child: Text('sellerProfile.loadMore'.tr()),
+                child: Text('seller_profile.load_more'.tr()),
               ),
           ],
         );

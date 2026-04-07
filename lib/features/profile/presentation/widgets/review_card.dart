@@ -64,7 +64,7 @@ class ReviewCard extends StatelessWidget {
       height: 44,
       child: IconButton(
         icon: Icon(PhosphorIcons.dotsThreeVertical(), size: 18),
-        tooltip: 'review.reportReview'.tr(),
+        tooltip: 'review.report_review'.tr(),
         onPressed: onReport,
         padding: EdgeInsets.zero,
       ),
@@ -73,7 +73,7 @@ class ReviewCard extends StatelessWidget {
 
   Widget _buildStars(BuildContext context) {
     return Semantics(
-      label: 'review.a11y.ratingLabel'.tr(
+      label: 'review.a11y.rating_label'.tr(
         namedArgs: {'rating': '${review.rating.round()}'},
       ),
       child: Row(

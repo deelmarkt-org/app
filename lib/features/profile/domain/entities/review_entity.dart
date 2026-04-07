@@ -1,5 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:deelmarkt/features/profile/domain/entities/review_role.dart';
+
+export 'package:deelmarkt/features/profile/domain/entities/review_role.dart';
+
 /// Review left by a buyer or seller after a transaction.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
@@ -106,6 +110,3 @@ class ReviewEntity extends Equatable {
     );
   }
 }
-
-/// Role of the reviewer in the transaction.
-enum ReviewRole { buyer, seller }

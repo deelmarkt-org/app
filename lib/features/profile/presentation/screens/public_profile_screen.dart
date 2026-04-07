@@ -8,10 +8,10 @@ import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/public_profile_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/listings_tab_view.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_header.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_skeleton.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/report_reason_sheet.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/reviews_tab_view.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
-import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 /// Public seller profile screen (P-39).
@@ -55,28 +55,28 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('sellerProfile.title'.tr()),
+        title: Text('seller_profile.title'.tr()),
         actions: [
           PopupMenuButton<_MenuAction>(
             icon: Icon(PhosphorIcons.dotsThreeVertical()),
-            tooltip: 'sellerProfile.moreActions'.tr(),
+            tooltip: 'seller_profile.more_actions'.tr(),
             onSelected: (action) => _handleMenuAction(action, notifier),
             itemBuilder:
                 (_) => [
                   PopupMenuItem(
                     value: _MenuAction.share,
-                    child: Text('sellerProfile.shareAction'.tr()),
+                    child: Text('seller_profile.share_action'.tr()),
                   ),
                   PopupMenuItem(
                     value: _MenuAction.report,
-                    child: Text('sellerProfile.reportAction'.tr()),
+                    child: Text('seller_profile.report_action'.tr()),
                   ),
                 ],
           ),
         ],
       ),
       body: state.user.when(
-        loading: () => const _ProfileSkeleton(),
+        loading: () => const PublicProfileSkeleton(),
         error:
             (_, _) => ErrorState(
               message: 'error.generic'.tr(),
@@ -85,7 +85,7 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
         data: (user) {
           if (user == null) {
             return ErrorState(
-              message: 'sellerProfile.notFound'.tr(),
+              message: 'seller_profile.not_found'.tr(),
               onRetry: notifier.refresh,
             );
           }
@@ -154,8 +154,8 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
     return TabBar(
       controller: _tabController,
       tabs: [
-        Tab(text: 'sellerProfile.tabListings'.tr()),
-        Tab(text: 'sellerProfile.tabReviews'.tr()),
+        Tab(text: 'seller_profile.tab_listings'.tr()),
+        Tab(text: 'seller_profile.tab_reviews'.tr()),
       ],
     );
   }
@@ -169,7 +169,7 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
         await notifier.shareProfile();
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('sellerProfile.shareCopied'.tr())),
+          SnackBar(content: Text('seller_profile.share_copied'.tr())),
         );
       case _MenuAction.report:
         _showReportSheet(context, (reason) => notifier.reportUser(reason));
@@ -188,30 +188,3 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
 }
 
 enum _MenuAction { share, report }
-
-class _ProfileSkeleton extends StatelessWidget {
-  const _ProfileSkeleton();
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.surfaceContainerLow;
-    return SkeletonLoader(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.s4),
-        child: Column(
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-            ),
-            const SizedBox(height: Spacing.s3),
-            Container(width: 120, height: 16, color: color),
-            const SizedBox(height: Spacing.s2),
-            Container(width: 80, height: 12, color: color),
-          ],
-        ),
-      ),
-    );
-  }
-}

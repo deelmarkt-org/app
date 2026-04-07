@@ -152,7 +152,7 @@ void main() {
         ),
       );
 
-      expect(find.text('sellerProfile.loadMore'), findsOneWidget);
+      expect(find.text('seller_profile.load_more'), findsOneWidget);
     });
 
     testWidgets('hides load more button when isLoadingMore is true', (
@@ -172,7 +172,7 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('sellerProfile.loadMore'), findsNothing);
+      expect(find.text('seller_profile.load_more'), findsNothing);
     });
   });
 }

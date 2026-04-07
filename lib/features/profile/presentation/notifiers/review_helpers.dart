@@ -10,7 +10,7 @@ String? checkReviewEligibility(TransactionStatus status) {
     TransactionStatus.created ||
     TransactionStatus.paymentPending => 'review.error.ineligible.pending',
     TransactionStatus.paid ||
-    TransactionStatus.shipped => 'review.error.ineligible.escrowHeld',
+    TransactionStatus.shipped => 'review.error.ineligible.escrow_held',
     TransactionStatus.delivered => 'review.error.ineligible.delivered',
     TransactionStatus.disputed => 'review.error.ineligible.disputed',
     TransactionStatus.cancelled => 'review.error.ineligible.cancelled',

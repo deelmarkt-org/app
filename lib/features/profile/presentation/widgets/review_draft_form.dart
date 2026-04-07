@@ -81,14 +81,14 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
                 children: [
                   if (draft.hasRestoredDraft) ...[
                     TrustBanner.info(
-                      title: 'review.blindReview'.tr(),
-                      description: 'review.blindExplanation'.tr(),
+                      title: 'review.blind_review'.tr(),
+                      description: 'review.blind_explanation'.tr(),
                       icon: PhosphorIcons.shield(PhosphorIconsStyle.fill),
                     ),
                     const SizedBox(height: Spacing.s4),
                   ],
                   Text(
-                    'review.howWasExperience'.tr(
+                    'review.how_was_experience'.tr(
                       namedArgs: {'name': draft.revieweeName.tr()},
                     ),
                     style: Theme.of(context).textTheme.titleMedium,
@@ -100,7 +100,7 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
                   ),
                   const SizedBox(height: Spacing.s6),
                   DeelInput(
-                    label: 'review.tellAbout'.tr(),
+                    label: 'review.tell_about'.tr(),
                     maxLines: 5,
                     maxLength: 500,
                     controller: _controller,
@@ -112,7 +112,7 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
                     child: Semantics(
                       label: 'review.a11y.counter'.tr(),
                       child: Text(
-                        'review.charCounter'.tr(
+                        'review.char_counter'.tr(
                           namedArgs: {'current': '$charCount'},
                         ),
                         style: Theme.of(

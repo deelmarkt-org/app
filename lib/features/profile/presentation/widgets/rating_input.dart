@@ -50,7 +50,8 @@ class RatingInput extends StatelessWidget {
               namedArgs: {'star': '$starNumber', 'total': '5'},
             ),
             value: isFilled ? 'selected' : 'unselected',
-            child: GestureDetector(
+            child: InkResponse(
+              radius: starSize / 2,
               onTap:
                   readOnly
                       ? null

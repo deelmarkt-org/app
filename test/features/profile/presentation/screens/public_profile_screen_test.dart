@@ -16,7 +16,7 @@ import 'package:deelmarkt/features/profile/presentation/widgets/reviews_tab_view
 ///
 /// Installs a [FlutterError.onError] override to suppress RenderFlex overflow
 /// errors caused by long `.tr()` key paths in the test environment (e.g.
-/// "sellerProfile.memberSince" is wider than the real translated text).
+/// "seller_profile.member_since" is wider than the real translated text).
 Future<void> _pumpScreen(
   WidgetTester tester, {
   required String userId,
@@ -80,7 +80,7 @@ void main() {
       final overrides = await _mockOverrides();
       await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
 
-      expect(find.text('sellerProfile.title'), findsOneWidget);
+      expect(find.text('seller_profile.title'), findsOneWidget);
       expect(find.byType(PublicProfileHeader), findsOneWidget);
     });
 
@@ -90,22 +90,22 @@ void main() {
       final overrides = await _mockOverrides();
       await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
 
-      expect(find.text('sellerProfile.tabListings'), findsOneWidget);
-      expect(find.text('sellerProfile.tabReviews'), findsOneWidget);
+      expect(find.text('seller_profile.tab_listings'), findsOneWidget);
+      expect(find.text('seller_profile.tab_reviews'), findsOneWidget);
     });
 
     testWidgets('renders popup menu with more-actions tooltip', (tester) async {
       final overrides = await _mockOverrides();
       await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
 
-      expect(find.byTooltip('sellerProfile.moreActions'), findsOneWidget);
+      expect(find.byTooltip('seller_profile.more_actions'), findsOneWidget);
     });
 
     testWidgets('can switch to reviews tab', (tester) async {
       final overrides = await _mockOverrides();
       await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
 
-      await tester.tap(find.text('sellerProfile.tabReviews'));
+      await tester.tap(find.text('seller_profile.tab_reviews'));
       await tester.pumpAndSettle();
 
       expect(find.byType(ReviewsTabView), findsOneWidget);

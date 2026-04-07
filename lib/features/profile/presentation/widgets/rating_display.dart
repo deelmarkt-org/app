@@ -81,7 +81,7 @@ class RatingDisplay extends StatelessWidget {
         _buildStars(size: 24),
         const SizedBox(width: Spacing.s2),
         Text(
-          'sellerProfile.reviewCount'.tr(
+          'seller_profile.review_count'.tr(
             namedArgs: {'count': '${aggregate.totalCount}'},
           ),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -119,7 +119,7 @@ class RatingDisplay extends StatelessWidget {
         borderRadius: BorderRadius.circular(Spacing.s2),
       ),
       child: Text(
-        'sellerProfile.tooFewReviews'.tr(),
+        'seller_profile.too_few_reviews'.tr(),
         style: Theme.of(
           context,
         ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.info),

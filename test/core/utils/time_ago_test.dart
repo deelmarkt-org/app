@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:deelmarkt/core/utils/time_ago.dart';
 
 // In test environments without easy_localization setup, .tr() returns the
-// l10n key path (e.g. 'timeAgo.justNow'). Tests verify the correct key
+// l10n key path (e.g. 'time_ago.just_now'). Tests verify the correct key
 // is selected rather than the translated string value.
 void main() {
   setUpAll(() async {
@@ -15,62 +15,62 @@ void main() {
   group('formatTimeAgo key selection', () {
     test('seconds ago returns justNow key', () {
       final dt = DateTime.now().subtract(const Duration(seconds: 30));
-      expect(formatTimeAgo(dt), 'timeAgo.justNow');
+      expect(formatTimeAgo(dt), 'time_ago.just_now');
     });
 
-    test('1 minute ago returns minuteAgo key', () {
+    test('1 minute ago returns minute_ago key', () {
       final dt = DateTime.now().subtract(const Duration(minutes: 1));
-      expect(formatTimeAgo(dt), 'timeAgo.minuteAgo');
+      expect(formatTimeAgo(dt), 'time_ago.minute_ago');
     });
 
-    test('multiple minutes ago returns minutesAgo key with n', () {
+    test('multiple minutes ago returns minutes_ago key with n', () {
       final dt = DateTime.now().subtract(const Duration(minutes: 15));
-      expect(formatTimeAgo(dt), 'timeAgo.minutesAgo');
+      expect(formatTimeAgo(dt), 'time_ago.minutes_ago');
     });
 
-    test('1 hour ago returns hourAgo key', () {
+    test('1 hour ago returns hour_ago key', () {
       final dt = DateTime.now().subtract(const Duration(hours: 1));
-      expect(formatTimeAgo(dt), 'timeAgo.hourAgo');
+      expect(formatTimeAgo(dt), 'time_ago.hour_ago');
     });
 
-    test('multiple hours ago returns hoursAgo key', () {
+    test('multiple hours ago returns hours_ago key', () {
       final dt = DateTime.now().subtract(const Duration(hours: 5));
-      expect(formatTimeAgo(dt), 'timeAgo.hoursAgo');
+      expect(formatTimeAgo(dt), 'time_ago.hours_ago');
     });
 
     test('1 day ago returns yesterday key', () {
       final dt = DateTime.now().subtract(const Duration(days: 1));
-      expect(formatTimeAgo(dt), 'timeAgo.yesterday');
+      expect(formatTimeAgo(dt), 'time_ago.yesterday');
     });
 
-    test('multiple days ago returns daysAgo key', () {
+    test('multiple days ago returns days_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 3));
-      expect(formatTimeAgo(dt), 'timeAgo.daysAgo');
+      expect(formatTimeAgo(dt), 'time_ago.days_ago');
     });
 
-    test('1 week ago returns weekAgo key', () {
+    test('1 week ago returns week_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 10));
-      expect(formatTimeAgo(dt), 'timeAgo.weekAgo');
+      expect(formatTimeAgo(dt), 'time_ago.week_ago');
     });
 
-    test('multiple weeks ago returns weeksAgo key', () {
+    test('multiple weeks ago returns weeks_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 21));
-      expect(formatTimeAgo(dt), 'timeAgo.weeksAgo');
+      expect(formatTimeAgo(dt), 'time_ago.weeks_ago');
     });
 
-    test('1 month ago returns monthAgo key', () {
+    test('1 month ago returns month_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 35));
-      expect(formatTimeAgo(dt), 'timeAgo.monthAgo');
+      expect(formatTimeAgo(dt), 'time_ago.month_ago');
     });
 
-    test('multiple months ago returns monthsAgo key', () {
+    test('multiple months ago returns months_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 120));
-      expect(formatTimeAgo(dt), 'timeAgo.monthsAgo');
+      expect(formatTimeAgo(dt), 'time_ago.months_ago');
     });
 
-    test('1 year ago returns yearAgo key', () {
+    test('1 year ago returns year_ago key', () {
       final dt = DateTime.now().subtract(const Duration(days: 400));
-      expect(formatTimeAgo(dt), 'timeAgo.yearAgo');
+      expect(formatTimeAgo(dt), 'time_ago.year_ago');
     });
 
     test('2+ years falls back to absolute date', () {
@@ -89,7 +89,7 @@ void main() {
   group('formatMemberSince', () {
     test('NL locale returns formatted date', () {
       final dt = DateTime(2025, 6);
-      final result = formatMemberSince(dt);
+      final result = formatMemberSince(dt, locale: 'nl');
       expect(result, contains('2025'));
     });
 

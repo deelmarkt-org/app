@@ -19,24 +19,24 @@ String formatTimeAgo(DateTime dateTime) {
   final hours = diff.inHours;
   final days = diff.inDays;
 
-  if (seconds < 60) return 'timeAgo.justNow'.tr();
-  if (minutes == 1) return 'timeAgo.minuteAgo'.tr();
+  if (seconds < 60) return 'time_ago.just_now'.tr();
+  if (minutes == 1) return 'time_ago.minute_ago'.tr();
   if (minutes < 60) {
-    return 'timeAgo.minutesAgo'.tr(namedArgs: {'n': '$minutes'});
+    return 'time_ago.minutes_ago'.tr(namedArgs: {'n': '$minutes'});
   }
-  if (hours == 1) return 'timeAgo.hourAgo'.tr();
-  if (hours < 24) return 'timeAgo.hoursAgo'.tr(namedArgs: {'n': '$hours'});
-  if (days == 1) return 'timeAgo.yesterday'.tr();
-  if (days < 7) return 'timeAgo.daysAgo'.tr(namedArgs: {'n': '$days'});
-  if (days < 14) return 'timeAgo.weekAgo'.tr();
+  if (hours == 1) return 'time_ago.hour_ago'.tr();
+  if (hours < 24) return 'time_ago.hours_ago'.tr(namedArgs: {'n': '$hours'});
+  if (days == 1) return 'time_ago.yesterday'.tr();
+  if (days < 7) return 'time_ago.days_ago'.tr(namedArgs: {'n': '$days'});
+  if (days < 14) return 'time_ago.week_ago'.tr();
   if (days < 30) {
-    return 'timeAgo.weeksAgo'.tr(namedArgs: {'n': '${days ~/ 7}'});
+    return 'time_ago.weeks_ago'.tr(namedArgs: {'n': '${days ~/ 7}'});
   }
-  if (days < 60) return 'timeAgo.monthAgo'.tr();
+  if (days < 60) return 'time_ago.month_ago'.tr();
   if (days < 365) {
-    return 'timeAgo.monthsAgo'.tr(namedArgs: {'n': '${days ~/ 30}'});
+    return 'time_ago.months_ago'.tr(namedArgs: {'n': '${days ~/ 30}'});
   }
-  if (days < 730) return 'timeAgo.yearAgo'.tr();
+  if (days < 730) return 'time_ago.year_ago'.tr();
   return _formatAbsolute(dateTime);
 }
 
@@ -47,6 +47,6 @@ String _formatAbsolute(DateTime dt) {
 /// Format a member-since date as "Lid sinds jan 2025" / "Member since Jan 2025".
 ///
 /// Uses `intl` for locale-aware month formatting.
-String formatMemberSince(DateTime date, {String locale = 'nl'}) {
+String formatMemberSince(DateTime date, {required String locale}) {
   return DateFormat.yMMM(locale).format(date);
 }

@@ -72,7 +72,7 @@ void main() {
       await pumpTestWidget(tester, ReviewCard(review: testReview));
 
       // Without EasyLocalization, .tr() returns the key path
-      expect(find.bySemanticsLabel('review.a11y.ratingLabel'), findsOneWidget);
+      expect(find.bySemanticsLabel('review.a11y.rating_label'), findsOneWidget);
     });
   });
 }

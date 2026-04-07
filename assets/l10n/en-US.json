@@ -368,6 +368,27 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "scam_alert": {
+    "title_high": "This message may contain a scam",
+    "title_low": "Heads up: be careful with external links",
+    "subtitle_low": "DeelMarkt never asks you to pay outside our platform.",
+    "why_warning": "Why this warning?",
+    "reasons_header": "Detected risks",
+    "why_warning_hide": "Hide explanation",
+    "ai_detected_prefix": "AI detected:",
+    "report": "Report this message",
+    "dismiss": "Dismiss",
+    "a11y_high": "Warning: possible scam detected",
+    "a11y_low": "Tip: be careful with external links",
+    "reason": {
+      "external_payment_link": "This message contains a link to an external payment site",
+      "off_site_contact": "This message asks to move the conversation off-platform",
+      "phone_number_request": "This message asks for your phone number or messaging app",
+      "suspicious_pricing": "This price seems suspiciously low for this item",
+      "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
+      "other": "This message was flagged by our scam detector"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Location: {city}, {distance} away",
     "a11yCityOnly": "Location: {city}",
@@ -397,28 +418,28 @@
   },
   "review": {
     "title": "Review",
-    "howWasExperience": "How was your experience with {name}?",
-    "tellAbout": "Tell about your experience...",
-    "charCounter": "{current}/500",
-    "blindReview": "Blind review",
-    "blindExplanation": "The other party can only see your review after submitting theirs",
+    "how_was_experience": "How was your experience with {name}?",
+    "tell_about": "Tell about your experience...",
+    "char_counter": "{current}/500",
+    "blind_review": "Blind review",
+    "blind_explanation": "The other party can only see your review after submitting theirs",
     "submit": "Submit review",
     "submitting": "Submitting...",
-    "thankYou": "Thank you!",
-    "waitingForOther": "Waiting for the {role}'s review",
+    "thank_you": "Thank you!",
+    "waiting_for_other": "Waiting for the {role}'s review",
     "role": {
       "buyer": "buyer",
       "seller": "seller"
     },
-    "bothVisible": "Both reviews are now visible",
+    "both_visible": "Both reviews are now visible",
     "close": "Close",
-    "urlWarning": "Links are not allowed in reviews",
-    "reportReview": "Report this review",
-    "unsavedDiscard": "Discard your draft?",
-    "unsavedKeep": "Keep",
+    "url_warning": "Links are not allowed in reviews",
+    "report_review": "Report this review",
+    "unsaved_discard": "Discard your draft?",
+    "unsaved_keep": "Keep",
     "a11y": {
       "rating": "Star {star} of {total}",
-      "ratingLabel": "{rating} out of 5 stars",
+      "rating_label": "{rating} out of 5 stars",
       "counter": "Character counter"
     },
     "error": {
@@ -426,54 +447,54 @@
       "conflict": "You have already submitted a review",
       "expired": "The review window has expired",
       "cancelled": "This transaction was cancelled",
-      "rateLimit": "Too many attempts. Try again in {seconds} seconds.",
-      "moderationBlocked": "This review has been blocked by moderation",
+      "rate_limit": "Too many attempts. Try again in {seconds} seconds.",
+      "moderation_blocked": "This review has been blocked by moderation",
       "unknown": "Something went wrong. Please try again.",
       "ineligible": {
         "auth": "You must be logged in to submit a review",
         "notFound": "Transaction not found",
         "pending": "Payment has not been completed yet",
-        "escrowHeld": "Escrow has not been released yet",
+        "escrow_held": "Escrow has not been released yet",
         "delivered": "Confirm receipt before leaving a review",
         "disputed": "There is an ongoing dispute for this transaction",
         "cancelled": "This transaction was cancelled"
       }
     },
-    "reportReason": {
+    "report_reason": {
       "scam": "Scam",
       "harassment": "Harassment",
-      "hateSpeech": "Hate speech",
-      "sexualContent": "Sexual content",
+      "hate_speech": "Hate speech",
+      "sexual_content": "Sexual content",
       "violence": "Violence",
-      "illegalContent": "Illegal content",
+      "illegal_content": "Illegal content",
       "spam": "Spam",
       "other": "Other"
     }
   },
-  "sellerProfile": {
+  "seller_profile": {
     "title": "Profile",
-    "memberSince": "Member since {date}",
-    "reviewCount": "{count} reviews",
-    "soldCount": "{count} sold",
-    "messageAction": "Send message",
-    "shareAction": "Share",
-    "shareCopied": "Link copied",
-    "reportAction": "Report user",
-    "tabListings": "Listings",
-    "tabReviews": "Reviews",
-    "tooFewReviews": "Too few reviews to show average",
-    "noListings": "This seller has no listings",
-    "noReviews": "No reviews yet",
-    "blockedTitle": "You have blocked this user",
-    "blockedUnblock": "Unblock",
-    "notFound": "User not found",
-    "loadMore": "Load more",
-    "moreActions": "More options",
+    "member_since": "Member since {date}",
+    "review_count": "{count} reviews",
+    "sold_count": "{count} sold",
+    "message_action": "Send message",
+    "share_action": "Share",
+    "share_copied": "Link copied",
+    "report_action": "Report user",
+    "tab_listings": "Listings",
+    "tab_reviews": "Reviews",
+    "too_few_reviews": "Too few reviews to show average",
+    "no_listings": "This seller has no listings",
+    "no_reviews": "No reviews yet",
+    "blocked_title": "You have blocked this user",
+    "blocked_unblock": "Unblock",
+    "not_found": "User not found",
+    "load_more": "Load more",
+    "more_actions": "More options",
     "responseTime": {
-      "under1h": "Responds within 1 hour",
-      "under4h": "Responds within 4 hours",
-      "under24h": "Responds within 24 hours",
-      "over24h": "Responds after 24 hours",
+      "under_1h": "Responds within 1 hour",
+      "under_4h": "Responds within 4 hours",
+      "under_24h": "Responds within 24 hours",
+      "over_24h": "Responds after 24 hours",
       "unknown": "Response time unknown"
     }
   },
@@ -575,30 +596,6 @@
       "priceHighLow": "Price: high to low",
       "newest": "Newest first",
       "nearest": "Nearest first"
-    }
-  },
-  "scamAlert": {
-    "highTitle": "This message may contain a scam",
-    "lowTitle": "This message looks suspicious",
-    "reportAction": "REPORT THIS MESSAGE",
-    "dismissAction": "Dismiss",
-    "expandAction": "Why this warning?",
-    "collapseAction": "Hide details",
-    "whyTitle": "Why this warning?",
-    "feedbackSubmitted": "Thank you for your report",
-    "statementOfReasons": "Why this warning?",
-    "reason": {
-      "externalPaymentLink": "Contains a link to an external payment site",
-      "offPlatformRequest": "Asks to complete the transaction outside DeelMarkt",
-      "phoneNumberSolicitation": "Requests a phone number or WhatsApp",
-      "tooGoodToBeTrue": "Price or offer is suspiciously low",
-      "urgencyPressure": "Uses pressure or urgency to act quickly",
-      "unknown": "Suspicious pattern detected"
-    },
-    "a11y": {
-      "highSeverity": "Warning: this message has been flagged as a potential scam",
-      "lowSeverity": "Caution: this message looks suspicious",
-      "reportHint": "Tap to report this message as suspicious"
     }
   },
   "sell": {
@@ -737,18 +734,18 @@
     "otherBubbleA11y": "They said: {text}",
     "readReceiptA11y": "Read"
   },
-  "timeAgo": {
-    "justNow": "Just now",
-    "minuteAgo": "1 minute ago",
-    "minutesAgo": "{n} minutes ago",
-    "hourAgo": "1 hour ago",
-    "hoursAgo": "{n} hours ago",
+  "time_ago": {
+    "just_now": "Just now",
+    "minute_ago": "1 minute ago",
+    "minutes_ago": "{n} minutes ago",
+    "hour_ago": "1 hour ago",
+    "hours_ago": "{n} hours ago",
     "yesterday": "Yesterday",
-    "daysAgo": "{n} days ago",
-    "weekAgo": "1 week ago",
-    "weeksAgo": "{n} weeks ago",
-    "monthAgo": "1 month ago",
-    "monthsAgo": "{n} months ago",
-    "yearAgo": "1 year ago"
+    "days_ago": "{n} days ago",
+    "week_ago": "1 week ago",
+    "weeks_ago": "{n} weeks ago",
+    "month_ago": "1 month ago",
+    "months_ago": "{n} months ago",
+    "year_ago": "1 year ago"
   }
 }

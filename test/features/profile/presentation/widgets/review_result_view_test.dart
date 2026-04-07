@@ -63,8 +63,8 @@ void main() {
         const ReviewSubmittedView(role: ReviewRole.buyer),
       );
 
-      expect(find.text('review.thankYou'), findsOneWidget);
-      expect(find.text('review.waitingForOther'), findsOneWidget);
+      expect(find.text('review.thank_you'), findsOneWidget);
+      expect(find.text('review.waiting_for_other'), findsOneWidget);
     });
 
     testWidgets('seller role renders thank you and waiting text', (
@@ -75,8 +75,8 @@ void main() {
         const ReviewSubmittedView(role: ReviewRole.seller),
       );
 
-      expect(find.text('review.thankYou'), findsOneWidget);
-      expect(find.text('review.waitingForOther'), findsOneWidget);
+      expect(find.text('review.thank_you'), findsOneWidget);
+      expect(find.text('review.waiting_for_other'), findsOneWidget);
     });
 
     testWidgets('has close button', (tester) async {
@@ -111,7 +111,7 @@ void main() {
         ReviewBothVisibleView(myReview: _review1, theirReview: _review2),
       );
 
-      expect(find.text('review.bothVisible'), findsOneWidget);
+      expect(find.text('review.both_visible'), findsOneWidget);
       expect(find.byType(ReviewCard), findsNWidgets(2));
     });
   });

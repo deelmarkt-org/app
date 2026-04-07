@@ -28,7 +28,7 @@ class PublicProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.locale.languageCode;
     final dateFormatted = formatMemberSince(user.createdAt, locale: locale);
-    final memberSince = 'sellerProfile.memberSince'.tr(
+    final memberSince = 'seller_profile.member_since'.tr(
       namedArgs: {'date': dateFormatted},
     );
 

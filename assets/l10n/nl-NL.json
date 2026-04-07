@@ -368,6 +368,27 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "scam_alert": {
+    "title_high": "Dit bericht bevat mogelijk oplichting",
+    "title_low": "Let op: wees voorzichtig met externe links",
+    "subtitle_low": "DeelMarkt vraagt je nooit om betalingen buiten ons platform te voldoen.",
+    "why_warning": "Waarom deze waarschuwing?",
+    "reasons_header": "Gedetecteerde risico\u2019s",
+    "why_warning_hide": "Verberg uitleg",
+    "ai_detected_prefix": "AI gedetecteerd:",
+    "report": "Meld dit bericht",
+    "dismiss": "Negeren",
+    "a11y_high": "Waarschuwing: mogelijke oplichting gedetecteerd",
+    "a11y_low": "Tip: wees voorzichtig met externe links",
+    "reason": {
+      "external_payment_link": "Dit bericht bevat een link naar een externe betaalsite",
+      "off_site_contact": "Dit bericht vraagt om het gesprek buiten het platform voort te zetten",
+      "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
+      "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
+      "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
     "a11yCityOnly": "Locatie: {city}",
@@ -397,28 +418,28 @@
   },
   "review": {
     "title": "Beoordeling",
-    "howWasExperience": "Hoe was je ervaring met {name}?",
-    "tellAbout": "Vertel over je ervaring...",
-    "charCounter": "{current}/500",
-    "blindReview": "Blinde beoordeling",
-    "blindExplanation": "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling",
+    "how_was_experience": "Hoe was je ervaring met {name}?",
+    "tell_about": "Vertel over je ervaring...",
+    "char_counter": "{current}/500",
+    "blind_review": "Blinde beoordeling",
+    "blind_explanation": "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling",
     "submit": "Beoordeling plaatsen",
     "submitting": "Verzenden...",
-    "thankYou": "Bedankt!",
-    "waitingForOther": "Wacht op de beoordeling van de {role}",
+    "thank_you": "Bedankt!",
+    "waiting_for_other": "Wacht op de beoordeling van de {role}",
     "role": {
       "buyer": "koper",
       "seller": "verkoper"
     },
-    "bothVisible": "Jullie beoordelingen zijn nu zichtbaar",
+    "both_visible": "Jullie beoordelingen zijn nu zichtbaar",
     "close": "Sluiten",
-    "urlWarning": "Links zijn niet toegestaan in beoordelingen",
-    "reportReview": "Meld deze beoordeling",
-    "unsavedDiscard": "Wil je je concept weggooien?",
-    "unsavedKeep": "Bewaren",
+    "url_warning": "Links zijn niet toegestaan in beoordelingen",
+    "report_review": "Meld deze beoordeling",
+    "unsaved_discard": "Wil je je concept weggooien?",
+    "unsaved_keep": "Bewaren",
     "a11y": {
       "rating": "Ster {star} van {total}",
-      "ratingLabel": "{rating} van 5 sterren",
+      "rating_label": "{rating} van 5 sterren",
       "counter": "Tekenteller"
     },
     "error": {
@@ -426,54 +447,54 @@
       "conflict": "Je hebt al een beoordeling geplaatst",
       "expired": "Het reviewvenster is verstreken",
       "cancelled": "Deze transactie is geannuleerd",
-      "rateLimit": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
-      "moderationBlocked": "Deze beoordeling is geblokkeerd door moderatie",
+      "rate_limit": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
+      "moderation_blocked": "Deze beoordeling is geblokkeerd door moderatie",
       "unknown": "Er is iets misgegaan. Probeer het opnieuw.",
       "ineligible": {
         "auth": "Je moet ingelogd zijn om een beoordeling te plaatsen",
         "notFound": "Transactie niet gevonden",
         "pending": "De betaling is nog niet afgerond",
-        "escrowHeld": "Escrow is nog niet vrijgegeven",
+        "escrow_held": "Escrow is nog niet vrijgegeven",
         "delivered": "Bevestig eerst de ontvangst voordat je een beoordeling plaatst",
         "disputed": "Er loopt een geschil over deze transactie",
         "cancelled": "Deze transactie is geannuleerd"
       }
     },
-    "reportReason": {
+    "report_reason": {
       "scam": "Oplichting",
       "harassment": "Intimidatie",
-      "hateSpeech": "Haatdragend taalgebruik",
-      "sexualContent": "Seksuele inhoud",
+      "hate_speech": "Haatdragend taalgebruik",
+      "sexual_content": "Seksuele inhoud",
       "violence": "Geweld",
-      "illegalContent": "Illegale inhoud",
+      "illegal_content": "Illegale inhoud",
       "spam": "Spam",
       "other": "Anders"
     }
   },
-  "sellerProfile": {
+  "seller_profile": {
     "title": "Profiel",
-    "memberSince": "Lid sinds {date}",
-    "reviewCount": "{count} beoordelingen",
-    "soldCount": "{count} verkocht",
-    "messageAction": "Bericht sturen",
-    "shareAction": "Delen",
-    "shareCopied": "Link gekopieerd",
-    "reportAction": "Meld gebruiker",
-    "tabListings": "Advertenties",
-    "tabReviews": "Beoordelingen",
-    "tooFewReviews": "Te weinig beoordelingen om gemiddelde te tonen",
-    "noListings": "Deze verkoper heeft geen advertenties",
-    "noReviews": "Nog geen beoordelingen",
-    "blockedTitle": "Je hebt deze gebruiker geblokkeerd",
-    "blockedUnblock": "Deblokkeer",
-    "notFound": "Gebruiker bestaat niet",
-    "loadMore": "Meer laden",
-    "moreActions": "Meer opties",
+    "member_since": "Lid sinds {date}",
+    "review_count": "{count} beoordelingen",
+    "sold_count": "{count} verkocht",
+    "message_action": "Bericht sturen",
+    "share_action": "Delen",
+    "share_copied": "Link gekopieerd",
+    "report_action": "Meld gebruiker",
+    "tab_listings": "Advertenties",
+    "tab_reviews": "Beoordelingen",
+    "too_few_reviews": "Te weinig beoordelingen om gemiddelde te tonen",
+    "no_listings": "Deze verkoper heeft geen advertenties",
+    "no_reviews": "Nog geen beoordelingen",
+    "blocked_title": "Je hebt deze gebruiker geblokkeerd",
+    "blocked_unblock": "Deblokkeer",
+    "not_found": "Gebruiker bestaat niet",
+    "load_more": "Meer laden",
+    "more_actions": "Meer opties",
     "responseTime": {
-      "under1h": "Reageert binnen 1 uur",
-      "under4h": "Reageert binnen 4 uur",
-      "under24h": "Reageert binnen 24 uur",
-      "over24h": "Reageert na 24 uur",
+      "under_1h": "Reageert binnen 1 uur",
+      "under_4h": "Reageert binnen 4 uur",
+      "under_24h": "Reageert binnen 24 uur",
+      "over_24h": "Reageert na 24 uur",
       "unknown": "Reactietijd onbekend"
     }
   },
@@ -575,30 +596,6 @@
       "priceHighLow": "Prijs: hoog naar laag",
       "newest": "Nieuwste eerst",
       "nearest": "Dichtstbijzijnde eerst"
-    }
-  },
-  "scamAlert": {
-    "highTitle": "Dit bericht bevat mogelijk oplichting",
-    "lowTitle": "Dit bericht lijkt verdacht",
-    "reportAction": "MELD DIT BERICHT",
-    "dismissAction": "Negeer",
-    "expandAction": "Waarom deze waarschuwing?",
-    "collapseAction": "Verberg details",
-    "whyTitle": "Waarom deze waarschuwing?",
-    "feedbackSubmitted": "Bedankt voor je melding",
-    "statementOfReasons": "Waarom deze waarschuwing?",
-    "reason": {
-      "externalPaymentLink": "Bevat een link naar een externe betaalsite",
-      "offPlatformRequest": "Vraagt om de transactie buiten DeelMarkt af te handelen",
-      "phoneNumberSolicitation": "Vraagt om een telefoonnummer of WhatsApp",
-      "tooGoodToBeTrue": "Prijs of aanbod is verdacht laag",
-      "urgencyPressure": "Gebruikt druk of urgentie om snel te handelen",
-      "unknown": "Verdacht patroon gedetecteerd"
-    },
-    "a11y": {
-      "highSeverity": "Waarschuwing: dit bericht is gemarkeerd als mogelijke oplichting",
-      "lowSeverity": "Let op: dit bericht lijkt verdacht",
-      "reportHint": "Tik om dit bericht te melden als verdacht"
     }
   },
   "sell": {
@@ -737,18 +734,18 @@
     "otherBubbleA11y": "Zij zeiden: {text}",
     "readReceiptA11y": "Gelezen"
   },
-  "timeAgo": {
-    "justNow": "Zojuist",
-    "minuteAgo": "1 minuut geleden",
-    "minutesAgo": "{n} minuten geleden",
-    "hourAgo": "1 uur geleden",
-    "hoursAgo": "{n} uur geleden",
+  "time_ago": {
+    "just_now": "Zojuist",
+    "minute_ago": "1 minuut geleden",
+    "minutes_ago": "{n} minuten geleden",
+    "hour_ago": "1 uur geleden",
+    "hours_ago": "{n} uur geleden",
     "yesterday": "Gisteren",
-    "daysAgo": "{n} dagen geleden",
-    "weekAgo": "1 week geleden",
-    "weeksAgo": "{n} weken geleden",
-    "monthAgo": "1 maand geleden",
-    "monthsAgo": "{n} maanden geleden",
-    "yearAgo": "1 jaar geleden"
+    "days_ago": "{n} dagen geleden",
+    "week_ago": "1 week geleden",
+    "weeks_ago": "{n} weken geleden",
+    "month_ago": "1 maand geleden",
+    "months_ago": "{n} maanden geleden",
+    "year_ago": "1 jaar geleden"
   }
 }

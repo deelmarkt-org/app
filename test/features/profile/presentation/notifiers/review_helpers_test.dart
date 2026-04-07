@@ -28,17 +28,17 @@ void main() {
       );
     });
 
-    test('paid returns escrowHeld key', () {
+    test('paid returns escrow_held key', () {
       expect(
         checkReviewEligibility(TransactionStatus.paid),
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 
-    test('shipped returns escrowHeld key', () {
+    test('shipped returns escrow_held key', () {
       expect(
         checkReviewEligibility(TransactionStatus.shipped),
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 

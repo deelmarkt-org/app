@@ -46,8 +46,11 @@ void main() {
         ),
       );
 
-      // sellerProfile.memberSince returns its key path in test env
-      expect(find.textContaining('sellerProfile.memberSince'), findsOneWidget);
+      // seller_profile.member_since returns its key path in test env
+      expect(
+        find.textContaining('seller_profile.member_since'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows RatingDisplay when aggregate data is available', (
