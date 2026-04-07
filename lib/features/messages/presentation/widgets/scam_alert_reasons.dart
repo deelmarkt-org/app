@@ -66,9 +66,7 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          isExpanded
-                              ? 'scamAlert.collapseAction'.tr()
-                              : 'scamAlert.expandAction'.tr(),
+                          'scamAlert.expandAction'.tr(),
                           style: Theme.of(
                             context,
                           ).textTheme.labelSmall?.copyWith(
@@ -90,60 +88,60 @@ class _ScamAlertReasonsState extends State<ScamAlertReasons> {
                 ),
               ),
             ),
-            AnimatedSize(
-              duration:
-                  reducedMotion
-                      ? Duration.zero
-                      : const Duration(milliseconds: 200),
-              alignment: Alignment.topCenter,
-              child:
-                  isExpanded
-                      ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            widget.reasons
-                                .map(
-                                  (reason) => Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: Spacing.s2,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 4,
-                                            right: Spacing.s2,
-                                          ),
-                                          child: Icon(
-                                            PhosphorIcons.dotOutline(
-                                              PhosphorIconsStyle.fill,
-                                            ),
-                                            size: 8,
-                                            color: widget.accentColor,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            reason.localizationKey.tr(),
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.bodySmall,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                      )
-                      : const SizedBox.shrink(),
-            ),
+            _buildReasonsList(context, isExpanded, reducedMotion),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildReasonsList(
+    BuildContext context,
+    bool isExpanded,
+    bool reducedMotion,
+  ) {
+    final reasonsColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:
+          widget.reasons
+              .map(
+                (reason) => Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.s2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 4,
+                          right: Spacing.s2,
+                        ),
+                        child: Icon(
+                          PhosphorIcons.dotOutline(PhosphorIconsStyle.fill),
+                          size: 8,
+                          color: widget.accentColor,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          reason.localizationKey.tr(),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+    );
+
+    if (reducedMotion) {
+      return isExpanded ? reasonsColumn : const SizedBox.shrink();
+    }
+
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      alignment: Alignment.topCenter,
+      child: isExpanded ? reasonsColumn : const SizedBox.shrink(),
     );
   }
 }

@@ -73,8 +73,8 @@ void main() {
       expect(find.text('scamAlert.reason.externalPaymentLink'), findsOneWidget);
       expect(find.text('scamAlert.reason.urgencyPressure'), findsOneWidget);
 
-      // Tap collapse — button now shows collapseAction text when expanded
-      await tester.tap(find.text('scamAlert.collapseAction'));
+      // Tap collapse — button always shows expandAction text (stable text avoids AnimatedSize layout assertion)
+      await tester.tap(find.text('scamAlert.expandAction'));
       await tester.pumpAndSettle();
 
       expect(find.text('scamAlert.reason.externalPaymentLink'), findsNothing);
