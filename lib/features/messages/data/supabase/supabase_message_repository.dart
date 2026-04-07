@@ -57,45 +57,13 @@ class SupabaseMessageRepository implements MessageRepository {
 
   @override
   Stream<List<MessageEntity>> watchMessages(String conversationId) {
-    // StreamController so we can push snapshots on each Realtime event.
     late StreamController<List<MessageEntity>> controller;
     RealtimeChannel? channel;
 
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {
-        // Emit the current snapshot immediately on subscribe.
-        try {
-          final initial = await getMessages(conversationId);
-          if (!controller.isClosed) controller.add(initial);
-        } on Exception catch (e) {
-          if (!controller.isClosed) controller.addError(e);
-          return;
-        }
-
-        // Subscribe to INSERT events on messages filtered to this conversation.
-        channel =
-            _client
-                .channel('$_channelPrefix$conversationId')
-                .onPostgresChanges(
-                  event: PostgresChangeEvent.insert,
-                  schema: 'public',
-                  table: _messagesTable,
-                  filter: PostgresChangeFilter(
-                    type: PostgresChangeFilterType.eq,
-                    column: 'conversation_id',
-                    value: conversationId,
-                  ),
-                  callback: (_) async {
-                    // Re-fetch the full ordered list on every new INSERT.
-                    try {
-                      final updated = await getMessages(conversationId);
-                      if (!controller.isClosed) controller.add(updated);
-                    } on Exception catch (e) {
-                      if (!controller.isClosed) controller.addError(e);
-                    }
-                  },
-                )
-                .subscribe();
+        if (!await _emitSnapshot(conversationId, controller)) return;
+        channel = _subscribeInserts(conversationId, controller);
       },
       onCancel: () {
         channel?.unsubscribe();
@@ -104,6 +72,44 @@ class SupabaseMessageRepository implements MessageRepository {
     );
 
     return controller.stream;
+  }
+
+  /// Fetches the current message list and pushes it onto [controller].
+  /// Returns `false` if an error occurred and was forwarded to the controller.
+  Future<bool> _emitSnapshot(
+    String conversationId,
+    StreamController<List<MessageEntity>> controller,
+  ) async {
+    try {
+      final messages = await getMessages(conversationId);
+      if (!controller.isClosed) controller.add(messages);
+      return true;
+    } on Exception catch (e) {
+      if (!controller.isClosed) controller.addError(e);
+      return false;
+    }
+  }
+
+  /// Subscribes to INSERT events for [conversationId] and re-emits a full
+  /// snapshot on each event. Returns the active [RealtimeChannel].
+  RealtimeChannel _subscribeInserts(
+    String conversationId,
+    StreamController<List<MessageEntity>> controller,
+  ) {
+    return _client
+        .channel('$_channelPrefix$conversationId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: _messagesTable,
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'conversation_id',
+            value: conversationId,
+          ),
+          callback: (_) => _emitSnapshot(conversationId, controller),
+        )
+        .subscribe();
   }
 
   @override
