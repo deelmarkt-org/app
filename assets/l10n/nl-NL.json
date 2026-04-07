@@ -241,6 +241,7 @@
     "confirmDeliveryDescription": "Bevestig dat je het artikel hebt ontvangen",
     "disputeOrder": "Probleem melden",
     "countdownHint": "48 uur om te bevestigen",
+    "deadlineHint": "Bevestig voor {date}",
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper"
   },
@@ -367,6 +368,11 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "location_badge": {
+    "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
+    "a11yCityOnly": "Locatie: {city}",
+    "mapPlaceholder": "Kaartweergave"
+  },
   "profile": {
     "title": "Profiel",
     "notLoggedIn": "Niet ingelogd",
@@ -492,11 +498,11 @@
     "postnl": "PostNL",
     "dhl": "DHL",
     "weightRange": "Gewicht",
-    "weight0to2": "0\u20132 kg",
-    "weight2to5": "2\u20135 kg",
-    "weight5to10": "5\u201310 kg",
-    "weight10to23": "10\u201323 kg",
-    "weight23to31": "23\u201331,5 kg",
+    "weight0to2": "0–2 kg",
+    "weight2to5": "2–5 kg",
+    "weight5to10": "5–10 kg",
+    "weight10to23": "10–23 kg",
+    "weight23to31": "23–31,5 kg",
     "location": "Locatie",
     "quality": "Kwaliteit",
     "publish": "Publiceren",
@@ -511,7 +517,7 @@
     "priceTip": "Stel een prijs in voor je item",
     "categoryTip": "Kies een subcategorie voor betere zichtbaarheid",
     "conditionTip": "Geef de conditie van je item aan",
-    "minOnePhoto": "Voeg minstens \u00e9\u00e9n foto toe",
+    "minOnePhoto": "Voeg minstens één foto toe",
     "photoLimitReached": "Maximaal 12 foto's bereikt",
     "qualityTooLow": "Verbeter je advertentie om te publiceren (minimumscore: 40)",
     "pickPhoto": "Kies een foto",
@@ -548,6 +554,62 @@
     "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorUnsupportedFormat": "Dit afbeeldingsformaat wordt niet ondersteund",
     "errorImagePicker": "Kon de fotokiezer niet openen"
+  },
+  "image_gallery": {
+    "close": "Sluiten",
+    "fullscreenLabel": "Foto op volledig scherm",
+    "noImages": "Geen afbeeldingen",
+    "photoCount": "{current} / {total}",
+    "photoSemantics": "Foto {current} van {total}"
+  },
+  "price_tag": {
+    "exclBtw": "excl. BTW",
+    "free": "Gratis",
+    "inclBtw": "incl. BTW",
+    "semanticsDiscounted": "{price} euro, was {original} euro",
+    "semanticsFree": "Gratis",
+    "semanticsPrice": "{price} euro"
+  },
+  "messages": {
+    "title": "Berichten",
+    "subtitle": "Beheer je gesprekken en biedingen.",
+    "noConversations": "Nog geen berichten",
+    "startConversation": "Start een gesprek door een advertentie te bekijken",
+    "emptyAction": "Naar Ontdekken",
+    "errorTitle": "Er ging iets mis",
+    "errorRetry": "Opnieuw proberen",
+    "yesterday": "Gisteren",
+    "offerPreview": "Bod: {amount}",
+    "unreadA11y": "{count} ongelezen",
+    "onlineA11y": "Online",
+    "offlineA11y": "Offline",
+    "noThreadSelected": "Selecteer een gesprek om te beginnen"
+  },
+  "chat": {
+    "typeMessage": "Typ een bericht…",
+    "makeOffer": "Doe een bod",
+    "offer": "Bod",
+    "offerOf": "Bod van {amount}",
+    "accept": "Accepteren",
+    "decline": "Afwijzen",
+    "counter": "Tegenbod",
+    "accepted": "Geaccepteerd",
+    "declined": "Afgewezen",
+    "online": "Online",
+    "lastSeen": "Offline",
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "statusForSale": "Te koop",
+    "comingSoon": "Binnenkort beschikbaar",
+    "emptyThread": "Nog geen berichten. Zeg hallo!",
+    "sendA11y": "Bericht versturen",
+    "backA11y": "Terug",
+    "cameraA11y": "Foto bijvoegen",
+    "optionsMenuA11y": "Meer opties",
+    "listingEmbedA11y": "Advertentie: {title}",
+    "selfBubbleA11y": "Jij zei: {text}",
+    "otherBubbleA11y": "Zij zeiden: {text}",
+    "readReceiptA11y": "Gelezen"
   },
   "scam_alert": {
     "reason": {

@@ -58,7 +58,7 @@ All UI text in NL + EN. Never hardcode strings.
 | Token | Hex | Usage |
 |:------|:----|:------|
 | `trust-verified` | `#16A34A` | iDIN verified badge |
-| `trust-escrow` | `#2563EB` | Escrow active indicator |
+| `trust-escrow` | `#2563EB` | Escrow protection banner + **completed** steps in the escrow timeline. Active steps use `primary` orange per `patterns.md` §Escrow Timeline. |
 | `trust-warning` | `#DC2626` | Scam detection alerts |
 | `trust-pending` | `#F59E0B` | KYC pending |
 | `trust-shield` | `#F0FDF4` | Badge background |

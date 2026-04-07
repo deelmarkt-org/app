@@ -212,9 +212,13 @@ The agent will:
 - [ ] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list
 - [ ] `P-28` Favourites screen — save/unsave toggle, list view
 - [ ] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition
+- [ ] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` (follow-up to PR #66)
 - [ ] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough
-- [ ] `P-32` `LocationBadge` widget — distance + pin icon
-- [ ] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `PaymentSummaryCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66)
+- [x] `P-32` `LocationBadge` widget — distance + pin icon
+- [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
+- [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
+- [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
 - [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
@@ -259,8 +263,8 @@ The agent will:
 
 **Branch:** `feature/pizmam-E04-chat-screens` | **Epics:** [E04](epics/E04-messaging.md) + [E06](epics/E06-trust-moderation.md)
 
-- [ ] `P-35` Chat conversation list screen — unread badges, response time
-- [ ] `P-36` Chat thread screen — listing embed, bubbles, offer messages
+- [x] `P-35` Chat conversation list screen — unread badges, response time ✅ PR #71
+- [x] `P-36` Chat thread screen — listing embed, bubbles, offer messages ✅ PR #71
 - [ ] `P-37` Scam alert integration in chat — warning on flagged messages
 - [ ] `P-38` Rating/review screen (post-transaction) — star + text, blind
 - [ ] `P-39` Seller profile screen (public ratings) — average + reviews + badges

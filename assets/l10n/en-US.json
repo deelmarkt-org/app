@@ -215,6 +215,7 @@
     "confirmDeliveryDescription": "Confirm that you have received the item",
     "disputeOrder": "Report issue",
     "countdownHint": "48 hours to confirm",
+    "deadlineHint": "Confirm before {date}",
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller"
   },
@@ -367,6 +368,11 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "location_badge": {
+    "a11yWithDistance": "Location: {city}, {distance} away",
+    "a11yCityOnly": "Location: {city}",
+    "mapPlaceholder": "Map preview"
+  },
   "profile": {
     "title": "Profile",
     "notLoggedIn": "Not logged in",
@@ -492,11 +498,11 @@
     "postnl": "PostNL",
     "dhl": "DHL",
     "weightRange": "Weight",
-    "weight0to2": "0\u20132 kg",
-    "weight2to5": "2\u20135 kg",
-    "weight5to10": "5\u201310 kg",
-    "weight10to23": "10\u201323 kg",
-    "weight23to31": "23\u201331.5 kg",
+    "weight0to2": "0–2 kg",
+    "weight2to5": "2–5 kg",
+    "weight5to10": "5–10 kg",
+    "weight10to23": "10–23 kg",
+    "weight23to31": "23–31.5 kg",
     "location": "Location",
     "quality": "Quality",
     "publish": "Publish",
@@ -548,6 +554,62 @@
     "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
     "errorUnsupportedFormat": "This image format is not supported",
     "errorImagePicker": "Could not open the photo picker"
+  },
+  "image_gallery": {
+    "close": "Close",
+    "fullscreenLabel": "Fullscreen photo",
+    "noImages": "No images",
+    "photoCount": "{current} / {total}",
+    "photoSemantics": "Photo {current} of {total}"
+  },
+  "price_tag": {
+    "exclBtw": "excl. VAT",
+    "free": "Free",
+    "inclBtw": "incl. VAT",
+    "semanticsDiscounted": "{price} euro, was {original} euro",
+    "semanticsFree": "Free",
+    "semanticsPrice": "{price} euro"
+  },
+  "messages": {
+    "title": "Messages",
+    "subtitle": "Manage your conversations and offers.",
+    "noConversations": "No messages yet",
+    "startConversation": "Start a conversation by viewing a listing",
+    "emptyAction": "Go to Discover",
+    "errorTitle": "Something went wrong",
+    "errorRetry": "Try again",
+    "yesterday": "Yesterday",
+    "offerPreview": "Offer: {amount}",
+    "unreadA11y": "{count} unread",
+    "onlineA11y": "Online",
+    "offlineA11y": "Offline",
+    "noThreadSelected": "Select a conversation to start chatting"
+  },
+  "chat": {
+    "typeMessage": "Type a message…",
+    "makeOffer": "Make an offer",
+    "offer": "Offer",
+    "offerOf": "Offer of {amount}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "counter": "Counter offer",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "online": "Online",
+    "lastSeen": "Offline",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "statusForSale": "For sale",
+    "comingSoon": "Coming soon",
+    "emptyThread": "No messages yet. Say hi!",
+    "sendA11y": "Send message",
+    "backA11y": "Go back",
+    "cameraA11y": "Attach photo",
+    "optionsMenuA11y": "More options",
+    "listingEmbedA11y": "Listing: {title}",
+    "selfBubbleA11y": "You said: {text}",
+    "otherBubbleA11y": "They said: {text}",
+    "readReceiptA11y": "Read"
   },
   "scam_alert": {
     "reason": {
