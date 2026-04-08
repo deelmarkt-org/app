@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -111,6 +113,74 @@ void main() {
         container
             .read(chatThreadNotifierProvider('c1').notifier)
             .sendText('Hallo'),
+        throwsA(isA<StateError>()),
+      );
+
+      final state =
+          container.read(chatThreadNotifierProvider('c1')).requireValue;
+      expect(state.messages, isEmpty);
+      expect(state.isSending, isFalse);
+    });
+
+    test('sendOffer appends offer message with pending status', () async {
+      final fake = FakeMessageRepository(
+        conversations: [_conv('c1')],
+        messages: [],
+      );
+      final container = ProviderContainer(
+        overrides: [messageRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(chatThreadNotifierProvider('c1').future);
+      await container
+          .read(chatThreadNotifierProvider('c1').notifier)
+          .sendOffer(9900);
+
+      final state =
+          container.read(chatThreadNotifierProvider('c1')).requireValue;
+      expect(state.messages.length, 1);
+      expect(state.messages.single.type, MessageType.offer);
+      expect(state.messages.single.offerAmountCents, 9900);
+      expect(state.messages.single.offerStatus, OfferStatus.pending);
+      expect(state.isSending, isFalse);
+    });
+
+    test('sendOffer formats text as euro amount', () async {
+      final fake = FakeMessageRepository(
+        conversations: [_conv('c1')],
+        messages: [],
+      );
+      final container = ProviderContainer(
+        overrides: [messageRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(chatThreadNotifierProvider('c1').future);
+      await container
+          .read(chatThreadNotifierProvider('c1').notifier)
+          .sendOffer(12050);
+
+      expect(fake.sendCalls.single.text, '€ 120,50');
+    });
+
+    test('sendOffer rolls back on failure', () async {
+      final fake = FakeMessageRepository(
+        conversations: [_conv('c1')],
+        messages: [],
+        throwOnSend: true,
+      );
+      final container = ProviderContainer(
+        overrides: [messageRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(chatThreadNotifierProvider('c1').future);
+
+      await expectLater(
+        container
+            .read(chatThreadNotifierProvider('c1').notifier)
+            .sendOffer(5000),
         throwsA(isA<StateError>()),
       );
 

@@ -7,10 +7,8 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
-
-/// Render state for an [OfferMessageCard].
-enum OfferStatus { pending, accepted, declined }
 
 /// P-36 — Structured offer card for `MessageType.offer`.
 ///
@@ -25,13 +23,11 @@ class OfferMessageCard extends StatelessWidget {
   const OfferMessageCard({
     required this.message,
     required this.isSelf,
-    this.status = OfferStatus.pending,
     super.key,
   });
 
   final MessageEntity message;
   final bool isSelf;
-  final OfferStatus status;
 
   /// Very small parser that extracts the amount string from messages like
   /// "Bod: € 120,00" — keeps us decoupled from adding a new entity field.
@@ -86,12 +82,15 @@ class OfferMessageCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Spacing.s3),
-                if (status == OfferStatus.pending)
+                if (message.offerStatus == OfferStatus.pending)
                   _PendingActions(
                     onTap: (action) => _showComingSoon(context, action),
                   )
                 else
-                  _StatusRow(status: status, colors: colors),
+                  _StatusRow(
+                    status: message.offerStatus ?? OfferStatus.pending,
+                    colors: colors,
+                  ),
               ],
             ),
           ),

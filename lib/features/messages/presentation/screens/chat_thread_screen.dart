@@ -11,6 +11,7 @@ import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_co
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_list.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/make_offer_sheet.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
 
 /// Whether the scam alert banner has been dismissed by the user.
@@ -72,13 +73,18 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     }
   }
 
-  void _showComingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('chat.comingSoon'.tr()),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  Future<void> _handleMakeOffer() async {
+    final cents = await MakeOfferSheet.show(context);
+    if (cents == null || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    final errorLabel = 'messages.errorTitle'.tr();
+    await ref
+        .read(chatThreadNotifierProvider(widget.conversationId).notifier)
+        .sendOffer(cents)
+        .catchError((_) {
+          if (!mounted) return;
+          messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
+        });
   }
 
   void _handleSend(String text) {
@@ -180,8 +186,14 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
           ChatMessageComposer(
             isSending: state.isSending,
             onSend: _handleSend,
-            onCameraTap: () => _showComingSoon(context),
-            onMakeOfferTap: () => _showComingSoon(context),
+            onCameraTap:
+                () => ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('chat.comingSoon'.tr()),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                ),
+            onMakeOfferTap: _handleMakeOffer,
           ),
         ],
       ),

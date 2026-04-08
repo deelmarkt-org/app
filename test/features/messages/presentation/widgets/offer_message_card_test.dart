@@ -1,6 +1,7 @@
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/offer_message_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +17,17 @@ void main() {
     await EasyLocalization.ensureInitialized();
   });
 
-  MessageEntity offer({String text = 'Bod: € 120,00'}) => MessageEntity(
+  MessageEntity offer({
+    String text = 'Bod: € 120,00',
+    OfferStatus status = OfferStatus.pending,
+  }) => MessageEntity(
     id: 'msg-1',
     conversationId: 'c1',
     senderId: 'u1',
     text: text,
     type: MessageType.offer,
     offerAmountCents: 12000,
+    offerStatus: status,
     createdAt: DateTime(2026, 3, 25, 14),
   );
 
@@ -82,9 +87,8 @@ void main() {
       await tester.pumpWidget(
         buildTest(
           OfferMessageCard(
-            message: offer(),
+            message: offer(status: OfferStatus.accepted),
             isSelf: true,
-            status: OfferStatus.accepted,
           ),
         ),
       );
@@ -98,9 +102,8 @@ void main() {
       await tester.pumpWidget(
         buildTest(
           OfferMessageCard(
-            message: offer(),
+            message: offer(status: OfferStatus.declined),
             isSelf: false,
-            status: OfferStatus.declined,
           ),
         ),
       );

@@ -732,7 +732,14 @@
     "listingEmbedA11y": "Listing: {title}",
     "selfBubbleA11y": "You said: {text}",
     "otherBubbleA11y": "They said: {text}",
-    "readReceiptA11y": "Read"
+    "readReceiptA11y": "Read",
+    "makeOfferTitle": "Make an offer",
+    "makeOfferAmountLabel": "Your offer",
+    "makeOfferHint": "0,00",
+    "makeOfferSend": "Send offer",
+    "makeOfferCancel": "Cancel",
+    "makeOfferInvalidAmount": "Enter a valid amount greater than €0",
+    "makeOfferA11y": "Offer amount in euros"
   },
   "time_ago": {
     "just_now": "Just now",

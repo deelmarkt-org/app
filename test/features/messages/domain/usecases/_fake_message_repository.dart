@@ -1,6 +1,7 @@
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Minimal in-memory fake for use-case and notifier tests.
@@ -50,6 +51,7 @@ class FakeMessageRepository implements MessageRepository {
       text: text,
       type: type,
       offerAmountCents: offerAmountCents,
+      offerStatus: type == MessageType.offer ? OfferStatus.pending : null,
       createdAt: DateTime.now(),
     );
     sendCalls.add(msg);
