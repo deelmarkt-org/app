@@ -44,8 +44,18 @@ if (-not (Test-Path $claudeSettings)) {
     Ok "Claude Code hooks already exist"
 }
 
+# Optional: check for deno
+if (Get-Command deno -ErrorAction SilentlyContinue) {
+    Ok "deno found: $(deno --version | Select-Object -First 1)"
+} else {
+    Write-Host "  !!  deno not installed - Edge Function lint/fmt hooks will be skipped" -ForegroundColor Yellow
+    Write-Host "     Install: https://deno.land/#installation"
+}
+
 Write-Host ""
-Write-Host "Done. New quality gates active:"
+Write-Host "Done. Quality gates active:"
 Write-Host "  Pre-commit: file length, cross-feature imports, l10n, Semantics, setState"
+Write-Host "              Edge Function lint + schema cross-reference (.ts/.sql)"
+Write-Host "              deno lint + deno fmt (if deno installed)"
 Write-Host "  Pre-push:   duplicate strings, nested ternaries, long methods, coverage"
 Write-Host "  Claude Code: inline warnings on file write"

@@ -66,6 +66,12 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
   fail "Missing required tools: ${MISSING[*]}. Install them first — see docs/SETUP.md"
 fi
 
+# Optional: deno for Edge Function linting
+if ! check_cmd deno; then
+  warn "deno not found — Edge Function lint/fmt hooks will be skipped"
+  warn "Install: https://deno.land/#installation"
+fi
+
 # Check Flutter version
 FLUTTER_VER=$(flutter --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 ok "Flutter version: $FLUTTER_VER"

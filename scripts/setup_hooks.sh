@@ -39,8 +39,18 @@ else
   echo -e "${GREEN}✓${NC}  Claude Code hooks already exist"
 fi
 
+# Optional: check for deno (needed for Edge Function TS linting)
+if command -v deno &>/dev/null; then
+  echo -e "${GREEN}✓${NC}  deno found: $(deno --version | head -1)"
+else
+  echo "  ⚠  deno not installed — Edge Function lint/fmt hooks will be skipped"
+  echo "     Install: https://deno.land/#installation"
+fi
+
 echo ""
-echo "Done. New quality gates active:"
+echo "Done. Quality gates active:"
 echo "  Pre-commit: file length, cross-feature imports, l10n, Semantics, setState"
+echo "              Edge Function lint + schema cross-reference (.ts/.sql)"
+echo "              deno lint + deno fmt (if deno installed)"
 echo "  Pre-push:   duplicate strings, nested ternaries, long methods, coverage"
 echo "  Claude Code: inline warnings on file write"
