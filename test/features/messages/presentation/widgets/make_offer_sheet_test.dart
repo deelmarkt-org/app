@@ -99,6 +99,55 @@ void main() {
       expect(find.byType(TextFormField), findsOneWidget);
     });
 
+    testWidgets('shows max-exceeded error for amount over limit', (
+      tester,
+    ) async {
+      await openSheet(tester);
+
+      // OfferConstants.maxOfferCents = 999999 = €9,999.99
+      await tester.enterText(find.byType(TextFormField), '10000');
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+
+      // Sheet stays open (did not pop)
+      expect(find.byType(MakeOfferSheet), findsOneWidget);
+      expect(find.byType(TextFormField), findsOneWidget);
+    });
+
+    testWidgets('parses EU thousands format correctly', (tester) async {
+      int? result;
+      await tester.pumpWidget(
+        EasyLocalization(
+          supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+          fallbackLocale: const Locale('en', 'US'),
+          path: 'assets/l10n',
+          child: MaterialApp(
+            theme: DeelmarktTheme.light,
+            home: Scaffold(
+              body: Builder(
+                builder:
+                    (ctx) => ElevatedButton(
+                      onPressed: () async {
+                        result = await MakeOfferSheet.show(ctx);
+                      },
+                      child: const Text('open'),
+                    ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextFormField), '1.200,50');
+      await tester.tap(find.byType(FilledButton));
+      await tester.pumpAndSettle();
+
+      expect(result, 120050);
+    });
+
     testWidgets('cancel button dismisses sheet without result', (tester) async {
       int? result;
       await tester.pumpWidget(

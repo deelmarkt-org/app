@@ -52,8 +52,6 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = ''
 AS $$
-DECLARE
-  v_current_status TEXT;
 BEGIN
   IF p_new_status NOT IN ('accepted', 'declined') THEN
     RAISE EXCEPTION 'Invalid offer status: %', p_new_status;
@@ -72,18 +70,15 @@ BEGIN
     RAISE EXCEPTION 'Unauthorized: only the seller may respond to an offer';
   END IF;
 
-  SELECT offer_status INTO v_current_status
-  FROM public.messages
-  WHERE id = p_message_id;
-
-  -- Already resolved — idempotent, do nothing
-  IF v_current_status IN ('accepted', 'declined') THEN
-    RETURN;
-  END IF;
-
+  -- Atomic transition: only updates if currently 'pending'.
+  -- The UPDATE acquires a row-level lock, preventing TOCTOU races
+  -- where two concurrent calls could both read 'pending' and proceed.
   UPDATE public.messages
   SET offer_status = p_new_status
-  WHERE id = p_message_id;
+  WHERE id = p_message_id
+    AND offer_status = 'pending';
+
+  -- Already resolved — idempotent no-op (not an error)
 END;
 $$;
 

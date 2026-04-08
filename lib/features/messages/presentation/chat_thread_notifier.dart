@@ -114,6 +114,43 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
     );
   }
 
+  /// Updates the offer status with optimistic UI — the offer card shows the
+  /// new status immediately and rolls back if the server call fails.
+  Future<void> updateOfferStatus(
+    String messageId,
+    OfferStatus newStatus,
+  ) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+
+    // Optimistic: update the matching message's offerStatus
+    final updatedMessages = [
+      for (final msg in current.messages)
+        if (msg.id == messageId)
+          msg.copyWith(offerStatus: newStatus)
+        else
+          msg,
+    ];
+    state = AsyncValue.data(current.copyWith(messages: updatedMessages));
+
+    try {
+      await ref.read(updateOfferStatusUseCaseProvider)(
+        messageId: messageId,
+        newStatus: newStatus,
+      );
+    } catch (e, st) {
+      AppLogger.error(
+        'updateOfferStatus',
+        tag: 'ChatThreadNotifier',
+        error: e,
+        stackTrace: st,
+      );
+      // Rollback to original messages
+      state = AsyncValue.data(current.copyWith(messages: current.messages));
+      rethrow;
+    }
+  }
+
   Future<void> _optimisticSend({
     required MessageEntity optimistic,
     required Future<MessageEntity> Function(String convId) send,

@@ -739,6 +739,7 @@
     "makeOfferSend": "Bod versturen",
     "makeOfferCancel": "Annuleren",
     "makeOfferInvalidAmount": "Voer een geldig bedrag in van meer dan €0",
+    "makeOfferMaxExceeded": "Maximaal bod is €9.999,99",
     "makeOfferA11y": "Bod bedrag in euro"
   },
   "time_ago": {

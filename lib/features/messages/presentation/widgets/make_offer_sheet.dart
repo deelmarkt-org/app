@@ -38,9 +38,7 @@ int? _parseCents(String raw) {
 
   final value = double.tryParse(normalised);
   if (value == null || value <= 0) return null;
-  final cents = (value * 100).round();
-  if (cents > OfferConstants.maxOfferCents) return null;
-  return cents;
+  return (value * 100).round();
 }
 
 /// Bottom sheet for composing a structured "Make an Offer" message (R-32).
@@ -72,7 +70,7 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
 
   /// Ephemeral validation error — drives a [ValueListenableBuilder] so the
   /// field rebuilds on error without calling setState (CLAUDE.md §1.3).
-  final _errorNotifier = ValueNotifier<String?>('');
+  final _errorNotifier = ValueNotifier<String?>(null);
 
   @override
   void dispose() {
@@ -85,6 +83,10 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
     final cents = _parseCents(_controller.text);
     if (cents == null) {
       _errorNotifier.value = 'chat.makeOfferInvalidAmount'.tr();
+      return;
+    }
+    if (cents > OfferConstants.maxOfferCents) {
+      _errorNotifier.value = 'chat.makeOfferMaxExceeded'.tr();
       return;
     }
     Navigator.of(context).pop(cents);
@@ -111,7 +113,7 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
                 labelText: 'chat.makeOfferAmountLabel'.tr(),
                 hintText: 'chat.makeOfferHint'.tr(),
                 prefixText: '€ ',
-                errorText: errorText?.isEmpty == true ? null : errorText,
+                errorText: errorText,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(DeelmarktRadius.md),
                 ),
@@ -120,7 +122,7 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
                   vertical: Spacing.s3,
                 ),
               ),
-              onChanged: (_) => _errorNotifier.value = '',
+              onChanged: (_) => _errorNotifier.value = null,
               onFieldSubmitted: (_) => _submit(),
             ),
           ),
