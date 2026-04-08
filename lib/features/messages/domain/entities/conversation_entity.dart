@@ -19,6 +19,7 @@ class ConversationEntity extends Equatable {
     this.otherUserAvatarUrl,
     this.lastMessageType,
     this.unreadCount = 0,
+    this.sellerResponseTimeMinutes,
   });
 
   final String id;
@@ -36,6 +37,10 @@ class ConversationEntity extends Equatable {
   final String? lastMessageType;
   final int unreadCount;
 
+  /// Seller's median first-reply time in minutes, computed daily by R-33 cron.
+  /// Null when the seller has too few conversations to compute a reliable stat.
+  final int? sellerResponseTimeMinutes;
+
   @override
   List<Object?> get props => [
     id,
@@ -49,6 +54,7 @@ class ConversationEntity extends Equatable {
     lastMessageAt,
     lastMessageType,
     unreadCount,
+    sellerResponseTimeMinutes,
   ];
 
   ConversationEntity copyWith({
@@ -63,6 +69,7 @@ class ConversationEntity extends Equatable {
     DateTime? lastMessageAt,
     String? lastMessageType,
     int? unreadCount,
+    int? sellerResponseTimeMinutes,
   }) {
     return ConversationEntity(
       id: id ?? this.id,
@@ -76,6 +83,8 @@ class ConversationEntity extends Equatable {
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
       lastMessageType: lastMessageType ?? this.lastMessageType,
       unreadCount: unreadCount ?? this.unreadCount,
+      sellerResponseTimeMinutes:
+          sellerResponseTimeMinutes ?? this.sellerResponseTimeMinutes,
     );
   }
 }

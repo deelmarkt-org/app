@@ -21,17 +21,32 @@ class ProfileStatsRow extends StatelessWidget {
           label: 'profile.reviews'.tr(),
         ),
         _StatItem(
-          value: _formatResponseTime(user.responseTimeMinutes),
-          label: 'profile.response_time'.tr(),
+          value: _formatResponseTimeValue(user.responseTimeMinutes),
+          label: _formatResponseTimeLabel(user.responseTimeMinutes),
         ),
       ],
     );
   }
 
-  String _formatResponseTime(int? minutes) {
+  /// Short value shown in large text (e.g. "< 1h", "< 4h").
+  String _formatResponseTimeValue(int? minutes) {
     if (minutes == null) return '-';
-    if (minutes < 60) return '${minutes}m';
-    return '${(minutes / 60).round()}h';
+    if (minutes < 60) return '< 1h';
+    if (minutes < 240) return '< 4h';
+    if (minutes < 1440) return '< 24h';
+    return '> 24h';
+  }
+
+  /// Descriptive label shown in small text below the value.
+  /// Uses l10n bucket strings consistent with SellerInfoRow and the E04 spec.
+  String _formatResponseTimeLabel(int? minutes) {
+    if (minutes == null) {
+      return 'seller_profile.response_time.unknown'.tr();
+    }
+    if (minutes < 60) return 'seller_profile.response_time.under_1h'.tr();
+    if (minutes < 240) return 'seller_profile.response_time.under_4h'.tr();
+    if (minutes < 1440) return 'seller_profile.response_time.under_24h'.tr();
+    return 'seller_profile.response_time.over_24h'.tr();
   }
 }
 

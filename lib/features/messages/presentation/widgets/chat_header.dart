@@ -81,6 +81,7 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildTitleBlock(ThemeData theme, ChatThemeColors colors) {
     final statusColor = _isOnline ? colors.success : colors.textTertiary;
+    final subtitle = _buildSubtitle();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,11 +96,20 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
           overflow: TextOverflow.ellipsis,
         ),
         Text(
-          _isOnline ? 'chat.online'.tr() : 'chat.lastSeen'.tr(),
+          subtitle,
           style: theme.textTheme.bodySmall?.copyWith(color: statusColor),
         ),
       ],
     );
+  }
+
+  String _buildSubtitle() {
+    final minutes = conversation.sellerResponseTimeMinutes;
+    if (minutes == null) return 'chat.lastSeen'.tr();
+    if (minutes < 60) return 'seller_profile.response_time.under_1h'.tr();
+    if (minutes < 240) return 'seller_profile.response_time.under_4h'.tr();
+    if (minutes < 1440) return 'seller_profile.response_time.under_24h'.tr();
+    return 'seller_profile.response_time.over_24h'.tr();
   }
 }
 

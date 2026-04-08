@@ -40,49 +40,97 @@ void main() {
         expect(find.text('profile.reviews'), findsOneWidget);
       });
 
-      testWidgets('shows response time', (tester) async {
+      testWidgets('shows response time value and l10n label', (tester) async {
+        // 15 min < 60 → value '< 1h', label under_1h bucket key
         await pumpTestWidget(tester, ProfileStatsRow(user: buildUser()));
 
-        expect(find.text('15m'), findsOneWidget);
-        expect(find.text('profile.response_time'), findsOneWidget);
+        expect(find.text('< 1h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.under_1h'),
+          findsOneWidget,
+        );
       });
     });
 
-    group('formats response time correctly', () {
-      testWidgets('minutes under 60 show as Xm', (tester) async {
+    group('formats response time value correctly', () {
+      testWidgets('under 60 minutes → "< 1h"', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 30)),
         );
 
-        expect(find.text('30m'), findsOneWidget);
+        expect(find.text('< 1h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.under_1h'),
+          findsOneWidget,
+        );
       });
 
-      testWidgets('60 minutes shows as 1h', (tester) async {
+      testWidgets('exactly 60 minutes → "< 4h"', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 60)),
         );
 
-        expect(find.text('1h'), findsOneWidget);
+        expect(find.text('< 4h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.under_4h'),
+          findsOneWidget,
+        );
       });
 
-      testWidgets('90 minutes rounds to 2h', (tester) async {
+      testWidgets('90 minutes → "< 4h"', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 90)),
         );
 
-        expect(find.text('2h'), findsOneWidget);
+        expect(find.text('< 4h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.under_4h'),
+          findsOneWidget,
+        );
       });
 
-      testWidgets('120 minutes shows as 2h', (tester) async {
+      testWidgets('240 minutes → "< 24h"', (tester) async {
         await pumpTestWidget(
           tester,
-          ProfileStatsRow(user: buildUser(responseTimeMinutes: 120)),
+          ProfileStatsRow(user: buildUser(responseTimeMinutes: 240)),
         );
 
-        expect(find.text('2h'), findsOneWidget);
+        expect(find.text('< 24h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.under_24h'),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('1440+ minutes → "> 24h"', (tester) async {
+        await pumpTestWidget(
+          tester,
+          ProfileStatsRow(user: buildUser(responseTimeMinutes: 1440)),
+        );
+
+        expect(find.text('> 24h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.over_24h'),
+          findsOneWidget,
+        );
+      });
+
+      testWidgets('null responseTimeMinutes → "-" value + unknown label', (
+        tester,
+      ) async {
+        await pumpTestWidget(
+          tester,
+          ProfileStatsRow(user: buildUser(responseTimeMinutes: null)),
+        );
+
+        expect(find.text('-'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.unknown'),
+          findsOneWidget,
+        );
       });
     });
 
@@ -93,20 +141,12 @@ void main() {
           ProfileStatsRow(user: buildUser(averageRating: null)),
         );
 
-        // One dash for rating, one for response time if also null
         expect(find.text('-'), findsOneWidget);
       });
 
-      testWidgets('null responseTimeMinutes shows dash', (tester) async {
-        await pumpTestWidget(
-          tester,
-          ProfileStatsRow(user: buildUser(responseTimeMinutes: null)),
-        );
-
-        expect(find.text('-'), findsOneWidget);
-      });
-
-      testWidgets('both null show two dashes', (tester) async {
+      testWidgets('both null — one dash for rating, one for response time', (
+        tester,
+      ) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(
@@ -115,6 +155,10 @@ void main() {
         );
 
         expect(find.text('-'), findsNWidgets(2));
+        expect(
+          find.text('seller_profile.response_time.unknown'),
+          findsOneWidget,
+        );
       });
     });
   });

@@ -44,7 +44,7 @@ interface MessageRow {
   id: string;
   conversation_id: string;
   sender_id: string;
-  sent_at: string;
+  created_at: string;
 }
 
 interface ConversationRow {
@@ -85,7 +85,7 @@ async function computeSellerResponseTimes(
   // listings to resolve seller_id in one query (no N+1).
   const { data: conversations, error: convError } = await supabase
     .from("conversations")
-    .select("id, listings!inner(seller_id:user_id)")
+    .select("id, listings!inner(seller_id)")
     .gte("created_at", since.toISOString());
 
   if (convError) throw new Error(`conversations query: ${convError.message}`);
@@ -101,9 +101,9 @@ async function computeSellerResponseTimes(
   // Fetch all messages in those conversations in one batch.
   const { data: messages, error: msgError } = await supabase
     .from("messages")
-    .select("id, conversation_id, sender_id, sent_at")
+    .select("id, conversation_id, sender_id, created_at")
     .in("conversation_id", convIds)
-    .order("sent_at", { ascending: true });
+    .order("created_at", { ascending: true });
 
   if (msgError) throw new Error(`messages query: ${msgError.message}`);
   if (!messages || messages.length === 0) return [];
@@ -135,8 +135,8 @@ async function computeSellerResponseTimes(
         pendingBuyerMsg = msg;
       } else if (isSeller && pendingBuyerMsg !== null) {
         // Seller replied — compute gap.
-        const buyerTs = new Date(pendingBuyerMsg.sent_at).getTime();
-        const sellerTs = new Date(msg.sent_at).getTime();
+        const buyerTs = new Date(pendingBuyerMsg.created_at).getTime();
+        const sellerTs = new Date(msg.created_at).getTime();
         const gapMinutes = Math.round((sellerTs - buyerTs) / 60_000);
 
         if (gapMinutes >= 0) {
@@ -207,7 +207,7 @@ async function clearStaleProfiles(
     .from("user_profiles")
     .select("id")
     .not("response_time_minutes", "is", null)
-    .not("id", "in", `(${updatedSellerIds.map((id) => `'${id}'`).join(",")})`);
+    .not("id", "in", `(${updatedSellerIds.join(",")})`);
 
   if (selectError) {
     console.error(`[response-time] stale select error: ${selectError.message}`);

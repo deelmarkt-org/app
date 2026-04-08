@@ -43,6 +43,8 @@ class ConversationDto {
       lastMessageAt: DateTime.parse(lastMessageAtRaw),
       lastMessageType: lastMessageType,
       unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
+      sellerResponseTimeMinutes:
+          (json['seller_response_time_minutes'] as num?)?.toInt(),
     );
   }
 

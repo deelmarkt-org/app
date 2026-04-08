@@ -1,6 +1,5 @@
 import {
   assertEquals,
-  assertAlmostEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 
@@ -21,7 +20,7 @@ interface MessageRow {
   id: string;
   conversation_id: string;
   sender_id: string;
-  sent_at: string;
+  created_at: string;
 }
 
 interface ConversationRow {
@@ -38,7 +37,7 @@ function computeGapsForConversation(
   let pendingBuyerMsg: MessageRow | null = null;
 
   const sorted = [...msgs].sort(
-    (a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime(),
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   );
 
   for (const msg of sorted) {
@@ -47,8 +46,8 @@ function computeGapsForConversation(
     if (!isSeller && pendingBuyerMsg === null) {
       pendingBuyerMsg = msg;
     } else if (isSeller && pendingBuyerMsg !== null) {
-      const buyerTs = new Date(pendingBuyerMsg.sent_at).getTime();
-      const sellerTs = new Date(msg.sent_at).getTime();
+      const buyerTs = new Date(pendingBuyerMsg.created_at).getTime();
+      const sellerTs = new Date(msg.created_at).getTime();
       const gapMinutes = Math.round((sellerTs - buyerTs) / 60_000);
       if (gapMinutes >= 0) gaps.push(gapMinutes);
       pendingBuyerMsg = null;
@@ -148,7 +147,7 @@ describe("computeGapsForConversation()", () => {
       id,
       conversation_id: convId,
       sender_id: senderId,
-      sent_at: base.toISOString(),
+      created_at: base.toISOString(),
     };
   }
 
@@ -202,7 +201,7 @@ describe("computeGapsForConversation()", () => {
     assertEquals(computeGapsForConversation([], conv), []);
   });
 
-  it("is resilient to out-of-order input — sorts by sent_at", () => {
+  it("is resilient to out-of-order input — sorts by created_at", () => {
     const msgs = [
       makeMsg("m2", sellerId, 45), // arrives first in array but is later
       makeMsg("m1", buyerId, 0),
