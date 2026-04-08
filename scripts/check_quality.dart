@@ -50,7 +50,9 @@ void main(List<String> args) async {
     }
   }
 
-  // Missing test file check — runs on all staged lib/ files
+  // Missing test file + spec reference checks — separate from the main loop
+  // because they only need the file path (not content), and they apply to all
+  // files regardless of --thorough mode.
   for (final file in files) {
     _checkMissingTestFile(file, violations);
   }

@@ -417,13 +417,13 @@ The European Accessibility Act is enforceable. These are not optional:
 2. Run `flutter analyze` after each file change
 3. Run `dart run scripts/check_quality.dart --all` to catch CLAUDE.md violations early
 4. Run `bash scripts/check_edge_functions.sh --all` when working on Edge Functions
-4. Keep files under line limits (§2.1)
-5. Use design system tokens, never raw values (§3.3)
-6. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
-7. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
-8. All interactive widgets MUST have `Semantics()` labels
-9. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
-10. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
+5. Keep files under line limits (§2.1)
+6. Use design system tokens, never raw values (§3.3)
+7. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
+8. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
+9. All interactive widgets MUST have `Semantics()` labels
+10. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
+11. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
 
 ### Before Ending
 

@@ -119,7 +119,9 @@ column_exists() {
 }
 
 # ── 3. Structure checks ─────────────────────────────────────────────────────
-
+# Guard: FUNCTIONS may be empty on Bash 3.x (macOS default) where
+# "${arr[@]}" on an empty array triggers nounset even after length check.
+if [[ ${#FUNCTIONS[@]} -gt 0 ]]; then
 for func in "${FUNCTIONS[@]}"; do
   func_dir="$FUNC_DIR/$func"
 
@@ -148,6 +150,7 @@ for func in "${FUNCTIONS[@]}"; do
     warn "LOCAL_JSON_RESPONSE" "$index — defines jsonResponse locally; import from _shared/response.ts (DRY §3.2)"
   fi
 done
+fi  # end FUNCTIONS guard
 
 # ── 4. Schema cross-reference ────────────────────────────────────────────────
 
@@ -155,6 +158,7 @@ schema_count=$(wc -l < "$SCHEMA_FILE" | xargs)
 if [[ "$schema_count" -eq 0 ]]; then
   echo "Warning: no schema columns parsed from migrations. Skipping schema cross-reference."
 else
+  if [[ ${#FUNCTIONS[@]} -gt 0 ]]; then
   for func in "${FUNCTIONS[@]}"; do
     index="$FUNC_DIR/$func/index.ts"
     [[ ! -f "$index" ]] && continue
@@ -163,7 +167,11 @@ else
     content=$(tr '\n' ' ' < "$index")
 
     # Extract .from("table")...select("cols") pairs using perl.
-    # The [^.]*? prevents crossing another .from() boundary.
+    # Known limitations (pragmatic 80/20 — catches the common cases):
+    #   - Assumes .from() and .select() are on the same logical statement
+    #   - Uses [^;]*? to avoid crossing statement boundaries; may fail on
+    #     chained queries without semicolons or template literals with semicolons
+    #   - If this script grows in complexity, consider an AST-based TS parser
     echo "$content" | perl -ne '
       while (/\.from\(['\''"](\w+)['\''"]\)[^;]*?\.select\(['\''"]([^'\''"]+)['\''"]/g) {
         print "$1|$2\n";
@@ -220,7 +228,7 @@ else
       done
     done || true
 
-    # Check .order("col") calls
+    # Check .order("col") calls (same regex caveats as .select() above)
     echo "$content" | perl -ne '
       while (/\.from\(['\''"](\w+)['\''"]\).*?\.order\(['\''"](\w+)['\''"]/g) {
         print "$1|$2\n";
@@ -232,6 +240,7 @@ else
       fi
     done || true
   done
+  fi  # end FUNCTIONS guard for schema cross-reference
 fi
 
 # ── 5. Report ────────────────────────────────────────────────────────────────
