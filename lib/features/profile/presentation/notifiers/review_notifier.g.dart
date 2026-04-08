@@ -6,8 +6,7 @@ part of 'review_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$reviewNotifierHash() =>
-    r'b91fd73e681a5e41da1623aaa9fb774cdc24bb09'; // pragma: allowlist secret
+String _$reviewNotifierHash() => r'6197eb54789665ff45841d2b809bbd602740e616';
 
 /// Copied from Dart SDK
 class _SystemHash {

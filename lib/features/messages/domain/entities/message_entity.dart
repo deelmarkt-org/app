@@ -1,17 +1,22 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
 
 /// Single message in a conversation.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
 /// Extends [Equatable] for Riverpod state diffing (ADR-21).
 ///
+/// Scam fields ([scamConfidence], [scamReasons], [scamFlaggedAt]) are
+/// populated asynchronously by the R-35 Edge Function after insert.
+/// The invariant is enforced by both the DB CHECK constraint and the
+/// constructor assert: when [scamConfidence] is not [ScamConfidence.none],
+/// [scamReasons] and [scamFlaggedAt] must be non-null.
+///
 /// Reference: docs/epics/E04-messaging.md, docs/epics/E06-trust-moderation.md
 class MessageEntity extends Equatable {
-  // Non-const: runtime asserts on scamReasons/scamFlaggedAt disqualify const.
-  // ignore: prefer_const_constructors_in_immutables
-  MessageEntity({
+  const MessageEntity({
     required this.id,
     required this.conversationId,
     required this.senderId,
@@ -19,6 +24,7 @@ class MessageEntity extends Equatable {
     required this.createdAt,
     this.type = MessageType.text,
     this.isRead = false,
+    this.offerAmountCents,
     this.scamConfidence = ScamConfidence.none,
     this.scamReasons,
     this.scamFlaggedAt,
@@ -33,6 +39,10 @@ class MessageEntity extends Equatable {
              (scamReasons == null && scamFlaggedAt == null),
          'When scamConfidence is none, scamReasons and scamFlaggedAt '
          'must be null.',
+       ),
+       assert(
+         type != MessageType.offer || offerAmountCents != null,
+         'offerAmountCents must be provided when type is offer.',
        );
 
   final String id;
@@ -41,7 +51,9 @@ class MessageEntity extends Equatable {
   final String text;
   final MessageType type;
   final bool isRead;
-  final DateTime createdAt;
+
+  /// Offer amount in euro cents — non-null only when [type] is [MessageType.offer].
+  final int? offerAmountCents;
 
   /// E06 scam detector confidence on this message.
   /// Defaults to [ScamConfidence.none].
@@ -53,6 +65,8 @@ class MessageEntity extends Equatable {
   /// Timestamp when the detector flagged the message. Null when not flagged.
   final DateTime? scamFlaggedAt;
 
+  final DateTime createdAt;
+
   @override
   List<Object?> get props => [
     id,
@@ -61,6 +75,7 @@ class MessageEntity extends Equatable {
     text,
     type,
     isRead,
+    offerAmountCents,
     createdAt,
     scamConfidence,
     scamReasons,
@@ -82,6 +97,7 @@ class MessageEntity extends Equatable {
     String? text,
     MessageType? type,
     bool? isRead,
+    int? offerAmountCents,
     DateTime? createdAt,
     ScamConfidence? scamConfidence,
     List<ScamReason>? scamReasons,
@@ -94,6 +110,7 @@ class MessageEntity extends Equatable {
       text: text ?? this.text,
       type: type ?? this.type,
       isRead: isRead ?? this.isRead,
+      offerAmountCents: offerAmountCents ?? this.offerAmountCents,
       createdAt: createdAt ?? this.createdAt,
       scamConfidence: scamConfidence ?? this.scamConfidence,
       scamReasons: scamReasons ?? this.scamReasons,
@@ -101,6 +118,3 @@ class MessageEntity extends Equatable {
     );
   }
 }
-
-/// Message types — per design system patterns.md §Chat.
-enum MessageType { text, offer, systemAlert, scamWarning }

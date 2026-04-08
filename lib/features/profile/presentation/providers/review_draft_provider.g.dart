@@ -7,7 +7,7 @@ part of 'review_draft_provider.dart';
 // **************************************************************************
 
 String _$reviewDraftNotifierHash() =>
-    r'481893ac4e0483ecf0f61b5f57a29253afd8b9ed'; // pragma: allowlist secret
+    r'481893ac4e0483ecf0f61b5f57a29253afd8b9ed';
 
 /// Copied from Dart SDK
 class _SystemHash {

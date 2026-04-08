@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
-import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 
 void main() {
   late MockMessageRepository repo;
@@ -51,6 +51,7 @@ void main() {
         conversationId: 'conv-001',
         text: '€45.00',
         type: MessageType.offer,
+        offerAmountCents: 4500,
       );
 
       expect(msg.type, MessageType.offer);
