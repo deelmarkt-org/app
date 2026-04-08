@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_day_separator.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/message_bubble.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/offer_message_card.dart';

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
@@ -135,5 +137,56 @@ void main() {
       expect(state.conversation.id, 'does-not-exist');
       expect(state.messages, isEmpty);
     });
+
+    test(
+      'buffers Realtime snapshot received during send and applies on completion',
+      () async {
+        final fake = _RealtimeFakeRepository(
+          conversations: [_conv('c1')],
+          messages: [],
+        );
+        final container = ProviderContainer(
+          overrides: [messageRepositoryProvider.overrideWithValue(fake)],
+        );
+        addTearDown(container.dispose);
+
+        await container.read(chatThreadNotifierProvider('c1').future);
+
+        // Simulate a concurrent Realtime snapshot arriving during isSending.
+        final incomingMsg = _msg(
+          'incoming',
+          DateTime(2026, 3, 25, 15),
+          sender: 'user-002',
+        );
+        fake.pushSnapshot([incomingMsg]);
+
+        await container
+            .read(chatThreadNotifierProvider('c1').notifier)
+            .sendText('Hallo');
+
+        // After send completes the buffered snapshot should be applied.
+        final state =
+            container.read(chatThreadNotifierProvider('c1')).requireValue;
+        expect(state.isSending, isFalse);
+      },
+    );
   });
+}
+
+/// Fake repository with a controllable broadcast stream for Realtime tests.
+class _RealtimeFakeRepository extends FakeMessageRepository {
+  _RealtimeFakeRepository({
+    required super.conversations,
+    required super.messages,
+  });
+
+  final _controller = StreamController<List<MessageEntity>>.broadcast();
+
+  void pushSnapshot(List<MessageEntity> msgs) => _controller.add(msgs);
+
+  @override
+  Stream<List<MessageEntity>> watchMessages(String conversationId) =>
+      _controller.stream.map(
+        (m) => m.where((e) => e.conversationId == conversationId).toList(),
+      );
 }
