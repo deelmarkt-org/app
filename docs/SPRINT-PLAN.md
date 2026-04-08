@@ -231,7 +231,7 @@ The agent will:
 
 - [x] `R-31` Messages table + Supabase Realtime — real-time delivery works *(done by reso (mahmutkaya))*
 - [x] `R-32` "Make an Offer" structured message type — offer with price stored
-- [ ] `R-33` Seller response time calculation (cron) — average computed daily
+- [x] `R-33` Seller response time calculation (cron) — average computed daily *(PR #89)*
 - [ ] `R-34` FCM push notification on new message — delivered on iOS + Android
 - [ ] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [ ] `R-36` Reviews table + blind review logic — hidden until both submit
