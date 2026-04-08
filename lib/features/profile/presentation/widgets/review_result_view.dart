@@ -75,14 +75,7 @@ class ReviewSubmittedView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.s6),
-            Semantics(
-              button: true,
-              label: 'review.close'.tr(),
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('review.close'.tr()),
-              ),
-            ),
+            _CloseButton(),
           ],
         ),
       ),
@@ -176,16 +169,25 @@ class ReviewErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.s6),
-            Semantics(
-              button: true,
-              label: 'review.close'.tr(),
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('review.close'.tr()),
-              ),
-            ),
+            _CloseButton(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Shared close button used by [ReviewSubmittedView] and [ReviewErrorView].
+class _CloseButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final label = 'review.close'.tr();
+    return Semantics(
+      button: true,
+      label: label,
+      child: OutlinedButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: Text(label),
       ),
     );
   }

@@ -86,6 +86,20 @@ GoRouter createTestRouter({
   return _buildRouter(authStream: authStream, redirect: redirect);
 }
 
+/// Creates a redirect guard that validates a path parameter's length.
+///
+/// Returns [fallback] when the id is empty or exceeds
+/// [AppConstants.maxRouteIdLength]; returns `null` (no redirect) otherwise.
+GoRouterRedirect _idGuard(String param, String fallback) {
+  return (context, state) {
+    final id = state.pathParameters[param] ?? '';
+    if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+      return fallback;
+    }
+    return null;
+  };
+}
+
 GoRouter _buildRouter({
   required Stream<AuthState> authStream,
   required GoRouterRedirect redirect,
@@ -160,17 +174,7 @@ GoRouter _buildRouter({
                   GoRoute(
                     path: ':conversationId',
                     name: 'chatThread',
-                    // Deep-link validation: reject empty or overly long ids
-                    // to prevent URL-pollution DOS and mirror the guard used
-                    // by sibling routes like categoryDetail.
-                    redirect: (context, state) {
-                      final id = state.pathParameters['conversationId'] ?? '';
-                      if (id.isEmpty ||
-                          id.length > AppConstants.maxRouteIdLength) {
-                        return AppRoutes.messages;
-                      }
-                      return null;
-                    },
+                    redirect: _idGuard('conversationId', AppRoutes.messages),
                     builder:
                         (context, state) => MessagesResponsiveShell(
                           conversationId:
@@ -209,13 +213,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.categoryDetail,
         name: 'category-detail',
-        redirect: (context, state) {
-          final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-            return AppRoutes.categories;
-          }
-          return null;
-        },
+        redirect: _idGuard('id', AppRoutes.categories),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return CategoryDetailScreen(categoryId: id);
@@ -231,13 +229,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.listingDetail,
         name: 'listing-detail',
-        redirect: (context, state) {
-          final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-            return AppRoutes.home;
-          }
-          return null;
-        },
+        redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return ListingDetailScreen(listingId: id);
@@ -246,13 +238,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.userProfile,
         name: 'user-profile',
-        redirect: (context, state) {
-          final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-            return AppRoutes.home;
-          }
-          return null;
-        },
+        redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return PublicProfileScreen(userId: id);
@@ -261,13 +247,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.transactionDetail,
         name: 'transaction-detail',
-        redirect: (context, state) {
-          final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-            return AppRoutes.home;
-          }
-          return null;
-        },
+        redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return _Placeholder('Transaction $id');
@@ -276,13 +256,7 @@ GoRouter _buildRouter({
           GoRoute(
             path: 'review',
             name: 'transaction-review',
-            redirect: (context, state) {
-              final id = state.pathParameters['id'] ?? '';
-              if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-                return AppRoutes.home;
-              }
-              return null;
-            },
+            redirect: _idGuard('id', AppRoutes.home),
             pageBuilder: (context, state) {
               final id = state.pathParameters['id']!;
               return MaterialPage(
@@ -296,13 +270,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: AppRoutes.shippingDetail,
         name: 'shipping-detail',
-        redirect: (context, state) {
-          final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
-            return AppRoutes.home;
-          }
-          return null;
-        },
+        redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
           return _Placeholder('Shipping $id');

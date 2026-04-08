@@ -10,11 +10,17 @@ const mockCurrentUserId = 'user-current';
 /// Mock reviewee ID (the seller being reviewed).
 const mockRevieweeId = 'user-001';
 
+/// Mock seller user ID used in transaction-level fixtures.
+const mockSellerId = 'user-seller';
+
+/// Transaction ID shared across the "both visible" fixture set.
+const _txn003 = 'txn-003';
+
 /// Base review fixtures used by getByUserId.
 final mockReviews = [
   ReviewEntity(
     id: 'review-001',
-    transactionId: 'txn-003',
+    transactionId: _txn003,
     reviewerId: 'user-002',
     reviewerName: 'Maria Jansen',
     revieweeId: mockRevieweeId,
@@ -25,7 +31,7 @@ final mockReviews = [
   ),
   ReviewEntity(
     id: 'review-002',
-    transactionId: 'txn-003',
+    transactionId: _txn003,
     reviewerId: 'user-003',
     reviewerName: 'Pieter Bakker',
     revieweeId: mockRevieweeId,
@@ -36,7 +42,7 @@ final mockReviews = [
   ),
   ReviewEntity(
     id: 'review-003',
-    transactionId: 'txn-003',
+    transactionId: _txn003,
     reviewerId: 'user-004',
     reviewerName: 'Sophie Visser',
     revieweeId: mockRevieweeId,
@@ -61,20 +67,20 @@ final mockTxnFixtures = <String, List<ReviewEntity>>{
       transactionId: 'txn-002',
       reviewerId: mockCurrentUserId,
       reviewerName: 'Current User',
-      revieweeId: 'user-seller',
+      revieweeId: mockSellerId,
       listingId: 'listing-010',
       rating: 4.0,
       text: 'Goede verkoper, netjes verpakt.',
       createdAt: DateTime(2026, 4, 2),
     ),
   ],
-  'txn-003': [
+  _txn003: [
     ReviewEntity(
       id: 'review-txn3-buyer',
-      transactionId: 'txn-003',
+      transactionId: _txn003,
       reviewerId: mockCurrentUserId,
       reviewerName: 'Current User',
-      revieweeId: 'user-seller',
+      revieweeId: mockSellerId,
       listingId: 'listing-020',
       rating: 5.0,
       text: 'Uitstekende ervaring, snelle levering!',
@@ -82,8 +88,8 @@ final mockTxnFixtures = <String, List<ReviewEntity>>{
     ),
     ReviewEntity(
       id: 'review-txn3-seller',
-      transactionId: 'txn-003',
-      reviewerId: 'user-seller',
+      transactionId: _txn003,
+      reviewerId: mockSellerId,
       reviewerName: 'Jan de Vries',
       revieweeId: mockCurrentUserId,
       listingId: 'listing-020',
