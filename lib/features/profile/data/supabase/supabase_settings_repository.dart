@@ -117,11 +117,12 @@ class SupabaseSettingsRepository implements SettingsRepository {
 
   @override
   Future<void> deleteAddress(DutchAddress address) async {
+    final userId = _userId;
     try {
       var query = _client
           .from('user_addresses')
           .delete()
-          .eq('user_id', _userId)
+          .eq('user_id', userId)
           .eq('postcode', address.postcode)
           .eq('house_number', address.houseNumber);
 
@@ -134,8 +135,6 @@ class SupabaseSettingsRepository implements SettingsRepository {
       await query;
     } on PostgrestException catch (e) {
       throw Exception('Failed to delete address: ${e.message}');
-    } on TypeError {
-      throw Exception(_formatError);
     }
   }
 
