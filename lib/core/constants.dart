@@ -56,6 +56,9 @@ abstract final class StarSizes {
   /// Small star size — inline cards and review cards.
   static const double small = 14;
 
+  /// Icon size for compact action buttons (e.g. report menu).
+  static const double iconCompact = 18;
+
   /// Minimum touch target for interactive star elements (EAA §10).
   static const double touchTarget = 44;
 }

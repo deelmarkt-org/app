@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
@@ -60,10 +61,13 @@ class ReviewCard extends StatelessWidget {
 
   Widget _buildReportButton(BuildContext context) {
     return SizedBox(
-      width: 44,
-      height: 44,
+      width: StarSizes.touchTarget,
+      height: StarSizes.touchTarget,
       child: IconButton(
-        icon: Icon(PhosphorIcons.dotsThreeVertical(), size: 18),
+        icon: Icon(
+          PhosphorIcons.dotsThreeVertical(),
+          size: StarSizes.iconCompact,
+        ),
         tooltip: 'review.report_review'.tr(),
         onPressed: onReport,
         padding: EdgeInsets.zero,
