@@ -164,10 +164,13 @@ The design system is in `docs/design-system/`:
 
 ### 4.2 Before Building Any Screen
 
-1. Read the relevant pattern in `docs/design-system/patterns.md`
-2. Check which components from `docs/design-system/components.md` apply
-3. Verify colour/spacing tokens from `docs/design-system/tokens.md`
-4. Confirm accessibility requirements from `docs/design-system/accessibility.md`
+1. Look up the screen in [`docs/screens/SCREEN-MAP.md`](docs/screens/SCREEN-MAP.md) — find the spec + designs
+2. Read the screen spec markdown (layout, components, states, l10n, accessibility)
+3. Read the design PNGs for all relevant variants (light/dark, mobile/desktop, states)
+4. Read the relevant pattern in `docs/design-system/patterns.md`
+5. Check which components from `docs/design-system/components.md` apply
+6. Verify colour/spacing tokens from `docs/design-system/tokens.md`
+7. Confirm accessibility requirements from `docs/design-system/accessibility.md`
 
 ### 4.3 Design System Violations That Block PR
 
@@ -315,6 +318,27 @@ or flag issues before implementation begins. Format:
 
 **For Dart-only tasks** (no Edge Functions or migrations), the schema verification
 step can be skipped but the epic audit and existing-reference scan still apply.
+
+**For UI tasks** (any task touching `presentation/` screens or widgets):
+
+5. **Screen spec + design reference** — Before writing any screen or widget:
+   - Look up the screen in [`docs/screens/SCREEN-MAP.md`](docs/screens/SCREEN-MAP.md)
+   - Read the full spec markdown file (layout, components, states, l10n keys, accessibility)
+   - Read the design PNG files for the relevant variants (light/dark, mobile/desktop, states)
+   - Add a `/// Reference: docs/screens/...` doc comment to every new screen/widget file
+   - List which design variants you checked in your verification block
+
+Format for UI tasks:
+
+```
+### Design reference
+- Spec: docs/screens/06-chat/02-chat-thread.md ✓ (read layout §1-4, l10n §7)
+- Designs checked:
+  - chat_thread_mobile_light ✓ (primary layout reference)
+  - chat_thread_mobile_dark ✓ (dark mode tokens)
+  - chat_thread_desktop_expanded ✓ (responsive breakpoint)
+- All l10n keys from spec present in en-US.json + nl-NL.json ✓
+```
 
 ---
 

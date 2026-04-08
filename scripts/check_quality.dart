@@ -40,6 +40,7 @@ void main(List<String> args) async {
       _checkMissingSemantics(file, content, violations);
       _checkSetState(file, content, config, violations);
       _checkRawAsyncWidgets(file, content, violations);
+      _checkScreenSpecReference(file, content, violations);
     }
 
     if (thorough) {
@@ -337,6 +338,34 @@ void _checkRawAsyncWidgets(
         '  RAW_ASYNC  $file: uses $widget — use Riverpod provider instead [CLAUDE.md §1.3]',
       );
     }
+  }
+}
+
+// ── Screen spec reference check ───────────────────────────────────────
+
+/// Screen and widget files in presentation/ should have a
+/// `/// Reference: docs/screens/...` doc comment linking to the spec.
+/// Only applies to screen files (*_screen.dart) and top-level widget files
+/// that correspond to a screen spec section.
+void _checkScreenSpecReference(
+  String file,
+  String content,
+  List<String> violations,
+) {
+  // Only check screen files — widgets may reference the parent screen spec
+  // or may be purely generic (no spec). Screens always have a spec.
+  if (!file.endsWith('_screen.dart')) return;
+
+  // Skip generated files
+  if (file.endsWith('.g.dart')) return;
+
+  final hasRef =
+      content.contains('docs/screens/') || content.contains('docs/epics/');
+
+  if (!hasRef) {
+    violations.add(
+      '  MISSING_SPEC_REF  $file: screen file has no /// Reference: docs/screens/... comment — check SCREEN-MAP.md [CLAUDE.md §4.2]',
+    );
   }
 }
 

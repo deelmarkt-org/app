@@ -52,9 +52,26 @@ if (Get-Command deno -ErrorAction SilentlyContinue) {
     Write-Host "     Install: https://deno.land/#installation"
 }
 
+# Git LFS (needed for screen design PNGs)
+$lfsVer = git lfs version 2>$null
+if ($lfsVer) {
+    git lfs install 2>$null | Out-Null
+    Ok "Git LFS initialized"
+    $lfsPtr = git lfs ls-files 2>$null | Select-Object -First 1
+    if ($lfsPtr -match '\*') {
+        Write-Host "  Pulling LFS files (screen design PNGs)..."
+        git lfs pull
+        Ok "LFS files downloaded"
+    }
+} else {
+    Write-Host "  !!  git-lfs not installed - screen design PNGs will be pointer files" -ForegroundColor Yellow
+    Write-Host "     Install: winget install GitHub.GitLFS"
+}
+
 Write-Host ""
 Write-Host "Done. Quality gates active:"
 Write-Host "  Pre-commit: file length, cross-feature imports, l10n, Semantics, setState"
+Write-Host "              missing test file, missing screen spec reference"
 Write-Host "              Edge Function lint + schema cross-reference (.ts/.sql)"
 Write-Host "              deno lint + deno fmt (if deno installed)"
 Write-Host "  Pre-push:   duplicate strings, nested ternaries, long methods, coverage"

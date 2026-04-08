@@ -47,9 +47,26 @@ else
   echo "     Install: https://deno.land/#installation"
 fi
 
+# Git LFS (needed for screen design PNGs)
+if git lfs version &>/dev/null; then
+  git lfs install >/dev/null 2>&1
+  echo -e "${GREEN}✓${NC}  Git LFS initialized"
+  # Pull LFS objects if pointer files detected
+  if git lfs ls-files 2>/dev/null | head -1 | grep -q '\*'; then
+    echo "  Pulling LFS files (screen design PNGs)..."
+    git lfs pull
+    echo -e "${GREEN}✓${NC}  LFS files downloaded"
+  fi
+else
+  echo "  ⚠  git-lfs not installed — screen design PNGs will be pointer files"
+  echo "     macOS: brew install git-lfs"
+  echo "     Windows: winget install GitHub.GitLFS"
+fi
+
 echo ""
 echo "Done. Quality gates active:"
 echo "  Pre-commit: file length, cross-feature imports, l10n, Semantics, setState"
+echo "              missing test file, missing screen spec reference"
 echo "              Edge Function lint + schema cross-reference (.ts/.sql)"
 echo "              deno lint + deno fmt (if deno installed)"
 echo "  Pre-push:   duplicate strings, nested ternaries, long methods, coverage"
