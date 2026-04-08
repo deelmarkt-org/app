@@ -18,32 +18,8 @@ export 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart'
 
 part 'chat_thread_notifier.g.dart';
 
-/// Stub id for the current signed-in user.
-///
-/// TODO(pizmam): replace with `authStateProvider.currentUser.id` once the auth
-/// subsystem ships — tracked in deelmarkt-org/app#80 (R-13 / R-14).
-/// This single constant is the source of truth for both the notifier
-/// (optimistic send sender) and the screen (self vs other bubble alignment)
-/// — keep them in sync by importing from here, never hardcoding the literal
-/// a second time.
-const String kCurrentUserIdStub = 'user-001';
-
-/// DI — reuses the same use-case providers as the list notifier where possible.
-final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
-  (ref) => GetMessagesUseCase(ref.watch(messageRepositoryProvider)),
-);
-final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
-  (ref) => SendMessageUseCase(ref.watch(messageRepositoryProvider)),
-);
-
 /// Async view-model for the chat thread screen (P-36).
-///
-/// Loads the conversation header, then subscribes to [MessageRepository.watchMessages]
-/// for real-time updates from the other participant. On each Realtime event the
-/// repository re-fetches the full ordered list so local state stays consistent.
-///
-/// Optimistic send appends the message immediately; on failure it rolls back
-/// and re-throws so the UI can show a SnackBar via ref.listen.
+/// Subscribes to Realtime updates; optimistic send rolls back on failure.
 @riverpod
 class ChatThreadNotifier extends _$ChatThreadNotifier {
   StreamSubscription<List<MessageEntity>>? _realtimeSub;
