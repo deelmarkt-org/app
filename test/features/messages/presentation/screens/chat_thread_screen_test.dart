@@ -151,6 +151,31 @@ void main() {
       expect(find.byType(MakeOfferSheet), findsOneWidget);
     });
 
+    testWidgets('submitting offer via MakeOfferSheet sends offer message', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('chat.offer'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextFormField), '99.50');
+      await tester.tap(find.byType(FilledButton).first);
+      await tester.pumpAndSettle();
+
+      expect(repo.sendCalls, hasLength(1));
+      expect(repo.sendCalls.single.offerAmountCents, 9950);
+    });
+
     testWidgets('renders correctly in dark theme', (tester) async {
       setLargeScreen(tester);
       addTearDown(tester.view.resetPhysicalSize);
