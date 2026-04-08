@@ -6,6 +6,7 @@ import 'package:deelmarkt/features/messages/domain/repositories/message_reposito
 
 /// Mock data constants to avoid duplicate literals.
 const _currentUserId = 'user-001';
+const _otherUserId = 'user-002';
 const _convId001 = 'conv-001';
 
 /// Mock message repository — returns static data for USE_MOCK_DATA mode.
@@ -84,7 +85,7 @@ final _mockConversations = [
     listingId: 'listing-002',
     listingTitle: 'iPhone 15 Pro 256GB',
     listingImageUrl: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
-    otherUserId: 'user-002',
+    otherUserId: _otherUserId,
     otherUserName: 'Maria Jansen',
     lastMessageText: 'Is de prijs bespreekbaar?',
     lastMessageAt: DateTime(2026, 3, 25, 14, 30),
@@ -114,7 +115,7 @@ final _mockMessages = [
   MessageEntity(
     id: 'msg-002',
     conversationId: _convId001,
-    senderId: 'user-002',
+    senderId: _otherUserId,
     text: 'Ja, nog beschikbaar! Wil je hem zien?',
     createdAt: DateTime(2026, 3, 25, 14, 15),
     isRead: true,

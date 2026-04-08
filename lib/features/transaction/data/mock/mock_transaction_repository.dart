@@ -8,6 +8,10 @@ import 'package:deelmarkt/features/transaction/domain/repositories/transaction_r
 ///
 /// Returns hardcoded transactions after a simulated network delay.
 /// Toggle via provider override in dev builds (ADR-MOCK-SWAP).
+/// Mock user IDs to avoid duplicating string literals.
+const _currentUser = 'user-current';
+const _seller = 'user-seller';
+
 class MockTransactionRepository implements TransactionRepository {
   MockTransactionRepository() {
     if (kReleaseMode) {
@@ -21,8 +25,8 @@ class MockTransactionRepository implements TransactionRepository {
     'txn-001': TransactionEntity(
       id: 'txn-001',
       listingId: 'listing-001',
-      buyerId: 'user-current',
-      sellerId: 'user-seller',
+      buyerId: _currentUser,
+      sellerId: _seller,
       status: TransactionStatus.released,
       itemAmountCents: 2500,
       platformFeeCents: 63,
@@ -34,8 +38,8 @@ class MockTransactionRepository implements TransactionRepository {
     'txn-002': TransactionEntity(
       id: 'txn-002',
       listingId: 'listing-010',
-      buyerId: 'user-current',
-      sellerId: 'user-seller',
+      buyerId: _currentUser,
+      sellerId: _seller,
       status: TransactionStatus.released,
       itemAmountCents: 5000,
       platformFeeCents: 125,
@@ -47,8 +51,8 @@ class MockTransactionRepository implements TransactionRepository {
     'txn-003': TransactionEntity(
       id: 'txn-003',
       listingId: 'listing-020',
-      buyerId: 'user-current',
-      sellerId: 'user-seller',
+      buyerId: _currentUser,
+      sellerId: _seller,
       status: TransactionStatus.released,
       itemAmountCents: 7500,
       platformFeeCents: 188,
@@ -60,8 +64,8 @@ class MockTransactionRepository implements TransactionRepository {
     'txn-cancelled': TransactionEntity(
       id: 'txn-cancelled',
       listingId: 'listing-030',
-      buyerId: 'user-current',
-      sellerId: 'user-seller',
+      buyerId: _currentUser,
+      sellerId: _seller,
       status: TransactionStatus.cancelled,
       itemAmountCents: 1500,
       platformFeeCents: 38,
@@ -72,8 +76,8 @@ class MockTransactionRepository implements TransactionRepository {
     'txn-pending': TransactionEntity(
       id: 'txn-pending',
       listingId: 'listing-040',
-      buyerId: 'user-current',
-      sellerId: 'user-seller',
+      buyerId: _currentUser,
+      sellerId: _seller,
       status: TransactionStatus.paid,
       itemAmountCents: 3000,
       platformFeeCents: 75,

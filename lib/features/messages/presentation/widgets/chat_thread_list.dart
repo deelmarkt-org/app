@@ -62,35 +62,45 @@ class ChatThreadList extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: Spacing.s2),
       itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        if (item is _DaySeparatorItem) {
-          return ChatDaySeparator(moment: item.day, now: now);
-        }
-        if (item is _MessageItem) {
-          final msg = item.message;
-          final nextIsSelf = _nextMessageIsSelf(items, index);
-          final showReceipt = item.isSelf && !nextIsSelf;
-          if (msg.type == MessageType.offer) {
-            return OfferMessageCard(
-              message: msg,
-              isSelf: item.isSelf,
-              onRespond:
-                  (!item.isSelf &&
-                          msg.offerStatus == OfferStatus.pending &&
-                          onOfferRespond != null)
-                      ? (status) => onOfferRespond!(msg.id, status)
-                      : null,
-            );
-          }
-          return MessageBubble(
-            message: msg,
-            isSelf: item.isSelf,
-            showReadReceipt: showReceipt,
-          );
-        }
-        return const SizedBox.shrink();
-      },
+      itemBuilder: (context, index) => _buildItem(items, index, now),
+    );
+  }
+
+  Widget _buildItem(List<_ThreadItem> items, int index, DateTime now) {
+    final item = items[index];
+    if (item is _DaySeparatorItem) {
+      return ChatDaySeparator(moment: item.day, now: now);
+    }
+    if (item is _MessageItem) {
+      return _buildMessageItem(items, index, item);
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildMessageItem(
+    List<_ThreadItem> items,
+    int index,
+    _MessageItem item,
+  ) {
+    final msg = item.message;
+    final nextIsSelf = _nextMessageIsSelf(items, index);
+    final showReceipt = item.isSelf && !nextIsSelf;
+    if (msg.type == MessageType.offer) {
+      return OfferMessageCard(
+        message: msg,
+        isSelf: item.isSelf,
+        onRespond:
+            (!item.isSelf &&
+                    msg.offerStatus == OfferStatus.pending &&
+                    onOfferRespond != null)
+                ? (status) => onOfferRespond!(msg.id, status)
+                : null,
+      );
+    }
+    return MessageBubble(
+      message: msg,
+      isSelf: item.isSelf,
+      showReadReceipt: showReceipt,
     );
   }
 
