@@ -1,10 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_aggregate.dart';
+import 'package:deelmarkt/widgets/trust/star_row.dart';
 
 /// Display widget for aggregate rating data.
 ///
@@ -78,7 +79,7 @@ class RatingDisplay extends StatelessWidget {
           ).textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(width: Spacing.s2),
-        _buildStars(size: 24),
+        StarRow(rating: aggregate.averageRating, size: StarSizes.large),
         const SizedBox(width: Spacing.s2),
         Text(
           'seller_profile.review_count'.tr(
@@ -96,7 +97,7 @@ class RatingDisplay extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildStars(size: 14),
+        StarRow(rating: aggregate.averageRating),
         const SizedBox(width: Spacing.s1),
         Text(
           '(${aggregate.totalCount})',
@@ -124,23 +125,6 @@ class RatingDisplay extends StatelessWidget {
           context,
         ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.info),
       ),
-    );
-  }
-
-  Widget _buildStars({required double size}) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(5, (index) {
-        final isFilled = index < aggregate.averageRating.round();
-        return Icon(
-          isFilled
-              ? PhosphorIcons.star(PhosphorIconsStyle.fill)
-              : PhosphorIcons.star(),
-          size: size,
-          color:
-              isFilled ? DeelmarktColors.warning : DeelmarktColors.neutral300,
-        );
-      }),
     );
   }
 }

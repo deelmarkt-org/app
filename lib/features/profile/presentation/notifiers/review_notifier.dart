@@ -24,9 +24,12 @@ class ReviewNotifier extends _$ReviewNotifier {
     if (currentUser == null) {
       return const ReviewIneligible(reason: 'review.error.ineligible.auth');
     }
-    final txn = await ref
-        .read(transactionRepositoryProvider)
-        .getTransaction(transactionId);
+    // Parallelize independent network calls to reduce latency.
+    final (txn, reviews) =
+        await (
+          ref.read(transactionRepositoryProvider).getTransaction(transactionId),
+          ref.read(reviewRepositoryProvider).getForTransaction(transactionId),
+        ).wait;
     if (txn == null) {
       return const ReviewIneligible(
         reason: 'review.error.ineligible.not_found',
@@ -38,9 +41,6 @@ class ReviewNotifier extends _$ReviewNotifier {
         currentUser.id == txn.buyerId ? ReviewRole.buyer : ReviewRole.seller;
     _revieweeName =
         _role == ReviewRole.buyer ? 'review.role.seller' : 'review.role.buyer';
-    final reviews = await ref
-        .read(reviewRepositoryProvider)
-        .getForTransaction(transactionId);
     final my = reviews.where((r) => r.reviewerId == currentUser.id).firstOrNull;
     final their =
         reviews.where((r) => r.reviewerId != currentUser.id).firstOrNull;

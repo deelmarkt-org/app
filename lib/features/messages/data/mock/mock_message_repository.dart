@@ -17,11 +17,17 @@ class MockMessageRepository implements MessageRepository {
   }
 
   @override
-  Future<List<MessageEntity>> getMessages(String conversationId) async {
+  Future<List<MessageEntity>> getMessages(
+    String conversationId, {
+    int? limit,
+    int? offset,
+  }) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    return _mockMessages
-        .where((m) => m.conversationId == conversationId)
-        .toList();
+    var all =
+        _mockMessages.where((m) => m.conversationId == conversationId).toList();
+    if (offset != null) all = all.skip(offset).toList();
+    if (limit != null) all = all.take(limit).toList();
+    return all;
   }
 
   @override

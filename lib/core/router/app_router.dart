@@ -276,6 +276,13 @@ GoRouter _buildRouter({
           GoRoute(
             path: 'review',
             name: 'transaction-review',
+            redirect: (context, state) {
+              final id = state.pathParameters['id'] ?? '';
+              if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+                return AppRoutes.home;
+              }
+              return null;
+            },
             pageBuilder: (context, state) {
               final id = state.pathParameters['id']!;
               return MaterialPage(

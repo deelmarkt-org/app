@@ -4,4 +4,5 @@ export 'escrow_step_circle.dart';
 export 'escrow_timeline.dart';
 export 'escrow_timeline_state.dart';
 export 'scam_alert.dart';
+export 'star_row.dart';
 export 'trust_banner.dart';

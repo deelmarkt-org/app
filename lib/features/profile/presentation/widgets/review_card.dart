@@ -2,10 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
+import 'package:deelmarkt/widgets/trust/star_row.dart';
 
 /// Single review card with reviewer avatar, stars, and text.
 ///
@@ -76,20 +76,7 @@ class ReviewCard extends StatelessWidget {
       label: 'review.a11y.rating_label'.tr(
         namedArgs: {'rating': '${review.rating.round()}'},
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: List.generate(5, (index) {
-          final isFilled = index < review.rating.round();
-          return Icon(
-            isFilled
-                ? PhosphorIcons.star(PhosphorIconsStyle.fill)
-                : PhosphorIcons.star(),
-            size: 14,
-            color:
-                isFilled ? DeelmarktColors.warning : DeelmarktColors.neutral300,
-          );
-        }),
-      ),
+      child: StarRow(rating: review.rating),
     );
   }
 }

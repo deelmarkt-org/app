@@ -15,7 +15,17 @@ abstract class MessageRepository {
   Future<List<ConversationEntity>> getConversations();
 
   /// Get messages in a conversation, oldest first.
-  Future<List<MessageEntity>> getMessages(String conversationId);
+  ///
+  /// Supports optional pagination via [limit] and [offset].
+  /// When [limit] is null all messages are returned (no truncation).
+  ///
+  // TODO(reso): wire limit/offset through GetMessagesUseCase and add
+  // a loadMore() to ChatThreadNotifier — deelmarkt-org/app#80.
+  Future<List<MessageEntity>> getMessages(
+    String conversationId, {
+    int? limit,
+    int? offset,
+  });
 
   /// Subscribe to new messages in a conversation via Supabase Realtime.
   ///

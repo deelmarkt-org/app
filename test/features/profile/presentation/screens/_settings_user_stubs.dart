@@ -115,6 +115,7 @@ class EmptyListingRepository implements ListingRepository {
   Future<ListingSearchResult> search({
     required String query,
     String? categoryId,
+    List<String>? categoryIds,
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -102,7 +100,7 @@ class ImagePickerService {
       );
     }
 
-    final size = await File(file.path).length();
+    final size = await file.length();
     if (size > maxFileSizeBytes) {
       return const ImagePickerResult(type: ImagePickerResultType.fileTooLarge);
     }
