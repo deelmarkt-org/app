@@ -8,9 +8,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/features/profile/presentation/notifiers/public_profile_notifier.dart';
+import 'package:deelmarkt/features/profile/presentation/notifiers/public_profile_state.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/public_profile_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_header.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_skeleton.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/reviews_tab_view.dart';
+import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 /// Pumps [PublicProfileScreen] wrapped in EasyLocalization + ProviderScope.
 ///
@@ -70,6 +74,16 @@ Future<List<Override>> _mockOverrides() async {
   ];
 }
 
+/// Stub notifier that returns a fixed [PublicProfileState] without I/O.
+class _StubNotifier extends PublicProfileNotifier {
+  _StubNotifier(this._fixedState);
+
+  final PublicProfileState _fixedState;
+
+  @override
+  PublicProfileState build(String userId) => _fixedState;
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -109,6 +123,75 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(ReviewsTabView), findsOneWidget);
+    });
+
+    testWidgets('shows skeleton while profile is loading', (tester) async {
+      const loadingState = PublicProfileState();
+      // Do not use _pumpScreen here: PublicProfileSkeleton uses Shimmer
+      // (infinite animation) which causes pumpAndSettle to time out.
+      // Instead, pump just enough frames to build the widget tree.
+      SharedPreferences.setMockInitialValues({});
+      await EasyLocalization.ensureInitialized();
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final overrides = <Override>[
+        publicProfileNotifierProvider(
+          'user-001',
+        ).overrideWith(() => _StubNotifier(loadingState)),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides,
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: MaterialApp(
+              theme: DeelmarktTheme.light,
+              home: const PublicProfileScreen(userId: 'user-001'),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(PublicProfileSkeleton), findsOneWidget);
+      expect(find.byType(PublicProfileHeader), findsNothing);
+    });
+
+    testWidgets('shows error state when profile fetch fails', (tester) async {
+      final errorState = PublicProfileState(
+        user: AsyncValue.error(Exception('network error'), StackTrace.empty),
+      );
+      final overrides = <Override>[
+        publicProfileNotifierProvider(
+          'user-001',
+        ).overrideWith(() => _StubNotifier(errorState)),
+      ];
+      await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
+
+      expect(find.byType(ErrorState), findsOneWidget);
+      expect(find.byType(PublicProfileHeader), findsNothing);
+    });
+
+    testWidgets('shows not-found error state when user does not exist', (
+      tester,
+    ) async {
+      const emptyState = PublicProfileState(user: AsyncValue.data(null));
+      final overrides = <Override>[
+        publicProfileNotifierProvider(
+          'user-001',
+        ).overrideWith(() => _StubNotifier(emptyState)),
+      ];
+      await _pumpScreen(tester, userId: 'user-001', overrides: overrides);
+
+      expect(find.byType(ErrorState), findsOneWidget);
+      expect(find.byType(PublicProfileHeader), findsNothing);
     });
   });
 }

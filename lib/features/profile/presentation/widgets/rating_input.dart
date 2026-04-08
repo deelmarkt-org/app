@@ -45,6 +45,7 @@ class RatingInput extends StatelessWidget {
           final isFilled = starNumber <= value.round();
 
           return Semantics(
+            enabled: !readOnly,
             button: !readOnly,
             label: 'review.a11y.rating'.tr(
               namedArgs: {'star': '$starNumber', 'total': '5'},

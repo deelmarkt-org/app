@@ -401,14 +401,14 @@
     "verifyIdentity": "Verifieer je identiteit",
     "sold": "Verkocht",
     "reviews": "Reviews",
-    "responseTime": "Reactietijd",
+    "response_time": "Reactietijd",
     "listings": "Advertenties",
     "reviewsTab": "Reviews",
     "active": "Actief",
     "statusSold": "Verkocht",
     "statusDraft": "Concept",
     "firstListing": "Plaats je eerste advertentie",
-    "noReviews": "Nog geen reviews",
+    "no_reviews": "Nog geen reviews",
     "editAvatar": "Foto wijzigen",
     "pickPhoto": "Kies een foto",
     "takePhoto": "Maak een foto",
@@ -452,7 +452,7 @@
       "unknown": "Er is iets misgegaan. Probeer het opnieuw.",
       "ineligible": {
         "auth": "Je moet ingelogd zijn om een beoordeling te plaatsen",
-        "notFound": "Transactie niet gevonden",
+        "not_found": "Transactie niet gevonden",
         "pending": "De betaling is nog niet afgerond",
         "escrow_held": "Escrow is nog niet vrijgegeven",
         "delivered": "Bevestig eerst de ontvangst voordat je een beoordeling plaatst",
@@ -490,7 +490,7 @@
     "not_found": "Gebruiker bestaat niet",
     "load_more": "Meer laden",
     "more_actions": "Meer opties",
-    "responseTime": {
+    "response_time": {
       "under_1h": "Reageert binnen 1 uur",
       "under_4h": "Reageert binnen 4 uur",
       "under_24h": "Reageert binnen 24 uur",
@@ -566,7 +566,7 @@
     "photoCount": "Foto {current} van {total}",
     "memberSince": "Lid sinds {date}",
     "reviews": "{count} beoordelingen",
-    "noReviews": "Nog geen beoordelingen",
+    "no_reviews": "Nog geen beoordelingen",
     "verified": "Geverifieerd",
     "locationHeader": "Locatie"
   },

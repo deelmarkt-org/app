@@ -401,14 +401,14 @@
     "verifyIdentity": "Verify your identity",
     "sold": "Sold",
     "reviews": "Reviews",
-    "responseTime": "Response time",
+    "response_time": "Response time",
     "listings": "Listings",
     "reviewsTab": "Reviews",
     "active": "Active",
     "statusSold": "Sold",
     "statusDraft": "Draft",
     "firstListing": "Place your first listing",
-    "noReviews": "No reviews yet",
+    "no_reviews": "No reviews yet",
     "editAvatar": "Change photo",
     "pickPhoto": "Choose a photo",
     "takePhoto": "Take a photo",
@@ -452,7 +452,7 @@
       "unknown": "Something went wrong. Please try again.",
       "ineligible": {
         "auth": "You must be logged in to submit a review",
-        "notFound": "Transaction not found",
+        "not_found": "Transaction not found",
         "pending": "Payment has not been completed yet",
         "escrow_held": "Escrow has not been released yet",
         "delivered": "Confirm receipt before leaving a review",
@@ -490,7 +490,7 @@
     "not_found": "User not found",
     "load_more": "Load more",
     "more_actions": "More options",
-    "responseTime": {
+    "response_time": {
       "under_1h": "Responds within 1 hour",
       "under_4h": "Responds within 4 hours",
       "under_24h": "Responds within 24 hours",
@@ -566,7 +566,7 @@
     "photoCount": "Photo {current} of {total}",
     "memberSince": "Member since {date}",
     "reviews": "{count} reviews",
-    "noReviews": "No reviews yet",
+    "no_reviews": "No reviews yet",
     "verified": "Verified",
     "locationHeader": "Location"
   },
