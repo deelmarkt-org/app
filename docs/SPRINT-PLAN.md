@@ -229,8 +229,8 @@ The agent will:
 
 **Branch:** `feature/reso-E04-messaging` | **Epics:** [E04](epics/E04-messaging.md) + [E06](epics/E06-trust-moderation.md)
 
-- [ ] `R-31` Messages table + Supabase Realtime — real-time delivery works
-- [ ] `R-32` "Make an Offer" structured message type — offer with price stored
+- [x] `R-31` Messages table + Supabase Realtime — real-time delivery works *(done by reso (mahmutkaya))*
+- [x] `R-32` "Make an Offer" structured message type — offer with price stored
 - [ ] `R-33` Seller response time calculation (cron) — average computed daily
 - [ ] `R-34` FCM push notification on new message — delivered on iOS + Android
 - [ ] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
