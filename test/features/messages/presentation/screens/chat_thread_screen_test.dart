@@ -5,6 +5,7 @@ import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_composer.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/make_offer_sheet.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/message_bubble.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +133,7 @@ void main() {
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
-    testWidgets('offer button shows coming soon snackbar', (tester) async {
+    testWidgets('offer button opens MakeOfferSheet', (tester) async {
       setLargeScreen(tester);
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -145,9 +146,9 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('chat.offer'));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.byType(MakeOfferSheet), findsOneWidget);
     });
 
     testWidgets('renders correctly in dark theme', (tester) async {
