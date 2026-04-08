@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_aggregate.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
@@ -127,6 +128,61 @@ void main() {
         expect(state.reviews.hasValue, isTrue);
       },
     );
+  });
+
+  group('PublicProfileNotifier actions', () {
+    test('shareProfile completes without error', () async {
+      final container = await _createContainer();
+      addTearDown(container.dispose);
+
+      await _waitForState(container, 'user-001');
+      final notifier = container.read(
+        publicProfileNotifierProvider('user-001').notifier,
+      );
+
+      // shareProfile copies a deep-link URL to the clipboard.
+      await notifier.shareProfile();
+    });
+
+    test('reportUser completes without error', () async {
+      final container = await _createContainer();
+      addTearDown(container.dispose);
+
+      await _waitForState(container, 'user-001');
+      final notifier = container.read(
+        publicProfileNotifierProvider('user-001').notifier,
+      );
+
+      await notifier.reportUser(ReportReason.scam);
+    });
+
+    test('reportReview completes without error', () async {
+      final container = await _createContainer();
+      addTearDown(container.dispose);
+
+      await _waitForState(container, 'user-001');
+      final notifier = container.read(
+        publicProfileNotifierProvider('user-001').notifier,
+      );
+
+      await notifier.reportReview('review-001', ReportReason.harassment);
+    });
+
+    test('loadMoreReviews early-returns when no more reviews', () async {
+      final container = await _createContainer();
+      addTearDown(container.dispose);
+
+      await _waitForState(container, 'user-003');
+      final notifier = container.read(
+        publicProfileNotifierProvider('user-003').notifier,
+      );
+
+      // user-003 has only 2 reviews (< page size of 5), so hasMoreReviews
+      // should be false and loadMoreReviews should early-return.
+      expect(notifier.hasMoreReviews, isFalse);
+      await notifier.loadMoreReviews();
+      expect(notifier.isLoadingMore, isFalse);
+    });
   });
 
   group('PublicProfileState', () {
