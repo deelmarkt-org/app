@@ -30,11 +30,6 @@ class ListingCreationScreen extends ConsumerStatefulWidget {
 
 class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final state = ref.watch(listingCreationNotifierProvider);
 
