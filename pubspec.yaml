@@ -53,6 +53,9 @@ dependencies:
   # Entity equality — needed by Riverpod state diffing (Phase 1 v3.1 audit)
   equatable: ^2.0.7
 
+  # Error tracking — Sentry (free tier)
+  sentry_flutter: ^8.12.0
+
   # Loading — Shimmer effect for skeleton placeholders (P-07)
   shimmer: ^3.0.0
 
