@@ -161,7 +161,7 @@ void main() {
           .read(chatThreadNotifierProvider('c1').notifier)
           .sendOffer(12050);
 
-      expect(fake.sendCalls.single.text, '€ 120,50');
+      expect(fake.sendCalls.single.text, '120.50');
     });
 
     test('sendOffer rolls back on failure', () async {

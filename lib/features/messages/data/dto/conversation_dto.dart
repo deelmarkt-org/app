@@ -31,19 +31,6 @@ class ConversationDto {
       );
     }
 
-    // Format offer previews as "Aanbod: € 750,00" rather than the raw euro
-    // string stored in messages.text. Falls back to the raw text for all
-    // other message types (including null / legacy rows).
-    final String displayText;
-    if (lastMessageType == 'offer') {
-      final amountRaw = lastMessageText ?? '';
-      // messages.text for offer rows is already formatted by the DTO on insert
-      // (e.g. "€ 750,00"), so we show a labelled preview.
-      displayText = 'Aanbod: $amountRaw';
-    } else {
-      displayText = lastMessageText ?? '';
-    }
-
     return ConversationEntity(
       id: id,
       listingId: listingId,
@@ -52,8 +39,9 @@ class ConversationDto {
       otherUserId: otherUserId,
       otherUserName: otherUserName,
       otherUserAvatarUrl: json['other_user_avatar_url'] as String?,
-      lastMessageText: displayText,
+      lastMessageText: lastMessageText ?? '',
       lastMessageAt: DateTime.parse(lastMessageAtRaw),
+      lastMessageType: lastMessageType,
       unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
     );
   }

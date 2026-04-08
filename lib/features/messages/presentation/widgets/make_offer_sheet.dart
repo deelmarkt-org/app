@@ -8,10 +8,34 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 
-/// Parses a euro-formatted string (e.g. "12,50" or "12.50") to cents.
+/// Parses a euro-formatted string to cents.
+/// Handles "12,50", "12.50", and European thousands formats like "1.200,50".
+/// Strategy: if both separators appear, the last one is the decimal separator.
+/// If only one appears and it splits exactly 2 digits at the end, it's decimal.
 /// Returns null if the input is not a valid positive amount.
 int? _parseCents(String raw) {
-  final normalised = raw.trim().replaceAll(',', '.');
+  final trimmed = raw.trim();
+  final hasDot = trimmed.contains('.');
+  final hasComma = trimmed.contains(',');
+
+  final String normalised;
+  if (hasDot && hasComma) {
+    // e.g. "1.200,50" (EU) or "1,200.50" (US) — last separator is decimal
+    final lastDot = trimmed.lastIndexOf('.');
+    final lastComma = trimmed.lastIndexOf(',');
+    if (lastComma > lastDot) {
+      // EU: dot = thousands, comma = decimal
+      normalised = trimmed.replaceAll('.', '').replaceAll(',', '.');
+    } else {
+      // US: comma = thousands, dot = decimal
+      normalised = trimmed.replaceAll(',', '');
+    }
+  } else if (hasComma) {
+    normalised = trimmed.replaceAll(',', '.');
+  } else {
+    normalised = trimmed;
+  }
+
   final value = double.tryParse(normalised);
   if (value == null || value <= 0) return null;
   final cents = (value * 100).round();
@@ -66,6 +90,69 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
     Navigator.of(context).pop(cents);
   }
 
+  Widget _buildAmountField() {
+    return ValueListenableBuilder<String?>(
+      valueListenable: _errorNotifier,
+      builder:
+          (_, errorText, _) => Semantics(
+            label: 'chat.makeOfferA11y'.tr(),
+            child: TextFormField(
+              controller: _controller,
+              autofocus: true,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[\d,.]')),
+              ],
+              style: DeelmarktTypography.priceInput,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                labelText: 'chat.makeOfferAmountLabel'.tr(),
+                hintText: 'chat.makeOfferHint'.tr(),
+                prefixText: '€ ',
+                errorText: errorText?.isEmpty == true ? null : errorText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(DeelmarktRadius.md),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.s4,
+                  vertical: Spacing.s3,
+                ),
+              ),
+              onChanged: (_) => _errorNotifier.value = '',
+              onFieldSubmitted: (_) => _submit(),
+            ),
+          ),
+    );
+  }
+
+  Widget _buildActions() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FilledButton(
+          onPressed: _submit,
+          style: FilledButton.styleFrom(
+            backgroundColor: DeelmarktColors.primary,
+            foregroundColor: DeelmarktColors.white,
+            minimumSize: const Size.fromHeight(52),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(DeelmarktRadius.md),
+            ),
+          ),
+          child: Text('chat.makeOfferSend'.tr()),
+        ),
+        const SizedBox(height: Spacing.s2),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          style: TextButton.styleFrom(minimumSize: const Size.fromHeight(44)),
+          child: Text('chat.makeOfferCancel'.tr()),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,64 +194,9 @@ class _MakeOfferSheetState extends State<MakeOfferSheet> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.s5),
-            ValueListenableBuilder<String?>(
-              valueListenable: _errorNotifier,
-              builder:
-                  (_, errorText, _) => Semantics(
-                    label: 'chat.makeOfferA11y'.tr(),
-                    child: TextFormField(
-                      controller: _controller,
-                      autofocus: true,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[\d,.]')),
-                      ],
-                      style: DeelmarktTypography.priceInput,
-                      textAlign: TextAlign.center,
-                      decoration: InputDecoration(
-                        labelText: 'chat.makeOfferAmountLabel'.tr(),
-                        hintText: 'chat.makeOfferHint'.tr(),
-                        prefixText: '€ ',
-                        errorText:
-                            errorText?.isEmpty == true ? null : errorText,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                            DeelmarktRadius.md,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.s4,
-                          vertical: Spacing.s3,
-                        ),
-                      ),
-                      onChanged: (_) => _errorNotifier.value = '',
-                      onFieldSubmitted: (_) => _submit(),
-                    ),
-                  ),
-            ),
+            _buildAmountField(),
             const SizedBox(height: Spacing.s4),
-            FilledButton(
-              onPressed: _submit,
-              style: FilledButton.styleFrom(
-                backgroundColor: DeelmarktColors.primary,
-                foregroundColor: DeelmarktColors.white,
-                minimumSize: const Size.fromHeight(52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(DeelmarktRadius.md),
-                ),
-              ),
-              child: Text('chat.makeOfferSend'.tr()),
-            ),
-            const SizedBox(height: Spacing.s2),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                minimumSize: const Size.fromHeight(44),
-              ),
-              child: Text('chat.makeOfferCancel'.tr()),
-            ),
+            _buildActions(),
           ],
         ),
       ),

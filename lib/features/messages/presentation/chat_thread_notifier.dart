@@ -91,8 +91,7 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
   }
 
   Future<void> sendOffer(int amountCents) async {
-    final euros = (amountCents / 100).toStringAsFixed(2).replaceAll('.', ',');
-    final offerText = '€ $euros';
+    final offerText = (amountCents / 100).toStringAsFixed(2);
     await _optimisticSend(
       optimistic: MessageEntity(
         id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',

@@ -32,9 +32,15 @@ class OfferMessageCard extends StatelessWidget {
   /// Null when the viewer is the buyer or the offer is already resolved.
   final void Function(OfferStatus)? onRespond;
 
-  String _amountOrFallback() {
-    final match = RegExp(r'€\s?[0-9]+(?:[.,][0-9]+)*').firstMatch(message.text);
-    return match?.group(0) ?? '€ —';
+  String _formattedAmount(BuildContext context) {
+    final cents = message.offerAmountCents;
+    if (cents == null) return '€ —';
+    final locale = Localizations.localeOf(context).toString();
+    return NumberFormat.currency(
+      locale: locale,
+      symbol: '€ ',
+      decimalDigits: 2,
+    ).format(cents / 100);
   }
 
   void _showComingSoon(BuildContext context, String action) {
@@ -74,7 +80,9 @@ class OfferMessageCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'chat.offerOf'.tr(namedArgs: {'amount': _amountOrFallback()}),
+                  'chat.offerOf'.tr(
+                    namedArgs: {'amount': _formattedAmount(context)},
+                  ),
                   style: DeelmarktTypography.priceSm.copyWith(
                     color: colors.textPrimary,
                   ),
