@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
-import 'package:deelmarkt/features/messages/data/supabase/message_realtime_handler.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
@@ -30,11 +29,7 @@ class SupabaseMessageRepository implements MessageRepository {
   final SupabaseClient _client;
 
   static const _messagesTable = 'messages';
-
-  late final _realtimeHandler = MessageRealtimeHandler(
-    client: _client,
-    fetcher: getMessages,
-  );
+  static const _channelPrefix = 'messages:conv:';
 
   @override
   Future<List<ConversationEntity>> getConversations() async {
@@ -79,7 +74,6 @@ class SupabaseMessageRepository implements MessageRepository {
   Stream<List<MessageEntity>> watchMessages(String conversationId) {
     late StreamController<List<MessageEntity>> controller;
     RealtimeChannel? channel;
-    var messages = <MessageEntity>[];
 
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {

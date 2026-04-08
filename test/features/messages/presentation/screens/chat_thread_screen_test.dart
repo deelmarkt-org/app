@@ -2,11 +2,15 @@ import 'dart:async';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_composer.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/make_offer_sheet.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/message_bubble.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/offer_message_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -176,6 +180,110 @@ void main() {
       expect(repo.sendCalls.single.offerAmountCents, 9950);
     });
 
+    testWidgets('accepting offer on card calls updateOfferStatus', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [offerMsg('o1', DateTime(2026, 3, 25, 14))],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OfferMessageCard), findsOneWidget);
+      await tester.tap(find.byType(FilledButton).first);
+      await tester.pumpAndSettle();
+
+      expect(repo.updateOfferCalls, hasLength(1));
+      expect(repo.updateOfferCalls.single.messageId, 'o1');
+      expect(repo.updateOfferCalls.single.newStatus, OfferStatus.accepted);
+    });
+
+    testWidgets('declining offer on card calls updateOfferStatus', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [offerMsg('o2', DateTime(2026, 3, 25, 14))],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(OutlinedButton));
+      await tester.pumpAndSettle();
+
+      expect(repo.updateOfferCalls, hasLength(1));
+      expect(repo.updateOfferCalls.single.newStatus, OfferStatus.declined);
+    });
+
+    testWidgets('resolved offer shows status row without action buttons', (
+      tester,
+    ) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [
+          offerMsg(
+            'o3',
+            DateTime(2026, 3, 25, 14),
+            offerStatus: OfferStatus.accepted,
+          ),
+        ],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OfferMessageCard), findsOneWidget);
+      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+    });
+
+    testWidgets('offer respond error shows snackbar', (tester) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [offerMsg('o4', DateTime(2026, 3, 25, 14))],
+        throwOnUpdate: true,
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(FilledButton).first);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('send text error shows snackbar', (tester) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = _ThrowExceptionOnSendRepo(conversations: [conv('c1')]);
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField), 'Test');
+      await tester.pump();
+      await tester.tap(find.byIcon(Icons.arrow_upward));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
     testWidgets('renders correctly in dark theme', (tester) async {
       setLargeScreen(tester);
       addTearDown(tester.view.resetPhysicalSize);
@@ -191,4 +299,20 @@ void main() {
       expect(find.byType(MessageBubble), findsOneWidget);
     });
   });
+}
+
+/// Throws [Exception] (not [StateError]) so the screen's `on Exception`
+/// catch handler is exercised.
+class _ThrowExceptionOnSendRepo extends FakeMessageRepository {
+  _ThrowExceptionOnSendRepo({required super.conversations});
+
+  @override
+  Future<MessageEntity> sendMessage({
+    required String conversationId,
+    required String text,
+    MessageType type = MessageType.text,
+    int? offerAmountCents,
+  }) async {
+    throw Exception('Network error');
+  }
 }

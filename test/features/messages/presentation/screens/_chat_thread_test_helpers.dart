@@ -2,6 +2,8 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,23 @@ MessageEntity msg(
   conversationId: 'c1',
   senderId: sender,
   text: text,
+  createdAt: at,
+);
+
+MessageEntity offerMsg(
+  String id,
+  DateTime at, {
+  String sender = 'other-c1',
+  int amountCents = 12000,
+  OfferStatus offerStatus = OfferStatus.pending,
+}) => MessageEntity(
+  id: id,
+  conversationId: 'c1',
+  senderId: sender,
+  text: (amountCents / 100).toStringAsFixed(2),
+  type: MessageType.offer,
+  offerAmountCents: amountCents,
+  offerStatus: offerStatus,
   createdAt: at,
 );
 

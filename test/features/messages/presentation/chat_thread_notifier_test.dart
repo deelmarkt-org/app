@@ -226,42 +226,39 @@ void main() {
       },
     );
 
-    test(
-      'updateOfferStatus rolls back on failure',
-      () async {
-        final offerMsg = MessageEntity(
-          id: 'offer-2',
-          conversationId: 'c1',
-          senderId: 'user-002',
-          text: '50.00',
-          type: MessageType.offer,
-          offerAmountCents: 5000,
-          offerStatus: OfferStatus.pending,
-          createdAt: DateTime(2026, 3, 25, 12),
-        );
-        final fake = _ThrowOnUpdateRepo(
-          conversations: [_conv('c1')],
-          messages: [offerMsg],
-        );
-        final container = ProviderContainer(
-          overrides: [messageRepositoryProvider.overrideWithValue(fake)],
-        );
-        addTearDown(container.dispose);
+    test('updateOfferStatus rolls back on failure', () async {
+      final offerMsg = MessageEntity(
+        id: 'offer-2',
+        conversationId: 'c1',
+        senderId: 'user-002',
+        text: '50.00',
+        type: MessageType.offer,
+        offerAmountCents: 5000,
+        offerStatus: OfferStatus.pending,
+        createdAt: DateTime(2026, 3, 25, 12),
+      );
+      final fake = _ThrowOnUpdateRepo(
+        conversations: [_conv('c1')],
+        messages: [offerMsg],
+      );
+      final container = ProviderContainer(
+        overrides: [messageRepositoryProvider.overrideWithValue(fake)],
+      );
+      addTearDown(container.dispose);
 
-        await container.read(chatThreadNotifierProvider('c1').future);
+      await container.read(chatThreadNotifierProvider('c1').future);
 
-        await expectLater(
-          container
-              .read(chatThreadNotifierProvider('c1').notifier)
-              .updateOfferStatus('offer-2', OfferStatus.declined),
-          throwsA(isA<StateError>()),
-        );
+      await expectLater(
+        container
+            .read(chatThreadNotifierProvider('c1').notifier)
+            .updateOfferStatus('offer-2', OfferStatus.declined),
+        throwsA(isA<StateError>()),
+      );
 
-        final state =
-            container.read(chatThreadNotifierProvider('c1')).requireValue;
-        expect(state.messages.single.offerStatus, OfferStatus.pending);
-      },
-    );
+      final state =
+          container.read(chatThreadNotifierProvider('c1')).requireValue;
+      expect(state.messages.single.offerStatus, OfferStatus.pending);
+    });
 
     test('unknown conversation id resolves to sentinel, no crash', () async {
       final fake = FakeMessageRepository(
@@ -318,10 +315,7 @@ void main() {
 
 /// Fake that throws on [updateOfferStatus] to test rollback.
 class _ThrowOnUpdateRepo extends FakeMessageRepository {
-  _ThrowOnUpdateRepo({
-    required super.conversations,
-    required super.messages,
-  });
+  _ThrowOnUpdateRepo({required super.conversations, required super.messages});
 
   @override
   Future<void> updateOfferStatus({

@@ -114,6 +114,33 @@ void main() {
       expect(find.byIcon(Icons.check_circle), findsOneWidget);
     });
 
+    testWidgets('counter button shows coming soon snackbar', (tester) async {
+      await tester.pumpWidget(
+        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('buyer view disables accept and decline buttons', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTest(OfferMessageCard(message: offer(), isSelf: true)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FilledButton), findsOneWidget);
+      final filledButton = tester.widget<FilledButton>(
+        find.byType(FilledButton),
+      );
+      expect(filledButton.onPressed, isNull);
+    });
+
     testWidgets('declined state renders status row, no CTAs', (tester) async {
       await tester.pumpWidget(
         buildTest(

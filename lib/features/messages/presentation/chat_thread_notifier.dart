@@ -126,10 +126,7 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
     // Optimistic: update the matching message's offerStatus
     final updatedMessages = [
       for (final msg in current.messages)
-        if (msg.id == messageId)
-          msg.copyWith(offerStatus: newStatus)
-        else
-          msg,
+        if (msg.id == messageId) msg.copyWith(offerStatus: newStatus) else msg,
     ];
     state = AsyncValue.data(current.copyWith(messages: updatedMessages));
 

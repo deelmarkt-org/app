@@ -12,12 +12,14 @@ class FakeMessageRepository implements MessageRepository {
     List<ConversationEntity> conversations = const [],
     List<MessageEntity> messages = const [],
     this.throwOnSend = false,
+    this.throwOnUpdate = false,
   }) : _conversations = [...conversations],
        _messages = [...messages];
 
   final List<ConversationEntity> _conversations;
   final List<MessageEntity> _messages;
   final bool throwOnSend;
+  final bool throwOnUpdate;
 
   /// Records every [sendMessage] invocation for assertions.
   final List<MessageEntity> sendCalls = [];
@@ -82,6 +84,9 @@ class FakeMessageRepository implements MessageRepository {
     required String messageId,
     required OfferStatus newStatus,
   }) async {
+    if (throwOnUpdate) {
+      throw Exception('Network error');
+    }
     updateOfferCalls.add((messageId: messageId, newStatus: newStatus));
   }
 }
