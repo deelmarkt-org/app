@@ -82,8 +82,11 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildTitleBlock(ThemeData theme, ChatThemeColors colors) {
     final statusColor = _isOnline ? colors.success : colors.textTertiary;
+    // Online status takes priority; response time shown when offline.
     final subtitle =
-        conversation.sellerResponseTimeMinutes != null
+        _isOnline
+            ? 'chat.online'.tr()
+            : conversation.sellerResponseTimeMinutes != null
             ? formatResponseTimeLabel(conversation.sellerResponseTimeMinutes)
             : 'chat.lastSeen'.tr();
     return Semantics(

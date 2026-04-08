@@ -36,6 +36,9 @@ const LOOKBACK_DAYS = 90;
 // from update — too little signal to show a meaningful stat.
 const MIN_RESPONSE_PAIRS = 3;
 
+// Batch size for .in() filters — keeps PostgREST URLs under length limits.
+const QUERY_BATCH = 100;
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -54,9 +57,8 @@ interface ConversationRow {
 
 interface SellerResult {
   seller_id: string;
-  response_time_minutes: number | null;
+  response_time_minutes: number;
   pair_count: number;
-  updated: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -69,6 +71,26 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0
     ? (sorted[mid - 1] + sorted[mid]) / 2
     : sorted[mid];
+}
+
+/** Fetch in batches to avoid PostgREST URL length limits on .in() filters. */
+async function fetchMessagesBatched(
+  supabase: ReturnType<typeof createClient>,
+  convIds: string[],
+): Promise<MessageRow[]> {
+  const all: MessageRow[] = [];
+  for (let i = 0; i < convIds.length; i += QUERY_BATCH) {
+    const batch = convIds.slice(i, i + QUERY_BATCH);
+    const { data, error } = await supabase
+      .from("messages")
+      .select("id, conversation_id, sender_id, created_at")
+      .in("conversation_id", batch)
+      .order("created_at", { ascending: true });
+
+    if (error) throw new Error(`messages batch ${i}: ${error.message}`);
+    if (data) all.push(...(data as MessageRow[]));
+  }
+  return all;
 }
 
 // ---------------------------------------------------------------------------
@@ -98,19 +120,13 @@ async function computeSellerResponseTimes(
 
   const convIds = convRows.map((c) => c.id);
 
-  // Fetch all messages in those conversations in one batch.
-  const { data: messages, error: msgError } = await supabase
-    .from("messages")
-    .select("id, conversation_id, sender_id, created_at")
-    .in("conversation_id", convIds)
-    .order("created_at", { ascending: true });
-
-  if (msgError) throw new Error(`messages query: ${msgError.message}`);
-  if (!messages || messages.length === 0) return [];
+  // Fetch messages in batches to stay under URL length limits.
+  const messages = await fetchMessagesBatched(supabase, convIds);
+  if (messages.length === 0) return [];
 
   // Group messages by conversation.
   const msgsByConv = new Map<string, MessageRow[]>();
-  for (const msg of messages as MessageRow[]) {
+  for (const msg of messages) {
     const list = msgsByConv.get(msg.conversation_id) ?? [];
     list.push(msg);
     msgsByConv.set(msg.conversation_id, list);
@@ -158,9 +174,8 @@ async function computeSellerResponseTimes(
     if (gaps.length >= MIN_RESPONSE_PAIRS) {
       results.push({
         seller_id,
-        response_time_minutes: median(gaps),
+        response_time_minutes: Math.round(median(gaps)),
         pair_count: gaps.length,
-        updated: false,
       });
     }
   }
@@ -179,9 +194,8 @@ async function updateProfiles(
   if (results.length === 0) return;
 
   // Upsert in batches of 100 to stay well under Supabase payload limits.
-  const BATCH = 100;
-  for (let i = 0; i < results.length; i += BATCH) {
-    const batch = results.slice(i, i + BATCH).map((r) => ({
+  for (let i = 0; i < results.length; i += QUERY_BATCH) {
+    const batch = results.slice(i, i + QUERY_BATCH).map((r) => ({
       id: r.seller_id,
       response_time_minutes: r.response_time_minutes,
     }));
@@ -192,40 +206,45 @@ async function updateProfiles(
 
     if (error) throw new Error(`upsert batch ${i}: ${error.message}`);
   }
-
-  // Mark all as updated in the result list (for response logging).
-  for (const r of results) r.updated = true;
 }
 
 async function clearStaleProfiles(
   supabase: ReturnType<typeof createClient>,
-  updatedSellerIds: string[],
+  updatedSellerIds: Set<string>,
 ): Promise<number> {
-  // NULL out sellers who had an entry before but received no qualifying
-  // response pairs this run (stale data removed, not left lying around).
-  const { data: stale, error: selectError } = await supabase
+  // Fetch all profiles that currently have a response_time_minutes value,
+  // then filter out the ones we just updated — the remainder are stale.
+  // This avoids a large NOT IN filter that could exceed URL length limits.
+  const { data: withTime, error: selectError } = await supabase
     .from("user_profiles")
     .select("id")
-    .not("response_time_minutes", "is", null)
-    .not("id", "in", `(${updatedSellerIds.join(",")})`);
+    .not("response_time_minutes", "is", null);
 
   if (selectError) {
     console.error(`[response-time] stale select error: ${selectError.message}`);
     return 0;
   }
 
-  if (!stale || stale.length === 0) return 0;
+  if (!withTime || withTime.length === 0) return 0;
 
-  const staleIds = (stale as { id: string }[]).map((r) => r.id);
+  const staleIds = (withTime as { id: string }[])
+    .map((r) => r.id)
+    .filter((id) => !updatedSellerIds.has(id));
 
-  const { error: clearError } = await supabase
-    .from("user_profiles")
-    .update({ response_time_minutes: null })
-    .in("id", staleIds);
+  if (staleIds.length === 0) return 0;
 
-  if (clearError) {
-    console.error(`[response-time] stale clear error: ${clearError.message}`);
-    return 0;
+  // Batch the NULL updates to stay under URL length limits.
+  for (let i = 0; i < staleIds.length; i += QUERY_BATCH) {
+    const batch = staleIds.slice(i, i + QUERY_BATCH);
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ response_time_minutes: null })
+      .in("id", batch);
+
+    if (error) {
+      console.error(`[response-time] stale clear batch ${i}: ${error.message}`);
+      return i; // return count cleared so far
+    }
   }
 
   return staleIds.length;
@@ -253,8 +272,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const results = await computeSellerResponseTimes(supabase);
     await updateProfiles(supabase, results);
 
-    const updatedIds = results.map((r) => r.seller_id);
-    const staleCleared = updatedIds.length > 0
+    const updatedIds = new Set(results.map((r) => r.seller_id));
+    const staleCleared = updatedIds.size > 0
       ? await clearStaleProfiles(supabase, updatedIds)
       : 0;
 
