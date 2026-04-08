@@ -1,4 +1,5 @@
-import 'package:equatable/equatable.dart';
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
@@ -7,7 +8,10 @@ import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/usecases/get_messages_usecase.dart';
 import 'package:deelmarkt/features/messages/domain/usecases/send_message_usecase.dart';
+import 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
+
+export 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 
 part 'chat_thread_notifier.g.dart';
 
@@ -21,93 +25,88 @@ part 'chat_thread_notifier.g.dart';
 /// a second time.
 const String kCurrentUserIdStub = 'user-001';
 
-/// Immutable state for a single chat thread.
-class ChatThreadState extends Equatable {
-  const ChatThreadState({
-    required this.conversation,
-    required this.messages,
-    this.isSending = false,
-  });
-
-  final ConversationEntity conversation;
-  final List<MessageEntity> messages;
-  final bool isSending;
-
-  ChatThreadState copyWith({
-    ConversationEntity? conversation,
-    List<MessageEntity>? messages,
-    bool? isSending,
-  }) {
-    return ChatThreadState(
-      conversation: conversation ?? this.conversation,
-      messages: messages ?? this.messages,
-      isSending: isSending ?? this.isSending,
-    );
-  }
-
-  @override
-  List<Object?> get props => [conversation, messages, isSending];
-}
-
+/// DI — reuses the same use-case providers as the list notifier where possible.
 final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
   (ref) => GetMessagesUseCase(ref.watch(messageRepositoryProvider)),
 );
-
 final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
   (ref) => SendMessageUseCase(ref.watch(messageRepositoryProvider)),
 );
-// Fallback when the conversation id in the URL cannot be resolved.
-ConversationEntity _unknownConversation(String id) => ConversationEntity(
-  id: id,
-  listingId: '',
-  listingTitle: '',
-  listingImageUrl: null,
-  otherUserId: '',
-  otherUserName: '',
-  lastMessageText: '',
-  lastMessageAt: DateTime.fromMillisecondsSinceEpoch(0),
-);
 
-/// Async view-model for P-36. Loads conversation + messages in parallel;
-/// supports optimistic send with rollback on failure.
+/// Async view-model for the chat thread screen (P-36).
+///
+/// Loads the conversation header, then subscribes to [MessageRepository.watchMessages]
+/// for real-time updates from the other participant. On each Realtime event the
+/// repository re-fetches the full ordered list so local state stays consistent.
+///
+/// Optimistic send appends the message immediately; on failure it rolls back
+/// and re-throws so the UI can show a SnackBar via ref.listen.
 @riverpod
 class ChatThreadNotifier extends _$ChatThreadNotifier {
-  @override
-  Future<ChatThreadState> build(String conversationId) => _load(conversationId);
+  StreamSubscription<List<MessageEntity>>? _realtimeSub;
+  List<MessageEntity>? _pendingSnapshot;
 
-  Future<ChatThreadState> _load(String conversationId) async {
-    final getConversations = ref.read(getConversationsUseCaseProvider);
-    final getMessages = ref.read(getMessagesUseCaseProvider);
+  @override
+  Future<ChatThreadState> build(String conversationId) async {
+    // Cancel any previous subscription when the provider is rebuilt or disposed.
+    ref.onDispose(() => _realtimeSub?.cancel());
 
     final results = await Future.wait([
-      getConversations(),
-      getMessages(conversationId),
+      ref.read(getConversationsUseCaseProvider)(),
+      ref.read(getMessagesUseCaseProvider)(conversationId),
     ]);
     final conversations = results[0] as List<ConversationEntity>;
     final messages = results[1] as List<MessageEntity>;
 
     final conversation = conversations.firstWhere(
       (c) => c.id == conversationId,
-      orElse: () => _unknownConversation(conversationId),
+      orElse: () => unknownConversationSentinel(conversationId),
     );
+
+    // Subscribe to Realtime after initial load to receive messages from
+    // the other participant without polling.
+    _subscribeRealtime(conversationId);
 
     return ChatThreadState(conversation: conversation, messages: messages);
   }
 
-  /// Optimistic send — appends the message to state immediately, then calls
-  /// the repository. On failure, rolls back and surfaces the error.
+  /// Subscribes to the repository Realtime stream; buffers snapshots during
+  /// isSending so optimistic messages are not dropped mid-flight.
+  void _subscribeRealtime(String conversationId) {
+    _realtimeSub?.cancel();
+    _realtimeSub = ref
+        .read(messageRepositoryProvider)
+        .watchMessages(conversationId)
+        .listen(
+          (messages) {
+            final current = state.valueOrNull;
+            if (current == null) return;
+            if (current.isSending) {
+              // Buffer snapshot — apply once send completes.
+              _pendingSnapshot = messages;
+            } else {
+              state = AsyncValue.data(current.copyWith(messages: messages));
+            }
+          },
+          onError: (Object e, StackTrace st) {
+            AppLogger.error(
+              'watchMessages error',
+              tag: 'ChatThreadNotifier',
+              error: e,
+              stackTrace: st,
+            );
+          },
+        );
+  }
+
+  /// Optimistic send — appends immediately; rolls back on failure.
   Future<void> sendText(String text) async {
     final current = state.valueOrNull;
-    if (current == null || current.isSending) {
-      return;
-    }
+    if (current == null || current.isSending) return;
     final trimmed = text.trim();
-    if (trimmed.isEmpty) {
-      return;
-    }
+    if (trimmed.isEmpty) return;
 
-    // SECURITY (F-05): prefix is a UI-only sentinel; server MUST reject
-    // ids starting with `_optimistic_` (never persisted to the database).
+    // UI-only sentinel id — never persisted to the database.
     final optimistic = MessageEntity(
       id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
       conversationId: current.conversation.id,
@@ -124,14 +123,14 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
     );
 
     try {
-      final sendMessage = ref.read(sendMessageUseCaseProvider);
-      final sent = await sendMessage(
+      final sent = await ref.read(sendMessageUseCaseProvider)(
         conversationId: current.conversation.id,
         text: trimmed,
       );
-      final updated = [...current.messages, sent];
+      final after = _pendingSnapshot ?? [...current.messages, sent];
+      _pendingSnapshot = null;
       state = AsyncValue.data(
-        current.copyWith(messages: updated, isSending: false),
+        current.copyWith(messages: after, isSending: false),
       );
     } catch (e, st) {
       AppLogger.error(
@@ -140,11 +139,11 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
         error: e,
         stackTrace: st,
       );
-      // Rollback: drop the optimistic message.
+      final after = _pendingSnapshot ?? current.messages;
+      _pendingSnapshot = null;
       state = AsyncValue.data(
-        current.copyWith(messages: current.messages, isSending: false),
+        current.copyWith(messages: after, isSending: false),
       );
-      // Re-throw so the UI can show a SnackBar via ref.listen.
       rethrow;
     }
   }

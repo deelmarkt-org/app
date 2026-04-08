@@ -219,7 +219,7 @@ The agent will:
 - [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
 - [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
-- [ ] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
+- [x] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
 
@@ -265,9 +265,9 @@ The agent will:
 
 - [x] `P-35` Chat conversation list screen — unread badges, response time ✅ PR #71
 - [x] `P-36` Chat thread screen — listing embed, bubbles, offer messages ✅ PR #71
-- [ ] `P-37` Scam alert integration in chat — warning on flagged messages
-- [ ] `P-38` Rating/review screen (post-transaction) — star + text, blind
-- [ ] `P-39` Seller profile screen (public ratings) — average + reviews + badges
+- [x] `P-37` Scam alert integration in chat — warning on flagged messages ✅ PR #75
+- [x] `P-38` Rating/review screen (post-transaction) — star + text, blind ✅ PR #75
+- [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
 - [ ] `P-40` Admin moderation panel (Retool) — flagged, disputes, DSA, appeals
 - [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA

@@ -368,6 +368,27 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "scam_alert": {
+    "title_high": "Dit bericht bevat mogelijk oplichting",
+    "title_low": "Let op: wees voorzichtig met externe links",
+    "subtitle_low": "DeelMarkt vraagt je nooit om betalingen buiten ons platform te voldoen.",
+    "why_warning": "Waarom deze waarschuwing?",
+    "reasons_header": "Gedetecteerde risico’s",
+    "why_warning_hide": "Verberg uitleg",
+    "ai_detected_prefix": "AI gedetecteerd:",
+    "report": "Meld dit bericht",
+    "dismiss": "Negeren",
+    "a11y_high": "Waarschuwing: mogelijke oplichting gedetecteerd",
+    "a11y_low": "Tip: wees voorzichtig met externe links",
+    "reason": {
+      "external_payment_link": "Dit bericht bevat een link naar een externe betaalsite",
+      "off_site_contact": "Dit bericht vraagt om het gesprek buiten het platform voort te zetten",
+      "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
+      "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
+      "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
+    }
+  },
   "location_badge": {
     "a11yWithDistance": "Locatie: {city}, {distance} verwijderd",
     "a11yCityOnly": "Locatie: {city}",
@@ -392,7 +413,109 @@
     "pickPhoto": "Kies een foto",
     "takePhoto": "Maak een foto",
     "chooseFromGallery": "Kies uit galerij",
-    "photoSelected": "Foto geselecteerd"
+    "photoSelected": "Foto geselecteerd",
+    "deletedUser": "Verwijderde gebruiker"
+  },
+  "review": {
+    "title": "Beoordeling",
+    "how_was_experience": "Hoe was je ervaring met {name}?",
+    "tell_about": "Vertel over je ervaring...",
+    "char_counter": "{current}/500",
+    "blind_review": "Blinde beoordeling",
+    "blind_explanation": "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling",
+    "submit": "Beoordeling plaatsen",
+    "submitting": "Verzenden...",
+    "thank_you": "Bedankt!",
+    "waiting_for_other": "Wacht op de beoordeling van de {role}",
+    "role": {
+      "buyer": "koper",
+      "seller": "verkoper"
+    },
+    "both_visible": "Jullie beoordelingen zijn nu zichtbaar",
+    "close": "Sluiten",
+    "url_warning": "Links zijn niet toegestaan in beoordelingen",
+    "report_review": "Meld deze beoordeling",
+    "unsaved_discard": "Wil je je concept weggooien?",
+    "unsaved_keep": "Bewaren",
+    "a11y": {
+      "rating": "Ster {star} van {total}",
+      "rating_label": "{rating} van 5 sterren",
+      "counter": "Tekenteller"
+    },
+    "error": {
+      "network": "Geen verbinding. Probeer het opnieuw.",
+      "conflict": "Je hebt al een beoordeling geplaatst",
+      "expired": "Het reviewvenster is verstreken",
+      "cancelled": "Deze transactie is geannuleerd",
+      "rate_limit": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
+      "moderation_blocked": "Deze beoordeling is geblokkeerd door moderatie",
+      "unknown": "Er is iets misgegaan. Probeer het opnieuw.",
+      "ineligible": {
+        "auth": "Je moet ingelogd zijn om een beoordeling te plaatsen",
+        "notFound": "Transactie niet gevonden",
+        "pending": "De betaling is nog niet afgerond",
+        "escrow_held": "Escrow is nog niet vrijgegeven",
+        "delivered": "Bevestig eerst de ontvangst voordat je een beoordeling plaatst",
+        "disputed": "Er loopt een geschil over deze transactie",
+        "cancelled": "Deze transactie is geannuleerd"
+      }
+    },
+    "report_reason": {
+      "scam": "Oplichting",
+      "harassment": "Intimidatie",
+      "hate_speech": "Haatdragend taalgebruik",
+      "sexual_content": "Seksuele inhoud",
+      "violence": "Geweld",
+      "illegal_content": "Illegale inhoud",
+      "spam": "Spam",
+      "other": "Anders"
+    }
+  },
+  "seller_profile": {
+    "title": "Profiel",
+    "member_since": "Lid sinds {date}",
+    "review_count": "{count} beoordelingen",
+    "sold_count": "{count} verkocht",
+    "message_action": "Bericht sturen",
+    "share_action": "Delen",
+    "share_copied": "Link gekopieerd",
+    "report_action": "Meld gebruiker",
+    "tab_listings": "Advertenties",
+    "tab_reviews": "Beoordelingen",
+    "too_few_reviews": "Te weinig beoordelingen om gemiddelde te tonen",
+    "no_listings": "Deze verkoper heeft geen advertenties",
+    "no_reviews": "Nog geen beoordelingen",
+    "blocked_title": "Je hebt deze gebruiker geblokkeerd",
+    "blocked_unblock": "Deblokkeer",
+    "not_found": "Gebruiker bestaat niet",
+    "load_more": "Meer laden",
+    "more_actions": "Meer opties",
+    "responseTime": {
+      "under_1h": "Reageert binnen 1 uur",
+      "under_4h": "Reageert binnen 4 uur",
+      "under_24h": "Reageert binnen 24 uur",
+      "over_24h": "Reageert na 24 uur",
+      "unknown": "Reactietijd onbekend"
+    }
+  },
+  "rating": {
+    "a11y": {
+      "summary": "{average} van 5 sterren, {count} beoordelingen"
+    }
+  },
+  "report": {
+    "title": "Melden",
+    "submitted": "Melding ingediend",
+    "reason": {
+      "scam": "Oplichting",
+      "harassment": "Intimidatie",
+      "hateSpeech": "Haatdragend taalgebruik",
+      "sexualContent": "Seksuele inhoud",
+      "violence": "Geweld",
+      "illegalContent": "Illegale inhoud",
+      "spam": "Spam",
+      "other": "Anders"
+    }
   },
   "kyc": {
     "bannerTitle": "Verifieer je identiteit",
@@ -610,5 +733,19 @@
     "selfBubbleA11y": "Jij zei: {text}",
     "otherBubbleA11y": "Zij zeiden: {text}",
     "readReceiptA11y": "Gelezen"
+  },
+  "time_ago": {
+    "just_now": "Zojuist",
+    "minute_ago": "1 minuut geleden",
+    "minutes_ago": "{n} minuten geleden",
+    "hour_ago": "1 uur geleden",
+    "hours_ago": "{n} uur geleden",
+    "yesterday": "Gisteren",
+    "days_ago": "{n} dagen geleden",
+    "week_ago": "1 week geleden",
+    "weeks_ago": "{n} weken geleden",
+    "month_ago": "1 maand geleden",
+    "months_ago": "{n} maanden geleden",
+    "year_ago": "1 jaar geleden"
   }
 }

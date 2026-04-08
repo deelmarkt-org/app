@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
+import 'package:deelmarkt/features/profile/data/supabase/settings_json_mappers.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 
 /// Supabase implementation of [SettingsRepository].
@@ -35,7 +36,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
               .maybeSingle();
 
       if (response == null) return const NotificationPreferences();
-      return _prefsFromJson(response);
+      return notificationPrefsFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch notification preferences: ${e.message}');
     } on TypeError {
@@ -61,7 +62,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
               .select()
               .single();
 
-      return _prefsFromJson(response);
+      return notificationPrefsFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception(
         'Failed to update notification preferences: ${e.message}',
@@ -80,7 +81,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
           .eq('user_id', _userId)
           .order('created_at');
 
-      return response.map(_addressFromJson).toList();
+      return response.map(dutchAddressFromJson).toList();
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch addresses: ${e.message}');
     } on TypeError {
@@ -107,7 +108,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
               .select()
               .single();
 
-      return _addressFromJson(response);
+      return dutchAddressFromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to save address: ${e.message}');
     } on TypeError {
@@ -191,26 +192,5 @@ class SupabaseSettingsRepository implements SettingsRepository {
     } on FunctionException catch (e) {
       throw Exception('Failed to delete account: ${e.reasonPhrase}');
     }
-  }
-
-  static NotificationPreferences _prefsFromJson(Map<String, dynamic> json) {
-    return NotificationPreferences(
-      messages: json['messages'] as bool? ?? true,
-      offers: json['offers'] as bool? ?? true,
-      shippingUpdates: json['shipping_updates'] as bool? ?? true,
-      marketing: json['marketing'] as bool? ?? false,
-    );
-  }
-
-  static DutchAddress _addressFromJson(Map<String, dynamic> json) {
-    return DutchAddress(
-      postcode: json['postcode'] as String,
-      houseNumber: json['house_number'] as String,
-      addition: json['addition'] as String?,
-      street: json['street'] as String,
-      city: json['city'] as String,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-    );
   }
 }

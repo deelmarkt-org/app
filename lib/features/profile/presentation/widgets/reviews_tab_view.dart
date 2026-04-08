@@ -7,16 +7,24 @@ import 'package:deelmarkt/features/profile/presentation/widgets/review_card.dart
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 
-/// List of user reviews.
+/// List of user reviews with optional pagination.
 class ReviewsTabView extends StatelessWidget {
   const ReviewsTabView({
     required this.reviews,
     required this.onRetry,
+    this.onLoadMore,
+    this.isLoadingMore = false,
+    this.hasMore = false,
+    this.onReport,
     super.key,
   });
 
   final AsyncValue<List<ReviewEntity>> reviews;
   final VoidCallback onRetry;
+  final VoidCallback? onLoadMore;
+  final bool isLoadingMore;
+  final bool hasMore;
+  final void Function(ReviewEntity review)? onReport;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +49,24 @@ class ReviewsTabView extends StatelessWidget {
           );
         }
         return Column(
-          children: items.map((r) => ReviewCard(review: r)).toList(),
+          children: [
+            ...items.map(
+              (r) => ReviewCard(
+                review: r,
+                onReport: onReport != null ? () => onReport!(r) : null,
+              ),
+            ),
+            if (isLoadingMore)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(),
+              ),
+            if (hasMore && !isLoadingMore && onLoadMore != null)
+              TextButton(
+                onPressed: onLoadMore,
+                child: Text('seller_profile.load_more'.tr()),
+              ),
+          ],
         );
       },
     );
