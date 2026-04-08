@@ -12,7 +12,10 @@ import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/profile/domain/entities/notification_preferences.dart';
+import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
+import 'package:deelmarkt/features/profile/domain/entities/review_aggregate.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
+import 'package:deelmarkt/features/profile/domain/entities/review_submission.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
@@ -331,6 +334,21 @@ class _EmptyReviewRepository implements ReviewRepository {
     int limit = 5,
     String? cursor,
   }) async => [];
+
+  @override
+  Future<ReviewEntity> submitReview(ReviewSubmission submission) =>
+      throw UnimplementedError();
+
+  @override
+  Future<List<ReviewEntity>> getForTransaction(String transactionId) async =>
+      [];
+
+  @override
+  Future<ReviewAggregate> getAggregateForUser(String userId) async =>
+      ReviewAggregate.empty(userId);
+
+  @override
+  Future<void> reportReview(String reviewId, ReportReason reason) async {}
 }
 
 // ── Pump helper ──────────────────────────────────────────────────────────────

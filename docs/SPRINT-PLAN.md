@@ -265,8 +265,8 @@ The agent will:
 
 - [x] `P-35` Chat conversation list screen — unread badges, response time ✅ PR #71
 - [x] `P-36` Chat thread screen — listing embed, bubbles, offer messages ✅ PR #71
-- [ ] `P-37` Scam alert integration in chat — warning on flagged messages
-- [ ] `P-38` Rating/review screen (post-transaction) — star + text, blind
+- [x] `P-37` Scam alert integration in chat — warning on flagged messages
+- [x] `P-38` Rating/review screen (post-transaction) — star + text, blind
 - [ ] `P-39` Seller profile screen (public ratings) — average + reviews + badges
 - [ ] `P-40` Admin moderation panel (Retool) — flagged, disputes, DSA, appeals
 - [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts

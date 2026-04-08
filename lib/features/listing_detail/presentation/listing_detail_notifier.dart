@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/domain/entities/user_entity.dart';
