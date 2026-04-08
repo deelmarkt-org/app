@@ -164,10 +164,13 @@ The design system is in `docs/design-system/`:
 
 ### 4.2 Before Building Any Screen
 
-1. Read the relevant pattern in `docs/design-system/patterns.md`
-2. Check which components from `docs/design-system/components.md` apply
-3. Verify colour/spacing tokens from `docs/design-system/tokens.md`
-4. Confirm accessibility requirements from `docs/design-system/accessibility.md`
+1. Look up the screen in [`docs/screens/SCREEN-MAP.md`](docs/screens/SCREEN-MAP.md) — find the spec + designs
+2. Read the screen spec markdown (layout, components, states, l10n, accessibility)
+3. Read the design PNGs for all relevant variants (light/dark, mobile/desktop, states)
+4. Read the relevant pattern in `docs/design-system/patterns.md`
+5. Check which components from `docs/design-system/components.md` apply
+6. Verify colour/spacing tokens from `docs/design-system/tokens.md`
+7. Confirm accessibility requirements from `docs/design-system/accessibility.md`
 
 ### 4.3 Design System Violations That Block PR
 
@@ -267,6 +270,76 @@ Before writing ANY implementation code, complete these steps:
 [ ] Run flutter analyze — zero warnings
 ```
 
+### 7.1 Mandatory Pre-Implementation Verification (AI Agent)
+
+> **This is not optional.** The AI agent MUST output a verification block
+> in its response BEFORE writing any implementation code. Skipping this
+> section led to 2 critical runtime bugs and 3 missing features in past PRs.
+
+**Before writing ANY new Edge Function, migration, or Supabase query:**
+
+1. **Schema verification** — For each DB table/column referenced in the task:
+   - Read the migration file that defines it
+   - List the exact column names you will use (copy-paste from the migration, don't guess)
+   - If joining tables, confirm the FK column names on both sides
+2. **Sibling convention check** — Before creating a new file in an existing directory:
+   - List sibling files and their structure (e.g. `deno.json`, shared imports, naming)
+   - Match the convention exactly
+3. **Epic acceptance criteria audit** — For each acceptance criterion in the epic:
+   - State whether this task covers it (fully / partially / not applicable)
+   - If partially: note what's missing and whether this PR or a follow-up addresses it
+4. **Existing UI/logic scan** — Search the codebase for any widget, DTO, or entity that
+   already references the field/feature being built. List them. Confirm they will still
+   work after your change (or that you are updating them).
+
+**Output this as a checklist in your response.** The developer can then approve
+or flag issues before implementation begins. Format:
+
+```
+## Pre-Implementation Verification
+
+### Schema (tables/columns I will query)
+- conversations.listing_id → FK to listings.id ✓ (migration 20260407...)
+- messages.created_at → TIMESTAMPTZ ✓ (migration 20260407..., line 75)
+
+### Sibling conventions
+- All Edge Functions have deno.json ✓
+- Cron functions use _shared/auth.ts verifyServiceRole ✓
+
+### Epic acceptance criteria (E04-messaging.md)
+- [x] Seller response time displayed on profile → already wired in ProfileStatsRow
+- [ ] Seller response time displayed in conversation header → needs ChatHeader update
+
+### Existing references to this feature
+- ProfileStatsRow uses responseTimeMinutes (raw "30m" format)
+- SellerInfoRow uses responseTimeMinutes (l10n bucket format)
+- → inconsistency to resolve
+```
+
+**For Dart-only tasks** (no Edge Functions or migrations), the schema verification
+step can be skipped but the epic audit and existing-reference scan still apply.
+
+**For UI tasks** (any task touching `presentation/` screens or widgets):
+
+5. **Screen spec + design reference** — Before writing any screen or widget:
+   - Look up the screen in [`docs/screens/SCREEN-MAP.md`](docs/screens/SCREEN-MAP.md)
+   - Read the full spec markdown file (layout, components, states, l10n keys, accessibility)
+   - Read the design PNG files for the relevant variants (light/dark, mobile/desktop, states)
+   - Add a `/// Reference: docs/screens/...` doc comment to every new screen/widget file
+   - List which design variants you checked in your verification block
+
+Format for UI tasks:
+
+```
+### Design reference
+- Spec: docs/screens/06-chat/02-chat-thread.md ✓ (read layout §1-4, l10n §7)
+- Designs checked:
+  - chat_thread_mobile_light ✓ (primary layout reference)
+  - chat_thread_mobile_dark ✓ (dark mode tokens)
+  - chat_thread_desktop_expanded ✓ (responsive breakpoint)
+- All l10n keys from spec present in en-US.json + nl-NL.json ✓
+```
+
 ---
 
 ## §8 — Quality Gates (enforced by pre-commit hooks)
@@ -277,6 +350,8 @@ Before writing ANY implementation code, complete these steps:
 - `flutter analyze --no-pub` — static analysis (zero warnings)
 - `detect-secrets` — no hardcoded secrets
 - No commits to `main` or `dev` directly
+- `bash scripts/check_edge_functions.sh` — Edge Function structure + schema cross-reference (on `.ts`/`.sql` files)
+- `deno lint` + `deno fmt --check` — TypeScript linting (gracefully skips if deno not installed)
 
 ### On Every Push
 
@@ -338,33 +413,37 @@ The European Accessibility Act is enforceable. These are not optional:
 
 ### During Implementation
 
-1. Follow §7 pre-implementation checklist before each screen
+1. Follow §7 + §7.1 pre-implementation checklists before each task
 2. Run `flutter analyze` after each file change
 3. Run `dart run scripts/check_quality.dart --all` to catch CLAUDE.md violations early
-4. Keep files under line limits (§2.1)
-5. Use design system tokens, never raw values (§3.3)
-6. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
-7. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
-8. All interactive widgets MUST have `Semantics()` labels
-9. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
-10. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
+4. Run `bash scripts/check_edge_functions.sh --all` when working on Edge Functions
+5. Keep files under line limits (§2.1)
+6. Use design system tokens, never raw values (§3.3)
+7. Use `core/domain/entities/` barrel re-exports for cross-feature entity imports
+8. Use `core/domain/repositories/` barrel re-exports for cross-feature repository imports
+9. All interactive widgets MUST have `Semantics()` labels
+10. All UI text MUST use `.tr()` l10n keys — no hardcoded strings
+11. No `setState()`, `FutureBuilder`, or `StreamBuilder` in presentation layer — use Riverpod
 
 ### Before Ending
 
 1. Run `flutter analyze` — zero warnings
 2. Run `dart run scripts/check_quality.dart` — zero violations on your files
-3. Run `flutter test` — all passing
-4. Commit with proper message format
-5. Update epic acceptance criteria checkboxes if applicable
+3. Run `bash scripts/check_edge_functions.sh --all` — zero new violations (if you touched Edge Functions)
+4. Run `flutter test` — all passing
+5. Commit with proper message format
+6. Update epic acceptance criteria checkboxes if applicable
 
 ### Quality Gate Scripts
 
 | Script | When | What |
 |:-------|:-----|:-----|
-| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder |
-| `dart run scripts/check_quality.dart --thorough` | Pre-push (auto) | + duplicate strings, nested ternaries, long methods |
+| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder, **missing test file** |
+| `dart run scripts/check_quality.dart --thorough` | Pre-commit (auto) | + duplicate strings, nested ternaries, long methods |
 | `dart run scripts/check_quality.dart --all` | Manual | Check entire codebase |
 | `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
+| `bash scripts/check_edge_functions.sh` | Pre-commit (auto) | Edge Function structure + schema cross-reference (staged .ts/.sql) |
+| `bash scripts/check_edge_functions.sh --all` | Manual | Check all Edge Functions |
 
 ### Setup for New or Existing Developers
 
