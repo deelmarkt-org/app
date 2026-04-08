@@ -36,13 +36,15 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Sentry first — so it captures errors from other service inits.
+  await initSentry();
+
   await Future.wait([
     EasyLocalization.ensureInitialized(),
     initSupabase(),
     initFirebase(),
     initUnleash(),
     initSharedPreferences(),
-    initSentry(),
   ]);
 
   // Production error widget — user-friendly instead of white screen.

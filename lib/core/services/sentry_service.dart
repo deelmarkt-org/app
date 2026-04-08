@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:deelmarkt/core/services/env.dart';
 
-/// Initialise Sentry in `main()` before `runApp`.
+/// Initialise Sentry **before** other services so it captures init errors.
 ///
 /// Sentry runs alongside Firebase Crashlytics:
 /// - Crashlytics → crash aggregation + real-time alerting (Firebase console)
@@ -19,19 +17,20 @@ Future<void> initSentry() async {
       ..environment = kDebugMode ? 'development' : 'production'
       ..tracesSampleRate = 0.2
       ..attachScreenshot = true
+      ..debug = kDebugMode
       ..sendDefaultPii = false;
   });
 }
 
 /// Capture an exception with optional stack trace in Sentry.
-Future<void> sentryCaptureException(
+Future<SentryId> sentryCaptureException(
   dynamic exception, {
   StackTrace? stackTrace,
-}) async {
-  await Sentry.captureException(exception, stackTrace: stackTrace);
+}) {
+  return Sentry.captureException(exception, stackTrace: stackTrace);
 }
 
 /// Capture a plain message in Sentry.
-Future<void> sentryCaptureMessage(String message) async {
-  await Sentry.captureMessage(message);
+Future<SentryId> sentryCaptureMessage(String message) {
+  return Sentry.captureMessage(message);
 }
