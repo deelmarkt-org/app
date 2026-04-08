@@ -373,20 +373,20 @@ void _checkScreenSpecReference(
 
 /// Paths exempt from the "must have a test" rule.
 const _testExemptPaths = [
-  'lib/core/router/',        // router config — tested via integration
-  'lib/core/services/',      // service wiring — tested via integration
-  'lib/core/l10n/',          // localisation config
+  'lib/core/router/', // router config — tested via integration
+  'lib/core/services/', // service wiring — tested via integration
+  'lib/core/l10n/', // localisation config
   'lib/core/constants.dart', // just constants
-  'lib/main.dart',           // app entry point
+  'lib/main.dart', // app entry point
 ];
 
 /// Filename patterns exempt — these file types don't need individual tests.
 const _testExemptPatterns = [
-  '/mock/',             // mock implementations — test infrastructure
+  '/mock/', // mock implementations — test infrastructure
   '/domain/repositories/', // repository interfaces — tested via implementations
-  '/domain/exceptions',    // exception classes — trivial data holders
-  '_providers.dart',       // Riverpod provider wiring — tested via consumers
-  '_state.dart',           // state classes — tested via notifier tests
+  '/domain/exceptions', // exception classes — trivial data holders
+  '_providers.dart', // Riverpod provider wiring — tested via consumers
+  '_state.dart', // state classes — tested via notifier tests
 ];
 
 void _checkMissingTestFile(String file, List<String> violations) {

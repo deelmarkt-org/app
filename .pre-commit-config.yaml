@@ -34,7 +34,7 @@ repos:
       - id: dart-format
         name: dart format
         language: system
-        entry: bash -c 'dart format --set-exit-if-changed lib/ test/'
+        entry: bash -c 'dart format --set-exit-if-changed lib/ test/ scripts/'
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
