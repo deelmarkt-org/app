@@ -2,8 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_notifier.dart'
     show ChatThreadState, chatThreadNotifierProvider, kCurrentUserIdStub;
+import 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart'
+    show updateOfferStatusUseCaseProvider;
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_error_view.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
@@ -81,6 +84,18 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     await ref
         .read(chatThreadNotifierProvider(widget.conversationId).notifier)
         .sendOffer(cents)
+        .catchError((_) {
+          if (!mounted) return;
+          messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
+        });
+  }
+
+  void _handleOfferRespond(String messageId, OfferStatus response) {
+    final messenger = ScaffoldMessenger.of(context);
+    final errorLabel = 'messages.errorTitle'.tr();
+    ref
+        .read(updateOfferStatusUseCaseProvider)
+        .call(messageId: messageId, newStatus: response)
         .catchError((_) {
           if (!mounted) return;
           messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
@@ -181,6 +196,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
               scrollController: _scrollController,
               messages: state.messages,
               currentUserId: kCurrentUserIdStub,
+              onOfferRespond: _handleOfferRespond,
             ),
           ),
           ChatMessageComposer(

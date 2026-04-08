@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// These tests assert the Senior Staff Engineer decision from PLAN-chat-screens.md
-/// §13 Q3: offer CTAs must render visually complete but only show a
-/// "coming soon" SnackBar. They must NOT invoke any transaction or payment API.
+/// These tests cover OfferMessageCard rendering and callback behaviour.
+/// Accept/Decline call the [onRespond] callback (R-32). Counter offer still
+/// shows a "coming soon" SnackBar (deferred to E03).
 void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
@@ -57,30 +57,46 @@ void main() {
       expect(find.byType(TextButton), findsOneWidget);
     });
 
-    testWidgets('tapping accept shows SnackBar, does not crash', (
+    testWidgets('tapping accept invokes onRespond with accepted', (
       tester,
     ) async {
+      OfferStatus? received;
       await tester.pumpWidget(
-        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+        buildTest(
+          OfferMessageCard(
+            message: offer(),
+            isSelf: false,
+            onRespond: (s) => received = s,
+          ),
+        ),
       );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FilledButton));
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(received, OfferStatus.accepted);
     });
 
-    testWidgets('tapping decline shows SnackBar', (tester) async {
+    testWidgets('tapping decline invokes onRespond with declined', (
+      tester,
+    ) async {
+      OfferStatus? received;
       await tester.pumpWidget(
-        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+        buildTest(
+          OfferMessageCard(
+            message: offer(),
+            isSelf: false,
+            onRespond: (s) => received = s,
+          ),
+        ),
       );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(OutlinedButton));
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(received, OfferStatus.declined);
     });
 
     testWidgets('accepted state renders status row, no CTAs', (tester) async {

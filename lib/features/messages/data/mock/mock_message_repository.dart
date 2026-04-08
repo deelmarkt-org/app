@@ -61,6 +61,15 @@ class MockMessageRepository implements MessageRepository {
     await Future<void>.delayed(const Duration(milliseconds: 100));
     return _convId001;
   }
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+    // No-op in mock — Realtime UPDATE subscription handles state refresh.
+  }
 }
 
 final _mockConversations = [
@@ -110,5 +119,27 @@ final _mockMessages = [
     senderId: _currentUserId,
     text: 'Is de prijs bespreekbaar?',
     createdAt: DateTime(2026, 3, 25, 14, 30),
+  ),
+  // Pending offer sent by the buyer (current user) — seller sees Accept/Decline.
+  MessageEntity(
+    id: 'msg-004',
+    conversationId: _convId001,
+    senderId: _currentUserId,
+    text: '€ 750,00',
+    type: MessageType.offer,
+    offerAmountCents: 75000,
+    offerStatus: OfferStatus.pending,
+    createdAt: DateTime(2026, 3, 25, 14, 35),
+  ),
+  // Accepted offer from the seller — shows accepted status row.
+  MessageEntity(
+    id: 'msg-005',
+    conversationId: _convId001,
+    senderId: 'user-002',
+    text: '€ 800,00',
+    type: MessageType.offer,
+    offerAmountCents: 80000,
+    offerStatus: OfferStatus.accepted,
+    createdAt: DateTime(2026, 3, 25, 14, 40),
   ),
 ];

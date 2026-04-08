@@ -64,4 +64,15 @@ class FakeMessageRepository implements MessageRepository {
     required String listingId,
     required String buyerId,
   }) async => 'conv-fake-001';
+
+  /// Records every [updateOfferStatus] invocation for assertions.
+  final List<({String messageId, OfferStatus newStatus})> updateOfferCalls = [];
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    updateOfferCalls.add((messageId: messageId, newStatus: newStatus));
+  }
 }

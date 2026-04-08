@@ -120,7 +120,7 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
             ),
             const SizedBox(width: Spacing.s2),
             TextButton(
-              onPressed: widget.onMakeOfferTap,
+              onPressed: widget.isSending ? null : widget.onMakeOfferTap,
               style: TextButton.styleFrom(
                 foregroundColor: colors.primary,
                 minimumSize: const Size(44, 44),

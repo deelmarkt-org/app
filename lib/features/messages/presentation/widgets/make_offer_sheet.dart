@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
@@ -13,7 +14,9 @@ int? _parseCents(String raw) {
   final normalised = raw.trim().replaceAll(',', '.');
   final value = double.tryParse(normalised);
   if (value == null || value <= 0) return null;
-  return (value * 100).round();
+  final cents = (value * 100).round();
+  if (cents > OfferConstants.maxOfferCents) return null;
+  return cents;
 }
 
 /// Bottom sheet for composing a structured "Make an Offer" message (R-32).

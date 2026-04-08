@@ -7,6 +7,7 @@ import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
@@ -63,7 +64,7 @@ class SupabaseMessageRepository implements MessageRepository {
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {
         if (!await _emitSnapshot(conversationId, controller)) return;
-        channel = _subscribeInserts(conversationId, controller);
+        channel = _subscribeChanges(conversationId, controller);
       },
       onCancel: () {
         channel?.unsubscribe();
@@ -90,24 +91,35 @@ class SupabaseMessageRepository implements MessageRepository {
     }
   }
 
-  /// Subscribes to INSERT events for [conversationId] and re-emits a full
-  /// snapshot on each event. Returns the active [RealtimeChannel].
-  RealtimeChannel _subscribeInserts(
+  /// Subscribes to INSERT and UPDATE events for [conversationId] and
+  /// re-emits a full snapshot on each event. UPDATE is required so that
+  /// offer_status changes (accept/decline via R-32 RPC) are reflected
+  /// in real-time without a manual refresh.
+  RealtimeChannel _subscribeChanges(
     String conversationId,
     StreamController<List<MessageEntity>> controller,
   ) {
+    final filter = PostgresChangeFilter(
+      type: PostgresChangeFilterType.eq,
+      column: 'conversation_id',
+      value: conversationId,
+    );
+    void onEvent(_) => _emitSnapshot(conversationId, controller);
     return _client
         .channel('$_channelPrefix$conversationId')
         .onPostgresChanges(
           event: PostgresChangeEvent.insert,
           schema: 'public',
           table: _messagesTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'conversation_id',
-            value: conversationId,
-          ),
-          callback: (_) => _emitSnapshot(conversationId, controller),
+          filter: filter,
+          callback: onEvent,
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: _messagesTable,
+          filter: filter,
+          callback: onEvent,
         )
         .subscribe();
   }
@@ -142,6 +154,29 @@ class SupabaseMessageRepository implements MessageRepository {
       return MessageDto.fromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to send message: ${e.message}');
+    }
+  }
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    if (newStatus != OfferStatus.accepted &&
+        newStatus != OfferStatus.declined) {
+      throw ArgumentError.value(
+        newStatus,
+        'newStatus',
+        'Only accepted or declined are valid transitions',
+      );
+    }
+    try {
+      await _client.rpc(
+        'update_offer_status',
+        params: {'p_message_id': messageId, 'p_new_status': newStatus.toDb()},
+      );
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to update offer status: ${e.message}');
     }
   }
 

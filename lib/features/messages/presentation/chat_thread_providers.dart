@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/usecases/get_messages_usecase.dart';
 import 'package:deelmarkt/features/messages/domain/usecases/send_message_usecase.dart';
+import 'package:deelmarkt/features/messages/domain/usecases/update_offer_status_usecase.dart';
 
 /// Stub id for the current signed-in user.
 ///
@@ -18,4 +19,8 @@ final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
 
 final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
   (ref) => SendMessageUseCase(ref.watch(messageRepositoryProvider)),
+);
+
+final updateOfferStatusUseCaseProvider = Provider<UpdateOfferStatusUseCase>(
+  (ref) => UpdateOfferStatusUseCase(ref.watch(messageRepositoryProvider)),
 );
