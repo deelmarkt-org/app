@@ -197,7 +197,7 @@ void main() {
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
-    testWidgets('tapping Dismiss on low-confidence alert shows snackbar', (
+    testWidgets('tapping Dismiss on low-confidence alert hides the banner', (
       tester,
     ) async {
       setLargeScreen(tester);
@@ -222,6 +222,8 @@ void main() {
       await tester.pumpWidget(buildApp(repo: repo));
       await tester.pumpAndSettle();
 
+      expect(find.byType(ScamAlert), findsOneWidget);
+
       final dismissFinder = find.byWidgetPredicate(
         (w) =>
             w is Semantics &&
@@ -232,7 +234,8 @@ void main() {
       await tester.tap(dismissFinder);
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      // After dismiss, the banner should be hidden
+      expect(find.byType(ScamAlert), findsNothing);
     });
   });
 }
