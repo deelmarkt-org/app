@@ -495,7 +495,11 @@
       "under_4h": "Responds within 4 hours",
       "under_24h": "Responds within 24 hours",
       "over_24h": "Responds after 24 hours",
-      "unknown": "Response time unknown"
+      "unknown": "Response time unknown",
+      "short_under_1h": "< 1h",
+      "short_under_4h": "< 4h",
+      "short_under_24h": "< 24h",
+      "short_over_24h": "> 24h"
     }
   },
   "rating": {

@@ -495,7 +495,11 @@
       "under_4h": "Reageert binnen 4 uur",
       "under_24h": "Reageert binnen 24 uur",
       "over_24h": "Reageert na 24 uur",
-      "unknown": "Reactietijd onbekend"
+      "unknown": "Reactietijd onbekend",
+      "short_under_1h": "< 1u",
+      "short_under_4h": "< 4u",
+      "short_under_24h": "< 24u",
+      "short_over_24h": "> 24u"
     }
   },
   "rating": {
