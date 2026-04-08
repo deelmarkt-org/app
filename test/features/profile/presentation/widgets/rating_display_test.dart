@@ -37,7 +37,7 @@ void main() {
       // Stars rendered
       expect(find.byType(Icon), findsNWidgets(5));
       // Count text present (.tr() returns key path)
-      expect(find.text('sellerProfile.reviewCount'), findsOneWidget);
+      expect(find.text('seller_profile.review_count'), findsOneWidget);
     });
 
     testWidgets('filled stars match rounded average', (tester) async {
@@ -87,7 +87,7 @@ void main() {
         RatingDisplay.tooFew(aggregate: tooFewAggregate),
       );
 
-      expect(find.text('sellerProfile.tooFewReviews'), findsOneWidget);
+      expect(find.text('seller_profile.too_few_reviews'), findsOneWidget);
       // No stars in tooFew variant
       expect(find.byType(Icon), findsNothing);
     });
@@ -116,14 +116,14 @@ void main() {
 
       // Large shows headlineLarge-style number
       expect(find.byType(Icon), findsNWidgets(5));
-      expect(find.text('sellerProfile.reviewCount'), findsOneWidget);
+      expect(find.text('seller_profile.review_count'), findsOneWidget);
     });
 
     testWidgets('picks tooFew variant when not visible', (tester) async {
       final widget = RatingDisplay.fromAggregate(tooFewAggregate);
       await pumpTestWidget(tester, widget);
 
-      expect(find.text('sellerProfile.tooFewReviews'), findsOneWidget);
+      expect(find.text('seller_profile.too_few_reviews'), findsOneWidget);
     });
   });
 

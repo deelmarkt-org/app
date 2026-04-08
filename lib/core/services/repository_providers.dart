@@ -7,7 +7,6 @@ import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repositor
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
-import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
@@ -21,8 +20,6 @@ import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_reposi
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 
-/// Re-export [currentUserProvider] so presentation-layer notifiers can import
-/// from this barrel instead of reaching into the raw infrastructure layer.
 export 'package:deelmarkt/core/services/supabase_service.dart'
     show currentUserProvider;
 
@@ -76,9 +73,22 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Message repository — mock or Supabase based on [useMockDataProvider].
+/// Message repository — mock only for P-35/P-36.
+///
+/// Supabase Realtime implementation is planned as a backend-owned
+/// follow-up task (E04 §Technical Scope). The mock repo is wired
+/// unconditionally here — when `SupabaseMessageRepository` ships,
+/// switch to the same `useMockDataProvider` pattern the other
+/// providers in this file use:
+///
+/// ```dart
+/// final useMock = ref.watch(useMockDataProvider);
+/// if (useMock) return MockMessageRepository();
+/// return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
+/// ```
+///
+/// TODO(reso): replace with the conditional above once
+/// `SupabaseMessageRepository` lands (E04 backend tasks).
 final messageRepositoryProvider = Provider<MessageRepository>((ref) {
-  final useMock = ref.watch(useMockDataProvider);
-  if (useMock) return MockMessageRepository();
-  return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
+  return MockMessageRepository();
 });

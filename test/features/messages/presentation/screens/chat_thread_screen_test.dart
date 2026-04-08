@@ -114,6 +114,42 @@ void main() {
       expect(repo.sendCalls.single.text, 'Goedemiddag');
     });
 
+    testWidgets('camera button shows coming soon snackbar', (tester) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byIcon(Icons.camera_alt_outlined));
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('offer button shows coming soon snackbar', (tester) async {
+      setLargeScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final repo = FakeMessageRepository(
+        conversations: [conv('c1')],
+        messages: [],
+      );
+      await tester.pumpWidget(buildApp(repo: repo));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('chat.offer'));
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
     testWidgets('renders correctly in dark theme', (tester) async {
       setLargeScreen(tester);
       addTearDown(tester.view.resetPhysicalSize);

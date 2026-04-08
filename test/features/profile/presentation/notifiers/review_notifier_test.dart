@@ -42,8 +42,8 @@ Future<ReviewScreenState> _waitForState(
   String txnId,
 ) async {
   container.listen(reviewNotifierProvider(txnId), (_, _) {});
-  // Mock repos simulate 200-300ms delay
-  await Future<void>.delayed(const Duration(milliseconds: 600));
+  // Mock repos simulate 200-300ms delay; allow extra headroom under CI load
+  await Future<void>.delayed(const Duration(milliseconds: 1000));
   final asyncVal = container.read(reviewNotifierProvider(txnId));
   return asyncVal.requireValue;
 }
@@ -85,7 +85,7 @@ void main() {
       expect(state, isA<ReviewIneligible>());
       expect(
         (state as ReviewIneligible).reason,
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 

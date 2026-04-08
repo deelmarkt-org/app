@@ -19,6 +19,17 @@ Widget _wrapWidget(Widget child) {
   );
 }
 
+ReviewEntity _review(String id) => ReviewEntity(
+  id: id,
+  reviewerId: 'u1',
+  reviewerName: 'Alice',
+  revieweeId: 'u2',
+  listingId: 'l1',
+  rating: 4,
+  text: 'Great!',
+  createdAt: DateTime(2025),
+);
+
 void main() {
   group('ReviewsTabView', () {
     testWidgets('loading state shows SkeletonLoader', (tester) async {
@@ -126,6 +137,42 @@ void main() {
       );
 
       expect(find.text('Okay transaction'), findsOneWidget);
+    });
+
+    testWidgets('shows load more button when hasMore and not loading', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        ReviewsTabView(
+          reviews: AsyncValue<List<ReviewEntity>>.data([_review('r1')]),
+          onRetry: () {},
+          onLoadMore: () {},
+          hasMore: true,
+        ),
+      );
+
+      expect(find.text('seller_profile.load_more'), findsOneWidget);
+    });
+
+    testWidgets('hides load more button when isLoadingMore is true', (
+      tester,
+    ) async {
+      // pumpAndSettle would loop forever on CircularProgressIndicator (infinite
+      // animation) — use pumpTestWidgetAnimated + manual pump instead.
+      await pumpTestWidgetAnimated(
+        tester,
+        ReviewsTabView(
+          reviews: AsyncValue<List<ReviewEntity>>.data([_review('r1')]),
+          onRetry: () {},
+          onLoadMore: () {},
+          hasMore: true,
+          isLoadingMore: true,
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('seller_profile.load_more'), findsNothing);
     });
   });
 }

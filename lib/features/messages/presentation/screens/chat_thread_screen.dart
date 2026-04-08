@@ -11,8 +11,10 @@ import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_co
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_list.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
-import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
+
+/// Whether the scam alert banner has been dismissed by the user.
+final scamAlertDismissedProvider = StateProvider<bool>((_) => false);
 
 /// Pixel threshold beneath which the user is considered "at the bottom"
 /// for the purposes of sticky auto-scroll (Gemini code review G2).
@@ -40,14 +42,9 @@ class ChatThreadScreen extends ConsumerStatefulWidget {
 class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  /// Tracks whether the user dismissed the low-confidence scam banner.
-  /// [ValueNotifier] keeps dismiss state local without setState (CLAUDE.md §1.3).
-  final ValueNotifier<bool> _scamAlertDismissed = ValueNotifier(false);
-
   @override
   void dispose() {
     _scrollController.dispose();
-    _scamAlertDismissed.dispose();
     super.dispose();
   }
 
@@ -79,15 +76,6 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('chat.comingSoon'.tr()),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  void _handleReport() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('scam_alert.report'.tr()),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -142,6 +130,34 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     );
   }
 
+  /// Returns the [ScamAlert] widget when the latest message in the thread
+  /// has been flagged, or an invisible placeholder otherwise.
+  Widget _buildScamAlert(ChatThreadState state) {
+    final dismissed = ref.watch(scamAlertDismissedProvider);
+    if (dismissed) return const SizedBox.shrink();
+    if (state.messages.isEmpty) return const SizedBox.shrink();
+    final latest = state.messages.last;
+    if (latest.scamConfidence == ScamConfidence.none) {
+      return const SizedBox.shrink();
+    }
+    return ScamAlert(
+      confidence: latest.scamConfidence,
+      reasons: latest.scamReasons ?? const [ScamReason.other],
+      onReport:
+          latest.scamConfidence == ScamConfidence.high
+              ? () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('scam_alert.report_submitted'.tr())),
+                );
+              }
+              : null,
+      onDismiss:
+          latest.scamConfidence == ScamConfidence.low
+              ? () => ref.read(scamAlertDismissedProvider.notifier).state = true
+              : null,
+    );
+  }
+
   Widget _buildLoaded(ChatThreadState state, ChatThemeColors colors) {
     return Container(
       color: colors.scaffold,
@@ -152,7 +168,8 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
             showBackButton: widget.showBackButton,
           ),
           ChatListingEmbedCard(conversation: state.conversation),
-          _buildScamAlert(state.messages),
+          // P-37: Scam alert banner for flagged messages.
+          _buildScamAlert(state),
           Expanded(
             child: ChatThreadList(
               scrollController: _scrollController,
@@ -168,45 +185,6 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  /// Builds the P-37 scam alert banner for the most recently flagged message,
-  /// or returns [SizedBox.shrink] when no messages are flagged.
-  ///
-  /// Uses [ValueListenableBuilder] for the low-confidence dismiss state so no
-  /// [setState] call is needed (CLAUDE.md §1.3).
-  Widget _buildScamAlert(List<MessageEntity> messages) {
-    MessageEntity? flagged;
-    for (final m in messages) {
-      if (m.scamConfidence != ScamConfidence.none) flagged = m;
-    }
-    if (flagged == null) return const SizedBox.shrink();
-
-    final reasons =
-        flagged.scamReasons?.isNotEmpty == true
-            ? flagged.scamReasons!
-            : [ScamReason.other];
-
-    if (flagged.scamConfidence == ScamConfidence.high) {
-      return ScamAlert(
-        confidence: ScamConfidence.high,
-        reasons: reasons,
-        onReport: _handleReport,
-      );
-    }
-
-    return ValueListenableBuilder<bool>(
-      valueListenable: _scamAlertDismissed,
-      builder: (context, dismissed, child) {
-        if (dismissed) return const SizedBox.shrink();
-        return ScamAlert(
-          confidence: ScamConfidence.low,
-          reasons: reasons,
-          onReport: _handleReport,
-          onDismiss: () => _scamAlertDismissed.value = true,
-        );
-      },
     );
   }
 }

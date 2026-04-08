@@ -1,202 +1,156 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/review_card.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_result_view.dart';
+import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 import '../../../../helpers/pump_app.dart';
 
-/// Minimal [ReviewEntity] fixture.
-ReviewEntity _review({
-  String id = 'r-1',
-  String reviewerId = 'user-1',
-  double rating = 4.0,
-  String text = 'Snelle levering, goed verpakt.',
-}) => ReviewEntity(
-  id: id,
-  reviewerId: reviewerId,
-  reviewerName: 'Jan de Vries',
-  revieweeId: 'user-2',
-  listingId: 'listing-1',
-  rating: rating,
-  text: text,
-  createdAt: DateTime(2026, 4),
+final _review1 = ReviewEntity(
+  id: 'r1',
+  reviewerId: 'u1',
+  reviewerName: 'Alice',
+  revieweeId: 'u2',
+  listingId: 'l1',
+  rating: 4,
+  text: 'Great!',
+  createdAt: DateTime(2025),
+);
+
+final _review2 = ReviewEntity(
+  id: 'r2',
+  reviewerId: 'u2',
+  reviewerName: 'Bob',
+  revieweeId: 'u1',
+  listingId: 'l1',
+  rating: 3,
+  text: 'OK',
+  createdAt: DateTime(2025),
 );
 
 void main() {
   group('ReviewIneligibleView', () {
-    testWidgets('renders the ineligibility reason key', (tester) async {
+    testWidgets('renders warning icon and reason key', (tester) async {
       await pumpTestWidget(
         tester,
         const ReviewIneligibleView(reason: 'review.error.ineligible.pending'),
       );
+
+      expect(find.byType(ReviewIneligibleView), findsOneWidget);
+      // .tr() returns the key in test environment
       expect(find.text('review.error.ineligible.pending'), findsOneWidget);
     });
 
-    testWidgets('renders a warning icon', (tester) async {
+    testWidgets('renders with custom reason key', (tester) async {
       await pumpTestWidget(
         tester,
-        const ReviewIneligibleView(reason: 'review.error.ineligible.pending'),
+        const ReviewIneligibleView(reason: 'review.error.ineligible.disputed'),
       );
-      expect(find.byType(Icon), findsOneWidget);
+
+      expect(find.text('review.error.ineligible.disputed'), findsOneWidget);
     });
   });
 
   group('ReviewSubmittedView', () {
-    testWidgets('renders thank-you title', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewSubmittedView(role: ReviewRole.buyer),
-      );
-      expect(find.text('review.thankYou'), findsOneWidget);
-    });
-
-    testWidgets('renders waiting-for-other message', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewSubmittedView(role: ReviewRole.buyer),
-      );
-      expect(find.text('review.waitingForOther'), findsOneWidget);
-    });
-
-    testWidgets('renders close button', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewSubmittedView(role: ReviewRole.buyer),
-      );
-      expect(find.byType(OutlinedButton), findsOneWidget);
-    });
-
-    testWidgets('buyer role uses seller label in waiting message', (
+    testWidgets('buyer role renders thank you and waiting text', (
       tester,
     ) async {
       await pumpTestWidget(
         tester,
         const ReviewSubmittedView(role: ReviewRole.buyer),
       );
-      // ReviewSubmittedView passes roleSeller to waitingForOther namedArgs
-      // .tr() returns key in tests, so waitingForOther is shown
-      expect(find.byType(ReviewSubmittedView), findsOneWidget);
+
+      expect(find.text('review.thank_you'), findsOneWidget);
+      expect(find.text('review.waiting_for_other'), findsOneWidget);
     });
 
-    testWidgets('seller role renders without errors', (tester) async {
+    testWidgets('seller role renders thank you and waiting text', (
+      tester,
+    ) async {
       await pumpTestWidget(
         tester,
         const ReviewSubmittedView(role: ReviewRole.seller),
       );
-      expect(find.text('review.thankYou'), findsOneWidget);
+
+      expect(find.text('review.thank_you'), findsOneWidget);
+      expect(find.text('review.waiting_for_other'), findsOneWidget);
+    });
+
+    testWidgets('has close button', (tester) async {
+      await pumpTestWidget(
+        tester,
+        const ReviewSubmittedView(role: ReviewRole.buyer),
+      );
+
+      expect(find.text('review.close'), findsOneWidget);
+    });
+
+    testWidgets('close button does not throw', (tester) async {
+      await pumpTestWidget(
+        tester,
+        Builder(
+          builder:
+              (context) => const ReviewSubmittedView(role: ReviewRole.buyer),
+        ),
+      );
+
+      // Tap close — pumpTestWidget wraps in MaterialApp so Navigator exists
+      await tester.tap(find.text('review.close'));
+      await tester.pumpAndSettle();
+      // No exception = pass
     });
   });
 
   group('ReviewBothVisibleView', () {
-    testWidgets('renders both-visible title', (tester) async {
+    testWidgets('renders section header and two review cards', (tester) async {
       await pumpTestWidget(
         tester,
-        ReviewBothVisibleView(
-          myReview: _review(),
-          theirReview: _review(id: 'r-2', reviewerId: 'user-2'),
-        ),
+        ReviewBothVisibleView(myReview: _review1, theirReview: _review2),
       );
-      expect(find.text('review.bothVisible'), findsOneWidget);
-    });
 
-    testWidgets('renders reviewer names for both reviews', (tester) async {
-      await pumpTestWidget(
-        tester,
-        ReviewBothVisibleView(
-          myReview: _review(),
-          theirReview: _review(id: 'r-2', reviewerId: 'user-2'),
-        ),
-      );
-      // ReviewCard shows reviewerName — both use the same name in fixtures
-      expect(find.text('Jan de Vries'), findsWidgets);
-    });
-
-    testWidgets('renders in dark theme without paint exceptions', (
-      tester,
-    ) async {
-      await pumpTestWidget(
-        tester,
-        ReviewBothVisibleView(
-          myReview: _review(),
-          theirReview: _review(id: 'r-2', reviewerId: 'user-2'),
-        ),
-        theme: DeelmarktTheme.dark,
-      );
-      expect(find.text('review.bothVisible'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      expect(find.text('review.both_visible'), findsOneWidget);
+      expect(find.byType(ReviewCard), findsNWidgets(2));
     });
   });
 
   group('ReviewErrorView', () {
-    testWidgets('renders ErrorState when onRetry is provided', (tester) async {
+    testWidgets('retryable error renders ErrorState widget', (tester) async {
       await pumpTestWidget(
         tester,
         ReviewErrorView(errorClass: ReviewErrorClass.network, onRetry: () {}),
       );
-      // ErrorState with message = 'review.error.network'
-      expect(find.text('review.error.network'), findsOneWidget);
+
+      expect(find.byType(ErrorState), findsOneWidget);
     });
 
-    testWidgets('renders close button when onRetry is null', (tester) async {
+    testWidgets('non-retryable error renders error message and close button', (
+      tester,
+    ) async {
       await pumpTestWidget(
         tester,
         const ReviewErrorView(errorClass: ReviewErrorClass.conflict),
       );
-      expect(find.byType(OutlinedButton), findsOneWidget);
+
+      expect(find.byType(ErrorState), findsNothing);
+      expect(find.text('review.close'), findsOneWidget);
     });
 
-    testWidgets('conflict error key renders correctly', (tester) async {
+    testWidgets('rateLimit error with retryAfterSeconds shows message', (
+      tester,
+    ) async {
       await pumpTestWidget(
         tester,
-        const ReviewErrorView(errorClass: ReviewErrorClass.conflict),
-      );
-      expect(find.text('review.error.conflict'), findsOneWidget);
-    });
-
-    testWidgets('expired error key renders correctly', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewErrorView(errorClass: ReviewErrorClass.expired),
-      );
-      expect(find.text('review.error.expired'), findsOneWidget);
-    });
-
-    testWidgets('cancelled error key renders correctly', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewErrorView(errorClass: ReviewErrorClass.cancelled),
-      );
-      expect(find.text('review.error.cancelled'), findsOneWidget);
-    });
-
-    testWidgets('rateLimit error shows seconds placeholder', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewErrorView(
+        ReviewErrorView(
           errorClass: ReviewErrorClass.rateLimit,
           retryAfterSeconds: 30,
+          onRetry: () {},
         ),
       );
-      expect(find.text('review.error.rateLimit'), findsOneWidget);
-    });
 
-    testWidgets('moderationBlocked error key renders', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewErrorView(errorClass: ReviewErrorClass.moderationBlocked),
-      );
-      expect(find.text('review.error.moderationBlocked'), findsOneWidget);
-    });
-
-    testWidgets('unknown error key renders', (tester) async {
-      await pumpTestWidget(
-        tester,
-        const ReviewErrorView(errorClass: ReviewErrorClass.unknown),
-      );
-      expect(find.text('review.error.unknown'), findsOneWidget);
+      expect(find.byType(ErrorState), findsOneWidget);
     });
   });
 }

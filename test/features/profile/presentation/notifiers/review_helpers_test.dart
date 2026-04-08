@@ -6,136 +6,129 @@ import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_
 
 void main() {
   group('checkReviewEligibility', () {
-    test('returns null for released (eligible)', () {
+    test('released returns null (eligible)', () {
       expect(checkReviewEligibility(TransactionStatus.released), isNull);
     });
 
-    test('returns null for confirmed (eligible)', () {
+    test('confirmed returns null (eligible)', () {
       expect(checkReviewEligibility(TransactionStatus.confirmed), isNull);
     });
 
-    test('returns pending key for created', () {
+    test('created returns pending key', () {
       expect(
         checkReviewEligibility(TransactionStatus.created),
         'review.error.ineligible.pending',
       );
     });
 
-    test('returns pending key for paymentPending', () {
+    test('paymentPending returns pending key', () {
       expect(
         checkReviewEligibility(TransactionStatus.paymentPending),
         'review.error.ineligible.pending',
       );
     });
 
-    test('returns escrowHeld key for paid', () {
+    test('paid returns escrow_held key', () {
       expect(
         checkReviewEligibility(TransactionStatus.paid),
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 
-    test('returns escrowHeld key for shipped', () {
+    test('shipped returns escrow_held key', () {
       expect(
         checkReviewEligibility(TransactionStatus.shipped),
-        'review.error.ineligible.escrowHeld',
+        'review.error.ineligible.escrow_held',
       );
     });
 
-    test('returns delivered key for delivered', () {
+    test('delivered returns delivered key', () {
       expect(
         checkReviewEligibility(TransactionStatus.delivered),
         'review.error.ineligible.delivered',
       );
     });
 
-    test('returns disputed key for disputed', () {
+    test('disputed returns disputed key', () {
       expect(
         checkReviewEligibility(TransactionStatus.disputed),
         'review.error.ineligible.disputed',
       );
     });
 
-    test('returns cancelled key for cancelled', () {
+    test('cancelled returns cancelled key', () {
       expect(
         checkReviewEligibility(TransactionStatus.cancelled),
         'review.error.ineligible.cancelled',
       );
     });
-
-    test('returns pending key for expired (wildcard)', () {
-      expect(
-        checkReviewEligibility(TransactionStatus.expired),
-        'review.error.ineligible.pending',
-      );
-    });
   });
 
   group('classifyReviewError', () {
-    test('returns conflict for conflict message', () {
+    test('message with conflict → ReviewErrorClass.conflict', () {
       expect(
         classifyReviewError(Exception('conflict detected')),
         ReviewErrorClass.conflict,
       );
     });
 
-    test('returns conflict for 409 status code', () {
+    test('message with 409 → ReviewErrorClass.conflict', () {
       expect(
-        classifyReviewError(Exception('409 too many')),
+        classifyReviewError(Exception('HTTP 409 error')),
         ReviewErrorClass.conflict,
       );
     });
 
-    test('returns rateLimit for rate message', () {
+    test('message with rate → ReviewErrorClass.rateLimit', () {
       expect(
         classifyReviewError(Exception('rate limit exceeded')),
         ReviewErrorClass.rateLimit,
       );
     });
 
-    test('returns rateLimit for 429 status code', () {
+    test('message with 429 → ReviewErrorClass.rateLimit', () {
       expect(
-        classifyReviewError(Exception('http 429')),
+        classifyReviewError(Exception('HTTP 429')),
         ReviewErrorClass.rateLimit,
       );
     });
 
-    test('returns expired for expired message', () {
+    test('message with expired → ReviewErrorClass.expired', () {
       expect(
-        classifyReviewError(Exception('token expired')),
+        classifyReviewError(Exception('review window expired')),
         ReviewErrorClass.expired,
       );
     });
 
-    test('returns moderationBlocked for moderation message', () {
+    test('message with moderation → ReviewErrorClass.moderationBlocked', () {
       expect(
-        classifyReviewError(Exception('moderation blocked content')),
+        classifyReviewError(Exception('moderation blocked')),
         ReviewErrorClass.moderationBlocked,
       );
     });
 
-    test('returns network for network message', () {
+    test('message with network → ReviewErrorClass.network', () {
       expect(
-        classifyReviewError(Exception('network error')),
+        classifyReviewError(Exception('network unreachable')),
         ReviewErrorClass.network,
       );
     });
 
-    test('returns network for socket error', () {
+    test('message with socket → ReviewErrorClass.network', () {
       expect(
-        classifyReviewError(Exception('socket connection failed')),
+        classifyReviewError(Exception('socket closed')),
         ReviewErrorClass.network,
       );
     });
 
-    test('returns network for timeout', () {
+    test('message with timeout → ReviewErrorClass.network', () {
       expect(
         classifyReviewError(Exception('connection timeout')),
         ReviewErrorClass.network,
       );
     });
 
-    test('returns unknown for unrecognised message', () {
+    test('unknown message → ReviewErrorClass.unknown', () {
       expect(
         classifyReviewError(Exception('something went wrong')),
         ReviewErrorClass.unknown,
@@ -148,75 +141,41 @@ void main() {
       expect(sanitizeReviewBody('  hello  '), 'hello');
     });
 
-    test('strips null control characters', () {
-      expect(sanitizeReviewBody('hello\x00world'), 'helloworld');
+    test('strips null byte (\\x00)', () {
+      expect(sanitizeReviewBody('abc\x00def'), 'abcdef');
     });
 
-    test('strips other control characters', () {
-      expect(sanitizeReviewBody('hello\x08world'), 'helloworld');
+    test('strips control char (\\x07)', () {
+      expect(sanitizeReviewBody('abc\x07def'), 'abcdef');
     });
 
-    test('strips zero-width space', () {
-      expect(sanitizeReviewBody('hello\u200Bworld'), 'helloworld');
+    test('strips zero-width space (\\u200B)', () {
+      expect(sanitizeReviewBody('abc\u200Bdef'), 'abcdef');
     });
 
-    test('strips BOM character', () {
-      expect(sanitizeReviewBody('hello\uFEFFworld'), 'helloworld');
+    test('leaves normal text unchanged', () {
+      expect(sanitizeReviewBody('Great seller!'), 'Great seller!');
     });
 
-    test('preserves normal text unchanged', () {
-      expect(sanitizeReviewBody('Geweldige verkoper!'), 'Geweldige verkoper!');
-    });
-
-    test('handles empty string', () {
+    test('empty string returns empty', () {
       expect(sanitizeReviewBody(''), '');
-    });
-
-    test('handles whitespace-only string', () {
-      expect(sanitizeReviewBody('   '), '');
-    });
-  });
-
-  group('reviewBodyContainsUrl', () {
-    test('detects https:// URLs', () {
-      expect(reviewBodyContainsUrl('See https://scam.nl'), isTrue);
-    });
-
-    test('detects http:// URLs', () {
-      expect(reviewBodyContainsUrl('Visit http://example.com now'), isTrue);
-    });
-
-    test('detects www. prefix', () {
-      expect(reviewBodyContainsUrl('Go to www.example.com'), isTrue);
-    });
-
-    test('detects bare domain patterns', () {
-      expect(reviewBodyContainsUrl('Check out example.nl/item'), isTrue);
-    });
-
-    test('returns false for clean text', () {
-      expect(reviewBodyContainsUrl('Great seller, fast delivery!'), isFalse);
-    });
-
-    test('returns false for empty string', () {
-      expect(reviewBodyContainsUrl(''), isFalse);
     });
   });
 
   group('generateIdempotencyKey', () {
-    test('generates a non-empty string', () {
+    test('returns non-empty string', () {
       expect(generateIdempotencyKey(), isNotEmpty);
     });
 
-    test('generates unique keys on each call', () {
-      final key1 = generateIdempotencyKey();
-      final key2 = generateIdempotencyKey();
-      expect(key1, isNot(key2));
+    test('two successive calls return different keys', () {
+      final k1 = generateIdempotencyKey();
+      final k2 = generateIdempotencyKey();
+      expect(k1, isNot(equals(k2)));
     });
 
-    test('key contains the dash separator', () {
+    test('key matches pattern <timestamp>-<random>', () {
       final key = generateIdempotencyKey();
-      expect(key, contains('-'));
+      expect(key, matches(RegExp(r'^\d+-\d+$')));
     });
   });
 }

@@ -90,11 +90,11 @@ class ReviewScreen extends ConsumerWidget {
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: Text('review.unsavedDiscard'.tr()),
+            title: Text('review.unsaved_discard'.tr()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text('review.unsavedKeep'.tr()),
+                child: Text('review.unsaved_keep'.tr()),
               ),
               TextButton(
                 onPressed: () {

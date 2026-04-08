@@ -50,9 +50,8 @@ class ReviewSubmittedView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final roleLabel =
-        role == ReviewRole.buyer
-            ? 'review.roleSeller'.tr()
-            : 'review.roleBuyer'.tr();
+        (role == ReviewRole.buyer ? 'review.role.seller' : 'review.role.buyer')
+            .tr();
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.s6),
@@ -66,12 +65,12 @@ class ReviewSubmittedView extends StatelessWidget {
             ),
             const SizedBox(height: Spacing.s4),
             Text(
-              'review.thankYou'.tr(),
+              'review.thank_you'.tr(),
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: Spacing.s2),
             Text(
-              'review.waitingForOther'.tr(namedArgs: {'role': roleLabel}),
+              'review.waiting_for_other'.tr(namedArgs: {'role': roleLabel}),
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -108,7 +107,7 @@ class ReviewBothVisibleView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'review.bothVisible'.tr(),
+              'review.both_visible'.tr(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: Spacing.s4),
@@ -142,8 +141,8 @@ class ReviewErrorView extends StatelessWidget {
       ReviewErrorClass.conflict => 'review.error.conflict',
       ReviewErrorClass.expired => 'review.error.expired',
       ReviewErrorClass.cancelled => 'review.error.cancelled',
-      ReviewErrorClass.rateLimit => 'review.error.rateLimit',
-      ReviewErrorClass.moderationBlocked => 'review.error.moderationBlocked',
+      ReviewErrorClass.rateLimit => 'review.error.rate_limit',
+      ReviewErrorClass.moderationBlocked => 'review.error.moderation_blocked',
       ReviewErrorClass.unknown => 'review.error.unknown',
     };
 

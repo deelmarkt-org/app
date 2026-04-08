@@ -226,6 +226,9 @@ class _InstantUserRepository implements UserRepository {
   Future<UserEntity?> getById(String id) async => _testUser;
 
   @override
+  Future<void> reportUser(String userId, ReportReason reason) async {}
+
+  @override
   Future<UserEntity> updateProfile({
     String? displayName,
     String? avatarUrl,
@@ -240,6 +243,9 @@ class _HangingUserRepository implements UserRepository {
 
   @override
   Future<UserEntity?> getById(String id) => Completer<UserEntity?>().future;
+
+  @override
+  Future<void> reportUser(String userId, ReportReason reason) async {}
 
   @override
   Future<UserEntity> updateProfile({
@@ -258,6 +264,10 @@ class _ErrorUserRepository implements UserRepository {
   Future<UserEntity?> getById(String id) => throw Exception('Auth failed');
 
   @override
+  Future<void> reportUser(String userId, ReportReason reason) =>
+      throw Exception('Auth failed');
+
+  @override
   Future<UserEntity> updateProfile({
     String? displayName,
     String? avatarUrl,
@@ -272,6 +282,9 @@ class _NullUserRepository implements UserRepository {
 
   @override
   Future<UserEntity?> getById(String id) async => null;
+
+  @override
+  Future<void> reportUser(String userId, ReportReason reason) async {}
 
   @override
   Future<UserEntity> updateProfile({

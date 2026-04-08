@@ -38,11 +38,11 @@ Both submitted state (showing both reviews side by side)
 ## l10n keys
 ```
 review.title: "Beoordeling" / "Review"
-review.howWasExperience: "Hoe was je ervaring met {name}?" / "How was your experience with {name}?"
-review.tellAbout: "Vertel over je ervaring..." / "Tell about your experience..."
-review.blindReview: "Blinde beoordeling" / "Blind review"
-review.blindExplanation: "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling" / "The other party can only see your review after submitting theirs"
+review.how_was_experience: "Hoe was je ervaring met {name}?" / "How was your experience with {name}?"
+review.tell_about: "Vertel over je ervaring..." / "Tell about your experience..."
+review.blind_review: "Blinde beoordeling" / "Blind review"
+review.blind_explanation: "De ander kan jouw beoordeling pas zien na het invullen van hun eigen beoordeling" / "The other party can only see your review after submitting theirs"
 review.submit: "Beoordeling plaatsen" / "Submit review"
-review.thankYou: "Bedankt!" / "Thank you!"
-review.waitingForOther: "Wacht op de beoordeling van de verkoper" / "Waiting for the seller's review"
+review.thank_you: "Bedankt!" / "Thank you!"
+review.waiting_for_other: "Wacht op de beoordeling van de verkoper" / "Waiting for the seller's review"
 ```

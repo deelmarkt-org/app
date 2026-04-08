@@ -10,7 +10,7 @@ String? checkReviewEligibility(TransactionStatus status) {
     TransactionStatus.created ||
     TransactionStatus.paymentPending => 'review.error.ineligible.pending',
     TransactionStatus.paid ||
-    TransactionStatus.shipped => 'review.error.ineligible.escrowHeld',
+    TransactionStatus.shipped => 'review.error.ineligible.escrow_held',
     TransactionStatus.delivered => 'review.error.ineligible.delivered',
     TransactionStatus.disputed => 'review.error.ineligible.disputed',
     TransactionStatus.cancelled => 'review.error.ineligible.cancelled',
@@ -45,17 +45,6 @@ String sanitizeReviewBody(String body) {
       .trim()
       .replaceAll(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]'), '')
       .replaceAll(RegExp(r'[\u200B-\u200F\u2028-\u202F\uFEFF]'), '');
-}
-
-/// Returns `true` if [body] contains a URL-like pattern.
-///
-/// Detects `http://`, `https://`, `www.` prefixes and bare domain patterns
-/// (e.g. `example.nl/path`). Used to surface [review.urlWarning] in the form.
-bool reviewBodyContainsUrl(String body) {
-  return RegExp(
-    r'https?://|www\.|\b\w+\.(com|nl|be|de|org|net|io|co|app)\b',
-    caseSensitive: false,
-  ).hasMatch(body);
 }
 
 /// Generates a client-side idempotency key.

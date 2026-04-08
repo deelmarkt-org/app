@@ -34,9 +34,8 @@ class ReviewNotifier extends _$ReviewNotifier {
     if (ineligible != null) return ReviewIneligible(reason: ineligible);
     _role =
         currentUser.id == txn.buyerId ? ReviewRole.buyer : ReviewRole.seller;
-    // Use l10n keys — `.tr()` is called in the widget layer
     _revieweeName =
-        _role == ReviewRole.buyer ? 'review.roleSeller' : 'review.roleBuyer';
+        _role == ReviewRole.buyer ? 'review.role.seller' : 'review.role.buyer';
     final reviews = await ref
         .read(reviewRepositoryProvider)
         .getForTransaction(transactionId);

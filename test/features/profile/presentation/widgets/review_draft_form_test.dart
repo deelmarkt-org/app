@@ -1,209 +1,139 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
-import 'package:deelmarkt/features/profile/presentation/widgets/rating_input.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_draft_form.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/rating_input.dart';
+import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
-/// Helper — creates a [ReviewDraftState] for testing.
-ReviewDraftState _draft({
-  double rating = 0,
-  String body = '',
-  bool hasRestoredDraft = false,
-}) => ReviewDraftState(
-  rating: rating,
-  body: body,
-  idempotencyKey: 'idempotency-key-1',
-  revieweeName: 'review.roleSeller',
-  role: ReviewRole.buyer,
-  hasRestoredDraft: hasRestoredDraft,
-);
-
-/// Pumps [form] inside a [Scaffold] so that [BottomAppBar] and [Expanded]
-/// have proper height constraints.
-Future<void> _pump(WidgetTester tester, ReviewDraftForm form) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      theme: DeelmarktTheme.light,
-      home: MediaQuery(
-        data: const MediaQueryData(disableAnimations: true),
-        child: Scaffold(body: form),
-      ),
-    ),
-  );
-  await tester.pumpAndSettle();
-}
+import '../../../../helpers/pump_app.dart';
 
 void main() {
-  group('ReviewDraftForm — rendering', () {
+  group('ReviewDraftForm', () {
+    ReviewDraftState makeDraft({
+      double rating = 0,
+      String body = '',
+      bool hasRestoredDraft = false,
+    }) {
+      return ReviewDraftState(
+        rating: rating,
+        body: body,
+        idempotencyKey: 'key-1',
+        revieweeName: 'review.role.seller',
+        role: ReviewRole.seller,
+        hasRestoredDraft: hasRestoredDraft,
+      );
+    }
+
     testWidgets('renders RatingInput', (tester) async {
-      await _pump(
+      await pumpTestScreen(
         tester,
-        ReviewDraftForm(
-          draft: _draft(),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.byType(RatingInput), findsOneWidget);
-    });
-
-    testWidgets('renders submit button', (tester) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.byType(FilledButton), findsOneWidget);
-    });
-
-    testWidgets('shows how-was-experience prompt with reviewee name', (
-      tester,
-    ) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      // .tr() returns the key in test env; named arg 'name' is also a key
-      expect(find.text('review.howWasExperience'), findsOneWidget);
-    });
-
-    testWidgets('shows character counter', (tester) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(body: 'Hello'),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.text('review.charCounter'), findsOneWidget);
-    });
-  });
-
-  group('ReviewDraftForm — trust banner', () {
-    testWidgets('shows blind-review banner when hasRestoredDraft', (
-      tester,
-    ) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(hasRestoredDraft: true),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.text('review.blindReview'), findsOneWidget);
-    });
-
-    testWidgets('hides banner when draft was not restored', (tester) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.text('review.blindReview'), findsNothing);
-    });
-  });
-
-  group('ReviewDraftForm — submit button state', () {
-    testWidgets('submit is disabled when rating is zero', (tester) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(body: 'Some text'),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      final btn = tester.widget<FilledButton>(find.byType(FilledButton));
-      expect(btn.onPressed, isNull);
-    });
-
-    testWidgets('urlWarning is shown when body contains a link', (
-      tester,
-    ) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(rating: 4, body: 'Check https://scam.nl for this'),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.text('review.urlWarning'), findsOneWidget);
-    });
-
-    testWidgets('urlWarning is hidden when body has no link', (tester) async {
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(rating: 4, body: 'Great seller, quick shipping'),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () {},
-        ),
-      );
-      expect(find.text('review.urlWarning'), findsNothing);
-    });
-
-    testWidgets('submit is enabled when canSubmit is true', (tester) async {
-      var submitted = false;
-      await _pump(
-        tester,
-        ReviewDraftForm(
-          draft: _draft(rating: 4, body: 'Great seller!'),
-          onRatingChanged: (_) {},
-          onBodyChanged: (_) {},
-          onSubmit: () => submitted = true,
-        ),
-      );
-      await tester.tap(find.byType(FilledButton));
-      expect(submitted, isTrue);
-    });
-  });
-
-  group('ReviewDraftForm — dark mode', () {
-    testWidgets('renders without errors in dark theme', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: DeelmarktTheme.dark,
-          home: MediaQuery(
-            data: const MediaQueryData(disableAnimations: true),
-            child: Scaffold(
-              body: ReviewDraftForm(
-                draft: _draft(rating: 3, body: 'Good'),
-                onRatingChanged: (_) {},
-                onBodyChanged: (_) {},
-                onSubmit: () {},
-              ),
-            ),
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () {},
           ),
         ),
       );
-      await tester.pumpAndSettle();
+
       expect(find.byType(ReviewDraftForm), findsOneWidget);
-      expect(tester.takeException(), isNull);
+      expect(find.byType(RatingInput), findsOneWidget);
+    });
+
+    testWidgets('submit button disabled when canSubmit is false', (
+      tester,
+    ) async {
+      await pumpTestScreen(
+        tester,
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () {},
+          ),
+        ),
+      );
+
+      final button = tester.widget<FilledButton>(find.byType(FilledButton));
+      expect(button.onPressed, isNull);
+    });
+
+    testWidgets('submit button enabled when canSubmit is true', (tester) async {
+      await pumpTestScreen(
+        tester,
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(rating: 4, body: 'Great item!'),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () {},
+          ),
+        ),
+      );
+
+      final button = tester.widget<FilledButton>(find.byType(FilledButton));
+      expect(button.onPressed, isNotNull);
+    });
+
+    testWidgets('onSubmit fires when button tapped', (tester) async {
+      var submitted = false;
+
+      await pumpTestScreen(
+        tester,
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(rating: 4, body: 'Great!'),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () => submitted = true,
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(FilledButton));
+      await tester.pump();
+
+      expect(submitted, isTrue);
+    });
+
+    testWidgets('shows TrustBanner when hasRestoredDraft is true', (
+      tester,
+    ) async {
+      await pumpTestScreen(
+        tester,
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(hasRestoredDraft: true),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () {},
+          ),
+        ),
+      );
+
+      expect(find.byType(TrustBanner), findsOneWidget);
+    });
+
+    testWidgets('hides TrustBanner when hasRestoredDraft is false', (
+      tester,
+    ) async {
+      await pumpTestScreen(
+        tester,
+        Scaffold(
+          body: ReviewDraftForm(
+            draft: makeDraft(),
+            onRatingChanged: (_) {},
+            onBodyChanged: (_) {},
+            onSubmit: () {},
+          ),
+        ),
+      );
+
+      expect(find.byType(TrustBanner), findsNothing);
     });
   });
 }

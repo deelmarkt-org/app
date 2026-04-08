@@ -71,7 +71,8 @@ void main() {
     testWidgets('has star rating semantics', (tester) async {
       await pumpTestWidget(tester, ReviewCard(review: testReview));
 
-      expect(find.bySemanticsLabel('4.0 out of 5 stars'), findsOneWidget);
+      // Without EasyLocalization, .tr() returns the key path
+      expect(find.bySemanticsLabel('review.a11y.rating_label'), findsOneWidget);
     });
   });
 }
