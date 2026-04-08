@@ -69,6 +69,62 @@ void main() {
 
       expect(conv.unreadCount, equals(0));
     });
+
+    test('lastMessageType defaults to null', () {
+      final conv = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'Test',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'User',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026),
+      );
+
+      expect(conv.lastMessageType, isNull);
+    });
+
+    test('lastMessageType is included in equality check', () {
+      final base = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'A',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        lastMessageText: '120.00',
+        lastMessageAt: DateTime(2026),
+      );
+      final withType = base.copyWith(lastMessageType: 'offer');
+
+      expect(base, isNot(equals(withType)));
+      expect(withType.lastMessageType, 'offer');
+    });
+
+    test('copyWith preserves unspecified fields', () {
+      final conv = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'A',
+        listingImageUrl: 'img.jpg',
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        otherUserAvatarUrl: 'avatar.jpg',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026),
+        lastMessageType: 'offer',
+        unreadCount: 2,
+      );
+      final copy = conv.copyWith(lastMessageText: 'Bye');
+
+      expect(copy.id, conv.id);
+      expect(copy.listingId, conv.listingId);
+      expect(copy.otherUserAvatarUrl, conv.otherUserAvatarUrl);
+      expect(copy.lastMessageType, conv.lastMessageType);
+      expect(copy.unreadCount, conv.unreadCount);
+      expect(copy.lastMessageText, 'Bye');
+    });
   });
 
   // MessageEntity tests moved to message_entity_test.dart — avoid duplication

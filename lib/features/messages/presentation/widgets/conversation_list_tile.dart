@@ -91,7 +91,11 @@ class ConversationListTile extends StatelessWidget {
         _buildNameRow(theme, colors),
         const SizedBox(height: Spacing.s1),
         Text(
-          conversation.lastMessageText,
+          conversation.lastMessageType == 'offer'
+              ? 'messages.offerPreview'.tr(
+                namedArgs: {'amount': conversation.lastMessageText},
+              )
+              : conversation.lastMessageText,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: _previewColor(colors),
             fontWeight: _isUnread ? FontWeight.w700 : FontWeight.w400,
@@ -171,10 +175,13 @@ class ConversationListTile extends StatelessWidget {
       _isUnread ? colors.primary : colors.textTertiary;
 
   String _semanticLabel() {
-    final parts = <String>[
-      conversation.otherUserName,
-      conversation.lastMessageText,
-    ];
+    final preview =
+        conversation.lastMessageType == 'offer'
+            ? 'messages.offerPreview'.tr(
+              namedArgs: {'amount': conversation.lastMessageText},
+            )
+            : conversation.lastMessageText;
+    final parts = <String>[conversation.otherUserName, preview];
     if (_isUnread) {
       parts.add(
         'messages.unreadA11y'.tr(

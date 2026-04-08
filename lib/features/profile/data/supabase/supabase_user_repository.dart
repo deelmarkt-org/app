@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 import 'package:deelmarkt/features/profile/data/dto/user_dto.dart';
@@ -37,6 +38,19 @@ class SupabaseUserRepository implements UserRepository {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return null;
     return getById(userId);
+  }
+
+  @override
+  Future<void> reportUser(String userId, ReportReason reason) async {
+    try {
+      await _client.from('user_reports').insert({
+        'reported_user_id': userId,
+        'reason': reason.name,
+        'reporter_id': _client.auth.currentUser?.id,
+      });
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to report user: ${e.message}');
+    }
   }
 
   @override

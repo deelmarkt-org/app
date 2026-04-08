@@ -280,8 +280,9 @@ Before writing ANY implementation code, complete these steps:
 
 ### On Every Push
 
-- `flutter test --no-pub` — full test suite must pass
-- Coverage ≥ 70% — CI blocks below threshold
+- `flutter analyze --no-pub --fatal-infos` — strict analyze (catches generated-file regressions)
+- `dart run scripts/check_new_code_coverage.dart` — ≥80% coverage on changed files
+- Full test suite runs in CI — not locally on push
 
 ### Workflow
 

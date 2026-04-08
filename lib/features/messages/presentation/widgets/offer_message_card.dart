@@ -7,43 +7,43 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
-/// Render state for an [OfferMessageCard].
-enum OfferStatus { pending, accepted, declined }
-
-/// P-36 — Structured offer card for `MessageType.offer`.
+/// P-36 / R-32 — Structured offer card for `MessageType.offer`.
 ///
-/// Layout per `docs/screens/06-chat/02-chat-thread.md` §Structured offer.
-/// The action buttons are rendered visually complete but their `onPressed`
-/// handlers surface a localised "coming soon" SnackBar — the real
-/// accept/decline/counter logic ships with the transaction module (E03)
-/// in a follow-up task (see plan §13, Decision Q3).
+/// [onRespond] is called when the seller taps Accept or Decline. It is null
+/// for the buyer (isSelf = true) or once the offer is resolved.
+/// Counter offer is deferred to E03 transaction module (still shows comingSoon).
 ///
-/// SECURITY: These CTAs must never call any payment or transaction API.
+/// SECURITY: [onRespond] must never call any payment or transaction API.
 class OfferMessageCard extends StatelessWidget {
   const OfferMessageCard({
     required this.message,
     required this.isSelf,
-    this.status = OfferStatus.pending,
+    this.onRespond,
     super.key,
   });
 
   final MessageEntity message;
   final bool isSelf;
-  final OfferStatus status;
 
-  /// Very small parser that extracts the amount string from messages like
-  /// "Bod: € 120,00" — keeps us decoupled from adding a new entity field.
-  String _amountOrFallback() {
-    final match = RegExp(r'€\s?[0-9]+(?:[.,][0-9]+)*').firstMatch(message.text);
-    return match?.group(0) ?? '€ —';
+  /// Called with [OfferStatus.accepted] or [OfferStatus.declined].
+  /// Null when the viewer is the buyer or the offer is already resolved.
+  final void Function(OfferStatus)? onRespond;
+
+  String _formattedAmount(BuildContext context) {
+    final cents = message.offerAmountCents;
+    if (cents == null) return '€ —';
+    final locale = Localizations.localeOf(context).toString();
+    return NumberFormat.currency(
+      locale: locale,
+      symbol: '€ ',
+      decimalDigits: 2,
+    ).format(cents / 100);
   }
 
   void _showComingSoon(BuildContext context, String action) {
-    // Analytics intent event — Product uses this to prioritise P-36.1 order
-    // (accept/decline/counter). Contains no PII — only the action token and
-    // the literal word 'offer' (no conversation id, no user id, no text).
     AppLogger.info('offer_cta_intent:$action', tag: 'OfferMessageCard');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -80,18 +80,24 @@ class OfferMessageCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'chat.offerOf'.tr(namedArgs: {'amount': _amountOrFallback()}),
+                  'chat.offerOf'.tr(
+                    namedArgs: {'amount': _formattedAmount(context)},
+                  ),
                   style: DeelmarktTypography.priceSm.copyWith(
                     color: colors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: Spacing.s3),
-                if (status == OfferStatus.pending)
+                if (message.offerStatus == OfferStatus.pending)
                   _PendingActions(
-                    onTap: (action) => _showComingSoon(context, action),
+                    onRespond: onRespond,
+                    onCounter: (ctx) => _showComingSoon(ctx, 'counter'),
                   )
                 else
-                  _StatusRow(status: status, colors: colors),
+                  _StatusRow(
+                    status: message.offerStatus ?? OfferStatus.pending,
+                    colors: colors,
+                  ),
               ],
             ),
           ),
@@ -102,9 +108,10 @@ class OfferMessageCard extends StatelessWidget {
 }
 
 class _PendingActions extends StatelessWidget {
-  const _PendingActions({required this.onTap});
+  const _PendingActions({required this.onRespond, required this.onCounter});
 
-  final void Function(String action) onTap;
+  final void Function(OfferStatus)? onRespond;
+  final void Function(BuildContext) onCounter;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +122,10 @@ class _PendingActions extends StatelessWidget {
           children: [
             Expanded(
               child: FilledButton(
-                onPressed: () => onTap('accept'),
+                onPressed:
+                    onRespond != null
+                        ? () => onRespond!(OfferStatus.accepted)
+                        : null,
                 style: FilledButton.styleFrom(
                   backgroundColor: DeelmarktColors.success,
                   foregroundColor: DeelmarktColors.white,
@@ -130,7 +140,10 @@ class _PendingActions extends StatelessWidget {
             const SizedBox(width: Spacing.s2),
             Expanded(
               child: OutlinedButton(
-                onPressed: () => onTap('decline'),
+                onPressed:
+                    onRespond != null
+                        ? () => onRespond!(OfferStatus.declined)
+                        : null,
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(48),
                   side: const BorderSide(color: DeelmarktColors.neutral300),
@@ -145,7 +158,7 @@ class _PendingActions extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.s2),
         TextButton(
-          onPressed: () => onTap('counter'),
+          onPressed: () => onCounter(context),
           style: TextButton.styleFrom(minimumSize: const Size.fromHeight(44)),
           child: Text('chat.counter'.tr()),
         ),

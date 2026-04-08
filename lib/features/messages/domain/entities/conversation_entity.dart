@@ -17,6 +17,7 @@ class ConversationEntity extends Equatable {
     required this.lastMessageText,
     required this.lastMessageAt,
     this.otherUserAvatarUrl,
+    this.lastMessageType,
     this.unreadCount = 0,
   });
 
@@ -29,6 +30,10 @@ class ConversationEntity extends Equatable {
   final String? otherUserAvatarUrl;
   final String lastMessageText;
   final DateTime lastMessageAt;
+
+  /// Raw message type from DB (e.g. "offer", "text"). Used by UI to format
+  /// the preview string with the correct l10n template.
+  final String? lastMessageType;
   final int unreadCount;
 
   @override
@@ -42,6 +47,7 @@ class ConversationEntity extends Equatable {
     otherUserAvatarUrl,
     lastMessageText,
     lastMessageAt,
+    lastMessageType,
     unreadCount,
   ];
 
@@ -55,6 +61,7 @@ class ConversationEntity extends Equatable {
     String? otherUserAvatarUrl,
     String? lastMessageText,
     DateTime? lastMessageAt,
+    String? lastMessageType,
     int? unreadCount,
   }) {
     return ConversationEntity(
@@ -67,6 +74,7 @@ class ConversationEntity extends Equatable {
       otherUserAvatarUrl: otherUserAvatarUrl ?? this.otherUserAvatarUrl,
       lastMessageText: lastMessageText ?? this.lastMessageText,
       lastMessageAt: lastMessageAt ?? this.lastMessageAt,
+      lastMessageType: lastMessageType ?? this.lastMessageType,
       unreadCount: unreadCount ?? this.unreadCount,
     );
   }

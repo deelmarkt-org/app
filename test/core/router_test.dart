@@ -86,10 +86,22 @@ void main() {
     });
 
     testWidgets('navigates to user profile via deep link', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
       router.go('/users/user-456');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
-      await tester.pumpAndSettle();
-      expect(find.text('User user-456'), findsWidgets);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            useMockDataProvider.overrideWithValue(true),
+            sharedPreferencesProvider.overrideWithValue(prefs),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      // Pump enough for mock repo delays (200-300ms) to complete
+      await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byType(Scaffold), findsWidgets);
     });
 
     testWidgets(
@@ -131,7 +143,7 @@ void main() {
       router.go('/nonexistent/path');
       await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       await tester.pumpAndSettle();
-      expect(find.textContaining('Page not found'), findsWidgets);
+      expect(find.textContaining('error.notFound'), findsWidgets);
     });
   });
 

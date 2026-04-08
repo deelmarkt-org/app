@@ -16,7 +16,12 @@ import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repositor
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
+import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
+
+export 'package:deelmarkt/core/services/supabase_service.dart'
+    show currentUserProvider;
 
 /// Whether to use real Supabase or mock repositories.
 ///
@@ -53,6 +58,20 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   // Tracked: #46 — SupabaseReviewRepository blocked by R-36
   return MockReviewRepository();
+});
+
+/// Transaction repository — mock-only until [SupabaseTransactionRepository]
+/// ships with the E03 backend tasks.
+///
+/// TODO(belengaz): add `useMockDataProvider` gate once real implementation
+/// exists — same pattern as [listingRepositoryProvider]:
+/// ```dart
+/// final useMock = ref.watch(useMockDataProvider);
+/// if (useMock) return MockTransactionRepository();
+/// return SupabaseTransactionRepository(ref.watch(supabaseClientProvider));
+/// ```
+final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
+  return MockTransactionRepository();
 });
 
 /// Settings repository — mock or Supabase based on [useMockDataProvider].

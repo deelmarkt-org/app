@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_day_separator.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/message_bubble.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/offer_message_card.dart';
@@ -16,12 +18,17 @@ class ChatThreadList extends StatelessWidget {
     required this.scrollController,
     required this.messages,
     required this.currentUserId,
+    this.onOfferRespond,
     super.key,
   });
 
   final ScrollController scrollController;
   final List<MessageEntity> messages;
   final String currentUserId;
+
+  /// Called when the seller taps Accept or Decline on an offer card.
+  /// Null disables both buttons (buyer view or already-resolved offer).
+  final void Function(String messageId, OfferStatus response)? onOfferRespond;
 
   @override
   Widget build(BuildContext context) {
@@ -55,26 +62,45 @@ class ChatThreadList extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(vertical: Spacing.s2),
       itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        if (item is _DaySeparatorItem) {
-          return ChatDaySeparator(moment: item.day, now: now);
-        }
-        if (item is _MessageItem) {
-          final msg = item.message;
-          final nextIsSelf = _nextMessageIsSelf(items, index);
-          final showReceipt = item.isSelf && !nextIsSelf;
-          if (msg.type == MessageType.offer) {
-            return OfferMessageCard(message: msg, isSelf: item.isSelf);
-          }
-          return MessageBubble(
-            message: msg,
-            isSelf: item.isSelf,
-            showReadReceipt: showReceipt,
-          );
-        }
-        return const SizedBox.shrink();
-      },
+      itemBuilder: (context, index) => _buildItem(items, index, now),
+    );
+  }
+
+  Widget _buildItem(List<_ThreadItem> items, int index, DateTime now) {
+    final item = items[index];
+    if (item is _DaySeparatorItem) {
+      return ChatDaySeparator(moment: item.day, now: now);
+    }
+    if (item is _MessageItem) {
+      return _buildMessageItem(items, index, item);
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildMessageItem(
+    List<_ThreadItem> items,
+    int index,
+    _MessageItem item,
+  ) {
+    final msg = item.message;
+    final nextIsSelf = _nextMessageIsSelf(items, index);
+    final showReceipt = item.isSelf && !nextIsSelf;
+    if (msg.type == MessageType.offer) {
+      return OfferMessageCard(
+        message: msg,
+        isSelf: item.isSelf,
+        onRespond:
+            (!item.isSelf &&
+                    msg.offerStatus == OfferStatus.pending &&
+                    onOfferRespond != null)
+                ? (status) => onOfferRespond!(msg.id, status)
+                : null,
+      );
+    }
+    return MessageBubble(
+      message: msg,
+      isSelf: item.isSelf,
+      showReadReceipt: showReceipt,
     );
   }
 

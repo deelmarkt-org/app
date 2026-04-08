@@ -15,25 +15,23 @@ class GetListingsByCategoryUseCase {
   /// Returns up to [limit] listings for the given [categoryId].
   ///
   /// If [categoryId] is an L1 category with subcategories, searches across
-  /// all L2 children. Otherwise searches the category ID directly.
+  /// all L2 children in a single query (avoids N+1). Otherwise searches the
+  /// category ID directly.
   Future<List<ListingEntity>> call(String categoryId, {int limit = 6}) async {
     final subcategories = await _categoryRepo.getSubcategories(categoryId);
 
-    final categoryIds =
+    final ids =
         subcategories.isEmpty
             ? [categoryId]
             : subcategories.map((c) => c.id).toList();
 
-    // Search each category with graceful error handling per sub-call.
-    // If one subcategory search fails, others still contribute results.
-    final results = await Future.wait(
-      categoryIds.map(
-        (id) => _listingRepo
-            .search(query: '', categoryId: id, limit: limit)
-            .then((r) => r.listings, onError: (_) => <ListingEntity>[]),
-      ),
+    // Single query with all category IDs — no N+1.
+    final result = await _listingRepo.search(
+      query: '',
+      categoryIds: ids,
+      limit: limit,
     );
 
-    return results.expand((listings) => listings).take(limit).toList();
+    return result.listings;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
 
 /// Photo operation results — pure functions operating on [ListingCreationState].
 ///

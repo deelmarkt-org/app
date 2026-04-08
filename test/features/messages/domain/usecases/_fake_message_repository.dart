@@ -1,5 +1,7 @@
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Minimal in-memory fake for use-case and notifier tests.
@@ -10,12 +12,14 @@ class FakeMessageRepository implements MessageRepository {
     List<ConversationEntity> conversations = const [],
     List<MessageEntity> messages = const [],
     this.throwOnSend = false,
+    this.throwOnUpdate = false,
   }) : _conversations = [...conversations],
        _messages = [...messages];
 
   final List<ConversationEntity> _conversations;
   final List<MessageEntity> _messages;
   final bool throwOnSend;
+  final bool throwOnUpdate;
 
   /// Records every [sendMessage] invocation for assertions.
   final List<MessageEntity> sendCalls = [];
@@ -24,14 +28,29 @@ class FakeMessageRepository implements MessageRepository {
   Future<List<ConversationEntity>> getConversations() async => _conversations;
 
   @override
-  Future<List<MessageEntity>> getMessages(String conversationId) async =>
-      _messages.where((m) => m.conversationId == conversationId).toList();
+  Future<List<MessageEntity>> getMessages(
+    String conversationId, {
+    int? limit,
+    int? offset,
+  }) async {
+    var all =
+        _messages.where((m) => m.conversationId == conversationId).toList();
+    if (offset != null) all = all.skip(offset).toList();
+    if (limit != null) all = all.take(limit).toList();
+    return all;
+  }
+
+  @override
+  Stream<List<MessageEntity>> watchMessages(String conversationId) async* {
+    yield _messages.where((m) => m.conversationId == conversationId).toList();
+  }
 
   @override
   Future<MessageEntity> sendMessage({
     required String conversationId,
     required String text,
     MessageType type = MessageType.text,
+    int? offerAmountCents,
   }) async {
     if (throwOnSend) {
       throw StateError('Network error');
@@ -42,10 +61,32 @@ class FakeMessageRepository implements MessageRepository {
       senderId: 'user-001',
       text: text,
       type: type,
+      offerAmountCents: offerAmountCents,
+      offerStatus: type == MessageType.offer ? OfferStatus.pending : null,
       createdAt: DateTime.now(),
     );
     sendCalls.add(msg);
     _messages.add(msg);
     return msg;
+  }
+
+  @override
+  Future<String> getOrCreateConversation({
+    required String listingId,
+    required String buyerId,
+  }) async => 'conv-fake-001';
+
+  /// Records every [updateOfferStatus] invocation for assertions.
+  final List<({String messageId, OfferStatus newStatus})> updateOfferCalls = [];
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    if (throwOnUpdate) {
+      throw Exception('Network error');
+    }
+    updateOfferCalls.add((messageId: messageId, newStatus: newStatus));
   }
 }

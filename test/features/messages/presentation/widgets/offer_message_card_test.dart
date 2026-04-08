@@ -1,26 +1,33 @@
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
+import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/offer_message_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// These tests assert the Senior Staff Engineer decision from PLAN-chat-screens.md
-/// §13 Q3: offer CTAs must render visually complete but only show a
-/// "coming soon" SnackBar. They must NOT invoke any transaction or payment API.
+/// These tests cover OfferMessageCard rendering and callback behaviour.
+/// Accept/Decline call the [onRespond] callback (R-32). Counter offer still
+/// shows a "coming soon" SnackBar (deferred to E03).
 void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
     await EasyLocalization.ensureInitialized();
   });
 
-  MessageEntity offer({String text = 'Bod: € 120,00'}) => MessageEntity(
+  MessageEntity offer({
+    String text = 'Bod: € 120,00',
+    OfferStatus status = OfferStatus.pending,
+  }) => MessageEntity(
     id: 'msg-1',
     conversationId: 'c1',
     senderId: 'u1',
     text: text,
     type: MessageType.offer,
+    offerAmountCents: 12000,
+    offerStatus: status,
     createdAt: DateTime(2026, 3, 25, 14),
   );
 
@@ -50,39 +57,54 @@ void main() {
       expect(find.byType(TextButton), findsOneWidget);
     });
 
-    testWidgets('tapping accept shows SnackBar, does not crash', (
+    testWidgets('tapping accept invokes onRespond with accepted', (
       tester,
     ) async {
+      OfferStatus? received;
       await tester.pumpWidget(
-        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+        buildTest(
+          OfferMessageCard(
+            message: offer(),
+            isSelf: false,
+            onRespond: (s) => received = s,
+          ),
+        ),
       );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FilledButton));
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(received, OfferStatus.accepted);
     });
 
-    testWidgets('tapping decline shows SnackBar', (tester) async {
+    testWidgets('tapping decline invokes onRespond with declined', (
+      tester,
+    ) async {
+      OfferStatus? received;
       await tester.pumpWidget(
-        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+        buildTest(
+          OfferMessageCard(
+            message: offer(),
+            isSelf: false,
+            onRespond: (s) => received = s,
+          ),
+        ),
       );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(OutlinedButton));
       await tester.pump();
 
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(received, OfferStatus.declined);
     });
 
     testWidgets('accepted state renders status row, no CTAs', (tester) async {
       await tester.pumpWidget(
         buildTest(
           OfferMessageCard(
-            message: offer(),
+            message: offer(status: OfferStatus.accepted),
             isSelf: true,
-            status: OfferStatus.accepted,
           ),
         ),
       );
@@ -92,13 +114,39 @@ void main() {
       expect(find.byIcon(Icons.check_circle), findsOneWidget);
     });
 
+    testWidgets('counter button shows coming soon snackbar', (tester) async {
+      await tester.pumpWidget(
+        buildTest(OfferMessageCard(message: offer(), isSelf: false)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('buyer view disables accept and decline buttons', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildTest(OfferMessageCard(message: offer(), isSelf: true)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FilledButton), findsOneWidget);
+      final filledButton = tester.widget<FilledButton>(
+        find.byType(FilledButton),
+      );
+      expect(filledButton.onPressed, isNull);
+    });
+
     testWidgets('declined state renders status row, no CTAs', (tester) async {
       await tester.pumpWidget(
         buildTest(
           OfferMessageCard(
-            message: offer(),
+            message: offer(status: OfferStatus.declined),
             isSelf: false,
-            status: OfferStatus.declined,
           ),
         ),
       );

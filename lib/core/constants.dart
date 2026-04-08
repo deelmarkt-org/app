@@ -1,4 +1,12 @@
 /// App-wide constants — no magic values in code (CLAUDE.md §3.2).
+/// Offer-related business rules — shared between domain validation and UI.
+abstract final class OfferConstants {
+  /// Maximum offer amount: €9,999.99 (999 999 cents).
+  /// Prevents absurdly large offers and keeps the value within Mollie's
+  /// single-payment limit for marketplace transactions.
+  static const int maxOfferCents = 999999;
+}
+
 abstract final class AppConstants {
   /// Legal URLs
   static const String termsUrl = 'https://deelmarkt.nl/terms';
@@ -10,4 +18,47 @@ abstract final class AppConstants {
   /// Allowed hosts for GDPR export and other trusted URLs.
   /// Used for defense-in-depth validation in both data and presentation layers.
   static const Set<String> trustedHosts = {'deelmarkt.nl', 'api.deelmarkt.nl'};
+
+  /// Maximum allowed length for deep-link ID path parameters.
+  /// Applies to listing, user, transaction, and shipping routes.
+  static const int maxRouteIdLength = 64;
+}
+
+/// Quality score thresholds for listing creation (CLAUDE.md §3.2).
+///
+/// Used by [CalculateQualityScoreUseCase] and [QualityScoreResult].
+/// Centralised here so the publish gate and score calculation
+/// stay in sync when thresholds are tuned.
+abstract final class ListingQualityThresholds {
+  /// Minimum number of photos required for a quality pass.
+  static const int minPhotos = 3;
+
+  /// Minimum title character count.
+  static const int minTitleLength = 10;
+
+  /// Maximum title character count.
+  static const int maxTitleLength = 60;
+
+  /// Minimum word count for the description field.
+  static const int minDescriptionWords = 50;
+
+  /// Minimum quality score required to publish a listing (0–100).
+  static const int publishThreshold = 40;
+}
+
+/// Star icon size constants used by [StarRow] and rating displays.
+///
+/// Replaces magic numbers in star rendering (CLAUDE.md §3.3).
+abstract final class StarSizes {
+  /// Large star size — profile header hero display.
+  static const double large = 24;
+
+  /// Small star size — inline cards and review cards.
+  static const double small = 14;
+
+  /// Icon size for compact action buttons (e.g. report menu).
+  static const double iconCompact = 18;
+
+  /// Minimum touch target for interactive star elements (EAA §10).
+  static const double touchTarget = 44;
 }
