@@ -43,6 +43,16 @@ enum ScamReason {
     ScamReason.urgencyPressure => 'scam_alert.reason.urgency_pressure',
     ScamReason.other => 'scam_alert.reason.other',
   };
+
+  /// Maps a DB string value to [ScamReason]. Falls back to [other].
+  static ScamReason fromDb(String value) => switch (value) {
+    'external_payment_link' => ScamReason.externalPaymentLink,
+    'off_site_contact' => ScamReason.offSiteContact,
+    'phone_number_request' => ScamReason.phoneNumberRequest,
+    'suspicious_pricing' => ScamReason.suspiciousPricing,
+    'urgency_pressure' => ScamReason.urgencyPressure,
+    _ => ScamReason.other,
+  };
 }
 
 /// Confidence level assigned by the E06 scam detector to a message.
@@ -60,4 +70,15 @@ enum ScamReason {
 /// ```
 ///
 /// Reference: docs/epics/E06-trust-moderation.md §Scam Detection
-enum ScamConfidence { none, low, high }
+enum ScamConfidence {
+  none,
+  low,
+  high;
+
+  /// Maps a DB string value to [ScamConfidence]. Falls back to [none].
+  static ScamConfidence fromDb(String? value) => switch (value) {
+    'low' => ScamConfidence.low,
+    'high' => ScamConfidence.high,
+    _ => ScamConfidence.none,
+  };
+}

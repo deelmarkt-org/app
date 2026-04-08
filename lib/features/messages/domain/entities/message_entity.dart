@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 /// Single message in a conversation.
 ///
@@ -82,14 +82,11 @@ class MessageEntity extends Equatable {
     scamFlaggedAt,
   ];
 
-  /// Returns a copy with the given fields replaced.
+  /// Creates a copy with the given fields replaced.
   ///
-  /// **Limitation:** `scamReasons` and `scamFlaggedAt` use the `??`
-  /// operator so they cannot be explicitly set back to `null` via this
-  /// method. To clear scam metadata (e.g. unflagging a false positive),
-  /// construct a new [MessageEntity] directly with
-  /// `scamConfidence: ScamConfidence.none` (the asserts will enforce the
-  /// null invariant).
+  /// Nullable scam fields use a sentinel pattern: pass the field explicitly
+  /// to update it (including setting it to `null` to clear a flag).
+  /// Omitting a field preserves the current value.
   MessageEntity copyWith({
     String? id,
     String? conversationId,
@@ -100,8 +97,8 @@ class MessageEntity extends Equatable {
     int? offerAmountCents,
     DateTime? createdAt,
     ScamConfidence? scamConfidence,
-    List<ScamReason>? scamReasons,
-    DateTime? scamFlaggedAt,
+    Object? scamReasons = _sentinel,
+    Object? scamFlaggedAt = _sentinel,
   }) {
     return MessageEntity(
       id: id ?? this.id,
@@ -113,8 +110,16 @@ class MessageEntity extends Equatable {
       offerAmountCents: offerAmountCents ?? this.offerAmountCents,
       createdAt: createdAt ?? this.createdAt,
       scamConfidence: scamConfidence ?? this.scamConfidence,
-      scamReasons: scamReasons ?? this.scamReasons,
-      scamFlaggedAt: scamFlaggedAt ?? this.scamFlaggedAt,
+      scamReasons:
+          scamReasons == _sentinel
+              ? this.scamReasons
+              : scamReasons as List<ScamReason>?,
+      scamFlaggedAt:
+          scamFlaggedAt == _sentinel
+              ? this.scamFlaggedAt
+              : scamFlaggedAt as DateTime?,
     );
   }
+
+  static const Object _sentinel = Object();
 }
