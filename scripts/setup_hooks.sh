@@ -53,7 +53,7 @@ if git lfs version &>/dev/null; then
   echo -e "${GREEN}✓${NC}  Git LFS initialized"
   # Pull LFS objects if pointer files detected
   if git lfs ls-files 2>/dev/null | head -1 | grep -q '\*'; then
-    echo "  Pulling LFS files (screen design PNGs)..."
+    echo "  Pulling LFS files (~28 MB — 109 screen design PNGs)..."
     git lfs pull
     echo -e "${GREEN}✓${NC}  LFS files downloaded"
   fi

@@ -59,7 +59,7 @@ if ($lfsVer) {
     Ok "Git LFS initialized"
     $lfsPtr = git lfs ls-files 2>$null | Select-Object -First 1
     if ($lfsPtr -match '\*') {
-        Write-Host "  Pulling LFS files (screen design PNGs)..."
+        Write-Host "  Pulling LFS files (~28 MB - 109 screen design PNGs)..."
         git lfs pull
         Ok "LFS files downloaded"
     }

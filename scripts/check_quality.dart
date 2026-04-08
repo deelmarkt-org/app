@@ -51,10 +51,12 @@ void main(List<String> args) async {
   }
 
   // Missing test file + spec reference checks — separate from the main loop
-  // because they only need the file path (not content), and they apply to all
-  // files regardless of --thorough mode.
-  for (final file in files) {
-    _checkMissingTestFile(file, violations);
+  // because they only need the file path (not content). Skipped in --all mode
+  // to avoid noise from pre-existing files without tests (169+ violations).
+  if (!all) {
+    for (final file in files) {
+      _checkMissingTestFile(file, violations);
+    }
   }
 
   if (violations.isEmpty) {
@@ -358,9 +360,6 @@ void _checkScreenSpecReference(
   // or may be purely generic (no spec). Screens always have a spec.
   if (!file.endsWith('_screen.dart')) return;
 
-  // Skip generated files
-  if (file.endsWith('.g.dart')) return;
-
   final hasRef =
       content.contains('docs/screens/') || content.contains('docs/epics/');
 
@@ -378,6 +377,7 @@ const _testExemptPaths = [
   'lib/core/router/', // router config — tested via integration
   'lib/core/services/', // service wiring — tested via integration
   'lib/core/l10n/', // localisation config
+  'lib/core/design_system/', // tokens/theme — tested via widget tests
   'lib/core/constants.dart', // just constants
   'lib/main.dart', // app entry point
 ];

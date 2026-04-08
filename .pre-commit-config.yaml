@@ -95,7 +95,7 @@ repos:
         name: deno lint (Edge Functions)
         language: system
         entry: >-
-          bash -c 'if command -v deno &>/dev/null; then deno lint supabase/functions/ --compact 2>&1 | grep -v "^$" || true; else echo "deno not installed - skipping lint"; fi'
+          bash -c 'if command -v deno &>/dev/null; then deno lint supabase/functions/ --compact; else echo "deno not installed - skipping lint"; fi'
         pass_filenames: false
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]

@@ -72,6 +72,11 @@ if ! check_cmd deno; then
   warn "Install: https://deno.land/#installation"
 fi
 
+# Required: perl for Edge Function schema cross-reference
+if ! check_cmd perl; then
+  warn "perl not found — Edge Function schema checks will be limited"
+fi
+
 # Check Flutter version
 FLUTTER_VER=$(flutter --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 ok "Flutter version: $FLUTTER_VER"
