@@ -48,6 +48,7 @@ class MockListingRepository implements ListingRepository {
   Future<ListingSearchResult> search({
     required String query,
     String? categoryId,
+    List<String>? categoryIds,
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
@@ -58,13 +59,15 @@ class MockListingRepository implements ListingRepository {
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 400));
     final lowerQuery = query.toLowerCase();
+    final effectiveIds =
+        categoryIds ?? (categoryId != null ? [categoryId] : null);
     final results =
         mockListings.where((l) {
           final matchesQuery =
               l.title.toLowerCase().contains(lowerQuery) ||
               l.description.toLowerCase().contains(lowerQuery);
           final matchesCategory =
-              categoryId == null || l.categoryId == categoryId;
+              effectiveIds == null || effectiveIds.contains(l.categoryId);
           final matchesPrice =
               (minPriceCents == null || l.priceInCents >= minPriceCents) &&
               (maxPriceCents == null || l.priceInCents <= maxPriceCents);

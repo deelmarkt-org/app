@@ -102,7 +102,10 @@ void main() {
       await pumpLoginScreen(
         tester,
         initialState: const LoginState(
-          passwordError: 'auth.invalidCredentials', // pragma: allowlist secret
+          fieldErrors: LoginFieldErrors(
+            passwordError:
+                'auth.invalidCredentials', // pragma: allowlist secret
+          ),
         ),
       );
 
@@ -112,7 +115,9 @@ void main() {
     testWidgets('shows email validation error', (tester) async {
       await pumpLoginScreen(
         tester,
-        initialState: const LoginState(emailError: 'validation.email_invalid'),
+        initialState: const LoginState(
+          fieldErrors: LoginFieldErrors(emailError: 'validation.email_invalid'),
+        ),
       );
 
       expect(find.text('validation.email_invalid'), findsOneWidget);
@@ -198,8 +203,11 @@ void main() {
         tester,
         theme: DeelmarktTheme.dark,
         initialState: const LoginState(
-          emailError: 'validation.email_invalid',
-          passwordError: 'auth.invalidCredentials', // pragma: allowlist secret
+          fieldErrors: LoginFieldErrors(
+            emailError: 'validation.email_invalid',
+            passwordError:
+                'auth.invalidCredentials', // pragma: allowlist secret
+          ),
         ),
       );
 

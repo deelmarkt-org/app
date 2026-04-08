@@ -37,3 +37,17 @@ abstract final class ListingQualityThresholds {
   /// Minimum quality score required to publish a listing (0–100).
   static const int publishThreshold = 40;
 }
+
+/// Star icon size constants used by [StarRow] and rating displays.
+///
+/// Replaces magic numbers in star rendering (CLAUDE.md §3.3).
+abstract final class StarSizes {
+  /// Large star size — profile header hero display.
+  static const double large = 24;
+
+  /// Small star size — inline cards and review cards.
+  static const double small = 14;
+
+  /// Minimum touch target for interactive star elements (EAA §10).
+  static const double touchTarget = 44;
+}

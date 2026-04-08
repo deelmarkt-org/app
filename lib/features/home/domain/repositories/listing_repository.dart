@@ -22,9 +22,14 @@ abstract class ListingRepository {
   Future<ListingEntity?> getById(String id);
 
   /// Search listings (backend-agnostic — works with FTS, Meilisearch, or ES).
+  ///
+  /// Use [categoryIds] to filter by multiple categories in a single query
+  /// (avoids N+1 when expanding L1 → L2 categories). If both [categoryId]
+  /// and [categoryIds] are provided, [categoryIds] takes precedence.
   Future<ListingSearchResult> search({
     required String query,
     String? categoryId,
+    List<String>? categoryIds,
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,

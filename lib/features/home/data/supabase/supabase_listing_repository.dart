@@ -106,6 +106,7 @@ class SupabaseListingRepository implements ListingRepository {
   Future<ListingSearchResult> search({
     required String query,
     String? categoryId,
+    List<String>? categoryIds,
     int? minPriceCents,
     int? maxPriceCents,
     ListingCondition? condition,
@@ -127,7 +128,10 @@ class SupabaseListingRepository implements ListingRepository {
         );
       }
 
-      if (categoryId != null) {
+      // categoryIds takes precedence over categoryId (avoids N+1).
+      if (categoryIds != null && categoryIds.isNotEmpty) {
+        request = request.inFilter('category_id', categoryIds);
+      } else if (categoryId != null) {
         request = request.eq('category_id', categoryId);
       }
       if (minPriceCents != null) {

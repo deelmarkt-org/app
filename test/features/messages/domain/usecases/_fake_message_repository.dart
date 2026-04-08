@@ -25,8 +25,16 @@ class FakeMessageRepository implements MessageRepository {
   Future<List<ConversationEntity>> getConversations() async => _conversations;
 
   @override
-  Future<List<MessageEntity>> getMessages(String conversationId) async =>
-      _messages.where((m) => m.conversationId == conversationId).toList();
+  Future<List<MessageEntity>> getMessages(
+    String conversationId, {
+    int limit = 50,
+    int? offset,
+  }) async {
+    final all =
+        _messages.where((m) => m.conversationId == conversationId).toList();
+    final start = offset ?? 0;
+    return all.skip(start).take(limit).toList();
+  }
 
   @override
   Stream<List<MessageEntity>> watchMessages(String conversationId) async* {

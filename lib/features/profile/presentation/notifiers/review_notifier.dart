@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
+import 'package:deelmarkt/core/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_submission.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_helpers.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
@@ -24,9 +25,13 @@ class ReviewNotifier extends _$ReviewNotifier {
     if (currentUser == null) {
       return const ReviewIneligible(reason: 'review.error.ineligible.auth');
     }
-    final txn = await ref
-        .read(transactionRepositoryProvider)
-        .getTransaction(transactionId);
+    // Parallelize independent network calls to reduce latency.
+    final results = await Future.wait([
+      ref.read(transactionRepositoryProvider).getTransaction(transactionId),
+      ref.read(reviewRepositoryProvider).getForTransaction(transactionId),
+    ]);
+    final txn = results[0] as TransactionEntity?;
+    final reviews = results[1] as List<ReviewEntity>;
     if (txn == null) {
       return const ReviewIneligible(
         reason: 'review.error.ineligible.not_found',
@@ -38,9 +43,6 @@ class ReviewNotifier extends _$ReviewNotifier {
         currentUser.id == txn.buyerId ? ReviewRole.buyer : ReviewRole.seller;
     _revieweeName =
         _role == ReviewRole.buyer ? 'review.role.seller' : 'review.role.buyer';
-    final reviews = await ref
-        .read(reviewRepositoryProvider)
-        .getForTransaction(transactionId);
     final my = reviews.where((r) => r.reviewerId == currentUser.id).firstOrNull;
     final their =
         reviews.where((r) => r.reviewerId != currentUser.id).firstOrNull;

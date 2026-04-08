@@ -4,6 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 
+/// Maps a camelCase enum name to its snake_case l10n key under
+/// `review.report_reason.*`.
+String _reasonL10nKey(ReportReason reason) {
+  // Convert camelCase → snake_case (e.g. hateSpeech → hate_speech).
+  final snake = reason.name.replaceAllMapped(
+    RegExp('[A-Z]'),
+    (m) => '_${m[0]!.toLowerCase()}',
+  );
+  return 'review.report_reason.$snake';
+}
+
 /// Bottom sheet for selecting a report reason (DSA Art. 16).
 ///
 /// Used by review cards and profile overflow menus.
@@ -32,9 +43,9 @@ class ReportReasonSheet extends StatelessWidget {
           ...ReportReason.values.map(
             (reason) => Semantics(
               button: true,
-              label: 'report.reason.${reason.name}'.tr(),
+              label: _reasonL10nKey(reason).tr(),
               child: ListTile(
-                title: Text('report.reason.${reason.name}'.tr()),
+                title: Text(_reasonL10nKey(reason).tr()),
                 onTap: () async {
                   Navigator.of(context).pop();
                   try {

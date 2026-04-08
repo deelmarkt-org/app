@@ -60,9 +60,14 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   return MockReviewRepository();
 });
 
-/// Transaction repository — mock or real.
+/// Transaction repository — mock or Supabase based on [useMockDataProvider].
+///
+/// TODO(belengaz): replace mock branch with SupabaseTransactionRepository
+/// once it ships (E03 backend tasks).
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
-  // Tracked: SupabaseTransactionRepository exists but mock used for reviews
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockTransactionRepository();
+  // Real implementation not yet available — fall back to mock.
   return MockTransactionRepository();
 });
 

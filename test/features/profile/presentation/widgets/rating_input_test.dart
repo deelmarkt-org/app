@@ -37,7 +37,7 @@ void main() {
       );
 
       // Tap the third star (index 2)
-      final stars = find.byType(GestureDetector);
+      final stars = find.byType(InkResponse);
       await tester.tap(stars.at(2));
       expect(tappedValue, 3.0);
     });
@@ -49,7 +49,7 @@ void main() {
         RatingInput(value: 3, readOnly: true, onChanged: (_) => tapped = true),
       );
 
-      final stars = find.byType(GestureDetector);
+      final stars = find.byType(InkResponse);
       await tester.tap(stars.at(4));
       expect(tapped, isFalse);
     });
@@ -57,10 +57,10 @@ void main() {
     testWidgets('each star meets 44×44 minimum tap target', (tester) async {
       await pumpTestWidget(tester, RatingInput(value: 0, onChanged: (_) {}));
 
-      // Each GestureDetector wraps a SizedBox(48×48) — verify tap areas
+      // Each InkResponse wraps a SizedBox(48×48) — verify tap areas
       final detectors = find.descendant(
         of: find.byType(RatingInput),
-        matching: find.byType(GestureDetector),
+        matching: find.byType(InkResponse),
       );
 
       for (var i = 0; i < 5; i++) {
