@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
+import 'package:deelmarkt/features/messages/data/supabase/message_realtime_handler.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
@@ -13,9 +14,9 @@ import 'package:deelmarkt/features/messages/domain/repositories/message_reposito
 ///
 /// - REST queries via PostgREST for initial fetches.
 /// - [watchMessages] uses a Supabase Realtime subscription on the `messages`
-///   table filtered by `conversation_id`. On each INSERT event the full
-///   message list is re-fetched so callers always receive an ordered, complete
-///   snapshot (avoids ordering drift from out-of-order WebSocket delivery).
+///   table filtered by `conversation_id`. On each INSERT event the new message
+///   is appended from the Realtime payload. If parsing fails, falls back to a
+///   full re-fetch so the stream stays alive.
 /// - [getConversations] calls the `get_conversations_for_user` RPC which
 ///   joins listings + user_profiles in one query (avoids N+1).
 /// - [getOrCreateConversation] calls `get_or_create_conversation` RPC which
@@ -28,7 +29,11 @@ class SupabaseMessageRepository implements MessageRepository {
   final SupabaseClient _client;
 
   static const _messagesTable = 'messages';
-  static const _channelPrefix = 'messages:conv:';
+
+  late final _realtimeHandler = MessageRealtimeHandler(
+    client: _client,
+    fetcher: getMessages,
+  );
 
   @override
   Future<List<ConversationEntity>> getConversations() async {
@@ -44,7 +49,7 @@ class SupabaseMessageRepository implements MessageRepository {
   @override
   Future<List<MessageEntity>> getMessages(
     String conversationId, {
-    int limit = 50,
+    int? limit,
     int? offset,
   }) async {
     try {
@@ -54,10 +59,12 @@ class SupabaseMessageRepository implements MessageRepository {
           .eq('conversation_id', conversationId)
           .order('created_at');
 
-      if (offset != null) {
-        query = query.range(offset, offset + limit - 1);
-      } else {
-        query = query.limit(limit);
+      if (limit != null) {
+        if (offset != null) {
+          query = query.range(offset, offset + limit - 1);
+        } else {
+          query = query.limit(limit);
+        }
       }
 
       final response = await query;
@@ -71,8 +78,6 @@ class SupabaseMessageRepository implements MessageRepository {
   Stream<List<MessageEntity>> watchMessages(String conversationId) {
     late StreamController<List<MessageEntity>> controller;
     RealtimeChannel? channel;
-
-    /// Local cache of messages for delta updates.
     var messages = <MessageEntity>[];
 
     controller = StreamController<List<MessageEntity>>(
@@ -84,7 +89,11 @@ class SupabaseMessageRepository implements MessageRepository {
           if (!controller.isClosed) controller.addError(e);
           return;
         }
-        channel = _subscribeInserts(conversationId, controller, messages);
+        channel = _realtimeHandler.subscribe(
+          conversationId,
+          controller,
+          messages,
+        );
       },
       onCancel: () {
         channel?.unsubscribe();
@@ -93,67 +102,6 @@ class SupabaseMessageRepository implements MessageRepository {
     );
 
     return controller.stream;
-  }
-
-  /// Subscribes to INSERT events for [conversationId] and appends new
-  /// messages from the Realtime payload instead of re-fetching all.
-  /// Returns the active [RealtimeChannel].
-  ///
-  /// [messages] is the mutable local cache maintained across events.
-  RealtimeChannel _subscribeInserts(
-    String conversationId,
-    StreamController<List<MessageEntity>> controller,
-    List<MessageEntity> messages,
-  ) {
-    return _client
-        .channel('$_channelPrefix$conversationId')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: _messagesTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'conversation_id',
-            value: conversationId,
-          ),
-          callback: (payload) {
-            try {
-              final newRow = payload.newRecord;
-              final newMessage = MessageDto.fromJson(newRow);
-              // Avoid duplicates (idempotent handling).
-              if (!messages.any((m) => m.id == newMessage.id)) {
-                messages
-                  ..add(newMessage)
-                  ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-              }
-              if (!controller.isClosed) {
-                controller.add(List.unmodifiable(messages));
-              }
-            } on Object {
-              // If payload parsing fails, fall back to full re-fetch.
-              _fallbackRefetch(conversationId, controller, messages);
-            }
-          },
-        )
-        .subscribe();
-  }
-
-  /// Fallback: re-fetches all messages when a Realtime payload cannot be
-  /// parsed. Keeps the stream alive instead of erroring out.
-  Future<void> _fallbackRefetch(
-    String conversationId,
-    StreamController<List<MessageEntity>> controller,
-    List<MessageEntity> messages,
-  ) async {
-    try {
-      final refreshed = await getMessages(conversationId);
-      messages
-        ..clear()
-        ..addAll(refreshed);
-      if (!controller.isClosed) controller.add(List.unmodifiable(messages));
-    } on Exception catch (e) {
-      if (!controller.isClosed) controller.addError(e);
-    }
   }
 
   @override

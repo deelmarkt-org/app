@@ -15,10 +15,14 @@ abstract class MessageRepository {
 
   /// Get messages in a conversation, oldest first.
   ///
-  /// Supports pagination via [limit] (default 50) and [offset].
+  /// Supports optional pagination via [limit] and [offset].
+  /// When [limit] is null all messages are returned (no truncation).
+  ///
+  // TODO(reso): wire limit/offset through GetMessagesUseCase and add
+  // a loadMore() to ChatThreadNotifier — deelmarkt-org/app#80.
   Future<List<MessageEntity>> getMessages(
     String conversationId, {
-    int limit = 50,
+    int? limit,
     int? offset,
   });
 

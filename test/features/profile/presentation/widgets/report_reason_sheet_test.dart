@@ -6,15 +6,6 @@ import 'package:deelmarkt/features/profile/presentation/widgets/report_reason_sh
 
 import '../../../../helpers/pump_app.dart';
 
-/// Mirrors the camelCase→snake_case conversion in [ReportReasonSheet].
-String _reasonL10nKey(ReportReason reason) {
-  final snake = reason.name.replaceAllMapped(
-    RegExp('[A-Z]'),
-    (m) => '_${m[0]!.toLowerCase()}',
-  );
-  return 'review.report_reason.$snake';
-}
-
 void main() {
   group('ReportReasonSheet', () {
     testWidgets('renders title', (tester) async {
@@ -28,7 +19,7 @@ void main() {
 
       for (final reason in ReportReason.values) {
         expect(
-          find.text(_reasonL10nKey(reason)),
+          find.text(reasonL10nKey(reason)),
           findsOneWidget,
           reason: '${reason.name} ListTile not found',
         );
@@ -49,7 +40,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text(_reasonL10nKey(ReportReason.scam)));
+      await tester.tap(find.text(reasonL10nKey(ReportReason.scam)));
       await tester.pumpAndSettle();
 
       expect(submitted, ReportReason.scam);
@@ -69,7 +60,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text(_reasonL10nKey(ReportReason.spam)));
+      await tester.tap(find.text(reasonL10nKey(ReportReason.spam)));
       await tester.pumpAndSettle();
 
       expect(submitted, ReportReason.spam);

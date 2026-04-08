@@ -6,7 +6,8 @@ import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 
 /// Maps a camelCase enum name to its snake_case l10n key under
 /// `review.report_reason.*`.
-String _reasonL10nKey(ReportReason reason) {
+@visibleForTesting
+String reasonL10nKey(ReportReason reason) {
   // Convert camelCase → snake_case (e.g. hateSpeech → hate_speech).
   final snake = reason.name.replaceAllMapped(
     RegExp('[A-Z]'),
@@ -43,9 +44,9 @@ class ReportReasonSheet extends StatelessWidget {
           ...ReportReason.values.map(
             (reason) => Semantics(
               button: true,
-              label: _reasonL10nKey(reason).tr(),
+              label: reasonL10nKey(reason).tr(),
               child: ListTile(
-                title: Text(_reasonL10nKey(reason).tr()),
+                title: Text(reasonL10nKey(reason).tr()),
                 onTap: () async {
                   Navigator.of(context).pop();
                   try {

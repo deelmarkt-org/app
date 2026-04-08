@@ -18,14 +18,15 @@ class MockMessageRepository implements MessageRepository {
   @override
   Future<List<MessageEntity>> getMessages(
     String conversationId, {
-    int limit = 50,
+    int? limit,
     int? offset,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    final all =
+    var all =
         _mockMessages.where((m) => m.conversationId == conversationId).toList();
-    final start = offset ?? 0;
-    return all.skip(start).take(limit).toList();
+    if (offset != null) all = all.skip(offset).toList();
+    if (limit != null) all = all.take(limit).toList();
+    return all;
   }
 
   @override

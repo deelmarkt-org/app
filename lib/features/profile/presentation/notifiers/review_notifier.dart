@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
-import 'package:deelmarkt/core/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_submission.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_helpers.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
@@ -26,12 +25,11 @@ class ReviewNotifier extends _$ReviewNotifier {
       return const ReviewIneligible(reason: 'review.error.ineligible.auth');
     }
     // Parallelize independent network calls to reduce latency.
-    final results = await Future.wait([
-      ref.read(transactionRepositoryProvider).getTransaction(transactionId),
-      ref.read(reviewRepositoryProvider).getForTransaction(transactionId),
-    ]);
-    final txn = results[0] as TransactionEntity?;
-    final reviews = results[1] as List<ReviewEntity>;
+    final (txn, reviews) =
+        await (
+          ref.read(transactionRepositoryProvider).getTransaction(transactionId),
+          ref.read(reviewRepositoryProvider).getForTransaction(transactionId),
+        ).wait;
     if (txn == null) {
       return const ReviewIneligible(
         reason: 'review.error.ineligible.not_found',

@@ -27,13 +27,14 @@ class FakeMessageRepository implements MessageRepository {
   @override
   Future<List<MessageEntity>> getMessages(
     String conversationId, {
-    int limit = 50,
+    int? limit,
     int? offset,
   }) async {
-    final all =
+    var all =
         _messages.where((m) => m.conversationId == conversationId).toList();
-    final start = offset ?? 0;
-    return all.skip(start).take(limit).toList();
+    if (offset != null) all = all.skip(offset).toList();
+    if (limit != null) all = all.take(limit).toList();
+    return all;
   }
 
   @override
