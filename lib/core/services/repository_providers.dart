@@ -65,9 +65,7 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
 /// TODO(belengaz): replace mock branch with SupabaseTransactionRepository
 /// once it ships (E03 backend tasks).
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
-  final useMock = ref.watch(useMockDataProvider);
-  if (useMock) return MockTransactionRepository();
-  // Real implementation not yet available — fall back to mock.
+  // Real implementation not yet available — always returns mock.
   return MockTransactionRepository();
 });
 

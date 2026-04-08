@@ -62,38 +62,20 @@ class MockListingRepository implements ListingRepository {
     final effectiveIds =
         categoryIds ?? (categoryId != null ? [categoryId] : null);
     final results =
-        mockListings.where((l) {
-          final matchesQuery =
-              l.title.toLowerCase().contains(lowerQuery) ||
-              l.description.toLowerCase().contains(lowerQuery);
-          final matchesCategory =
-              effectiveIds == null || effectiveIds.contains(l.categoryId);
-          final matchesPrice =
-              (minPriceCents == null || l.priceInCents >= minPriceCents) &&
-              (maxPriceCents == null || l.priceInCents <= maxPriceCents);
-          final matchesCondition =
-              condition == null || l.condition == condition;
-          return matchesQuery &&
-              matchesCategory &&
-              matchesPrice &&
-              matchesCondition;
-        }).toList();
+        mockListings
+            .where(
+              (l) => _matchesSearch(
+                l,
+                lowerQuery,
+                effectiveIds,
+                minPriceCents,
+                maxPriceCents,
+                condition,
+              ),
+            )
+            .toList();
 
-    if (sortBy == 'price_cents') {
-      results.sort(
-        (a, b) =>
-            ascending
-                ? a.priceInCents.compareTo(b.priceInCents)
-                : b.priceInCents.compareTo(a.priceInCents),
-      );
-    } else if (sortBy == 'created_at') {
-      results.sort(
-        (a, b) =>
-            ascending
-                ? a.createdAt.compareTo(b.createdAt)
-                : b.createdAt.compareTo(a.createdAt),
-      );
-    }
+    _sortResults(results, sortBy, ascending);
 
     return ListingSearchResult(
       listings: results.skip(offset).take(limit).toList(),
@@ -119,6 +101,48 @@ class MockListingRepository implements ListingRepository {
   Future<List<ListingEntity>> getFavourites() async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
     return mockListings.where((l) => favouriteIds.contains(l.id)).toList();
+  }
+
+  static bool _matchesSearch(
+    ListingEntity l,
+    String lowerQuery,
+    List<String>? effectiveIds,
+    int? minPriceCents,
+    int? maxPriceCents,
+    ListingCondition? condition,
+  ) {
+    final matchesQuery =
+        l.title.toLowerCase().contains(lowerQuery) ||
+        l.description.toLowerCase().contains(lowerQuery);
+    final matchesCategory =
+        effectiveIds == null || effectiveIds.contains(l.categoryId);
+    final matchesPrice =
+        (minPriceCents == null || l.priceInCents >= minPriceCents) &&
+        (maxPriceCents == null || l.priceInCents <= maxPriceCents);
+    final matchesCondition = condition == null || l.condition == condition;
+    return matchesQuery && matchesCategory && matchesPrice && matchesCondition;
+  }
+
+  static void _sortResults(
+    List<ListingEntity> results,
+    String? sortBy,
+    bool ascending,
+  ) {
+    if (sortBy == 'price_cents') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.priceInCents.compareTo(b.priceInCents)
+                : b.priceInCents.compareTo(a.priceInCents),
+      );
+    } else if (sortBy == 'created_at') {
+      results.sort(
+        (a, b) =>
+            ascending
+                ? a.createdAt.compareTo(b.createdAt)
+                : b.createdAt.compareTo(a.createdAt),
+      );
+    }
   }
 
   @override
