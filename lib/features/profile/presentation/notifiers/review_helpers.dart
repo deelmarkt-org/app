@@ -3,20 +3,18 @@ import 'dart:math';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
 
-/// Returns ineligibility l10n key for the given status, or null if eligible.
-String? checkReviewEligibility(TransactionStatus status) {
-  return switch (status) {
-    TransactionStatus.released || TransactionStatus.confirmed => null,
-    TransactionStatus.created ||
-    TransactionStatus.paymentPending => 'review.error.ineligible.pending',
-    TransactionStatus.paid ||
-    TransactionStatus.shipped => 'review.error.ineligible.escrow_held',
-    TransactionStatus.delivered => 'review.error.ineligible.delivered',
-    TransactionStatus.disputed => 'review.error.ineligible.disputed',
-    TransactionStatus.cancelled => 'review.error.ineligible.cancelled',
-    _ => 'review.error.ineligible.pending',
-  };
-}
+/// Returns ineligibility l10n key for [status], or null if eligible.
+String? checkReviewEligibility(TransactionStatus status) => switch (status) {
+  TransactionStatus.released || TransactionStatus.confirmed => null,
+  TransactionStatus.created ||
+  TransactionStatus.paymentPending => 'review.error.ineligible.pending',
+  TransactionStatus.paid ||
+  TransactionStatus.shipped => 'review.error.ineligible.escrow_held',
+  TransactionStatus.delivered => 'review.error.ineligible.delivered',
+  TransactionStatus.disputed => 'review.error.ineligible.disputed',
+  TransactionStatus.cancelled => 'review.error.ineligible.cancelled',
+  _ => 'review.error.ineligible.pending',
+};
 
 /// Classifies an exception into a [ReviewErrorClass].
 ReviewErrorClass classifyReviewError(Exception e) {
@@ -28,9 +26,7 @@ ReviewErrorClass classifyReviewError(Exception e) {
     return ReviewErrorClass.rateLimit;
   }
   if (message.contains('expired')) return ReviewErrorClass.expired;
-  if (message.contains('moderation')) {
-    return ReviewErrorClass.moderationBlocked;
-  }
+  if (message.contains('moderation')) return ReviewErrorClass.moderationBlocked;
   if (message.contains('network') ||
       message.contains('socket') ||
       message.contains('timeout')) {

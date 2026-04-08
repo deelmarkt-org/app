@@ -22,7 +22,7 @@ class ProfileStatsRow extends StatelessWidget {
         ),
         _StatItem(
           value: _formatResponseTime(user.responseTimeMinutes),
-          label: 'profile.responseTime'.tr(),
+          label: 'profile.response_time'.tr(),
         ),
       ],
     );

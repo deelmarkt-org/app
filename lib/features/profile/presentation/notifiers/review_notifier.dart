@@ -28,7 +28,9 @@ class ReviewNotifier extends _$ReviewNotifier {
         .read(transactionRepositoryProvider)
         .getTransaction(transactionId);
     if (txn == null) {
-      return const ReviewIneligible(reason: 'review.error.ineligible.notFound');
+      return const ReviewIneligible(
+        reason: 'review.error.ineligible.not_found',
+      );
     }
     final ineligible = checkReviewEligibility(txn.status);
     if (ineligible != null) return ReviewIneligible(reason: ineligible);

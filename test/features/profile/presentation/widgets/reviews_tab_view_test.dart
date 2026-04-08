@@ -57,7 +57,7 @@ void main() {
       );
 
       // .tr() returns the key path in tests.
-      expect(find.text('profile.noReviews'), findsOneWidget);
+      expect(find.text('profile.no_reviews'), findsOneWidget);
     });
 
     testWidgets('error state shows ErrorState', (tester) async {

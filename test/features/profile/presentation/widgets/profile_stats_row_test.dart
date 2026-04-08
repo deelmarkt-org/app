@@ -44,7 +44,7 @@ void main() {
         await pumpTestWidget(tester, ProfileStatsRow(user: buildUser()));
 
         expect(find.text('15m'), findsOneWidget);
-        expect(find.text('profile.responseTime'), findsOneWidget);
+        expect(find.text('profile.response_time'), findsOneWidget);
       });
     });
 

@@ -97,7 +97,7 @@ void main() {
       expect(state, isA<ReviewIneligible>());
       expect(
         (state as ReviewIneligible).reason,
-        'review.error.ineligible.notFound',
+        'review.error.ineligible.not_found',
       );
     });
 

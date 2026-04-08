@@ -75,9 +75,13 @@ class ReviewSubmittedView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.s6),
-            OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('review.close'.tr()),
+            Semantics(
+              button: true,
+              label: 'review.close'.tr(),
+              child: OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('review.close'.tr()),
+              ),
             ),
           ],
         ),
@@ -172,9 +176,13 @@ class ReviewErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.s6),
-            OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('review.close'.tr()),
+            Semantics(
+              button: true,
+              label: 'review.close'.tr(),
+              child: OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('review.close'.tr()),
+              ),
             ),
           ],
         ),

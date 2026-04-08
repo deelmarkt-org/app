@@ -91,7 +91,7 @@ class DetailSellerCard extends StatelessWidget {
           ? 'listing_detail.reviews'.tr(
             namedArgs: {'count': '${seller.reviewCount}'},
           )
-          : 'listing_detail.noReviews'.tr();
+          : 'listing_detail.no_reviews'.tr();
 }
 
 class _Avatar extends StatelessWidget {
