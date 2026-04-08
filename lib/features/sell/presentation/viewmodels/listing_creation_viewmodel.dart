@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';

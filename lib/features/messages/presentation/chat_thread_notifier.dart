@@ -17,11 +17,12 @@ part 'chat_thread_notifier.g.dart';
 
 /// Stub id for the current signed-in user.
 ///
-/// TODO(auth): replace with `authStateProvider.currentUser.id` once the auth
-/// subsystem ships via the `[R]` backend tasks. This single constant is the
-/// source of truth for both the notifier (optimistic send sender) and the
-/// screen (self vs other bubble alignment) — keep them in sync by importing
-/// from here, never hardcoding the literal a second time.
+/// TODO(pizmam): replace with `authStateProvider.currentUser.id` once the auth
+/// subsystem ships — tracked in deelmarkt-org/app#80 (R-13 / R-14).
+/// This single constant is the source of truth for both the notifier
+/// (optimistic send sender) and the screen (self vs other bubble alignment)
+/// — keep them in sync by importing from here, never hardcoding the literal
+/// a second time.
 const String kCurrentUserIdStub = 'user-001';
 
 /// DI — reuses the same use-case providers as the list notifier where possible.

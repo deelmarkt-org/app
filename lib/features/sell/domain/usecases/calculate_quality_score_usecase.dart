@@ -1,76 +1,57 @@
+import 'package:deelmarkt/core/constants.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/entities/quality_score_result.dart';
+import 'package:deelmarkt/features/sell/domain/usecases/quality_score_helpers.dart';
 
 /// Calculates a quality score (0–100) for a listing in progress.
 ///
 /// Pure synchronous use case — no dependencies, no side effects.
-/// The score determines whether the user can publish (threshold: 40).
+/// The score determines whether the user can publish (threshold:
+/// [ListingQualityThresholds.publishThreshold]).
 class CalculateQualityScoreUseCase {
   const CalculateQualityScoreUseCase();
 
   /// Evaluates [state] against six quality criteria and returns
   /// a [QualityScoreResult] with the total score and per-field breakdown.
   QualityScoreResult call(ListingCreationState state) {
-    final photosOk = state.imageFiles.length >= 3;
-    final titleOk = state.title.length >= 10 && state.title.length <= 60;
-    final descriptionWordCount =
-        state.description
-            .trim()
-            .split(RegExp(r'\s+'))
-            .where((w) => w.isNotEmpty)
-            .length;
-    final descriptionOk = descriptionWordCount >= 50;
-    final priceOk = state.priceInCents > 0;
-    final categoryOk = state.categoryL2Id != null;
-    final conditionOk = state.condition != null;
+    final wordCount = qualityWordCount(state.description);
 
     final fields = [
-      QualityScoreField(
-        name: 'sell.photos',
-        points: photosOk ? 25 : 0,
-        maxPoints: 25,
-        passed: photosOk,
-        tipKey: photosOk ? null : 'sell.tipMorePhotos',
+      qualityField(
+        'sell.photos',
+        state.imageFiles.length >= ListingQualityThresholds.minPhotos,
+        25,
+        'sell.tipMorePhotos',
       ),
-      QualityScoreField(
-        name: 'sell.title',
-        points: titleOk ? 15 : 0,
-        maxPoints: 15,
-        passed: titleOk,
-        tipKey: titleOk ? null : 'sell.titleTip',
+      qualityField(
+        'sell.title',
+        state.title.length >= ListingQualityThresholds.minTitleLength &&
+            state.title.length <= ListingQualityThresholds.maxTitleLength,
+        15,
+        'sell.titleTip',
       ),
-      QualityScoreField(
-        name: 'sell.description',
-        points: descriptionOk ? 20 : 0,
-        maxPoints: 20,
-        passed: descriptionOk,
-        tipKey: descriptionOk ? null : 'sell.descriptionTip',
+      qualityField(
+        'sell.description',
+        wordCount >= ListingQualityThresholds.minDescriptionWords,
+        20,
+        'sell.descriptionTip',
       ),
-      QualityScoreField(
-        name: 'sell.price',
-        points: priceOk ? 15 : 0,
-        maxPoints: 15,
-        passed: priceOk,
-        tipKey: priceOk ? null : 'sell.priceTip',
+      qualityField('sell.price', state.priceInCents > 0, 15, 'sell.priceTip'),
+      qualityField(
+        'sell.category',
+        state.categoryL2Id != null,
+        15,
+        'sell.categoryTip',
       ),
-      QualityScoreField(
-        name: 'sell.category',
-        points: categoryOk ? 15 : 0,
-        maxPoints: 15,
-        passed: categoryOk,
-        tipKey: categoryOk ? null : 'sell.categoryTip',
-      ),
-      QualityScoreField(
-        name: 'sell.condition',
-        points: conditionOk ? 10 : 0,
-        maxPoints: 10,
-        passed: conditionOk,
-        tipKey: conditionOk ? null : 'sell.conditionTip',
+      qualityField(
+        'sell.condition',
+        state.condition != null,
+        10,
+        'sell.conditionTip',
       ),
     ];
 
-    final totalScore = fields.fold<int>(0, (sum, field) => sum + field.points);
-
+    final totalScore = fields.fold<int>(0, (sum, f) => sum + f.points);
     return QualityScoreResult(score: totalScore, breakdown: fields);
   }
 }

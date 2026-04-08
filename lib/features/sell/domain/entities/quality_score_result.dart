@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'package:deelmarkt/core/constants.dart';
+
 /// Result of the listing quality score calculation.
 ///
 /// Pure domain entity — no Flutter/Supabase imports.
@@ -13,8 +15,10 @@ class QualityScoreResult extends Equatable {
   /// Per-field breakdown of points earned vs. maximum.
   final List<QualityScoreField> breakdown;
 
-  /// Minimum score of 40 required to publish a listing.
-  bool get canPublish => score >= 40;
+  /// Whether this listing meets the publish threshold.
+  ///
+  /// Threshold: [ListingQualityThresholds.publishThreshold].
+  bool get canPublish => score >= ListingQualityThresholds.publishThreshold;
 
   @override
   List<Object?> get props => [score, breakdown];

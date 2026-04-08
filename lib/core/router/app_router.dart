@@ -1,9 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/core/constants.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/register_screen.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
@@ -162,7 +165,8 @@ GoRouter _buildRouter({
                     // by sibling routes like categoryDetail.
                     redirect: (context, state) {
                       final id = state.pathParameters['conversationId'] ?? '';
-                      if (id.isEmpty || id.length > 64) {
+                      if (id.isEmpty ||
+                          id.length > AppConstants.maxRouteIdLength) {
                         return AppRoutes.messages;
                       }
                       return null;
@@ -207,7 +211,9 @@ GoRouter _buildRouter({
         name: 'category-detail',
         redirect: (context, state) {
           final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty || id.length > 64) return AppRoutes.categories;
+          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+            return AppRoutes.categories;
+          }
           return null;
         },
         builder: (context, state) {
@@ -227,7 +233,9 @@ GoRouter _buildRouter({
         name: 'listing-detail',
         redirect: (context, state) {
           final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty) return AppRoutes.home;
+          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+            return AppRoutes.home;
+          }
           return null;
         },
         builder: (context, state) {
@@ -240,7 +248,9 @@ GoRouter _buildRouter({
         name: 'user-profile',
         redirect: (context, state) {
           final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty) return AppRoutes.home;
+          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+            return AppRoutes.home;
+          }
           return null;
         },
         builder: (context, state) {
@@ -253,7 +263,9 @@ GoRouter _buildRouter({
         name: 'transaction-detail',
         redirect: (context, state) {
           final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty) return AppRoutes.home;
+          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+            return AppRoutes.home;
+          }
           return null;
         },
         builder: (context, state) {
@@ -279,7 +291,9 @@ GoRouter _buildRouter({
         name: 'shipping-detail',
         redirect: (context, state) {
           final id = state.pathParameters['id'] ?? '';
-          if (id.isEmpty) return AppRoutes.home;
+          if (id.isEmpty || id.length > AppConstants.maxRouteIdLength) {
+            return AppRoutes.home;
+          }
           return null;
         },
         builder: (context, state) {
@@ -317,8 +331,14 @@ GoRouter _buildRouter({
         ],
       ),
     ],
-    errorBuilder:
-        (context, state) => _Placeholder('Page not found: ${state.uri.path}'),
+    errorBuilder: (context, state) {
+      AppLogger.warning(
+        'Router: unmatched route',
+        tag: 'router',
+        error: state.uri.path,
+      );
+      return _Placeholder('error.notFound'.tr());
+    },
   );
 }
 
