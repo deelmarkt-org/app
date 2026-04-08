@@ -7,10 +7,6 @@ export 'package:deelmarkt/features/profile/domain/entities/review_role.dart';
 /// Review left by a buyer or seller after a transaction.
 ///
 /// Immutable value object — domain layer, no Flutter/Supabase imports.
-/// Extends [Equatable] for Riverpod state diffing (ADR-21).
-///
-/// P-38: extended with [transactionId], [role], [isHidden], [isReviewerDeleted],
-/// and [updatedAt] for blind review flow (E06 lines 24–29).
 class ReviewEntity extends Equatable {
   const ReviewEntity({
     required this.id,
@@ -31,28 +27,20 @@ class ReviewEntity extends Equatable {
 
   final String id;
 
-  /// Transaction this review belongs to. Null for legacy reviews.
   final String? transactionId;
-
   final String reviewerId;
   final String reviewerName;
   final String? reviewerAvatarUrl;
   final String revieweeId;
   final String listingId;
-
-  /// Whether reviewer acted as buyer or seller in the transaction.
   final ReviewRole role;
-
   final double rating;
   final String text;
 
-  /// Server-authoritative visibility flag for blind review flow.
-  /// When true, the review is hidden from the counterparty until both submit.
-  /// See ADR-BLIND-REVIEW-AUTHORITY.
+  /// Blind review visibility — hidden until both parties submit.
   final bool isHidden;
 
-  /// GDPR Art. 17 tombstone — reviewer account has been deleted.
-  /// When true, display "Verwijderde gebruiker" and generic avatar.
+  /// GDPR Art. 17 tombstone — reviewer account deleted.
   final bool isReviewerDeleted;
 
   final DateTime createdAt;
