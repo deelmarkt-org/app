@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 void main() {
   final now = DateTime(2026, 3, 25, 14);

@@ -1,4 +1,4 @@
-import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

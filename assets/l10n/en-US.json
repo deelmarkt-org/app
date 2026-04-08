@@ -387,8 +387,7 @@
       "suspicious_pricing": "This price seems suspiciously low for this item",
       "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
       "other": "This message was flagged by our scam detector"
-    },
-    "a11y_report_hint": "Tap to report this message as suspicious"
+    }
   },
   "location_badge": {
     "a11yWithDistance": "Location: {city}, {distance} away",
@@ -578,27 +577,6 @@
       "priceHighLow": "Price: high to low",
       "newest": "Newest first",
       "nearest": "Nearest first"
-    }
-  },
-  "scamAlert": {
-    "highTitle": "This message may contain a scam",
-    "lowTitle": "This message looks suspicious",
-    "reportAction": "REPORT THIS MESSAGE",
-    "dismissAction": "Dismiss",
-    "expandAction": "Why this warning?",
-    "collapseAction": "Hide details",
-    "reason": {
-      "externalPaymentLink": "Contains a link to an external payment site",
-      "offPlatformRequest": "Asks to complete the transaction outside DeelMarkt",
-      "phoneNumberSolicitation": "Requests a phone number or WhatsApp",
-      "tooGoodToBeTrue": "Price or offer is suspiciously low",
-      "urgencyPressure": "Uses pressure or urgency to act quickly",
-      "unknown": "Suspicious pattern detected"
-    },
-    "a11y": {
-      "highSeverity": "Warning: this message has been flagged as a potential scam",
-      "lowSeverity": "Caution: this message looks suspicious",
-      "reportHint": "Tap to report this message as suspicious"
     }
   },
   "sell": {

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 /// Single message in a conversation.
 ///
