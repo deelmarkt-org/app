@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 
 /// Single message in a conversation.
 ///
@@ -25,6 +26,7 @@ class MessageEntity extends Equatable {
     this.type = MessageType.text,
     this.isRead = false,
     this.offerAmountCents,
+    this.offerStatus,
     this.scamConfidence = ScamConfidence.none,
     this.scamReasons,
     this.scamFlaggedAt,
@@ -41,8 +43,13 @@ class MessageEntity extends Equatable {
          'must be null.',
        ),
        assert(
-         type != MessageType.offer || offerAmountCents != null,
-         'offerAmountCents must be provided when type is offer.',
+         type != MessageType.offer ||
+             (offerAmountCents != null && offerStatus != null),
+         'offerAmountCents and offerStatus must be provided when type is offer.',
+       ),
+       assert(
+         type == MessageType.offer || offerStatus == null,
+         'offerStatus must be null for non-offer messages.',
        );
 
   final String id;
@@ -54,6 +61,10 @@ class MessageEntity extends Equatable {
 
   /// Offer amount in euro cents — non-null only when [type] is [MessageType.offer].
   final int? offerAmountCents;
+
+  /// Lifecycle status of the offer — non-null only when [type] is [MessageType.offer].
+  /// Transitions: pending → accepted | declined (terminal, no reversal).
+  final OfferStatus? offerStatus;
 
   /// E06 scam detector confidence on this message.
   /// Defaults to [ScamConfidence.none].
@@ -76,6 +87,7 @@ class MessageEntity extends Equatable {
     type,
     isRead,
     offerAmountCents,
+    offerStatus,
     createdAt,
     scamConfidence,
     scamReasons,
@@ -95,6 +107,7 @@ class MessageEntity extends Equatable {
     MessageType? type,
     bool? isRead,
     int? offerAmountCents,
+    OfferStatus? offerStatus,
     DateTime? createdAt,
     ScamConfidence? scamConfidence,
     Object? scamReasons = _sentinel,
@@ -108,6 +121,7 @@ class MessageEntity extends Equatable {
       type: type ?? this.type,
       isRead: isRead ?? this.isRead,
       offerAmountCents: offerAmountCents ?? this.offerAmountCents,
+      offerStatus: offerStatus ?? this.offerStatus,
       createdAt: createdAt ?? this.createdAt,
       scamConfidence: scamConfidence ?? this.scamConfidence,
       scamReasons:

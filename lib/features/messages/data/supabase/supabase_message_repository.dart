@@ -4,10 +4,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
-import 'package:deelmarkt/features/messages/data/supabase/message_realtime_handler.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
@@ -29,11 +29,7 @@ class SupabaseMessageRepository implements MessageRepository {
   final SupabaseClient _client;
 
   static const _messagesTable = 'messages';
-
-  late final _realtimeHandler = MessageRealtimeHandler(
-    client: _client,
-    fetcher: getMessages,
-  );
+  static const _channelPrefix = 'messages:conv:';
 
   @override
   Future<List<ConversationEntity>> getConversations() async {
@@ -78,22 +74,11 @@ class SupabaseMessageRepository implements MessageRepository {
   Stream<List<MessageEntity>> watchMessages(String conversationId) {
     late StreamController<List<MessageEntity>> controller;
     RealtimeChannel? channel;
-    var messages = <MessageEntity>[];
 
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {
-        try {
-          messages = await getMessages(conversationId);
-          if (!controller.isClosed) controller.add(messages);
-        } on Exception catch (e) {
-          if (!controller.isClosed) controller.addError(e);
-          return;
-        }
-        channel = _realtimeHandler.subscribe(
-          conversationId,
-          controller,
-          messages,
-        );
+        if (!await _emitSnapshot(conversationId, controller)) return;
+        channel = _subscribeChanges(conversationId, controller);
       },
       onCancel: () {
         channel?.unsubscribe();
@@ -102,6 +87,55 @@ class SupabaseMessageRepository implements MessageRepository {
     );
 
     return controller.stream;
+  }
+
+  /// Fetches the current message list and pushes it onto [controller].
+  /// Returns `false` if an error occurred and was forwarded to the controller.
+  Future<bool> _emitSnapshot(
+    String conversationId,
+    StreamController<List<MessageEntity>> controller,
+  ) async {
+    try {
+      final messages = await getMessages(conversationId);
+      if (!controller.isClosed) controller.add(messages);
+      return true;
+    } on Exception catch (e) {
+      if (!controller.isClosed) controller.addError(e);
+      return false;
+    }
+  }
+
+  /// Subscribes to INSERT and UPDATE events for [conversationId] and
+  /// re-emits a full snapshot on each event. UPDATE is required so that
+  /// offer_status changes (accept/decline via R-32 RPC) are reflected
+  /// in real-time without a manual refresh.
+  RealtimeChannel _subscribeChanges(
+    String conversationId,
+    StreamController<List<MessageEntity>> controller,
+  ) {
+    final filter = PostgresChangeFilter(
+      type: PostgresChangeFilterType.eq,
+      column: 'conversation_id',
+      value: conversationId,
+    );
+    void onEvent(_) => _emitSnapshot(conversationId, controller);
+    return _client
+        .channel('$_channelPrefix$conversationId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: _messagesTable,
+          filter: filter,
+          callback: onEvent,
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: _messagesTable,
+          filter: filter,
+          callback: onEvent,
+        )
+        .subscribe();
   }
 
   @override
@@ -134,6 +168,29 @@ class SupabaseMessageRepository implements MessageRepository {
       return MessageDto.fromJson(response);
     } on PostgrestException catch (e) {
       throw Exception('Failed to send message: ${e.message}');
+    }
+  }
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    if (newStatus != OfferStatus.accepted &&
+        newStatus != OfferStatus.declined) {
+      throw ArgumentError.value(
+        newStatus,
+        'newStatus',
+        'Only accepted or declined are valid transitions',
+      );
+    }
+    try {
+      await _client.rpc(
+        'update_offer_status',
+        params: {'p_message_id': messageId, 'p_new_status': newStatus.toDb()},
+      );
+    } on PostgrestException catch (e) {
+      throw Exception('Failed to update offer status: ${e.message}');
     }
   }
 

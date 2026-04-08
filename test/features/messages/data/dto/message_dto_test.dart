@@ -2,6 +2,7 @@ import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -121,6 +122,7 @@ void main() {
         text: 'Bod: € 49,99',
         type: MessageType.offer,
         offerAmountCents: 4999,
+        offerStatus: OfferStatus.pending,
         createdAt: DateTime(2026, 4, 7, 12),
       );
 

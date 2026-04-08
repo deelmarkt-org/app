@@ -1,6 +1,7 @@
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Minimal in-memory fake for use-case and notifier tests.
@@ -11,12 +12,14 @@ class FakeMessageRepository implements MessageRepository {
     List<ConversationEntity> conversations = const [],
     List<MessageEntity> messages = const [],
     this.throwOnSend = false,
+    this.throwOnUpdate = false,
   }) : _conversations = [...conversations],
        _messages = [...messages];
 
   final List<ConversationEntity> _conversations;
   final List<MessageEntity> _messages;
   final bool throwOnSend;
+  final bool throwOnUpdate;
 
   /// Records every [sendMessage] invocation for assertions.
   final List<MessageEntity> sendCalls = [];
@@ -59,6 +62,7 @@ class FakeMessageRepository implements MessageRepository {
       text: text,
       type: type,
       offerAmountCents: offerAmountCents,
+      offerStatus: type == MessageType.offer ? OfferStatus.pending : null,
       createdAt: DateTime.now(),
     );
     sendCalls.add(msg);
@@ -71,4 +75,18 @@ class FakeMessageRepository implements MessageRepository {
     required String listingId,
     required String buyerId,
   }) async => 'conv-fake-001';
+
+  /// Records every [updateOfferStatus] invocation for assertions.
+  final List<({String messageId, OfferStatus newStatus})> updateOfferCalls = [];
+
+  @override
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
+  }) async {
+    if (throwOnUpdate) {
+      throw Exception('Network error');
+    }
+    updateOfferCalls.add((messageId: messageId, newStatus: newStatus));
+  }
 }

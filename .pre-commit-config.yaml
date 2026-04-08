@@ -66,20 +66,21 @@ repos:
         files: \.dart$
         stages: [pre-commit]
 
-      # Full test suite on push — safety net before code reaches remote
-      - id: flutter-test
-        name: flutter test (full)
-        language: system
-        entry: bash -c 'flutter test --no-pub'
-        pass_filenames: false
-        files: \.dart$
-        stages: [pre-push]
-
       # Thorough quality check — SonarCloud proxy (duplicate strings, nested ternaries, long methods)
+      # Moved to pre-commit: fast script, no benefit in delaying to push
       - id: quality-check-thorough
         name: quality check (SonarCloud proxy)
         language: system
         entry: bash -c 'dart run scripts/check_quality.dart --thorough'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-commit]
+
+      # Fast analyze pass on push — catches any regressions in generated files
+      - id: flutter-analyze-strict
+        name: flutter analyze (strict)
+        language: system
+        entry: bash -c 'flutter analyze --no-pub --fatal-infos'
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]

@@ -1,4 +1,12 @@
 /// App-wide constants — no magic values in code (CLAUDE.md §3.2).
+/// Offer-related business rules — shared between domain validation and UI.
+abstract final class OfferConstants {
+  /// Maximum offer amount: €9,999.99 (999 999 cents).
+  /// Prevents absurdly large offers and keeps the value within Mollie's
+  /// single-payment limit for marketplace transactions.
+  static const int maxOfferCents = 999999;
+}
+
 abstract final class AppConstants {
   /// Legal URLs
   static const String termsUrl = 'https://deelmarkt.nl/terms';

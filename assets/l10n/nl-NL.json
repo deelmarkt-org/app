@@ -722,7 +722,15 @@
     "listingEmbedA11y": "Advertentie: {title}",
     "selfBubbleA11y": "Jij zei: {text}",
     "otherBubbleA11y": "Zij zeiden: {text}",
-    "readReceiptA11y": "Gelezen"
+    "readReceiptA11y": "Gelezen",
+    "makeOfferTitle": "Doe een bod",
+    "makeOfferAmountLabel": "Jouw bod",
+    "makeOfferHint": "0,00",
+    "makeOfferSend": "Bod versturen",
+    "makeOfferCancel": "Annuleren",
+    "makeOfferInvalidAmount": "Voer een geldig bedrag in van meer dan €0",
+    "makeOfferMaxExceeded": "Maximaal bod is €9.999,99",
+    "makeOfferA11y": "Bod bedrag in euro"
   },
   "time_ago": {
     "just_now": "Zojuist",

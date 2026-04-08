@@ -1,6 +1,7 @@
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 
 /// Message repository interface — domain layer.
 ///
@@ -47,5 +48,15 @@ abstract class MessageRepository {
   Future<String> getOrCreateConversation({
     required String listingId,
     required String buyerId,
+  });
+
+  /// Update the status of an offer message (seller-only).
+  ///
+  /// [newStatus] must be [OfferStatus.accepted] or [OfferStatus.declined].
+  /// The RPC enforces seller authorisation server-side; re-calling on an
+  /// already-resolved offer is a no-op (idempotent).
+  Future<void> updateOfferStatus({
+    required String messageId,
+    required OfferStatus newStatus,
   });
 }

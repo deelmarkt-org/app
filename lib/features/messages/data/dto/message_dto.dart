@@ -2,6 +2,7 @@ import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 
 /// DTO for converting Supabase REST/Realtime JSON to [MessageEntity].
 ///
@@ -40,14 +41,21 @@ class MessageDto {
     final scamFlaggedAt =
         scamFlaggedAtRaw != null ? DateTime.tryParse(scamFlaggedAtRaw) : null;
 
+    final type = MessageType.fromDb((json['type'] as String?) ?? 'text');
+
     return MessageEntity(
       id: id,
       conversationId: conversationId,
       senderId: senderId,
       text: text,
-      type: MessageType.fromDb((json['type'] as String?) ?? 'text'),
+      type: type,
       isRead: (json['is_read'] as bool?) ?? false,
       offerAmountCents: json['offer_amount_cents'] as int?,
+      offerStatus:
+          type == MessageType.offer
+              ? (OfferStatus.fromDb(json['offer_status'] as String?) ??
+                  OfferStatus.pending)
+              : null,
       createdAt: DateTime.parse(createdAtRaw),
       scamConfidence: scamConfidence,
       scamReasons: scamConfidence != ScamConfidence.none ? scamReasons : null,
@@ -83,6 +91,7 @@ class MessageDto {
       'text': text,
       'type': type.toDb(),
       if (offerAmountCents != null) 'offer_amount_cents': offerAmountCents,
+      if (type == MessageType.offer) 'offer_status': OfferStatus.pending.toDb(),
     };
   }
 

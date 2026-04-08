@@ -16,7 +16,8 @@ class ConversationDto {
     final listingTitle = json['listing_title'];
     final otherUserId = json['other_user_id'];
     final otherUserName = json['other_user_name'];
-    final lastMessageText = json['last_message_text'];
+    final lastMessageText = json['last_message_text'] as String?;
+    final lastMessageType = json['last_message_type'] as String?;
     final lastMessageAtRaw = json['last_message_at'];
 
     if (id is! String ||
@@ -38,8 +39,9 @@ class ConversationDto {
       otherUserId: otherUserId,
       otherUserName: otherUserName,
       otherUserAvatarUrl: json['other_user_avatar_url'] as String?,
-      lastMessageText: (lastMessageText as String?) ?? '',
+      lastMessageText: lastMessageText ?? '',
       lastMessageAt: DateTime.parse(lastMessageAtRaw),
+      lastMessageType: lastMessageType,
       unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
     );
   }
