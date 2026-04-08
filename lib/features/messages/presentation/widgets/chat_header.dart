@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/utils/response_time_formatter.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 
@@ -81,35 +82,33 @@ class ChatHeader extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildTitleBlock(ThemeData theme, ChatThemeColors colors) {
     final statusColor = _isOnline ? colors.success : colors.textTertiary;
-    final subtitle = _buildSubtitle();
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          conversation.otherUserName,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: colors.textPrimary,
-            fontWeight: FontWeight.w700,
+    final subtitle =
+        conversation.sellerResponseTimeMinutes != null
+            ? formatResponseTimeLabel(conversation.sellerResponseTimeMinutes)
+            : 'chat.lastSeen'.tr();
+    return Semantics(
+      label: '${conversation.otherUserName}, $subtitle',
+      excludeSemantics: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            conversation.otherUserName,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: colors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        Text(
-          subtitle,
-          style: theme.textTheme.bodySmall?.copyWith(color: statusColor),
-        ),
-      ],
+          Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(color: statusColor),
+          ),
+        ],
+      ),
     );
-  }
-
-  String _buildSubtitle() {
-    final minutes = conversation.sellerResponseTimeMinutes;
-    if (minutes == null) return 'chat.lastSeen'.tr();
-    if (minutes < 60) return 'seller_profile.response_time.under_1h'.tr();
-    if (minutes < 240) return 'seller_profile.response_time.under_4h'.tr();
-    if (minutes < 1440) return 'seller_profile.response_time.under_24h'.tr();
-    return 'seller_profile.response_time.over_24h'.tr();
   }
 }
 

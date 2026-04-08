@@ -6,6 +6,10 @@ import 'package:deelmarkt/features/profile/presentation/widgets/profile_stats_ro
 import '../../../../helpers/pump_app.dart';
 
 void main() {
+  // .tr() returns the key path in test environment (no real l10n loaded).
+  // Short value keys: seller_profile.response_time.short_under_1h → "< 1h" in prod
+  // Label keys:       seller_profile.response_time.under_1h → "Responds within 1 hour" in prod
+
   UserEntity buildUser({
     double? averageRating = 4.7,
     int? responseTimeMinutes = 15,
@@ -27,9 +31,7 @@ void main() {
       testWidgets('shows sold count', (tester) async {
         await pumpTestWidget(tester, ProfileStatsRow(user: buildUser()));
 
-        // Sold count is hardcoded to '0'
         expect(find.text('0'), findsOneWidget);
-        // .tr() returns the key path in tests
         expect(find.text('profile.sold'), findsOneWidget);
       });
 
@@ -40,11 +42,14 @@ void main() {
         expect(find.text('profile.reviews'), findsOneWidget);
       });
 
-      testWidgets('shows response time value and l10n label', (tester) async {
-        // 15 min < 60 → value '< 1h', label under_1h bucket key
+      testWidgets('shows response time short value and label', (tester) async {
+        // 15 min < 60 → short_under_1h + under_1h
         await pumpTestWidget(tester, ProfileStatsRow(user: buildUser()));
 
-        expect(find.text('< 1h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.short_under_1h'),
+          findsOneWidget,
+        );
         expect(
           find.text('seller_profile.response_time.under_1h'),
           findsOneWidget,
@@ -52,75 +57,74 @@ void main() {
       });
     });
 
-    group('formats response time value correctly', () {
-      testWidgets('under 60 minutes → "< 1h"', (tester) async {
+    group('formats response time using l10n buckets', () {
+      testWidgets('under 60 minutes → short_under_1h + under_1h', (
+        tester,
+      ) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 30)),
         );
 
-        expect(find.text('< 1h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.short_under_1h'),
+          findsOneWidget,
+        );
         expect(
           find.text('seller_profile.response_time.under_1h'),
           findsOneWidget,
         );
       });
 
-      testWidgets('exactly 60 minutes → "< 4h"', (tester) async {
+      testWidgets('60 minutes → short_under_4h + under_4h', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 60)),
         );
 
-        expect(find.text('< 4h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.short_under_4h'),
+          findsOneWidget,
+        );
         expect(
           find.text('seller_profile.response_time.under_4h'),
           findsOneWidget,
         );
       });
 
-      testWidgets('90 minutes → "< 4h"', (tester) async {
-        await pumpTestWidget(
-          tester,
-          ProfileStatsRow(user: buildUser(responseTimeMinutes: 90)),
-        );
-
-        expect(find.text('< 4h'), findsOneWidget);
-        expect(
-          find.text('seller_profile.response_time.under_4h'),
-          findsOneWidget,
-        );
-      });
-
-      testWidgets('240 minutes → "< 24h"', (tester) async {
+      testWidgets('240 minutes → short_under_24h + under_24h', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 240)),
         );
 
-        expect(find.text('< 24h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.short_under_24h'),
+          findsOneWidget,
+        );
         expect(
           find.text('seller_profile.response_time.under_24h'),
           findsOneWidget,
         );
       });
 
-      testWidgets('1440+ minutes → "> 24h"', (tester) async {
+      testWidgets('1440+ minutes → short_over_24h + over_24h', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: 1440)),
         );
 
-        expect(find.text('> 24h'), findsOneWidget);
+        expect(
+          find.text('seller_profile.response_time.short_over_24h'),
+          findsOneWidget,
+        );
         expect(
           find.text('seller_profile.response_time.over_24h'),
           findsOneWidget,
         );
       });
 
-      testWidgets('null responseTimeMinutes → "-" value + unknown label', (
-        tester,
-      ) async {
+      testWidgets('null minutes → dash value + unknown label', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(user: buildUser(responseTimeMinutes: null)),
@@ -144,9 +148,7 @@ void main() {
         expect(find.text('-'), findsOneWidget);
       });
 
-      testWidgets('both null — one dash for rating, one for response time', (
-        tester,
-      ) async {
+      testWidgets('both null — two dashes', (tester) async {
         await pumpTestWidget(
           tester,
           ProfileStatsRow(

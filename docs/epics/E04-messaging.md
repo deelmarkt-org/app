@@ -44,7 +44,7 @@ Real-time in-app messaging between buyers and sellers via **Supabase Realtime** 
 - Unread message count badge
 
 ### Seller Response Time (0.5 week)
-- Calculate average response time from message timestamps
+- Calculate median response time from message timestamps (median chosen over mean for robustness against outliers — holidays, long absences)
 - Store as computed field on user profile (updated daily via cron/Edge Function)
 - Display on seller profile and conversation header
 

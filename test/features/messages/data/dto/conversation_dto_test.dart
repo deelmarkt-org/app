@@ -49,6 +49,23 @@ void main() {
       );
     });
 
+    test('parses seller_response_time_minutes when present', () {
+      final json = {...baseJson, 'seller_response_time_minutes': 120};
+      final entity = ConversationDto.fromJson(json);
+      expect(entity.sellerResponseTimeMinutes, 120);
+    });
+
+    test('parses seller_response_time_minutes as null when missing', () {
+      final entity = ConversationDto.fromJson(baseJson);
+      expect(entity.sellerResponseTimeMinutes, isNull);
+    });
+
+    test('casts seller_response_time_minutes from num to int', () {
+      final json = {...baseJson, 'seller_response_time_minutes': 45.0};
+      final entity = ConversationDto.fromJson(json);
+      expect(entity.sellerResponseTimeMinutes, 45);
+    });
+
     test('fromJsonList skips malformed entries', () {
       final list = [
         baseJson,
