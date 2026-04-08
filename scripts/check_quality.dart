@@ -49,6 +49,11 @@ void main(List<String> args) async {
     }
   }
 
+  // Missing test file check — runs on all staged lib/ files
+  for (final file in files) {
+    _checkMissingTestFile(file, violations);
+  }
+
   if (violations.isEmpty) {
     print('Quality check passed (${files.length} files).');
     exit(0);
@@ -333,6 +338,62 @@ void _checkRawAsyncWidgets(
       );
     }
   }
+}
+
+// ── Missing test file check ───────────────────────────────────────────
+
+/// Paths exempt from the "must have a test" rule.
+const _testExemptPaths = [
+  'lib/core/router/',        // router config — tested via integration
+  'lib/core/services/',      // service wiring — tested via integration
+  'lib/core/l10n/',          // localisation config
+  'lib/core/constants.dart', // just constants
+  'lib/main.dart',           // app entry point
+];
+
+/// Filename patterns exempt — these file types don't need individual tests.
+const _testExemptPatterns = [
+  '/mock/',             // mock implementations — test infrastructure
+  '/domain/repositories/', // repository interfaces — tested via implementations
+  '/domain/exceptions',    // exception classes — trivial data holders
+  '_providers.dart',       // Riverpod provider wiring — tested via consumers
+  '_state.dart',           // state classes — tested via notifier tests
+];
+
+void _checkMissingTestFile(String file, List<String> violations) {
+  if (!file.startsWith('lib/')) return;
+  if (file.endsWith('.g.dart') || file.endsWith('.freezed.dart')) return;
+
+  // Skip exempt paths
+  for (final exempt in _testExemptPaths) {
+    if (file.startsWith(exempt)) return;
+  }
+
+  // Skip exempt patterns
+  for (final pattern in _testExemptPatterns) {
+    if (file.contains(pattern)) return;
+  }
+
+  // Map lib/X.dart → test/X_test.dart
+  final testPath = file
+      .replaceFirst('lib/', 'test/')
+      .replaceFirst(RegExp(r'\.dart$'), '_test.dart');
+
+  if (File(testPath).existsSync()) return;
+
+  // Also accept a directory-level test:
+  // lib/core/design_system/colors.dart → test/core/design_system_test.dart
+  final parts = testPath.split('/');
+  if (parts.length >= 3) {
+    final dirName = parts[parts.length - 2];
+    final parentParts = parts.sublist(0, parts.length - 2);
+    final dirTest = '${parentParts.join("/")}/${dirName}_test.dart';
+    if (File(dirTest).existsSync()) return;
+  }
+
+  violations.add(
+    '  MISSING_TEST  $file: no corresponding test file found (expected $testPath) [CLAUDE.md §6]',
+  );
 }
 
 // ── Thorough checks (pre-push) ─────────────────────────────────────────

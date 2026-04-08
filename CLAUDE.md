@@ -414,7 +414,7 @@ The European Accessibility Act is enforceable. These are not optional:
 
 | Script | When | What |
 |:-------|:-----|:-----|
-| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder |
+| `dart run scripts/check_quality.dart` | Pre-commit (auto) | File length, cross-imports, l10n, Semantics, setState, FutureBuilder, **missing test file** |
 | `dart run scripts/check_quality.dart --thorough` | Pre-commit (auto) | + duplicate strings, nested ternaries, long methods |
 | `dart run scripts/check_quality.dart --all` | Manual | Check entire codebase |
 | `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
