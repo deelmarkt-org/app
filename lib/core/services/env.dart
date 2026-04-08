@@ -22,4 +22,7 @@ abstract class Env {
 
   @EnviedField(varName: 'UNLEASH_CLIENT_KEY', obfuscate: true)
   static final String unleashClientKey = _Env.unleashClientKey;
+
+  @EnviedField(varName: 'SENTRY_DSN', obfuscate: true)
+  static final String sentryDsn = _Env.sentryDsn;
 }
