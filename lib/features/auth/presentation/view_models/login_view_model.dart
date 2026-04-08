@@ -4,7 +4,7 @@ import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/presentation/view_models/login_state.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
 
-export 'login_state.dart' show LoginState, kMinPasswordLength;
+export 'login_state.dart' show LoginState, LoginFieldErrors, kMinPasswordLength;
 
 part 'login_view_model.g.dart';
 
@@ -21,7 +21,7 @@ class LoginViewModel extends _$LoginViewModel {
   void setEmail(String value) {
     state = state.copyWith(
       email: value,
-      emailError: () => null,
+      fieldErrors: state.fieldErrors.copyWith(emailError: () => null),
       lastResult: () => null,
     );
   }
@@ -29,7 +29,7 @@ class LoginViewModel extends _$LoginViewModel {
   void setPassword(String value) {
     state = state.copyWith(
       password: value,
-      passwordError: () => null,
+      fieldErrors: state.fieldErrors.copyWith(passwordError: () => null),
       lastResult: () => null,
     );
   }
@@ -44,22 +44,34 @@ class LoginViewModel extends _$LoginViewModel {
     // Validate locally — presentation concern
     final emailTrimmed = state.email.trim();
     if (emailTrimmed.isEmpty) {
-      state = state.copyWith(emailError: () => 'validation.email_required');
+      state = state.copyWith(
+        fieldErrors: state.fieldErrors.copyWith(
+          emailError: () => 'validation.email_required',
+        ),
+      );
       return;
     }
     if (!_emailRegex.hasMatch(emailTrimmed)) {
-      state = state.copyWith(emailError: () => 'validation.email_invalid');
+      state = state.copyWith(
+        fieldErrors: state.fieldErrors.copyWith(
+          emailError: () => 'validation.email_invalid',
+        ),
+      );
       return;
     }
     if (state.password.isEmpty) {
       state = state.copyWith(
-        passwordError: () => 'validation.password_required',
+        fieldErrors: state.fieldErrors.copyWith(
+          passwordError: () => 'validation.password_required',
+        ),
       );
       return;
     }
     if (state.password.length < kMinPasswordLength) {
       state = state.copyWith(
-        passwordError: () => 'validation.password_too_short',
+        fieldErrors: state.fieldErrors.copyWith(
+          passwordError: () => 'validation.password_too_short',
+        ),
       );
       return;
     }
@@ -67,8 +79,7 @@ class LoginViewModel extends _$LoginViewModel {
     state = state.copyWith(
       isLoading: true,
       lastResult: () => null,
-      emailError: () => null,
-      passwordError: () => null,
+      fieldErrors: const LoginFieldErrors(),
     );
 
     final useCase = ref.read(loginWithEmailUseCaseProvider);
@@ -78,11 +89,13 @@ class LoginViewModel extends _$LoginViewModel {
       isLoading: false,
       password: '',
       lastResult: () => result,
-      passwordError:
-          () =>
-              result is AuthFailureInvalidCredentials
-                  ? 'auth.invalidCredentials'
-                  : null,
+      fieldErrors: state.fieldErrors.copyWith(
+        passwordError:
+            () =>
+                result is AuthFailureInvalidCredentials
+                    ? 'auth.invalidCredentials'
+                    : null,
+      ),
     );
   }
 

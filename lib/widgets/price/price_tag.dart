@@ -83,12 +83,10 @@ class PriceTag extends StatelessWidget {
 
     // Current price text color: primary when free OR discounted,
     // default (theme foreground) otherwise.
+    final Color defaultColor =
+        isDark ? DeelmarktColors.darkOnSurface : DeelmarktColors.neutral900;
     final currentColor =
-        (_isFree || _isDiscounted)
-            ? primaryColor
-            : (isDark
-                ? DeelmarktColors.darkOnSurface
-                : DeelmarktColors.neutral900);
+        (_isFree || _isDiscounted) ? primaryColor : defaultColor;
 
     const tabular = [FontFeature.tabularFigures()];
 

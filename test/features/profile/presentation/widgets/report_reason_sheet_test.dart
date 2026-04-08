@@ -19,7 +19,7 @@ void main() {
 
       for (final reason in ReportReason.values) {
         expect(
-          find.text('report.reason.${reason.name}'),
+          find.text(reasonL10nKey(reason)),
           findsOneWidget,
           reason: '${reason.name} ListTile not found',
         );
@@ -40,7 +40,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('report.reason.scam'));
+      await tester.tap(find.text(reasonL10nKey(ReportReason.scam)));
       await tester.pumpAndSettle();
 
       expect(submitted, ReportReason.scam);
@@ -60,7 +60,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('report.reason.spam'));
+      await tester.tap(find.text(reasonL10nKey(ReportReason.spam)));
       await tester.pumpAndSettle();
 
       expect(submitted, ReportReason.spam);

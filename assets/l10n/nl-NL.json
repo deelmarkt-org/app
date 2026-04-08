@@ -505,17 +505,7 @@
   },
   "report": {
     "title": "Melden",
-    "submitted": "Melding ingediend",
-    "reason": {
-      "scam": "Oplichting",
-      "harassment": "Intimidatie",
-      "hateSpeech": "Haatdragend taalgebruik",
-      "sexualContent": "Seksuele inhoud",
-      "violence": "Geweld",
-      "illegalContent": "Illegale inhoud",
-      "spam": "Spam",
-      "other": "Anders"
-    }
+    "submitted": "Melding ingediend"
   },
   "kyc": {
     "bannerTitle": "Verifieer je identiteit",

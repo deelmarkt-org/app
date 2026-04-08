@@ -6,6 +6,31 @@ import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 /// the registration screen constant.
 const int kMinPasswordLength = 8;
 
+/// Grouped field-validation errors for the login form.
+///
+/// Extracted from [LoginState] to keep the constructor under 7 parameters
+/// (SonarCloud MAJOR rule).
+class LoginFieldErrors extends Equatable {
+  const LoginFieldErrors({this.emailError, this.passwordError});
+
+  final String? emailError;
+  final String? passwordError;
+
+  LoginFieldErrors copyWith({
+    String? Function()? emailError,
+    String? Function()? passwordError,
+  }) {
+    return LoginFieldErrors(
+      emailError: emailError != null ? emailError() : this.emailError,
+      passwordError:
+          passwordError != null ? passwordError() : this.passwordError,
+    );
+  }
+
+  @override
+  List<Object?> get props => [emailError, passwordError];
+}
+
 /// Immutable login form state — drives the UI via `ref.watch`.
 class LoginState extends Equatable {
   const LoginState({
@@ -16,8 +41,7 @@ class LoginState extends Equatable {
     this.lastResult,
     this.biometricAvailable = false,
     this.biometricMethod,
-    this.emailError,
-    this.passwordError,
+    this.fieldErrors = const LoginFieldErrors(),
   });
 
   final String email;
@@ -27,8 +51,11 @@ class LoginState extends Equatable {
   final AuthResult? lastResult;
   final bool biometricAvailable;
   final BiometricMethod? biometricMethod;
-  final String? emailError;
-  final String? passwordError;
+  final LoginFieldErrors fieldErrors;
+
+  /// Convenience accessors for field errors.
+  String? get emailError => fieldErrors.emailError;
+  String? get passwordError => fieldErrors.passwordError;
 
   LoginState copyWith({
     String? email,
@@ -38,8 +65,7 @@ class LoginState extends Equatable {
     AuthResult? Function()? lastResult,
     bool? biometricAvailable,
     BiometricMethod? Function()? biometricMethod,
-    String? Function()? emailError,
-    String? Function()? passwordError,
+    LoginFieldErrors? fieldErrors,
   }) {
     return LoginState(
       email: email ?? this.email,
@@ -50,9 +76,7 @@ class LoginState extends Equatable {
       biometricAvailable: biometricAvailable ?? this.biometricAvailable,
       biometricMethod:
           biometricMethod != null ? biometricMethod() : this.biometricMethod,
-      emailError: emailError != null ? emailError() : this.emailError,
-      passwordError:
-          passwordError != null ? passwordError() : this.passwordError,
+      fieldErrors: fieldErrors ?? this.fieldErrors,
     );
   }
 
@@ -65,7 +89,6 @@ class LoginState extends Equatable {
     lastResult,
     biometricAvailable,
     biometricMethod,
-    emailError,
-    passwordError,
+    fieldErrors,
   ];
 }

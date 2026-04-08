@@ -15,14 +15,8 @@ export 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart'
 
 part 'chat_thread_notifier.g.dart';
 
-/// Stub id for the current signed-in user.
-///
-/// TODO(pizmam): replace with `authStateProvider.currentUser.id` once the auth
-/// subsystem ships — tracked in deelmarkt-org/app#80 (R-13 / R-14).
-/// This single constant is the source of truth for both the notifier
-/// (optimistic send sender) and the screen (self vs other bubble alignment)
-/// — keep them in sync by importing from here, never hardcoding the literal
-/// a second time.
+/// Stub user id while auth is unwired.
+/// TODO(pizmam): replace with authStateProvider — deelmarkt-org/app#80.
 const String kCurrentUserIdStub = 'user-001';
 
 /// DI — reuses the same use-case providers as the list notifier where possible.
