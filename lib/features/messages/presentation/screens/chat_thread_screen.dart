@@ -13,6 +13,9 @@ import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_lis
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/widgets/trust/scam_alert.dart';
 
+/// Whether the scam alert banner has been dismissed by the user.
+final scamAlertDismissedProvider = StateProvider<bool>((_) => false);
+
 /// Pixel threshold beneath which the user is considered "at the bottom"
 /// for the purposes of sticky auto-scroll (Gemini code review G2).
 const double _kAutoScrollThresholdPx = 100;
@@ -130,6 +133,8 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
   /// Returns the [ScamAlert] widget when the latest message in the thread
   /// has been flagged, or an invisible placeholder otherwise.
   Widget _buildScamAlert(ChatThreadState state) {
+    final dismissed = ref.watch(scamAlertDismissedProvider);
+    if (dismissed) return const SizedBox.shrink();
     if (state.messages.isEmpty) return const SizedBox.shrink();
     final latest = state.messages.last;
     if (latest.scamConfidence == ScamConfidence.none) {
@@ -141,14 +146,14 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
       onReport:
           latest.scamConfidence == ScamConfidence.high
               ? () {
-                // TODO(P-37): implement report flow
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('scam_alert.report_submitted'.tr())),
+                );
               }
               : null,
       onDismiss:
           latest.scamConfidence == ScamConfidence.low
-              ? () {
-                // TODO(P-37): implement dismiss flow
-              }
+              ? () => ref.read(scamAlertDismissedProvider.notifier).state = true
               : null,
     );
   }

@@ -1,7 +1,7 @@
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
-import 'package:deelmarkt/features/messages/domain/entities/scam_detection.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 
 /// DTO for converting Supabase REST/Realtime JSON to [MessageEntity].
 ///
