@@ -63,7 +63,7 @@ The agent will:
 - [x] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
 - [x] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
 - [x] `R-11` Set up Upstash Redis — connection working from Edge Function
-- [ ] `R-12` Set up Sentry — error tracking receiving test events
+- [x] `R-12` Set up Sentry — error tracking receiving test events
 
 ### belengaz `[B]` — DevOps & Deep Linking
 

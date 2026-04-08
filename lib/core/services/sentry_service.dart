@@ -3,6 +3,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:deelmarkt/core/services/env.dart';
 
+/// Fraction of transactions sampled for performance monitoring.
+const _tracesSampleRate = 0.2;
+
 /// Initialise Sentry **before** other services so it captures init errors.
 ///
 /// Sentry runs alongside Firebase Crashlytics:
@@ -15,8 +18,8 @@ Future<void> initSentry() async {
     options
       ..dsn = kDebugMode ? '' : Env.sentryDsn
       ..environment = kDebugMode ? 'development' : 'production'
-      ..tracesSampleRate = 0.2
-      ..attachScreenshot = true
+      ..tracesSampleRate = _tracesSampleRate
+      ..attachScreenshot = false
       ..debug = kDebugMode
       ..sendDefaultPii = false;
   });
