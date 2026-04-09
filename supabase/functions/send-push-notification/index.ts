@@ -5,7 +5,7 @@
  * Auth via service_role check.
  *
  * Flow:
- *   1. Receive message payload from the DB trigger (notify_new_message).
+ *   1. Idempotency check (Redis NX) to prevent duplicate pushes on pg_net retry.
  *   2. Resolve the recipient — the conversation participant who is NOT the sender.
  *   3. Check notification_preferences.messages — skip if disabled.
  *   4. Fetch recipient's FCM device tokens from device_tokens table.
@@ -20,6 +20,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { verifyServiceRole } from "../_shared/auth.ts";
 import { jsonResponse } from "../_shared/response.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { checkIdempotency } from "../_shared/idempotency.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -39,15 +41,19 @@ interface FcmTokenRow {
   platform: string;
 }
 
+interface ServiceAccount {
+  project_id: string;
+  client_email: string;
+  private_key: string;
+}
+
 // ---------------------------------------------------------------------------
 // Google OAuth2 — get access token for FCM v1 API
 // ---------------------------------------------------------------------------
 
-async function getFcmAccessToken(serviceAccountJson: string): Promise<string> {
-  const sa = JSON.parse(serviceAccountJson);
+async function getFcmAccessToken(sa: ServiceAccount): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
 
-  // Build JWT header + claims for Google OAuth2
   const header = btoa(JSON.stringify({ alg: "RS256", typ: "JWT" }));
   const claims = btoa(
     JSON.stringify({
@@ -59,7 +65,6 @@ async function getFcmAccessToken(serviceAccountJson: string): Promise<string> {
     }),
   );
 
-  // Sign with the service account private key
   const signingInput = `${header}.${claims}`;
   const key = await crypto.subtle.importKey(
     "pkcs8",
@@ -75,7 +80,6 @@ async function getFcmAccessToken(serviceAccountJson: string): Promise<string> {
   );
   const jwt = `${signingInput}.${arrayBufferToBase64Url(signature)}`;
 
-  // Exchange JWT for access token
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -108,7 +112,7 @@ function arrayBufferToBase64Url(buffer: ArrayBuffer): string {
 }
 
 // ---------------------------------------------------------------------------
-// FCM send
+// FCM send — parallel for multi-device
 // ---------------------------------------------------------------------------
 
 interface FcmResult {
@@ -126,46 +130,40 @@ async function sendFcmMessages(
   data: Record<string, string>,
 ): Promise<FcmResult[]> {
   const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
-  const results: FcmResult[] = [];
 
-  for (const t of tokens) {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: {
-          token: t.token,
-          notification: { title, body },
-          data,
-          android: { priority: "high" },
-          apns: {
-            payload: { aps: { sound: "default", badge: 1 } },
-          },
+  return Promise.all(
+    tokens.map(async (t): Promise<FcmResult> => {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          message: {
+            token: t.token,
+            notification: { title, body },
+            data,
+            android: { priority: "high" },
+            apns: {
+              payload: { aps: { sound: "default", badge: 1 } },
+            },
+          },
+        }),
+      });
 
-    const responseBody = await res.text();
-    const unregistered =
-      !res.ok && responseBody.includes("UNREGISTERED");
+      const responseBody = await res.text();
+      const unregistered = !res.ok && responseBody.includes("UNREGISTERED");
 
-    results.push({
-      token: t.token,
-      success: res.ok,
-      unregistered,
-    });
+      if (!res.ok && !unregistered) {
+        console.error(
+          `[push] FCM send failed for token ${t.token.slice(0, 8)}...: ${res.status} ${responseBody}`,
+        );
+      }
 
-    if (!res.ok && !unregistered) {
-      console.error(
-        `[push] FCM send failed for token ${t.token.slice(0, 8)}...: ${res.status} ${responseBody}`,
-      );
-    }
-  }
-
-  return results;
+      return { token: t.token, success: res.ok, unregistered };
+    }),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -193,13 +191,20 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
 
-  const { conversation_id, sender_id, text, type } = payload;
+  const { message_id, conversation_id, sender_id, text, type } = payload;
 
   if (!conversation_id || !sender_id) {
     return jsonResponse({ error: "Missing conversation_id or sender_id" }, 400);
   }
 
   try {
+    // 0. Idempotency — prevent duplicate pushes on pg_net retry.
+    const redis = getRedisCredentials();
+    const isNew = await checkIdempotency(redis, `push:${message_id}`, 300);
+    if (!isNew) {
+      return jsonResponse({ status: "skipped", reason: "duplicate" });
+    }
+
     // 1. Resolve recipient — the participant who is NOT the sender.
     const { data: conv, error: convError } = await supabase
       .from("conversations")
@@ -228,7 +233,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .eq("user_id", recipientId)
       .maybeSingle();
 
-    // Default to enabled if no preferences row exists.
     if (prefs && prefs.messages === false) {
       return jsonResponse({ status: "skipped", reason: "notifications_disabled" });
     }
@@ -248,10 +252,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return jsonResponse({ status: "skipped", reason: "no_device_tokens" });
     }
 
-    // 4. Get FCM credentials from Vault.
-    const serviceAccountJson = await getVaultSecret(supabase, "fcm_service_account");
-    const sa = JSON.parse(serviceAccountJson);
-    const accessToken = await getFcmAccessToken(serviceAccountJson);
+    // 4. Get FCM credentials from Vault (parse once).
+    const sa: ServiceAccount = JSON.parse(
+      await getVaultSecret(supabase, "fcm_service_account"),
+    );
+    const accessToken = await getFcmAccessToken(sa);
 
     // 5. Build notification content.
     const { data: senderProfile } = await supabase
@@ -266,7 +271,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       : `${senderName} sent a message`;
     const body = text.length > 100 ? `${text.slice(0, 97)}...` : text;
 
-    // 6. Send FCM messages.
+    // 6. Send FCM messages (parallel for multi-device).
     const results = await sendFcmMessages(
       accessToken,
       sa.project_id,

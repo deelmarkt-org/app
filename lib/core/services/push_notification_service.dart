@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -19,13 +20,19 @@ const _tokenColumn = 'token';
 /// - Listens for token refreshes and updates the table
 /// - Handles foreground message display
 ///
-/// Call [initPushNotifications] after user is authenticated.
+/// Call [init] after user is authenticated.
 /// Reference: docs/epics/E04-messaging.md §Push notifications
 @Riverpod(keepAlive: true)
 class PushNotificationService extends _$PushNotificationService {
+  StreamSubscription<String>? _tokenSub;
+  StreamSubscription<RemoteMessage>? _messageSub;
+
   @override
   Future<void> build() async {
-    // No-op on build — call init() after auth.
+    ref.onDispose(() {
+      _tokenSub?.cancel();
+      _messageSub?.cancel();
+    });
   }
 
   /// Initialise push notifications for the authenticated user.
@@ -48,11 +55,12 @@ class PushNotificationService extends _$PushNotificationService {
       await _registerToken(token);
     }
 
-    // Listen for token refreshes (happens when app is reinstalled, etc.).
-    messaging.onTokenRefresh.listen(_registerToken);
+    // Cancel prior listeners from a previous login cycle (keepAlive survives logout).
+    await _tokenSub?.cancel();
+    await _messageSub?.cancel();
 
-    // Handle foreground messages (show local notification or update UI).
-    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+    _tokenSub = messaging.onTokenRefresh.listen(_registerToken);
+    _messageSub = FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
   }
 
   /// Register or update the FCM token in the device_tokens table.
@@ -61,6 +69,7 @@ class PushNotificationService extends _$PushNotificationService {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
+    // kIsWeb guard ensures Platform.isIOS is never evaluated on web.
     final nativePlatform = Platform.isIOS ? 'ios' : 'android';
     final platform = kIsWeb ? 'web' : nativePlatform;
 
@@ -85,15 +94,16 @@ class PushNotificationService extends _$PushNotificationService {
       'Foreground message: ${message.notification?.title}',
       tag: _logTag,
     );
-    // Foreground notification display is handled by the chat Riverpod
-    // providers — Supabase Realtime already updates the conversation list
-    // and message thread in real-time. The push notification is only
-    // needed when the app is in background/terminated.
   }
 
   /// Remove the current device token on logout.
   Future<void> removeToken() async {
     if (kIsWeb) return;
+
+    await _tokenSub?.cancel();
+    await _messageSub?.cancel();
+    _tokenSub = null;
+    _messageSub = null;
 
     final messaging = FirebaseMessaging.instance;
     final token = await messaging.getToken();
