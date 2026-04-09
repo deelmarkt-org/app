@@ -15,11 +15,14 @@ class ListingDto {
     final priceCents = json['price_cents'];
     final createdAtRaw = json['created_at'];
 
+    final originalPriceCents = json['original_price_cents'];
+
     if (id is! String ||
         title is! String ||
         description is! String ||
         priceCents is! int ||
-        createdAtRaw is! String) {
+        createdAtRaw is! String ||
+        (originalPriceCents != null && originalPriceCents is! int)) {
       throw const FormatException(
         'ListingDto.fromJson: missing or invalid required fields',
       );
@@ -30,7 +33,7 @@ class ListingDto {
       title: title,
       description: description,
       priceInCents: priceCents,
-      originalPriceInCents: json['original_price_cents'] as int?,
+      originalPriceInCents: originalPriceCents as int?,
       sellerId: (json['seller_id'] as String?) ?? '',
       sellerName: (json['seller_name'] as String?) ?? 'Verkoper',
       condition: ListingCondition.fromDb(
