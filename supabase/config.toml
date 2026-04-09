@@ -486,6 +486,20 @@ verify_jwt = false
 import_map = "./functions/tracking-webhook/deno.json"
 entrypoint = "./functions/tracking-webhook/index.ts"
 
+# R-33: Seller response time — cron-triggered, service_role auth
+[functions.seller-response-time]
+enabled = true
+verify_jwt = false
+import_map = "./functions/seller-response-time/deno.json"
+entrypoint = "./functions/seller-response-time/index.ts"
+
+# R-34: FCM push notifications — triggered by DB, service_role auth
+[functions.send-push-notification]
+enabled = true
+verify_jwt = false
+import_map = "./functions/send-push-notification/deno.json"
+entrypoint = "./functions/send-push-notification/index.ts"
+
 # R-35: Scam detection — service_role auth, called by E04 messaging pipeline
 [functions.scam-detection]
 enabled = true

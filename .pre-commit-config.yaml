@@ -122,6 +122,18 @@ repos:
         files: \.dart$
         stages: [pre-push]
 
+      # Deployment drift check — warns if migrations or Edge Functions are pending.
+      # Runs on push when .sql or .ts files under supabase/ are staged.
+      # Warning only (|| true) — does not block push if supabase CLI is missing.
+      - id: deployment-drift
+        name: deployment drift check
+        language: system
+        entry: >-
+          bash -c 'if command -v supabase &>/dev/null && [[ -f supabase/.temp/project-ref ]]; then bash scripts/check_deployments.sh; else echo "supabase CLI not linked — skipping deployment check"; fi || true'
+        pass_filenames: false
+        files: ^supabase/
+        stages: [pre-push]
+
       # New-code coverage gate — blocks push if changed files < 80% covered
       - id: coverage-gate
         name: new-code coverage (≥80%)

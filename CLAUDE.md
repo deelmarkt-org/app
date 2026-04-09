@@ -384,6 +384,9 @@ git push origin feature/...
 - Edge Functions use Zod for input validation
 - Webhook handlers MUST be idempotent (Upstash Redis NX pattern)
 - Database schema changes require a migration file
+- **Migrations MUST be applied** after creating/modifying `.sql` files — run `bash scripts/check_deployments.sh --deploy`
+- **Edge Functions MUST be deployed** after creating/modifying — run `bash scripts/check_deployments.sh --deploy`
+- Before marking a task as done, verify deployment: `bash scripts/check_deployments.sh`
 
 ---
 
@@ -430,9 +433,10 @@ The European Accessibility Act is enforceable. These are not optional:
 1. Run `flutter analyze` — zero warnings
 2. Run `dart run scripts/check_quality.dart` — zero violations on your files
 3. Run `bash scripts/check_edge_functions.sh --all` — zero new violations (if you touched Edge Functions)
-4. Run `flutter test` — all passing
-5. Commit with proper message format
-6. Update epic acceptance criteria checkboxes if applicable
+4. Run `bash scripts/check_deployments.sh` — zero pending migrations or undeployed functions
+5. Run `flutter test` — all passing
+6. Commit with proper message format
+7. Update epic acceptance criteria checkboxes if applicable
 
 ### Quality Gate Scripts
 
@@ -444,6 +448,8 @@ The European Accessibility Act is enforceable. These are not optional:
 | `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
 | `bash scripts/check_edge_functions.sh` | Pre-commit (auto) | Edge Function structure + schema cross-reference (staged .ts/.sql) |
 | `bash scripts/check_edge_functions.sh --all` | Manual | Check all Edge Functions |
+| `bash scripts/check_deployments.sh` | Before ending session | Detects pending migrations + undeployed Edge Functions |
+| `bash scripts/check_deployments.sh --deploy` | After creating migration/function | Auto-applies pending migrations + deploys functions |
 
 ### Setup for New or Existing Developers
 
