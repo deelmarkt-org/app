@@ -386,6 +386,11 @@
       "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
       "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
       "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "credential_harvesting": "Dit bericht vraagt om wachtwoorden, inloggegevens of identiteitsdocumenten",
+      "advance_payment_request": "Dit bericht vraagt om vooruitbetaling of een aanbetaling voor levering",
+      "fake_escrow": "Dit bericht promoot een externe escrow-service buiten DeelMarkt",
+      "shipping_scam": "Dit bericht bevat een verdacht verzoek om verzendkosten te betalen",
+      "prohibited_item": "Dit bericht verwijst naar artikelen die verboden zijn op DeelMarkt",
       "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
     }
   },

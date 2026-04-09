@@ -2,6 +2,9 @@
  * R-07: Health check Edge Function
  * GET /functions/v1/health → 200 OK
  *
+ * verify_jwt = false — called by Betterstack uptime monitor.
+ * Auth via service_role check.
+ *
  * Checks:
  * - Edge Function runtime is alive
  * - Supabase DB connection (via service_role)
@@ -10,6 +13,8 @@
 
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 
 // Module-scope client — reused across requests (L2)
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -18,10 +23,11 @@ const supabase = createClient(supabaseUrl, serviceRoleKey);
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "GET") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
+    return jsonResponse({ error: "Method not allowed" }, 405);
+  }
+
+  if (!verifyServiceRole(req)) {
+    return jsonResponse({ error: "Unauthorized" }, 401);
   }
 
   const checks: Record<string, string> = {
@@ -44,16 +50,10 @@ Deno.serve(async (req: Request) => {
     status = 503;
   }
 
-  return new Response(
-    JSON.stringify({
-      status: status === 200 ? "healthy" : "degraded",
-      checks,
-      timestamp: new Date().toISOString(),
-      version: "0.1.0",
-    }),
-    {
-      status,
-      headers: { "Content-Type": "application/json" },
-    },
-  );
+  return jsonResponse({
+    status: status === 200 ? "healthy" : "degraded",
+    checks,
+    timestamp: new Date().toISOString(),
+    version: "0.1.0",
+  }, status);
 });

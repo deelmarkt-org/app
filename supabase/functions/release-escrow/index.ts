@@ -19,6 +19,7 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { triggerPagerDuty } from "../_shared/pagerduty.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -281,15 +282,4 @@ async function releaseToSeller(
   if (ledgerError) {
     throw new Error(`Ledger entry failed for ${txn.id}: ${ledgerError.message}`);
   }
-}
-
-// ---------------------------------------------------------------------------
-// Helper
-// ---------------------------------------------------------------------------
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body, null, 2), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
 }
