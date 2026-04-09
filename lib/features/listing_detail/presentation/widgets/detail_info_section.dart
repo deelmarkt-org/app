@@ -1,17 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/design_system/typography.dart';
-import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/widgets/price/price_tag.dart';
 
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_chips.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_location_block.dart';
 
 /// Price, title, chips, description, own-listing stats, and location
 /// with map placeholder. Layout per stitch design.
@@ -60,14 +58,9 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
                 ),
               ),
               const SizedBox(width: Spacing.s3),
-              Text(
-                Formatters.euroFromCents(listing.priceInCents),
-                style: DeelmarktTypography.price.copyWith(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkPrimary
-                          : DeelmarktColors.primary,
-                ),
+              PriceTag(
+                priceInCents: listing.priceInCents,
+                originalPriceInCents: listing.originalPriceInCents,
               ),
             ],
           ),
@@ -137,93 +130,13 @@ class _DetailInfoSectionState extends State<DetailInfoSection> {
           ),
           const SizedBox(height: Spacing.s3),
           if (listing.location != null)
-            _LocationBlock(
+            DetailLocationBlock(
               location: listing.location!,
               distanceKm: listing.distanceKm,
               isDark: isDark,
             ),
         ],
       ),
-    );
-  }
-}
-
-/// Location row + map placeholder, extracted for line-limit compliance.
-class _LocationBlock extends StatelessWidget {
-  const _LocationBlock({
-    required this.location,
-    required this.isDark,
-    this.distanceKm,
-  });
-
-  final String location;
-  final double? distanceKm;
-  final bool isDark;
-
-  static const double _mapPlaceholderHeight = 120;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final mutedColor =
-        isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral500;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'listing_detail.locationHeader'.tr(),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: Spacing.s2),
-        Row(
-          children: [
-            Icon(
-              PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
-              size: DeelmarktIconSize.xs,
-              color: mutedColor,
-            ),
-            const SizedBox(width: Spacing.s1),
-            Text(
-              location,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color:
-                    isDark
-                        ? DeelmarktColors.darkOnSurface
-                        : DeelmarktColors.neutral700,
-              ),
-            ),
-            if (distanceKm != null)
-              Text(
-                ' · ${Formatters.distanceKm(distanceKm!)}',
-                style: theme.textTheme.bodyMedium?.copyWith(color: mutedColor),
-              ),
-          ],
-        ),
-        const SizedBox(height: Spacing.s3),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-          child: Container(
-            height: _mapPlaceholderHeight,
-            width: double.infinity,
-            color:
-                isDark
-                    ? DeelmarktColors.darkSurfaceElevated
-                    : DeelmarktColors.neutral100,
-            child: Center(
-              child: Icon(
-                PhosphorIcons.mapPin(PhosphorIconsStyle.fill),
-                size: DeelmarktIconSize.lg,
-                color: mutedColor,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
