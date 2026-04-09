@@ -84,3 +84,5 @@ mollie/
 
 # Git worktree config
 .worktreeinclude
+
+.cursor/rules/
