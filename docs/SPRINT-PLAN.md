@@ -233,7 +233,7 @@ The agent will:
 - [x] `R-32` "Make an Offer" structured message type — offer with price stored
 - [x] `R-33` Seller response time calculation (cron) — average computed daily *(PR #89)*
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
-- [ ] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
+- [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [ ] `R-36` Reviews table + blind review logic — hidden until both submit
 - [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate
 - [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
