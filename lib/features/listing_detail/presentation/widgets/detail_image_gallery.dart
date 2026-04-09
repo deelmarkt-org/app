@@ -39,7 +39,7 @@ class DetailImageGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'listing_detail.imageGallery',
+      label: 'listing_detail.imageGallery'.tr(),
       container: true,
       child: ImageGallery(
         imageUrls: imageUrls,

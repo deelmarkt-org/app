@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/presentation/favourites_notifier.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
@@ -23,6 +24,10 @@ class FavouriteCard extends ConsumerWidget {
       title: listing.title,
       isFavourited: true,
       location: listing.location,
+      distanceFormatted:
+          listing.distanceKm != null
+              ? Formatters.distanceKm(listing.distanceKm!)
+              : null,
       onTap:
           () => context.push(
             AppRoutes.listingDetail.replaceAll(':id', listing.id),

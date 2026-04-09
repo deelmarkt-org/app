@@ -4,8 +4,8 @@ import 'package:deelmarkt/features/home/domain/entities/listing_condition.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_status.dart';
 
 // Re-export enums so existing imports continue to work.
-export 'listing_condition.dart';
-export 'listing_status.dart';
+export 'package:deelmarkt/features/home/domain/entities/listing_condition.dart';
+export 'package:deelmarkt/features/home/domain/entities/listing_status.dart';
 
 /// Marketplace listing — a second-hand item for sale.
 ///
