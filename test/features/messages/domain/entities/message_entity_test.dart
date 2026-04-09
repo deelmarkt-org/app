@@ -223,7 +223,7 @@ void main() {
 
   group('ScamReason', () {
     test('has all expected values', () {
-      expect(ScamReason.values, hasLength(6));
+      expect(ScamReason.values, hasLength(11));
       expect(
         ScamReason.values,
         containsAll([
@@ -232,6 +232,11 @@ void main() {
           ScamReason.phoneNumberRequest,
           ScamReason.suspiciousPricing,
           ScamReason.urgencyPressure,
+          ScamReason.credentialHarvesting,
+          ScamReason.advancePaymentRequest,
+          ScamReason.fakeEscrow,
+          ScamReason.shippingScam,
+          ScamReason.prohibitedItem,
           ScamReason.other,
         ]),
       );

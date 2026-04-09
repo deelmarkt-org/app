@@ -136,18 +136,60 @@ for func in "${FUNCTIONS[@]}"; do
     continue
   fi
 
+  # Collect all .ts files in the function directory (index.ts + any modules)
+  ts_files=()
+  while IFS= read -r f; do
+    # Skip test files
+    [[ "$f" == *_test.ts ]] && continue
+    ts_files+=("$f")
+  done < <(find "$func_dir" -maxdepth 1 -name '*.ts' 2>/dev/null)
+
   index="$func_dir/index.ts"
 
-  # If function uses createClient + verifyServiceRole, should import _shared/auth.ts
-  if grep -q 'createClient' "$index" && grep -q 'verifyServiceRole' "$index"; then
-    if ! grep -q '_shared/auth' "$index"; then
-      warn "MISSING_AUTH_IMPORT" "$index — uses verifyServiceRole but doesn't import from _shared/auth.ts"
+  # Concatenate all non-test .ts files for rule checks (catches imports in modules)
+  all_src=""
+  for f in "${ts_files[@]:-}"; do
+    [[ -f "$f" ]] && all_src+=$(cat "$f")$'\n'
+  done
+
+  # ── 3a. Auth: service_role functions MUST use verifyServiceRole from _shared/auth.ts
+  # Condition: function creates a Supabase client with SUPABASE_SERVICE_ROLE_KEY
+  # AND has no other auth mechanism (HMAC, JWT header check, anon key).
+  # Functions that use JWT auth (verify_jwt = true) or HMAC (tracking-webhook)
+  # are excluded — they have their own auth layer above the service_role client.
+  if echo "$all_src" | grep -q 'SUPABASE_SERVICE_ROLE_KEY'; then
+    has_auth=false
+    # Check for known auth mechanisms
+    echo "$all_src" | grep -q '_shared/auth' && has_auth=true
+    echo "$all_src" | grep -q 'verifyServiceRole' && has_auth=true
+    echo "$all_src" | grep -qE 'verify_jwt\s*=\s*true' && has_auth=true
+    echo "$all_src" | grep -qiE 'hmac|createHmac|crypto\.subtle' && has_auth=true
+    # Functions that use anon key for user-facing JWT auth (create-payment style)
+    echo "$all_src" | grep -q 'SUPABASE_ANON_KEY\|getUser\|auth\.getUser' && has_auth=true
+    # Intentionally public endpoints (health check for uptime monitors)
+    echo "$all_src" | grep -q 'intentionally public' && has_auth=true
+    if ! $has_auth; then
+      warn "MISSING_SERVICE_ROLE_AUTH" "$func — uses SUPABASE_SERVICE_ROLE_KEY without any auth mechanism; import verifyServiceRole from _shared/auth.ts (§9, §3.3)"
     fi
   fi
 
-  # If function defines jsonResponse locally, prefer shared import
-  if grep -q 'function jsonResponse' "$index" && ! grep -q '_shared/response' "$index"; then
-    warn "LOCAL_JSON_RESPONSE" "$index — defines jsonResponse locally; import from _shared/response.ts (DRY §3.2)"
+  # ── 3b. Zod: Edge Functions that parse request body MUST use Zod (§9)
+  # Condition: function calls req.json() to parse a request body.
+  # Exception: cron/internal functions that only use GET with no body.
+  if echo "$all_src" | grep -q 'req\.json()'; then
+    if ! echo "$all_src" | grep -qE 'from.*zod|import.*zod|import.*{.*z.*}.*from'; then
+      warn "NO_ZOD_VALIDATION" "$func — parses req.json() but does not import Zod for input validation (§9: Edge Functions use Zod)"
+    fi
+  fi
+
+  # ── 3c. Shared helpers: jsonResponse must come from _shared/response.ts
+  if echo "$all_src" | grep -q 'function jsonResponse' && ! echo "$all_src" | grep -q '_shared/response'; then
+    warn "LOCAL_JSON_RESPONSE" "$func — defines jsonResponse locally; import from _shared/response.ts (DRY §3.3)"
+  fi
+
+  # ── 3d. Legacy check: verifyServiceRole used but not imported (backwards compat)
+  if grep -q 'verifyServiceRole' "$index" && ! grep -q '_shared/auth' "$index"; then
+    warn "MISSING_AUTH_IMPORT" "$func — uses verifyServiceRole but doesn't import from _shared/auth.ts"
   fi
 done
 fi  # end FUNCTIONS guard
@@ -243,7 +285,50 @@ else
   fi  # end FUNCTIONS guard for schema cross-reference
 fi
 
-# ── 5. Report ────────────────────────────────────────────────────────────────
+# ── 5. Cross-language reason string alignment ───────────────────────────────
+# Validates that string literals used as "reason" values in Edge Functions
+# match the fromDb() mappings in lib/core/domain/entities/scam_reason.dart.
+# This catches backend→frontend contract drift that no single-language
+# linter can detect.
+
+SCAM_REASON_DART="lib/core/domain/entities/scam_reason.dart"
+if [[ -f "$SCAM_REASON_DART" ]]; then
+  # Extract accepted reason strings from fromDb(): 'some_value' => ScamReason.x
+  VALID_REASONS=$(grep -oE "'[a-z_]+'" "$SCAM_REASON_DART" | tr -d "'" | sort -u)
+
+  if [[ ${#FUNCTIONS[@]} -gt 0 ]]; then
+  for func in "${FUNCTIONS[@]}"; do
+    func_dir="$FUNC_DIR/$func"
+
+    # Only check functions that import scan_engine or reference scam detection
+    all_ts=""
+    for f in "$func_dir"/*.ts; do
+      [[ -f "$f" && "$f" != *_test.ts ]] && all_ts+=$(cat "$f")$'\n'
+    done
+
+    # Skip functions that don't deal with scam detection
+    if ! echo "$all_ts" | grep -qE 'scam|scan_engine|ScanResult|scam_confidence'; then
+      continue
+    fi
+
+    # Look for REASON constant definitions: SOME_KEY: "some_value"
+    # These are the authoritative reason strings output by the scan engine.
+    all_reasons=$(echo "$all_ts" | grep -oE '[A-Z_]+:\s*"[a-z_]+"' | grep -oE '"[a-z_]+"' | tr -d '"' | sort -u | grep -v '^$')
+
+    if [[ -z "$all_reasons" ]]; then
+      continue
+    fi
+
+    while IFS= read -r reason; do
+      if ! echo "$VALID_REASONS" | grep -qx "$reason"; then
+        warn "UNKNOWN_SCAM_REASON" "$func — uses reason string '$reason' not found in ScamReason.fromDb() (scam_reason.dart)"
+      fi
+    done <<< "$all_reasons"
+  done
+  fi  # end FUNCTIONS guard
+fi
+
+# ── 6. Report ────────────────────────────────────────────────────────────────
 
 violation_count=0
 if [[ -f "$VIOLATIONS_FILE" ]]; then

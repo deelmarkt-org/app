@@ -11,7 +11,10 @@
 --
 -- Reference: docs/epics/E04-messaging.md R-33 audit finding
 
-CREATE OR REPLACE FUNCTION get_conversations_for_user()
+-- DROP first because the return type changes (adding seller_response_time_minutes).
+DROP FUNCTION IF EXISTS get_conversations_for_user();
+
+CREATE FUNCTION get_conversations_for_user()
 RETURNS TABLE (
   id                           UUID,
   listing_id                   UUID,
