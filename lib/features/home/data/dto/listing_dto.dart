@@ -30,6 +30,7 @@ class ListingDto {
       title: title,
       description: description,
       priceInCents: priceCents,
+      originalPriceInCents: json['original_price_cents'] as int?,
       sellerId: (json['seller_id'] as String?) ?? '',
       sellerName: (json['seller_name'] as String?) ?? 'Verkoper',
       condition: ListingCondition.fromDb(
@@ -56,6 +57,7 @@ class ListingDto {
       'title': entity.title,
       'description': entity.description,
       'price_cents': entity.priceInCents,
+      'original_price_cents': entity.originalPriceInCents,
       'seller_id': entity.sellerId,
       'condition': entity.condition.toDb(),
       'category_id': entity.categoryId,

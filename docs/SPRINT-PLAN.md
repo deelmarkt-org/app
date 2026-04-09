@@ -209,12 +209,12 @@ The agent will:
 **Branch:** `feature/pizmam-E01-listing-screens` | **Epic:** [E01](epics/E01-listing-management.md)
 
 - [x] `P-24` Listing creation screen (photo-first) — camera → form → score → publish
-- [ ] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list
-- [ ] `P-28` Favourites screen — save/unsave toggle, list view
-- [ ] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition
+- [x] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list ✅ PR #65
+- [x] `P-28` Favourites screen — save/unsave toggle, list view ✅ PR #65
+- [x] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition ✅ PR #66
 - [ ] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` (follow-up to PR #66)
-- [ ] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough
-- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `PaymentSummaryCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66)
+- [x] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough ✅ PR #66
+- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66). PaymentSummaryCard excluded — PriceTag semantics/color/zero-handling incompatible with tabular line items.
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
 - [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states

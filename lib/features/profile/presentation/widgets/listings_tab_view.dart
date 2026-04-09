@@ -72,7 +72,8 @@ class ListingsTabView extends StatelessWidget {
               child: DeelCard.grid(
                 imageUrl:
                     listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-                priceFormatted: Formatters.euroFromCents(listing.priceInCents),
+                priceInCents: listing.priceInCents,
+                originalPriceInCents: listing.originalPriceInCents,
                 title: listing.title,
                 onTap: () {
                   context.pushNamed(
