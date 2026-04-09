@@ -80,3 +80,6 @@ deelmarkt-email.md
 
 # Mollie reference docs (local only)
 mollie/
+
+.cursor/commands/
+.worktreeinclude
