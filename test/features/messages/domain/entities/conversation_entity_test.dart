@@ -115,6 +115,7 @@ void main() {
         lastMessageAt: DateTime(2026),
         lastMessageType: 'offer',
         unreadCount: 2,
+        sellerResponseTimeMinutes: 45,
       );
       final copy = conv.copyWith(lastMessageText: 'Bye');
 
@@ -123,7 +124,40 @@ void main() {
       expect(copy.otherUserAvatarUrl, conv.otherUserAvatarUrl);
       expect(copy.lastMessageType, conv.lastMessageType);
       expect(copy.unreadCount, conv.unreadCount);
+      expect(copy.sellerResponseTimeMinutes, 45);
       expect(copy.lastMessageText, 'Bye');
+    });
+
+    test('sellerResponseTimeMinutes defaults to null', () {
+      final conv = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'Test',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'User',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026),
+      );
+
+      expect(conv.sellerResponseTimeMinutes, isNull);
+    });
+
+    test('sellerResponseTimeMinutes is included in equality check', () {
+      final base = ConversationEntity(
+        id: 'c1',
+        listingId: 'l1',
+        listingTitle: 'A',
+        listingImageUrl: null,
+        otherUserId: 'u1',
+        otherUserName: 'Alice',
+        lastMessageText: 'Hi',
+        lastMessageAt: DateTime(2026),
+      );
+      final withTime = base.copyWith(sellerResponseTimeMinutes: 120);
+
+      expect(base, isNot(equals(withTime)));
+      expect(withTime.sellerResponseTimeMinutes, 120);
     });
   });
 

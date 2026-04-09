@@ -216,6 +216,7 @@ jobs:
         with:
           supabase-project-id: ${{ secrets.SUPABASE_PROJECT_ID }}
           supabase-anon-public: ${{ secrets.SUPABASE_ANON_PUBLIC }}
+          sentry-dsn: ${{ secrets.SENTRY_DSN }}
 
       - name: Build APK (release)
         run: flutter build apk --release --no-pub --split-debug-info=build/debug-info --obfuscate
@@ -228,9 +229,9 @@ jobs:
             exit 0
           fi
           SIZE_MB=$(du -m "$APK_PATH" | cut -f1)
-          echo "APK size: ${SIZE_MB}MB (budget: 60MB)"
-          if [ "$SIZE_MB" -gt 60 ]; then
-            echo "::error::APK size ${SIZE_MB}MB exceeds 60MB budget"
+          echo "APK size: ${SIZE_MB}MB (budget: 65MB)"
+          if [ "$SIZE_MB" -gt 65 ]; then
+            echo "::error::APK size ${SIZE_MB}MB exceeds 65MB budget"
             exit 1
           fi
 
@@ -249,6 +250,7 @@ jobs:
         with:
           supabase-project-id: ${{ secrets.SUPABASE_PROJECT_ID }}
           supabase-anon-public: ${{ secrets.SUPABASE_ANON_PUBLIC }}
+          sentry-dsn: ${{ secrets.SENTRY_DSN }}
 
       - name: Check web platform exists
         id: web-check

@@ -63,7 +63,7 @@ The agent will:
 - [x] `R-09` Connect Firebase to Flutter — `google-services.json` + `GoogleService-Info.plist`
 - [x] `R-10` Set up Unleash (self-hosted Railway/Render) — dashboard accessible, one test flag
 - [x] `R-11` Set up Upstash Redis — connection working from Edge Function
-- [ ] `R-12` Set up Sentry — error tracking receiving test events
+- [x] `R-12` Set up Sentry — error tracking receiving test events
 
 ### belengaz `[B]` — DevOps & Deep Linking
 
@@ -231,7 +231,7 @@ The agent will:
 
 - [x] `R-31` Messages table + Supabase Realtime — real-time delivery works *(done by reso (mahmutkaya))*
 - [x] `R-32` "Make an Offer" structured message type — offer with price stored
-- [ ] `R-33` Seller response time calculation (cron) — average computed daily
+- [x] `R-33` Seller response time calculation (cron) — average computed daily *(PR #89)*
 - [ ] `R-34` FCM push notification on new message — delivered on iOS + Android
 - [ ] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [ ] `R-36` Reviews table + blind review logic — hidden until both submit

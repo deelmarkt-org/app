@@ -66,9 +66,50 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
   fail "Missing required tools: ${MISSING[*]}. Install them first — see docs/SETUP.md"
 fi
 
+# Optional: deno for Edge Function linting
+if ! check_cmd deno; then
+  warn "deno not found — Edge Function lint/fmt hooks will be skipped"
+  warn "Install: https://deno.land/#installation"
+fi
+
+# Required: perl for Edge Function schema cross-reference
+if ! check_cmd perl; then
+  warn "perl not found — Edge Function schema checks will be limited"
+fi
+
 # Check Flutter version
 FLUTTER_VER=$(flutter --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 ok "Flutter version: $FLUTTER_VER"
+
+echo ""
+
+# ── 1b. Git LFS (required for screen design PNGs) ─────────────────────────
+info "Setting up Git LFS..."
+
+if ! check_cmd git-lfs; then
+  if command -v git &>/dev/null && git lfs version &>/dev/null 2>&1; then
+    ok "git-lfs available via git"
+  else
+    warn "git-lfs not found. Installing..."
+    if check_cmd brew; then
+      brew install git-lfs
+    else
+      fail "Cannot install git-lfs. Install Homebrew (macOS) or download from https://git-lfs.com"
+    fi
+  fi
+fi
+
+git lfs install
+ok "Git LFS initialized"
+
+# Pull LFS objects (screen design PNGs)
+if git lfs ls-files 2>/dev/null | head -1 | grep -q '\*'; then
+  warn "LFS pointer files detected — pulling actual content..."
+  git lfs pull
+  ok "LFS files downloaded"
+else
+  ok "LFS files already present"
+fi
 
 echo ""
 

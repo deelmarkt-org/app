@@ -34,7 +34,7 @@ repos:
       - id: dart-format
         name: dart format
         language: system
-        entry: bash -c 'dart format --set-exit-if-changed lib/ test/'
+        entry: bash -c 'dart format --set-exit-if-changed lib/ test/ scripts/'
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -75,6 +75,43 @@ repos:
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
+
+      # ── Supabase / Edge Functions (TypeScript + SQL) ─────────────────────
+
+      # Edge Function linter — structure (deno.json, shared imports) +
+      # schema cross-reference (column names vs migrations)
+      - id: edge-function-check
+        name: edge function lint + schema check
+        language: system
+        entry: bash scripts/check_edge_functions.sh
+        pass_filenames: false
+        files: \.(ts|sql)$
+        exclude: _test\.ts$
+        stages: [pre-commit]
+
+      # Deno lint — catches unused imports, type errors, style issues
+      # Gracefully skips if deno is not installed (prints a warning)
+      - id: deno-lint
+        name: deno lint (Edge Functions)
+        language: system
+        entry: >-
+          bash -c 'if command -v deno &>/dev/null; then deno lint supabase/functions/ --compact; else echo "deno not installed - skipping lint"; fi'
+        pass_filenames: false
+        files: ^supabase/functions/.*\.ts$
+        stages: [pre-commit]
+
+      # Deno format check — consistent TypeScript formatting
+      # Gracefully skips if deno is not installed
+      - id: deno-fmt-check
+        name: deno fmt check (Edge Functions)
+        language: system
+        entry: >-
+          bash -c 'if command -v deno &>/dev/null; then deno fmt --check supabase/functions/; else echo "deno not installed - skipping fmt check"; fi'
+        pass_filenames: false
+        files: ^supabase/functions/.*\.ts$
+        stages: [pre-commit]
+
+      # ── Push-time gates ────────────────────────────────────────────────
 
       # Fast analyze pass on push — catches any regressions in generated files
       - id: flutter-analyze-strict
