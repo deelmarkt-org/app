@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
@@ -29,6 +30,7 @@ class SupabaseMessageRepository implements MessageRepository {
   final SupabaseClient _client;
 
   static const _messagesTable = 'messages';
+  static const _conversationIdCol = 'conversation_id';
   static const _channelPrefix = 'messages:conv:';
 
   @override
@@ -52,7 +54,7 @@ class SupabaseMessageRepository implements MessageRepository {
       var query = _client
           .from(_messagesTable)
           .select()
-          .eq('conversation_id', conversationId)
+          .eq(_conversationIdCol, conversationId)
           .order('created_at');
 
       if (limit != null) {
@@ -115,7 +117,7 @@ class SupabaseMessageRepository implements MessageRepository {
   ) {
     final filter = PostgresChangeFilter(
       type: PostgresChangeFilterType.eq,
-      column: 'conversation_id',
+      column: _conversationIdCol,
       value: conversationId,
     );
     void onEvent(_) => _emitSnapshot(conversationId, controller);
@@ -165,10 +167,39 @@ class SupabaseMessageRepository implements MessageRepository {
               .select()
               .single();
 
-      return MessageDto.fromJson(response);
+      final sentMessage = MessageDto.fromJson(response);
+
+      // Fire-and-forget: invoke scam-detection Edge Function asynchronously.
+      // The function flags the message in the DB via RPC; the Realtime
+      // subscription picks up the scam field updates automatically.
+      _scanMessageAsync(sentMessage);
+
+      return sentMessage;
     } on PostgrestException catch (e) {
       throw Exception('Failed to send message: ${e.message}');
     }
+  }
+
+  /// Asynchronously scans a sent message for scam indicators via the
+  /// R-35 scam-detection Edge Function. Non-blocking — failures are
+  /// logged but never propagated to the caller.
+  void _scanMessageAsync(MessageEntity message) {
+    _client.functions
+        .invoke(
+          'scam-detection',
+          body: {
+            'message_id': message.id,
+            'conversation_id': message.conversationId,
+            'text': message.text,
+          },
+        )
+        .then((_) {})
+        .catchError((Object error, StackTrace stackTrace) {
+          AppLogger.warning(
+            'scam-detection invocation failed: $error',
+            tag: 'SupabaseMessageRepository',
+          );
+        });
   }
 
   @override

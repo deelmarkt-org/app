@@ -242,7 +242,7 @@ The agent will:
 
 **Branch:** `feature/belengaz-E04-connectors` | **Epics:** [E04](epics/E04-messaging.md) + [E05](epics/E05-shipping-logistics.md)
 
-- [ ] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB
+- [x] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB *(PR #96)*
 - [ ] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
 - [ ] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
