@@ -39,12 +39,36 @@ else
   echo -e "${GREEN}✓${NC}  Claude Code hooks already exist"
 fi
 
-# Optional: check for deno (needed for Edge Function TS linting)
+# Required: deno for Edge Function TS linting (§9 quality gate)
 if command -v deno &>/dev/null; then
   echo -e "${GREEN}✓${NC}  deno found: $(deno --version | head -1)"
 else
-  echo "  ⚠  deno not installed — Edge Function lint/fmt hooks will be skipped"
-  echo "     Install: https://deno.land/#installation"
+  echo "  ✗  deno not installed — Edge Function lint/fmt hooks will FAIL"
+  echo "     Install now:  brew install deno  (macOS)"
+  echo "                   curl -fsSL https://deno.land/install.sh | sh  (Linux)"
+  echo ""
+  echo "     Or run: bash scripts/setup.sh  (auto-installs deno)"
+fi
+
+# Ensure build_runner has been run (generated files must exist for analyze)
+if [[ -f pubspec.yaml ]] && grep -q "build_runner" pubspec.yaml 2>/dev/null; then
+  # Check if any .g.dart file is missing for files that declare 'part ... .g.dart'
+  STALE=false
+  while IFS= read -r src; do
+    gfile="${src%.dart}.g.dart"
+    if [[ ! -f "$gfile" ]]; then
+      STALE=true
+      break
+    fi
+  done < <(grep -rl "part '.*\.g\.dart'" lib/ 2>/dev/null || true)
+
+  if $STALE; then
+    echo "  ⚠  Generated files missing — running build_runner..."
+    flutter pub run build_runner build --delete-conflicting-outputs 2>/dev/null
+    echo -e "${GREEN}✓${NC}  Code generation complete"
+  else
+    echo -e "${GREEN}✓${NC}  Generated files up to date"
+  fi
 fi
 
 # Git LFS (needed for screen design PNGs)
