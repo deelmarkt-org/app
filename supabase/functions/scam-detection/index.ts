@@ -61,15 +61,21 @@ Deno.serve(async (req: Request): Promise<Response> => {
   // Scan the message
   const result = scanMessage(request.text);
 
-  // If flagged, persist to DB via RPC
+  // If flagged, persist to DB via RPC.
+  // The `persisted` field tells the caller whether the flag was written to
+  // the moderation_queue. If false, the caller should retry or alert.
+  let persisted: boolean | null = null;
+  let dbError: string | undefined;
+
   if (result.confidence !== "none") {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+      return jsonResponse({ error: "Internal server configuration error" }, 500);
+    }
+
     try {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL");
-      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-      if (!supabaseUrl || !serviceRoleKey) {
-        console.error("[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-        return jsonResponse({ error: "Internal server configuration error" }, 500);
-      }
       const supabase = createClient(supabaseUrl, serviceRoleKey);
 
       const { error } = await supabase.rpc("flag_message_scam", {
@@ -80,10 +86,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
 
       if (error) {
+        persisted = false;
+        dbError = error.message;
         console.error(`[scam-detection] flag_message_scam RPC error: ${error.message}`);
+      } else {
+        persisted = true;
       }
     } catch (err) {
-      console.error(`[scam-detection] DB error: ${(err as Error).message}`);
+      persisted = false;
+      dbError = (err as Error).message;
+      console.error(`[scam-detection] DB error: ${dbError}`);
     }
   }
 
@@ -92,5 +104,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     confidence: result.confidence,
     reasons: result.reasons,
     score: result.score,
+    ...(persisted !== null && { persisted }),
+    ...(dbError && { db_error: dbError }),
   });
 });
