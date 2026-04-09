@@ -1,0 +1,31 @@
+name: Redis Keepalive
+
+on:
+  schedule:
+    # Every Monday at 09:00 UTC — keeps Upstash free-tier database active
+    - cron: "0 9 * * 1"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping-redis:
+    name: Ping Redis Health
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Call redis-health Edge Function
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            "$SUPABASE_URL/functions/v1/redis-health")
+
+          echo "HTTP status: $RESPONSE"
+
+          if [ "$RESPONSE" != "200" ]; then
+            echo "::error::Redis health check failed with HTTP $RESPONSE"
+            exit 1
+          fi
+
+          echo "Redis is healthy"
