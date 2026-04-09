@@ -64,6 +64,7 @@ firebase/
 .codex/
 .opencode/
 .cursor/rules/kit-governance.mdc
+.cursor/commands/
 
 # Node.js (Devran AI Kit — local dev tooling, not a project dependency)
 node_modules/
@@ -80,3 +81,8 @@ deelmarkt-email.md
 
 # Mollie reference docs (local only)
 mollie/
+
+# Git worktree config
+.worktreeinclude
+
+.cursor/rules/
