@@ -11,6 +11,7 @@ import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repos
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
@@ -55,10 +56,14 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
   return SupabaseUserRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Review repository — mock or real.
+/// Review repository — mock or Supabase based on [useMockDataProvider].
+///
+/// SupabaseReviewRepository implements blind review via DB-level RLS (R-36).
+/// Resolves GitHub Issue #46.
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
-  // Tracked: #46 — SupabaseReviewRepository blocked by R-36
-  return MockReviewRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockReviewRepository();
+  return SupabaseReviewRepository(ref.watch(supabaseClientProvider));
 });
 
 /// Transaction repository — mock-only until [SupabaseTransactionRepository]
