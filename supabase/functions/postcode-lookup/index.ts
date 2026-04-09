@@ -14,13 +14,18 @@ import { jsonResponse as baseJsonResponse } from "../_shared/response.ts";
 
 // Postcode responses get 24h cache — postcodes don't change often
 function jsonResponse(body: Record<string, unknown>, status = 200): Response {
-  return baseJsonResponse(body, status, { "Cache-Control": "public, max-age=86400" });
+  return baseJsonResponse(body, status, {
+    "Cache-Control": "public, max-age=86400",
+  });
 }
 
 // --- Zod Schema ---
 
 const QuerySchema = z.object({
-  postcode: z.string().regex(/^\d{4}[A-Z]{2}$/, "Postcode must be 4 digits + 2 uppercase letters"),
+  postcode: z.string().regex(
+    /^\d{4}[A-Z]{2}$/,
+    "Postcode must be 4 digits + 2 uppercase letters",
+  ),
   houseNumber: z.string().min(1, "House number is required"),
   addition: z.string().optional(),
 });
@@ -81,7 +86,9 @@ async function lookupViaPostcodeTech(
   );
 
   if (resp.status === 429) {
-    console.warn("[postcode-lookup] postcode.tech rate limited (429) — free tier exhausted");
+    console.warn(
+      "[postcode-lookup] postcode.tech rate limited (429) — free tier exhausted",
+    );
     throw new ProviderError("postcode.tech", resp.status);
   }
   if (resp.status >= 500) throw new ProviderError("postcode.tech", resp.status);
@@ -111,7 +118,9 @@ async function lookupViaApiPostcode(
 ): Promise<AddressResult | null> {
   const apiKey = Deno.env.get("POSTCODE_API_KEY");
   if (!apiKey) {
-    console.warn("[postcode-lookup] POSTCODE_API_KEY not configured — skipping fallback");
+    console.warn(
+      "[postcode-lookup] POSTCODE_API_KEY not configured — skipping fallback",
+    );
     return null;
   }
 
@@ -125,10 +134,14 @@ async function lookupViaApiPostcode(
   );
 
   if (resp.status === 429) {
-    console.warn("[postcode-lookup] api-postcode.nl rate limited (429) — daily quota exhausted");
+    console.warn(
+      "[postcode-lookup] api-postcode.nl rate limited (429) — daily quota exhausted",
+    );
     throw new ProviderError("api-postcode.nl", resp.status);
   }
-  if (resp.status >= 500) throw new ProviderError("api-postcode.nl", resp.status);
+  if (resp.status >= 500) {
+    throw new ProviderError("api-postcode.nl", resp.status);
+  }
   if (!resp.ok) return null;
 
   const data = await resp.json();
@@ -165,25 +178,40 @@ Deno.serve(async (req: Request) => {
     let providersFailed = 0;
 
     try {
-      result = await lookupViaPostcodeTech(input.postcode, input.houseNumber, input.addition);
+      result = await lookupViaPostcodeTech(
+        input.postcode,
+        input.houseNumber,
+        input.addition,
+      );
     } catch (err) {
       providersFailed++;
-      console.warn(`[postcode-lookup] postcode.tech failed: ${(err as Error).message}`);
+      console.warn(
+        `[postcode-lookup] postcode.tech failed: ${(err as Error).message}`,
+      );
     }
 
     if (!result) {
       try {
-        result = await lookupViaApiPostcode(input.postcode, input.houseNumber, input.addition);
+        result = await lookupViaApiPostcode(
+          input.postcode,
+          input.houseNumber,
+          input.addition,
+        );
       } catch (err) {
         providersFailed++;
-        console.warn(`[postcode-lookup] api-postcode.nl failed: ${(err as Error).message}`);
+        console.warn(
+          `[postcode-lookup] api-postcode.nl failed: ${(err as Error).message}`,
+        );
       }
     }
 
     if (!result) {
       // All providers had server errors → 502, not 404
       if (providersFailed >= PROVIDER_COUNT) {
-        return jsonResponse({ error: "All postcode providers unavailable" }, 502);
+        return jsonResponse(
+          { error: "All postcode providers unavailable" },
+          502,
+        );
       }
       return jsonResponse({ error: "Address not found" }, 404);
     }

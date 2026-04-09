@@ -351,7 +351,8 @@ Format for UI tasks:
 - `detect-secrets` — no hardcoded secrets
 - No commits to `main` or `dev` directly
 - `bash scripts/check_edge_functions.sh` — Edge Function structure + schema cross-reference (on `.ts`/`.sql` files)
-- `deno lint` + `deno fmt --check` — TypeScript linting (gracefully skips if deno not installed)
+- `deno lint` + `deno fmt --check` — TypeScript linting (**deno is required** — run `bash scripts/setup.sh` to install)
+- `build_runner` freshness check — ensures `.g.dart` files exist before `flutter analyze`
 
 ### On Every Push
 
@@ -448,6 +449,8 @@ The European Accessibility Act is enforceable. These are not optional:
 | `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
 | `bash scripts/check_edge_functions.sh` | Pre-commit (auto) | Edge Function structure + schema cross-reference (staged .ts/.sql) |
 | `bash scripts/check_edge_functions.sh --all` | Manual | Check all Edge Functions |
+| `deno lint` + `deno fmt --check` | Pre-commit (auto) + CI | TypeScript lint + formatting on Edge Functions |
+| `build_runner` freshness check | Pre-commit (auto) | Ensures .g.dart files exist (auto-runs build_runner if stale) |
 | `bash scripts/check_deployments.sh` | Before ending session | Detects pending migrations + undeployed Edge Functions |
 | `bash scripts/check_deployments.sh --deploy` | After creating migration/function | Auto-applies pending migrations + deploys functions |
 

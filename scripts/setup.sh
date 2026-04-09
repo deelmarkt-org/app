@@ -66,10 +66,18 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
   fail "Missing required tools: ${MISSING[*]}. Install them first — see docs/SETUP.md"
 fi
 
-# Optional: deno for Edge Function linting
+# Required: deno for Edge Function linting (§9 quality gate)
 if ! check_cmd deno; then
-  warn "deno not found — Edge Function lint/fmt hooks will be skipped"
-  warn "Install: https://deno.land/#installation"
+  info "Installing deno (required for Edge Function lint/fmt hooks)..."
+  if check_cmd brew; then
+    brew install deno
+    ok "deno installed via Homebrew"
+  elif curl -fsSL https://deno.land/install.sh 2>/dev/null | sh; then
+    export PATH="$HOME/.deno/bin:$PATH"
+    ok "deno installed via deno.land"
+  else
+    fail "Cannot install deno. Install manually: https://deno.land/#installation"
+  fi
 fi
 
 # Required: perl for Edge Function schema cross-reference

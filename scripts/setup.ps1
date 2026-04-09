@@ -35,12 +35,17 @@ if ($missing.Count -gt 0) {
     Fail "Missing required tools: $($missing -join ', '). Install them first - see docs/SETUP.md"
 }
 
-# Optional: deno for Edge Function linting
+# Required: deno for Edge Function linting (§9 quality gate)
 if (Get-Command deno -ErrorAction SilentlyContinue) {
     Ok "deno found: $(deno --version | Select-Object -First 1)"
 } else {
-    Warn "deno not installed - Edge Function lint/fmt hooks will be skipped"
-    Write-Host "     Install: https://deno.land/#installation"
+    Info "Installing deno (required for Edge Function lint/fmt hooks)..."
+    irm https://deno.land/install.ps1 | iex
+    if (Get-Command deno -ErrorAction SilentlyContinue) {
+        Ok "deno installed"
+    } else {
+        Fail "Cannot install deno. Install manually: https://deno.land/#installation"
+    }
 }
 
 Write-Host ""

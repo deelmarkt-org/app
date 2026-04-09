@@ -89,24 +89,35 @@ repos:
         exclude: _test\.ts$
         stages: [pre-commit]
 
+      # Build runner freshness — ensures .g.dart files exist before analyze.
+      # Without this, flutter analyze fails on generated code references.
+      - id: build-runner-check
+        name: build_runner freshness
+        language: system
+        entry: >-
+          bash -c 'STALE=false; for src in $(grep -rl "part '\''.*\.g\.dart'\''" lib/ 2>/dev/null); do g="${src%.dart}.g.dart"; if [ ! -f "$g" ]; then STALE=true; break; fi; done; if $STALE; then echo "Generated files missing — running build_runner..."; flutter pub run build_runner build --delete-conflicting-outputs; fi'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-commit]
+
       # Deno lint — catches unused imports, type errors, style issues
-      # Gracefully skips if deno is not installed (prints a warning)
+      # Fails if deno is not installed — run: bash scripts/setup.sh
       - id: deno-lint
         name: deno lint (Edge Functions)
         language: system
         entry: >-
-          bash -c 'if command -v deno &>/dev/null; then deno lint supabase/functions/ --compact; else echo "deno not installed - skipping lint"; fi'
+          bash -c 'if ! command -v deno &>/dev/null; then echo "ERROR: deno not installed. Run: bash scripts/setup.sh"; exit 1; fi; deno lint supabase/functions/ --compact'
         pass_filenames: false
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]
 
       # Deno format check — consistent TypeScript formatting
-      # Gracefully skips if deno is not installed
+      # Fails if deno is not installed — run: bash scripts/setup.sh
       - id: deno-fmt-check
         name: deno fmt check (Edge Functions)
         language: system
         entry: >-
-          bash -c 'if command -v deno &>/dev/null; then deno fmt --check supabase/functions/; else echo "deno not installed - skipping fmt check"; fi'
+          bash -c 'if ! command -v deno &>/dev/null; then echo "ERROR: deno not installed. Run: bash scripts/setup.sh"; exit 1; fi; deno fmt --check supabase/functions/'
         pass_filenames: false
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]

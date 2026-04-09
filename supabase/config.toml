@@ -500,9 +500,11 @@ verify_jwt = false
 import_map = "./functions/send-push-notification/deno.json"
 entrypoint = "./functions/send-push-notification/index.ts"
 
-# R-35: Scam detection — service_role auth, called by E04 messaging pipeline
+# R-35: Scam detection — called by Flutter client after message send.
+# verify_jwt = true — Supabase gateway validates the user JWT.
+# Internally uses service_role client for flag_message_scam RPC.
 [functions.scam-detection]
 enabled = true
-verify_jwt = false
+verify_jwt = true
 import_map = "./functions/scam-detection/deno.json"
 entrypoint = "./functions/scam-detection/index.ts"

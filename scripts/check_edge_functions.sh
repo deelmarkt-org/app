@@ -226,10 +226,16 @@ else
         continue
       fi
 
-      # Parse individual columns
+      # Parse individual columns (split by comma, but skip fragments inside join parens)
       IFS=',' read -ra parts <<< "$cols"
       for part in "${parts[@]}"; do
         part=$(echo "$part" | xargs)  # trim
+
+        # Skip trailing fragments of join expressions, e.g. "title)" from
+        # "listings!inner(seller_id, title)" split at the comma.
+        if echo "$part" | grep -qE '\)$' && ! echo "$part" | grep -qE '\('; then
+          continue
+        fi
 
         # Handle join expressions: "listings!inner(seller_id)"
         if echo "$part" | grep -qE '^[a-z_]+!'; then

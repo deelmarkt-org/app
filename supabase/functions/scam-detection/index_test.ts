@@ -6,9 +6,7 @@
  * and scan_scoring_test.ts.
  */
 
-import {
-  assert,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 

@@ -82,27 +82,71 @@ const OFFPLATFORM_PAYMENT_PATTERN =
  */
 const KEYWORD_RULES: Array<[RegExp, string, number]> = [
   // Urgency / pressure tactics
-  [/\b(urgent|dringend|snel|haast|nu\s+betalen|pay\s+now|immediately|meteen)\b/gi, REASON.URGENCY_PRESSURE, 15],
-  [/\b(laatste\s+kans|last\s+chance|beperkt\s+aanbod|limited\s+offer|only\s+today)\b/gi, REASON.URGENCY_PRESSURE, 20],
+  [
+    /\b(urgent|dringend|snel|haast|nu\s+betalen|pay\s+now|immediately|meteen)\b/gi,
+    REASON.URGENCY_PRESSURE,
+    15,
+  ],
+  [
+    /\b(laatste\s+kans|last\s+chance|beperkt\s+aanbod|limited\s+offer|only\s+today)\b/gi,
+    REASON.URGENCY_PRESSURE,
+    20,
+  ],
 
   // Too-good-to-be-true → maps to suspicious_pricing
-  [/\b(gratis|free|gewonnen|you\s+won|congratulations|gefeliciteerd|prijs\s+gewonnen)\b/gi, REASON.SUSPICIOUS_PRICING, 20],
-  [/\b(50%\s*(?:off|korting)|70%\s*(?:off|korting)|90%\s*(?:off|korting))\b/gi, REASON.SUSPICIOUS_PRICING, 15],
+  [
+    /\b(gratis|free|gewonnen|you\s+won|congratulations|gefeliciteerd|prijs\s+gewonnen)\b/gi,
+    REASON.SUSPICIOUS_PRICING,
+    20,
+  ],
+  [
+    /\b(50%\s*(?:off|korting)|70%\s*(?:off|korting)|90%\s*(?:off|korting))\b/gi,
+    REASON.SUSPICIOUS_PRICING,
+    15,
+  ],
 
   // Advance payment / deposit requests
-  [/\b(aanbetaling|deposit|vooruit\s*betalen|pay\s+(?:in\s+)?advance|prepay|upfront\s+payment)\b/gi, REASON.ADVANCE_PAYMENT_REQUEST, 25],
-  [/\b(stuur\s+(?:geld|money)|send\s+(?:geld|money))\b/gi, REASON.ADVANCE_PAYMENT_REQUEST, 30],
+  [
+    /\b(aanbetaling|deposit|vooruit\s*betalen|pay\s+(?:in\s+)?advance|prepay|upfront\s+payment)\b/gi,
+    REASON.ADVANCE_PAYMENT_REQUEST,
+    25,
+  ],
+  [
+    /\b(stuur\s+(?:geld|money)|send\s+(?:geld|money))\b/gi,
+    REASON.ADVANCE_PAYMENT_REQUEST,
+    30,
+  ],
 
   // Identity / credential harvesting
-  [/\b(wachtwoord|password|inloggegevens|login\s*details|creditcard|credit\s*card|pin\s*code|bsn|burgerservicenummer|sofi\s*nummer)\b/gi, REASON.CREDENTIAL_HARVESTING, 35],
-  [/\b(id\s*bewijs|passport|rijbewijs|identity\s*card|kopie\s+id|scan.*(?:id|passport))\b/gi, REASON.CREDENTIAL_HARVESTING, 25],
+  [
+    /\b(wachtwoord|password|inloggegevens|login\s*details|creditcard|credit\s*card|pin\s*code|bsn|burgerservicenummer|sofi\s*nummer)\b/gi,
+    REASON.CREDENTIAL_HARVESTING,
+    35,
+  ],
+  [
+    /\b(id\s*bewijs|passport|rijbewijs|identity\s*card|kopie\s+id|scan.*(?:id|passport))\b/gi,
+    REASON.CREDENTIAL_HARVESTING,
+    25,
+  ],
 
   // Shipping scams
-  [/\b(verzendkosten\s+(?:betalen|vooruit)|shipping\s+(?:fee|cost)\s+(?:first|upfront))\b/gi, REASON.SHIPPING_SCAM, 20],
-  [/\b(tracking\s+(?:code|nummer).*betaal|pay.*tracking)\b/gi, REASON.SHIPPING_SCAM, 25],
+  [
+    /\b(verzendkosten\s+(?:betalen|vooruit)|shipping\s+(?:fee|cost)\s+(?:first|upfront))\b/gi,
+    REASON.SHIPPING_SCAM,
+    20,
+  ],
+  [
+    /\b(tracking\s+(?:code|nummer).*betaal|pay.*tracking)\b/gi,
+    REASON.SHIPPING_SCAM,
+    25,
+  ],
 
   // Fake escrow / external escrow
-  [/\b(escrow\s*(?:service|platform|website)|externe\s+escrow|external\s+escrow)\b/gi, REASON.FAKE_ESCROW, 30],
+  [
+    /\b(escrow\s*(?:service|platform|website)|externe\s+escrow|external\s+escrow)\b/gi,
+    REASON.FAKE_ESCROW,
+    30,
+  ],
 ];
 
 /** Prohibited items keywords (Dutch marketplace context). */

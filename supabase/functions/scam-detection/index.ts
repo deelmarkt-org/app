@@ -4,7 +4,8 @@
  * Synchronous per-message call from E04 messaging pipeline.
  * Delegates scanning to scan_engine.ts (pure logic, no side-effects).
  *
- * Auth: verify_jwt = false — called with service_role key by E04 backend.
+ * Auth: verify_jwt = true — called by Flutter client with user JWT.
+ * Supabase gateway validates the JWT; internally uses service_role for DB writes.
  * Validation: Zod schema per CLAUDE.md §9.
  *
  * Latency target: <1s (no external API calls, pure regex + keyword matching).
@@ -18,7 +19,6 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
-import { verifyServiceRole } from "../_shared/auth.ts";
 import { jsonResponse } from "../_shared/response.ts";
 import { scanMessage } from "./scan_engine.ts";
 
@@ -41,9 +41,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Method not allowed" }, 405);
   }
 
-  if (!verifyServiceRole(req)) {
-    return jsonResponse({ error: "Unauthorized" }, 401);
-  }
+  // Auth: verify_jwt = true in config.toml — Supabase gateway rejects
+  // unauthenticated requests before they reach this handler. No manual
+  // auth check needed. The function uses its own service_role client
+  // internally for the flag_message_scam RPC.
 
   let body: unknown;
   try {
@@ -71,8 +72,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!supabaseUrl || !serviceRoleKey) {
-      console.error("[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-      return jsonResponse({ error: "Internal server configuration error" }, 500);
+      console.error(
+        "[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      );
+      return jsonResponse(
+        { error: "Internal server configuration error" },
+        500,
+      );
     }
 
     try {
@@ -88,7 +94,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
       if (error) {
         persisted = false;
         dbError = error.message;
-        console.error(`[scam-detection] flag_message_scam RPC error: ${error.message}`);
+        console.error(
+          `[scam-detection] flag_message_scam RPC error: ${error.message}`,
+        );
       } else {
         persisted = true;
       }
