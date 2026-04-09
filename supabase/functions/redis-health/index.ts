@@ -13,9 +13,9 @@ import { verifyServiceRole } from "../_shared/auth.ts";
 import { jsonResponse } from "../_shared/response.ts";
 import {
   getRedisCredentials,
-  redisSet,
-  redisGet,
   redisDel,
+  redisGet,
+  redisSet,
 } from "../_shared/redis.ts";
 
 Deno.serve(async (req: Request): Promise<Response> => {
@@ -53,7 +53,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     await redisDel(creds, probeKey);
     checks.delete = "ok";
   } catch (error) {
-    const failedCheck = Object.entries(checks).find(([_, v]) => v === "unknown");
+    const failedCheck = Object.entries(checks).find(([_, v]) =>
+      v === "unknown"
+    );
     if (failedCheck) {
       checks[failedCheck[0]] = "error";
     }

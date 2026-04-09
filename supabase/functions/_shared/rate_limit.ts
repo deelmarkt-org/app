@@ -66,7 +66,9 @@ export async function checkRateLimit(
 
   if (!evalResponse.ok) {
     // Redis unavailable — fail open (allow the request, log warning)
-    console.warn(`[rate-limit] Redis EVAL failed (HTTP ${evalResponse.status}), failing open`);
+    console.warn(
+      `[rate-limit] Redis EVAL failed (HTTP ${evalResponse.status}), failing open`,
+    );
     return { allowed: true, remaining: config.maxRequests, resetSeconds: 0 };
   }
 

@@ -6,8 +6,8 @@
  */
 
 import {
-  assertEquals,
   assert,
+  assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 import { scanMessage } from "./scan_engine.ts";
@@ -30,12 +30,16 @@ describe("scanMessage — clean messages", () => {
   });
 
   it("returns 'none' for a normal pickup arrangement", () => {
-    const result = scanMessage("Ik kan morgen om 14:00 ophalen bij jou in Amsterdam");
+    const result = scanMessage(
+      "Ik kan morgen om 14:00 ophalen bij jou in Amsterdam",
+    );
     assertEquals(result.confidence, "none");
   });
 
   it("allows deelmarkt.nl links", () => {
-    const result = scanMessage("Kijk op https://deelmarkt.nl/listing/123 voor meer info");
+    const result = scanMessage(
+      "Kijk op https://deelmarkt.nl/listing/123 voor meer info",
+    );
     assertEquals(result.confidence, "none");
   });
 
@@ -51,7 +55,9 @@ describe("scanMessage — clean messages", () => {
 
 describe("scanMessage — external links", () => {
   it("flags a single external URL", () => {
-    const result = scanMessage("Bekijk het hier: https://suspicious-site.com/deal");
+    const result = scanMessage(
+      "Bekijk het hier: https://suspicious-site.com/deal",
+    );
     assert(result.reasons.includes("external_payment_link"));
     assertEquals(result.confidence, "low");
   });
@@ -120,8 +126,11 @@ describe("scanMessage — off-platform contact", () => {
   });
 
   it("deduplicates email + messaging into one off_site_contact reason", () => {
-    const result = scanMessage("Mail me op test@gmail.com of stuur een WhatsApp");
-    const offSiteCount = result.reasons.filter((r) => r === "off_site_contact").length;
+    const result = scanMessage(
+      "Mail me op test@gmail.com of stuur een WhatsApp",
+    );
+    const offSiteCount =
+      result.reasons.filter((r) => r === "off_site_contact").length;
     assertEquals(offSiteCount, 1);
   });
 });
@@ -168,7 +177,9 @@ describe("scanMessage — NLP keyword patterns", () => {
   });
 
   it("flags advance payment requests", () => {
-    const result = scanMessage("Je moet een aanbetaling doen van €50 voordat ik het verstuur");
+    const result = scanMessage(
+      "Je moet een aanbetaling doen van €50 voordat ik het verstuur",
+    );
     assert(result.reasons.includes("advance_payment_request"));
   });
 
@@ -178,7 +189,9 @@ describe("scanMessage — NLP keyword patterns", () => {
   });
 
   it("flags fake escrow references", () => {
-    const result = scanMessage("Gebruik mijn escrow service voor veilige betaling");
+    const result = scanMessage(
+      "Gebruik mijn escrow service voor veilige betaling",
+    );
     assert(result.reasons.includes("fake_escrow"));
   });
 });

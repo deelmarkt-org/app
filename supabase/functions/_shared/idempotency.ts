@@ -7,7 +7,12 @@
  * Reference: CLAUDE.md §9 — "Webhook handlers MUST be idempotent (Upstash Redis NX pattern)"
  */
 
-import { type RedisCredentials, redisSet, redisDel, CACHE_TTL } from "./redis.ts";
+import {
+  CACHE_TTL,
+  type RedisCredentials,
+  redisDel,
+  redisSet,
+} from "./redis.ts";
 
 /**
  * Atomic idempotency check via SET NX.
@@ -22,7 +27,7 @@ export async function checkIdempotency(
   key: string,
   ttl = CACHE_TTL.IDEMPOTENCY,
 ): Promise<boolean> {
-  return redisSet(creds, key, "1", ttl, true);
+  return await redisSet(creds, key, "1", ttl, true);
 }
 
 /**
@@ -36,7 +41,10 @@ export async function rollbackIdempotency(
   try {
     await redisDel(creds, key);
   } catch (error) {
-    console.error(`[redis] Failed to rollback idempotency key '${key}':`, error);
+    console.error(
+      `[redis] Failed to rollback idempotency key '${key}':`,
+      error,
+    );
     // Best-effort — carrier/payment provider will retry
   }
 }

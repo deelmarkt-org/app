@@ -19,7 +19,10 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { jsonResponse } from "../_shared/response.ts";
 import { getRedisCredentials } from "../_shared/redis.ts";
-import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
+import {
+  checkIdempotency,
+  rollbackIdempotency,
+} from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -42,7 +45,7 @@ const TrackingEventSchema = z.object({
 async function verifyCarrierSignature(
   body: string,
   signature: string | null,
-  secret: string
+  secret: string,
 ): Promise<boolean> {
   if (!signature) return false;
 
@@ -53,18 +56,18 @@ async function verifyCarrierSignature(
       encoder.encode(secret),
       { name: "HMAC", hash: "SHA-256" },
       false,
-      ["verify"]
+      ["verify"],
     );
 
     const sigBytes = new Uint8Array(
-      (signature.match(/.{2}/g) ?? []).map((h) => parseInt(h, 16))
+      (signature.match(/.{2}/g) ?? []).map((h) => parseInt(h, 16)),
     );
 
     return await crypto.subtle.verify(
       "HMAC",
       key,
       sigBytes,
-      encoder.encode(body)
+      encoder.encode(body),
     );
   } catch {
     return false;
@@ -84,7 +87,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
-    console.error("[tracking-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    console.error(
+      "[tracking-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+    );
     return jsonResponse({ error: "Internal configuration error" }, 500);
   }
 
@@ -105,21 +110,33 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     // 2. Verify carrier HMAC signature (H4: distinct vault error handling)
     const secretName = payload.carrier === "postnl"
-        ? "postnl_webhook_secret"
-        : "dhl_webhook_secret";
+      ? "postnl_webhook_secret"
+      : "dhl_webhook_secret";
 
     let webhookSecret: string;
     try {
       webhookSecret = await getVaultSecret(supabase, secretName);
     } catch (err) {
-      console.error(`[tracking-webhook] Vault secret '${secretName}' not configured: ${(err as Error).message}`);
-      return jsonResponse({ error: "Webhook signature verification unavailable" }, 503);
+      console.error(
+        `[tracking-webhook] Vault secret '${secretName}' not configured: ${
+          (err as Error).message
+        }`,
+      );
+      return jsonResponse({
+        error: "Webhook signature verification unavailable",
+      }, 503);
     }
 
     const signature = req.headers.get("x-carrier-signature");
-    const isValid = await verifyCarrierSignature(rawBody, signature, webhookSecret);
+    const isValid = await verifyCarrierSignature(
+      rawBody,
+      signature,
+      webhookSecret,
+    );
     if (!isValid) {
-      console.error(`[tracking-webhook] Invalid ${payload.carrier} signature for ${payload.barcode}`);
+      console.error(
+        `[tracking-webhook] Invalid ${payload.carrier} signature for ${payload.barcode}`,
+      );
       return jsonResponse({ error: "Invalid signature" }, 401);
     }
 
@@ -128,7 +145,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     idempotencyKey = `tracking:webhook:${payload.event_id}`;
     const isNew = await checkIdempotency(redisCreds, idempotencyKey);
     if (!isNew) {
-      console.log(`[tracking-webhook] Duplicate skipped (Redis): ${payload.event_id}`);
+      console.log(
+        `[tracking-webhook] Duplicate skipped (Redis): ${payload.event_id}`,
+      );
       return new Response("Already processed", { status: 200 });
     }
 
@@ -140,8 +159,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .single();
 
     if (labelError || !label) {
-      console.log(`[tracking-webhook] Barcode not found (ignored): ${payload.barcode}`);
-      return jsonResponse({ status: "ignored", reason: "barcode_not_found" }, 200);
+      console.log(
+        `[tracking-webhook] Barcode not found (ignored): ${payload.barcode}`,
+      );
+      return jsonResponse(
+        { status: "ignored", reason: "barcode_not_found" },
+        200,
+      );
     }
 
     // 5. Insert tracking event (DB UNIQUE on carrier_event_id is safety net)
@@ -158,18 +182,22 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
 
     if (insertError?.code === "23505") {
-      console.log(`[tracking-webhook] Duplicate skipped (DB): ${payload.event_id}`);
+      console.log(
+        `[tracking-webhook] Duplicate skipped (DB): ${payload.event_id}`,
+      );
       return new Response("Already processed", { status: 200 });
     }
     if (insertError) {
-      throw new Error(`Failed to insert tracking event: ${insertError.message}`);
+      throw new Error(
+        `Failed to insert tracking event: ${insertError.message}`,
+      );
     }
 
     // 6. DB trigger (trg_on_tracking_delivered) handles status transition
     //    when status = 'delivered'. No manual update needed here.
 
     console.log(
-      `[tracking-webhook] ${payload.carrier} ${payload.status} for barcode ${payload.barcode} (txn: ${label.transaction_id})`
+      `[tracking-webhook] ${payload.carrier} ${payload.status} for barcode ${payload.barcode} (txn: ${label.transaction_id})`,
     );
 
     return jsonResponse({

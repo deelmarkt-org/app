@@ -71,8 +71,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!supabaseUrl || !serviceRoleKey) {
-      console.error("[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-      return jsonResponse({ error: "Internal server configuration error" }, 500);
+      console.error(
+        "[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+      );
+      return jsonResponse(
+        { error: "Internal server configuration error" },
+        500,
+      );
     }
 
     try {
@@ -88,7 +93,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
       if (error) {
         persisted = false;
         dbError = error.message;
-        console.error(`[scam-detection] flag_message_scam RPC error: ${error.message}`);
+        console.error(
+          `[scam-detection] flag_message_scam RPC error: ${error.message}`,
+        );
       } else {
         persisted = true;
       }
