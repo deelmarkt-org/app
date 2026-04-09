@@ -118,7 +118,10 @@ CREATE POLICY listings_select ON listings
   );
 
 -- ── H-2: Update view to filter soft-deleted listings ───────────────────
-CREATE OR REPLACE VIEW listings_with_favourites AS
+-- DROP first because l.* now includes deleted_at, changing the view's column
+-- set — CREATE OR REPLACE cannot rename/reorder existing columns.
+DROP VIEW IF EXISTS listings_with_favourites;
+CREATE VIEW listings_with_favourites AS
 SELECT
   l.*,
   up.display_name AS seller_name,

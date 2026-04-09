@@ -84,8 +84,8 @@ $$;
 -- C-2: Restrict to pg_cron only (no public execute)
 REVOKE ALL ON FUNCTION gdpr_hard_delete_expired() FROM PUBLIC;
 
--- M-3: Idempotent cron scheduling
-SELECT cron.unschedule('gdpr-hard-delete');
+-- M-3: Idempotent cron scheduling — unschedule only if job exists
+SELECT cron.unschedule(jobid) FROM cron.job WHERE jobname = 'gdpr-hard-delete';
 SELECT cron.schedule(
   'gdpr-hard-delete',
   '0 3 * * *',
