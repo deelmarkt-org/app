@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
+import 'package:deelmarkt/features/messages/data/supabase/message_scam_scanner.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
@@ -12,22 +12,13 @@ import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
-///
-/// - REST queries via PostgREST for initial fetches.
-/// - [watchMessages] uses a Supabase Realtime subscription on the `messages`
-///   table filtered by `conversation_id`. On each INSERT event the new message
-///   is appended from the Realtime payload. If parsing fails, falls back to a
-///   full re-fetch so the stream stays alive.
-/// - [getConversations] calls the `get_conversations_for_user` RPC which
-///   joins listings + user_profiles in one query (avoids N+1).
-/// - [getOrCreateConversation] calls `get_or_create_conversation` RPC which
-///   is idempotent (UPSERT with ON CONFLICT DO NOTHING).
-///
 /// Reference: docs/epics/E04-messaging.md §Supabase Realtime Messaging
 class SupabaseMessageRepository implements MessageRepository {
-  SupabaseMessageRepository(this._client);
+  SupabaseMessageRepository(this._client)
+      : _scamScanner = MessageScamScanner(_client);
 
   final SupabaseClient _client;
+  final MessageScamScanner _scamScanner;
 
   static const _messagesTable = 'messages';
   static const _conversationIdCol = 'conversation_id';
@@ -91,8 +82,7 @@ class SupabaseMessageRepository implements MessageRepository {
     return controller.stream;
   }
 
-  /// Fetches the current message list and pushes it onto [controller].
-  /// Returns `false` if an error occurred and was forwarded to the controller.
+  /// Emits current messages onto [controller]. Returns false on error.
   Future<bool> _emitSnapshot(
     String conversationId,
     StreamController<List<MessageEntity>> controller,
@@ -107,10 +97,7 @@ class SupabaseMessageRepository implements MessageRepository {
     }
   }
 
-  /// Subscribes to INSERT and UPDATE events for [conversationId] and
-  /// re-emits a full snapshot on each event. UPDATE is required so that
-  /// offer_status changes (accept/decline via R-32 RPC) are reflected
-  /// in real-time without a manual refresh.
+  /// Subscribes to INSERT + UPDATE events, re-emitting a full snapshot each time.
   RealtimeChannel _subscribeChanges(
     String conversationId,
     StreamController<List<MessageEntity>> controller,
@@ -168,11 +155,7 @@ class SupabaseMessageRepository implements MessageRepository {
               .single();
 
       final sentMessage = MessageDto.fromJson(response);
-
-      // Fire-and-forget: invoke scam-detection Edge Function asynchronously.
-      // The function flags the message in the DB via RPC; the Realtime
-      // subscription picks up the scam field updates automatically.
-      _scanMessageAsync(sentMessage);
+      _scamScanner.scan(sentMessage); // fire-and-forget R-35 scam check
 
       return sentMessage;
     } on PostgrestException catch (e) {
@@ -180,46 +163,19 @@ class SupabaseMessageRepository implements MessageRepository {
     }
   }
 
-  /// Asynchronously scans a sent message for scam indicators via the
-  /// R-35 scam-detection Edge Function. Non-blocking — failures are
-  /// logged but never propagated to the caller.
-  void _scanMessageAsync(MessageEntity message) {
-    _client.functions
-        .invoke(
-          'scam-detection',
-          body: {
-            'message_id': message.id,
-            'conversation_id': message.conversationId,
-            'text': message.text,
-          },
-        )
-        .then((_) {})
-        .catchError((Object error, StackTrace stackTrace) {
-          AppLogger.warning(
-            'scam-detection invocation failed: $error',
-            tag: 'SupabaseMessageRepository',
-          );
-        });
-  }
-
   @override
   Future<void> updateOfferStatus({
     required String messageId,
     required OfferStatus newStatus,
   }) async {
-    if (newStatus != OfferStatus.accepted &&
-        newStatus != OfferStatus.declined) {
-      throw ArgumentError.value(
-        newStatus,
-        'newStatus',
-        'Only accepted or declined are valid transitions',
-      );
+    if (newStatus != OfferStatus.accepted && newStatus != OfferStatus.declined) {
+      throw ArgumentError.value(newStatus, 'newStatus', 'Only accepted or declined');
     }
     try {
-      await _client.rpc(
-        'update_offer_status',
-        params: {'p_message_id': messageId, 'p_new_status': newStatus.toDb()},
-      );
+      await _client.rpc('update_offer_status', params: {
+        'p_message_id': messageId,
+        'p_new_status': newStatus.toDb(),
+      });
     } on PostgrestException catch (e) {
       throw Exception('Failed to update offer status: ${e.message}');
     }
@@ -231,13 +187,11 @@ class SupabaseMessageRepository implements MessageRepository {
     required String buyerId,
   }) async {
     try {
-      final response = await _client.rpc(
-        'get_or_create_conversation',
-        params: {'p_listing_id': listingId, 'p_buyer_id': buyerId},
-      );
-      if (response == null) {
-        throw Exception('get_or_create_conversation returned null');
-      }
+      final response = await _client.rpc('get_or_create_conversation', params: {
+        'p_listing_id': listingId,
+        'p_buyer_id': buyerId,
+      });
+      if (response == null) throw Exception('get_or_create_conversation returned null');
       return response as String;
     } on PostgrestException catch (e) {
       throw Exception('Failed to get or create conversation: ${e.message}');
