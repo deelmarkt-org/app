@@ -12,20 +12,35 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
     steps:
-      - name: Call redis-health Edge Function
+      - name: Ping Upstash Redis (SET → GET → DEL)
         run: |
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-            "$SUPABASE_URL/functions/v1/redis-health")
+          PROBE_KEY="keepalive:$(date +%s)"
 
-          echo "HTTP status: $RESPONSE"
+          # SET with 60s TTL
+          SET_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" \
+            "$UPSTASH_REDIS_REST_URL/set/$PROBE_KEY/ping/EX/60")
 
-          if [ "$RESPONSE" != "200" ]; then
-            echo "::error::Redis health check failed with HTTP $RESPONSE"
+          echo "SET status: $SET_STATUS"
+
+          # GET
+          GET_RESULT=$(curl -s \
+            -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" \
+            "$UPSTASH_REDIS_REST_URL/get/$PROBE_KEY")
+
+          echo "GET result: $GET_RESULT"
+
+          # DEL
+          curl -s -o /dev/null \
+            -H "Authorization: Bearer $UPSTASH_REDIS_REST_TOKEN" \
+            "$UPSTASH_REDIS_REST_URL/del/$PROBE_KEY"
+
+          if [ "$SET_STATUS" != "200" ]; then
+            echo "::error::Redis keepalive failed with HTTP $SET_STATUS"
             exit 1
           fi
 
-          echo "Redis is healthy"
+          echo "Redis is alive"
