@@ -50,19 +50,23 @@ class ShippingQrScreen extends StatelessWidget {
   }
 
   Widget _instructionCard(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Semantics(
       label: 'shipping.instructions'.tr(),
       child: Container(
         padding: const EdgeInsets.all(Spacing.s4),
         decoration: BoxDecoration(
-          color: DeelmarktColors.infoSurface,
+          color:
+              isDark
+                  ? DeelmarktColors.darkInfoSurface
+                  : DeelmarktColors.infoSurface,
           borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
         ),
         child: Row(
           children: [
             Icon(
               PhosphorIcons.info(PhosphorIconsStyle.fill),
-              color: DeelmarktColors.info,
+              color: isDark ? DeelmarktColors.darkInfo : DeelmarktColors.info,
               size: 20,
             ),
             const SizedBox(width: Spacing.s3),
@@ -70,7 +74,10 @@ class ShippingQrScreen extends StatelessWidget {
               child: Text(
                 'shipping.scanAtServicePoint'.tr(),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: DeelmarktColors.neutral700,
+                  color:
+                      isDark
+                          ? DeelmarktColors.darkOnSurfaceSecondary
+                          : DeelmarktColors.neutral700,
                 ),
               ),
             ),
