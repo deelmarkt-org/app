@@ -181,7 +181,7 @@ for func in "${FUNCTIONS[@]}"; do
   fi
 
   # ── 3c. Shared helpers: jsonResponse must come from _shared/response.ts
-  if grep -q 'function jsonResponse' "$index" && ! grep -q '_shared/response' "$index"; then
+  if echo "$all_src" | grep -q 'function jsonResponse' && ! echo "$all_src" | grep -q '_shared/response'; then
     warn "LOCAL_JSON_RESPONSE" "$func — defines jsonResponse locally; import from _shared/response.ts (DRY §3.3)"
   fi
 

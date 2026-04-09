@@ -64,10 +64,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
   // If flagged, persist to DB via RPC
   if (result.confidence !== "none") {
     try {
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      );
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!supabaseUrl || !serviceRoleKey) {
+        console.error("[scam-detection] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+        return jsonResponse({ error: "Internal server configuration error" }, 500);
+      }
+      const supabase = createClient(supabaseUrl, serviceRoleKey);
 
       const { error } = await supabase.rpc("flag_message_scam", {
         p_message_id: request.message_id,
