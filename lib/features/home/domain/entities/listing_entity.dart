@@ -34,6 +34,9 @@ class ListingEntity extends Equatable {
     this.status = ListingStatus.active,
   });
 
+  /// Sentinel for [copyWith] — distinguishes "not passed" from "passed as null".
+  static const _sentinel = Object();
+
   final String id;
   final String title;
   final String description;
@@ -62,21 +65,26 @@ class ListingEntity extends Equatable {
 
   final DateTime createdAt;
 
+  /// Creates a copy with the given fields replaced.
+  ///
+  /// Nullable fields use a sentinel pattern so they can be explicitly
+  /// set to `null` (e.g. `copyWith(originalPriceInCents: null)` clears
+  /// the discount). Omitting a parameter preserves the current value.
   ListingEntity copyWith({
     String? id,
     String? title,
     String? description,
     int? priceInCents,
-    int? originalPriceInCents,
+    Object? originalPriceInCents = _sentinel,
     String? sellerId,
     String? sellerName,
     ListingCondition? condition,
     String? categoryId,
     List<String>? imageUrls,
-    String? location,
-    double? distanceKm,
+    Object? location = _sentinel,
+    Object? distanceKm = _sentinel,
     bool? isFavourited,
-    int? qualityScore,
+    Object? qualityScore = _sentinel,
     ListingStatus? status,
     DateTime? createdAt,
   }) {
@@ -85,16 +93,21 @@ class ListingEntity extends Equatable {
       title: title ?? this.title,
       description: description ?? this.description,
       priceInCents: priceInCents ?? this.priceInCents,
-      originalPriceInCents: originalPriceInCents ?? this.originalPriceInCents,
+      originalPriceInCents:
+          originalPriceInCents == _sentinel
+              ? this.originalPriceInCents
+              : originalPriceInCents as int?,
       sellerId: sellerId ?? this.sellerId,
       sellerName: sellerName ?? this.sellerName,
       condition: condition ?? this.condition,
       categoryId: categoryId ?? this.categoryId,
       imageUrls: imageUrls ?? this.imageUrls,
-      location: location ?? this.location,
-      distanceKm: distanceKm ?? this.distanceKm,
+      location: location == _sentinel ? this.location : location as String?,
+      distanceKm:
+          distanceKm == _sentinel ? this.distanceKm : distanceKm as double?,
       isFavourited: isFavourited ?? this.isFavourited,
-      qualityScore: qualityScore ?? this.qualityScore,
+      qualityScore:
+          qualityScore == _sentinel ? this.qualityScore : qualityScore as int?,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
     );
