@@ -23,6 +23,11 @@ import 'package:deelmarkt/features/profile/presentation/screens/review_screen.da
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:deelmarkt/features/sell/presentation/screens/listing_creation_screen.dart';
+import 'package:deelmarkt/features/shipping/presentation/screens/parcel_shop_selector_page.dart';
+import 'package:deelmarkt/features/shipping/presentation/screens/shipping_detail_page.dart';
+import 'package:deelmarkt/features/shipping/presentation/screens/shipping_qr_page.dart';
+import 'package:deelmarkt/features/shipping/presentation/screens/tracking_page.dart';
+import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_page.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -250,7 +255,7 @@ GoRouter _buildRouter({
         redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return _Placeholder('Transaction $id');
+          return TransactionDetailPage(transactionId: id);
         },
         routes: [
           GoRoute(
@@ -273,34 +278,31 @@ GoRouter _buildRouter({
         redirect: _idGuard('id', AppRoutes.home),
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          return _Placeholder('Shipping $id');
+          return ShippingDetailPage(shippingId: id);
         },
         routes: [
           GoRoute(
             path: 'qr',
             name: 'shipping-qr',
             builder: (context, state) {
-              // Phase 2 (belengaz): replace with ShippingQrScreen when ViewModel + data layer exists.
               final id = state.pathParameters['id']!;
-              return _Placeholder('Shipping QR $id');
+              return ShippingQrPage(shippingId: id);
             },
           ),
           GoRoute(
             path: 'tracking',
             name: 'shipping-tracking',
             builder: (context, state) {
-              // Phase 2 (belengaz): replace with TrackingScreen when ViewModel + data layer exists.
               final id = state.pathParameters['id']!;
-              return _Placeholder('Tracking $id');
+              return TrackingPage(shippingId: id);
             },
           ),
           GoRoute(
             path: 'parcel-shops',
             name: 'parcel-shop-selector',
             builder: (context, state) {
-              // Wire to ParcelShopSelectorScreen when ViewModel + data layer exist (E05 Phase 2)
               final id = state.pathParameters['id']!;
-              return _Placeholder('Parcel Shops $id');
+              return ParcelShopSelectorPage(shippingId: id);
             },
           ),
         ],
@@ -312,23 +314,26 @@ GoRouter _buildRouter({
         tag: 'router',
         error: state.uri.path,
       );
-      return _Placeholder('error.notFound'.tr());
+      return _NotFoundScreen(path: state.uri.path);
     },
   );
 }
 
-/// Temporary placeholder screen — replaced by real screens in E01–E06.
-class _Placeholder extends StatelessWidget {
-  const _Placeholder(this.label);
+/// 404 error screen — shown for unmatched routes.
+class _NotFoundScreen extends StatelessWidget {
+  const _NotFoundScreen({required this.path});
 
-  final String label;
+  final String path;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(label)),
+      appBar: AppBar(title: Text('error.notFound'.tr())),
       body: Center(
-        child: Text(label, style: Theme.of(context).textTheme.headlineMedium),
+        child: Text(
+          'error.notFound'.tr(),
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
       ),
     );
   }

@@ -262,13 +262,17 @@
     "closed": "Closed",
     "selectThisShop": "Select this point",
     "selectFromList": "Select a service point from the list",
-    "noShopsFound": "No service points found nearby"
+    "noShopsFound": "No service points found nearby",
+    "details": "Shipping details",
+    "viewQrCode": "View QR code"
   },
   "tracking": {
     "title": "Track shipment",
     "shipment": "shipment",
     "updates": "Tracking updates",
     "noUpdates": "No tracking updates yet",
+    "viewTracking": "View tracking",
+    "latestUpdate": "Latest update",
     "labelCreated": "Label created",
     "droppedOff": "Dropped off at service point",
     "pickedUp": "Picked up by carrier",

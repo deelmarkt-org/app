@@ -85,6 +85,36 @@ class MockTransactionRepository implements TransactionRepository {
       currency: 'EUR',
       createdAt: DateTime(2026, 3, 8),
     ),
+    'txn-shipped': TransactionEntity(
+      id: 'txn-shipped',
+      listingId: 'listing-050',
+      buyerId: _currentUser,
+      sellerId: _seller,
+      status: TransactionStatus.shipped,
+      itemAmountCents: 4500,
+      platformFeeCents: 113,
+      shippingCostCents: 495,
+      currency: 'EUR',
+      createdAt: DateTime(2026, 4),
+      paidAt: DateTime(2026, 4),
+      shippedAt: DateTime(2026, 4, 2),
+    ),
+    'txn-delivered': TransactionEntity(
+      id: 'txn-delivered',
+      listingId: 'listing-060',
+      buyerId: _currentUser,
+      sellerId: _seller,
+      status: TransactionStatus.delivered,
+      itemAmountCents: 6000,
+      platformFeeCents: 150,
+      shippingCostCents: 495,
+      currency: 'EUR',
+      createdAt: DateTime(2026, 4, 3),
+      paidAt: DateTime(2026, 4, 3),
+      shippedAt: DateTime(2026, 4, 4),
+      deliveredAt: DateTime(2026, 4, 6),
+      escrowDeadline: DateTime(2026, 4, 8),
+    ),
   };
 
   @override
@@ -117,7 +147,12 @@ class MockTransactionRepository implements TransactionRepository {
     required String transactionId,
     required TransactionStatus newStatus,
   }) async {
-    throw UnimplementedError('Mock: updateStatus not needed for reviews');
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    final txn = _fixtures[transactionId];
+    if (txn == null) throw Exception('Transaction not found');
+    final updated = txn.copyWith(status: newStatus);
+    _fixtures[transactionId] = updated;
+    return updated;
   }
 
   @override

@@ -288,13 +288,17 @@
     "closed": "Gesloten",
     "selectThisShop": "Dit punt selecteren",
     "selectFromList": "Selecteer een servicepunt uit de lijst",
-    "noShopsFound": "Geen servicepunten in de buurt gevonden"
+    "noShopsFound": "Geen servicepunten in de buurt gevonden",
+    "details": "Verzendgegevens",
+    "viewQrCode": "QR-code bekijken"
   },
   "tracking": {
     "title": "Zending volgen",
     "shipment": "zending",
     "updates": "Trackingupdates",
     "noUpdates": "Nog geen trackingupdates",
+    "viewTracking": "Tracking bekijken",
+    "latestUpdate": "Laatste update",
     "labelCreated": "Label aangemaakt",
     "droppedOff": "Afgegeven bij servicepunt",
     "pickedUp": "Opgehaald door bezorger",

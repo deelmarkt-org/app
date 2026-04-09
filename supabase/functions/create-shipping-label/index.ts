@@ -131,11 +131,11 @@ async function createViaEctaro(
 }
 
 // --- PostNL Shipment v2 API (failover for PostNL labels) ---
-// Verified via sandbox testing 2026-03-29:
+// Verified via sandbox testing 2026-03-29, updated per PostNL guidance 2026-04-09:
 //   Barcode:  GET  /shipment/v1_1/barcode
-//   Confirm:  POST /shipment/v2/confirm
-//   Label:    POST /shipment/v2_2/label
+//   Label:    POST /shipment/v2_2/label  (confirm is included automatically)
 //   Status:   GET  /shipment/v2/status/barcode/:barcode
+// Note: separate /shipment/v2/confirm is NOT needed — label endpoint auto-confirms.
 
 /** PostNL base URL — sandbox or production based on POSTNL_ENV. */
 function getPostNLBaseUrl(): string {
@@ -249,25 +249,24 @@ async function createViaPostNL(
     }],
   };
 
-  // Stringify once for confirm, then update MessageID for label
-  const confirmBody = JSON.stringify(shipmentPayload);
-
-  // Step 2: Confirm shipment via POST /shipment/v2/confirm
-  const confirmResp = await fetch(`${baseUrl}/shipment/v2/confirm`, {
+  // Step 2: Generate label via POST /shipment/v2_2/label
+  // Confirmation is included automatically — no separate /confirm call needed
+  // (confirmed by PostNL support, Chi-Ho Tse, 2026-03-31)
+  const labelResp = await fetch(`${baseUrl}/shipment/v2_2/label`, {
     method: "POST",
     headers,
-    body: confirmBody,
+    body: JSON.stringify(shipmentPayload),
   });
 
-  if (!confirmResp.ok) {
-    const text = await confirmResp.text();
+  if (!labelResp.ok) {
+    const text = await labelResp.text();
     throw new Error(
-      `PostNL Shipment v2/confirm failed (${confirmResp.status}): ${text}`,
+      `PostNL Label v2_2 failed (${labelResp.status}): ${text}`,
     );
   }
 
-  const confirmData = await confirmResp.json();
-  const errors = confirmData.ResponseShipments?.[0]?.Errors;
+  const labelData = await labelResp.json();
+  const errors = labelData.ResponseShipments?.[0]?.Errors;
   if (errors && errors.length > 0) {
     throw new Error(
       `PostNL shipment errors: ${
@@ -276,24 +275,8 @@ async function createViaPostNL(
     );
   }
 
-  // Step 3: Generate label via POST /shipment/v2_2/label
-  // New MessageID required — confirm and label are distinct API calls
-  shipmentPayload.Message.MessageID = crypto.randomUUID();
-  const labelResp = await fetch(`${baseUrl}/shipment/v2_2/label`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(shipmentPayload),
-  });
-
-  let labelPdf: string | undefined;
-  if (labelResp.ok) {
-    const labelData = await labelResp.json();
-    labelPdf = labelData.ResponseShipments?.[0]?.Labels?.[0]?.Content;
-  } else {
-    console.warn(
-      `[create-shipping-label] PostNL label generation failed (${labelResp.status}) — shipment confirmed but no PDF`,
-    );
-  }
+  const labelPdf: string | undefined = labelData.ResponseShipments?.[0]?.Labels
+    ?.[0]?.Content;
 
   return {
     trackingNumber: barcode,
