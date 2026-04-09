@@ -38,10 +38,7 @@ void _arrangeAuthenticated(MockSupabaseClient client, MockGoTrueClient auth) {
   when(() => auth.currentUser).thenReturn(_StubUser(id: _uid));
 }
 
-void _arrangeUnauthenticated(
-  MockSupabaseClient client,
-  MockGoTrueClient auth,
-) {
+void _arrangeUnauthenticated(MockSupabaseClient client, MockGoTrueClient auth) {
   when(() => client.auth).thenReturn(auth);
   when(() => auth.currentUser).thenReturn(null);
 }
@@ -69,10 +66,7 @@ void main() {
       _arrangeUnauthenticated(client, auth);
 
       expect(
-        () => repo.sendMessage(
-          conversationId: 'conv-1',
-          text: 'hello',
-        ),
+        () => repo.sendMessage(conversationId: 'conv-1', text: 'hello'),
         throwsA(
           isA<Exception>().having(
             (e) => e.toString(),
@@ -88,17 +82,18 @@ void main() {
 
       // Verify sendMessage uses MessageType.text as default
       expect(
-        () => repo.sendMessage(
-          conversationId: 'conv-1',
-          text: 'hello',
-        ),
+        () => repo.sendMessage(conversationId: 'conv-1', text: 'hello'),
         // Will throw because PostgREST is not mocked, but we verify
         // the auth check passes and the method proceeds
-        throwsA(isNot(isA<Exception>().having(
-          (e) => e.toString(),
-          'message',
-          contains('not authenticated'),
-        ))),
+        throwsA(
+          isNot(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('not authenticated'),
+            ),
+          ),
+        ),
       );
     });
 
@@ -112,11 +107,15 @@ void main() {
           type: MessageType.offer,
           offerAmountCents: 2500,
         ),
-        throwsA(isNot(isA<Exception>().having(
-          (e) => e.toString(),
-          'message',
-          contains('not authenticated'),
-        ))),
+        throwsA(
+          isNot(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('not authenticated'),
+            ),
+          ),
+        ),
       );
     });
   });

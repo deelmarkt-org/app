@@ -15,7 +15,7 @@ import 'package:deelmarkt/features/messages/domain/repositories/message_reposito
 /// Reference: docs/epics/E04-messaging.md §Supabase Realtime Messaging
 class SupabaseMessageRepository implements MessageRepository {
   SupabaseMessageRepository(this._client)
-      : _scamScanner = MessageScamScanner(_client);
+    : _scamScanner = MessageScamScanner(_client);
 
   final SupabaseClient _client;
   final MessageScamScanner _scamScanner;
@@ -168,14 +168,19 @@ class SupabaseMessageRepository implements MessageRepository {
     required String messageId,
     required OfferStatus newStatus,
   }) async {
-    if (newStatus != OfferStatus.accepted && newStatus != OfferStatus.declined) {
-      throw ArgumentError.value(newStatus, 'newStatus', 'Only accepted or declined');
+    if (newStatus != OfferStatus.accepted &&
+        newStatus != OfferStatus.declined) {
+      throw ArgumentError.value(
+        newStatus,
+        'newStatus',
+        'Only accepted or declined',
+      );
     }
     try {
-      await _client.rpc('update_offer_status', params: {
-        'p_message_id': messageId,
-        'p_new_status': newStatus.toDb(),
-      });
+      await _client.rpc(
+        'update_offer_status',
+        params: {'p_message_id': messageId, 'p_new_status': newStatus.toDb()},
+      );
     } on PostgrestException catch (e) {
       throw Exception('Failed to update offer status: ${e.message}');
     }
@@ -187,11 +192,13 @@ class SupabaseMessageRepository implements MessageRepository {
     required String buyerId,
   }) async {
     try {
-      final response = await _client.rpc('get_or_create_conversation', params: {
-        'p_listing_id': listingId,
-        'p_buyer_id': buyerId,
-      });
-      if (response == null) throw Exception('get_or_create_conversation returned null');
+      final response = await _client.rpc(
+        'get_or_create_conversation',
+        params: {'p_listing_id': listingId, 'p_buyer_id': buyerId},
+      );
+      if (response == null) {
+        throw Exception('get_or_create_conversation returned null');
+      }
       return response as String;
     } on PostgrestException catch (e) {
       throw Exception('Failed to get or create conversation: ${e.message}');
