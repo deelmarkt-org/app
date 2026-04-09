@@ -2,8 +2,9 @@
  * R-07: Health check Edge Function
  * GET /functions/v1/health → 200 OK
  *
- * verify_jwt = false — called by Betterstack uptime monitor.
- * Auth via service_role check.
+ * verify_jwt = false — called by Betterstack uptime monitor (anonymous).
+ * No auth required — this endpoint is intentionally public so external
+ * monitoring can probe without credentials.
  *
  * Checks:
  * - Edge Function runtime is alive
@@ -13,7 +14,6 @@
 
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { verifyServiceRole } from "../_shared/auth.ts";
 import { jsonResponse } from "../_shared/response.ts";
 
 // Module-scope client — reused across requests (L2)
@@ -24,10 +24,6 @@ const supabase = createClient(supabaseUrl, serviceRoleKey);
 Deno.serve(async (req: Request) => {
   if (req.method !== "GET") {
     return jsonResponse({ error: "Method not allowed" }, 405);
-  }
-
-  if (!verifyServiceRole(req)) {
-    return jsonResponse({ error: "Unauthorized" }, 401);
   }
 
   const checks: Record<string, string> = {

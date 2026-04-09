@@ -166,6 +166,8 @@ for func in "${FUNCTIONS[@]}"; do
     echo "$all_src" | grep -qiE 'hmac|createHmac|crypto\.subtle' && has_auth=true
     # Functions that use anon key for user-facing JWT auth (create-payment style)
     echo "$all_src" | grep -q 'SUPABASE_ANON_KEY\|getUser\|auth\.getUser' && has_auth=true
+    # Intentionally public endpoints (health check for uptime monitors)
+    echo "$all_src" | grep -q 'intentionally public' && has_auth=true
     if ! $has_auth; then
       warn "MISSING_SERVICE_ROLE_AUTH" "$func — uses SUPABASE_SERVICE_ROLE_KEY without any auth mechanism; import verifyServiceRole from _shared/auth.ts (§9, §3.3)"
     fi
