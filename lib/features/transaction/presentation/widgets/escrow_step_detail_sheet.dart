@@ -18,53 +18,50 @@ import 'package:deelmarkt/widgets/trust/escrow_timeline_state.dart';
 /// Reference: docs/design-system/patterns.md §Escrow Timeline
 class EscrowStepDetailSheet extends StatelessWidget {
   const EscrowStepDetailSheet({
-    required this.stepIndex,
+    required this.step,
     required this.transaction,
     super.key,
   });
 
-  final int stepIndex;
+  final EscrowTimelineStep step;
   final TransactionEntity transaction;
 
   /// Show this sheet as a modal bottom sheet.
   static Future<void> show(
     BuildContext context, {
-    required int stepIndex,
+    required EscrowTimelineStep step,
     required TransactionEntity transaction,
   }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      showDragHandle: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(DeelmarktRadius.xl),
         ),
       ),
       builder:
-          (_) => EscrowStepDetailSheet(
-            stepIndex: stepIndex,
-            transaction: transaction,
-          ),
+          (_) => EscrowStepDetailSheet(step: step, transaction: transaction),
     );
   }
 
-  DateTime? get _stepTimestamp => switch (stepIndex) {
-    0 => transaction.paidAt,
-    1 => transaction.shippedAt,
-    2 => transaction.deliveredAt,
-    3 => transaction.confirmedAt,
-    4 => transaction.releasedAt,
-    _ => null,
+  DateTime? get _stepTimestamp => switch (step) {
+    EscrowTimelineStep.paid => transaction.paidAt,
+    EscrowTimelineStep.shipped => transaction.shippedAt,
+    EscrowTimelineStep.delivered => transaction.deliveredAt,
+    EscrowTimelineStep.confirmed => transaction.confirmedAt,
+    EscrowTimelineStep.released => transaction.releasedAt,
   };
 
-  bool get _isDeliveredStep => stepIndex == 2;
+  bool get _isDeliveredStep => step == EscrowTimelineStep.delivered;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final viewInsets = MediaQuery.of(context).viewInsets;
-    final stepName = 'escrow.${EscrowTimelineStep.values[stepIndex].name}'.tr();
+    final stepName = 'escrow.${step.name}'.tr();
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -77,18 +74,6 @@ class EscrowStepDetailSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle — 40×4, outlineVariant, pill radius.
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-              ),
-            ),
-          ),
-          const SizedBox(height: Spacing.s4),
           Semantics(
             header: true,
             child: Text(stepName, style: theme.textTheme.headlineSmall),

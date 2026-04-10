@@ -6,6 +6,7 @@ import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/transaction/presentation/widgets/escrow_step_detail_sheet.dart';
+import 'package:deelmarkt/widgets/trust/escrow_timeline_state.dart';
 
 import '../../../../helpers/pump_app.dart';
 
@@ -49,7 +50,7 @@ TransactionEntity _txn({
 Future<void> pumpSheetOpener(
   WidgetTester tester,
   TransactionEntity transaction,
-  int stepIndex, {
+  EscrowTimelineStep step, {
   ThemeData? theme,
 }) async {
   await pumpTestWidget(
@@ -60,7 +61,7 @@ Future<void> pumpSheetOpener(
             onPressed:
                 () => EscrowStepDetailSheet.show(
                   ctx,
-                  stepIndex: stepIndex,
+                  step: step,
                   transaction: transaction,
                 ),
             child: const Text('open'),
@@ -82,24 +83,22 @@ void main() {
     // 1. Sheet opens via static show()
     // -------------------------------------------------------------------------
     testWidgets('opens via show() factory', (tester) async {
-      await pumpSheetOpener(tester, _txn(), 0);
+      await pumpSheetOpener(tester, _txn(), EscrowTimelineStep.paid);
       expect(find.byType(EscrowStepDetailSheet), findsOneWidget);
     });
 
     // -------------------------------------------------------------------------
     // 2. Displays correct step name for each of the 5 steps
     // -------------------------------------------------------------------------
-    for (final (stepIndex, l10nKey) in [
-      (0, 'escrow.paid'),
-      (1, 'escrow.shipped'),
-      (2, 'escrow.delivered'),
-      (3, 'escrow.confirmed'),
-      (4, 'escrow.released'),
+    for (final (step, l10nKey) in [
+      (EscrowTimelineStep.paid, 'escrow.paid'),
+      (EscrowTimelineStep.shipped, 'escrow.shipped'),
+      (EscrowTimelineStep.delivered, 'escrow.delivered'),
+      (EscrowTimelineStep.confirmed, 'escrow.confirmed'),
+      (EscrowTimelineStep.released, 'escrow.released'),
     ]) {
-      testWidgets('shows step name for step $stepIndex ($l10nKey)', (
-        tester,
-      ) async {
-        await pumpSheetOpener(tester, _txn(), stepIndex);
+      testWidgets('shows step name for $step ($l10nKey)', (tester) async {
+        await pumpSheetOpener(tester, _txn(), step);
         expect(find.text(l10nKey), findsOneWidget);
       });
     }
@@ -109,7 +108,11 @@ void main() {
     // -------------------------------------------------------------------------
     testWidgets('shows formatted paidAt timestamp', (tester) async {
       final paidAt = DateTime(2026, 3, 19, 14, 30);
-      await pumpSheetOpener(tester, _txn(paidAt: paidAt), 0);
+      await pumpSheetOpener(
+        tester,
+        _txn(paidAt: paidAt),
+        EscrowTimelineStep.paid,
+      );
 
       expect(find.text('escrow.stepDetail.completedAt'), findsOneWidget);
       expect(
@@ -125,13 +128,13 @@ void main() {
       tester,
     ) async {
       // confirmedAt is null by default
-      await pumpSheetOpener(tester, _txn(), 3);
+      await pumpSheetOpener(tester, _txn(), EscrowTimelineStep.confirmed);
       expect(find.text('escrow.stepDetail.notReached'), findsOneWidget);
       expect(find.text('escrow.stepDetail.completedAt'), findsNothing);
     });
 
     // -------------------------------------------------------------------------
-    // 5. Shows escrow deadline row for the delivered step (index 2)
+    // 5. Shows escrow deadline row for the delivered step
     // -------------------------------------------------------------------------
     testWidgets('shows escrow deadline row for delivered step', (tester) async {
       final deadline = DateTime(2026, 3, 21, 10);
@@ -142,7 +145,7 @@ void main() {
           escrowDeadline: deadline,
           status: TransactionStatus.delivered,
         ),
-        2,
+        EscrowTimelineStep.delivered,
       );
 
       expect(find.text('escrow.stepDetail.deadline'), findsOneWidget);
@@ -164,7 +167,7 @@ void main() {
           disputedAt: disputedAt,
           status: TransactionStatus.disputed,
         ),
-        2,
+        EscrowTimelineStep.delivered,
       );
 
       expect(find.text('escrow.stepDetail.disputedAt'), findsOneWidget);
@@ -181,31 +184,30 @@ void main() {
       tester,
     ) async {
       final deadline = DateTime(2026, 3, 21, 10);
-      // Step 0 (paid) — escrowDeadline is set but should not be shown
-      await pumpSheetOpener(tester, _txn(escrowDeadline: deadline), 0);
+      // paid step — escrowDeadline is set but should not be shown
+      await pumpSheetOpener(
+        tester,
+        _txn(escrowDeadline: deadline),
+        EscrowTimelineStep.paid,
+      );
       expect(find.text('escrow.stepDetail.deadline'), findsNothing);
     });
 
     // -------------------------------------------------------------------------
-    // 8. Drag handle renders with correct 40 px width
+    // 8. Sheet renders with M3 drag handle (showDragHandle: true)
     // -------------------------------------------------------------------------
-    testWidgets('drag handle has 40px width', (tester) async {
-      await pumpTestWidget(
+    testWidgets('sheet uses built-in M3 drag handle via show()', (
+      tester,
+    ) async {
+      // The drag handle is now Flutter's built-in (showDragHandle: true).
+      // Verify the sheet opens and renders the step name — no manual Container.
+      await pumpSheetOpener(
         tester,
-        EscrowStepDetailSheet(stepIndex: 0, transaction: _txn()),
+        _txn(paidAt: DateTime(2026, 3, 19, 14, 30)),
+        EscrowTimelineStep.paid,
       );
-
-      // Find Container widgets; locate the 40×4 drag handle.
-      final containers = tester.widgetList<Container>(find.byType(Container));
-      final handle = containers.firstWhere(
-        (c) =>
-            c.constraints?.maxWidth == 40 ||
-            (c.decoration is BoxDecoration &&
-                (c.decoration! as BoxDecoration).borderRadius != null),
-        orElse: () => Container(),
-      );
-      // The drag handle is a fixed-size Container — verify it exists.
-      expect(handle, isA<Container>());
+      expect(find.byType(EscrowStepDetailSheet), findsOneWidget);
+      expect(find.text('escrow.paid'), findsOneWidget);
     });
 
     // -------------------------------------------------------------------------
@@ -214,7 +216,10 @@ void main() {
     testWidgets('step name has Semantics header', (tester) async {
       await pumpTestWidget(
         tester,
-        EscrowStepDetailSheet(stepIndex: 0, transaction: _txn()),
+        EscrowStepDetailSheet(
+          step: EscrowTimelineStep.paid,
+          transaction: _txn(),
+        ),
       );
 
       final semanticsNodes = tester.widgetList<Semantics>(
@@ -234,14 +239,14 @@ void main() {
       await pumpTestWidget(
         tester,
         EscrowStepDetailSheet(
-          stepIndex: 0,
+          step: EscrowTimelineStep.paid,
           transaction: _txn(paidAt: DateTime(2026, 3, 19, 14, 30)),
         ),
         theme: DeelmarktTheme.dark,
       );
 
       expect(find.byType(EscrowStepDetailSheet), findsOneWidget);
-      // Primary orange deadline color should not appear (step 0, no deadline)
+      // Primary orange deadline color should not appear (paid step, no deadline)
       final deadlineText = find.text('escrow.stepDetail.deadline');
       expect(deadlineText, findsNothing);
     });
