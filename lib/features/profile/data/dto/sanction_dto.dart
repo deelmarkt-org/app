@@ -53,7 +53,7 @@ class SanctionDto {
       userId: userId,
       type: type,
       reason: reason,
-      createdAt: DateTime.tryParse(createdAtRaw) ?? DateTime.now(),
+      createdAt: DateTime.parse(createdAtRaw),
       expiresAt: _parseDate(json['expires_at']),
       appealedAt: _parseDate(json['appealed_at']),
       appealBody: json['appeal_body'] as String?,

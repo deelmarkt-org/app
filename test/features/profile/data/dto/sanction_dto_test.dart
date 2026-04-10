@@ -134,9 +134,9 @@ void main() {
       expect(SanctionDto.fromJson(json).expiresAt, isNull);
     });
 
-    test('invalid created_at falls back to DateTime.now()', () {
+    test('invalid created_at throws FormatException', () {
       final json = _validJson(createdAt: 'not-a-date');
-      expect(SanctionDto.fromJson(json).createdAt, isNotNull);
+      expect(() => SanctionDto.fromJson(json), throwsFormatException);
     });
   });
 

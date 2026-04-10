@@ -72,18 +72,18 @@ The agent will:
 - [x] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
 - [x] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
 - [ ] `B-05` Set up Codemagic — iOS (TestFlight) + Android (Play internal) builds ⚠️ Needs Apple Dev + Google Play accounts
-  > **Android build notu:** CI'da fat APK kullanıyoruz (sadece "build ediyor mu" kontrolü). Production build'de mutlaka `--split-per-abi` veya App Bundle kullanılacak:
+  > **Android build note:** CI uses a fat APK (build-only check). Production builds must use `--split-per-abi` or App Bundle:
   > ```
-  > # Tercih 1 — App Bundle (Play Store otomatik split eder, en iyi seçenek):
+  > # Option 1 — App Bundle (Play Store splits automatically, recommended):
   > flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
   >
-  > # Tercih 2 — Split APK (3 ayrı APK üretir):
+  > # Option 2 — Split APK (produces 3 separate APKs):
   > flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info
-  > # → app-armeabi-v7a-release.apk (~20MB) — eski telefonlar
-  > # → app-arm64-v8a-release.apk (~22MB) — modern telefonlar (%95 kullanıcı)
-  > # → app-x86_64-release.apk (~23MB) — emülatörler
+  > # → app-armeabi-v7a-release.apk (~20 MB) — older devices
+  > # → app-arm64-v8a-release.apk  (~22 MB) — modern devices (95% of users)
+  > # → app-x86_64-release.apk     (~23 MB) — emulators
   > ```
-  > Kullanıcı fat APK yerine sadece kendi cihazına uygun olanı indirir (~22MB vs 62MB).
+  > Users download only the slice for their device (~22 MB instead of ~62 MB fat APK).
 - [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
 - [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
 - [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
