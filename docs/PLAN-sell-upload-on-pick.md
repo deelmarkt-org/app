@@ -474,12 +474,12 @@ This is a **new observability pattern** for the repository layer — `export-use
 
 19. [ ] **Add l10n keys** to `assets/l10n/en-US.json` and `assets/l10n/nl-NL.json`:
     ```
-    sell.uploadingImage            "Uploading photo {index}" / "Foto {index} uploaden"
-    sell.uploadingProgress         "Uploading {done} of {total} photos…" / "{done} van {total} foto's uploaden…"
+    sell.uploadingImage            "Uploading photo" / "Foto uploaden"
+    sell.uploadingProgress         "Uploading {current} of {total}" / "Uploaden {current} van {total}"
     sell.uploadFailed              "Upload failed" / "Upload mislukt"
     sell.retryUpload               "Retry upload" / "Opnieuw proberen"
-    sell.errorImagesUploading      "Wait until all photos finish uploading" / "Wacht tot alle foto's zijn geüpload"
-    sell.errorImagesFailed         "Retry or remove failed photos to continue" / "Probeer opnieuw of verwijder mislukte foto's"
+    sell.errorImagesUploading      "Wait for all photos to finish uploading" / "Wacht tot alle foto's zijn geüpload"
+    sell.errorImagesFailed         "Some photos failed to upload. Retry or remove them." / "Sommige foto's konden niet worden geüpload. Probeer opnieuw of verwijder ze."
     sell.uploadErrorBlocked        "This photo was blocked by our safety scan" / "Deze foto is geblokkeerd door onze beveiligingscontrole"
     sell.uploadErrorTooLarge       "This photo exceeds the 15 MB limit" / "Deze foto is groter dan 15 MB"
     sell.uploadErrorNetwork        "Upload failed — check your connection" / "Upload mislukt — controleer je verbinding"
