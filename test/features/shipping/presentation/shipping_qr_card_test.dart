@@ -17,6 +17,7 @@ ShippingLabel _label({
     qrData: qrData,
     trackingNumber: '3SDEVC1234567',
     carrier: carrier,
+    destinationPostalCode: '2521CA',
     shipByDeadline: DateTime(2026, 3, 25, 18),
     createdAt: DateTime(2026, 3, 23),
   );

@@ -18,6 +18,8 @@ import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repositor
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
+import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
@@ -85,6 +87,14 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSettingsRepository();
   return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Shipping repository — mock-only until shipping tables ship.
+///
+/// TODO(belengaz): add `useMockDataProvider` gate once real implementation
+/// exists — same pattern as [listingRepositoryProvider].
+final shippingRepositoryProvider = Provider<ShippingRepository>((ref) {
+  return MockShippingRepository();
 });
 
 /// Message repository — real Supabase implementation (B-53).

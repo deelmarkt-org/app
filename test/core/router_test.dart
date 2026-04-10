@@ -108,11 +108,20 @@ void main() {
       'navigates to transaction detail via deep link (auth required)',
       (tester) async {
         final authedRouter = _createTestRouter(isLoggedIn: true)
-          ..go('/transactions/tx-789');
-        await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
-        await tester.pumpAndSettle();
-        expect(find.text('Transaction tx-789'), findsWidgets);
-        authedRouter.dispose();
+          ..go('/transactions/txn-001');
+        addTearDown(authedRouter.dispose);
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [useMockDataProvider.overrideWithValue(true)],
+            child: MaterialApp.router(routerConfig: authedRouter),
+          ),
+        );
+        // Pump frames: initial build, then past the mock async delay,
+        // then settle remaining animations after data arrives.
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump();
+        expect(find.textContaining('transaction.status'), findsWidgets);
       },
     );
 
@@ -120,11 +129,20 @@ void main() {
       tester,
     ) async {
       final authedRouter = _createTestRouter(isLoggedIn: true)
-        ..go('/shipping/ship-012');
-      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
-      await tester.pumpAndSettle();
-      expect(find.text('Shipping ship-012'), findsWidgets);
-      authedRouter.dispose();
+        ..go('/shipping/ship-001');
+      addTearDown(authedRouter.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: authedRouter),
+        ),
+      );
+      // Shipping provider: getLabel (200ms) + getTrackingEvents (200ms).
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump();
+      expect(find.textContaining('shipping.details'), findsWidgets);
     });
 
     testWidgets('search route renders search screen', (tester) async {
@@ -150,29 +168,55 @@ void main() {
   group('GoRouter shipping sub-routes', () {
     testWidgets('navigates to shipping QR sub-route', (tester) async {
       final authedRouter = _createTestRouter(isLoggedIn: true)
-        ..go('/shipping/ship-1/qr');
+        ..go('/shipping/ship-001/qr');
       addTearDown(authedRouter.dispose);
-      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
-      await tester.pumpAndSettle();
-      expect(find.text('Shipping QR ship-1'), findsWidgets);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: authedRouter),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump();
+      expect(find.textContaining('shipping.sendPackage'), findsWidgets);
     });
 
     testWidgets('navigates to shipping tracking sub-route', (tester) async {
       final authedRouter = _createTestRouter(isLoggedIn: true)
-        ..go('/shipping/ship-1/tracking');
+        ..go('/shipping/ship-001/tracking');
       addTearDown(authedRouter.dispose);
-      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
-      await tester.pumpAndSettle();
-      expect(find.text('Tracking ship-1'), findsWidgets);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: authedRouter),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump();
+      expect(find.textContaining('tracking.title'), findsWidgets);
     });
 
     testWidgets('navigates to parcel shops sub-route', (tester) async {
       final authedRouter = _createTestRouter(isLoggedIn: true)
-        ..go('/shipping/ship-1/parcel-shops');
+        ..go('/shipping/ship-001/parcel-shops');
       addTearDown(authedRouter.dispose);
-      await tester.pumpWidget(MaterialApp.router(routerConfig: authedRouter));
-      await tester.pumpAndSettle();
-      expect(find.text('Parcel Shops ship-1'), findsWidgets);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [useMockDataProvider.overrideWithValue(true)],
+          child: MaterialApp.router(routerConfig: authedRouter),
+        ),
+      );
+      // Shipping label (200ms) + tracking events (200ms) + parcel shops (300ms)
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump(const Duration(milliseconds: 250));
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pump();
+      expect(find.textContaining('shipping.selectParcelShop'), findsWidgets);
     });
   });
 

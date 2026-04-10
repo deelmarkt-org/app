@@ -8,7 +8,7 @@ import 'package:deelmarkt/features/shipping/presentation/widgets/shipping_qr_car
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
-import '../../../../test/helpers/pump_app.dart';
+import '../../../../helpers/pump_app.dart';
 
 ShippingLabel _label() {
   return ShippingLabel(
@@ -17,6 +17,7 @@ ShippingLabel _label() {
     qrData: 'https://postnl.nl/qr/3SDEVC1234567',
     trackingNumber: '3SDEVC1234567',
     carrier: ShippingCarrier.postnl,
+    destinationPostalCode: '2521CA',
     shipByDeadline: DateTime(2026, 3, 25, 18),
     createdAt: DateTime(2026, 3, 23),
   );
@@ -66,6 +67,17 @@ void main() {
     testWidgets('has instruction card', (tester) async {
       await pumpTestScreen(tester, ShippingQrScreen(label: _label()));
 
+      expect(find.textContaining('shipping.scanAtServicePoint'), findsWidgets);
+    });
+
+    testWidgets('renders correctly in dark mode', (tester) async {
+      await pumpTestScreen(
+        tester,
+        ShippingQrScreen(label: _label()),
+        theme: ThemeData.dark(),
+      );
+
+      expect(find.byType(ShippingQrCard), findsOneWidget);
       expect(find.textContaining('shipping.scanAtServicePoint'), findsWidgets);
     });
   });

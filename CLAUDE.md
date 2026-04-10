@@ -496,6 +496,7 @@ setState_allowlist:
   - lib/features/profile/presentation/widgets/address_form_modal.dart
   - lib/features/transaction/presentation/screens/mollie_checkout_screen.dart
   - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
+  - lib/features/transaction/presentation/widgets/action_section.dart
   - lib/features/dev/**
   - lib/widgets/inputs/deel_search_input.dart
   - lib/features/profile/presentation/widgets/delete_account_dialog.dart

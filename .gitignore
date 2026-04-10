@@ -86,3 +86,4 @@ mollie/
 .worktreeinclude
 
 .cursor/rules/
+scripts/test_label.pdf
