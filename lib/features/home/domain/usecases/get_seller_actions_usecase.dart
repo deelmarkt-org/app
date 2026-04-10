@@ -31,8 +31,6 @@ class GetSellerActionsUseCase {
           ActionItemEntity(
             id: 'ship-${t.id}',
             type: ActionItemType.shipOrder,
-            title: 'Verzend bestelling #${t.id.substring(0, 4)}',
-            subtitle: 'Bestelling betaald — verzending vereist',
             referenceId: t.id,
           ),
         );
@@ -45,9 +43,9 @@ class GetSellerActionsUseCase {
           ActionItemEntity(
             id: 'reply-${c.id}',
             type: ActionItemType.replyMessage,
-            title: 'Beantwoord bericht van ${c.otherUserName}',
-            subtitle: '${c.unreadCount} ongelezen bericht(en)',
             referenceId: c.id,
+            otherUserName: c.otherUserName,
+            unreadCount: c.unreadCount,
           ),
         );
       }

@@ -136,6 +136,8 @@ void main() {
         expect(result.first.type, ActionItemType.shipOrder);
         expect(result.first.id, 'ship-tx-1234');
         expect(result.first.referenceId, 'tx-1234');
+        expect(result.first.otherUserName, isNull);
+        expect(result.first.unreadCount, isNull);
       },
     );
 
@@ -154,6 +156,8 @@ void main() {
         expect(result.length, 1);
         expect(result.first.type, ActionItemType.replyMessage);
         expect(result.first.id, 'reply-conv-1');
+        expect(result.first.otherUserName, 'Koper');
+        expect(result.first.unreadCount, 3);
       },
     );
 

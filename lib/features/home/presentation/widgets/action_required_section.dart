@@ -56,9 +56,25 @@ class _ActionTile extends StatelessWidget {
     final bgColor =
         isDark ? DeelmarktColors.darkSurface : DeelmarktColors.neutral50;
 
+    final isShip = action.type == ActionItemType.shipOrder;
+    final title =
+        isShip
+            ? 'home.seller.shipOrderTitle'.tr(
+              args: [action.referenceId.substring(0, 4)],
+            )
+            : 'home.seller.replyTo'.tr(
+              namedArgs: {'name': action.otherUserName ?? ''},
+            );
+    final subtitle =
+        isShip
+            ? 'home.seller.shipOrderSubtitle'.tr()
+            : 'home.seller.unreadCount'.tr(
+              args: [(action.unreadCount ?? 0).toString()],
+            );
+
     return Semantics(
       button: true,
-      label: action.title,
+      label: title,
       child: Padding(
         padding: const EdgeInsets.only(
           left: Spacing.s4,
@@ -78,7 +94,7 @@ class _ActionTile extends StatelessWidget {
                 children: [
                   _icon(),
                   const SizedBox(width: Spacing.s3),
-                  _content(context, isDark),
+                  _content(context, isDark, title, subtitle),
                   const SizedBox(width: Spacing.s2),
                   _chevron(isDark),
                 ],
@@ -112,7 +128,12 @@ class _ActionTile extends StatelessWidget {
     );
   }
 
-  Widget _content(BuildContext context, bool isDark) {
+  Widget _content(
+    BuildContext context,
+    bool isDark,
+    String title,
+    String subtitle,
+  ) {
     final subtitleColor =
         isDark
             ? DeelmarktColors.darkOnSurfaceSecondary
@@ -123,7 +144,7 @@ class _ActionTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            action.title,
+            title,
             style: Theme.of(
               context,
             ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
@@ -132,7 +153,7 @@ class _ActionTile extends StatelessWidget {
           ),
           const SizedBox(height: Spacing.s1),
           Text(
-            action.subtitle,
+            subtitle,
             style: Theme.of(
               context,
             ).textTheme.bodySmall?.copyWith(color: subtitleColor),

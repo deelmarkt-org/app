@@ -90,7 +90,12 @@
     "sold": "Sold! 🎉",
     "views": "Views",
     "favorites": "In favorites",
-    "shipping": "Shipping"
+    "shipping": "Shipping",
+    "status": {
+      "active": "Active",
+      "sold": "Sold",
+      "draft": "Draft"
+    }
   },
   "auth": {
     "login": "Log in",
@@ -395,7 +400,10 @@
       "unreadMessages": "Unread messages",
       "actionRequired": "Action required",
       "shipOrder": "Ship order",
+      "shipOrderTitle": "Ship order #{id}",
+      "shipOrderSubtitle": "Order paid — shipping required",
       "replyTo": "Reply to message from {name}",
+      "unreadCount": "{count} unread message(s)",
       "myListings": "My listings",
       "newListing": "New listing",
       "startSelling": "Start selling",

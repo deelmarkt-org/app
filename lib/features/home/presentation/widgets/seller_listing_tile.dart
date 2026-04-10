@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 
 /// Seller listing tile — list row showing thumbnail, title, price,
@@ -89,7 +90,7 @@ class SellerListingTile extends StatelessWidget {
           ),
           const SizedBox(height: Spacing.s1),
           Text(
-            _formatPrice(listing.priceInCents),
+            Formatters.euroFromCents(listing.priceInCents),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: DeelmarktColors.primary,
@@ -145,11 +146,6 @@ class SellerListingTile extends StatelessWidget {
       ),
     );
   }
-
-  static String _formatPrice(int cents) {
-    final euros = cents / 100;
-    return '\u20AC${euros.toStringAsFixed(2).replaceAll('.', ',')}';
-  }
 }
 
 class _StatusBadge extends StatelessWidget {
@@ -161,17 +157,17 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, bgColor, textColor) = switch (status) {
       ListingStatus.active => (
-        'Actief',
+        'listing.status.active'.tr(),
         DeelmarktColors.successSurface,
         DeelmarktColors.success,
       ),
       ListingStatus.sold => (
-        'Verkocht',
+        'listing.status.sold'.tr(),
         DeelmarktColors.primarySurface,
         DeelmarktColors.primary,
       ),
       ListingStatus.draft => (
-        'Concept',
+        'listing.status.draft'.tr(),
         DeelmarktColors.neutral100,
         DeelmarktColors.neutral500,
       ),

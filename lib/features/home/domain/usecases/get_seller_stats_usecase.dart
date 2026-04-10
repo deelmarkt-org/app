@@ -23,6 +23,10 @@ class GetSellerStatsUseCase {
   final TransactionRepository _transactionRepo;
 
   Future<SellerStatsEntity> call(String userId) async {
+    // limit: 100 is an intentional cap for the dashboard stats card.
+    // The active listings count is therefore approximate for prolific sellers
+    // (>100 listings). A dedicated countActiveListings repository method
+    // is tracked in P-54 for a future sprint.
     final (listings, conversations, transactions) =
         await (
           _listingRepo.getByUserId(userId, limit: 100),

@@ -90,7 +90,12 @@
     "sold": "Verkocht! 🎉",
     "views": "Bekeken",
     "favorites": "In favorieten",
-    "shipping": "Verzending"
+    "shipping": "Verzending",
+    "status": {
+      "active": "Actief",
+      "sold": "Verkocht",
+      "draft": "Concept"
+    }
   },
   "auth": {
     "login": "Inloggen",
@@ -395,7 +400,10 @@
       "unreadMessages": "Ongelezen berichten",
       "actionRequired": "Actie vereist",
       "shipOrder": "Verzend bestelling",
+      "shipOrderTitle": "Verzend bestelling #{id}",
+      "shipOrderSubtitle": "Bestelling betaald — verzending vereist",
       "replyTo": "Beantwoord bericht van {name}",
+      "unreadCount": "{count} ongelezen bericht(en)",
       "myListings": "Mijn advertenties",
       "newListing": "Nieuwe advertentie",
       "startSelling": "Start met verkopen",

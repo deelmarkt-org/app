@@ -5,6 +5,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/seller_stats_entity.dart';
 
 /// Three stat cards for the seller dashboard: total sales, active listings,
@@ -29,7 +30,7 @@ class SellerStatsRow extends StatelessWidget {
           _StatCard(
             icon: PhosphorIcons.currencyEur(PhosphorIconsStyle.fill),
             iconColor: DeelmarktColors.success,
-            value: _formatEur(stats.totalSalesCents),
+            value: Formatters.euroFromCents(stats.totalSalesCents),
             label: 'home.seller.totalSales'.tr(),
           ),
           const SizedBox(width: Spacing.s3),
@@ -50,11 +51,6 @@ class SellerStatsRow extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  static String _formatEur(int cents) {
-    final euros = cents / 100;
-    return '\u20AC${euros.toStringAsFixed(2).replaceAll('.', ',')}';
   }
 }
 

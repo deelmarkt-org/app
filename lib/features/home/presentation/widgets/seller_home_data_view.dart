@@ -56,6 +56,7 @@ class SellerHomeDataView extends ConsumerWidget {
   }
 
   Widget _greeting(BuildContext context) {
+    final name = data.userName ?? 'mode.seller'.tr();
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
@@ -65,7 +66,7 @@ class SellerHomeDataView extends ConsumerWidget {
           Spacing.s2,
         ),
         child: Text(
-          'home.seller.hello'.tr(args: [data.userName]),
+          'home.seller.hello'.tr(args: [name]),
           style: Theme.of(
             context,
           ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -124,7 +125,7 @@ class SellerHomeDataView extends ConsumerWidget {
   void _handleActionTap(BuildContext context, ActionItemEntity action) {
     switch (action.type) {
       case ActionItemType.shipOrder:
-        context.push('/shipping/${Uri.encodeComponent(action.referenceId)}');
+        context.push(AppRoutes.shippingDetailFor(action.referenceId));
       case ActionItemType.replyMessage:
         context.push(AppRoutes.chatThreadFor(action.referenceId));
     }

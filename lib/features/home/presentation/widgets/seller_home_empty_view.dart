@@ -19,9 +19,9 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 ///
 /// Reference: docs/screens/02-home/designs/seller_mode_home_empty_state/
 class SellerHomeEmptyView extends ConsumerWidget {
-  const SellerHomeEmptyView({required this.userName, super.key});
+  const SellerHomeEmptyView({this.userName, super.key});
 
-  final String userName;
+  final String? userName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,8 +72,9 @@ class SellerHomeEmptyView extends ConsumerWidget {
   }
 
   Widget _greeting(BuildContext context) {
+    final name = userName ?? 'mode.seller'.tr();
     return Text(
-      'home.seller.hello'.tr(args: [userName]),
+      'home.seller.hello'.tr(args: [name]),
       style: Theme.of(
         context,
       ).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w700),

@@ -1,37 +1,15 @@
-import 'package:equatable/equatable.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/features/home/domain/entities/action_item_entity.dart';
-import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
-import 'package:deelmarkt/features/home/domain/entities/seller_stats_entity.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_seller_actions_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_seller_listings_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_seller_stats_usecase.dart';
+import 'package:deelmarkt/features/home/presentation/seller_home_state.dart';
+
+export 'package:deelmarkt/features/home/presentation/seller_home_state.dart';
 
 part 'seller_home_notifier.g.dart';
-
-/// State for the seller home dashboard.
-class SellerHomeState extends Equatable {
-  const SellerHomeState({
-    required this.userName,
-    required this.stats,
-    required this.actions,
-    required this.listings,
-  });
-
-  final String userName;
-  final SellerStatsEntity stats;
-  final List<ActionItemEntity> actions;
-  final List<ListingEntity> listings;
-
-  /// Whether the seller has no listings at all (empty state).
-  bool get isEmpty => listings.isEmpty;
-
-  @override
-  List<Object?> get props => [userName, stats, actions, listings];
-}
 
 /// Riverpod provider for [GetSellerStatsUseCase].
 final getSellerStatsUseCaseProvider = Provider<GetSellerStatsUseCase>(
@@ -79,7 +57,9 @@ class SellerHomeNotifier extends _$SellerHomeNotifier {
     final rawName = metadata?['display_name'];
     final metaName = rawName as String?;
     final emailName = user.email?.split('@').first;
-    final displayName = metaName ?? emailName ?? 'Verkoper';
+    // null means no display name is available — presentation layer
+    // substitutes the localised fallback via 'mode.seller'.tr().
+    final displayName = metaName ?? emailName;
 
     return SellerHomeState(
       userName: displayName,

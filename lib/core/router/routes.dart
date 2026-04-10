@@ -18,6 +18,13 @@ abstract final class AppRoutes {
   /// non-UUID id ever reaches this helper (security finding F-06).
   static String chatThreadFor(String conversationId) =>
       '/messages/${Uri.encodeComponent(conversationId)}';
+
+  /// Builds the concrete path for a shipping detail screen.
+  ///
+  /// Percent-encodes [transactionId] for the same reason as [chatThreadFor].
+  static String shippingDetailFor(String transactionId) =>
+      '/shipping/${Uri.encodeComponent(transactionId)}';
+
   static const profile = '/profile';
 
   /// Bottom nav tab indices — must match StatefulShellBranch order in app_router.

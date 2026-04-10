@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/features/home/domain/entities/action_item_entity.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/entities/seller_stats_entity.dart';
-import 'package:deelmarkt/features/home/presentation/seller_home_notifier.dart';
+import 'package:deelmarkt/features/home/presentation/seller_home_state.dart';
 
 void main() {
   group('SellerHomeState', () {
@@ -27,18 +27,12 @@ void main() {
     );
 
     test('isEmpty returns true when listings is empty', () {
-      const state = SellerHomeState(
-        userName: 'Test',
-        stats: stats,
-        actions: [],
-        listings: [],
-      );
+      const state = SellerHomeState(stats: stats, actions: [], listings: []);
       expect(state.isEmpty, isTrue);
     });
 
     test('isEmpty returns false when listings is non-empty', () {
       final state = SellerHomeState(
-        userName: 'Test',
         stats: stats,
         actions: const [],
         listings: [listing],
@@ -47,18 +41,8 @@ void main() {
     });
 
     test('equality via Equatable', () {
-      const a = SellerHomeState(
-        userName: 'Test',
-        stats: stats,
-        actions: [],
-        listings: [],
-      );
-      const b = SellerHomeState(
-        userName: 'Test',
-        stats: stats,
-        actions: [],
-        listings: [],
-      );
+      const a = SellerHomeState(stats: stats, actions: [], listings: []);
+      const b = SellerHomeState(stats: stats, actions: [], listings: []);
       expect(a, equals(b));
     });
 
@@ -78,13 +62,16 @@ void main() {
       expect(a, isNot(equals(b)));
     });
 
+    test('userName defaults to null', () {
+      const state = SellerHomeState(stats: stats, actions: [], listings: []);
+      expect(state.userName, isNull);
+    });
+
     test('props includes all fields', () {
       final actions = [
         const ActionItemEntity(
           id: 'a1',
           type: ActionItemType.shipOrder,
-          title: 'Ship',
-          subtitle: 'Sub',
           referenceId: 'ref',
         ),
       ];
