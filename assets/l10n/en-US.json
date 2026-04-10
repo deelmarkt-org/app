@@ -199,7 +199,8 @@
     "menu": "Open menu",
     "skipToContent": "Skip to content",
     "back": "Go back",
-    "consent_banner": "Privacy consent"
+    "consent_banner": "Privacy consent",
+    "modeSwitch": "Switch between buyer and seller mode"
   },
   "payment": {
     "orderSummary": "Order summary",
@@ -386,7 +387,27 @@
     "recentlyAdded": "Recently added",
     "categories": "Categories",
     "emptyNearby": "No listings nearby",
-    "emptyNearbyAction": "Start searching"
+    "emptyNearbyAction": "Start searching",
+    "seller": {
+      "hello": "Hello, {name}",
+      "totalSales": "Total sales",
+      "activeListings": "Active listings",
+      "unreadMessages": "Unread messages",
+      "actionRequired": "Action required",
+      "shipOrder": "Ship order",
+      "replyTo": "Reply to message from {name}",
+      "myListings": "My listings",
+      "newListing": "New listing",
+      "startSelling": "Start selling",
+      "views": "{count} views",
+      "daysActive": "{count} days active",
+      "emptyTitle": "You don't have any listings yet",
+      "emptySubtitle": "Start selling items you no longer use and give them a second life."
+    }
+  },
+  "mode": {
+    "buyer": "Buyer",
+    "seller": "Seller"
   },
   "listing_card": {
     "escrowAvailable": "Escrow available",

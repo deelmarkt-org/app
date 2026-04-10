@@ -199,7 +199,8 @@
     "menu": "Menu openen",
     "skipToContent": "Ga naar inhoud",
     "back": "Terug",
-    "consent_banner": "Privacytoestemming"
+    "consent_banner": "Privacytoestemming",
+    "modeSwitch": "Wissel tussen koper en verkoper modus"
   },
   "settings": {
     "language": "Taal",
@@ -386,7 +387,27 @@
     "recentlyAdded": "Recent toegevoegd",
     "categories": "Categorieën",
     "emptyNearby": "Geen advertenties in de buurt",
-    "emptyNearbyAction": "Start met zoeken"
+    "emptyNearbyAction": "Start met zoeken",
+    "seller": {
+      "hello": "Hallo, {name}",
+      "totalSales": "Totale verkopen",
+      "activeListings": "Actieve advertenties",
+      "unreadMessages": "Ongelezen berichten",
+      "actionRequired": "Actie vereist",
+      "shipOrder": "Verzend bestelling",
+      "replyTo": "Beantwoord bericht van {name}",
+      "myListings": "Mijn advertenties",
+      "newListing": "Nieuwe advertentie",
+      "startSelling": "Start met verkopen",
+      "views": "{count} weergaven",
+      "daysActive": "{count} dagen actief",
+      "emptyTitle": "Je hebt nog geen advertenties",
+      "emptySubtitle": "Begin met het verkopen van spullen die je niet meer gebruikt en geef ze een tweede leven."
+    }
+  },
+  "mode": {
+    "buyer": "Koper",
+    "seller": "Verkoper"
   },
   "listing_card": {
     "escrowAvailable": "Escrow beschikbaar",
