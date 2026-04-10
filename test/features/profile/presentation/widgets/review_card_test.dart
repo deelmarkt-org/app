@@ -15,7 +15,7 @@ void main() {
     revieweeId: 'user-001',
     listingId: 'listing-001',
     rating: 4.0,
-    text: 'Snelle verzending en precies zoals beschreven.',
+    body: 'Snelle verzending en precies zoals beschreven.',
     createdAt: DateTime(2026, 3, 15),
   );
 
@@ -57,7 +57,7 @@ void main() {
         revieweeId: 'user-001',
         listingId: 'listing-002',
         rating: 5.0,
-        text: 'Great!',
+        body: 'Great!',
         createdAt: DateTime(2026, 3, 10),
         reviewerAvatarUrl: 'https://example.com/pieter.jpg',
       );
