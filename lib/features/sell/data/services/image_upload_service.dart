@@ -105,7 +105,9 @@ class ImageUploadService {
   }
 
   /// Direct upload to Supabase Storage. Path format must satisfy the
-  /// EF regex `^[a-f0-9-]{36}/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$`.
+  /// EF regex
+  /// `^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$`
+  /// (strict UUIDv4 8-4-4-4-12 layout, tightened in PR #105 review).
   ///
   /// `upsert` defaults to false, which is what we want — the filename
   /// has a timestamp + random tail so collisions are effectively

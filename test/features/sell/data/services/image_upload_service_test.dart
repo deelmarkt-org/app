@@ -133,34 +133,31 @@ void main() {
       expect(result.format, 'jpg');
     });
 
-    test(
-      'uploads to listings-images bucket under the user id folder',
-      () async {
-        arrangeAuthenticated();
-        arrangeSuccessfulStorageUpload();
-        arrangeEfResponse(
-          FunctionResponse(status: 200, data: _successResponse),
-        );
+    test('uploads to listings-images bucket under the user id folder', () async {
+      arrangeAuthenticated();
+      arrangeSuccessfulStorageUpload();
+      arrangeEfResponse(FunctionResponse(status: 200, data: _successResponse));
 
-        String? capturedPath;
-        when(() => fileApi.upload(any(), any())).thenAnswer((invocation) async {
-          capturedPath = invocation.positionalArguments[0] as String;
-          return 'ok';
-        });
+      String? capturedPath;
+      when(() => fileApi.upload(any(), any())).thenAnswer((invocation) async {
+        capturedPath = invocation.positionalArguments[0] as String;
+        return 'ok';
+      });
 
-        await service.uploadAndProcess(await _makeTempFile(extension: 'png'));
+      await service.uploadAndProcess(await _makeTempFile(extension: 'png'));
 
-        verify(() => storage.from('listings-images')).called(1);
-        expect(capturedPath, isNotNull);
-        expect(capturedPath!.startsWith('$_userId/'), isTrue);
-        expect(capturedPath!.endsWith('.png'), isTrue);
-        // Regex from the EF: user_id (UUID) / filename.ext
-        final regex = RegExp(
-          r'^[a-f0-9-]{36}/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$',
-        );
-        expect(regex.hasMatch(capturedPath!), isTrue);
-      },
-    );
+      verify(() => storage.from('listings-images')).called(1);
+      expect(capturedPath, isNotNull);
+      expect(capturedPath!.startsWith('$_userId/'), isTrue);
+      expect(capturedPath!.endsWith('.png'), isTrue);
+      // Strict EF regex (tightened in PR #105 review): user_id must
+      // match the canonical UUIDv4 8-4-4-4-12 layout, not just
+      // 36 hex-or-dash characters.
+      final regex = RegExp(
+        r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$',
+      );
+      expect(regex.hasMatch(capturedPath!), isTrue);
+    });
 
     test('forwards the generated path to the EF body', () async {
       arrangeAuthenticated();
