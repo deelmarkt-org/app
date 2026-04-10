@@ -72,6 +72,18 @@ The agent will:
 - [x] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
 - [x] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
 - [ ] `B-05` Set up Codemagic — iOS (TestFlight) + Android (Play internal) builds ⚠️ Needs Apple Dev + Google Play accounts
+  > **Android build notu:** CI'da fat APK kullanıyoruz (sadece "build ediyor mu" kontrolü). Production build'de mutlaka `--split-per-abi` veya App Bundle kullanılacak:
+  > ```
+  > # Tercih 1 — App Bundle (Play Store otomatik split eder, en iyi seçenek):
+  > flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
+  >
+  > # Tercih 2 — Split APK (3 ayrı APK üretir):
+  > flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info
+  > # → app-armeabi-v7a-release.apk (~20MB) — eski telefonlar
+  > # → app-arm64-v8a-release.apk (~22MB) — modern telefonlar (%95 kullanıcı)
+  > # → app-x86_64-release.apk (~23MB) — emülatörler
+  > ```
+  > Kullanıcı fat APK yerine sadece kendi cihazına uygun olanı indirir (~22MB vs 62MB).
 - [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
 - [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
 - [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
@@ -235,7 +247,7 @@ The agent will:
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
 - [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
-- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate
+- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)*
 - [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
