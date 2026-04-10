@@ -27,15 +27,24 @@ class ActivityItemDto {
       orElse: () => ActivityItemType.systemUpdate,
     );
 
+    if (timestampRaw is! String) {
+      throw const FormatException(
+        'ActivityItemDto.fromJson: missing timestamp field',
+      );
+    }
+    final timestamp = DateTime.tryParse(timestampRaw);
+    if (timestamp == null) {
+      throw const FormatException(
+        'ActivityItemDto.fromJson: invalid timestamp value',
+      );
+    }
+
     return ActivityItemEntity(
       id: id,
       type: type,
       title: title,
       subtitle: subtitle,
-      timestamp:
-          timestampRaw is String
-              ? (DateTime.tryParse(timestampRaw) ?? DateTime.now())
-              : DateTime.now(),
+      timestamp: timestamp,
     );
   }
 

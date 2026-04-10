@@ -92,8 +92,7 @@ void main() {
         expect(result.type, ActivityItemType.systemUpdate);
       });
 
-      test('uses DateTime.now fallback for invalid timestamp', () {
-        final before = DateTime.now();
+      test('throws FormatException for invalid timestamp string', () {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'userVerified',
@@ -102,21 +101,13 @@ void main() {
           'timestamp': 'not-a-date',
         };
 
-        final result = ActivityItemDto.fromJson(json);
-        final after = DateTime.now();
-
         expect(
-          result.timestamp.isAfter(before.subtract(const Duration(seconds: 1))),
-          isTrue,
-        );
-        expect(
-          result.timestamp.isBefore(after.add(const Duration(seconds: 1))),
-          isTrue,
+          () => ActivityItemDto.fromJson(json),
+          throwsA(isA<FormatException>()),
         );
       });
 
-      test('uses DateTime.now fallback when timestamp is missing', () {
-        final before = DateTime.now();
+      test('throws FormatException when timestamp is missing', () {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'userVerified',
@@ -124,16 +115,9 @@ void main() {
           'subtitle': 'Some subtitle',
         };
 
-        final result = ActivityItemDto.fromJson(json);
-        final after = DateTime.now();
-
         expect(
-          result.timestamp.isAfter(before.subtract(const Duration(seconds: 1))),
-          isTrue,
-        );
-        expect(
-          result.timestamp.isBefore(after.add(const Duration(seconds: 1))),
-          isTrue,
+          () => ActivityItemDto.fromJson(json),
+          throwsA(isA<FormatException>()),
         );
       });
     });
