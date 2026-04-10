@@ -126,6 +126,77 @@ export default {
 
 ---
 
+## 4a. R-27 Image Pipeline Vault Seeding — 10 min
+
+> **Blocks:** the `image-upload-process` Edge Function cannot run until all
+> four secrets are present in Supabase Vault. Do this immediately after
+> `feature/belengaz-R26-R27-sell-flow-efs` is merged and deployed.
+
+**Prerequisites:**
+- [ ] Cloudinary credentials from §4 above (cloud name, API key, API secret)
+- [ ] Cloudmersive account with a free-tier API key — [cloudmersive.com/pricing](https://cloudmersive.com/pricing)
+  - Free tier: 800 virus scans/month. Upgrade to Hobby ($30/mo, 20K scans) when we
+    cross ~25 listings/day sustained.
+
+**Seed the four secrets via Supabase SQL Editor (service_role):**
+
+```sql
+-- NEVER commit these values to git. Run via SQL Editor only.
+SELECT insert_vault_secret(
+  'CLOUDMERSIVE_API_KEY',
+  '<paste from cloudmersive dashboard>',
+  'R-27 virus scan API key'
+);
+
+SELECT insert_vault_secret(
+  'CLOUDINARY_CLOUD_NAME',
+  '<paste from cloudinary dashboard>',
+  'R-27 Cloudinary account slug'
+);
+
+SELECT insert_vault_secret(
+  'CLOUDINARY_API_KEY',
+  '<paste from cloudinary dashboard>',
+  'R-27 Cloudinary API key'
+);
+
+SELECT insert_vault_secret(
+  'CLOUDINARY_API_SECRET',
+  '<paste from cloudinary dashboard>',
+  'R-27 Cloudinary API secret'
+);
+```
+
+**Verify each secret reads correctly:**
+
+```sql
+SELECT vault_read_secret('CLOUDMERSIVE_API_KEY') IS NOT NULL AS ok;
+SELECT vault_read_secret('CLOUDINARY_CLOUD_NAME') IS NOT NULL AS ok;
+SELECT vault_read_secret('CLOUDINARY_API_KEY')    IS NOT NULL AS ok;
+SELECT vault_read_secret('CLOUDINARY_API_SECRET') IS NOT NULL AS ok;
+```
+
+**Smoke-test the EF after seeding:**
+
+```bash
+# Upload a test image to listings-images/<your-user-id>/test.jpg first via
+# the Flutter client or supabase storage upload, then:
+curl -X POST "$SUPABASE_URL/functions/v1/image-upload-process" \
+  -H "Authorization: Bearer $SUPABASE_USER_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"storage_path":"<your-user-id>/test.jpg"}'
+# Expected: {"storage_path": "...", "delivery_url": "https://res.cloudinary.com/..."}
+```
+
+- [ ] Cloudmersive key seeded
+- [ ] Cloudinary cloud name seeded
+- [ ] Cloudinary API key seeded
+- [ ] Cloudinary API secret seeded
+- [ ] All four `vault_read_secret(...)` queries return `ok = true`
+- [ ] EF smoke test returns 200 with a `delivery_url`
+
+---
+
 ## 5. Codemagic CI/CD (B-05) — 30 min
 
 **Prerequisites:**

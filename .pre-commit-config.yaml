@@ -122,6 +122,16 @@ repos:
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]
 
+      # R-26: Quality score parity — keeps Dart client + TS Edge Function
+      # weights/thresholds in lock-step. Triggers when either source changes.
+      - id: quality-score-parity
+        name: quality score Dart↔TS parity
+        language: system
+        entry: bash scripts/check_quality_score_parity.sh
+        pass_filenames: false
+        files: ^(lib/core/constants\.dart|supabase/functions/_shared/quality_score_weights\.ts)$
+        stages: [pre-commit]
+
       # ── Push-time gates ────────────────────────────────────────────────
 
       # Fast analyze pass on push — catches any regressions in generated files

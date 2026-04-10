@@ -161,8 +161,8 @@ The agent will:
 
 **Branch:** `feature/reso-E01-listings` | **Epic:** [E01](epics/E01-listing-management.md)
 
-- [ ] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown
-- [ ] `R-27` Image upload Edge Function — resize + EXIF strip + ClamAV + Cloudinary
+- [x] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown *(done by belengaz, PR TBD — Dart↔TS parity enforced by pre-commit)*
+- [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) *(done by belengaz, PR TBD — client wiring in follow-up blocked on #104)*
 - [ ] `R-29` `search_outbox` table + trigger — events on listing CRUD
 - [ ] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted
 

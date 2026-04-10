@@ -508,3 +508,20 @@ enabled = true
 verify_jwt = true
 import_map = "./functions/scam-detection/deno.json"
 entrypoint = "./functions/scam-detection/index.ts"
+
+# R-26: Listing quality score — pure calculation, no DB I/O.
+# verify_jwt = true — Supabase gateway validates user JWT before handler runs.
+[functions.listing-quality-score]
+enabled = true
+verify_jwt = true
+import_map = "./functions/listing-quality-score/deno.json"
+entrypoint = "./functions/listing-quality-score/index.ts"
+
+# R-27: Listing image upload pipeline — virus scan (Cloudmersive)
+# + Cloudinary transform + DB metadata. Called per image from the sell
+# flow. verify_jwt = true — user must own the storage path being processed.
+[functions.image-upload-process]
+enabled = true
+verify_jwt = true
+import_map = "./functions/image-upload-process/deno.json"
+entrypoint = "./functions/image-upload-process/index.ts"
