@@ -14,7 +14,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
             isFavourited: true,
@@ -34,7 +34,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
             onFavouriteTap: () {},
@@ -51,7 +51,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
             onFavouriteTap: () => tapped = true,
@@ -70,7 +70,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
           ),
@@ -91,7 +91,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
             showEscrowBadge: true,
@@ -107,7 +107,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
           ),

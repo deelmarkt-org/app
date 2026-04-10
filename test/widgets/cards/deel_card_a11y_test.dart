@@ -12,7 +12,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Vintage Lamp',
             onTap: () {},
           ),
@@ -27,7 +27,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Item',
             onTap: () {},
             isFavourited: true,
