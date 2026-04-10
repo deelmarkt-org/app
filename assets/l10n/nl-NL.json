@@ -245,13 +245,10 @@
     "fundsHeld": "Geld wordt vastgehouden",
     "fundsReleased": "Geld vrijgegeven aan verkoper",
     "stepDetail": {
-      "title": "Stap details",
       "completedAt": "Voltooid op",
       "notReached": "Nog niet bereikt",
-      "pending": "In afwachting",
       "deadline": "Bevestig voor",
-      "disputedAt": "Betwist op",
-      "createdAt": "Bestelling aangemaakt"
+      "disputedAt": "Betwist op"
     }
   },
   "condition": {

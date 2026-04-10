@@ -219,13 +219,10 @@
     "fundsHeld": "Funds held in escrow",
     "fundsReleased": "Funds released to seller",
     "stepDetail": {
-      "title": "Step details",
       "completedAt": "Completed at",
       "notReached": "Not yet reached",
-      "pending": "Pending",
       "deadline": "Confirm before",
-      "disputedAt": "Disputed at",
-      "createdAt": "Order created"
+      "disputedAt": "Disputed at"
     }
   },
   "condition": {
