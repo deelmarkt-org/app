@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 import 'package:deelmarkt/features/sell/domain/entities/shipping_types.dart';
 
+export 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 export 'package:deelmarkt/features/sell/domain/entities/shipping_types.dart';
 
 /// Steps in the listing creation wizard.
@@ -37,7 +39,11 @@ class ListingCreationState extends Equatable {
   factory ListingCreationState.initial() => const ListingCreationState();
 
   final ListingCreationStep step;
-  final List<String> imageFiles;
+
+  /// Picked images with per-item upload state.
+  /// Order is preserved and is the primary key for rendering; ids are the
+  /// primary key for state patches (immune to reorder/remove races).
+  final List<SellImage> imageFiles;
   final String title;
   final String description;
   final String? categoryL1Id;

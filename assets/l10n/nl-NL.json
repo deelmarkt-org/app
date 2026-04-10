@@ -701,7 +701,18 @@
     "errorPermissionPermanent": "Cameratoegang is permanent geweigerd. Schakel in via Instellingen.",
     "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
     "errorUnsupportedFormat": "Dit afbeeldingsformaat wordt niet ondersteund",
-    "errorImagePicker": "Kon de fotokiezer niet openen"
+    "errorImagePicker": "Kon de fotokiezer niet openen",
+    "errorImagesUploading": "Wacht tot alle foto's klaar zijn met uploaden",
+    "errorImagesFailed": "Sommige foto's konden niet worden geüpload. Probeer opnieuw of verwijder ze.",
+    "uploadingImage": "Foto uploaden",
+    "uploadingProgress": "Uploaden {current} van {total}",
+    "uploadFailed": "Upload mislukt",
+    "retryUpload": "Upload opnieuw proberen",
+    "uploadErrorBlocked": "Deze foto is afgewezen door onze veiligheidsscan",
+    "uploadErrorTooLarge": "Deze foto is groter dan de limiet van 15 MB",
+    "uploadErrorNetwork": "Netwerkfout. Probeer het opnieuw.",
+    "uploadErrorAuth": "Meld opnieuw aan om foto's te uploaden",
+    "uploadErrorGeneric": "Kon deze foto niet uploaden. Probeer het opnieuw."
   },
   "image_gallery": {
     "close": "Sluiten",

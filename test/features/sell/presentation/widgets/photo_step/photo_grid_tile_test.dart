@@ -2,13 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid_tile.dart';
 
 import '../../../../../helpers/pump_app.dart';
 
+const _img = SellImage(
+  id: 't',
+  localPath: '/test/image.jpg',
+  status: ImageUploadStatus.uploaded,
+);
+
 void main() {
+  // Suppress image decode errors from fake file paths.
+  final origOnError = FlutterError.onError;
+  setUp(
+    () =>
+        FlutterError.onError = (details) {
+          final s = details.exceptionAsString();
+          if (s.contains('Image') || s.contains('overflowed')) return;
+          FlutterError.dumpErrorToConsole(details);
+        },
+  );
+  tearDown(() => FlutterError.onError = origOnError);
+
   group('PhotoGridTile — empty variant', () {
-    testWidgets('shows camera icon when imagePath is null', (tester) async {
+    testWidgets('shows camera icon when image is null', (tester) async {
       await pumpTestWidget(
         tester,
         const SizedBox(width: 120, height: 120, child: PhotoGridTile(index: 0)),
@@ -38,13 +57,13 @@ void main() {
   });
 
   group('PhotoGridTile — filled variant', () {
-    testWidgets('shows Image.file when imagePath is provided', (tester) async {
+    testWidgets('shows Image.file when image is provided', (tester) async {
       await pumpTestWidget(
         tester,
         const SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(imagePath: '/test/image.jpg', index: 0),
+          child: PhotoGridTile(image: _img, index: 0),
         ),
       );
 
@@ -58,11 +77,7 @@ void main() {
         const SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(
-            imagePath: '/test/image.jpg',
-            index: 0,
-            onRemove: _noOp,
-          ),
+          child: PhotoGridTile(image: _img, index: 0, onRemove: _noOp),
         ),
       );
 
@@ -78,7 +93,7 @@ void main() {
           width: 120,
           height: 120,
           child: PhotoGridTile(
-            imagePath: '/test/image.jpg',
+            image: _img,
             index: 0,
             onRemove: () => removed = true,
           ),
@@ -101,11 +116,7 @@ void main() {
         const SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(
-            imagePath: '/test/image.jpg',
-            index: 0,
-            onRemove: _noOp,
-          ),
+          child: PhotoGridTile(image: _img, index: 0, onRemove: _noOp),
         ),
       );
 
@@ -126,11 +137,7 @@ void main() {
         const SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(
-            imagePath: '/test/image.jpg',
-            index: 0,
-            onRemove: _noOp,
-          ),
+          child: PhotoGridTile(image: _img, index: 0, onRemove: _noOp),
         ),
       );
 
@@ -149,7 +156,7 @@ void main() {
         const SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(imagePath: '/test/image.jpg', index: 0),
+          child: PhotoGridTile(image: _img, index: 0),
         ),
       );
 

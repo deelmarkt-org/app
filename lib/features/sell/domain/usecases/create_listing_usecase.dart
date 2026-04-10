@@ -1,5 +1,6 @@
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_upload.dart';
 import 'package:deelmarkt/features/sell/domain/repositories/listing_creation_repository.dart';
 
 /// Publishes a new listing from the completed creation state.
@@ -24,7 +25,7 @@ class CreateListingUseCase {
       priceInCents: state.priceInCents,
       condition: condition,
       categoryId: categoryId,
-      imagePaths: state.imageFiles,
+      imageUrls: state.uploadedDeliveryUrls,
       location: state.location,
       shippingCarrier: state.shippingCarrier,
       weightRange: state.weightRange,

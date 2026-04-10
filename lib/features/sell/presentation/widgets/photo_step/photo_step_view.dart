@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_upload.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
@@ -31,7 +32,7 @@ class PhotoStepView extends ConsumerWidget {
             liveRegion: true,
             child: Text(
               'sell.photosCount'.tr(
-                args: ['${state.imageFiles.length}', '$_maxPhotos'],
+                args: ['${state.uploadedCount}', '$_maxPhotos'],
               ),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -42,6 +43,7 @@ class PhotoStepView extends ConsumerWidget {
           child: PhotoGrid(
             imageFiles: state.imageFiles,
             onRemove: notifier.removePhoto,
+            onRetry: notifier.retryUpload,
             onReorder: notifier.reorderPhotos,
           ),
         ),
@@ -60,7 +62,7 @@ class PhotoStepView extends ConsumerWidget {
           child: DeelButton(
             label: 'sell.next'.tr(),
             onPressed:
-                state.imageFiles.isNotEmpty ? () => notifier.nextStep() : null,
+                state.allImagesUploaded ? () => notifier.nextStep() : null,
           ),
         ),
       ],

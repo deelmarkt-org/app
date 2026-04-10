@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid_tile.dart';
 
 import '../../../../../helpers/pump_app.dart';
 
+SellImage _img(String id, String path) =>
+    SellImage(id: id, localPath: path, status: ImageUploadStatus.uploaded);
+
 void main() {
-  // Suppress overflow errors caused by grid layout in test viewports.
+  // Suppress overflow + image decode errors in test viewports.
   final origOnError = FlutterError.onError;
   setUp(
     () =>
         FlutterError.onError = (details) {
-          if (details.exceptionAsString().contains('overflowed')) return;
+          final s = details.exceptionAsString();
+          if (s.contains('overflowed') || s.contains('Image')) return;
           FlutterError.dumpErrorToConsole(details);
         },
   );
@@ -22,7 +27,11 @@ void main() {
     testWidgets('renders correct number of tiles for given images', (
       tester,
     ) async {
-      final images = ['/img/a.jpg', '/img/b.jpg', '/img/c.jpg'];
+      final images = [
+        _img('a', '/img/a.jpg'),
+        _img('b', '/img/b.jpg'),
+        _img('c', '/img/c.jpg'),
+      ];
 
       await pumpTestWidget(
         tester,
@@ -31,6 +40,7 @@ void main() {
           child: PhotoGrid(
             imageFiles: images,
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -47,6 +57,7 @@ void main() {
           child: PhotoGrid(
             imageFiles: const [],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -61,8 +72,9 @@ void main() {
         SizedBox(
           height: 400,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg'],
+            imageFiles: [_img('a', '/img/a.jpg')],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -74,15 +86,16 @@ void main() {
     testWidgets('onRemove callback fires when remove button is tapped', (
       tester,
     ) async {
-      int? removedIndex;
+      String? removedId;
 
       await pumpTestWidget(
         tester,
         SizedBox(
           height: 400,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg', '/img/b.jpg'],
-            onRemove: (i) => removedIndex = i,
+            imageFiles: [_img('a', '/img/a.jpg'), _img('b', '/img/b.jpg')],
+            onRemove: (id) => removedId = id,
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -98,7 +111,7 @@ void main() {
       await tester.tap(removeButtons.first);
       await tester.pump();
 
-      expect(removedIndex, equals(0));
+      expect(removedId, equals('a'));
     });
 
     testWidgets('popup menu shows reorder actions for middle item', (
@@ -109,8 +122,13 @@ void main() {
         SizedBox(
           height: 600,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg', '/img/b.jpg', '/img/c.jpg'],
+            imageFiles: [
+              _img('a', '/img/a.jpg'),
+              _img('b', '/img/b.jpg'),
+              _img('c', '/img/c.jpg'),
+            ],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -137,8 +155,13 @@ void main() {
         SizedBox(
           height: 600,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg', '/img/b.jpg', '/img/c.jpg'],
+            imageFiles: [
+              _img('a', '/img/a.jpg'),
+              _img('b', '/img/b.jpg'),
+              _img('c', '/img/c.jpg'),
+            ],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (from, to) {
               fromIndex = from;
               toIndex = to;
@@ -167,8 +190,9 @@ void main() {
         SizedBox(
           height: 400,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg'],
+            imageFiles: [_img('a', '/img/a.jpg')],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),
@@ -183,8 +207,9 @@ void main() {
         SizedBox(
           height: 400,
           child: PhotoGrid(
-            imageFiles: const ['/img/a.jpg'],
+            imageFiles: [_img('a', '/img/a.jpg')],
             onRemove: (_) {},
+            onRetry: (_) {},
             onReorder: (_, _) {},
           ),
         ),

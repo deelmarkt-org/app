@@ -16,7 +16,7 @@ void main() {
 
   group('ListingCreationNotifier -- photo operations', () {
     test('addFromCamera() adds a photo', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
       addTearDown(container.dispose);
 
       await container
@@ -25,11 +25,11 @@ void main() {
 
       final state = container.read(listingCreationNotifierProvider);
       expect(state.imageFiles, hasLength(1));
-      expect(state.imageFiles.first, equals('/mock/photo.jpg'));
+      expect(state.imageFiles.first.localPath, equals('/mock/photo.jpg'));
     });
 
     test('addFromGallery() adds photos', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
       addTearDown(container.dispose);
 
       await container
@@ -40,23 +40,24 @@ void main() {
       expect(state.imageFiles, hasLength(2));
     });
 
-    test('removePhoto(index) removes the photo at that index', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+    test('removePhoto(id) removes the photo with that id', () async {
+      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
       addTearDown(container.dispose);
 
-      await container
-          .read(listingCreationNotifierProvider.notifier)
-          .addFromGallery();
+      final notifier = container.read(listingCreationNotifierProvider.notifier);
+      await notifier.addFromGallery();
 
-      container.read(listingCreationNotifierProvider.notifier).removePhoto(0);
+      final firstId =
+          container.read(listingCreationNotifierProvider).imageFiles.first.id;
+      notifier.removePhoto(firstId);
 
       final state = container.read(listingCreationNotifierProvider);
       expect(state.imageFiles, hasLength(1));
-      expect(state.imageFiles.first, equals('/mock/gallery2.jpg'));
+      expect(state.imageFiles.first.localPath, equals('/mock/gallery2.jpg'));
     });
 
     test('reorderPhotos() changes photo order', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
       addTearDown(container.dispose);
 
       await container
@@ -68,13 +69,13 @@ void main() {
           .reorderPhotos(0, 2);
 
       final state = container.read(listingCreationNotifierProvider);
-      expect(state.imageFiles.first, equals('/mock/gallery2.jpg'));
-      expect(state.imageFiles.last, equals('/mock/gallery1.jpg'));
+      expect(state.imageFiles.first.localPath, equals('/mock/gallery2.jpg'));
+      expect(state.imageFiles.last.localPath, equals('/mock/gallery1.jpg'));
     });
 
     test('max 12 photos enforced -- addFromCamera() no-ops at limit', () async {
       final mockPicker = MockImagePickerService();
-      final (:container, picker: _, :repo) = buildContainer(
+      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -110,7 +111,7 @@ void main() {
               type: ImagePickerResultType.permissionDenied,
             );
 
-      final (:container, picker: _, :repo) = buildContainer(
+      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -132,7 +133,7 @@ void main() {
               type: ImagePickerResultType.permissionDenied,
             );
 
-      final (:container, picker: _, :repo) = buildContainer(
+      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -156,7 +157,7 @@ void main() {
                 type: ImagePickerResultType.permissionPermanentlyDenied,
               );
 
-        final (:container, picker: _, :repo) = buildContainer(
+        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -178,7 +179,7 @@ void main() {
               type: ImagePickerResultType.fileTooLarge,
             );
 
-      final (:container, picker: _, :repo) = buildContainer(
+      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -201,7 +202,7 @@ void main() {
                 type: ImagePickerResultType.unsupportedFormat,
               );
 
-        final (:container, picker: _, :repo) = buildContainer(
+        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -223,7 +224,7 @@ void main() {
               type: ImagePickerResultType.cancelled,
             );
 
-      final (:container, picker: _, :repo) = buildContainer(
+      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -248,7 +249,7 @@ void main() {
                 paths: ['/mock/cam.jpg'],
               );
 
-        final (:container, picker: _, :repo) = buildContainer(
+        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -270,21 +271,20 @@ void main() {
       },
     );
 
-    test('removePhoto with invalid index is a no-op', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+    test('removePhoto with unknown id is a no-op', () async {
+      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
       addTearDown(container.dispose);
 
-      await container
-          .read(listingCreationNotifierProvider.notifier)
-          .addFromCamera();
+      final notifier = container.read(listingCreationNotifierProvider.notifier);
+      await notifier.addFromCamera();
 
-      container.read(listingCreationNotifierProvider.notifier).removePhoto(-1);
+      notifier.removePhoto('does-not-exist');
       expect(
         container.read(listingCreationNotifierProvider).imageFiles,
         hasLength(1),
       );
 
-      container.read(listingCreationNotifierProvider.notifier).removePhoto(5);
+      notifier.removePhoto('another-unknown');
       expect(
         container.read(listingCreationNotifierProvider).imageFiles,
         hasLength(1),

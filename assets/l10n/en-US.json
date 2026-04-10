@@ -701,7 +701,18 @@
     "errorPermissionPermanent": "Camera access is permanently denied. Enable it in Settings.",
     "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
     "errorUnsupportedFormat": "This image format is not supported",
-    "errorImagePicker": "Could not open the photo picker"
+    "errorImagePicker": "Could not open the photo picker",
+    "errorImagesUploading": "Wait for all photos to finish uploading",
+    "errorImagesFailed": "Some photos failed to upload. Retry or remove them.",
+    "uploadingImage": "Uploading photo",
+    "uploadingProgress": "Uploading {current} of {total}",
+    "uploadFailed": "Upload failed",
+    "retryUpload": "Retry upload",
+    "uploadErrorBlocked": "This photo was rejected by our safety scan",
+    "uploadErrorTooLarge": "This photo exceeds the 15 MB size limit",
+    "uploadErrorNetwork": "Network error. Please retry.",
+    "uploadErrorAuth": "Sign in again to upload photos",
+    "uploadErrorGeneric": "Could not upload this photo. Please try again."
   },
   "image_gallery": {
     "close": "Close",

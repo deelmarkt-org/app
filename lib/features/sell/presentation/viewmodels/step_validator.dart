@@ -1,4 +1,5 @@
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_upload.dart';
 
 /// Wizard step validation + navigation graph.
 ///
@@ -13,7 +14,10 @@ class StepValidator {
   static String? validate(ListingCreationState state) {
     switch (state.step) {
       case ListingCreationStep.photos:
-        return state.imageFiles.isEmpty ? 'sell.errorNoPhotos' : null;
+        if (state.imageFiles.isEmpty) return 'sell.errorNoPhotos';
+        if (state.hasFailedUploads) return 'sell.errorImagesFailed';
+        if (state.hasPendingUploads) return 'sell.errorImagesUploading';
+        return null;
       case ListingCreationStep.details:
         if (state.title.trim().isEmpty) return 'sell.errorNoTitle';
         if (state.priceInCents <= 0) return 'sell.errorNoPrice';
