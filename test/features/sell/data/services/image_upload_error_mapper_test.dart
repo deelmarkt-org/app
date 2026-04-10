@@ -57,26 +57,45 @@ void main() {
   });
 
   group('ImageUploadErrorMapper.map — transport errors', () {
-    test('404 → NetworkException', () {
+    // These cases carry dedicated l10n keys so users don't see a
+    // misleading "No internet connection" message when the actual
+    // failure is an upstream outage (Cloudinary, Cloudmersive, etc).
+
+    test('404 → NetworkException(error.image.not_found)', () {
       final exception = ImageUploadErrorMapper.map(404, null);
       expect(exception, isA<NetworkException>());
+      expect(exception.messageKey, 'error.image.not_found');
     });
 
-    test('502 → NetworkException', () {
+    test('500 → NetworkException(error.image.upload_failed)', () {
+      final exception = ImageUploadErrorMapper.map(500, null);
+      expect(exception, isA<NetworkException>());
+      expect(exception.messageKey, 'error.image.upload_failed');
+    });
+
+    test('502 → NetworkException(error.image.upload_failed)', () {
+      // Cloudinary outage: EF returns 502 after its fetch() to
+      // api.cloudinary.com fails. User sees "Image upload failed".
       final exception = ImageUploadErrorMapper.map(502, null);
       expect(exception, isA<NetworkException>());
+      expect(exception.messageKey, 'error.image.upload_failed');
     });
 
-    test('503 → NetworkException', () {
+    test('503 → NetworkException(error.image.scan_unavailable)', () {
+      // Cloudmersive outage: EF returns 503 from its fail-closed
+      // branch. User sees "Our safety check is temporarily
+      // unavailable" instead of the misleading "No internet".
       final exception = ImageUploadErrorMapper.map(503, null);
       expect(exception, isA<NetworkException>());
+      expect(exception.messageKey, 'error.image.scan_unavailable');
     });
 
     test(
-      'unexpected status code → NetworkException with status in debugMessage',
+      'unexpected status code → NetworkException(error.network) with status in debugMessage',
       () {
         final exception = ImageUploadErrorMapper.map(599, null);
         expect(exception, isA<NetworkException>());
+        expect(exception.messageKey, 'error.network');
         expect(exception.debugMessage, contains('599'));
       },
     );

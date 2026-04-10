@@ -7,17 +7,24 @@ import 'package:deelmarkt/core/exceptions/app_exception.dart';
 /// the 200-line repository limit (CLAUDE.md §2.1) and so callers
 /// (and tests) can reason about the mapping in one place.
 ///
+/// The caller should invoke this from the `on FunctionException catch`
+/// branch of its `functions.invoke()` call — supabase_flutter throws
+/// `FunctionException` on any non-2xx response (it never returns a
+/// `FunctionResponse` with `status >= 300`), so this switch runs only
+/// off the exception's `status` + `details` fields.
+///
 /// | HTTP | Exception           | l10n key                                |
 /// | ---- | ------------------- | --------------------------------------- |
 /// | 401  | AuthException       | `error.auth.unauthenticated`            |
 /// | 403  | AuthException       | `error.image.ownership_mismatch`        |
-/// | 404  | NetworkException    | (storage object vanished — transport)   |
+/// | 404  | NetworkException    | `error.image.not_found`                 |
 /// | 413  | ValidationException | `error.image.too_large`                 |
 /// | 422  | ValidationException | `error.image.blocked`                   |
 /// | 429  | ValidationException | `error.image.rate_limited`              |
-/// | 502  | NetworkException    | (Cloudinary outage)                     |
-/// | 503  | NetworkException    | (Cloudmersive scan outage)              |
-/// | 5xx  | NetworkException    | (generic transport)                     |
+/// | 500  | NetworkException    | `error.image.upload_failed`             |
+/// | 502  | NetworkException    | `error.image.upload_failed`             |
+/// | 503  | NetworkException    | `error.image.scan_unavailable`          |
+/// | 5xx  | NetworkException    | `error.network`                         |
 abstract final class ImageUploadErrorMapper {
   /// Maps an EF HTTP error to the closest existing [AppException]
   /// subtype with a stable l10n key. The [body] is the parsed JSON
@@ -34,6 +41,11 @@ abstract final class ImageUploadErrorMapper {
         return const AuthException(
           'error.image.ownership_mismatch',
           debugMessage: 'image-upload-process returned 403',
+        );
+      case 404:
+        return const NetworkException(
+          messageKey: 'error.image.not_found',
+          debugMessage: 'image-upload-process returned 404',
         );
       case 413:
         return const ValidationException(
@@ -55,14 +67,17 @@ abstract final class ImageUploadErrorMapper {
           'error.image.rate_limited',
           debugMessage: 'image-upload-process 429, retry_after=$retryAfter',
         );
-      case 404:
+      case 500:
       case 502:
         return NetworkException(
+          messageKey: 'error.image.upload_failed',
           debugMessage: 'image-upload-process returned $status',
         );
       case 503:
         return const NetworkException(
-          debugMessage: 'error.image.scan_unavailable',
+          messageKey: 'error.image.scan_unavailable',
+          debugMessage:
+              'image-upload-process returned 503 (Cloudmersive outage)',
         );
       default:
         return NetworkException(

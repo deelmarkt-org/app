@@ -27,11 +27,17 @@ class ListingQualityScoreService {
   ///
   /// Throws:
   ///  - [ValidationException] (`error.quality_score.invalid_request`)
-  ///    if the server rejects the payload as malformed. Indicates a
-  ///    client/server contract drift — should never happen in practice.
+  ///    if the server rejects the payload as malformed (HTTP 400).
+  ///    Indicates a client/server contract drift — should never happen
+  ///    in practice.
   ///  - [NetworkException] for any transport failure, 5xx, or malformed
   ///    response. Callers should fall back to the client-side score
   ///    for UX (the app stays usable) and retry at publish time.
+  ///
+  /// `supabase_flutter`'s `FunctionsClient.invoke()` throws
+  /// [FunctionException] on any non-2xx status, so the happy path only
+  /// has to parse the body. The catch block routes off the exception's
+  /// `status` field.
   Future<QualityScoreResponse> calculate(ListingCreationState state) async {
     final body = _buildRequestBody(state);
     try {
@@ -39,18 +45,6 @@ class ListingQualityScoreService {
         _functionName,
         body: body,
       );
-      final status = response.status;
-      if (status == 400) {
-        throw const ValidationException(
-          'error.quality_score.invalid_request',
-          debugMessage: 'listing-quality-score EF returned 400',
-        );
-      }
-      if (status < 200 || status >= 300) {
-        throw NetworkException(
-          debugMessage: 'listing-quality-score EF returned HTTP $status',
-        );
-      }
       final data = response.data;
       if (data is! Map<String, dynamic>) {
         throw const NetworkException(
@@ -59,9 +53,15 @@ class ListingQualityScoreService {
       }
       return QualityScoreResponse.fromJson(data);
     } on FunctionException catch (err) {
+      if (err.status == 400) {
+        throw ValidationException(
+          'error.quality_score.invalid_request',
+          debugMessage: 'listing-quality-score EF returned 400: ${err.details}',
+        );
+      }
       throw NetworkException(
         debugMessage:
-            'listing-quality-score FunctionException: ${err.reasonPhrase}',
+            'listing-quality-score EF returned HTTP ${err.status}: ${err.reasonPhrase}',
       );
     } on FormatException catch (err) {
       throw NetworkException(

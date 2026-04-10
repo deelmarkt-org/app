@@ -60,7 +60,10 @@
       "unsupported_format": "Only JPG, PNG, WebP, or HEIC images are supported",
       "ownership_mismatch": "You can't upload to another user's folder",
       "blocked": "This image was blocked by our safety check",
-      "rate_limited": "Too many uploads — please wait a moment and try again"
+      "rate_limited": "Too many uploads — please wait a moment and try again",
+      "scan_unavailable": "Our safety check is temporarily unavailable — please try again in a moment",
+      "upload_failed": "Image upload failed — please try again",
+      "not_found": "That image vanished before processing — please re-select it"
     },
     "quality_score": {
       "invalid_request": "Couldn't check listing quality — please try again"

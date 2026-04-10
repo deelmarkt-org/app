@@ -23,9 +23,20 @@ final class AuthException extends AppException {
   const AuthException(super.messageKey, {super.debugMessage});
 }
 
-/// Network connectivity failures (no internet, timeouts).
+/// Network connectivity failures (no internet, timeouts, upstream 5xx).
+///
+/// [messageKey] defaults to `error.network` to preserve the no-arg
+/// construction used across the codebase. Callers that want to surface
+/// a more specific transient failure (e.g. `error.image.scan_unavailable`
+/// for a Cloudmersive outage) can pass a dedicated key — the UI still
+/// treats it as a generic transient/network-class failure so retry
+/// buttons keep their current affordance, but the user sees the right
+/// cause line.
 final class NetworkException extends AppException {
-  const NetworkException({super.debugMessage}) : super('error.network');
+  const NetworkException({
+    String messageKey = 'error.network',
+    super.debugMessage,
+  }) : super(messageKey);
 }
 
 /// Input validation failures.

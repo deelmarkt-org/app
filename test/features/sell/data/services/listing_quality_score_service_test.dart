@@ -157,38 +157,75 @@ void main() {
     });
   });
 
+  // supabase_flutter's FunctionsClient throws FunctionException on any
+  // non-2xx — it never returns a FunctionResponse with status >= 300.
+  // Tests that simulate server errors must use thenThrow(FunctionException).
   group('ListingQualityScoreService.calculate — error paths', () {
-    test('maps 400 to ValidationException with stable l10n key', () async {
+    void arrangeFailure(int status, Object? details) {
       when(
         () =>
             functions.invoke('listing-quality-score', body: any(named: 'body')),
-      ).thenAnswer((_) async => FunctionResponse(status: 400, data: const {}));
+      ).thenThrow(FunctionException(status: status, details: details));
+    }
+
+    test(
+      'maps 400 to ValidationException(error.quality_score.invalid_request)',
+      () async {
+        arrangeFailure(400, const {'error': 'schema mismatch'});
+
+        await expectLater(
+          service.calculate(draftState()),
+          throwsA(
+            isA<ValidationException>()
+                .having(
+                  (e) => e.messageKey,
+                  'messageKey',
+                  'error.quality_score.invalid_request',
+                )
+                .having(
+                  (e) => e.debugMessage,
+                  'debugMessage',
+                  contains('schema mismatch'),
+                ),
+          ),
+        );
+      },
+    );
+
+    test('maps 500 to NetworkException(error.network)', () async {
+      arrangeFailure(500, null);
 
       await expectLater(
         service.calculate(draftState()),
         throwsA(
-          isA<ValidationException>().having(
+          isA<NetworkException>().having(
             (e) => e.messageKey,
             'messageKey',
-            'error.quality_score.invalid_request',
+            'error.network',
           ),
         ),
       );
     });
 
-    test('maps other non-2xx statuses to NetworkException', () async {
-      when(
-        () =>
-            functions.invoke('listing-quality-score', body: any(named: 'body')),
-      ).thenAnswer((_) async => FunctionResponse(status: 500));
+    test('maps 503 to NetworkException(error.network)', () async {
+      // listing-quality-score doesn't get a dedicated 503 l10n key
+      // because it has no third-party deps — any 5xx is treated as a
+      // transient transport failure.
+      arrangeFailure(503, null);
 
       await expectLater(
         service.calculate(draftState()),
-        throwsA(isA<NetworkException>()),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.messageKey,
+            'messageKey',
+            'error.network',
+          ),
+        ),
       );
     });
 
-    test('maps non-map payload to NetworkException', () async {
+    test('maps non-map 200 payload to NetworkException', () async {
       when(
         () =>
             functions.invoke('listing-quality-score', body: any(named: 'body')),
@@ -203,7 +240,7 @@ void main() {
     });
 
     test(
-      'maps malformed payload (FormatException) to NetworkException',
+      'maps malformed 200 payload (FormatException) to NetworkException',
       () async {
         when(
           () => functions.invoke(
@@ -223,22 +260,5 @@ void main() {
         );
       },
     );
-
-    test('maps FunctionException to NetworkException', () async {
-      when(
-        () =>
-            functions.invoke('listing-quality-score', body: any(named: 'body')),
-      ).thenThrow(
-        const FunctionException(
-          status: 503,
-          reasonPhrase: 'Service Unavailable',
-        ),
-      );
-
-      await expectLater(
-        service.calculate(draftState()),
-        throwsA(isA<NetworkException>()),
-      );
-    });
   });
 }

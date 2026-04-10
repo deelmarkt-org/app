@@ -121,8 +121,13 @@ class ImageUploadService {
   }
 
   /// Invokes the `image-upload-process` Edge Function and parses the
-  /// response. Translates every error mode (function exception, parse
-  /// failure, non-2xx status) into the appropriate [AppException].
+  /// response.
+  ///
+  /// `supabase_flutter`'s `FunctionsClient.invoke()` throws
+  /// [FunctionException] on any non-2xx status, so the happy path only
+  /// has to parse the body. Error mapping lives in
+  /// [ImageUploadErrorMapper] and runs off the exception's `status` +
+  /// `details` fields.
   Future<ImageUploadResponse> _invokeProcessingFunction(
     String storagePath,
   ) async {
@@ -131,25 +136,21 @@ class ImageUploadService {
         _functionName,
         body: {'storage_path': storagePath},
       );
-      final status = response.status;
-
-      if (status >= 200 && status < 300) {
-        final data = response.data;
-        if (data is! Map<String, dynamic>) {
-          throw const NetworkException(
-            debugMessage: 'image-upload-process returned non-map payload',
-          );
-        }
-        return ImageUploadResponse.fromJson(data);
+      final data = response.data;
+      if (data is! Map<String, dynamic>) {
+        throw const NetworkException(
+          messageKey: 'error.image.upload_failed',
+          debugMessage: 'image-upload-process returned non-map payload',
+        );
       }
-      throw ImageUploadErrorMapper.map(status, response.data);
+      return ImageUploadResponse.fromJson(data);
     } on FunctionException catch (err) {
-      throw NetworkException(
-        debugMessage:
-            'image-upload-process FunctionException: ${err.reasonPhrase}',
-      );
+      // Route real non-2xx responses through the shared mapper so the
+      // right typed exception + l10n key reach the caller.
+      throw ImageUploadErrorMapper.map(err.status, err.details);
     } on FormatException catch (err) {
       throw NetworkException(
+        messageKey: 'error.image.upload_failed',
         debugMessage:
             'image-upload-process payload parse failed: ${err.message}',
       );

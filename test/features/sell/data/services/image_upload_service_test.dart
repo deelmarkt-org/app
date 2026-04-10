@@ -106,6 +106,17 @@ void main() {
     ).thenAnswer((_) async => response);
   }
 
+  /// Arranges a non-2xx Edge Function response the way supabase_flutter
+  /// actually surfaces it: `FunctionsClient.invoke()` throws a
+  /// `FunctionException` on any status >= 300. Tests that use
+  /// `FunctionResponse(status: 4xx)` via thenAnswer exercise dead code,
+  /// so server-side error paths must route through this helper.
+  void arrangeEfFailure(int status, Map<String, dynamic>? details) {
+    when(
+      () => functions.invoke('image-upload-process', body: any(named: 'body')),
+    ).thenThrow(FunctionException(status: status, details: details));
+  }
+
   group('ImageUploadService.uploadAndProcess — happy path', () {
     test('returns typed response on 200', () async {
       arrangeAuthenticated();
@@ -229,16 +240,18 @@ void main() {
     });
   });
 
+  // supabase_flutter's FunctionsClient throws FunctionException on any
+  // non-2xx — it never returns a FunctionResponse with status >= 300.
+  // Tests in this group all route through `arrangeEfFailure` so they
+  // exercise the real error-handling code path, not dead code.
   group('ImageUploadService.uploadAndProcess — server-side rejections', () {
     setUp(() {
       arrangeAuthenticated();
       arrangeSuccessfulStorageUpload();
     });
 
-    test('401 → AuthException', () async {
-      arrangeEfResponse(
-        FunctionResponse(status: 401, data: const {'error': 'Unauthorized'}),
-      );
+    test('401 → AuthException(error.auth.unauthenticated)', () async {
+      arrangeEfFailure(401, const {'error': 'Unauthorized'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
@@ -252,13 +265,8 @@ void main() {
       );
     });
 
-    test('403 → AuthException with ownership_mismatch key', () async {
-      arrangeEfResponse(
-        FunctionResponse(
-          status: 403,
-          data: const {'error': 'Path ownership mismatch'},
-        ),
-      );
+    test('403 → AuthException(error.image.ownership_mismatch)', () async {
+      arrangeEfFailure(403, const {'error': 'Path ownership mismatch'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
@@ -272,13 +280,23 @@ void main() {
       );
     });
 
-    test('413 → ValidationException(too_large)', () async {
-      arrangeEfResponse(
-        FunctionResponse(
-          status: 413,
-          data: const {'error': 'File exceeds 15 MiB limit'},
+    test('404 → NetworkException(error.image.not_found)', () async {
+      arrangeEfFailure(404, const {'error': 'Storage object not found'});
+
+      await expectLater(
+        service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.messageKey,
+            'messageKey',
+            'error.image.not_found',
+          ),
         ),
       );
+    });
+
+    test('413 → ValidationException(error.image.too_large)', () async {
+      arrangeEfFailure(413, const {'error': 'File exceeds 15 MiB limit'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
@@ -295,12 +313,9 @@ void main() {
     test(
       '422 → ValidationException(blocked) with threat in debugMessage',
       () async {
-        arrangeEfResponse(
-          FunctionResponse(
-            status: 422,
-            data: const {'error': 'Image blocked: virus: Eicar-Test'},
-          ),
-        );
+        arrangeEfFailure(422, const {
+          'error': 'Image blocked: virus: Eicar-Test',
+        });
 
         await expectLater(
           service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
@@ -321,54 +336,71 @@ void main() {
       },
     );
 
-    test('429 → ValidationException(rate_limited)', () async {
-      arrangeEfResponse(
-        FunctionResponse(
-          status: 429,
-          data: const {
-            'error': 'Too many image uploads.',
-            'retry_after_seconds': 120,
-          },
-        ),
-      );
+    test(
+      '429 → ValidationException(rate_limited) with retry in debugMessage',
+      () async {
+        arrangeEfFailure(429, const {
+          'error': 'Too many image uploads.',
+          'retry_after_seconds': 120,
+        });
+
+        await expectLater(
+          service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
+          throwsA(
+            isA<ValidationException>()
+                .having(
+                  (e) => e.messageKey,
+                  'messageKey',
+                  'error.image.rate_limited',
+                )
+                .having((e) => e.debugMessage, 'debugMessage', contains('120')),
+          ),
+        );
+      },
+    );
+
+    test('502 → NetworkException(error.image.upload_failed)', () async {
+      arrangeEfFailure(502, const {'error': 'Image upload failed'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
         throwsA(
-          isA<ValidationException>().having(
+          isA<NetworkException>().having(
             (e) => e.messageKey,
             'messageKey',
-            'error.image.rate_limited',
+            'error.image.upload_failed',
           ),
         ),
       );
     });
 
-    test('502 → NetworkException (Cloudinary outage)', () async {
-      arrangeEfResponse(
-        FunctionResponse(
-          status: 502,
-          data: const {'error': 'Image upload failed'},
-        ),
-      );
+    test('503 → NetworkException(error.image.scan_unavailable)', () async {
+      arrangeEfFailure(503, const {'error': 'Virus scan unavailable'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
-        throwsA(isA<NetworkException>()),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.messageKey,
+            'messageKey',
+            'error.image.scan_unavailable',
+          ),
+        ),
       );
     });
 
-    test('503 → NetworkException (scan unavailable)', () async {
-      arrangeEfResponse(
-        FunctionResponse(
-          status: 503,
-          data: const {'error': 'Virus scan unavailable'},
-        ),
-      );
+    test('unknown 5xx → NetworkException(error.network)', () async {
+      arrangeEfFailure(599, const {'error': 'Unknown'});
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
-        throwsA(isA<NetworkException>()),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.messageKey,
+            'messageKey',
+            'error.network',
+          ),
+        ),
       );
     });
 
@@ -387,20 +419,23 @@ void main() {
       },
     );
 
-    test('FunctionException → NetworkException', () async {
-      when(
-        () =>
-            functions.invoke('image-upload-process', body: any(named: 'body')),
-      ).thenThrow(
-        const FunctionException(
-          status: 503,
-          reasonPhrase: 'Service Unavailable',
-        ),
+    test('Happy-path 200 with a malformed body → NetworkException', () async {
+      // Unlike the other server rejections, this one tests the
+      // parsing-failure branch in _invokeProcessingFunction: the EF
+      // returned 200 but the payload is missing required fields.
+      arrangeEfResponse(
+        FunctionResponse(status: 200, data: const {'storage_path': 'x/y.jpg'}),
       );
 
       await expectLater(
         service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
-        throwsA(isA<NetworkException>()),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.messageKey,
+            'messageKey',
+            'error.image.upload_failed',
+          ),
+        ),
       );
     });
   });

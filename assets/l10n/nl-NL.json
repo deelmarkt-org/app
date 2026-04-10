@@ -60,7 +60,10 @@
       "unsupported_format": "Alleen JPG-, PNG-, WebP- of HEIC-afbeeldingen zijn toegestaan",
       "ownership_mismatch": "Je kunt niet uploaden naar de map van een andere gebruiker",
       "blocked": "Deze afbeelding is geblokkeerd door onze veiligheidscontrole",
-      "rate_limited": "Te veel uploads — wacht even en probeer opnieuw"
+      "rate_limited": "Te veel uploads — wacht even en probeer opnieuw",
+      "scan_unavailable": "Onze veiligheidscontrole is tijdelijk niet beschikbaar — probeer het zo meteen opnieuw",
+      "upload_failed": "Afbeelding uploaden mislukt — probeer opnieuw",
+      "not_found": "Die afbeelding is verdwenen voordat deze kon worden verwerkt — selecteer hem opnieuw"
     },
     "quality_score": {
       "invalid_request": "Kwaliteit van je advertentie kon niet worden gecontroleerd — probeer opnieuw"
