@@ -77,7 +77,7 @@ docs/archives/emre/
 # Private docs
 deelmarkt-email.md
 # Claude Code local settings
-.claude/
+.claude/commands/
 
 # Mollie reference docs (local only)
 mollie/
