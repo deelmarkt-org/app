@@ -217,7 +217,13 @@
     "countdownHint": "48 hours to confirm",
     "deadlineHint": "Confirm before {date}",
     "fundsHeld": "Funds held in escrow",
-    "fundsReleased": "Funds released to seller"
+    "fundsReleased": "Funds released to seller",
+    "stepDetail": {
+      "completedAt": "Completed at",
+      "notReached": "Not yet reached",
+      "deadline": "Confirm before",
+      "disputedAt": "Disputed at"
+    }
   },
   "condition": {
     "newWithTags": "New with tags",
