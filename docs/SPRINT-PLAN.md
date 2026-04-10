@@ -247,9 +247,9 @@ The agent will:
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
 - [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
-- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)* **[backend-only — UI tracked as P-53]**
+- [x] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(PR #102)* **[backend-only — UI tracked as P-53]**
   > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
-- [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
+- [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(branch: `feature/reso-E06-r38-dsa-reports`)*
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
 

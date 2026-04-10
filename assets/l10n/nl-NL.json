@@ -789,5 +789,42 @@
       "sanction_icon": "Pictogram account geschorst",
       "appeal_form": "Bezwaarformulier"
     }
+  },
+  "dsa_report": {
+    "title": "Inhoud melden",
+    "subtitle": "Meld illegale of verboden inhoud aan ons moderatieteam.",
+    "target_type": {
+      "listing": "Advertentie",
+      "message": "Bericht",
+      "profile": "Profiel",
+      "review": "Recensie"
+    },
+    "category": {
+      "label": "Reden",
+      "illegal_content": "Illegale inhoud",
+      "prohibited_item": "Verboden artikel",
+      "counterfeit": "Namaakgoederen",
+      "fraud": "Fraude of oplichting",
+      "privacy_violation": "Privacyschending",
+      "other": "Overig"
+    },
+    "description_label": "Beschrijving",
+    "description_hint": "Beschrijf het probleem in detail (minimaal 10 tekens)",
+    "submit": "Melding indienen",
+    "submit_success": "Uw melding is ingediend. We bekijken deze binnen 24 uur.",
+    "submit_error": "Melding kon niet worden ingediend. Probeer het opnieuw.",
+    "status": {
+      "pending": "In afwachting van beoordeling",
+      "under_review": "In behandeling",
+      "actioned": "Actie ondernomen",
+      "rejected": "Melding afgewezen"
+    },
+    "sla_breached": "Beoordeling te laat",
+    "history_title": "Mijn meldingen",
+    "history_empty": "U heeft nog geen meldingen ingediend.",
+    "a11y": {
+      "report_icon": "Pictogram inhoud melden",
+      "submit_button": "DSA-melding indienen"
+    }
   }
 }

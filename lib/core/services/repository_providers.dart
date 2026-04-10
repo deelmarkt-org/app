@@ -9,14 +9,17 @@ import 'package:deelmarkt/features/home/domain/repositories/listing_repository.d
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
@@ -115,4 +118,11 @@ final sanctionRepositoryProvider = Provider<SanctionRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSanctionRepository();
   return SupabaseSanctionRepository(ref.watch(supabaseClientProvider));
+});
+
+/// DSA report repository — mock or Supabase based on [useMockDataProvider].
+final dsaReportRepositoryProvider = Provider<DsaReportRepository>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockDsaReportRepository();
+  return SupabaseDsaReportRepository(ref.watch(supabaseClientProvider));
 });
