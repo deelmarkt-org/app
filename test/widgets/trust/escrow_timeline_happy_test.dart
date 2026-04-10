@@ -5,6 +5,7 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/widgets/trust/escrow_step_circle.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
+import 'package:deelmarkt/widgets/trust/escrow_timeline_state.dart';
 
 import '../../helpers/pump_app.dart';
 
@@ -110,18 +111,20 @@ void main() {
   });
 
   group('EscrowTimeline — interaction', () {
-    testWidgets('onStepTapped fires with correct index', (tester) async {
-      int? tappedIndex;
+    testWidgets('onStepTapped fires with correct step enum value', (
+      tester,
+    ) async {
+      EscrowTimelineStep? tappedStep;
       await _pumpAtSize(
         tester,
         EscrowTimeline(
           currentStatus: TransactionStatus.paid,
-          onStepTapped: (i) => tappedIndex = i,
+          onStepTapped: (s) => tappedStep = s,
         ),
       );
       await tester.tap(find.byType(InkWell).first);
       await tester.pumpAndSettle();
-      expect(tappedIndex, 0);
+      expect(tappedStep, EscrowTimelineStep.paid);
     });
 
     testWidgets('onStepTapped null → button semantics is false (fix M7)', (
