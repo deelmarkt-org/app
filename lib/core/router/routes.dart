@@ -44,4 +44,13 @@ abstract final class AppRoutes {
   static const shippingQr = '/shipping/:id/qr';
   static const shippingTracking = '/shipping/:id/tracking';
   static const parcelShopSelector = '/shipping/:id/parcel-shops';
+
+  // ── Admin panel ──
+  static const admin = '/admin';
+  static const adminFlaggedListings = '/admin/flagged-listings';
+  static const adminReportedUsers = '/admin/reported-users';
+  static const adminDisputes = '/admin/disputes';
+  static const adminDisputeDetail = '/admin/disputes/:id';
+  static const adminDsaNotices = '/admin/dsa-notices';
+  static const adminAppeals = '/admin/appeals';
 }

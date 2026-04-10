@@ -23,6 +23,71 @@
     "close": "Sluiten",
     "comingSoon": "Binnenkort beschikbaar"
   },
+  "admin": {
+    "sidebar": {
+      "title": "Moderation Hub",
+      "subtitle": "Admin Configuratiescherm",
+      "support": "Support",
+      "sign_out": "Uitloggen"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "flagged": "Gemelde advertenties",
+      "reported": "Gemelde gebruikers",
+      "disputes": "Geschillen",
+      "dsa": "DSA Meldingen",
+      "appeals": "Beroepen"
+    },
+    "dashboard": {
+      "title": "Dashboard Overzicht",
+      "subtitle": "Welkom terug. Hier is de status van DeelMarkt vandaag."
+    },
+    "activity": {
+      "title": "Recente Activiteit",
+      "view_all": "Alles bekijken",
+      "just_now": "Zojuist",
+      "minutes_ago": "{} min geleden",
+      "hours_ago": "{}u geleden",
+      "days_ago": "{}d geleden"
+    },
+    "badge": {
+      "today": "{} vandaag",
+      "critical": "Kritiek",
+      "normal": "Normaal",
+      "safe": "Veilig"
+    },
+    "empty": {
+      "title": "Alles onder controle",
+      "subtitle": "Nog geen moderatie-acties vereist. De marktplaats is momenteel rustig.",
+      "refresh": "Vernieuwen",
+      "view_logs": "Bekijk Logs",
+      "a11y": "Geen openstaande moderatie-acties"
+    },
+    "sla": {
+      "title": "DSA Compliance Monitor",
+      "subtitle": "Digital Services Act responsiviteit binnen 24 uur.",
+      "status": "DSA 24-uur SLA: {} van {} binnen tijd afgehandeld",
+      "a11y": "DSA SLA: {} van {} afgehandeld"
+    },
+    "stats": {
+      "openDisputes": "Open geschillen",
+      "dsaNotices": "DSA meldingen (< 24u)",
+      "activeListings": "Actieve advertenties",
+      "escrow": "In escrow",
+      "flaggedListings": "Gemelde advertenties",
+      "reportedUsers": "Gemelde gebruikers",
+      "approved": "Goedgekeurd"
+    },
+    "system": {
+      "title": "Systeem Status",
+      "payment_gateway": "Betalingsgateway",
+      "api_endpoints": "API Endpoints",
+      "mail_server": "Mail Server",
+      "operational": "Operationeel",
+      "down": "Niet beschikbaar"
+    },
+    "comingSoon": "Binnenkort beschikbaar"
+  },
   "form": {
     "email": "E-mailadres",
     "name": "Volledige naam",
