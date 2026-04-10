@@ -10,7 +10,7 @@ import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
-import '../../../helpers/pump_app.dart';
+import '../../../../helpers/pump_app.dart';
 
 TransactionEntity _txn({TransactionStatus status = TransactionStatus.paid}) {
   return TransactionEntity(

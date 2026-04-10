@@ -16,6 +16,8 @@ import 'package:deelmarkt/features/home/presentation/widgets/category_card.dart'
 /// Browse all L1 categories screen.
 ///
 /// Route: `/categories` (AppRoutes.categories)
+///
+/// Reference: docs/screens/02-home/04-category-browse.md
 class CategoryBrowseScreen extends ConsumerWidget {
   const CategoryBrowseScreen({super.key});
 

@@ -51,7 +51,20 @@
     "image_upload_failed": "Afbeelding uploaden mislukt",
     "payment_failed": "Betaling mislukt",
     "offline": "Je bent offline",
-    "offline_with_cache": "Je bent offline — eerder geladen gegevens worden getoond"
+    "offline_with_cache": "Je bent offline — eerder geladen gegevens worden getoond",
+    "auth": {
+      "unauthenticated": "Log in om door te gaan"
+    },
+    "image": {
+      "too_large": "Deze afbeelding overschrijdt de limiet van 15 MB",
+      "unsupported_format": "Alleen JPG-, PNG-, WebP- of HEIC-afbeeldingen zijn toegestaan",
+      "ownership_mismatch": "Je kunt niet uploaden naar de map van een andere gebruiker",
+      "blocked": "Deze afbeelding is geblokkeerd door onze veiligheidscontrole",
+      "rate_limited": "Te veel uploads — wacht even en probeer opnieuw"
+    },
+    "quality_score": {
+      "invalid_request": "Kwaliteit van je advertentie kon niet worden gecontroleerd — probeer opnieuw"
+    }
   },
   "empty": {
     "favorites": "Nog geen favorieten",

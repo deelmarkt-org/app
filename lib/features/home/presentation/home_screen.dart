@@ -14,6 +14,8 @@ import 'package:deelmarkt/features/home/presentation/widgets/home_data_view.dart
 ///
 /// Sections: categories → trust banner → nearby grid → recent row.
 /// Route: `/` (root, inside bottom nav shell).
+///
+/// Reference: docs/screens/02-home/01-home-buyer.md
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 

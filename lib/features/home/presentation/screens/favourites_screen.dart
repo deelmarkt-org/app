@@ -19,6 +19,8 @@ import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 /// Displays the user's saved listings in a 2-column grid with
 /// optimistic remove + SnackBar undo.
 /// Route: `/favourites`
+///
+/// Reference: docs/screens/03-listings/03-favourites.md
 class FavouritesScreen extends ConsumerWidget {
   const FavouritesScreen({super.key});
 

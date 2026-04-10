@@ -21,6 +21,8 @@ import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_se
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/sold_overlay.dart';
 
 /// Listing detail screen — route: `/listings/:id` (deep link + in-app).
+///
+/// Reference: docs/screens/03-listings/01-listing-detail.md
 class ListingDetailScreen extends ConsumerWidget {
   const ListingDetailScreen({required this.listingId, super.key});
 
