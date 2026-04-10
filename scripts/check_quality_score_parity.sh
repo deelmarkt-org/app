@@ -26,16 +26,20 @@ fi
 # Extract a named `static const int <name> = <value>;` from the Dart file,
 # restricted to the ListingQualityThresholds class body (awk picks the
 # stanza between the class opening brace and its closing brace).
+#
+# The `[[:space:]]*` allowances around `=` tolerate any formatter change
+# (e.g. `name=25` with no padding) — don't assume `dart format` will
+# always produce the current spacing.
 dart_value() {
   local name="$1"
   awk -v key="$name" '
     /abstract final class ListingQualityThresholds/ { inside = 1; next }
     inside && /^}/ { inside = 0 }
-    inside && $0 ~ ("static const int " key " = ") {
-      match($0, /= *[0-9]+/)
+    inside && $0 ~ ("static const int[[:space:]]+" key "[[:space:]]*=[[:space:]]*") {
+      match($0, /=[[:space:]]*[0-9]+/)
       if (RSTART > 0) {
         v = substr($0, RSTART + 1, RLENGTH - 1)
-        gsub(/ /, "", v)
+        gsub(/[[:space:]]/, "", v)
         print v
         exit
       }
@@ -44,14 +48,15 @@ dart_value() {
 }
 
 # Extract `export const <NAME> = <value>;` from the TS file.
+# Whitespace around `=` is tolerated the same way as the Dart extractor.
 ts_value() {
   local name="$1"
   awk -v key="$name" '
-    $0 ~ ("export const " key " = ") {
-      match($0, /= *[0-9]+/)
+    $0 ~ ("export const[[:space:]]+" key "[[:space:]]*=[[:space:]]*") {
+      match($0, /=[[:space:]]*[0-9]+/)
       if (RSTART > 0) {
         v = substr($0, RSTART + 1, RLENGTH - 1)
-        gsub(/ /, "", v)
+        gsub(/[[:space:]]/, "", v)
         print v
         exit
       }
@@ -101,13 +106,20 @@ done
 
 # Sum of weights must equal 100 on both sides (catches single-side edits
 # that keep names in sync but break the 100-point total).
+#
+# Derived from the PAIRS array by filtering on the `Weight` suffix so the
+# two lists can't drift: adding a new `xxxWeight` constant to PAIRS
+# automatically pulls it into the sum check too. Thresholds (`*Threshold`,
+# `min*`, `max*`) are filtered out because they don't contribute to the
+# 100-point total.
 weight_sum_dart=0
-for w in photosWeight titleWeight descriptionWeight priceWeight categoryWeight conditionWeight; do
-  weight_sum_dart=$((weight_sum_dart + $(dart_value "$w")))
-done
 weight_sum_ts=0
-for w in PHOTOS_WEIGHT TITLE_WEIGHT DESCRIPTION_WEIGHT PRICE_WEIGHT CATEGORY_WEIGHT CONDITION_WEIGHT; do
-  weight_sum_ts=$((weight_sum_ts + $(ts_value "$w")))
+for pair in "${PAIRS[@]}"; do
+  dart_name="${pair%%:*}"
+  ts_name="${pair##*:}"
+  [[ "$dart_name" == *Weight ]] || continue
+  weight_sum_dart=$((weight_sum_dart + $(dart_value "$dart_name")))
+  weight_sum_ts=$((weight_sum_ts + $(ts_value "$ts_name")))
 done
 
 if [[ "$weight_sum_dart" -ne 100 ]]; then

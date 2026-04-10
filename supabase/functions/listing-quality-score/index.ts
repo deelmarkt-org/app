@@ -27,13 +27,18 @@ import { calculateQualityScore } from "./scoring_engine.ts";
 // Zod schema — §9: Edge Functions use Zod for input validation
 // ---------------------------------------------------------------------------
 
+// `category_l2_id` rejects empty strings via `.uuid()`.
+// `condition` rejects empty strings via `.min(1)` — both fields are
+// scored as `!== null` in scoring_engine.ts (matching the Dart
+// CalculateQualityScoreUseCase), so empty strings must never reach
+// the scoring logic.
 const DraftSchema = z.object({
   photo_count: z.number().int().min(0).max(12),
   title: z.string().max(200),
   description: z.string().max(5000),
   price_cents: z.number().int().min(0).max(100_000_000),
   category_l2_id: z.string().uuid().nullable(),
-  condition: z.string().max(50).nullable(),
+  condition: z.string().min(1).max(50).nullable(),
 });
 
 // ---------------------------------------------------------------------------

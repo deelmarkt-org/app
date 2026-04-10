@@ -114,15 +114,20 @@ export function calculateQualityScore(draft: ListingDraft): ScoreResult {
       PRICE_WEIGHT,
       TIP_KEYS.price,
     ),
+    // Category + condition: `!== null` matches the Dart
+    // `CalculateQualityScoreUseCase` check exactly. Empty strings are
+    // rejected earlier by the Zod schema (`category_l2_id` requires a
+    // valid UUID, `condition` requires `.min(1)`), so we don't need a
+    // second length check here.
     field(
       FIELD_NAMES.category,
-      draft.category_l2_id !== null && draft.category_l2_id.length > 0,
+      draft.category_l2_id !== null,
       CATEGORY_WEIGHT,
       TIP_KEYS.category,
     ),
     field(
       FIELD_NAMES.condition,
-      draft.condition !== null && draft.condition.length > 0,
+      draft.condition !== null,
       CONDITION_WEIGHT,
       TIP_KEYS.condition,
     ),

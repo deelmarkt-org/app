@@ -17,7 +17,7 @@ const DraftSchema = z.object({
   description: z.string().max(5000),
   price_cents: z.number().int().min(0).max(100_000_000),
   category_l2_id: z.string().uuid().nullable(),
-  condition: z.string().max(50).nullable(),
+  condition: z.string().min(1).max(50).nullable(),
 });
 
 describe("DraftSchema", () => {
@@ -91,5 +91,34 @@ describe("DraftSchema", () => {
       condition: null,
     });
     assert(!result.success);
+  });
+
+  it("rejects an empty-string condition (.min(1))", () => {
+    // Regression test for the Dart↔TS scoring alignment on PR #105:
+    // the scorer now checks `condition !== null` only, so Zod must
+    // guard against empty strings reaching the scoring engine.
+    const result = DraftSchema.safeParse({
+      photo_count: 3,
+      title: "Test",
+      description: "Body",
+      price_cents: 100,
+      category_l2_id: null,
+      condition: "",
+    });
+    assert(!result.success);
+  });
+
+  it("accepts a null condition (nullable after .min(1))", () => {
+    // The .min(1) applies only when the value is a string; null is
+    // still allowed because the field is .nullable().
+    const result = DraftSchema.safeParse({
+      photo_count: 3,
+      title: "Test",
+      description: "Body",
+      price_cents: 100,
+      category_l2_id: null,
+      condition: null,
+    });
+    assert(result.success);
   });
 });

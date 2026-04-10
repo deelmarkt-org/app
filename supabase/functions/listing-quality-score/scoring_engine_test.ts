@@ -160,10 +160,25 @@ describe("calculateQualityScore — edge cases", () => {
     assertStrictEquals(titleField.passed, false);
   });
 
-  it("rejects an empty-string category (not just null)", () => {
+  it("treats an empty-string category as passing (Zod guards upstream)", () => {
+    // With the Dart↔TS scoring alignment (PR #105 review feedback),
+    // the scorer checks `!== null`, matching the Dart
+    // CalculateQualityScoreUseCase's `!= null`. Empty strings are
+    // rejected by the Zod schema in index.ts (`category_l2_id`
+    // requires `.uuid()`), so they can't reach the scoring engine in
+    // practice — but this test pins the in-engine semantics so a
+    // future scoring change doesn't silently drift from the Dart side.
     const result = calculateQualityScore({ ...perfect, category_l2_id: "" });
     const categoryField = result.breakdown[4];
-    assertStrictEquals(categoryField.passed, false);
+    assertStrictEquals(categoryField.passed, true);
+  });
+
+  it("treats an empty-string condition as passing (Zod guards upstream)", () => {
+    // Same alignment as category. The Zod schema uses `.min(1)` to
+    // reject empty strings at the edge so the scorer never sees them.
+    const result = calculateQualityScore({ ...perfect, condition: "" });
+    const conditionField = result.breakdown[5];
+    assertStrictEquals(conditionField.passed, true);
   });
 
   it("counts exactly 50 description words as passing", () => {

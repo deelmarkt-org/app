@@ -61,13 +61,18 @@ const RATE_LIMIT_WINDOW_SECONDS = 3600;
 
 const ProcessRequestSchema = z.object({
   // Must be a relative path inside BUCKET, no leading slash, no `..`
-  // segments. Enforced by regex before further parsing.
+  // segments. The user_id segment uses the strict UUIDv4 8-4-4-4-12
+  // layout so obviously-malformed strings (e.g. 36 dashes) are rejected
+  // at the edge, before the later `pathOwner !== user.id` ownership
+  // check. This is defence-in-depth — the ownership check alone would
+  // also catch them, but failing earlier keeps the error shape cleaner
+  // and the intent self-documenting.
   storage_path: z.string()
     .min(3)
     .max(512)
     .regex(
-      /^[a-f0-9-]{36}\/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$/,
-      "storage_path must be <user_id>/<filename>.<ext>",
+      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$/,
+      "storage_path must be <uuid>/<filename>.<ext>",
     ),
 });
 

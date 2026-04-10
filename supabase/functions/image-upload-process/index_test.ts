@@ -22,8 +22,8 @@ const ProcessRequestSchema = z.object({
     .min(3)
     .max(512)
     .regex(
-      /^[a-f0-9-]{36}\/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$/,
-      "storage_path must be <user_id>/<filename>.<ext>",
+      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/[A-Za-z0-9._-]+\.[A-Za-z0-9]{2,5}$/,
+      "storage_path must be <uuid>/<filename>.<ext>",
     ),
 });
 
@@ -75,6 +75,27 @@ describe("ProcessRequestSchema", () => {
   it("rejects a non-uuid user segment", () => {
     const result = ProcessRequestSchema.safeParse({
       storage_path: "NOT-A-UUID/photo.jpg",
+    });
+    assert(!result.success);
+  });
+
+  it("rejects 36 consecutive dashes (strict 8-4-4-4-12 layout)", () => {
+    // The old loose regex `[a-f0-9-]{36}` would have accepted this.
+    // The strict UUIDv4 layout requires the four dashes at fixed
+    // offsets, so a pathological all-dashes string is now rejected
+    // at the edge instead of relying on the downstream ownership
+    // check. (Defence-in-depth per the Gemini review on PR #105.)
+    const result = ProcessRequestSchema.safeParse({
+      storage_path: `${"-".repeat(36)}/photo.jpg`,
+    });
+    assert(!result.success);
+  });
+
+  it("rejects a 36-char hex blob with no dashes", () => {
+    // Another case the old regex admitted — strict layout requires
+    // dashes at positions 8/13/18/23.
+    const result = ProcessRequestSchema.safeParse({
+      storage_path: `${"a".repeat(36)}/photo.jpg`,
     });
     assert(!result.success);
   });
