@@ -19,18 +19,7 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 /// Composes stat cards, SLA bar, activity feed, and system status
 /// from [AdminDashboardNotifier] state.
 ///
-/// Formats an integer amount as a dot-separated string (e.g. 12450 → "12.450").
-String _formatThousands(int amount) {
-  final text = amount.toString();
-  final buffer = StringBuffer();
-  final remainder = text.length % 3;
-  if (remainder > 0) buffer.write(text.substring(0, remainder));
-  for (var i = remainder; i < text.length; i += 3) {
-    if (buffer.isNotEmpty) buffer.write('.');
-    buffer.write(text.substring(i, i + 3));
-  }
-  return buffer.toString();
-}
+final _thousandsFormat = NumberFormat('#,##0', 'nl_NL');
 
 /// Reference: docs/screens/08-admin/designs/admin_dashboard_main_view/
 class AdminDashboardScreen extends ConsumerWidget {
@@ -108,7 +97,7 @@ class _DataView extends StatelessWidget {
   Widget _statCards() {
     final stats = data.stats;
     final escrowWhole = stats.escrowAmountCents ~/ 100;
-    final escrowFormatted = '\u20AC${_formatThousands(escrowWhole)}';
+    final escrowFormatted = '\u20AC${_thousandsFormat.format(escrowWhole)}';
 
     return Wrap(
       spacing: Spacing.s4,
