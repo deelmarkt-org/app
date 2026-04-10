@@ -144,11 +144,18 @@ class _DataView extends StatelessWidget {
     );
   }
 
+  // Placeholder SLA total used when no DSA notices are open (Phase A).
+  static const int _slaFallbackTotal = 3;
+  // Placeholder SLA completion rate for Phase A mock data.
+  static const double _slaFallbackCompletion = 0.66;
+
   Widget _slaAndActivity() {
     final stats = data.stats;
     final slaTotal =
-        stats.dsaNoticesWithin24h > 0 ? stats.dsaNoticesWithin24h : 3;
-    final slaCompleted = (slaTotal * 0.66).round();
+        stats.dsaNoticesWithin24h > 0
+            ? stats.dsaNoticesWithin24h
+            : _slaFallbackTotal;
+    final slaCompleted = (slaTotal * _slaFallbackCompletion).round();
     final slaProgress = slaTotal > 0 ? slaCompleted / slaTotal : 1.0;
 
     return Row(

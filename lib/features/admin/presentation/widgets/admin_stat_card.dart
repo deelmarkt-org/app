@@ -120,6 +120,7 @@ class AdminStatCard extends StatelessWidget {
   }
 
   Color _badgeTextColor() {
+    // Surface colours (light bg) → use the matching saturated text colour.
     if (badgeColor == DeelmarktColors.errorSurface) {
       return DeelmarktColors.error;
     }
@@ -128,6 +129,18 @@ class AdminStatCard extends StatelessWidget {
     }
     if (badgeColor == DeelmarktColors.successSurface) {
       return DeelmarktColors.success;
+    }
+    if (badgeColor == DeelmarktColors.primarySurface) {
+      return DeelmarktColors.primary;
+    }
+    // Saturated base colours (primary, error, success, info, warning) used as
+    // badge backgrounds need white text to meet WCAG AA contrast requirements.
+    if (badgeColor == DeelmarktColors.error ||
+        badgeColor == DeelmarktColors.success ||
+        badgeColor == DeelmarktColors.info ||
+        badgeColor == DeelmarktColors.warning ||
+        badgeColor == DeelmarktColors.primary) {
+      return DeelmarktColors.white;
     }
     return DeelmarktColors.primary;
   }

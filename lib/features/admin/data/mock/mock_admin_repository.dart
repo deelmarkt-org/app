@@ -31,10 +31,14 @@ class MockAdminRepository implements AdminRepository {
     );
   }
 
+  // Fixed reference time for deterministic mock data — avoids flaky tests.
+  static final _mockNow = DateTime(2026, 4, 10, 9);
+
   @override
+  // ignore: avoid_redundant_argument_values
   Future<List<ActivityItemEntity>> getRecentActivity({int limit = 10}) async {
     await _simulateDelay();
-    final now = DateTime.now();
+    final now = _mockNow;
     return [
       ActivityItemEntity(
         id: 'act-001',
