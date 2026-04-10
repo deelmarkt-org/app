@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 // Hide gotrue.AuthException so it doesn't collide with our domain one.
@@ -260,5 +263,43 @@ void main() {
         );
       },
     );
+
+    // Regression tests for the generic-catch branch added after
+    // PR #106 review feedback (Gemini M-2). Transport-layer failures
+    // (SocketException / TimeoutException) must surface as a typed
+    // NetworkException so callers can fall back to the client-side
+    // score without crashing.
+
+    test('maps SocketException to NetworkException', () async {
+      when(
+        () =>
+            functions.invoke('listing-quality-score', body: any(named: 'body')),
+      ).thenThrow(const SocketException('dns lookup failed'));
+
+      await expectLater(
+        service.calculate(draftState()),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.debugMessage,
+            'debugMessage',
+            contains('listing-quality-score unexpected error'),
+          ),
+        ),
+      );
+    });
+
+    test('maps TimeoutException to NetworkException', () async {
+      when(
+        () =>
+            functions.invoke('listing-quality-score', body: any(named: 'body')),
+      ).thenThrow(
+        TimeoutException('function timed out', const Duration(seconds: 30)),
+      );
+
+      await expectLater(
+        service.calculate(draftState()),
+        throwsA(isA<NetworkException>()),
+      );
+    });
   });
 }

@@ -259,7 +259,13 @@
     "countdownHint": "48 uur om te bevestigen",
     "deadlineHint": "Bevestig voor {date}",
     "fundsHeld": "Geld wordt vastgehouden",
-    "fundsReleased": "Geld vrijgegeven aan verkoper"
+    "fundsReleased": "Geld vrijgegeven aan verkoper",
+    "stepDetail": {
+      "completedAt": "Voltooid op",
+      "notReached": "Nog niet bereikt",
+      "deadline": "Bevestig voor",
+      "disputedAt": "Betwist op"
+    }
   },
   "condition": {
     "newWithTags": "Nieuw met labels",
@@ -774,5 +780,36 @@
     "month_ago": "1 maand geleden",
     "months_ago": "{n} maanden geleden",
     "year_ago": "1 jaar geleden"
+  },
+  "sanction": {
+    "type": {
+      "warning": "Waarschuwing",
+      "suspension": "Schorsing",
+      "ban": "Verbanning"
+    },
+    "screen": {
+      "title": "Account geschorst",
+      "reason_label": "Reden",
+      "expires_label": "Geschorst tot",
+      "permanent": "Permanent",
+      "appeal_title": "Bezwaar indienen",
+      "appeal_hint": "Leg uit waarom je denkt dat deze beslissing onjuist is (max. 1000 tekens)",
+      "appeal_submit": "Bezwaar indienen",
+      "appeal_submitted_title": "Bezwaar ingediend",
+      "appeal_submitted_body": "We beoordelen je bezwaar binnen 72 uur.",
+      "appeal_pending_title": "Bezwaar in behandeling",
+      "appeal_pending_body": "Je bezwaar wordt beoordeeld. We sturen je een bericht zodra er een beslissing is genomen.",
+      "appeal_upheld_title": "Bezwaar afgewezen",
+      "appeal_upheld_body": "Je bezwaar is beoordeeld en de beslissing blijft van kracht.",
+      "appeal_overturned_title": "Account hersteld",
+      "appeal_overturned_body": "Je bezwaar is geaccepteerd. Je account is volledig hersteld.",
+      "appeal_window_closed": "De bezwaartermijn van 14 dagen voor deze sanctie is verlopen.",
+      "appeal_not_eligible": "Waarschuwingen kunnen niet worden aangevochten.",
+      "contact_support": "Neem contact op met support"
+    },
+    "a11y": {
+      "sanction_icon": "Pictogram account geschorst",
+      "appeal_form": "Bezwaarformulier"
+    }
   }
 }

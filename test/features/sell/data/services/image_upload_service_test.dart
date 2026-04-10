@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -433,6 +434,63 @@ void main() {
             'error.image.upload_failed',
           ),
         ),
+      );
+    });
+
+    // Regression tests for the generic-catch branches added after
+    // PR #106 review feedback. Gemini + pizmam flagged that
+    // SocketException / ClientException / TimeoutException from the
+    // transport layer would bubble out of the service unhandled,
+    // crashing the sell flow instead of surfacing a typed
+    // AppException. The bare `catch` now wraps anything unexpected.
+
+    test('Storage upload SocketException → NetworkException', () async {
+      when(
+        () => fileApi.upload(any(), any()),
+      ).thenThrow(const SocketException('dns lookup failed'));
+
+      await expectLater(
+        service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.debugMessage,
+            'debugMessage',
+            contains('Storage upload unexpected error'),
+          ),
+        ),
+      );
+      verifyNever(() => functions.invoke(any(), body: any(named: 'body')));
+    });
+
+    test('EF invocation SocketException → NetworkException', () async {
+      when(
+        () =>
+            functions.invoke('image-upload-process', body: any(named: 'body')),
+      ).thenThrow(const SocketException('tls handshake failed'));
+
+      await expectLater(
+        service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
+        throwsA(
+          isA<NetworkException>().having(
+            (e) => e.debugMessage,
+            'debugMessage',
+            contains('image-upload-process unexpected error'),
+          ),
+        ),
+      );
+    });
+
+    test('EF invocation TimeoutException → NetworkException', () async {
+      when(
+        () =>
+            functions.invoke('image-upload-process', body: any(named: 'body')),
+      ).thenThrow(
+        TimeoutException('function timed out', const Duration(seconds: 30)),
+      );
+
+      await expectLater(
+        service.uploadAndProcess(await _makeTempFile(extension: 'jpg')),
+        throwsA(isA<NetworkException>()),
       );
     });
   });

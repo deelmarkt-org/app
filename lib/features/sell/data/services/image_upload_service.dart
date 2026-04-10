@@ -119,6 +119,12 @@ class ImageUploadService {
       throw NetworkException(
         debugMessage: 'Storage upload failed: ${err.message}',
       );
+    } catch (err) {
+      // Fallback for transport-layer failures the storage client
+      // doesn't wrap (SocketException, ClientException, timeouts).
+      throw NetworkException(
+        debugMessage: 'Storage upload unexpected error: $err',
+      );
     }
   }
 
@@ -147,14 +153,23 @@ class ImageUploadService {
       }
       return ImageUploadResponse.fromJson(data);
     } on FunctionException catch (err) {
-      // Route real non-2xx responses through the shared mapper so the
-      // right typed exception + l10n key reach the caller.
+      // Route non-2xx EF responses through the shared mapper for the
+      // right typed exception + l10n key.
       throw ImageUploadErrorMapper.map(err.status, err.details);
     } on FormatException catch (err) {
       throw NetworkException(
         messageKey: 'error.image.upload_failed',
         debugMessage:
             'image-upload-process payload parse failed: ${err.message}',
+      );
+    } on AppException {
+      // Don't re-wrap our own typed exceptions.
+      rethrow;
+    } catch (err) {
+      // Fallback for SocketException / ClientException / timeouts —
+      // every failure path must hand callers an AppException subclass.
+      throw NetworkException(
+        debugMessage: 'image-upload-process unexpected error: $err',
       );
     }
   }

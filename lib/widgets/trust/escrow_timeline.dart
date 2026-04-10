@@ -25,7 +25,7 @@ class EscrowTimeline extends StatelessWidget {
 
   final TransactionStatus currentStatus;
   final DateTime? escrowDeadline;
-  final void Function(int stepIndex)? onStepTapped;
+  final void Function(EscrowTimelineStep step)? onStepTapped;
 
   /// Breakpoint under which labels wrap to 2 lines (fix A5).
   static const double _narrowBreakpoint = 360;
@@ -87,7 +87,7 @@ class EscrowTimeline extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: onTap != null ? () => onTap(stepIndex) : null,
+              onTap: onTap != null ? () => onTap(step) : null,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

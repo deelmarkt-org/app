@@ -72,6 +72,18 @@ The agent will:
 - [x] `B-03` Set up Cloudinary account — API key in Supabase Vault, test upload works
 - [x] `B-04` Create GitHub Actions CI workflow — lint, analyze, test, CVE scan on PR
 - [ ] `B-05` Set up Codemagic — iOS (TestFlight) + Android (Play internal) builds ⚠️ Needs Apple Dev + Google Play accounts
+  > **Android build note:** CI uses a fat APK (build-only check). Production builds must use `--split-per-abi` or App Bundle:
+  > ```
+  > # Option 1 — App Bundle (Play Store splits automatically, recommended):
+  > flutter build appbundle --release --obfuscate --split-debug-info=build/debug-info
+  >
+  > # Option 2 — Split APK (produces 3 separate APKs):
+  > flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/debug-info
+  > # → app-armeabi-v7a-release.apk (~20 MB) — older devices
+  > # → app-arm64-v8a-release.apk  (~22 MB) — modern devices (95% of users)
+  > # → app-x86_64-release.apk     (~23 MB) — emulators
+  > ```
+  > Users download only the slice for their device (~22 MB instead of ~62 MB fat APK).
 - [x] `B-06` Host AASA file on Cloudflare — valid JSON at `/.well-known/apple-app-site-association`
 - [x] `B-07` Host `assetlinks.json` for Android — accessible at correct URL
 - [x] `B-08` Implement GoRouter deep link handler — notification tap opens correct screen
@@ -212,13 +224,13 @@ The agent will:
 - [x] `P-27` Category browse screen — L1 horizontal scroll + L2 vertical list ✅ PR #65
 - [x] `P-28` Favourites screen — save/unsave toggle, list view ✅ PR #65
 - [x] `P-30` `ImageGallery` widget — swipe, dots, zoom, Hero transition ✅ PR #66
-- [ ] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` (follow-up to PR #66)
+- [x] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` ✅ PR #99
 - [x] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough ✅ PR #66
-- [ ] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` (follow-up to PR #66). PaymentSummaryCard excluded — PriceTag semantics/color/zero-handling incompatible with tabular line items.
+- [x] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` ✅ PR #99
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
-- [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
+- [x] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` ✅ PR #101
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
-- [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
+- [x] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50` ✅ PR #101
 - [x] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
@@ -235,7 +247,8 @@ The agent will:
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
 - [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
-- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate
+- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)* **[backend-only — UI tracked as P-53]**
+  > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
 - [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
@@ -280,6 +293,7 @@ The agent will:
 - [x] `P-50` GoRouter auth guard + splash screen + `/onboarding` route ✅ PR #14
 - [x] `P-51` Mock data layer (5 entities + 4 repository interfaces + 4 mock implementations) ✅ PR #14
 - [x] `P-52` Web error boundary + font loading strategy ✅ PR #14
+- [ ] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator *(blocked by R-37 merge)*
 
 ---
 

@@ -68,6 +68,19 @@ class ListingQualityScoreService {
         debugMessage:
             'listing-quality-score payload parse failed: ${err.message}',
       );
+    } on AppException {
+      // Don't re-wrap our own typed exceptions (e.g. the non-map
+      // payload NetworkException thrown a few lines above).
+      rethrow;
+    } catch (err) {
+      // Fallback: SocketException / ClientException / TimeoutException
+      // etc. must surface as a typed AppException so the sell flow
+      // can fall back to the client-side score without crashing.
+      // Matches the image-upload-service contract: every failure path
+      // hands the caller an AppException subclass.
+      throw NetworkException(
+        debugMessage: 'listing-quality-score unexpected error: $err',
+      );
     }
   }
 

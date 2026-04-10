@@ -5,6 +5,7 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_screen.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/escrow_step_detail_sheet.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/escrow_timeline.dart';
@@ -120,6 +121,18 @@ void main() {
       expect(find.byType(TrustBanner), findsOneWidget);
       expect(find.byType(EscrowTimeline), findsOneWidget);
       expect(find.byType(ResponsiveBody), findsOneWidget);
+    });
+
+    testWidgets('tapping escrow step opens detail sheet', (tester) async {
+      final txn = _txn().copyWith(paidAt: DateTime(2026, 3, 19, 14, 30));
+      await pumpTestScreen(tester, TransactionDetailScreen(transaction: txn));
+
+      // Tap the first step label ("escrow.paid" key returned by easy_localization
+      // in test context).
+      await tester.tap(find.text('escrow.paid'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EscrowStepDetailSheet), findsOneWidget);
     });
   });
 }
