@@ -7,13 +7,18 @@ import '../../../../helpers/pump_app.dart';
 
 void main() {
   group('AdminSidebar', () {
-    Widget buildSidebar({int selectedIndex = 0, ValueChanged<int>? onItemTap}) {
+    Widget buildSidebar({
+      int selectedIndex = 0,
+      ValueChanged<int>? onItemTap,
+      VoidCallback? onSignOut,
+    }) {
       return Scaffold(
         body: Row(
           children: [
             AdminSidebar(
               selectedIndex: selectedIndex,
               onItemTap: onItemTap ?? (_) {},
+              onSignOut: onSignOut ?? () {},
             ),
             const Expanded(child: SizedBox.shrink()),
           ],
@@ -69,6 +74,23 @@ void main() {
         find.byType(AdminSidebar),
       );
       expect(renderBox.size.width, equals(240.0));
+    });
+
+    testWidgets('sign out footer link fires onSignOut callback', (
+      tester,
+    ) async {
+      suppressOverflowErrors();
+      var signedOut = false;
+
+      await pumpTestScreen(
+        tester,
+        buildSidebar(onSignOut: () => signedOut = true),
+      );
+
+      await tester.tap(find.text('admin.sidebar.sign_out'));
+      await tester.pumpAndSettle();
+
+      expect(signedOut, isTrue);
     });
   });
 }

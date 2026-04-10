@@ -6,24 +6,22 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
-/// 240px-wide admin sidebar replacing the default NavigationRail.
-///
-/// Displays the ModerationHub branding, 6 navigation items with Phosphor
-/// icons, and bottom utility links (Support, Sign Out).
-///
+/// 240px-wide admin sidebar: ModerationHub branding, 6 nav items,
+/// and footer links (Support · Sign Out).
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class AdminSidebar extends StatelessWidget {
   const AdminSidebar({
     required this.selectedIndex,
     required this.onItemTap,
+    required this.onSignOut,
     super.key,
   });
 
-  /// Currently active navigation item index (0-5).
   final int selectedIndex;
-
-  /// Callback when a navigation item is tapped.
   final ValueChanged<int> onItemTap;
+
+  /// Fired when the Sign Out footer link is tapped.
+  final VoidCallback onSignOut;
 
   static const double _width = 240;
 
@@ -149,24 +147,30 @@ class AdminSidebar extends StatelessWidget {
           _footerLink(
             PhosphorIconsRegular.question,
             'admin.sidebar.support'.tr(),
+            onTap: () {},
           ),
           const SizedBox(height: Spacing.s2),
           _footerLink(
             PhosphorIconsRegular.signOut,
             'admin.sidebar.sign_out'.tr(),
+            onTap: onSignOut,
           ),
         ],
       ),
     );
   }
 
-  Widget _footerLink(IconData icon, String label) {
+  Widget _footerLink(
+    IconData icon,
+    String label, {
+    required VoidCallback onTap,
+  }) {
     return Semantics(
       label: label,
       button: true,
       child: InkWell(
         borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
-        onTap: () {},
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: Spacing.s3,

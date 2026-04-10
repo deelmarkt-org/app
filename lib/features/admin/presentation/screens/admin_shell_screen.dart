@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/features/admin/presentation/widgets/admin_sidebar.dart';
 
 /// Shell screen for the admin panel — 240px sidebar + content area.
@@ -10,20 +12,21 @@ import 'package:deelmarkt/features/admin/presentation/widgets/admin_sidebar.dart
 /// route in the remaining space.
 ///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
-class AdminShellScreen extends StatelessWidget {
+class AdminShellScreen extends ConsumerWidget {
   const AdminShellScreen({required this.child, super.key});
 
   /// The currently active admin child route.
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Row(
         children: [
           AdminSidebar(
             selectedIndex: _selectedIndex(context),
             onItemTap: (index) => _onTap(context, index),
+            onSignOut: () => ref.read(supabaseClientProvider).auth.signOut(),
           ),
           Expanded(child: child),
         ],
