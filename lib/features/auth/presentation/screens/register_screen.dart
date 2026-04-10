@@ -51,7 +51,7 @@ class RegisterScreen extends ConsumerWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          child: _StepView(state: state, ref: ref),
+          child: _StepView(state: state),
         ),
       ),
     );
@@ -66,14 +66,13 @@ class RegisterScreen extends ConsumerWidget {
   };
 }
 
-class _StepView extends StatelessWidget {
-  const _StepView({required this.state, required this.ref});
+class _StepView extends ConsumerWidget {
+  const _StepView({required this.state});
 
   final RegistrationState state;
-  final WidgetRef ref;
 
   @override
-  Widget build(BuildContext context) => switch (state.step) {
+  Widget build(BuildContext context, WidgetRef ref) => switch (state.step) {
     RegistrationStep.emailForm => RegistrationForm(
       isLoading: state.isLoading,
       errorText: state.errorKey,
