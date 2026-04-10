@@ -57,11 +57,13 @@ class _ActionTile extends StatelessWidget {
         isDark ? DeelmarktColors.darkSurface : DeelmarktColors.neutral50;
 
     final isShip = action.type == ActionItemType.shipOrder;
+    final shortId =
+        action.referenceId.length >= 4
+            ? action.referenceId.substring(0, 4)
+            : action.referenceId;
     final title =
         isShip
-            ? 'home.seller.shipOrderTitle'.tr(
-              args: [action.referenceId.substring(0, 4)],
-            )
+            ? 'home.seller.shipOrderTitle'.tr(args: [shortId])
             : 'home.seller.replyTo'.tr(
               namedArgs: {'name': action.otherUserName ?? ''},
             );
