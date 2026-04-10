@@ -31,13 +31,14 @@ class ChatThreadSendController {
   Future<void> sendText(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
+    final now = DateTime.now();
     await _optimisticSend(
       optimistic: MessageEntity(
-        id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+        id: '_optimistic_${now.microsecondsSinceEpoch}',
         conversationId: getState()?.conversation.id ?? '',
         senderId: kCurrentUserIdStub,
         text: trimmed,
-        createdAt: DateTime.now(),
+        createdAt: now,
       ),
       send:
           (convId) => ref.read(sendMessageUseCaseProvider)(
@@ -50,16 +51,17 @@ class ChatThreadSendController {
 
   Future<void> sendOffer(int amountCents) async {
     final offerText = (amountCents / 100).toStringAsFixed(2);
+    final now = DateTime.now();
     await _optimisticSend(
       optimistic: MessageEntity(
-        id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+        id: '_optimistic_${now.microsecondsSinceEpoch}',
         conversationId: getState()?.conversation.id ?? '',
         senderId: kCurrentUserIdStub,
         text: offerText,
         type: MessageType.offer,
         offerAmountCents: amountCents,
         offerStatus: OfferStatus.pending,
-        createdAt: DateTime.now(),
+        createdAt: now,
       ),
       send:
           (convId) => ref.read(sendMessageUseCaseProvider)(
