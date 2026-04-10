@@ -15,6 +15,8 @@ import 'package:deelmarkt/features/sell/presentation/widgets/quality_step/qualit
 
 /// Multi-step listing creation wizard.
 ///
+/// Reference: docs/screens/03-listings/02-listing-creation.md
+///
 /// Single `/sell` route with internal step management via
 /// [ListingCreationNotifier]. Steps: photos -> details -> quality -> success.
 ///

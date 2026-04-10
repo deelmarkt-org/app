@@ -15,6 +15,8 @@ import 'package:deelmarkt/features/home/presentation/widgets/category_card.dart'
 
 /// Browse all L1 categories screen.
 ///
+/// Reference: docs/screens/02-home/04-category-browse.md
+///
 /// Route: `/categories` (AppRoutes.categories)
 ///
 /// Reference: docs/screens/02-home/04-category-browse.md

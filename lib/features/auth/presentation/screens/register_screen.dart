@@ -14,6 +14,8 @@ import 'package:deelmarkt/features/auth/presentation/widgets/registration_form.d
 
 /// Multi-step registration screen.
 ///
+/// Reference: docs/screens/01-auth/02-registration.md
+///
 /// Single `/register` route with internal step management via [RegisterViewModel].
 /// Steps: emailForm → emailVerification → phoneForm → phoneVerification → complete.
 ///
@@ -49,64 +51,10 @@ class RegisterScreen extends ConsumerWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          child: _buildStepBody(context, ref, state),
+          child: _StepView(state: state, ref: ref),
         ),
       ),
     );
-  }
-
-  Widget _buildStepBody(
-    BuildContext context,
-    WidgetRef ref,
-    RegistrationState state,
-  ) {
-    final notifier = ref.read(registerViewModelProvider.notifier);
-    return switch (state.step) {
-      RegistrationStep.emailForm => RegistrationForm(
-        isLoading: state.isLoading,
-        errorText: state.errorKey,
-        onSubmit:
-            ({
-              required email,
-              required password,
-              required termsAccepted,
-              required privacyAccepted,
-            }) => notifier.submitEmail(
-              email: email,
-              password: password,
-              termsAccepted: termsAccepted,
-              privacyAccepted: privacyAccepted,
-            ),
-        onLoginTap: () => context.go(AppRoutes.login),
-      ),
-      // C-3: Use dedicated resendEmailOtp instead of submitEmail with empty password
-      RegistrationStep.emailVerification => OtpVerificationView(
-        title: 'auth.verify_email_title'.tr(),
-        subtitle: 'auth.verify_email_subtitle'.tr(
-          namedArgs: {'email': state.email ?? ''},
-        ),
-        isLoading: state.isLoading,
-        errorText: state.errorKey,
-        onCompleted: notifier.verifyEmail,
-        onResend: notifier.resendEmailOtp,
-      ),
-      RegistrationStep.phoneForm => PhoneFormView(
-        isLoading: state.isLoading,
-        errorText: state.errorKey,
-        onSubmit: notifier.submitPhone,
-      ),
-      RegistrationStep.phoneVerification => OtpVerificationView(
-        title: 'auth.verify_phone_title'.tr(),
-        subtitle: 'auth.verify_phone_subtitle'.tr(
-          namedArgs: {'phone': state.phone ?? ''},
-        ),
-        isLoading: state.isLoading,
-        errorText: state.errorKey,
-        onCompleted: notifier.verifyPhone,
-        onResend: notifier.resendPhoneOtp,
-      ),
-      RegistrationStep.complete => const SizedBox.shrink(),
-    };
   }
 
   String _titleForStep(RegistrationStep step) => switch (step) {
@@ -115,5 +63,64 @@ class RegisterScreen extends ConsumerWidget {
     RegistrationStep.phoneForm => 'auth.phone_entry_title'.tr(),
     RegistrationStep.phoneVerification => 'auth.verify_phone_title'.tr(),
     RegistrationStep.complete => '',
+  };
+}
+
+class _StepView extends StatelessWidget {
+  const _StepView({required this.state, required this.ref});
+
+  final RegistrationState state;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) => switch (state.step) {
+    RegistrationStep.emailForm => RegistrationForm(
+      isLoading: state.isLoading,
+      errorText: state.errorKey,
+      onSubmit:
+          ({
+            required email,
+            required password,
+            required termsAccepted,
+            required privacyAccepted,
+          }) => ref
+              .read(registerViewModelProvider.notifier)
+              .submitEmail(
+                email: email,
+                password: password,
+                termsAccepted: termsAccepted,
+                privacyAccepted: privacyAccepted,
+              ),
+      onLoginTap: () => context.go(AppRoutes.login),
+    ),
+    // C-3: Use dedicated resendEmailOtp instead of submitEmail with empty password
+    RegistrationStep.emailVerification => OtpVerificationView(
+      title: 'auth.verify_email_title'.tr(),
+      subtitle: 'auth.verify_email_subtitle'.tr(
+        namedArgs: {'email': state.email ?? ''},
+      ),
+      isLoading: state.isLoading,
+      errorText: state.errorKey,
+      onCompleted: ref.read(registerViewModelProvider.notifier).verifyEmail,
+      onResend:
+          () => ref.read(registerViewModelProvider.notifier).resendEmailOtp(),
+    ),
+    RegistrationStep.phoneForm => PhoneFormView(
+      isLoading: state.isLoading,
+      errorText: state.errorKey,
+      onSubmit: ref.read(registerViewModelProvider.notifier).submitPhone,
+    ),
+    RegistrationStep.phoneVerification => OtpVerificationView(
+      title: 'auth.verify_phone_title'.tr(),
+      subtitle: 'auth.verify_phone_subtitle'.tr(
+        namedArgs: {'phone': state.phone ?? ''},
+      ),
+      isLoading: state.isLoading,
+      errorText: state.errorKey,
+      onCompleted: ref.read(registerViewModelProvider.notifier).verifyPhone,
+      onResend:
+          () => ref.read(registerViewModelProvider.notifier).resendPhoneOtp(),
+    ),
+    RegistrationStep.complete => const SizedBox.shrink(),
   };
 }

@@ -15,6 +15,8 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 /// Category detail screen — hero, subcategory chips, and featured listings.
 ///
+/// Reference: docs/screens/02-home/04-category-browse.md
+///
 /// Route: `/categories/:id` (AppRoutes.categoryDetail)
 ///
 /// Reference: docs/screens/02-home/04-category-browse.md (sub-screen of

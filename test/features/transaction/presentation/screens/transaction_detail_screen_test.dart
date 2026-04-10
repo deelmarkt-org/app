@@ -13,18 +13,20 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import '../../../../helpers/pump_app.dart';
 
-TransactionEntity _txn({TransactionStatus status = TransactionStatus.paid}) {
+TransactionEntity _buildTransaction({
+  TransactionStatus status = TransactionStatus.paid,
+}) {
   return TransactionEntity(
-    id: 'txn_001',
-    listingId: 'lst_001',
-    buyerId: 'usr_buyer',
-    sellerId: 'usr_seller',
+    id: 'txn-001',
+    listingId: 'listing-001',
+    buyerId: 'buyer-001',
+    sellerId: 'seller-001',
     status: status,
     itemAmountCents: 4500,
     platformFeeCents: 113,
     shippingCostCents: 695,
     currency: 'EUR',
-    createdAt: DateTime(2026, 3, 19),
+    createdAt: DateTime(2026, 4),
   );
 }
 
@@ -33,7 +35,7 @@ void main() {
     testWidgets('renders trust banner', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       expect(find.byType(TrustBanner), findsOneWidget);
@@ -42,7 +44,7 @@ void main() {
     testWidgets('renders escrow timeline', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       expect(find.byType(EscrowTimeline), findsOneWidget);
@@ -51,7 +53,7 @@ void main() {
     testWidgets('displays amounts with euro formatting', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       // Total = 4500 + 113 + 695 = 5308 = €53,08
@@ -64,7 +66,7 @@ void main() {
       await pumpTestScreen(
         tester,
         TransactionDetailScreen(
-          transaction: _txn(status: TransactionStatus.delivered),
+          transaction: _buildTransaction(status: TransactionStatus.delivered),
         ),
       );
 
@@ -74,7 +76,7 @@ void main() {
     testWidgets('paid status shows info row (funds held)', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       // Should not show action buttons
@@ -85,17 +87,39 @@ void main() {
       await pumpTestScreen(
         tester,
         TransactionDetailScreen(
-          transaction: _txn(status: TransactionStatus.released),
+          transaction: _buildTransaction(status: TransactionStatus.released),
         ),
       );
 
       expect(find.byType(DeelButton), findsNothing);
     });
 
+    testWidgets('renders with shipped status', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TransactionDetailScreen(
+          transaction: _buildTransaction(status: TransactionStatus.shipped),
+        ),
+      );
+
+      expect(find.byType(TransactionDetailScreen), findsOneWidget);
+    });
+
+    testWidgets('renders with disputed status', (tester) async {
+      await pumpTestScreen(
+        tester,
+        TransactionDetailScreen(
+          transaction: _buildTransaction(status: TransactionStatus.disputed),
+        ),
+      );
+
+      expect(find.byType(TransactionDetailScreen), findsOneWidget);
+    });
+
     testWidgets('amount section has Semantics', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       // Semantics wrappers should exist
@@ -105,7 +129,7 @@ void main() {
     testWidgets('wraps content in ResponsiveBody', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
       );
 
       expect(find.byType(ResponsiveBody), findsOneWidget);
@@ -114,7 +138,7 @@ void main() {
     testWidgets('renders correctly in dark mode', (tester) async {
       await pumpTestScreen(
         tester,
-        TransactionDetailScreen(transaction: _txn()),
+        TransactionDetailScreen(transaction: _buildTransaction()),
         theme: DeelmarktTheme.dark,
       );
 
@@ -124,7 +148,7 @@ void main() {
     });
 
     testWidgets('tapping escrow step opens detail sheet', (tester) async {
-      final txn = _txn().copyWith(paidAt: DateTime(2026, 3, 19, 14, 30));
+      final txn = _buildTransaction().copyWith(paidAt: DateTime(2026, 3, 19, 14, 30));
       await pumpTestScreen(tester, TransactionDetailScreen(transaction: txn));
 
       // Tap the first step label ("escrow.paid" key returned by easy_localization

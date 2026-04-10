@@ -17,6 +17,10 @@ import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewm
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/settings/language_switch.dart';
 
+/// Settings screen.
+///
+/// Reference: docs/screens/07-profile/03-settings.md
+
 /// App version provider — uses manual FutureProvider (leaf provider, no notifier dependencies).
 final appVersionProvider = FutureProvider<String>((ref) async {
   try {

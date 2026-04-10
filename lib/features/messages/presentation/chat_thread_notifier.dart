@@ -5,10 +5,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
-import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_optimistic.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart';
+import 'package:deelmarkt/features/messages/presentation/chat_thread_send_controller.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
 
@@ -22,8 +22,12 @@ part 'chat_thread_notifier.g.dart';
 /// Subscribes to Realtime updates; optimistic send rolls back on failure.
 @riverpod
 class ChatThreadNotifier extends _$ChatThreadNotifier {
+  late final ChatThreadSendController _send = ChatThreadSendController(
+    ref: ref,
+    getState: () => state.valueOrNull,
+    writeState: (s) => state = AsyncValue.data(s),
+  );
   StreamSubscription<List<MessageEntity>>? _realtimeSub;
-  List<MessageEntity>? _pendingSnapshot;
 
   @override
   Future<ChatThreadState> build(String conversationId) async {
@@ -47,126 +51,33 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
 
   void _subscribeRealtime(String conversationId) {
     _realtimeSub?.cancel();
-    _realtimeSub = ChatThreadOptimistic.subscribeRealtime(
-      repository: ref.read(messageRepositoryProvider),
-      conversationId: conversationId,
-      onSnapshot: (messages) {
-        final current = state.valueOrNull;
-        if (current == null) return;
-        if (current.isSending) {
-          _pendingSnapshot = messages;
-        } else {
-          state = AsyncValue.data(current.copyWith(messages: messages));
-        }
-      },
-    );
+    _realtimeSub = ref
+        .read(messageRepositoryProvider)
+        .watchMessages(conversationId)
+        .listen(
+          (messages) {
+            final current = state.valueOrNull;
+            if (current == null) return;
+            if (current.isSending) {
+              _send.pendingSnapshot = messages;
+            } else {
+              state = AsyncValue.data(current.copyWith(messages: messages));
+            }
+          },
+          onError:
+              (Object e, StackTrace st) => AppLogger.error(
+                'watchMessages error',
+                tag: 'ChatThreadNotifier',
+                error: e,
+                stackTrace: st,
+              ),
+        );
   }
 
-  Future<void> sendText(String text) async {
-    final trimmed = text.trim();
-    if (trimmed.isEmpty) return;
-    final convId = state.valueOrNull?.conversation.id ?? '';
-    await _optimisticSend(
-      ChatThreadOptimistic.buildTextMessage(
-        conversationId: convId,
-        text: trimmed,
-      ),
-      (id) => ref.read(sendMessageUseCaseProvider)(
-        conversationId: id,
-        text: trimmed,
-      ),
-      'sendText',
-    );
-  }
+  Future<void> sendText(String text) => _send.sendText(text);
 
-  Future<void> sendOffer(int amountCents) async {
-    final convId = state.valueOrNull?.conversation.id ?? '';
-    final offerText = (amountCents / 100).toStringAsFixed(2);
-    await _optimisticSend(
-      ChatThreadOptimistic.buildOfferMessage(
-        conversationId: convId,
-        amountCents: amountCents,
-      ),
-      (id) => ref.read(sendMessageUseCaseProvider)(
-        conversationId: id,
-        text: offerText,
-        type: MessageType.offer,
-        offerAmountCents: amountCents,
-      ),
-      'sendOffer',
-    );
-  }
+  Future<void> sendOffer(int amountCents) => _send.sendOffer(amountCents);
 
-  /// Updates the offer status with optimistic UI — the offer card
-  /// shows the new status immediately and rolls back if the server
-  /// call fails.
-  Future<void> updateOfferStatus(
-    String messageId,
-    OfferStatus newStatus,
-  ) async {
-    final current = state.valueOrNull;
-    if (current == null) return;
-    state = AsyncValue.data(
-      current.copyWith(
-        messages: ChatThreadOptimistic.withOfferStatus(
-          current.messages,
-          messageId: messageId,
-          newStatus: newStatus,
-        ),
-      ),
-    );
-    try {
-      await ref.read(updateOfferStatusUseCaseProvider)(
-        messageId: messageId,
-        newStatus: newStatus,
-      );
-    } catch (e, st) {
-      ChatThreadOptimistic.logSendFailure(
-        tag: 'updateOfferStatus',
-        error: e,
-        stackTrace: st,
-      );
-      state = AsyncValue.data(current); // rollback
-      rethrow;
-    }
-  }
-
-  Future<void> _optimisticSend(
-    MessageEntity optimistic,
-    Future<MessageEntity> Function(String convId) send,
-    String tag,
-  ) async {
-    final current = state.valueOrNull;
-    if (current == null || current.isSending) return;
-    state = AsyncValue.data(
-      current.copyWith(
-        messages: [...current.messages, optimistic],
-        isSending: true,
-      ),
-    );
-    List<MessageEntity> drainSnapshot(List<MessageEntity> fallback) {
-      final after = _pendingSnapshot ?? fallback;
-      _pendingSnapshot = null;
-      return after;
-    }
-
-    try {
-      final sent = await send(current.conversation.id);
-      state = AsyncValue.data(
-        current.copyWith(
-          messages: drainSnapshot([...current.messages, sent]),
-          isSending: false,
-        ),
-      );
-    } catch (e, st) {
-      ChatThreadOptimistic.logSendFailure(tag: tag, error: e, stackTrace: st);
-      state = AsyncValue.data(
-        current.copyWith(
-          messages: drainSnapshot(current.messages),
-          isSending: false,
-        ),
-      );
-      rethrow;
-    }
-  }
+  Future<void> updateOfferStatus(String messageId, OfferStatus newStatus) =>
+      _send.updateOfferStatus(messageId, newStatus);
 }

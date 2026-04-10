@@ -61,16 +61,21 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       body: state.user.when(
         loading: () => const ProfileSkeleton(),
         error: (_, _) => Center(child: Text('error.generic'.tr())),
-        data:
-            (user) =>
-                user == null
-                    ? Center(child: Text('profile.notLoggedIn'.tr()))
-                    : _buildLoadedBody(user, state),
+        data: (user) => _buildBody(context, state, user),
       ),
     );
   }
 
-  Widget _buildLoadedBody(UserEntity user, ProfileState state) {
+  Widget _buildBody(
+    BuildContext context,
+    ProfileState state,
+    UserEntity? user,
+  ) {
+    if (user == null) {
+      return Center(child: Text('profile.notLoggedIn'.tr()));
+    }
+
+
     return ResponsiveBody(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(Spacing.s4),
