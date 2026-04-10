@@ -243,7 +243,13 @@
     "countdownHint": "48 uur om te bevestigen",
     "deadlineHint": "Bevestig voor {date}",
     "fundsHeld": "Geld wordt vastgehouden",
-    "fundsReleased": "Geld vrijgegeven aan verkoper"
+    "fundsReleased": "Geld vrijgegeven aan verkoper",
+    "stepDetail": {
+      "completedAt": "Voltooid op",
+      "notReached": "Nog niet bereikt",
+      "deadline": "Bevestig voor",
+      "disputedAt": "Betwist op"
+    }
   },
   "condition": {
     "newWithTags": "Nieuw met labels",
@@ -288,13 +294,17 @@
     "closed": "Gesloten",
     "selectThisShop": "Dit punt selecteren",
     "selectFromList": "Selecteer een servicepunt uit de lijst",
-    "noShopsFound": "Geen servicepunten in de buurt gevonden"
+    "noShopsFound": "Geen servicepunten in de buurt gevonden",
+    "details": "Verzendgegevens",
+    "viewQrCode": "QR-code bekijken"
   },
   "tracking": {
     "title": "Zending volgen",
     "shipment": "zending",
     "updates": "Trackingupdates",
     "noUpdates": "Nog geen trackingupdates",
+    "viewTracking": "Tracking bekijken",
+    "latestUpdate": "Laatste update",
     "labelCreated": "Label aangemaakt",
     "droppedOff": "Afgegeven bij servicepunt",
     "pickedUp": "Opgehaald door bezorger",
@@ -386,6 +396,11 @@
       "phone_number_request": "Dit bericht vraagt om je telefoonnummer of messaging-app",
       "suspicious_pricing": "Deze prijs lijkt verdacht laag voor dit artikel",
       "urgency_pressure": "Dit bericht gebruikt druk om een snelle beslissing af te dwingen",
+      "credential_harvesting": "Dit bericht vraagt om wachtwoorden, inloggegevens of identiteitsdocumenten",
+      "advance_payment_request": "Dit bericht vraagt om vooruitbetaling of een aanbetaling voor levering",
+      "fake_escrow": "Dit bericht promoot een externe escrow-service buiten DeelMarkt",
+      "shipping_scam": "Dit bericht bevat een verdacht verzoek om verzendkosten te betalen",
+      "prohibited_item": "Dit bericht verwijst naar artikelen die verboden zijn op DeelMarkt",
       "other": "Dit bericht is gemarkeerd door onze oplichting-detector"
     }
   },
@@ -495,7 +510,11 @@
       "under_4h": "Reageert binnen 4 uur",
       "under_24h": "Reageert binnen 24 uur",
       "over_24h": "Reageert na 24 uur",
-      "unknown": "Reactietijd onbekend"
+      "unknown": "Reactietijd onbekend",
+      "short_under_1h": "< 1u",
+      "short_under_4h": "< 4u",
+      "short_under_24h": "< 24u",
+      "short_over_24h": "> 24u"
     }
   },
   "rating": {
@@ -745,5 +764,36 @@
     "month_ago": "1 maand geleden",
     "months_ago": "{n} maanden geleden",
     "year_ago": "1 jaar geleden"
+  },
+  "sanction": {
+    "type": {
+      "warning": "Waarschuwing",
+      "suspension": "Schorsing",
+      "ban": "Verbanning"
+    },
+    "screen": {
+      "title": "Account geschorst",
+      "reason_label": "Reden",
+      "expires_label": "Geschorst tot",
+      "permanent": "Permanent",
+      "appeal_title": "Bezwaar indienen",
+      "appeal_hint": "Leg uit waarom je denkt dat deze beslissing onjuist is (max. 1000 tekens)",
+      "appeal_submit": "Bezwaar indienen",
+      "appeal_submitted_title": "Bezwaar ingediend",
+      "appeal_submitted_body": "We beoordelen je bezwaar binnen 72 uur.",
+      "appeal_pending_title": "Bezwaar in behandeling",
+      "appeal_pending_body": "Je bezwaar wordt beoordeeld. We sturen je een bericht zodra er een beslissing is genomen.",
+      "appeal_upheld_title": "Bezwaar afgewezen",
+      "appeal_upheld_body": "Je bezwaar is beoordeeld en de beslissing blijft van kracht.",
+      "appeal_overturned_title": "Account hersteld",
+      "appeal_overturned_body": "Je bezwaar is geaccepteerd. Je account is volledig hersteld.",
+      "appeal_window_closed": "De bezwaartermijn van 14 dagen voor deze sanctie is verlopen.",
+      "appeal_not_eligible": "Waarschuwingen kunnen niet worden aangevochten.",
+      "contact_support": "Neem contact op met support"
+    },
+    "a11y": {
+      "sanction_icon": "Pictogram account geschorst",
+      "appeal_form": "Bezwaarformulier"
+    }
   }
 }

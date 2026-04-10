@@ -55,7 +55,7 @@ class MockReviewRepository implements ReviewRepository {
       listingId: 'listing-001',
       role: submission.role,
       rating: submission.rating,
-      text: submission.body,
+      body: submission.body,
       isHidden: true,
       createdAt: DateTime.now(),
     );

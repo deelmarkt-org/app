@@ -18,6 +18,10 @@ inputs:
     description: Unleash frontend client key (use placeholder for non-build jobs)
     required: false
     default: ci-placeholder-key
+  sentry-dsn:
+    description: Sentry DSN (use placeholder for non-build jobs)
+    required: false
+    default: https://ci-placeholder@o0.ingest.sentry.io/0
 
 runs:
   using: composite
@@ -39,6 +43,7 @@ runs:
         SUPABASE_ANON_PUBLIC=${{ inputs.supabase-anon-public }}
         UNLEASH_URL=${{ inputs.unleash-url }}
         UNLEASH_CLIENT_KEY=${{ inputs.unleash-client-key }}
+        SENTRY_DSN=${{ inputs.sentry-dsn }}
         EOF
 
     - name: Run code generation (envied + riverpod)

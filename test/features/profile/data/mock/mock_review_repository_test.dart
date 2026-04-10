@@ -57,7 +57,7 @@ void main() {
         expect(review.listingId, isNotEmpty);
         expect(review.rating, greaterThanOrEqualTo(1.0));
         expect(review.rating, lessThanOrEqualTo(5.0));
-        expect(review.text, isNotEmpty);
+        expect(review.body, isNotEmpty);
       }
     });
   });

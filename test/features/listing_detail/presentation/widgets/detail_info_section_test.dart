@@ -5,6 +5,8 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_info_section.dart';
+import 'package:deelmarkt/widgets/location/location_badge.dart';
+import 'package:deelmarkt/widgets/location/location_badge_detail.dart';
 
 final _testListing = ListingEntity(
   id: 'test-1',
@@ -64,6 +66,20 @@ void main() {
       await tester.pumpWidget(buildSection());
       await tester.pump();
       expect(find.text('Amsterdam'), findsOneWidget);
+      expect(find.byType(LocationBadge), findsOneWidget);
+    });
+
+    testWidgets('renders location section header', (tester) async {
+      await tester.pumpWidget(buildSection());
+      await tester.pump();
+      // easy_localization returns the key as-is in test context.
+      expect(find.text('listing_detail.locationHeader'), findsOneWidget);
+    });
+
+    testWidgets('renders map placeholder for location', (tester) async {
+      await tester.pumpWidget(buildSection());
+      await tester.pump();
+      expect(find.byType(LocationMapPlaceholder), findsOneWidget);
     });
 
     testWidgets('hides location when null', (tester) async {
@@ -153,7 +169,7 @@ void main() {
       await tester.pumpWidget(buildSection());
       await tester.pump();
 
-      // The widget renders distance as ' · <formatted>' inside a Text.
+      // LocationBadgeDetail renders distance as a standalone Text below city.
       // Formatters.distanceKm uses Dutch locale: "2,3 km".
       final formatted = Formatters.distanceKm(2.3);
       expect(find.textContaining(formatted), findsOneWidget);

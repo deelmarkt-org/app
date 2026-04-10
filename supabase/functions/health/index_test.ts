@@ -1,6 +1,4 @@
-import {
-  assertEquals,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 
 // ---------------------------------------------------------------------------
@@ -12,8 +10,7 @@ function mockSupabaseClient(dbError: Error | null = null) {
   return {
     from: (_table: string) => ({
       select: (_cols: string) => ({
-        limit: (_n: number) =>
-          Promise.resolve({ error: dbError, data: [] }),
+        limit: (_n: number) => Promise.resolve({ error: dbError, data: [] }),
       }),
     }),
   };

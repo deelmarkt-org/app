@@ -16,7 +16,9 @@ export function getRedisCredentials(): RedisCredentials {
   const token = Deno.env.get("UPSTASH_REDIS_REST_TOKEN");
 
   if (!url || !token) {
-    throw new Error("Upstash Redis not configured — UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are required");
+    throw new Error(
+      "Upstash Redis not configured — UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are required",
+    );
   }
 
   return { url, token };
@@ -25,10 +27,10 @@ export function getRedisCredentials(): RedisCredentials {
 // --- Cache TTLs ---
 
 export const CACHE_TTL = {
-  LISTING_DETAIL: 300,   // 5 min — invalidated by listing.updated/sold/deleted
-  SEARCH_RESULTS: 120,   // 2 min — invalidated by listing.created/updated
-  USER_PROFILE: 600,     // 10 min — invalidated by user.updated, review added
-  IDEMPOTENCY: 86400,    // 24 hours
+  LISTING_DETAIL: 300, // 5 min — invalidated by listing.updated/sold/deleted
+  SEARCH_RESULTS: 120, // 2 min — invalidated by listing.created/updated
+  USER_PROFILE: 600, // 10 min — invalidated by user.updated, review added
+  IDEMPOTENCY: 86400, // 24 hours
 } as const;
 
 // --- Core operations ---
@@ -49,7 +51,12 @@ export async function redisSet(
   ttl?: number,
   nx?: boolean,
 ): Promise<boolean> {
-  const parts = [creds.url, "set", encodeURIComponent(key), encodeURIComponent(value)];
+  const parts = [
+    creds.url,
+    "set",
+    encodeURIComponent(key),
+    encodeURIComponent(value),
+  ];
   if (ttl) parts.push("EX", String(ttl));
   if (nx) parts.push("NX");
 
@@ -57,7 +64,9 @@ export async function redisSet(
     headers: { Authorization: `Bearer ${creds.token}` },
   });
   if (!response.ok) {
-    throw new Error(`Redis SET failed (HTTP ${response.status}): ${await response.text()}`);
+    throw new Error(
+      `Redis SET failed (HTTP ${response.status}): ${await response.text()}`,
+    );
   }
   const data = await response.json();
   return data.result === "OK";
@@ -75,7 +84,9 @@ export async function redisGet(
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
   if (!response.ok) {
-    throw new Error(`Redis GET failed (HTTP ${response.status}): ${await response.text()}`);
+    throw new Error(
+      `Redis GET failed (HTTP ${response.status}): ${await response.text()}`,
+    );
   }
   const data = await response.json();
   return data.result ?? null;
@@ -93,7 +104,9 @@ export async function redisDel(
     { headers: { Authorization: `Bearer ${creds.token}` } },
   );
   if (!response.ok) {
-    throw new Error(`Redis DEL failed (HTTP ${response.status}): ${await response.text()}`);
+    throw new Error(
+      `Redis DEL failed (HTTP ${response.status}): ${await response.text()}`,
+    );
   }
   const data = await response.json();
   return data.result ?? 0;

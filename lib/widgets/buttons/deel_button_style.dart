@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
@@ -50,7 +51,7 @@ class DeelButtonStyleResolver {
   // ── Style constants ─────────────────────────────────────────────────
 
   static const double _kDisabledAlpha = 0.4;
-  static const Color _kPressedBgOverlay = Color(0x1A000000); // 10% black
+  static const Color _kPressedBgOverlay = DeelmarktColors.pressedOverlay;
   static const double _kPressedFocusedAlpha = 0.08;
   static const double _kHoveredAlpha = 0.04;
 

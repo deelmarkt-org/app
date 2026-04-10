@@ -15,7 +15,7 @@ class ReviewEntity extends Equatable {
     required this.revieweeId,
     required this.listingId,
     required this.rating,
-    required this.text,
+    required this.body,
     required this.createdAt,
     this.transactionId,
     this.reviewerAvatarUrl,
@@ -35,7 +35,9 @@ class ReviewEntity extends Equatable {
   final String listingId;
   final ReviewRole role;
   final double rating;
-  final String text;
+
+  /// Review body text, max 500 chars. Matches DB column `body` and [ReviewSubmission.body].
+  final String body;
 
   /// Blind review visibility — hidden until both parties submit.
   final bool isHidden;
@@ -57,7 +59,7 @@ class ReviewEntity extends Equatable {
     listingId,
     role,
     rating,
-    text,
+    body,
     isHidden,
     isReviewerDeleted,
     createdAt,
@@ -74,7 +76,7 @@ class ReviewEntity extends Equatable {
     String? listingId,
     ReviewRole? role,
     double? rating,
-    String? text,
+    String? body,
     bool? isHidden,
     bool? isReviewerDeleted,
     DateTime? createdAt,
@@ -90,7 +92,7 @@ class ReviewEntity extends Equatable {
       listingId: listingId ?? this.listingId,
       role: role ?? this.role,
       rating: rating ?? this.rating,
-      text: text ?? this.text,
+      body: body ?? this.body,
       isHidden: isHidden ?? this.isHidden,
       isReviewerDeleted: isReviewerDeleted ?? this.isReviewerDeleted,
       createdAt: createdAt ?? this.createdAt,

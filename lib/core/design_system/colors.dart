@@ -33,6 +33,9 @@ class DeelmarktColors {
   static const neutral50 = Color(0xFFF8F9FB);
   static const white = Color(0xFFFFFFFF);
 
+  // Interaction overlays (applied on top of button backgrounds)
+  static const pressedOverlay = Color(0x1A000000); // 10% black
+
   // Trust (dedicated — never for general UI)
   static const trustVerified = Color(0xFF16A34A);
   static const trustEscrow = Color(0xFF2563EB);

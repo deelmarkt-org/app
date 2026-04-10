@@ -29,6 +29,21 @@ enum ScamReason {
   /// Message uses urgency pressure ("now", "today only", "limited time").
   urgencyPressure,
 
+  /// Message asks for credentials, passwords, BSN, or identity documents.
+  credentialHarvesting,
+
+  /// Message requests advance payment or deposit before delivery.
+  advancePaymentRequest,
+
+  /// Message promotes a fake or external escrow service.
+  fakeEscrow,
+
+  /// Message contains a shipping-related scam pattern.
+  shippingScam,
+
+  /// Message references prohibited items (weapons, drugs, stolen goods).
+  prohibitedItem,
+
   /// Detector flagged the message but did not classify the reason.
   other;
 
@@ -41,6 +56,13 @@ enum ScamReason {
     ScamReason.phoneNumberRequest => 'scam_alert.reason.phone_number_request',
     ScamReason.suspiciousPricing => 'scam_alert.reason.suspicious_pricing',
     ScamReason.urgencyPressure => 'scam_alert.reason.urgency_pressure',
+    ScamReason.credentialHarvesting =>
+      'scam_alert.reason.credential_harvesting',
+    ScamReason.advancePaymentRequest =>
+      'scam_alert.reason.advance_payment_request',
+    ScamReason.fakeEscrow => 'scam_alert.reason.fake_escrow',
+    ScamReason.shippingScam => 'scam_alert.reason.shipping_scam',
+    ScamReason.prohibitedItem => 'scam_alert.reason.prohibited_item',
     ScamReason.other => 'scam_alert.reason.other',
   };
 
@@ -51,6 +73,11 @@ enum ScamReason {
     'phone_number_request' => ScamReason.phoneNumberRequest,
     'suspicious_pricing' => ScamReason.suspiciousPricing,
     'urgency_pressure' => ScamReason.urgencyPressure,
+    'credential_harvesting' => ScamReason.credentialHarvesting,
+    'advance_payment_request' => ScamReason.advancePaymentRequest,
+    'fake_escrow' => ScamReason.fakeEscrow,
+    'shipping_scam' => ScamReason.shippingScam,
+    'prohibited_item' => ScamReason.prohibitedItem,
     _ => ScamReason.other,
   };
 }

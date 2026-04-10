@@ -40,12 +40,22 @@ void main(List<String> args) async {
       _checkMissingSemantics(file, content, violations);
       _checkSetState(file, content, config, violations);
       _checkRawAsyncWidgets(file, content, violations);
+      _checkScreenSpecReference(file, content, violations);
     }
 
     if (thorough) {
       _checkDuplicateStrings(file, lines, violations);
       _checkNestedTernaries(file, lines, violations);
       _checkLongMethods(file, lines, violations);
+    }
+  }
+
+  // Missing test file + spec reference checks — separate from the main loop
+  // because they only need the file path (not content). Skipped in --all mode
+  // to avoid noise from pre-existing files without tests (169+ violations).
+  if (!all) {
+    for (final file in files) {
+      _checkMissingTestFile(file, violations);
     }
   }
 
@@ -333,6 +343,88 @@ void _checkRawAsyncWidgets(
       );
     }
   }
+}
+
+// ── Screen spec reference check ───────────────────────────────────────
+
+/// Screen and widget files in presentation/ should have a
+/// `/// Reference: docs/screens/...` doc comment linking to the spec.
+/// Only applies to screen files (*_screen.dart) and top-level widget files
+/// that correspond to a screen spec section.
+void _checkScreenSpecReference(
+  String file,
+  String content,
+  List<String> violations,
+) {
+  // Only check screen files — widgets may reference the parent screen spec
+  // or may be purely generic (no spec). Screens always have a spec.
+  if (!file.endsWith('_screen.dart')) return;
+
+  final hasRef =
+      content.contains('docs/screens/') || content.contains('docs/epics/');
+
+  if (!hasRef) {
+    violations.add(
+      '  MISSING_SPEC_REF  $file: screen file has no /// Reference: docs/screens/... comment — check SCREEN-MAP.md [CLAUDE.md §4.2]',
+    );
+  }
+}
+
+// ── Missing test file check ───────────────────────────────────────────
+
+/// Paths exempt from the "must have a test" rule.
+const _testExemptPaths = [
+  'lib/core/router/', // router config — tested via integration
+  'lib/core/services/', // service wiring — tested via integration
+  'lib/core/l10n/', // localisation config
+  'lib/core/design_system/', // tokens/theme — tested via widget tests
+  'lib/core/constants.dart', // just constants
+  'lib/main.dart', // app entry point
+];
+
+/// Filename patterns exempt — these file types don't need individual tests.
+const _testExemptPatterns = [
+  '/mock/', // mock implementations — test infrastructure
+  '/domain/repositories/', // repository interfaces — tested via implementations
+  '/domain/exceptions', // exception classes — trivial data holders
+  '_providers.dart', // Riverpod provider wiring — tested via consumers
+  '_state.dart', // state classes — tested via notifier tests
+];
+
+void _checkMissingTestFile(String file, List<String> violations) {
+  if (!file.startsWith('lib/')) return;
+  if (file.endsWith('.g.dart') || file.endsWith('.freezed.dart')) return;
+
+  // Skip exempt paths
+  for (final exempt in _testExemptPaths) {
+    if (file.startsWith(exempt)) return;
+  }
+
+  // Skip exempt patterns
+  for (final pattern in _testExemptPatterns) {
+    if (file.contains(pattern)) return;
+  }
+
+  // Map lib/X.dart → test/X_test.dart
+  final testPath = file
+      .replaceFirst('lib/', 'test/')
+      .replaceFirst(RegExp(r'\.dart$'), '_test.dart');
+
+  if (File(testPath).existsSync()) return;
+
+  // Also accept a directory-level test:
+  // lib/core/design_system/colors.dart → test/core/design_system_test.dart
+  final parts = testPath.split('/');
+  if (parts.length >= 3) {
+    final dirName = parts[parts.length - 2];
+    final parentParts = parts.sublist(0, parts.length - 2);
+    final dirTest = '${parentParts.join("/")}/${dirName}_test.dart';
+    if (File(dirTest).existsSync()) return;
+  }
+
+  violations.add(
+    '  MISSING_TEST  $file: no corresponding test file found (expected $testPath) [CLAUDE.md §6]',
+  );
 }
 
 // ── Thorough checks (pre-push) ─────────────────────────────────────────

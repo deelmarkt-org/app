@@ -9,6 +9,7 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/l10n/l10n.dart';
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/services/firebase_service.dart';
+import 'package:deelmarkt/core/services/sentry_service.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/core/services/unleash_service.dart';
@@ -34,6 +35,9 @@ void main() async {
   usePathUrlStrategy();
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Sentry first — so it captures errors from other service inits.
+  await initSentry();
 
   await Future.wait([
     EasyLocalization.ensureInitialized(),

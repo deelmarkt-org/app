@@ -35,6 +35,47 @@ if ($missing.Count -gt 0) {
     Fail "Missing required tools: $($missing -join ', '). Install them first - see docs/SETUP.md"
 }
 
+# Required: deno for Edge Function linting (§9 quality gate)
+if (Get-Command deno -ErrorAction SilentlyContinue) {
+    Ok "deno found: $(deno --version | Select-Object -First 1)"
+} else {
+    Info "Installing deno (required for Edge Function lint/fmt hooks)..."
+    irm https://deno.land/install.ps1 | iex
+    if (Get-Command deno -ErrorAction SilentlyContinue) {
+        Ok "deno installed"
+    } else {
+        Fail "Cannot install deno. Install manually: https://deno.land/#installation"
+    }
+}
+
+Write-Host ""
+
+# -- 1b. Git LFS (required for screen design PNGs) ----------------------------
+Info "Setting up Git LFS..."
+
+$lfsVersion = git lfs version 2>$null
+if ($lfsVersion) {
+    Ok "git-lfs found: $lfsVersion"
+} else {
+    Warn "git-lfs not found. Install from https://git-lfs.com or: winget install GitHub.GitLFS"
+    Warn "Screen design PNGs will not be available until git-lfs is installed"
+}
+
+git lfs install 2>$null
+if ($LASTEXITCODE -eq 0) {
+    Ok "Git LFS initialized"
+}
+
+# Pull LFS objects if pointer files detected
+$lfsFiles = git lfs ls-files 2>$null | Select-Object -First 1
+if ($lfsFiles -match '\*') {
+    Warn "LFS pointer files detected - pulling actual content..."
+    git lfs pull
+    Ok "LFS files downloaded"
+} else {
+    Ok "LFS files already present"
+}
+
 Write-Host ""
 
 # -- 2. Install pre-commit ----------------------------------------------------
