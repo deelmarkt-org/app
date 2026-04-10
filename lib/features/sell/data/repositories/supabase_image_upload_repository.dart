@@ -184,7 +184,10 @@ class SupabaseImageUploadRepository implements ImageUploadRepository {
     if (status == 429 || status == 502 || status == 503 || status >= 500) {
       return ImageUploadServerException(statusCode: status, details: details);
     }
-    if (status == 400) return const ImageUploadInvalidException();
+    // Any other 4xx is a terminal client error — not retryable.
+    if (status >= 400 && status < 500) {
+      return const ImageUploadInvalidException();
+    }
     return ImageUploadServerException(statusCode: status, details: details);
   }
 }
