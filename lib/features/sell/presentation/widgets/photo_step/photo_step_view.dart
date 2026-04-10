@@ -32,7 +32,7 @@ class PhotoStepView extends ConsumerWidget {
             liveRegion: true,
             child: Text(
               'sell.photosCount'.tr(
-                args: ['${state.uploadedCount}', '$_maxPhotos'],
+                args: ['${state.imageFiles.length}', '$_maxPhotos'],
               ),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
