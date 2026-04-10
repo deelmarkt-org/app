@@ -132,9 +132,12 @@ class AdminSlaBar extends StatelessWidget {
     );
   }
 
+  static const double _slaSuccessThreshold = 0.8;
+  static const double _slaWarningThreshold = 0.5;
+
   Color _progressColor() {
-    if (progress >= 0.8) return DeelmarktColors.success;
-    if (progress >= 0.5) return DeelmarktColors.primary;
+    if (progress >= _slaSuccessThreshold) return DeelmarktColors.success;
+    if (progress >= _slaWarningThreshold) return DeelmarktColors.primary;
     return DeelmarktColors.error;
   }
 }
