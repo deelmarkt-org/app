@@ -12,8 +12,8 @@
  *     path inside the `listings-images` bucket.
  *  3. This EF verifies the authenticated user owns the path, scans the
  *     bytes, uploads to Cloudinary, and returns the delivery URL.
- *  4. Client stores the URL in `ListingCreationState.uploadedImageUrls`
- *     (see GH issue #TBD for pizmam sell-screen wiring).
+ *  4. Client stores the URL in `ListingCreationState.imageFiles[].deliveryUrl`
+ *     (see deelmarkt-org/app#104 for pizmam sell-screen wiring).
  *
  * On virus scan failure, the Storage object is deleted to prevent
  * orphan infected files from sitting in the bucket.
@@ -21,6 +21,13 @@
  * Auth: verify_jwt = true. The Supabase gateway validates the JWT and
  * we additionally compare the `sub` claim to the storage path's first
  * segment so users can't process each other's uploads.
+ *
+ * Rate limiting: 100 processed uploads per user per hour via Upstash
+ * Redis. Each call consumes one Cloudmersive scan credit (free tier
+ * 800/mo) and one Cloudinary credit, so an unthrottled authenticated
+ * user could drain both third-party free tiers in minutes. Fails open
+ * if Redis is unavailable — upload availability > rate limiting, same
+ * trade-off as create-payment.
  *
  * Reference: docs/epics/E01-listing-management.md §"Image Processing Pipeline"
  */
@@ -30,6 +37,8 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { jsonResponse } from "../_shared/response.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
+import { checkRateLimit } from "../_shared/rate_limit.ts";
+import { getRedisCredentials } from "../_shared/redis.ts";
 import { describeThreat, scanImage } from "./cloudmersive.ts";
 import { type CloudinaryCredentials, uploadImage } from "./cloudinary.ts";
 
@@ -39,6 +48,12 @@ import { type CloudinaryCredentials, uploadImage } from "./cloudinary.ts";
 
 const BUCKET = "listings-images";
 const MAX_BYTES = 15 * 1024 * 1024; // 15 MiB — matches bucket policy
+
+// Rate limit: 100 processed uploads/hour/user ≈ 8 full listings (12 photos
+// each) before throttle. Sized to allow a power-seller's normal day while
+// capping third-party cost per compromised account.
+const RATE_LIMIT_MAX = 100;
+const RATE_LIMIT_WINDOW_SECONDS = 3600;
 
 // ---------------------------------------------------------------------------
 // Zod input validation (§9)
@@ -103,6 +118,47 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const pathOwner = storage_path.split("/")[0];
   if (pathOwner !== user.id) {
     return jsonResponse({ error: "Path ownership mismatch" }, 403);
+  }
+
+  // ── Rate limit — protects metered Cloudmersive/Cloudinary quotas ──────
+  // Fails open if Redis is unavailable: we'd rather accept the upload
+  // than block a real seller on infra flapping, matching create-payment.
+  try {
+    const redisCreds = getRedisCredentials();
+    const { allowed, remaining, resetSeconds } = await checkRateLimit(
+      redisCreds,
+      user.id,
+      "image-upload-process",
+      {
+        maxRequests: RATE_LIMIT_MAX,
+        windowSeconds: RATE_LIMIT_WINDOW_SECONDS,
+      },
+    );
+    if (!allowed) {
+      return new Response(
+        JSON.stringify({
+          error: "Too many image uploads. Please wait before trying again.",
+          retry_after_seconds: resetSeconds,
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(resetSeconds),
+            "X-RateLimit-Remaining": "0",
+          },
+        },
+      );
+    }
+    console.log(
+      `[image-upload-process] Rate limit: ${remaining} remaining for user ${
+        user.id.slice(0, 8)
+      }`,
+    );
+  } catch (rateLimitErr) {
+    console.warn(
+      `[image-upload-process] Rate limit check failed, failing open: ${rateLimitErr}`,
+    );
   }
 
   // ── Load secrets ──────────────────────────────────────────────────────
