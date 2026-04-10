@@ -13,7 +13,7 @@ void main() {
         'reviewee_id': 'user-001',
         'listing_id': 'listing-001',
         'rating': 4.5,
-        'text': 'Great seller!',
+        'body': 'Great seller!',
         'created_at': '2026-03-15T10:00:00Z',
       };
 
@@ -22,7 +22,7 @@ void main() {
       expect(result, isA<ReviewEntity>());
       expect(result.id, 'review-001');
       expect(result.rating, 4.5);
-      expect(result.text, 'Great seller!');
+      expect(result.body, 'Great seller!');
     });
 
     test('parses integer rating', () {
@@ -33,7 +33,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 5,
-        'text': 'P',
+        'body': 'P',
         'created_at': '2026-03-15T10:00:00Z',
       };
       expect(ReviewDto.fromJson(json).rating, 5.0);
@@ -47,7 +47,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 4.0,
-        'text': 'G',
+        'body': 'G',
         'created_at': '2026-03-15T10:00:00Z',
         'reviewer_avatar_url': 'https://example.com/a.jpg',
       };
@@ -65,7 +65,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 4.0,
-        'text': 'G',
+        'body': 'G',
         'created_at': '2026-03-15T10:00:00Z',
       };
       expect(ReviewDto.fromJson(json).reviewerAvatarUrl, isNull);
@@ -79,7 +79,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 4.0,
-        'text': 'G',
+        'body': 'G',
         'created_at': 'invalid-date',
       };
       expect(ReviewDto.fromJson(json).createdAt, isNotNull);
@@ -93,7 +93,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 4.0,
-        'text': 'G',
+        'body': 'G',
         'created_at': 12345,
       };
       expect(ReviewDto.fromJson(json).createdAt, isNotNull);
@@ -106,7 +106,7 @@ void main() {
         'reviewee_id': 'u1',
         'listing_id': 'l1',
         'rating': 4.0,
-        'text': 'G',
+        'body': 'G',
         'created_at': '2026-03-15T10:00:00Z',
       };
       expect(() => ReviewDto.fromJson(json), throwsFormatException);
@@ -119,13 +119,13 @@ void main() {
         'reviewer_name': 'M',
         'reviewee_id': 'u1',
         'listing_id': 'l1',
-        'text': 'G',
+        'body': 'G',
         'created_at': '2026-03-15T10:00:00Z',
       };
       expect(() => ReviewDto.fromJson(json), throwsFormatException);
     });
 
-    test('throws FormatException for missing text', () {
+    test('throws FormatException for missing body', () {
       final json = <String, dynamic>{
         'id': 'r1',
         'reviewer_id': 'u2',
@@ -149,7 +149,7 @@ void main() {
           'reviewee_id': 'u1',
           'listing_id': 'l1',
           'rating': 5.0,
-          'text': 'Excellent',
+          'body': 'Excellent',
           'created_at': '2026-03-15T10:00:00Z',
         },
         <String, dynamic>{
@@ -159,7 +159,7 @@ void main() {
           'reviewee_id': 'u1',
           'listing_id': 'l2',
           'rating': 4.0,
-          'text': 'Good',
+          'body': 'Good',
           'created_at': '2026-03-10T10:00:00Z',
         },
       ];
@@ -175,7 +175,7 @@ void main() {
           'reviewee_id': 'u1',
           'listing_id': 'l1',
           'rating': 5.0,
-          'text': 'E',
+          'body': 'E',
           'created_at': '2026-03-15T10:00:00Z',
         },
         <String, dynamic>{'id': 'r2'},
@@ -194,7 +194,7 @@ void main() {
           'reviewee_id': 'u1',
           'listing_id': 'l1',
           'rating': 5.0,
-          'text': 'E',
+          'body': 'E',
           'created_at': '2026-03-15T10:00:00Z',
         },
       ];

@@ -26,7 +26,7 @@ final mockReviews = [
     revieweeId: mockRevieweeId,
     listingId: 'listing-001',
     rating: 5.0,
-    text: 'Snelle verzending en precies zoals beschreven. Top verkoper!',
+    body: 'Snelle verzending en precies zoals beschreven. Top verkoper!',
     createdAt: DateTime(2026, 3, 15),
   ),
   ReviewEntity(
@@ -37,7 +37,7 @@ final mockReviews = [
     revieweeId: mockRevieweeId,
     listingId: 'listing-002',
     rating: 4.0,
-    text: 'Goede communicatie, item was in orde. Aanrader.',
+    body: 'Goede communicatie, item was in orde. Aanrader.',
     createdAt: DateTime(2026, 3, 10),
   ),
   ReviewEntity(
@@ -49,7 +49,7 @@ final mockReviews = [
     listingId: 'listing-003',
     role: ReviewRole.seller,
     rating: 4.5,
-    text: 'Fijne transactie, goed verpakt. Bedankt!',
+    body: 'Fijne transactie, goed verpakt. Bedankt!',
     createdAt: DateTime(2026, 3, 5),
   ),
 ];
@@ -70,7 +70,7 @@ final mockTxnFixtures = <String, List<ReviewEntity>>{
       revieweeId: mockSellerId,
       listingId: 'listing-010',
       rating: 4.0,
-      text: 'Goede verkoper, netjes verpakt.',
+      body: 'Goede verkoper, netjes verpakt.',
       createdAt: DateTime(2026, 4, 2),
     ),
   ],
@@ -83,7 +83,7 @@ final mockTxnFixtures = <String, List<ReviewEntity>>{
       revieweeId: mockSellerId,
       listingId: 'listing-020',
       rating: 5.0,
-      text: 'Uitstekende ervaring, snelle levering!',
+      body: 'Uitstekende ervaring, snelle levering!',
       createdAt: DateTime(2026, 4, 3),
     ),
     ReviewEntity(
@@ -95,7 +95,7 @@ final mockTxnFixtures = <String, List<ReviewEntity>>{
       listingId: 'listing-020',
       role: ReviewRole.seller,
       rating: 5.0,
-      text: 'Prettige koper, snelle betaling.',
+      body: 'Prettige koper, snelle betaling.',
       createdAt: DateTime(2026, 4, 3),
     ),
   ],

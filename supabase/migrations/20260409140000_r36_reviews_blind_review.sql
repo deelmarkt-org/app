@@ -215,3 +215,55 @@ $$;
 -- Callable by authenticated users only (SECURITY INVOKER — RLS applies)
 REVOKE ALL ON FUNCTION submit_review(UUID, TEXT, SMALLINT, TEXT, TEXT, TEXT) FROM PUBLIC;
 GRANT  EXECUTE ON FUNCTION submit_review(UUID, TEXT, SMALLINT, TEXT, TEXT, TEXT) TO authenticated;
+
+-- =============================================================================
+-- 6. updated_at trigger on reviews
+-- =============================================================================
+-- Ensures updated_at is set automatically on any UPDATE (e.g. admin moderation
+-- via service_role), not just the ON CONFLICT path in submit_review().
+-- Reuses update_updated_at() already defined in 20260321232641.
+
+CREATE TRIGGER reviews_updated_at
+  BEFORE UPDATE ON reviews
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- =============================================================================
+-- 7. RPC: get_review_aggregate (server-side aggregate — avoids full table scan)
+-- =============================================================================
+-- Returns avg rating, total count, per-star distribution, and last review date
+-- for a given user. Called by SupabaseReviewRepository.getAggregateForUser().
+--
+-- Only counts non-hidden reviews. Visible only when total_count >= 3.
+
+CREATE OR REPLACE FUNCTION get_review_aggregate(p_user_id UUID)
+RETURNS TABLE (
+  avg_rating       NUMERIC,
+  total_count      BIGINT,
+  dist_1           BIGINT,
+  dist_2           BIGINT,
+  dist_3           BIGINT,
+  dist_4           BIGINT,
+  dist_5           BIGINT,
+  last_review_at   TIMESTAMPTZ
+)
+LANGUAGE sql
+STABLE
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+  SELECT
+    ROUND(AVG(r.rating), 2)               AS avg_rating,
+    COUNT(*)                               AS total_count,
+    COUNT(*) FILTER (WHERE r.rating = 1)  AS dist_1,
+    COUNT(*) FILTER (WHERE r.rating = 2)  AS dist_2,
+    COUNT(*) FILTER (WHERE r.rating = 3)  AS dist_3,
+    COUNT(*) FILTER (WHERE r.rating = 4)  AS dist_4,
+    COUNT(*) FILTER (WHERE r.rating = 5)  AS dist_5,
+    MAX(r.created_at)                      AS last_review_at
+  FROM public.reviews r
+  WHERE r.reviewee_id = p_user_id
+    AND r.is_hidden = false;
+$$;
+
+REVOKE ALL ON FUNCTION get_review_aggregate(UUID) FROM PUBLIC;
+GRANT  EXECUTE ON FUNCTION get_review_aggregate(UUID) TO authenticated, anon;

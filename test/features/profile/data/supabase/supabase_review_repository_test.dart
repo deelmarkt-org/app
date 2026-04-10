@@ -62,7 +62,7 @@ Map<String, dynamic> _reviewJson({
   'listing_id': 'listing-abc',
   'role': role,
   'rating': rating.toInt(),
-  'text': 'Goede verkoper, snel geleverd.',
+  'body': 'Goede verkoper, snel geleverd.',
   'is_hidden': false,
   'is_reviewer_deleted': false,
   'created_at': '2026-04-09T10:00:00.000Z',
@@ -312,7 +312,7 @@ ReviewEntity _parseReviewJson(Map<String, dynamic> json) {
             ? ReviewRole.seller
             : ReviewRole.buyer,
     rating: (json['rating'] as num).toDouble(),
-    text: json['text'] as String,
+    body: json['body'] as String,
     isHidden: json['is_hidden'] as bool? ?? false,
     isReviewerDeleted: json['is_reviewer_deleted'] as bool? ?? false,
     createdAt: DateTime.parse(json['created_at'] as String),

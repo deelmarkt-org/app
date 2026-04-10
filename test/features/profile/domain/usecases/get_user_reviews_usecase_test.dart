@@ -28,7 +28,7 @@ void main() {
       expect(first.id, isNotEmpty);
       expect(first.reviewerName, isNotEmpty);
       expect(first.rating, greaterThan(0));
-      expect(first.text, isNotEmpty);
+      expect(first.body, isNotEmpty);
     });
 
     test('respects limit parameter', () async {

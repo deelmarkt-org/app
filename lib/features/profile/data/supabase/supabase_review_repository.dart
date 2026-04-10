@@ -103,49 +103,42 @@ class SupabaseReviewRepository implements ReviewRepository {
     }
   }
 
-  /// Computes aggregate rating stats for [userId].
+  /// Computes aggregate rating stats for [userId] via the server-side
+  /// [get_review_aggregate] RPC (migration R-36), which avoids fetching
+  /// unbounded rows client-side.
   ///
   /// [ReviewAggregate.isVisible] is true only when totalCount >= 3,
   /// matching the E06 spec: "average displayed once ≥3 reviews".
   @override
   Future<ReviewAggregate> getAggregateForUser(String userId) async {
     try {
-      final response = await _client
-          .from(_reviews)
-          .select('rating, $_createdAt')
-          .eq('reviewee_id', userId)
-          .eq('is_hidden', false)
-          .order(_createdAt, ascending: false);
-
-      final rows = (response as List<dynamic>).cast<Map<String, dynamic>>();
-      if (rows.isEmpty) return ReviewAggregate.empty(userId);
-
-      final count = rows.length;
-      final sum = rows.fold<double>(
-        0,
-        (s, r) => s + (r['rating'] as num).toDouble(),
+      final response = await _client.rpc(
+        'get_review_aggregate',
+        params: {'p_user_id': userId},
       );
 
-      final distribution = <int, int>{};
-      DateTime? lastReviewAt;
+      final rows = response as List<dynamic>;
+      if (rows.isEmpty) return ReviewAggregate.empty(userId);
 
-      for (final r in rows) {
-        final bucket = (r['rating'] as num).round();
-        distribution[bucket] = (distribution[bucket] ?? 0) + 1;
+      final row = rows.first as Map<String, dynamic>;
+      final count = (row['total_count'] as num?)?.toInt() ?? 0;
+      if (count == 0) return ReviewAggregate.empty(userId);
 
-        final raw = r[_createdAt] as String?;
-        if (raw != null) {
-          final dt = DateTime.tryParse(raw);
-          if (dt != null &&
-              (lastReviewAt == null || dt.isAfter(lastReviewAt))) {
-            lastReviewAt = dt;
-          }
-        }
-      }
+      final avg = (row['avg_rating'] as num?)?.toDouble() ?? 0.0;
+      final distribution = <int, int>{
+        1: (row['dist_1'] as num?)?.toInt() ?? 0,
+        2: (row['dist_2'] as num?)?.toInt() ?? 0,
+        3: (row['dist_3'] as num?)?.toInt() ?? 0,
+        4: (row['dist_4'] as num?)?.toInt() ?? 0,
+        5: (row['dist_5'] as num?)?.toInt() ?? 0,
+      };
+      final rawLastAt = row['last_review_at'] as String?;
+      final lastReviewAt =
+          rawLastAt != null ? DateTime.tryParse(rawLastAt) : null;
 
       return ReviewAggregate(
         userId: userId,
-        averageRating: sum / count,
+        averageRating: avg,
         totalCount: count,
         isVisible: count >= 3,
         distribution: distribution,
@@ -185,7 +178,13 @@ class SupabaseReviewRepository implements ReviewRepository {
               .eq('id', userId)
               .single();
       return response;
-    } on PostgrestException {
+    } on PostgrestException catch (e) {
+      // Non-fatal: reviewer profile missing → review still submits with empty name.
+      // Log for observability (Sentry via R-12 integration picks this up).
+      // ignore: avoid_print
+      print(
+        '[SupabaseReviewRepository] _fetchProfile failed for $userId: ${e.message}',
+      );
       return {'display_name': '', 'avatar_url': null};
     }
   }
