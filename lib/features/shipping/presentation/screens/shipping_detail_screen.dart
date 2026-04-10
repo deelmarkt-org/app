@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
@@ -12,6 +11,7 @@ import 'package:deelmarkt/features/shipping/domain/entities/shipping_label.dart'
 import 'package:deelmarkt/features/shipping/domain/entities/tracking_event.dart';
 import 'package:deelmarkt/features/shipping/presentation/extensions/shipping_carrier_ext.dart';
 import 'package:deelmarkt/features/shipping/presentation/widgets/shipping_action_buttons.dart';
+import 'package:deelmarkt/features/shipping/presentation/widgets/tracking_status_card.dart';
 
 /// Shipping overview screen — hub linking to QR, tracking, and parcel shops.
 ///
@@ -42,7 +42,10 @@ class ShippingDetailScreen extends StatelessWidget {
                 const SizedBox(height: Spacing.s4),
                 _carrierCard(context, isDark: isDark),
                 const SizedBox(height: Spacing.s4),
-                _trackingStatus(context, isDark: isDark),
+                TrackingStatusCard(
+                  latestEvent: events.isNotEmpty ? events.first : null,
+                  isDark: isDark,
+                ),
                 const SizedBox(height: Spacing.s6),
                 ShippingActionButtons(shippingId: label.id),
               ],
@@ -60,7 +63,7 @@ class ShippingDetailScreen extends StatelessWidget {
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.all(Spacing.s4),
-        decoration: _cardDecoration(isDark),
+        decoration: shippingCardDecoration(isDark),
         child: Row(
           children: [
             Icon(
@@ -99,96 +102,4 @@ class ShippingDetailScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _trackingStatus(BuildContext context, {required bool isDark}) {
-    return _TrackingStatusCard(
-      latestEvent: events.isNotEmpty ? events.first : null,
-      isDark: isDark,
-    );
-  }
-}
-
-class _TrackingStatusCard extends StatelessWidget {
-  const _TrackingStatusCard({required this.latestEvent, required this.isDark});
-
-  final TrackingEvent? latestEvent;
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final statusText = latestEvent?.description ?? 'tracking.noUpdates'.tr();
-    final isTerminal = latestEvent?.status.isTerminal == true;
-    final statusColor =
-        isTerminal
-            ? DeelmarktColors.trustVerified
-            : isDark
-            ? DeelmarktColors.darkOnSurfaceSecondary
-            : DeelmarktColors.neutral700;
-
-    return Semantics(
-      label: '${'tracking.latestUpdate'.tr()} $statusText',
-      excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.all(Spacing.s4),
-        decoration: _cardDecoration(isDark),
-        child: _statusRow(context, statusText, statusColor, isTerminal),
-      ),
-    );
-  }
-
-  Widget _statusRow(
-    BuildContext context,
-    String statusText,
-    Color statusColor,
-    bool isTerminal,
-  ) {
-    return Row(
-      children: [
-        Icon(
-          isTerminal
-              ? PhosphorIcons.checkCircle(PhosphorIconsStyle.fill)
-              : PhosphorIcons.clockCountdown(),
-          color: statusColor,
-        ),
-        const SizedBox(width: Spacing.s3),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'tracking.latestUpdate'.tr(),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkOnSurfaceSecondary
-                          : DeelmarktColors.neutral500,
-                ),
-              ),
-              const SizedBox(height: Spacing.s1),
-              Text(
-                statusText,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: statusColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-BoxDecoration _cardDecoration(bool isDark) {
-  return BoxDecoration(
-    color:
-        isDark
-            ? DeelmarktColors.darkSurfaceElevated
-            : DeelmarktColors.neutral50,
-    borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-    border: Border.all(
-      color: isDark ? DeelmarktColors.darkBorder : DeelmarktColors.neutral200,
-    ),
-  );
 }

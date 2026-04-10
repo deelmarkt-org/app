@@ -16,6 +16,7 @@ ShippingLabel _label() => ShippingLabel(
   qrData: '3SDEVC1234567|POSTNL|1012RR',
   trackingNumber: '3SDEVC1234567',
   carrier: ShippingCarrier.postnl,
+  destinationPostalCode: '1012RR',
   shipByDeadline: DateTime(2026, 4, 12),
   createdAt: DateTime(2026, 4, 8),
 );

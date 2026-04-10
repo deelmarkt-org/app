@@ -13,13 +13,25 @@ import 'package:deelmarkt/features/transaction/domain/entities/transaction_entit
 import 'package:deelmarkt/features/transaction/presentation/transaction_detail_notifier.dart';
 
 /// Action buttons based on transaction status.
-class ActionSection extends ConsumerWidget {
+///
+/// Uses [ConsumerStatefulWidget] for the `_isConfirming` loading guard
+/// on the confirm-delivery button (escrow-releasing financial action).
+/// Accepted §1.3 deviation: setState for ephemeral button loading state only.
+class ActionSection extends ConsumerStatefulWidget {
   const ActionSection({required this.transaction, super.key});
 
   final TransactionEntity transaction;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ActionSection> createState() => _ActionSectionState();
+}
+
+class _ActionSectionState extends ConsumerState<ActionSection> {
+  bool _isConfirming = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final transaction = widget.transaction;
     return switch (transaction.status) {
       TransactionStatus.paid => _infoRow(
         context,
@@ -39,7 +51,8 @@ class ActionSection extends ConsumerWidget {
             label: 'escrow.confirmDelivery'.tr(),
             leadingIcon: PhosphorIcons.checkCircle(),
             variant: DeelButtonVariant.success,
-            onPressed: () => _confirmDelivery(context, ref),
+            isLoading: _isConfirming,
+            onPressed: _isConfirming ? null : _confirmDelivery,
           ),
           const SizedBox(height: Spacing.s3),
           DeelButton(
@@ -70,20 +83,23 @@ class ActionSection extends ConsumerWidget {
     };
   }
 
-  Future<void> _confirmDelivery(BuildContext context, WidgetRef ref) async {
+  Future<void> _confirmDelivery() async {
+    setState(() => _isConfirming = true);
     try {
       final repo = ref.read(transactionRepositoryProvider);
       await repo.updateStatus(
-        transactionId: transaction.id,
+        transactionId: widget.transaction.id,
         newStatus: TransactionStatus.confirmed,
       );
-      ref.invalidate(transactionDetailProvider(transaction.id));
+      ref.invalidate(transactionDetailProvider(widget.transaction.id));
     } on Exception {
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('error.generic'.tr())));
       }
+    } finally {
+      if (mounted) setState(() => _isConfirming = false);
     }
   }
 

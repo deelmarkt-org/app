@@ -323,6 +323,7 @@ GoRouter _buildRouter({
 class _NotFoundScreen extends StatelessWidget {
   const _NotFoundScreen({required this.path});
 
+  /// The unmatched route path (shown in debug mode for diagnostics).
   final String path;
 
   @override
@@ -330,9 +331,18 @@ class _NotFoundScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('error.notFound'.tr())),
       body: Center(
-        child: Text(
-          'error.notFound'.tr(),
-          style: Theme.of(context).textTheme.headlineMedium,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'error.notFound'.tr(),
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            if (kDebugMode) ...[
+              const SizedBox(height: 8),
+              Text(path, style: Theme.of(context).textTheme.bodySmall),
+            ],
+          ],
         ),
       ),
     );

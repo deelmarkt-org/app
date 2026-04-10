@@ -24,9 +24,13 @@ final shippingDetailProvider =
       id,
     ) async {
       final repo = ref.watch(shippingRepositoryProvider);
-      final label = await repo.getLabel(id);
+      final results = await Future.wait([
+        repo.getLabel(id),
+        repo.getTrackingEvents(id),
+      ]);
+      final label = results[0] as ShippingLabel?;
       if (label == null) throw Exception('Shipping label not found');
-      final events = await repo.getTrackingEvents(id);
+      final events = results[1] as List<TrackingEvent>;
       return ShippingDetailState(label: label, events: events);
     });
 

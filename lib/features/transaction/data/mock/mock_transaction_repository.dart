@@ -13,7 +13,7 @@ const _currentUser = 'user-current';
 const _seller = 'user-seller';
 
 class MockTransactionRepository implements TransactionRepository {
-  MockTransactionRepository() {
+  MockTransactionRepository() : _data = Map.of(_seed) {
     if (kReleaseMode) {
       throw StateError(
         'MockTransactionRepository cannot be used in release builds',
@@ -21,7 +21,10 @@ class MockTransactionRepository implements TransactionRepository {
     }
   }
 
-  static final _fixtures = <String, TransactionEntity>{
+  /// Instance-level copy so mutations don't leak across test runs.
+  final Map<String, TransactionEntity> _data;
+
+  static final _seed = <String, TransactionEntity>{
     'txn-001': TransactionEntity(
       id: 'txn-001',
       listingId: 'listing-001',
@@ -120,13 +123,13 @@ class MockTransactionRepository implements TransactionRepository {
   @override
   Future<TransactionEntity?> getTransaction(String id) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    return _fixtures[id];
+    return _data[id];
   }
 
   @override
   Future<List<TransactionEntity>> getTransactionsForUser(String userId) async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return _fixtures.values
+    return _data.values
         .where((t) => t.buyerId == userId || t.sellerId == userId)
         .toList();
   }
@@ -148,10 +151,10 @@ class MockTransactionRepository implements TransactionRepository {
     required TransactionStatus newStatus,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 200));
-    final txn = _fixtures[transactionId];
+    final txn = _data[transactionId];
     if (txn == null) throw Exception('Transaction not found');
     final updated = txn.copyWith(status: newStatus);
-    _fixtures[transactionId] = updated;
+    _data[transactionId] = updated;
     return updated;
   }
 
