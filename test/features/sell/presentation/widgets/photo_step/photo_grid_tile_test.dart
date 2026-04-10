@@ -13,6 +13,8 @@ const _img = SellImage(
   status: ImageUploadStatus.uploaded,
 );
 
+void _noOp() {}
+
 void main() {
   // Suppress image decode errors from fake file paths.
   final origOnError = FlutterError.onError;
@@ -162,7 +164,23 @@ void main() {
 
       expect(find.byType(ClipRRect), findsOneWidget);
     });
-  });
-}
 
-void _noOp() {}
+    testWidgets('uploaded image uses full opacity', (tester) async {
+      await pumpTestWidget(
+        tester,
+        const SizedBox(
+          width: 120,
+          height: 120,
+          child: PhotoGridTile(image: _img, index: 0),
+        ),
+      );
+
+      final opacity = tester.widget<Opacity>(find.byType(Opacity).first);
+      expect(opacity.opacity, equals(1.0));
+    });
+  });
+
+  // Uploading and failed state tests live in
+  // photo_grid_tile_states_test.dart to keep this file under the 300-line
+  // test file limit (CLAUDE.md §2.1).
+}

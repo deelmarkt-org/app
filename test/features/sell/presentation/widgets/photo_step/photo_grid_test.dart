@@ -217,5 +217,148 @@ void main() {
 
       expect(find.byType(DragTarget<int>), findsOneWidget);
     });
+
+    testWidgets('single tile has no reorder popup menu (first == last guard)', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        SizedBox(
+          height: 400,
+          child: PhotoGrid(
+            imageFiles: [_img('only', '/img/only.jpg')],
+            onRemove: (_) {},
+            onRetry: (_) {},
+            onReorder: (_, _) {},
+          ),
+        ),
+      );
+
+      expect(find.byType(PopupMenuButton<String>), findsNothing);
+    });
+
+    testWidgets('middle tile popup menu shows all three reorder actions', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        SizedBox(
+          height: 600,
+          child: PhotoGrid(
+            imageFiles: [
+              _img('a', '/img/a.jpg'),
+              _img('b', '/img/b.jpg'),
+              _img('c', '/img/c.jpg'),
+            ],
+            onRemove: (_) {},
+            onRetry: (_) {},
+            onReorder: (_, _) {},
+          ),
+        ),
+      );
+
+      // The middle tile (index 1) has moveToFront, moveUp, moveDown.
+      final popups = find.byType(PopupMenuButton<String>);
+      expect(popups, findsNWidgets(3));
+
+      await tester.tap(popups.at(1));
+      await tester.pumpAndSettle();
+
+      expect(find.text('sell.moveToFront'), findsOneWidget);
+      expect(find.text('sell.moveUp'), findsOneWidget);
+      expect(find.text('sell.moveDown'), findsOneWidget);
+    });
+
+    testWidgets('moveToFront from middle tile fires onReorder(1, 0)', (
+      tester,
+    ) async {
+      int? from;
+      int? to;
+
+      await pumpTestWidget(
+        tester,
+        SizedBox(
+          height: 600,
+          child: PhotoGrid(
+            imageFiles: [
+              _img('a', '/img/a.jpg'),
+              _img('b', '/img/b.jpg'),
+              _img('c', '/img/c.jpg'),
+            ],
+            onRemove: (_) {},
+            onRetry: (_) {},
+            onReorder: (f, t) {
+              from = f;
+              to = t;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(PopupMenuButton<String>).at(1));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('sell.moveToFront'));
+      await tester.pumpAndSettle();
+
+      expect(from, equals(1));
+      expect(to, equals(0));
+    });
+
+    testWidgets('moveUp from middle tile fires onReorder(1, 0)', (
+      tester,
+    ) async {
+      int? from;
+      int? to;
+
+      await pumpTestWidget(
+        tester,
+        SizedBox(
+          height: 600,
+          child: PhotoGrid(
+            imageFiles: [
+              _img('a', '/img/a.jpg'),
+              _img('b', '/img/b.jpg'),
+              _img('c', '/img/c.jpg'),
+            ],
+            onRemove: (_) {},
+            onRetry: (_) {},
+            onReorder: (f, t) {
+              from = f;
+              to = t;
+            },
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(PopupMenuButton<String>).at(1));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('sell.moveUp'));
+      await tester.pumpAndSettle();
+
+      expect(from, equals(1));
+      expect(to, equals(0));
+    });
+
+    testWidgets('last tile popup menu does not show moveDown', (tester) async {
+      await pumpTestWidget(
+        tester,
+        SizedBox(
+          height: 600,
+          child: PhotoGrid(
+            imageFiles: [_img('a', '/img/a.jpg'), _img('b', '/img/b.jpg')],
+            onRemove: (_) {},
+            onRetry: (_) {},
+            onReorder: (_, _) {},
+          ),
+        ),
+      );
+
+      // Tap the last tile's popup menu.
+      await tester.tap(find.byType(PopupMenuButton<String>).at(1));
+      await tester.pumpAndSettle();
+
+      expect(find.text('sell.moveDown'), findsNothing);
+      expect(find.text('sell.moveUp'), findsOneWidget);
+    });
   });
 }

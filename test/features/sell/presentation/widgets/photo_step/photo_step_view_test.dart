@@ -1,42 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
-import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
-import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_step_view.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 import '../../../../../helpers/pump_app.dart';
-import '../../viewmodels/viewmodel_test_helpers.dart';
-
-/// Stub notifier that returns a fixed [ListingCreationState].
-class _StubListingCreationNotifier extends ListingCreationNotifier {
-  _StubListingCreationNotifier(this._state);
-
-  final ListingCreationState _state;
-
-  @override
-  ListingCreationState build() => _state;
-}
-
-List<Override> buildOverrides(
-  SharedPreferences prefs,
-  ListingCreationState state,
-) => [
-  sharedPreferencesProvider.overrideWithValue(prefs),
-  listingCreationNotifierProvider.overrideWith(
-    () => _StubListingCreationNotifier(state),
-  ),
-  imagePickerServiceProvider.overrideWithValue(MockImagePickerService()),
-  imageUploadRepositoryProvider.overrideWithValue(FakeImageUploadRepository()),
-  listingCreationRepositoryProvider.overrideWithValue(
-    MockListingCreationRepository(),
-  ),
-];
+import '_photo_step_test_helpers.dart';
 
 void main() {
   late SharedPreferences prefs;
@@ -58,7 +29,7 @@ void main() {
   );
   tearDown(() => FlutterError.onError = origOnError);
 
-  group('PhotoStepView', () {
+  group('PhotoStepView — rendering', () {
     testWidgets('renders without error with empty imageFiles', (tester) async {
       const state = ListingCreationState();
 
@@ -67,10 +38,9 @@ void main() {
         const Scaffold(
           body: Column(children: [Expanded(child: PhotoStepView())]),
         ),
-        overrides: buildOverrides(prefs, state),
+        overrides: buildPhotoStepOverrides(prefs, state),
       );
 
-      // PhotoStepView must be present in the tree.
       expect(find.byType(PhotoStepView), findsOneWidget);
     });
 
@@ -84,10 +54,9 @@ void main() {
         const Scaffold(
           body: Column(children: [Expanded(child: PhotoStepView())]),
         ),
-        overrides: buildOverrides(prefs, state),
+        overrides: buildPhotoStepOverrides(prefs, state),
       );
 
-      // .tr() returns the l10n key in test environments.
       expect(find.text('sell.photosCount'), findsOneWidget);
     });
 
@@ -101,10 +70,9 @@ void main() {
         const Scaffold(
           body: Column(children: [Expanded(child: PhotoStepView())]),
         ),
-        overrides: buildOverrides(prefs, state),
+        overrides: buildPhotoStepOverrides(prefs, state),
       );
 
-      // At least two DeelButtons should be present: add photos + next.
       expect(find.byType(DeelButton), findsWidgets);
 
       final addPhotosButton = tester
@@ -127,15 +95,100 @@ void main() {
         const Scaffold(
           body: Column(children: [Expanded(child: PhotoStepView())]),
         ),
-        overrides: buildOverrides(prefs, state),
+        overrides: buildPhotoStepOverrides(prefs, state),
       );
 
-      // The last DeelButton is the "next" button.
+      final nextButton =
+          tester.widgetList<DeelButton>(find.byType(DeelButton)).last;
+      expect(nextButton.onPressed, isNull);
+    });
+
+    testWidgets('next button is enabled when all images uploaded', (
+      tester,
+    ) async {
+      const state = ListingCreationState(
+        imageFiles: [
+          SellImage(
+            id: 'a',
+            localPath: '/img/a.jpg',
+            status: ImageUploadStatus.uploaded,
+          ),
+        ],
+      );
+
+      await pumpTestScreenWithProviders(
+        tester,
+        const Scaffold(
+          body: Column(children: [Expanded(child: PhotoStepView())]),
+        ),
+        overrides: buildPhotoStepOverrides(prefs, state),
+      );
+
       final nextButton =
           tester.widgetList<DeelButton>(find.byType(DeelButton)).last;
 
-      // With empty imageFiles, allImagesUploaded is false → onPressed null.
-      expect(nextButton.onPressed, isNull);
+      expect(nextButton.onPressed, isNotNull);
+    });
+
+    testWidgets('hides add-photos button when imageFiles reaches max (12)', (
+      tester,
+    ) async {
+      final images = List.generate(
+        12,
+        (i) => SellImage(
+          id: '$i',
+          localPath: '/img/$i.jpg',
+          status: ImageUploadStatus.uploaded,
+        ),
+      );
+      final state = ListingCreationState(imageFiles: images);
+
+      await pumpTestScreenWithProviders(
+        tester,
+        const Scaffold(
+          body: Column(children: [Expanded(child: PhotoStepView())]),
+        ),
+        overrides: buildPhotoStepOverrides(prefs, state),
+      );
+
+      final buttons =
+          tester.widgetList<DeelButton>(find.byType(DeelButton)).toList();
+      final outlineButtons = buttons.where(
+        (b) => b.variant == DeelButtonVariant.outline,
+      );
+
+      expect(outlineButtons, isEmpty);
+      expect(buttons.length, equals(1));
+    });
+
+    testWidgets('next button tap invokes notifier.nextStep when enabled', (
+      tester,
+    ) async {
+      const state = ListingCreationState(
+        imageFiles: [
+          SellImage(
+            id: 'a',
+            localPath: '/img/a.jpg',
+            status: ImageUploadStatus.uploaded,
+          ),
+        ],
+      );
+      final stub = StubListingCreationNotifier(state);
+
+      await pumpTestScreenWithProviders(
+        tester,
+        const Scaffold(
+          body: Column(children: [Expanded(child: PhotoStepView())]),
+        ),
+        overrides: buildPhotoStepOverrides(prefs, state, stub: stub),
+      );
+
+      final nextButton =
+          tester.widgetList<DeelButton>(find.byType(DeelButton)).last;
+      nextButton.onPressed!();
+      await tester.pump();
+
+      expect(stub.nextStepCalls, equals(1));
     });
   });
 }
