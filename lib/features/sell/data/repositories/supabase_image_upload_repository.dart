@@ -27,9 +27,9 @@ class SupabaseImageUploadRepository implements ImageUploadRepository {
 
   static const String _bucket = 'listings-images';
   static const String _functionName = 'image-upload-process';
-  // 10 MB client-side cap — prevents OOM on oversized files before Storage
-  // rejects them. Server-side Supabase Storage limit is the authoritative cap.
-  static const int _maxFileSizeBytes = 10 * 1024 * 1024;
+  // 15 MB client-side cap — aligns with the documented R-27 limit and prevents
+  // OOM on oversized files before Storage rejects them.
+  static const int _maxFileSizeBytes = 15 * 1024 * 1024;
   static const Set<String> _allowedExtensions = {
     'jpg',
     'jpeg',
