@@ -758,5 +758,36 @@
     "month_ago": "1 month ago",
     "months_ago": "{n} months ago",
     "year_ago": "1 year ago"
+  },
+  "sanction": {
+    "type": {
+      "warning": "Warning",
+      "suspension": "Suspension",
+      "ban": "Ban"
+    },
+    "screen": {
+      "title": "Account suspended",
+      "reason_label": "Reason",
+      "expires_label": "Suspended until",
+      "permanent": "Permanent",
+      "appeal_title": "Submit an appeal",
+      "appeal_hint": "Explain why you believe this decision is incorrect (max 1000 characters)",
+      "appeal_submit": "Submit appeal",
+      "appeal_submitted_title": "Appeal submitted",
+      "appeal_submitted_body": "We will review your appeal within 72 hours.",
+      "appeal_pending_title": "Appeal under review",
+      "appeal_pending_body": "Your appeal is being reviewed. We will notify you of the decision within 72 hours.",
+      "appeal_upheld_title": "Appeal upheld",
+      "appeal_upheld_body": "Your appeal was reviewed and the decision stands.",
+      "appeal_overturned_title": "Account reinstated",
+      "appeal_overturned_body": "Your appeal was accepted. Your account has been fully restored.",
+      "appeal_window_closed": "The 14-day appeal window for this sanction has closed.",
+      "appeal_not_eligible": "Warnings cannot be appealed.",
+      "contact_support": "Contact support"
+    },
+    "a11y": {
+      "sanction_icon": "Account suspended icon",
+      "appeal_form": "Appeal form"
+    }
   }
 }

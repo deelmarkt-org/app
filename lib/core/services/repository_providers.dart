@@ -10,12 +10,15 @@ import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.da
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_review_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
@@ -102,4 +105,14 @@ final messageRepositoryProvider = Provider<MessageRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockMessageRepository();
   return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Sanction repository — mock or Supabase based on [useMockDataProvider].
+///
+/// Provides read access to [account_sanctions] and the [submit_appeal] RPC.
+/// All write operations (issuance, decisions) are service_role-only (R-37).
+final sanctionRepositoryProvider = Provider<SanctionRepository>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockSanctionRepository();
+  return SupabaseSanctionRepository(ref.watch(supabaseClientProvider));
 });
