@@ -17,6 +17,7 @@
 
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
 import { jsonResponse } from "../_shared/response.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
@@ -83,7 +84,8 @@ async function getFcmAccessToken(sa: ServiceAccount): Promise<string> {
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
+    body:
+      `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
   });
 
   if (!res.ok) {
@@ -129,9 +131,10 @@ async function sendFcmMessages(
   body: string,
   data: Record<string, string>,
 ): Promise<FcmResult[]> {
-  const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
+  const url =
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
-  return Promise.all(
+  return await Promise.all(
     tokens.map(async (t): Promise<FcmResult> => {
       const res = await fetch(url, {
         method: "POST",
@@ -157,7 +160,9 @@ async function sendFcmMessages(
 
       if (!res.ok && !unregistered) {
         console.error(
-          `[push] FCM send failed for token ${t.token.slice(0, 8)}...: ${res.status} ${responseBody}`,
+          `[push] FCM send failed for token ${
+            t.token.slice(0, 8)
+          }...: ${res.status} ${responseBody}`,
         );
       }
 
@@ -184,18 +189,27 @@ Deno.serve(async (req: Request): Promise<Response> => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  let payload: MessagePayload;
+  let body: unknown;
   try {
-    payload = await req.json();
+    body = await req.json();
   } catch {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
 
-  const { message_id, conversation_id, sender_id, text, type } = payload;
+  const MessagePayloadSchema = z.object({
+    message_id: z.string().uuid(),
+    conversation_id: z.string().uuid(),
+    sender_id: z.string().uuid(),
+    text: z.string(),
+    type: z.string(),
+  });
 
-  if (!conversation_id || !sender_id) {
-    return jsonResponse({ error: "Missing conversation_id or sender_id" }, 400);
+  const parsed = MessagePayloadSchema.safeParse(body);
+  if (!parsed.success) {
+    return jsonResponse({ error: parsed.error.flatten() }, 400);
   }
+
+  const { message_id, conversation_id, sender_id, text, type } = parsed.data;
 
   try {
     // 0. Idempotency — prevent duplicate pushes on pg_net retry.
@@ -214,17 +228,19 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     if (convError || !conv) {
       console.error(`[push] conversation lookup failed: ${convError?.message}`);
-      return jsonResponse({ status: "skipped", reason: "conversation_not_found" });
+      return jsonResponse({
+        status: "skipped",
+        reason: "conversation_not_found",
+      });
     }
 
     const typedConv = conv as {
       buyer_id: string;
       listings: { seller_id: string; title: string };
     };
-    const recipientId =
-      sender_id === typedConv.buyer_id
-        ? typedConv.listings.seller_id
-        : typedConv.buyer_id;
+    const recipientId = sender_id === typedConv.buyer_id
+      ? typedConv.listings.seller_id
+      : typedConv.buyer_id;
 
     // 2. Check notification preferences.
     const { data: prefs } = await supabase
@@ -234,7 +250,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .maybeSingle();
 
     if (prefs && prefs.messages === false) {
-      return jsonResponse({ status: "skipped", reason: "notifications_disabled" });
+      return jsonResponse({
+        status: "skipped",
+        reason: "notifications_disabled",
+      });
     }
 
     // 3. Fetch device tokens.
@@ -245,7 +264,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     if (tokenError) {
       console.error(`[push] token lookup failed: ${tokenError.message}`);
-      return jsonResponse({ status: "error", message: tokenError.message }, 500);
+      return jsonResponse(
+        { status: "error", message: tokenError.message },
+        500,
+      );
     }
 
     if (!tokens || tokens.length === 0) {
@@ -265,7 +287,8 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .eq("id", sender_id)
       .single();
 
-    const senderName = (senderProfile as { display_name: string })?.display_name ?? "Someone";
+    const senderName =
+      (senderProfile as { display_name: string })?.display_name ?? "Someone";
     const title = type === "offer"
       ? `${senderName} sent an offer`
       : `${senderName} sent a message`;
@@ -285,7 +308,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const staleTokenIds = results
       .filter((r) => r.unregistered)
       .map((r) => {
-        const match = (tokens as FcmTokenRow[]).find((t) => t.token === r.token);
+        const match = (tokens as FcmTokenRow[]).find((t) =>
+          t.token === r.token
+        );
         return match?.id;
       })
       .filter(Boolean) as string[];
@@ -299,7 +324,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const failed = results.filter((r) => !r.success && !r.unregistered).length;
 
     console.log(
-      `[push] recipient=${recipientId.slice(0, 8)} sent=${sent} failed=${failed} stale=${staleTokenIds.length}`,
+      `[push] recipient=${
+        recipientId.slice(0, 8)
+      } sent=${sent} failed=${failed} stale=${staleTokenIds.length}`,
     );
 
     return jsonResponse({

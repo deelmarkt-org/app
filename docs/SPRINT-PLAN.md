@@ -216,9 +216,9 @@ The agent will:
 - [x] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough ✅ PR #66
 - [x] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` ✅ PR #99
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
-- [ ] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` (follow-up to PR #68)
+- [x] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` ✅ PR #101
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
-- [ ] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50`. Follow-up captured from PR #67 review #7.
+- [x] `P-33a` Wire `EscrowTimeline.onStepTapped` in `TransactionDetailScreen` — step-detail modal with timestamp per `patterns.md:50` ✅ PR #101
 - [x] `P-34` `ScamAlert` widget (inline chat warning) — matches spec
 
 ---
@@ -232,9 +232,9 @@ The agent will:
 - [x] `R-31` Messages table + Supabase Realtime — real-time delivery works *(done by reso (mahmutkaya))*
 - [x] `R-32` "Make an Offer" structured message type — offer with price stored
 - [x] `R-33` Seller response time calculation (cron) — average computed daily *(PR #89)*
-- [x] `R-34` FCM push notification on new message — delivered on iOS + Android
-- [ ] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
-- [ ] `R-36` Reviews table + blind review logic — hidden until both submit
+- [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
+- [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
+- [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
 - [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate
 - [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
 
@@ -242,8 +242,8 @@ The agent will:
 
 **Branch:** `feature/belengaz-E04-connectors` | **Epics:** [E04](epics/E04-messaging.md) + [E05](epics/E05-shipping-logistics.md)
 
-- [ ] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB
-- [ ] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
+- [x] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB *(PR #96)*
+- [x] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
 - [ ] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested

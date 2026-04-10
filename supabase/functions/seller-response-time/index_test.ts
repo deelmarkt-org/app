@@ -1,6 +1,4 @@
-import {
-  assertEquals,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 
 // ---------------------------------------------------------------------------
@@ -37,7 +35,8 @@ function computeGapsForConversation(
   let pendingBuyerMsg: MessageRow | null = null;
 
   const sorted = [...msgs].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    (a, b) =>
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
   );
 
   for (const msg of sorted) {
@@ -155,7 +154,7 @@ describe("computeGapsForConversation()", () => {
 
   it("computes a single gap correctly", () => {
     const msgs = [
-      makeMsg("m1", buyerId, 0),  // buyer at t+0
+      makeMsg("m1", buyerId, 0), // buyer at t+0
       makeMsg("m2", sellerId, 30), // seller at t+30 → 30 min gap
     ];
     assertEquals(computeGapsForConversation(msgs, conv), [30]);
@@ -163,9 +162,9 @@ describe("computeGapsForConversation()", () => {
 
   it("captures multiple (buyer_msg, reply) pairs in sequence", () => {
     const msgs = [
-      makeMsg("m1", buyerId, 0),   // buyer
+      makeMsg("m1", buyerId, 0), // buyer
       makeMsg("m2", sellerId, 15), // seller → 15 min
-      makeMsg("m3", buyerId, 30),  // buyer again
+      makeMsg("m3", buyerId, 30), // buyer again
       makeMsg("m4", sellerId, 60), // seller → 30 min
     ];
     assertEquals(computeGapsForConversation(msgs, conv), [15, 30]);
@@ -175,7 +174,7 @@ describe("computeGapsForConversation()", () => {
     const msgs = [
       makeMsg("m1", buyerId, 0),
       makeMsg("m2", sellerId, 10), // answered
-      makeMsg("m3", buyerId, 20),  // not yet answered
+      makeMsg("m3", buyerId, 20), // not yet answered
     ];
     assertEquals(computeGapsForConversation(msgs, conv), [10]);
   });
@@ -223,8 +222,10 @@ describe("HTTP handler", () => {
       method: "POST",
       headers: authHeaders,
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.resolve({ sellers_updated: 5, stale_cleared: 1 }),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.resolve({ sellers_updated: 5, stale_cleared: 1 }),
     );
     assertEquals(res.status, 200);
     const body = await res.json();
@@ -237,8 +238,10 @@ describe("HTTP handler", () => {
     const req = new Request("http://localhost/seller-response-time", {
       method: "POST",
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
     );
     assertEquals(res.status, 401);
     const body = await res.json();
@@ -250,8 +253,10 @@ describe("HTTP handler", () => {
       method: "POST",
       headers: { Authorization: "Bearer wrong-key" },
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
     );
     assertEquals(res.status, 401);
   });
@@ -261,8 +266,10 @@ describe("HTTP handler", () => {
       method: "DELETE",
       headers: authHeaders,
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
     );
     assertEquals(res.status, 405);
   });
@@ -272,8 +279,10 @@ describe("HTTP handler", () => {
       method: "POST",
       headers: authHeaders,
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.reject(new Error("DB connection failed")),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.reject(new Error("DB connection failed")),
     );
     assertEquals(res.status, 500);
     const body = await res.json();
@@ -286,8 +295,10 @@ describe("HTTP handler", () => {
       method: "GET",
       headers: authHeaders,
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.resolve({ sellers_updated: 0, stale_cleared: 0 }),
     );
     assertEquals(res.status, 200);
   });

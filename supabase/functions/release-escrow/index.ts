@@ -19,6 +19,7 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { triggerPagerDuty } from "../_shared/pagerduty.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -41,7 +42,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
   const pagerdutyKey = Deno.env.get("PAGERDUTY_ROUTING_KEY");
   const now = new Date().toISOString();
@@ -77,7 +78,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
         // Fallback: RPC not available (migration not yet applied)
-        console.warn(`[release-escrow] fetch_releasable_confirmed RPC unavailable, falling back:`, err);
+        console.warn(
+          `[release-escrow] fetch_releasable_confirmed RPC unavailable, falling back:`,
+          err,
+        );
         return supabase
           .from("transactions")
           .select("id, seller_id, item_amount_cents, shipping_cost_cents")
@@ -85,15 +89,32 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
 
     if (confirmedError) {
-      throw new Error(`Failed to fetch confirmed txns: ${(confirmedError as { message: string }).message}`);
+      throw new Error(
+        `Failed to fetch confirmed txns: ${
+          (confirmedError as { message: string }).message
+        }`,
+      );
     }
 
-    for (const txn of (confirmed as Array<{ id: string; seller_id: string; item_amount_cents: number; shipping_cost_cents: number }>) ?? []) {
+    for (
+      const txn of (confirmed as Array<
+        {
+          id: string;
+          seller_id: string;
+          item_amount_cents: number;
+          shipping_cost_cents: number;
+        }
+      >) ?? []
+    ) {
       try {
         await releaseToSeller(supabase, txn);
         results.confirmed_releases++;
       } catch (err) {
-        console.error(`[release-escrow] Error releasing confirmed ${txn.id}: ${(err as Error).message}`);
+        console.error(
+          `[release-escrow] Error releasing confirmed ${txn.id}: ${
+            (err as Error).message
+          }`,
+        );
         results.errors++;
       }
     }
@@ -106,7 +127,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .rpc("fetch_releasable_expired", {})
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
-        console.warn(`[release-escrow] fetch_releasable_expired RPC unavailable, falling back:`, err);
+        console.warn(
+          `[release-escrow] fetch_releasable_expired RPC unavailable, falling back:`,
+          err,
+        );
         return supabase
           .from("transactions")
           .select("id, seller_id, item_amount_cents, shipping_cost_cents")
@@ -115,10 +139,23 @@ Deno.serve(async (req: Request): Promise<Response> => {
       });
 
     if (expiredError) {
-      throw new Error(`Failed to fetch expired txns: ${(expiredError as { message: string }).message}`);
+      throw new Error(
+        `Failed to fetch expired txns: ${
+          (expiredError as { message: string }).message
+        }`,
+      );
     }
 
-    for (const txn of (expired as Array<{ id: string; seller_id: string; item_amount_cents: number; shipping_cost_cents: number }>) ?? []) {
+    for (
+      const txn of (expired as Array<
+        {
+          id: string;
+          seller_id: string;
+          item_amount_cents: number;
+          shipping_cost_cents: number;
+        }
+      >) ?? []
+    ) {
       try {
         // Auto-confirm then release
         await supabase
@@ -131,7 +168,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
         await releaseToSeller(supabase, txn);
         results.timeout_releases++;
       } catch (err) {
-        console.error(`[release-escrow] Error auto-releasing ${txn.id}: ${(err as Error).message}`);
+        console.error(
+          `[release-escrow] Error auto-releasing ${txn.id}: ${
+            (err as Error).message
+          }`,
+        );
         results.errors++;
       }
     }
@@ -144,27 +185,53 @@ Deno.serve(async (req: Request): Promise<Response> => {
     hardLimitDate.setDate(hardLimitDate.getDate() - ESCROW_HARD_LIMIT_DAYS);
 
     const { data: stale, error: staleError } = await supabase
-      .rpc("fetch_releasable_stale", { hard_limit_iso: hardLimitDate.toISOString() })
+      .rpc("fetch_releasable_stale", {
+        hard_limit_iso: hardLimitDate.toISOString(),
+      })
       .then((res: { data: unknown; error: unknown }) => res)
       .catch((err: unknown) => {
-        console.warn(`[release-escrow] fetch_releasable_stale RPC unavailable, falling back:`, err);
+        console.warn(
+          `[release-escrow] fetch_releasable_stale RPC unavailable, falling back:`,
+          err,
+        );
         return supabase
           .from("transactions")
-          .select("id, seller_id, buyer_id, status, item_amount_cents, shipping_cost_cents, paid_at")
+          .select(
+            "id, seller_id, buyer_id, status, item_amount_cents, shipping_cost_cents, paid_at",
+          )
           .in("status", ["paid", "shipped", "delivered", "confirmed"])
           .lt("paid_at", hardLimitDate.toISOString());
       });
 
     if (staleError) {
-      throw new Error(`Failed to fetch stale txns: ${(staleError as { message: string }).message}`);
+      throw new Error(
+        `Failed to fetch stale txns: ${
+          (staleError as { message: string }).message
+        }`,
+      );
     }
 
-    for (const txn of (stale as Array<{ id: string; seller_id: string; buyer_id: string; status: string; item_amount_cents: number; shipping_cost_cents: number; paid_at: string }>) ?? []) {
+    for (
+      const txn of (stale as Array<
+        {
+          id: string;
+          seller_id: string;
+          buyer_id: string;
+          status: string;
+          item_amount_cents: number;
+          shipping_cost_cents: number;
+          paid_at: string;
+        }
+      >) ?? []
+    ) {
       try {
         // Walk through valid state transitions to reach 'confirmed'.
         // DB trigger enforces state machine, so we can't skip states.
         // paid → shipped → delivered → confirmed
-        const stepsToConfirmed: Record<string, { status: string; field?: string }[]> = {
+        const stepsToConfirmed: Record<
+          string,
+          { status: string; field?: string }[]
+        > = {
           paid: [
             { status: "shipped", field: "shipped_at" },
             { status: "delivered", field: "delivered_at" },
@@ -207,29 +274,34 @@ Deno.serve(async (req: Request): Promise<Response> => {
               paid_at: txn.paid_at,
               action: "Force-released after 90-day hard limit",
             },
-            { source: "release-escrow", dedupKey: `90d:${txn.id}` }
+            { source: "release-escrow", dedupKey: `90d:${txn.id}` },
           );
         }
       } catch (err) {
-        console.error(`[release-escrow] Error force-releasing ${txn.id}: ${(err as Error).message}`);
+        console.error(
+          `[release-escrow] Error force-releasing ${txn.id}: ${
+            (err as Error).message
+          }`,
+        );
         results.errors++;
       }
     }
 
-    const total =
-      results.confirmed_releases + results.timeout_releases + results.hard_limit_releases;
     const status = results.errors > 0 ? "degraded" : "ok";
 
     console.log(
       `[release-escrow] ${status}: confirmed=${results.confirmed_releases} ` +
         `timeout=${results.timeout_releases} hard_limit=${results.hard_limit_releases} ` +
-        `errors=${results.errors}`
+        `errors=${results.errors}`,
     );
 
     return jsonResponse({ status, ...results }, 200);
   } catch (error) {
     console.error(`[release-escrow] Error: ${(error as Error).message}`);
-    return jsonResponse({ status: "error", message: (error as Error).message }, 500);
+    return jsonResponse(
+      { status: "error", message: (error as Error).message },
+      500,
+    );
   }
 });
 
@@ -239,7 +311,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
 async function releaseToSeller(
   supabase: ReturnType<typeof createClient>,
-  txn: { id: string; seller_id: string; item_amount_cents: number; shipping_cost_cents: number }
+  txn: {
+    id: string;
+    seller_id: string;
+    item_amount_cents: number;
+    shipping_cost_cents: number;
+  },
 ): Promise<void> {
   const sellerPayoutCents = txn.item_amount_cents + txn.shipping_cost_cents;
 
@@ -254,7 +331,9 @@ async function releaseToSeller(
     .select("id");
 
   if (updateError) {
-    throw new Error(`Status update failed for ${txn.id}: ${updateError.message}`);
+    throw new Error(
+      `Status update failed for ${txn.id}: ${updateError.message}`,
+    );
   }
 
   // 0 rows matched — already released
@@ -275,21 +354,14 @@ async function releaseToSeller(
 
   // H2: Skip if already recorded (retry scenario — status updated, ledger exists)
   if (ledgerError?.code === "23505") {
-    console.log(`[release-escrow] Ledger already exists for ${txn.id}, status updated`);
+    console.log(
+      `[release-escrow] Ledger already exists for ${txn.id}, status updated`,
+    );
     return;
   }
   if (ledgerError) {
-    throw new Error(`Ledger entry failed for ${txn.id}: ${ledgerError.message}`);
+    throw new Error(
+      `Ledger entry failed for ${txn.id}: ${ledgerError.message}`,
+    );
   }
-}
-
-// ---------------------------------------------------------------------------
-// Helper
-// ---------------------------------------------------------------------------
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body, null, 2), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
 }

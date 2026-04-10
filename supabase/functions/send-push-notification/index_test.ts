@@ -1,6 +1,4 @@
-import {
-  assertEquals,
-} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 
 // ---------------------------------------------------------------------------
@@ -10,7 +8,9 @@ import { describe, it } from "https://deno.land/std@0.224.0/testing/bdd.ts";
 async function handleRequest(
   req: Request,
   serviceRoleKey: string,
-  processFn: (payload: Record<string, string>) => Promise<Record<string, unknown>>,
+  processFn: (
+    payload: Record<string, string>,
+  ) => Promise<Record<string, unknown>>,
 ): Promise<Response> {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -161,8 +161,10 @@ describe("HTTP handler", () => {
         type: "text",
       }),
     });
-    const res = await handleRequest(req, SERVICE_KEY, () =>
-      Promise.reject(new Error("FCM unavailable")),
+    const res = await handleRequest(
+      req,
+      SERVICE_KEY,
+      () => Promise.reject(new Error("FCM unavailable")),
     );
     assertEquals(res.status, 500);
     const body = await res.json();
@@ -185,11 +187,17 @@ describe("recipient resolution", () => {
   }
 
   it("returns seller when sender is buyer", () => {
-    assertEquals(resolveRecipient("buyer-1", "buyer-1", "seller-1"), "seller-1");
+    assertEquals(
+      resolveRecipient("buyer-1", "buyer-1", "seller-1"),
+      "seller-1",
+    );
   });
 
   it("returns buyer when sender is seller", () => {
-    assertEquals(resolveRecipient("seller-1", "buyer-1", "seller-1"), "buyer-1");
+    assertEquals(
+      resolveRecipient("seller-1", "buyer-1", "seller-1"),
+      "buyer-1",
+    );
   });
 });
 

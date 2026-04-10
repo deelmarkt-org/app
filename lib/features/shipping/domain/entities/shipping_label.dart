@@ -11,6 +11,7 @@ class ShippingLabel {
     required this.qrData,
     required this.trackingNumber,
     required this.carrier,
+    required this.destinationPostalCode,
     required this.shipByDeadline,
     required this.createdAt,
   });
@@ -26,6 +27,9 @@ class ShippingLabel {
 
   /// Shipping carrier: 'postnl' or 'dhl'.
   final ShippingCarrier carrier;
+
+  /// Destination postal code for parcel shop lookup.
+  final String destinationPostalCode;
 
   /// Seller must ship by this deadline.
   final DateTime shipByDeadline;

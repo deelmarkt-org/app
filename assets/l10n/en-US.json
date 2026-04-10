@@ -271,13 +271,17 @@
     "closed": "Closed",
     "selectThisShop": "Select this point",
     "selectFromList": "Select a service point from the list",
-    "noShopsFound": "No service points found nearby"
+    "noShopsFound": "No service points found nearby",
+    "details": "Shipping details",
+    "viewQrCode": "View QR code"
   },
   "tracking": {
     "title": "Track shipment",
     "shipment": "shipment",
     "updates": "Tracking updates",
     "noUpdates": "No tracking updates yet",
+    "viewTracking": "View tracking",
+    "latestUpdate": "Latest update",
     "labelCreated": "Label created",
     "droppedOff": "Dropped off at service point",
     "pickedUp": "Picked up by carrier",
@@ -395,6 +399,11 @@
       "phone_number_request": "This message asks for your phone number or messaging app",
       "suspicious_pricing": "This price seems suspiciously low for this item",
       "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
+      "credential_harvesting": "This message asks for passwords, login details, or identity documents",
+      "advance_payment_request": "This message asks for advance payment or a deposit before delivery",
+      "fake_escrow": "This message promotes an external escrow service outside DeelMarkt",
+      "shipping_scam": "This message contains a suspicious shipping payment request",
+      "prohibited_item": "This message references items that are prohibited on DeelMarkt",
       "other": "This message was flagged by our scam detector"
     }
   },

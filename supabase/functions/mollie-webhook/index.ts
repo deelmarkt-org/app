@@ -15,8 +15,12 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 import { getVaultSecret } from "../_shared/vault.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 import { getRedisCredentials } from "../_shared/redis.ts";
-import { checkIdempotency, rollbackIdempotency } from "../_shared/idempotency.ts";
+import {
+  checkIdempotency,
+  rollbackIdempotency,
+} from "../_shared/idempotency.ts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -44,7 +48,7 @@ const WebhookPayloadSchema = z.object({
 async function verifySignature(
   body: string,
   signature: string | null,
-  secret: string
+  secret: string,
 ): Promise<boolean> {
   if (!signature) return false;
 
@@ -54,7 +58,7 @@ async function verifySignature(
     encoder.encode(secret),
     { name: "HMAC", hash: "SHA-256" },
     false,
-    ["sign"]
+    ["sign"],
   );
 
   const sig = await crypto.subtle.sign("HMAC", key, encoder.encode(body));
@@ -77,11 +81,11 @@ async function verifySignature(
 
 async function fetchMolliePayment(
   paymentId: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<MolliePayment> {
   const response = await fetch(
     `https://api.mollie.com/v2/payments/${paymentId}`,
-    { headers: { Authorization: `Bearer ${apiKey}` } }
+    { headers: { Authorization: `Bearer ${apiKey}` } },
   );
 
   if (!response.ok) {
@@ -124,7 +128,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
-    console.error("[mollie-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    console.error(
+      "[mollie-webhook] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+    );
     return jsonResponse({ error: "Internal configuration error" }, 500);
   }
   const supabase = createClient(supabaseUrl, serviceRoleKey);
@@ -151,10 +157,15 @@ Deno.serve(async (req: Request): Promise<Response> => {
     } else {
       // External Mollie webhook — HMAC verification mandatory
       const signature = req.headers.get("x-mollie-signature");
-      const webhookSecret = await getVaultSecret(supabase, "mollie_webhook_secret");
+      const webhookSecret = await getVaultSecret(
+        supabase,
+        "mollie_webhook_secret",
+      );
       const isValid = await verifySignature(rawBody, signature, webhookSecret);
       if (!isValid) {
-        console.error(`[mollie-webhook] Invalid signature for ${molliePaymentId}`);
+        console.error(
+          `[mollie-webhook] Invalid signature for ${molliePaymentId}`,
+        );
         return jsonResponse({ error: "Invalid signature" }, 401);
       }
     }
@@ -175,7 +186,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
     const transactionId = payment.metadata?.transaction_id;
 
     if (!transactionId) {
-      console.error(`[mollie-webhook] No transaction_id in metadata for ${molliePaymentId}`);
+      console.error(
+        `[mollie-webhook] No transaction_id in metadata for ${molliePaymentId}`,
+      );
       return jsonResponse({ error: "Missing transaction_id in metadata" }, 422);
     }
 
@@ -192,7 +205,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
           attempts: 1,
           last_attempted_at: new Date().toISOString(),
         },
-        { onConflict: "idempotency_key" }
+        { onConflict: "idempotency_key" },
       );
 
     if (eventError) {
@@ -225,42 +238,50 @@ Deno.serve(async (req: Request): Promise<Response> => {
       if (newStatus === "paid") {
         const { data: txn } = await supabase
           .from("transactions")
-          .select("id, buyer_id, seller_id, item_amount_cents, platform_fee_cents, shipping_cost_cents")
+          .select(
+            "id, buyer_id, seller_id, item_amount_cents, platform_fee_cents, shipping_cost_cents",
+          )
           .eq("mollie_payment_id", molliePaymentId)
           .single();
 
         if (txn) {
-          const totalCents =
-            txn.item_amount_cents + txn.platform_fee_cents + txn.shipping_cost_cents;
+          const totalCents = txn.item_amount_cents + txn.platform_fee_cents +
+            txn.shipping_cost_cents;
 
           // Entry 1: Full buyer payment → escrow
-          const { error: depositError } = await supabase.from("ledger_entries").insert({
-            transaction_id: txn.id,
-            idempotency_key: `deposit:buyer:${txn.id}`,
-            debit_account: `buyer:${txn.buyer_id}`,
-            credit_account: `escrow:${txn.id}`,
-            amount_cents: totalCents,
-            currency: "EUR",
-          });
+          const { error: depositError } = await supabase.from("ledger_entries")
+            .insert({
+              transaction_id: txn.id,
+              idempotency_key: `deposit:buyer:${txn.id}`,
+              debit_account: `buyer:${txn.buyer_id}`,
+              credit_account: `escrow:${txn.id}`,
+              amount_cents: totalCents,
+              currency: "EUR",
+            });
 
           if (depositError) {
-            throw new Error(`Failed to record escrow deposit: ${depositError.message}`);
+            throw new Error(
+              `Failed to record escrow deposit: ${depositError.message}`,
+            );
           }
 
           // Entry 2: Platform fee split — escrow → platform commission
           // Immediately accounts for platform revenue on payment
           if (txn.platform_fee_cents > 0) {
-            const { error: feeError } = await supabase.from("ledger_entries").insert({
-              transaction_id: txn.id,
-              idempotency_key: `fee:platform:${txn.id}`,
-              debit_account: `escrow:${txn.id}`,
-              credit_account: `platform:commission`,
-              amount_cents: txn.platform_fee_cents,
-              currency: "EUR",
-            });
+            const { error: feeError } = await supabase.from("ledger_entries")
+              .insert({
+                transaction_id: txn.id,
+                idempotency_key: `fee:platform:${txn.id}`,
+                debit_account: `escrow:${txn.id}`,
+                credit_account: `platform:commission`,
+                amount_cents: txn.platform_fee_cents,
+                currency: "EUR",
+              });
 
             if (feeError) {
-              throw new Error(`Failed to record platform fee split: ${feeError.message}`);
+              throw new Error(
+                `Failed to record platform fee split: ${feeError.message}`,
+              );
             }
           }
         }
@@ -278,7 +299,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
       .eq("idempotency_key", idempotencyKey);
 
     console.log(
-      `[mollie-webhook] Processed ${molliePaymentId}: ${payment.status} → ${newStatus ?? "no change"}`
+      `[mollie-webhook] Processed ${molliePaymentId}: ${payment.status} → ${
+        newStatus ?? "no change"
+      }`,
     );
     return new Response("OK", { status: 200 });
   } catch (error) {
@@ -314,7 +337,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
             last_error: (error as Error).message,
             last_attempted_at: new Date().toISOString(),
           },
-          { onConflict: "idempotency_key" }
+          { onConflict: "idempotency_key" },
         );
     } catch {
       // Best-effort error recording
@@ -323,10 +346,3 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonResponse({ error: "Internal error" }, 500);
   }
 });
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}

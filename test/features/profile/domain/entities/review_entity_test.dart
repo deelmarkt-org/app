@@ -12,7 +12,7 @@ void main() {
     String revieweeId = 'user-001',
     String listingId = 'listing-001',
     double rating = 5.0,
-    String text = 'Great seller!',
+    String body = 'Great seller!',
     DateTime? createdAtOverride,
     String? reviewerAvatarUrl,
   }) {
@@ -23,7 +23,7 @@ void main() {
       revieweeId: revieweeId,
       listingId: listingId,
       rating: rating,
-      text: text,
+      body: body,
       createdAt: createdAtOverride ?? createdAt,
       reviewerAvatarUrl: reviewerAvatarUrl,
     );
@@ -82,7 +82,7 @@ void main() {
 
     test('reviews with different text are not equal', () {
       final a = buildReview();
-      final b = buildReview(text: 'Good experience.');
+      final b = buildReview(body: 'Good experience.');
 
       expect(a, isNot(equals(b)));
     });
@@ -114,7 +114,7 @@ void main() {
       expect(review.revieweeId, 'user-001');
       expect(review.listingId, 'listing-001');
       expect(review.rating, 5.0);
-      expect(review.text, 'Great seller!');
+      expect(review.body, 'Great seller!');
       expect(review.createdAt, createdAt);
       expect(review.reviewerAvatarUrl, 'https://example.com/a.jpg');
     });

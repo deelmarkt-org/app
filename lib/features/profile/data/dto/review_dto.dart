@@ -16,7 +16,7 @@ class ReviewDto {
     final revieweeId = json['reviewee_id'];
     final listingId = json['listing_id'];
     final rating = json['rating'];
-    final text = json['text'];
+    final body = json['body'];
     final createdAtRaw = json['created_at'];
 
     if (id is! String ||
@@ -25,7 +25,7 @@ class ReviewDto {
         revieweeId is! String ||
         listingId is! String ||
         rating is! num ||
-        text is! String) {
+        body is! String) {
       throw const FormatException(
         'ReviewDto.fromJson: missing or malformed required fields',
       );
@@ -45,7 +45,7 @@ class ReviewDto {
       listingId: listingId,
       role: role,
       rating: rating.toDouble(),
-      text: text,
+      body: body,
       isHidden: json['is_hidden'] as bool? ?? false,
       isReviewerDeleted: json['is_reviewer_deleted'] as bool? ?? false,
       reviewerAvatarUrl: json['reviewer_avatar_url'] as String?,

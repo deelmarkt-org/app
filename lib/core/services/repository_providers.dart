@@ -7,15 +7,19 @@ import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repositor
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
+import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
+import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
@@ -54,10 +58,14 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
   return SupabaseUserRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Review repository — mock or real.
+/// Review repository — mock or Supabase based on [useMockDataProvider].
+///
+/// SupabaseReviewRepository implements blind review via DB-level RLS (R-36).
+/// Resolves GitHub Issue #46.
 final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
-  // Tracked: #46 — SupabaseReviewRepository blocked by R-36
-  return MockReviewRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockReviewRepository();
+  return SupabaseReviewRepository(ref.watch(supabaseClientProvider));
 });
 
 /// Transaction repository — mock-only until [SupabaseTransactionRepository]
@@ -81,22 +89,17 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Message repository — mock only for P-35/P-36.
+/// Shipping repository — mock-only until shipping tables ship.
 ///
-/// Supabase Realtime implementation is planned as a backend-owned
-/// follow-up task (E04 §Technical Scope). The mock repo is wired
-/// unconditionally here — when `SupabaseMessageRepository` ships,
-/// switch to the same `useMockDataProvider` pattern the other
-/// providers in this file use:
-///
-/// ```dart
-/// final useMock = ref.watch(useMockDataProvider);
-/// if (useMock) return MockMessageRepository();
-/// return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
-/// ```
-///
-/// TODO(reso): replace with the conditional above once
-/// `SupabaseMessageRepository` lands (E04 backend tasks).
+/// TODO(belengaz): add `useMockDataProvider` gate once real implementation
+/// exists — same pattern as [listingRepositoryProvider].
+final shippingRepositoryProvider = Provider<ShippingRepository>((ref) {
+  return MockShippingRepository();
+});
+
+/// Message repository — real Supabase implementation (B-53).
 final messageRepositoryProvider = Provider<MessageRepository>((ref) {
-  return MockMessageRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockMessageRepository();
+  return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
 });
