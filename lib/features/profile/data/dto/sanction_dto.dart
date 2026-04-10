@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
 
 /// Maps raw Supabase JSON rows from [account_sanctions] to [SanctionEntity].
@@ -74,7 +76,8 @@ class SanctionDto {
       if (item is! Map<String, dynamic>) continue;
       try {
         result.add(fromJson(item));
-      } on FormatException {
+      } on FormatException catch (e) {
+        debugPrint('SanctionDto.fromJsonList: skipping malformed row — $e');
         continue;
       }
     }

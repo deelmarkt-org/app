@@ -247,7 +247,8 @@ The agent will:
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
 - [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
-- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)*
+- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)* **[backend-only — UI tracked as P-53]**
+  > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
 - [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
@@ -292,6 +293,7 @@ The agent will:
 - [x] `P-50` GoRouter auth guard + splash screen + `/onboarding` route ✅ PR #14
 - [x] `P-51` Mock data layer (5 entities + 4 repository interfaces + 4 mock implementations) ✅ PR #14
 - [x] `P-52` Web error boundary + font loading strategy ✅ PR #14
+- [ ] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator *(blocked by R-37 merge)*
 
 ---
 

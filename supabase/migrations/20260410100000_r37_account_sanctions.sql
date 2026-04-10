@@ -40,8 +40,9 @@ CREATE TABLE account_sanctions (
   -- NULL = permanent; set for temporary suspensions (7/14/30 days)
   expires_at  TIMESTAMPTZ,
 
-  -- Moderator who issued the sanction
-  issued_by   UUID              REFERENCES auth.users(id),
+  -- Moderator who issued the sanction.
+  -- ON DELETE SET NULL: preserves the audit trail if a moderator account is removed.
+  issued_by   UUID              REFERENCES auth.users(id) ON DELETE SET NULL,
 
   created_at  TIMESTAMPTZ       NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ,
@@ -53,7 +54,8 @@ CREATE TABLE account_sanctions (
   -- Resolution fields — updated by moderator via service_role
   appeal_decision appeal_decision_t,
   resolved_at TIMESTAMPTZ,
-  resolved_by UUID              REFERENCES auth.users(id),
+  -- ON DELETE SET NULL: same rationale as issued_by.
+  resolved_by UUID              REFERENCES auth.users(id) ON DELETE SET NULL,
 
   -- Bans are always permanent (no expires_at)
   CONSTRAINT sanctions_ban_no_expiry
@@ -205,16 +207,18 @@ GRANT  EXECUTE ON FUNCTION submit_appeal(UUID, TEXT) TO authenticated;
 -- =============================================================================
 -- 7. Push notification trigger on new sanction
 -- =============================================================================
--- On INSERT, fires an async HTTP call to the send-push-notification Edge Function
--- (R-34 infrastructure). The Edge Function resolves FCM tokens from device_tokens,
--- checks notification_preferences, and sends the push with a plain-language message.
+-- On INSERT, fires an async HTTP call to the send-sanction-notification Edge
+-- Function. That function resolves FCM tokens, builds a sanction-specific push
+-- title/body, and skips notification_preferences (sanctions are mandatory legal
+-- comms, not opt-out). Idempotency key: sanction_id.
 --
 -- Payload keys:
---   event      → 'account_sanctioned'  (Edge Function selects template by this)
---   user_id    → sanctioned user
---   type       → 'warning' | 'suspension' | 'ban'
---   reason     → plain-language reason text
---   expires_at → ISO timestamp or null
+--   event       → 'account_sanctioned'
+--   sanction_id → NEW.id (used as Redis idempotency key)
+--   user_id     → sanctioned user
+--   type        → 'warning' | 'suspension' | 'ban'
+--   reason      → plain-language reason text
+--   expires_at  → ISO timestamp or null
 
 CREATE OR REPLACE FUNCTION notify_account_sanctioned()
 RETURNS TRIGGER
@@ -226,16 +230,17 @@ DECLARE
   payload JSONB;
 BEGIN
   payload := jsonb_build_object(
-    'event',      'account_sanctioned',
-    'user_id',    NEW.user_id,
-    'type',       NEW.type::TEXT,
-    'reason',     NEW.reason,
-    'expires_at', NEW.expires_at
+    'event',       'account_sanctioned',
+    'sanction_id', NEW.id,
+    'user_id',     NEW.user_id,
+    'type',        NEW.type::TEXT,
+    'reason',      NEW.reason,
+    'expires_at',  NEW.expires_at
   );
 
   PERFORM net.http_post(
     url     := current_setting('app.settings.supabase_url')
-               || '/functions/v1/send-push-notification',
+               || '/functions/v1/send-sanction-notification',
     headers := jsonb_build_object(
       'Authorization', 'Bearer '
                        || current_setting('app.settings.service_role_key'),
