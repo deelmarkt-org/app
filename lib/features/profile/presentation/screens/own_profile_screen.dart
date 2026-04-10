@@ -90,7 +90,9 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
             ProfileTabs(controller: _tabController),
             const SizedBox(height: Spacing.s4),
             SizedBox(
-              height: 600,
+              // Adaptive height: 55% of screen avoids overflow on small devices
+              // and leaves space for the header/stats section above.
+              height: MediaQuery.of(context).size.height * 0.55,
               child: TabBarView(
                 controller: _tabController,
                 children: [
