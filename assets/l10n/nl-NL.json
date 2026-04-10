@@ -243,7 +243,16 @@
     "countdownHint": "48 uur om te bevestigen",
     "deadlineHint": "Bevestig voor {date}",
     "fundsHeld": "Geld wordt vastgehouden",
-    "fundsReleased": "Geld vrijgegeven aan verkoper"
+    "fundsReleased": "Geld vrijgegeven aan verkoper",
+    "stepDetail": {
+      "title": "Stap details",
+      "completedAt": "Voltooid op",
+      "notReached": "Nog niet bereikt",
+      "pending": "In afwachting",
+      "deadline": "Bevestig voor",
+      "disputedAt": "Betwist op",
+      "createdAt": "Bestelling aangemaakt"
+    }
   },
   "condition": {
     "newWithTags": "Nieuw met labels",
