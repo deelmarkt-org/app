@@ -61,16 +61,20 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       body: state.user.when(
         loading: () => const ProfileSkeleton(),
         error: (_, _) => Center(child: Text('error.generic'.tr())),
-        data:
-            (user) =>
-                user == null
-                    ? Center(child: Text('profile.notLoggedIn'.tr()))
-                    : _buildLoadedBody(user, state),
+        data: (user) => _buildBody(context, state, user),
       ),
     );
   }
 
-  Widget _buildLoadedBody(UserEntity user, ProfileState state) {
+  Widget _buildBody(
+    BuildContext context,
+    ProfileState state,
+    UserEntity? user,
+  ) {
+    if (user == null) {
+      return Center(child: Text('profile.notLoggedIn'.tr()));
+    }
+
     return ResponsiveBody(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(Spacing.s4),
@@ -85,7 +89,9 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
             ProfileTabs(controller: _tabController),
             const SizedBox(height: Spacing.s4),
             SizedBox(
-              height: 600,
+              // Adaptive height: 55% of screen avoids overflow on small devices
+              // and leaves space for the header/stats section above.
+              height: MediaQuery.of(context).size.height * 0.55,
               child: TabBarView(
                 controller: _tabController,
                 children: [
