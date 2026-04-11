@@ -61,48 +61,95 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       body: state.user.when(
         loading: () => const ProfileSkeleton(),
         error: (_, _) => Center(child: Text('error.generic'.tr())),
-        data:
-            (user) =>
-                user == null
-                    ? Center(child: Text('profile.notLoggedIn'.tr()))
-                    : _buildLoadedBody(user, state),
+        data: (user) => _buildBody(context, state, user),
       ),
     );
   }
 
-  Widget _buildLoadedBody(UserEntity user, ProfileState state) {
+  Widget _buildBody(
+    BuildContext context,
+    ProfileState state,
+    UserEntity? user,
+  ) {
+    if (user == null) {
+      return Center(child: Text('profile.notLoggedIn'.tr()));
+    }
+
     return ResponsiveBody(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(Spacing.s4),
-        child: Column(
-          children: [
-            ProfileHeader(user: user),
-            const SizedBox(height: Spacing.s4),
-            VerificationBadgesRow(badges: user.badges),
-            const SizedBox(height: Spacing.s4),
-            ProfileStatsRow(user: user),
-            const SizedBox(height: Spacing.s6),
-            ProfileTabs(controller: _tabController),
-            const SizedBox(height: Spacing.s4),
-            SizedBox(
-              height: 600,
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  ListingsTabView(
-                    listings: state.listings,
-                    onRetry: () => ref.invalidate(profileNotifierProvider),
+      child: NestedScrollView(
+        headerSliverBuilder:
+            (context, innerBoxIsScrolled) => [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.s4,
+                    Spacing.s4,
+                    Spacing.s4,
+                    0,
                   ),
-                  ReviewsTabView(
-                    reviews: state.reviews,
-                    onRetry: () => ref.invalidate(profileNotifierProvider),
+                  child: Column(
+                    children: [
+                      ProfileHeader(user: user),
+                      const SizedBox(height: Spacing.s4),
+                      VerificationBadgesRow(badges: user.badges),
+                      const SizedBox(height: Spacing.s4),
+                      ProfileStatsRow(user: user),
+                      const SizedBox(height: Spacing.s6),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _PinnedTabsDelegate(
+                  ProfileTabs(controller: _tabController),
+                ),
+              ),
+            ],
+        body: Padding(
+          padding: const EdgeInsets.only(top: Spacing.s4),
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              ListingsTabView(
+                listings: state.listings,
+                onRetry: () => ref.invalidate(profileNotifierProvider),
+              ),
+              ReviewsTabView(
+                reviews: state.reviews,
+                onRetry: () => ref.invalidate(profileNotifierProvider),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+/// Keeps [ProfileTabs] pinned while the header scrolls away.
+class _PinnedTabsDelegate extends SliverPersistentHeaderDelegate {
+  const _PinnedTabsDelegate(this.tabs);
+
+  final Widget tabs;
+
+  // ProfileTabs is a TabBar — 48px is Flutter's default tab bar height.
+  static const double _height = 48;
+
+  @override
+  double get minExtent => _height;
+
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => Material(color: Theme.of(context).scaffoldBackgroundColor, child: tabs);
+
+  @override
+  bool shouldRebuild(_PinnedTabsDelegate oldDelegate) =>
+      oldDelegate.tabs != tabs;
 }

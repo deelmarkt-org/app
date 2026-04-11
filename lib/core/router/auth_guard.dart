@@ -17,6 +17,7 @@ const _protectedRoutes = [
   AppRoutes.favourites,
   '/transactions',
   '/shipping',
+  AppRoutes.admin,
 ];
 
 /// Routes shown only to unauthenticated users — redirect to home if logged in.
@@ -34,6 +35,7 @@ String? authRedirect({
   required bool isLoggedIn,
   required String currentPath,
   bool isOnboardingComplete = false,
+  bool isAdmin = false,
 }) {
   if (isLoading) return '/splash';
 
@@ -50,6 +52,11 @@ String? authRedirect({
   if (!isLoggedIn && isProtected) {
     return isOnboardingComplete ? '/login' : '/onboarding';
   }
+
+  // Admin routes require admin role.
+  final isAdminRoute = currentPath.startsWith('/admin');
+  if (isLoggedIn && isAdminRoute && !isAdmin) return AppRoutes.home;
+
   if (isLoggedIn && _authRoutes.contains(currentPath)) return AppRoutes.home;
 
   return null;

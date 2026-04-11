@@ -23,6 +23,93 @@
     "close": "Close",
     "comingSoon": "Coming soon"
   },
+  "admin": {
+    "sidebar": {
+      "title": "Moderation Hub",
+      "subtitle": "Admin Control Panel",
+      "support": "Support",
+      "sign_out": "Sign Out"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "flagged": "Flagged Listings",
+      "reported": "Reported Users",
+      "disputes": "Disputes",
+      "dsa": "DSA Notices",
+      "appeals": "Appeals"
+    },
+    "dashboard": {
+      "title": "Dashboard Overview",
+      "subtitle": "Welcome back. Here is the status of DeelMarkt today."
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "view_all": "View All",
+      "just_now": "Just now",
+      "minutes_ago": "{} min ago",
+      "hours_ago": "{}h ago",
+      "days_ago": "{}d ago",
+      "listingRemoved": {
+        "title": "Listing #{listingId} removed by {moderator}",
+        "subtitle": "Policy violation"
+      },
+      "userVerified": {
+        "title": "User @{userId} verified",
+        "subtitle": "{method} verification completed"
+      },
+      "disputeEscalated": {
+        "title": "Dispute #{disputeId} escalated to {escalatedTo}",
+        "subtitle": "Buyer and seller could not reach an agreement"
+      },
+      "systemUpdate": {
+        "title": "System update {version} deployed",
+        "subtitle": "Security patches and performance improvements"
+      }
+    },
+    "badge": {
+      "today": "{} today",
+      "critical": "Critical",
+      "normal": "Normal",
+      "safe": "Safe"
+    },
+    "empty": {
+      "title": "Everything under control",
+      "subtitle": "No moderation actions required. The marketplace is currently calm.",
+      "refresh": "Refresh",
+      "view_logs": "View Logs",
+      "a11y": "No pending moderation actions",
+      "trends_title": "Activity Trends",
+      "trends_empty": "No activity to display yet"
+    },
+    "narrow_viewport": {
+      "title": "Admin panel requires a desktop browser",
+      "subtitle": "Please use a screen at least 768 px wide"
+    },
+    "sla": {
+      "title": "DSA Compliance Monitor",
+      "subtitle": "Digital Services Act responsiveness within 24 hours.",
+      "status": "DSA 24h SLA: {} of {} handled on time",
+      "a11y": "DSA SLA: {} of {} handled"
+    },
+    "stats": {
+      "openDisputes": "Open disputes",
+      "dsaNotices": "DSA notices (< 24h)",
+      "activeListings": "Active listings",
+      "escrow": "In escrow",
+      "flaggedListings": "Flagged Listings",
+      "reportedUsers": "Reported Users",
+      "approved": "Approved"
+    },
+    "system": {
+      "title": "System Status",
+      "payment_gateway": "Payment gateway",
+      "api_endpoints": "API Endpoints",
+      "mail_server": "Mail Server",
+      "operational": "Operational",
+      "down": "Down"
+    },
+    "comingSoon": "Coming soon"
+  },
   "form": {
     "email": "Email address",
     "name": "Full name",
@@ -56,7 +143,7 @@
       "unauthenticated": "Please sign in to continue"
     },
     "image": {
-      "too_large": "This image is over the 15 MB limit",
+      "too_large": "This image is over the 15 MiB limit",
       "unsupported_format": "Only JPG, PNG, WebP, or HEIC images are supported",
       "ownership_mismatch": "You can't upload to another user's folder",
       "blocked": "This image was blocked by our safety check",
@@ -90,7 +177,12 @@
     "sold": "Sold! 🎉",
     "views": "Views",
     "favorites": "In favorites",
-    "shipping": "Shipping"
+    "shipping": "Shipping",
+    "status": {
+      "active": "Active",
+      "sold": "Sold",
+      "draft": "Draft"
+    }
   },
   "auth": {
     "login": "Log in",
@@ -199,7 +291,8 @@
     "menu": "Open menu",
     "skipToContent": "Skip to content",
     "back": "Go back",
-    "consent_banner": "Privacy consent"
+    "consent_banner": "Privacy consent",
+    "modeSwitch": "Switch between buyer and seller mode"
   },
   "payment": {
     "orderSummary": "Order summary",
@@ -386,7 +479,30 @@
     "recentlyAdded": "Recently added",
     "categories": "Categories",
     "emptyNearby": "No listings nearby",
-    "emptyNearbyAction": "Start searching"
+    "emptyNearbyAction": "Start searching",
+    "seller": {
+      "hello": "Hello, {name}",
+      "totalSales": "Total sales",
+      "activeListings": "Active listings",
+      "unreadMessages": "Unread messages",
+      "actionRequired": "Action required",
+      "shipOrder": "Ship order",
+      "shipOrderTitle": "Ship order #{id}",
+      "shipOrderSubtitle": "Order paid — shipping required",
+      "replyTo": "Reply to message from {name}",
+      "unreadCount": "{count} unread message(s)",
+      "myListings": "My listings",
+      "newListing": "New listing",
+      "startSelling": "Start selling",
+      "views": "{count} views",
+      "daysActive": "{count} days active",
+      "emptyTitle": "You don't have any listings yet",
+      "emptySubtitle": "Start selling items you no longer use and give them a second life."
+    }
+  },
+  "mode": {
+    "buyer": "Buyer",
+    "seller": "Seller"
   },
   "listing_card": {
     "escrowAvailable": "Escrow available",
@@ -699,9 +815,21 @@
     "openSettingsHint": "Go to Settings to enable camera access for DeelMarkt",
     "errorPermissionDenied": "Camera or photo library access was denied",
     "errorPermissionPermanent": "Camera access is permanently denied. Enable it in Settings.",
-    "errorFileTooLarge": "This photo exceeds the 15 MB size limit",
+    "errorFileTooLarge": "This photo exceeds the 15 MiB size limit",
     "errorUnsupportedFormat": "This image format is not supported",
-    "errorImagePicker": "Could not open the photo picker"
+    "errorImagePicker": "Could not open the photo picker",
+    "errorImagesUploading": "Wait for all photos to finish uploading",
+    "errorImagesFailed": "Some photos failed to upload. Retry or remove them.",
+    "uploadingImage": "Uploading photo",
+    "uploadingProgress": "Uploading {current} of {total}",
+    "uploadFailed": "Upload failed",
+    "retryUpload": "Retry upload",
+    "uploadErrorBlocked": "This photo was rejected by our safety scan",
+    "uploadErrorTooLarge": "This photo exceeds the 15 MiB size limit",
+    "uploadErrorNetwork": "Network error. Please retry.",
+    "uploadErrorAuth": "Sign in again to upload photos",
+    "uploadErrorCancelled": "Upload cancelled",
+    "uploadErrorGeneric": "Could not upload this photo. Please try again."
   },
   "image_gallery": {
     "close": "Close",
@@ -810,6 +938,43 @@
     "a11y": {
       "sanction_icon": "Account suspended icon",
       "appeal_form": "Appeal form"
+    }
+  },
+  "dsa_report": {
+    "title": "Report content",
+    "subtitle": "Report illegal or prohibited content to our moderation team.",
+    "target_type": {
+      "listing": "Listing",
+      "message": "Message",
+      "profile": "Profile",
+      "review": "Review"
+    },
+    "category": {
+      "label": "Reason",
+      "illegal_content": "Illegal content",
+      "prohibited_item": "Prohibited item",
+      "counterfeit": "Counterfeit goods",
+      "fraud": "Fraud or scam",
+      "privacy_violation": "Privacy violation",
+      "other": "Other"
+    },
+    "description_label": "Description",
+    "description_hint": "Describe the issue in detail (minimum 10 characters)",
+    "submit": "Submit report",
+    "submit_success": "Your report has been submitted. We will review it within 24 hours.",
+    "submit_error": "Could not submit your report. Please try again.",
+    "status": {
+      "pending": "Pending review",
+      "under_review": "Under review",
+      "actioned": "Action taken",
+      "rejected": "Report rejected"
+    },
+    "sla_breached": "Review overdue",
+    "history_title": "My reports",
+    "history_empty": "You have not submitted any reports.",
+    "a11y": {
+      "report_icon": "Report content icon",
+      "submit_button": "Submit DSA report"
     }
   }
 }

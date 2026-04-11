@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid_tile.dart';
 
 /// A grid of photos with drag-to-reorder and accessible menu alternatives.
@@ -14,15 +15,19 @@ class PhotoGrid extends StatelessWidget {
   const PhotoGrid({
     required this.imageFiles,
     required this.onRemove,
+    required this.onRetry,
     required this.onReorder,
     super.key,
   });
 
-  /// Local file paths of selected images.
-  final List<String> imageFiles;
+  /// Picked images with per-item upload state.
+  final List<SellImage> imageFiles;
 
-  /// Called when the user removes a photo at [index].
-  final void Function(int index) onRemove;
+  /// Called when the user removes a photo with [id].
+  final void Function(String id) onRemove;
+
+  /// Called when the user retries a failed upload for [id].
+  final void Function(String id) onRetry;
 
   /// Called to reorder a photo from [oldIndex] to [newIndex].
   final void Function(int oldIndex, int newIndex) onReorder;
@@ -54,7 +59,7 @@ class PhotoGrid extends StatelessWidget {
         child: SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(imagePath: imageFiles[index], index: index),
+          child: PhotoGridTile(image: imageFiles[index], index: index),
         ),
       ),
       childWhenDragging: Opacity(opacity: 0.3, child: tile),
@@ -83,13 +88,15 @@ class PhotoGrid extends StatelessWidget {
   Widget _buildTileWithMenu(int index) {
     final isFirst = index == 0;
     final isLast = index == imageFiles.length - 1;
+    final img = imageFiles[index];
 
     return Stack(
       children: [
         PhotoGridTile(
-          imagePath: imageFiles[index],
+          image: img,
           index: index,
-          onRemove: () => onRemove(index),
+          onRemove: () => onRemove(img.id),
+          onRetry: () => onRetry(img.id),
         ),
         if (!isFirst || !isLast)
           Positioned(

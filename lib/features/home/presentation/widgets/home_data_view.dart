@@ -12,6 +12,7 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/listing_card.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
 
@@ -71,6 +72,8 @@ class HomeDataView extends ConsumerWidget {
         ),
       ),
       actions: [
+        const HomeModePillSwitch(),
+        const SizedBox(width: Spacing.s2),
         IconButton(
           icon: Icon(PhosphorIcons.heart()),
           tooltip: 'favourites.title'.tr(),

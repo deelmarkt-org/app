@@ -20,7 +20,29 @@ void main() {
 
       const state = ListingCreationState(
         step: ListingCreationStep.quality,
-        imageFiles: ['img1.jpg', 'img2.jpg', 'img3.jpg'],
+        imageFiles: [
+          SellImage(
+            id: 'img1',
+            localPath: '/tmp/img1.jpg',
+            status: ImageUploadStatus.uploaded,
+            storagePath: 'u/img1.jpg',
+            deliveryUrl: 'https://cdn.test/img1.jpg',
+          ),
+          SellImage(
+            id: 'img2',
+            localPath: '/tmp/img2.jpg',
+            status: ImageUploadStatus.uploaded,
+            storagePath: 'u/img2.jpg',
+            deliveryUrl: 'https://cdn.test/img2.jpg',
+          ),
+          SellImage(
+            id: 'img3',
+            localPath: '/tmp/img3.jpg',
+            status: ImageUploadStatus.uploaded,
+            storagePath: 'u/img3.jpg',
+            deliveryUrl: 'https://cdn.test/img3.jpg',
+          ),
+        ],
         title: 'Vintage lamp',
         description: 'A beautiful vintage lamp from the 1960s',
         categoryL1Id: 'home',
@@ -36,7 +58,13 @@ void main() {
       final restored = service.restore();
 
       expect(restored, isNotNull);
-      expect(restored!.imageFiles, ['img1.jpg', 'img2.jpg', 'img3.jpg']);
+      expect(restored!.imageFiles.length, 3);
+      expect(restored.imageFiles.every((i) => i.isUploaded), true);
+      expect(restored.imageFiles.map((i) => i.deliveryUrl).toList(), const [
+        'https://cdn.test/img1.jpg',
+        'https://cdn.test/img2.jpg',
+        'https://cdn.test/img3.jpg',
+      ]);
       expect(restored.title, 'Vintage lamp');
       expect(restored.description, 'A beautiful vintage lamp from the 1960s');
       expect(restored.categoryL1Id, 'home');

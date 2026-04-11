@@ -2,29 +2,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/features/home/data/mock/mock_category_repository.dart';
 import 'package:deelmarkt/features/home/data/mock/mock_listing_repository.dart';
+import 'package:deelmarkt/features/home/data/shared_prefs_home_mode_repository.dart';
 import 'package:deelmarkt/features/home/data/supabase/supabase_category_repository.dart';
 import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/features/home/domain/repositories/home_mode_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_settings_repository.dart';
+import 'package:deelmarkt/features/profile/data/supabase/supabase_dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_review_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_sanction_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_settings_repository.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_user_repository.dart';
 import 'package:deelmarkt/features/profile/data/supabase/supabase_user_repository.dart';
+import 'package:deelmarkt/features/profile/domain/repositories/dsa_report_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/review_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/admin/data/mock/mock_admin_repository.dart';
+import 'package:deelmarkt/features/admin/data/supabase/supabase_admin_repository.dart';
+import 'package:deelmarkt/features/admin/domain/repositories/admin_repository.dart';
 import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
 import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 
 export 'package:deelmarkt/core/services/supabase_service.dart'
@@ -38,6 +47,11 @@ export 'package:deelmarkt/core/services/supabase_service.dart'
 /// Uses compile-time flag to avoid catching unrelated Supabase errors.
 final useMockDataProvider = Provider<bool>((ref) {
   return const bool.fromEnvironment('USE_MOCK_DATA');
+});
+
+/// Home mode repository — persists buyer/seller toggle via SharedPreferences.
+final homeModeRepositoryProvider = Provider<HomeModeRepository>((ref) {
+  return SharedPrefsHomeModeRepository(ref.watch(sharedPreferencesProvider));
 });
 
 /// Listing repository — mock or Supabase based on [useMockDataProvider].
@@ -107,6 +121,16 @@ final messageRepositoryProvider = Provider<MessageRepository>((ref) {
   return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
 });
 
+/// Admin repository — mock or Supabase based on [useMockDataProvider].
+///
+/// Provides moderation dashboard stats and recent activity.
+/// Phase A: dashboard only. Phases B–D add flagged listings, disputes, etc.
+final adminRepositoryProvider = Provider<AdminRepository>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockAdminRepository();
+  return SupabaseAdminRepository(ref.watch(supabaseClientProvider));
+});
+
 /// Sanction repository — mock or Supabase based on [useMockDataProvider].
 ///
 /// Provides read access to [account_sanctions] and the [submit_appeal] RPC.
@@ -115,4 +139,11 @@ final sanctionRepositoryProvider = Provider<SanctionRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSanctionRepository();
   return SupabaseSanctionRepository(ref.watch(supabaseClientProvider));
+});
+
+/// DSA report repository — mock or Supabase based on [useMockDataProvider].
+final dsaReportRepositoryProvider = Provider<DsaReportRepository>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockDsaReportRepository();
+  return SupabaseDsaReportRepository(ref.watch(supabaseClientProvider));
 });

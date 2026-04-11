@@ -7,21 +7,34 @@ import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.d
 
 /// Persists listing creation drafts to SharedPreferences.
 ///
-/// Saves only user-entered data (not UI state like step, isLoading, errorKey).
-/// On restore, always restarts from [ListingCreationStep.photos].
+/// Schema version 2 (P-24): persists only successfully uploaded images so
+/// drafts survive across sessions without dangling local file paths. Pending
+/// and failed uploads are dropped on save — the user must re-pick.
+///
+/// Uses **strict equality** on the version field: a missing or differing
+/// `v` returns null (drops the draft) rather than risking partial parses.
+/// This handles both backward (v1 legacy) and forward (future v3) cases.
 class DraftPersistenceService {
   DraftPersistenceService(this._prefs);
 
   final SharedPreferences _prefs;
 
   static const _key = 'listing_creation_draft';
+  static const int _schemaVersion = 2;
 
   /// Saves the current creation state as a JSON draft.
   ///
-  /// Only persists user-entered fields — UI state is excluded.
+  /// Only persists user-entered fields and **uploaded** images — UI state
+  /// and in-flight uploads are excluded.
   Future<void> save(ListingCreationState state) async {
+    final uploadedImages = state.imageFiles
+        .where((i) => i.isUploaded)
+        .map(_serializeImage)
+        .toList(growable: false);
+
     final data = <String, Object?>{
-      'imageFiles': state.imageFiles,
+      'v': _schemaVersion,
+      'imageFiles': uploadedImages,
       'title': state.title,
       'description': state.description,
       'categoryL1Id': state.categoryL1Id,
@@ -36,11 +49,11 @@ class DraftPersistenceService {
     await _prefs.setString(_key, jsonEncode(data));
   }
 
-  /// Restores a previously saved draft, or null if none exists.
+  /// Restores a previously saved draft, or null if none exists or the
+  /// schema version doesn't match.
   ///
-  /// Always restores to [ListingCreationStep.photos] so the user
-  /// reviews their photos first. Uses defensive parsing — returns
-  /// null for invalid JSON rather than crashing.
+  /// Always restores to [ListingCreationStep.photos]. Defensive parsing
+  /// returns null on any structural error rather than crashing.
   ListingCreationState? restore() {
     final raw = _prefs.getString(_key);
     if (raw == null) return null;
@@ -48,10 +61,13 @@ class DraftPersistenceService {
     try {
       final data = jsonDecode(raw) as Map<String, dynamic>;
 
+      // Strict version check — drop incompatible drafts.
+      if (data['v'] != _schemaVersion) return null;
+
       return ListingCreationState(
         // ignore: avoid_redundant_argument_values
         step: ListingCreationStep.photos, // always restart from step 1
-        imageFiles: _parseStringList(data['imageFiles']),
+        imageFiles: _parseImages(data['imageFiles']),
         title: data['title'] as String? ?? '',
         description: data['description'] as String? ?? '',
         categoryL1Id: data['categoryL1Id'] as String?,
@@ -76,9 +92,27 @@ class DraftPersistenceService {
     await _prefs.remove(_key);
   }
 
-  List<String> _parseStringList(Object? value) {
+  static Map<String, Object?> _serializeImage(SellImage image) =>
+      image.toJson();
+
+  List<SellImage> _parseImages(Object? value) {
     if (value is! List) return const [];
-    return value.whereType<String>().toList();
+    final result = <SellImage>[];
+    for (final item in value) {
+      if (item is! Map) continue;
+      final id = item['id'];
+      final deliveryUrl = item['deliveryUrl'];
+      // localPath is no longer required — restored images render from
+      // deliveryUrl. Older persisted drafts that include localPath are
+      // handled gracefully by SellImage.fromJson (optional field).
+      if (id is! String || deliveryUrl is! String) continue;
+      try {
+        result.add(SellImage.fromJson(Map<String, dynamic>.from(item)));
+      } on Object {
+        continue; // defensive: drop malformed entries
+      }
+    }
+    return result;
   }
 
   ListingCondition? _parseCondition(String? value) {

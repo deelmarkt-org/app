@@ -65,6 +65,7 @@ firebase/
 .opencode/
 .cursor/rules/kit-governance.mdc
 .cursor/commands/
+dev/
 
 # Node.js (Devran AI Kit — local dev tooling, not a project dependency)
 node_modules/
@@ -87,3 +88,9 @@ mollie/
 
 .cursor/rules/
 scripts/test_label.pdf
+
+# Kit cleanup (v5.2.8) — Windows literal-path artifact from `git config core.hooksPath dev/null`
+dev/null/
+
+# Kit init backup directories
+.agent.backup-*/

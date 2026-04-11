@@ -70,7 +70,16 @@ void main() {
         tester,
         const ListingCreationScreen(),
         overrides: overridesForState(
-          const ListingCreationState(imageFiles: ['/mock/photo.jpg']),
+          const ListingCreationState(
+            imageFiles: [
+              SellImage(
+                id: 'm1',
+                localPath: '/mock/photo.jpg',
+                status: ImageUploadStatus.uploaded,
+                deliveryUrl: 'https://cdn.test/m1.jpg',
+              ),
+            ],
+          ),
         ),
       );
 
@@ -88,7 +97,16 @@ void main() {
         tester,
         const ListingCreationScreen(),
         overrides: overridesForState(
-          const ListingCreationState(imageFiles: ['/mock/photo.jpg']),
+          const ListingCreationState(
+            imageFiles: [
+              SellImage(
+                id: 'm1',
+                localPath: '/mock/photo.jpg',
+                status: ImageUploadStatus.uploaded,
+                deliveryUrl: 'https://cdn.test/m1.jpg',
+              ),
+            ],
+          ),
         ),
       );
 

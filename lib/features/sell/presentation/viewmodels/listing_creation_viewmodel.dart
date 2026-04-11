@@ -1,50 +1,73 @@
 import 'dart:async';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/step_validator.dart';
 
 part 'listing_creation_viewmodel.g.dart';
 
+typedef _F = ListingFormUpdaters;
 const _draftDebounce = Duration(seconds: 2);
 
-/// ViewModel for the listing creation wizard.
 @riverpod
 class ListingCreationNotifier extends _$ListingCreationNotifier {
   Timer? _draftTimer;
+  StreamSubscription<PhotoUploadOutcome>? _outcomeSub;
 
   @override
   ListingCreationState build() {
-    ref.onDispose(() => _draftTimer?.cancel());
+    final queue = ref.watch(photoUploadQueueProvider);
+    _outcomeSub = queue.outcomes.listen(_onOutcome);
+    // Sub cancel before timer: avoids a done-event race on dispose.
+    ref.onDispose(() {
+      _outcomeSub?.cancel();
+      _draftTimer?.cancel();
+    });
     return ref.read(draftPersistenceServiceProvider).restore() ??
         ListingCreationState.initial();
   }
 
   Future<void> addFromCamera() async {
     if (state.imageFiles.length >= PhotoOperations.maxImages) return;
-    final result = await ref.read(imagePickerServiceProvider).pickFromCamera();
-    _apply(PhotoOperations.addPhotos(state, result));
+    final r = await ref.read(imagePickerServiceProvider).pickFromCamera();
+    _applyPick(PhotoOperations.addPhotos(state, r));
   }
 
   Future<void> addFromGallery() async {
     final remaining = PhotoOperations.maxImages - state.imageFiles.length;
     if (remaining <= 0) return;
-    final picker = ref.read(imagePickerServiceProvider);
-    final result = await picker.pickFromGallery(maxCount: remaining);
-    _apply(PhotoOperations.addPhotos(state, result));
+    final svc = ref.read(imagePickerServiceProvider);
+    final r = await svc.pickFromGallery(maxCount: remaining);
+    _applyPick(PhotoOperations.addPhotos(state, r));
   }
 
-  void removePhoto(int index) => _apply(PhotoOperations.remove(state, index));
-  void reorderPhotos(int old, int next) =>
-      _apply(PhotoOperations.reorder(state, old, next));
+  void removePhoto(String id) {
+    final out = PhotoOperations.removeById(state, id);
+    if (out.removed == null) return;
+    apply(out.state);
+    ref.read(photoUploadQueueProvider).cancel(id);
+    final sp = out.removed!.storagePath;
+    if (sp == null) return;
+    unawaited(ref.read(imageUploadServiceProvider).deleteStorageObject(sp));
+  }
 
-  // ── Navigation ──
+  void reorderPhotos(int old, int next) =>
+      apply(PhotoOperations.reorder(state, old, next));
+
+  void retryUpload(String id) {
+    final idx = state.imageFiles.indexWhere((i) => i.id == id);
+    if (idx == -1 || !state.imageFiles[idx].canRetry) return;
+    final im = state.imageFiles[idx];
+    apply(PhotoOperations.markRetry(state, id));
+    ref.read(photoUploadQueueProvider).enqueue(id: id, localPath: im.localPath);
+  }
 
   bool nextStep() {
     final error = StepValidator.validate(state);
@@ -63,21 +86,15 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     if (prev != null) state = state.copyWith(step: prev, errorKey: () => null);
   }
 
-  void updateTitle(String v) => _apply(ListingFormUpdaters.title(state, v));
-  void updateDescription(String v) =>
-      _apply(ListingFormUpdaters.description(state, v));
-  void updateCategoryL1(String? id) =>
-      _apply(ListingFormUpdaters.categoryL1(state, id));
-  void updateCategoryL2(String? id) =>
-      _apply(ListingFormUpdaters.categoryL2(state, id));
-  void updateCondition(ListingCondition? c) =>
-      _apply(ListingFormUpdaters.condition(state, c));
-  void updatePrice(int cents) =>
-      _apply(ListingFormUpdaters.price(state, cents));
-  void updateShipping(ShippingCarrier carrier, WeightRange? range) =>
-      _apply(ListingFormUpdaters.shipping(state, carrier, range));
-  void updateLocation(String? postcode) =>
-      _apply(ListingFormUpdaters.location(state, postcode));
+  void updateTitle(String v) => apply(_F.title(state, v));
+  void updateDescription(String v) => apply(_F.description(state, v));
+  void updateCategoryL1(String? id) => apply(_F.categoryL1(state, id));
+  void updateCategoryL2(String? id) => apply(_F.categoryL2(state, id));
+  void updateCondition(ListingCondition? c) => apply(_F.condition(state, c));
+  void updatePrice(int cents) => apply(_F.price(state, cents));
+  void updateShipping(ShippingCarrier c, WeightRange? r) =>
+      apply(_F.shipping(state, c, r));
+  void updateLocation(String? pc) => apply(_F.location(state, pc));
 
   Future<void> publish() => _submit(() async {
     final l = await ref.read(createListingUseCaseProvider).call(state: state);
@@ -100,26 +117,32 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     state = state.copyWith(isLoading: true, errorKey: () => null);
     try {
       state = await action();
-      _clearDraft();
+      _draftTimer?.cancel();
+      await ref.read(draftPersistenceServiceProvider).clear();
     } on Object catch (_) {
       state = state.copyWith(isLoading: false, errorKey: () => errorKey);
     }
   }
 
-  void _apply(ListingCreationState next) {
+  void apply(ListingCreationState next) {
     state = next;
-    _scheduleDraftSave();
+    _draftTimer?.cancel();
+    _draftTimer = Timer(
+      _draftDebounce,
+      () => ref.read(draftPersistenceServiceProvider).save(state),
+    );
   }
 
-  void _scheduleDraftSave() {
-    _draftTimer?.cancel();
-    _draftTimer = Timer(_draftDebounce, () {
-      ref.read(draftPersistenceServiceProvider).save(state);
-    });
+  void _applyPick(({ListingCreationState state, List<SellImage> newImages}) o) {
+    apply(o.state);
+    final q = ref.read(photoUploadQueueProvider);
+    for (final i in o.newImages) {
+      q.enqueue(id: i.id, localPath: i.localPath);
+    }
   }
 
-  void _clearDraft() {
-    _draftTimer?.cancel();
-    ref.read(draftPersistenceServiceProvider).clear();
+  void _onOutcome(PhotoUploadOutcome outcome) {
+    state = PhotoOperations.applyOutcome(state, outcome);
+    if (outcome is PhotoUploadSucceeded) apply(state);
   }
 }

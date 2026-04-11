@@ -22,12 +22,36 @@ void main() {
     sellerName: 'Jan de Vries',
     condition: ListingCondition.good,
     categoryId: 'cat-furniture',
-    imageUrls: const ['https://example.com/img1.jpg'],
+    imageUrls: const ['https://cdn.test/img1.jpg'],
     createdAt: DateTime(2026, 4),
   );
 
+  const uploadedImages = [
+    SellImage(
+      id: 'img-1',
+      localPath: '/tmp/photo1.jpg',
+      status: ImageUploadStatus.uploaded,
+      storagePath: 'u/img-1.jpg',
+      deliveryUrl: 'https://cdn.test/img1.jpg',
+    ),
+    SellImage(
+      id: 'img-2',
+      localPath: '/tmp/photo2.jpg',
+      status: ImageUploadStatus.uploaded,
+      storagePath: 'u/img-2.jpg',
+      deliveryUrl: 'https://cdn.test/img2.jpg',
+    ),
+    SellImage(
+      id: 'img-3',
+      localPath: '/tmp/photo3.jpg',
+      status: ImageUploadStatus.uploaded,
+      storagePath: 'u/img-3.jpg',
+      deliveryUrl: 'https://cdn.test/img3.jpg',
+    ),
+  ];
+
   const testState = ListingCreationState(
-    imageFiles: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
+    imageFiles: uploadedImages,
     title: 'Vintage chair for sale',
     description: 'A beautiful vintage chair in great condition',
     priceInCents: 4500,
@@ -58,7 +82,7 @@ void main() {
           priceInCents: any(named: 'priceInCents'),
           condition: any(named: 'condition'),
           categoryId: any(named: 'categoryId'),
-          imagePaths: any(named: 'imagePaths'),
+          imageUrls: any(named: 'imageUrls'),
           location: any(named: 'location'),
           shippingCarrier: any(named: 'shippingCarrier'),
           weightRange: any(named: 'weightRange'),
@@ -75,7 +99,11 @@ void main() {
           priceInCents: 4500,
           condition: ListingCondition.good,
           categoryId: 'cat-furniture',
-          imagePaths: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
+          imageUrls: const [
+            'https://cdn.test/img1.jpg',
+            'https://cdn.test/img2.jpg',
+            'https://cdn.test/img3.jpg',
+          ],
           location: '1012AB',
           shippingCarrier: ShippingCarrier.postnl,
           weightRange: WeightRange.zeroToTwo,
@@ -91,7 +119,7 @@ void main() {
           priceInCents: any(named: 'priceInCents'),
           condition: any(named: 'condition'),
           categoryId: any(named: 'categoryId'),
-          imagePaths: any(named: 'imagePaths'),
+          imageUrls: any(named: 'imageUrls'),
           location: any(named: 'location'),
           shippingCarrier: any(named: 'shippingCarrier'),
           weightRange: any(named: 'weightRange'),

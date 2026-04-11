@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
@@ -32,62 +33,124 @@ class LivePreviewPanel extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: Spacing.s3),
-              // Preview image placeholder or first photo.
-              AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: DeelmarktColors.neutral100,
-                    borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
-                  ),
-                  child:
-                      state.imageFiles.isNotEmpty
-                          ? ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              DeelmarktRadius.sm,
-                            ),
-                            child: Image.file(
-                              File(state.imageFiles.first),
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (_, e, st) => const Center(
-                                    child: Icon(Icons.image, size: 48),
-                                  ),
-                            ),
-                          )
-                          : const Center(
-                            child: Icon(
-                              Icons.image_outlined,
-                              size: 48,
-                              color: DeelmarktColors.neutral500,
-                            ),
-                          ),
-                ),
-              ),
+              _ImagePreview(imageFiles: state.imageFiles),
               const SizedBox(height: Spacing.s3),
-              // Preview title.
-              Text(
-                state.title.isNotEmpty
-                    ? state.title
-                    : 'sell.previewTitlePlaceholder'.tr(),
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              _TitleText(title: state.title, context: context),
               const SizedBox(height: Spacing.s1),
-              // Preview price.
-              Text(
-                state.priceInCents > 0
-                    ? '\u20AC ${(state.priceInCents / 100).toStringAsFixed(2)}'
-                    : '\u20AC 0,00',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: DeelmarktColors.primary,
-                ),
-              ),
+              _PriceText(priceInCents: state.priceInCents, context: context),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ImagePreview extends StatelessWidget {
+  const _ImagePreview({required this.imageFiles});
+
+  final List<SellImage> imageFiles;
+
+  Widget _buildPreviewImage(List<SellImage> images) {
+    if (images.isEmpty) {
+      return const Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 48,
+          color: DeelmarktColors.neutral500,
+        ),
+      );
+    }
+
+    final first = images.first;
+
+    // Prefer Cloudinary delivery URL (available once uploaded).
+    // On web, dart:io File is unavailable; kIsWeb guard prevents runtime error.
+    if (first.isUploaded && first.deliveryUrl != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        child: Image.network(
+          first.deliveryUrl!,
+          fit: BoxFit.cover,
+          errorBuilder:
+              (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.image, size: 48)),
+        ),
+      );
+    }
+
+    if (!kIsWeb) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        child: Image.file(
+          File(first.localPath),
+          fit: BoxFit.cover,
+          errorBuilder:
+              (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.image, size: 48)),
+        ),
+      );
+    }
+
+    // Web + no delivery URL yet → neutral placeholder.
+    return const Center(
+      child: Icon(
+        Icons.image_outlined,
+        size: 48,
+        color: DeelmarktColors.neutral500,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 4 / 3,
+      child: Container(
+        decoration: BoxDecoration(
+          color: DeelmarktColors.neutral100,
+          borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        ),
+        child: _buildPreviewImage(imageFiles),
+      ),
+    );
+  }
+}
+
+class _TitleText extends StatelessWidget {
+  const _TitleText({required this.title, required this.context});
+
+  final String title;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext _) {
+    return Text(
+      title.isNotEmpty ? title : 'sell.previewTitlePlaceholder'.tr(),
+      style: Theme.of(context).textTheme.titleMedium,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class _PriceText extends StatelessWidget {
+  const _PriceText({required this.priceInCents, required this.context});
+
+  final int priceInCents;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext _) {
+    final label =
+        priceInCents > 0
+            ? '\u20AC ${(priceInCents / 100).toStringAsFixed(2)}'
+            : '\u20AC 0,00';
+    return Text(
+      label,
+      style: Theme.of(
+        context,
+      ).textTheme.titleLarge?.copyWith(color: DeelmarktColors.primary),
     );
   }
 }

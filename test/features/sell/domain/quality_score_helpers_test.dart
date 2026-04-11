@@ -50,7 +50,7 @@ void main() {
     // Reusable builder so each test only needs to override the field it's
     // exercising. Mirrors the pattern in calculate_quality_score_usecase_test.
     ListingCreationState stateWith({
-      List<String> imageFiles = const [],
+      List<SellImage> imageFiles = const [],
       String title = '',
       String description = '',
       int priceInCents = 0,
@@ -109,7 +109,23 @@ void main() {
     test('complete state marks every field as passed', () {
       final breakdown = buildQualityBreakdown(
         stateWith(
-          imageFiles: const ['a.jpg', 'b.jpg', 'c.jpg'],
+          imageFiles: const [
+            SellImage(
+              id: 'a',
+              localPath: 'a.jpg',
+              status: ImageUploadStatus.uploaded,
+            ),
+            SellImage(
+              id: 'b',
+              localPath: 'b.jpg',
+              status: ImageUploadStatus.uploaded,
+            ),
+            SellImage(
+              id: 'c',
+              localPath: 'c.jpg',
+              status: ImageUploadStatus.uploaded,
+            ),
+          ],
           title: 'Great item for sale',
           description: List.filled(50, 'word').join(' '),
           priceInCents: 4500,

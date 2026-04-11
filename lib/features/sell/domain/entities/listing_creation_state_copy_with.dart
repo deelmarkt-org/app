@@ -12,7 +12,7 @@ import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.d
 extension ListingCreationStateCopyWith on ListingCreationState {
   ListingCreationState copyWith({
     ListingCreationStep? step,
-    List<String>? imageFiles,
+    List<SellImage>? imageFiles,
     String? title,
     String? description,
     String? Function()? categoryL1Id,

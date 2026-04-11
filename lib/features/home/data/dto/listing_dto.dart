@@ -50,6 +50,8 @@ class ListingDto {
       isFavourited: (json['is_favourited'] as bool?) ?? false,
       qualityScore: json['quality_score'] as int?,
       status: ListingStatus.fromDb((json['status'] as String?) ?? 'active'),
+      viewCount: (json['view_count'] as int?) ?? 0,
+      favouriteCount: (json['favourite_count'] as int?) ?? 0,
       createdAt: DateTime.tryParse(createdAtRaw) ?? DateTime.now(),
     );
   }

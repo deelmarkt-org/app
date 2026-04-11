@@ -30,7 +30,10 @@ void main() {
     test('preserves existing values when no params passed', () {
       const state = ListingCreationState(
         step: ListingCreationStep.details,
-        imageFiles: ['a.jpg', 'b.jpg'],
+        imageFiles: [
+          SellImage(id: 'a', localPath: 'a.jpg'),
+          SellImage(id: 'b', localPath: 'b.jpg'),
+        ],
         title: 'Test',
         description: 'Desc',
         categoryL1Id: 'cat1',
@@ -84,7 +87,7 @@ void main() {
 
     test('returns true when imageFiles is not empty', () {
       final state = ListingCreationState.initial().copyWith(
-        imageFiles: ['photo.jpg'],
+        imageFiles: const [SellImage(id: 'x', localPath: 'photo.jpg')],
       );
       expect(state.hasUnsavedData, true);
     });
