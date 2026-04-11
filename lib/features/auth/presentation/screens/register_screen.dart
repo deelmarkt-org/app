@@ -14,8 +14,6 @@ import 'package:deelmarkt/features/auth/presentation/widgets/registration_form.d
 
 /// Multi-step registration screen.
 ///
-/// Reference: docs/screens/01-auth/02-registration.md
-///
 /// Single `/register` route with internal step management via [RegisterViewModel].
 /// Steps: emailForm → emailVerification → phoneForm → phoneVerification → complete.
 ///

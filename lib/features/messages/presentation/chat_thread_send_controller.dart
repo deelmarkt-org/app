@@ -22,6 +22,12 @@ class ChatThreadSendController {
 
   final Ref ref;
   final ChatThreadState? Function() getState;
+
+  /// Plain-state setter — cannot produce `AsyncValue.loading` or
+  /// `AsyncValue.error`. No current send path needs to emit loading
+  /// or error states, but if a future refactor surfaces Realtime
+  /// errors or inflight indicators through the controller, replace
+  /// the signature with `void Function(AsyncValue<ChatThreadState>)`.
   final void Function(ChatThreadState) writeState;
 
   /// Snapshot from realtime that arrived while a send was in flight; applied
@@ -101,7 +107,9 @@ class ChatThreadSendController {
         error: e,
         stackTrace: st,
       );
-      writeState(current.copyWith(messages: current.messages));
+      // `current` is the pre-optimistic snapshot captured at method
+      // entry, so writing it back is the rollback — no copyWith needed.
+      writeState(current);
       rethrow;
     }
   }

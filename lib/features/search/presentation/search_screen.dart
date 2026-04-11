@@ -19,8 +19,6 @@ import 'package:deelmarkt/features/search/presentation/widgets/search_results_vi
 
 /// Search screen — B-52.
 ///
-/// Reference: docs/screens/02-home/03-search.md
-///
 /// Route: `/search?q=` (deep link + bottom nav).
 ///
 /// Reference: docs/screens/02-home/03-search.md

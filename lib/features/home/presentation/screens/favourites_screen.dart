@@ -16,8 +16,6 @@ import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 
 /// Favourites screen — P-28.
 ///
-/// Reference: docs/screens/03-listings/03-favourites.md
-///
 /// Displays the user's saved listings in a 2-column grid with
 /// optimistic remove + SnackBar undo.
 /// Route: `/favourites`
