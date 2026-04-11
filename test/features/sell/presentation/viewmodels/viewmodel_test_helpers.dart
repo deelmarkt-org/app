@@ -1,17 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/sell/data/services/draft_persistence_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
+import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
+import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
-import 'package:deelmarkt/features/sell/domain/repositories/image_upload_repository.dart';
 import 'package:deelmarkt/features/sell/domain/repositories/listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/create_listing_usecase.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/save_draft_usecase.dart';
-import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 
@@ -100,26 +104,26 @@ class MockListingCreationRepository implements ListingCreationRepository {
   }
 }
 
-/// Fake [ImageUploadRepository] for tests — never hits the network.
-/// By default returns a deterministic success for every call; override
-/// [shouldFail] to simulate failures.
-class FakeImageUploadRepository implements ImageUploadRepository {
+/// Fake [ImageUploadService] for tests — never hits the network.
+///
+/// By default returns a deterministic [ImageUploadResponse] for every call.
+/// Set [shouldFail] to true to simulate upload failures.
+class _MockSupabaseClient extends Mock implements SupabaseClient {}
+
+class FakeImageUploadService extends ImageUploadService {
+  FakeImageUploadService() : super(_MockSupabaseClient());
+
   bool shouldFail = false;
   final List<String> deletedPaths = [];
 
   @override
-  Future<UploadedImage> upload({
-    required String id,
-    required String localPath,
-    CancellationToken? token,
-  }) async {
-    if (shouldFail) {
-      throw Exception('upload failed');
-    }
-    return UploadedImage(
-      storagePath: 'fake/$id.jpg',
-      deliveryUrl: 'https://cdn.test/$id.jpg',
-      publicId: 'fake_$id',
+  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
+    if (shouldFail) throw Exception('upload failed');
+    final name = localFile.path.split(RegExp(r'[/\\]')).last;
+    return ImageUploadResponse(
+      storagePath: 'fake/$name',
+      deliveryUrl: 'https://cdn.test/$name',
+      publicId: 'fake/$name',
       width: 1024,
       height: 1024,
       bytes: 1000,
@@ -153,23 +157,23 @@ Future<void> pumpUntilUploaded(ProviderContainer container) async {
   ProviderContainer container,
   MockImagePickerService picker,
   MockListingCreationRepository repo,
-  FakeImageUploadRepository uploadRepo,
+  FakeImageUploadService uploadService,
 })
 buildContainer(
   SharedPreferences prefs, {
   MockImagePickerService? picker,
   MockListingCreationRepository? repo,
-  FakeImageUploadRepository? uploadRepo,
+  FakeImageUploadService? uploadService,
 }) {
   final mockPicker = picker ?? MockImagePickerService();
   final mockRepo = repo ?? MockListingCreationRepository();
-  final fakeUploadRepo = uploadRepo ?? FakeImageUploadRepository();
+  final fakeService = uploadService ?? FakeImageUploadService();
 
   final container = ProviderContainer(
     overrides: [
       imagePickerServiceProvider.overrideWithValue(mockPicker),
       listingCreationRepositoryProvider.overrideWithValue(mockRepo),
-      imageUploadRepositoryProvider.overrideWithValue(fakeUploadRepo),
+      imageUploadServiceProvider.overrideWithValue(fakeService),
       createListingUseCaseProvider.overrideWithValue(
         CreateListingUseCase(mockRepo),
       ),
@@ -185,6 +189,6 @@ buildContainer(
     container: container,
     picker: mockPicker,
     repo: mockRepo,
-    uploadRepo: fakeUploadRepo,
+    uploadService: fakeService,
   );
 }

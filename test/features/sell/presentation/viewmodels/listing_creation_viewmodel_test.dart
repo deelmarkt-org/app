@@ -17,7 +17,9 @@ void main() {
 
   group('ListingCreationNotifier -- initial state', () {
     test('starts at photos step with empty fields', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final state = container.read(listingCreationNotifierProvider);
@@ -34,7 +36,9 @@ void main() {
 
   group('ListingCreationNotifier -- form updates', () {
     test('updateTitle changes title', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -48,7 +52,9 @@ void main() {
     });
 
     test('updateDescription changes description', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -62,7 +68,9 @@ void main() {
     });
 
     test('updatePrice changes priceInCents', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -76,7 +84,9 @@ void main() {
     });
 
     test('updateCondition changes condition', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -90,7 +100,9 @@ void main() {
     });
 
     test('updateCategoryL1 changes categoryL1Id', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -104,7 +116,9 @@ void main() {
     });
 
     test('updateCategoryL2 changes categoryL2Id', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -118,7 +132,9 @@ void main() {
     });
 
     test('updateShipping changes carrier and weight range', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container
@@ -131,7 +147,9 @@ void main() {
     });
 
     test('updateLocation changes location', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container

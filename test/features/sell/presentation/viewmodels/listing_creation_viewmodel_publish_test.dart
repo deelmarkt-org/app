@@ -17,7 +17,9 @@ void main() {
 
   group('ListingCreationNotifier -- publish', () {
     test('publish() sets step to success with createdListingId', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
@@ -41,7 +43,7 @@ void main() {
 
     test('publish() sets error on failure', () async {
       final mockRepo = MockListingCreationRepository()..shouldFail = true;
-      final (:container, :picker, repo: _, uploadRepo: _) = buildContainer(
+      final (:container, :picker, repo: _, uploadService: _) = buildContainer(
         prefs,
         repo: mockRepo,
       );
@@ -68,7 +70,9 @@ void main() {
 
   group('ListingCreationNotifier -- draft save', () {
     test('saveDraft() sets step to success on completion', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier)
@@ -83,7 +87,7 @@ void main() {
 
     test('saveDraft() sets error on failure', () async {
       final mockRepo = MockListingCreationRepository()..shouldFail = true;
-      final (:container, :picker, repo: _, uploadRepo: _) = buildContainer(
+      final (:container, :picker, repo: _, uploadService: _) = buildContainer(
         prefs,
         repo: mockRepo,
       );
@@ -107,7 +111,9 @@ void main() {
       });
       prefs = await SharedPreferences.getInstance();
 
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final state = container.read(listingCreationNotifierProvider);

@@ -3,14 +3,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
-import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/sell/data/mock/mock_listing_creation_repository.dart';
-import 'package:deelmarkt/features/sell/data/repositories/supabase_image_upload_repository.dart';
 import 'package:deelmarkt/features/sell/data/services/draft_persistence_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/quality_score_result.dart';
-import 'package:deelmarkt/features/sell/domain/repositories/image_upload_repository.dart';
 import 'package:deelmarkt/features/sell/domain/repositories/listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/calculate_quality_score_usecase.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/create_listing_usecase.dart';
@@ -32,18 +30,15 @@ ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerService();
 }
 
-/// Image upload pipeline (Storage → Edge Function → Cloudinary).
-@riverpod
-ImageUploadRepository imageUploadRepository(Ref ref) {
-  return SupabaseImageUploadRepository(ref.watch(supabaseClientProvider));
-}
-
 /// Bounded-concurrency upload queue. One instance per wizard session;
 /// disposed via [Ref.onDispose] in the consumer.
+///
+/// Uses [imageUploadServiceProvider] from [sell_services_providers.dart]
+/// (the R-27 client wired in PR #106) so there is one upload pipeline.
 @riverpod
 PhotoUploadQueue photoUploadQueue(Ref ref) {
   final queue = PhotoUploadQueue(
-    repository: ref.watch(imageUploadRepositoryProvider),
+    service: ref.watch(imageUploadServiceProvider),
   );
   ref.onDispose(queue.dispose);
   return queue;

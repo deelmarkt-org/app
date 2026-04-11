@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/exceptions/app_exception.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
+import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
-import 'package:deelmarkt/features/sell/domain/exceptions/image_upload_exceptions.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 
@@ -13,8 +13,9 @@ SellImage makeImage(
   ImageUploadStatus status = ImageUploadStatus.pending,
   String? deliveryUrl,
   String? storagePath,
+  String? publicId,
   String? errorKey,
-  int attemptCount = 0,
+  int userRetryCount = 0,
   bool isRetryable = true,
 }) {
   return SellImage(
@@ -23,8 +24,9 @@ SellImage makeImage(
     status: status,
     deliveryUrl: deliveryUrl,
     storagePath: storagePath,
+    publicId: publicId,
     errorKey: errorKey,
-    attemptCount: attemptCount,
+    userRetryCount: userRetryCount,
     isRetryable: isRetryable,
   );
 }
@@ -63,7 +65,6 @@ void main() {
     test(
       'exceeds maxImages: note — state already at maxImages is not extended further',
       () {
-        // Build a state with maxImages already filled.
         final images = List.generate(
           PhotoOperations.maxImages,
           (i) => makeImage('img-$i'),
@@ -72,9 +73,6 @@ void main() {
           imageFiles: images,
         );
 
-        // The addPhotos function itself does not enforce the cap — the caller
-        // (ListingCreationNotifier) guards this before calling addPhotos.
-        // We verify the current count is already at the limit.
         expect(state.imageFiles.length, PhotoOperations.maxImages);
       },
     );
@@ -115,7 +113,6 @@ void main() {
         imageFiles: [img0, img1, img2],
       );
 
-      // Move img2 to position 0.
       final newState = PhotoOperations.reorder(state, 2, 0);
 
       expect(newState.imageFiles.map((i) => i.id).toList(), [
@@ -127,20 +124,27 @@ void main() {
   });
 
   group('PhotoOperations.markRetry', () {
-    test('sets status to pending and clears errorKey', () {
-      final img = makeImage(
-        'img-1',
-        status: ImageUploadStatus.failed,
-        errorKey: 'sell.uploadErrorNetwork',
-      );
-      final state = ListingCreationState.initial().copyWith(imageFiles: [img]);
+    test(
+      'sets status to pending, clears errorKey, increments userRetryCount',
+      () {
+        final img = makeImage(
+          'img-1',
+          status: ImageUploadStatus.failed,
+          errorKey: 'error.network',
+          userRetryCount: 1,
+        );
+        final state = ListingCreationState.initial().copyWith(
+          imageFiles: [img],
+        );
 
-      final newState = PhotoOperations.markRetry(state, 'img-1');
+        final newState = PhotoOperations.markRetry(state, 'img-1');
 
-      final patched = newState.imageFiles.first;
-      expect(patched.status, ImageUploadStatus.pending);
-      expect(patched.errorKey, isNull);
-    });
+        final patched = newState.imageFiles.first;
+        expect(patched.status, ImageUploadStatus.pending);
+        expect(patched.errorKey, isNull);
+        expect(patched.userRetryCount, 2);
+      },
+    );
 
     test('is a no-op if id is not found', () {
       final img = makeImage('img-1');
@@ -153,7 +157,7 @@ void main() {
   });
 
   group('PhotoOperations.applyOutcome', () {
-    test('PhotoUploadStarted → status uploading, attemptCount incremented', () {
+    test('PhotoUploadStarted → status uploading, errorKey cleared', () {
       final img = makeImage('img-1');
       final state = ListingCreationState.initial().copyWith(imageFiles: [img]);
 
@@ -164,19 +168,18 @@ void main() {
 
       final patched = newState.imageFiles.first;
       expect(patched.status, ImageUploadStatus.uploading);
-      expect(patched.attemptCount, 1);
       expect(patched.errorKey, isNull);
     });
 
     test(
-      'PhotoUploadSucceeded → status uploaded, storagePath/deliveryUrl set',
+      'PhotoUploadSucceeded → status uploaded, storagePath/deliveryUrl/publicId set',
       () {
         final img = makeImage('img-1', status: ImageUploadStatus.uploading);
         final state = ListingCreationState.initial().copyWith(
           imageFiles: [img],
         );
 
-        const uploaded = UploadedImage(
+        const response = ImageUploadResponse(
           storagePath: 'uid/abc.jpg',
           deliveryUrl: 'https://cdn/abc.jpg',
           publicId: 'uid/abc',
@@ -188,51 +191,62 @@ void main() {
 
         final newState = PhotoOperations.applyOutcome(
           state,
-          const PhotoUploadSucceeded('img-1', uploaded),
+          const PhotoUploadSucceeded('img-1', response),
         );
 
         final patched = newState.imageFiles.first;
         expect(patched.status, ImageUploadStatus.uploaded);
         expect(patched.storagePath, 'uid/abc.jpg');
         expect(patched.deliveryUrl, 'https://cdn/abc.jpg');
+        expect(patched.publicId, 'uid/abc');
         expect(patched.errorKey, isNull);
       },
     );
 
     test(
-      'PhotoUploadFailed (retryable) → status failed, errorKey set, isRetryable true',
+      'PhotoUploadFailed (retryable: NetworkException) → status failed, isRetryable true',
       () {
         final img = makeImage('img-1', status: ImageUploadStatus.uploading);
         final state = ListingCreationState.initial().copyWith(
           imageFiles: [img],
         );
 
-        const exception = ImageUploadNetworkException();
-        final newState = PhotoOperations.applyOutcome(
-          state,
-          const PhotoUploadFailed('img-1', exception),
-        );
+        const exception = NetworkException(debugMessage: 'timeout');
+        const outcome = PhotoUploadFailed('img-1', exception);
+        final newState = PhotoOperations.applyOutcome(state, outcome);
 
         final patched = newState.imageFiles.first;
         expect(patched.status, ImageUploadStatus.failed);
-        expect(patched.errorKey, exception.errorKey);
+        expect(patched.errorKey, 'error.network');
         expect(patched.isRetryable, isTrue);
       },
     );
 
-    test('PhotoUploadFailed (non-retryable) → isRetryable false', () {
-      final img = makeImage('img-1', status: ImageUploadStatus.uploading);
-      final state = ListingCreationState.initial().copyWith(imageFiles: [img]);
+    test(
+      'PhotoUploadFailed (non-retryable: ValidationException) → isRetryable false',
+      () {
+        final img = makeImage('img-1', status: ImageUploadStatus.uploading);
+        final state = ListingCreationState.initial().copyWith(
+          imageFiles: [img],
+        );
 
-      const exception = ImageUploadBlockedException();
-      final newState = PhotoOperations.applyOutcome(
-        state,
-        const PhotoUploadFailed('img-1', exception),
-      );
+        const exception = ValidationException(
+          'error.image.blocked',
+          debugMessage: 'blocked',
+        );
+        const outcome = PhotoUploadFailed('img-1', exception);
+        final newState = PhotoOperations.applyOutcome(state, outcome);
 
-      final patched = newState.imageFiles.first;
-      expect(patched.status, ImageUploadStatus.failed);
-      expect(patched.isRetryable, isFalse);
+        final patched = newState.imageFiles.first;
+        expect(patched.status, ImageUploadStatus.failed);
+        expect(patched.isRetryable, isFalse);
+      },
+    );
+
+    test('rate-limited ValidationException is retryable', () {
+      const exception = ValidationException('error.image.rate_limited');
+      const outcome = PhotoUploadFailed('img-1', exception);
+      expect(outcome.isRetryable, isTrue);
     });
   });
 }

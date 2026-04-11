@@ -11,32 +11,6 @@ import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
-import 'package:deelmarkt/features/sell/domain/repositories/image_upload_repository.dart';
-import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
-import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
-
-/// No-op image upload repository for the router test — avoids touching
-/// Supabase when [ListingCreationScreen] is mounted.
-class _FakeImageUploadRepository implements ImageUploadRepository {
-  @override
-  Future<UploadedImage> upload({
-    required String id,
-    required String localPath,
-    CancellationToken? token,
-  }) async => UploadedImage(
-    storagePath: 'fake/$id.jpg',
-    deliveryUrl: 'https://cdn.test/$id.jpg',
-    publicId: 'fake_$id',
-    width: 1,
-    height: 1,
-    bytes: 1,
-    format: 'jpg',
-  );
-
-  @override
-  Future<void> deleteStorageObject(String storagePath) async {}
-}
 
 /// Creates a test router with pre-set auth state (no real Supabase).
 GoRouter _createTestRouter({bool isLoggedIn = false, bool isLoading = false}) {
@@ -257,9 +231,8 @@ void main() {
           overrides: [
             useMockDataProvider.overrideWithValue(true),
             sharedPreferencesProvider.overrideWithValue(prefs),
-            imageUploadRepositoryProvider.overrideWithValue(
-              _FakeImageUploadRepository(),
-            ),
+            // imageUploadServiceProvider auto-returns MockImageUploadService
+            // when useMockDataProvider is true — no extra override needed.
           ],
           child: MaterialApp.router(routerConfig: authedRouter),
         ),

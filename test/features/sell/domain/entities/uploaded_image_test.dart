@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
+import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
+
+// Previously tested UploadedImage (removed in dedup refactor).
+// ImageUploadResponse is the canonical DTO from PR #106.
 
 void main() {
-  group('UploadedImage', () {
-    const a = UploadedImage(
+  group('ImageUploadResponse', () {
+    const a = ImageUploadResponse(
       storagePath: 'uid/abc.jpg',
       deliveryUrl: 'https://cdn/abc.jpg',
       publicId: 'uid/abc',
@@ -14,7 +17,7 @@ void main() {
       format: 'jpg',
     );
 
-    const b = UploadedImage(
+    const b = ImageUploadResponse(
       storagePath: 'uid/abc.jpg',
       deliveryUrl: 'https://cdn/abc.jpg',
       publicId: 'uid/abc',
@@ -24,7 +27,7 @@ void main() {
       format: 'jpg',
     );
 
-    const c = UploadedImage(
+    const c = ImageUploadResponse(
       storagePath: 'uid/other.jpg',
       deliveryUrl: 'https://cdn/other.jpg',
       publicId: 'uid/other',
@@ -34,25 +37,37 @@ void main() {
       format: 'png',
     );
 
-    test('two instances with same values are equal', () {
-      expect(a, equals(b));
-      expect(a.hashCode, equals(b.hashCode));
+    test('fromJson round-trip', () {
+      final json = {
+        'storage_path': 'uid/abc.jpg',
+        'delivery_url': 'https://cdn/abc.jpg',
+        'public_id': 'uid/abc',
+        'width': 1920,
+        'height': 1080,
+        'bytes': 204800,
+        'format': 'jpg',
+      };
+      final parsed = ImageUploadResponse.fromJson(json);
+      expect(parsed.storagePath, a.storagePath);
+      expect(parsed.deliveryUrl, a.deliveryUrl);
+      expect(parsed.publicId, a.publicId);
     });
 
-    test('two instances with different values are not equal', () {
-      expect(a, isNot(equals(c)));
+    test('fromJson throws FormatException on missing fields', () {
+      expect(
+        () => ImageUploadResponse.fromJson({'storage_path': 'only-this'}),
+        throwsA(isA<FormatException>()),
+      );
     });
 
-    test('props list contains all 7 fields', () {
-      expect(a.props, [
-        a.storagePath,
-        a.deliveryUrl,
-        a.publicId,
-        a.width,
-        a.height,
-        a.bytes,
-        a.format,
-      ]);
+    test('two instances with same values have equal fields', () {
+      expect(a.storagePath, equals(b.storagePath));
+      expect(a.deliveryUrl, equals(b.deliveryUrl));
+      expect(a.publicId, equals(b.publicId));
+    });
+
+    test('two instances with different values differ', () {
+      expect(a.storagePath, isNot(equals(c.storagePath)));
     });
   });
 }

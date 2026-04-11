@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
@@ -54,7 +54,7 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
     ref.read(photoUploadQueueProvider).cancel(id);
     final sp = out.removed!.storagePath;
     if (sp == null) return;
-    unawaited(ref.read(imageUploadRepositoryProvider).deleteStorageObject(sp));
+    unawaited(ref.read(imageUploadServiceProvider).deleteStorageObject(sp));
   }
 
   void reorderPhotos(int old, int next) =>

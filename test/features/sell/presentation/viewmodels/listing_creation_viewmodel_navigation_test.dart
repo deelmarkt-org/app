@@ -16,7 +16,9 @@ void main() {
 
   group('ListingCreationNotifier -- step navigation', () {
     test('nextStep() from photos with 0 images stays and sets error', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final result =
@@ -29,7 +31,9 @@ void main() {
     });
 
     test('nextStep() from photos with 1+ image advances to details', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       await container
@@ -48,7 +52,7 @@ void main() {
     test(
       'nextStep() from details without title stays and sets error',
       () async {
-        final (:container, :picker, :repo, uploadRepo: _) = buildContainer(
+        final (:container, :picker, :repo, uploadService: _) = buildContainer(
           prefs,
         );
         addTearDown(container.dispose);
@@ -76,7 +80,7 @@ void main() {
     test(
       'nextStep() from details with valid data advances to quality',
       () async {
-        final (:container, :picker, :repo, uploadRepo: _) = buildContainer(
+        final (:container, :picker, :repo, uploadService: _) = buildContainer(
           prefs,
         );
         addTearDown(container.dispose);
@@ -104,7 +108,7 @@ void main() {
     test(
       'nextStep() from details blocked when category not selected',
       () async {
-        final (:container, :picker, :repo, uploadRepo: _) = buildContainer(
+        final (:container, :picker, :repo, uploadService: _) = buildContainer(
           prefs,
         );
         addTearDown(container.dispose);
@@ -131,7 +135,9 @@ void main() {
     );
 
     test('previousStep() from details goes to photos', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
@@ -146,7 +152,9 @@ void main() {
     });
 
     test('previousStep() from quality goes to details', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
@@ -165,7 +173,9 @@ void main() {
     });
 
     test('previousStep() from photos is a no-op', () {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       container.read(listingCreationNotifierProvider.notifier).previousStep();
@@ -177,7 +187,7 @@ void main() {
     test(
       'nextStep() from details without price stays and sets error',
       () async {
-        final (:container, :picker, :repo, uploadRepo: _) = buildContainer(
+        final (:container, :picker, :repo, uploadService: _) = buildContainer(
           prefs,
         );
         addTearDown(container.dispose);
@@ -200,7 +210,9 @@ void main() {
     );
 
     test('nextStep() from quality is a no-op', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);

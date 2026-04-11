@@ -13,10 +13,7 @@ abstract final class PhotoOperations {
   static const maxImages = 12;
   static const _uuid = Uuid();
 
-  /// Applies a successful pick result to state. Newly picked images are
-  /// inserted in [ImageUploadStatus.pending] state with a fresh UUID.
-  /// Returns the new state and the freshly created images so the caller
-  /// can enqueue uploads.
+  /// Applies a pick result to state; returns new state + fresh images for enqueue.
   static ({ListingCreationState state, List<SellImage> newImages}) addPhotos(
     ListingCreationState state,
     ImagePickerResult result,
@@ -72,8 +69,6 @@ abstract final class PhotoOperations {
   }
 
   /// Id-based state patch — drops silently if [id] no longer exists.
-  /// Used by upload completion handlers so out-of-order callbacks cannot
-  /// resurrect a removed photo.
   static ListingCreationState patchImage(
     ListingCreationState state,
     String id,
@@ -94,7 +89,11 @@ abstract final class PhotoOperations {
   ) => patchImage(
     state,
     id,
-    (i) => i.copyWith(status: ImageUploadStatus.pending, errorKey: () => null),
+    (i) => i.copyWith(
+      status: ImageUploadStatus.pending,
+      errorKey: () => null,
+      userRetryCount: i.userRetryCount + 1,
+    ),
   );
 
   /// Apply a [PhotoUploadOutcome] from the queue to state via id-based patch.
@@ -109,7 +108,6 @@ abstract final class PhotoOperations {
         (img) => img.copyWith(
           status: ImageUploadStatus.uploading,
           errorKey: () => null,
-          attemptCount: img.attemptCount + 1,
         ),
       ),
       PhotoUploadSucceeded() => patchImage(
@@ -117,8 +115,9 @@ abstract final class PhotoOperations {
         outcome.id,
         (img) => img.copyWith(
           status: ImageUploadStatus.uploaded,
-          storagePath: () => outcome.image.storagePath,
-          deliveryUrl: () => outcome.image.deliveryUrl,
+          storagePath: () => outcome.response.storagePath,
+          deliveryUrl: () => outcome.response.deliveryUrl,
+          publicId: () => outcome.response.publicId,
           errorKey: () => null,
         ),
       ),
@@ -127,8 +126,8 @@ abstract final class PhotoOperations {
         outcome.id,
         (img) => img.copyWith(
           status: ImageUploadStatus.failed,
-          errorKey: () => outcome.exception.errorKey,
-          isRetryable: outcome.exception.isRetryable,
+          errorKey: () => outcome.exception.messageKey,
+          isRetryable: outcome.isRetryable,
         ),
       ),
     };

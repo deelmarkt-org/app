@@ -92,12 +92,8 @@ class DraftPersistenceService {
     await _prefs.remove(_key);
   }
 
-  static Map<String, Object?> _serializeImage(SellImage image) => {
-    'id': image.id,
-    'localPath': image.localPath,
-    'storagePath': image.storagePath,
-    'deliveryUrl': image.deliveryUrl,
-  };
+  static Map<String, Object?> _serializeImage(SellImage image) =>
+      image.toJson();
 
   List<SellImage> _parseImages(Object? value) {
     if (value is! List) return const [];
@@ -107,19 +103,14 @@ class DraftPersistenceService {
       final id = item['id'];
       final localPath = item['localPath'];
       final deliveryUrl = item['deliveryUrl'];
-      final storagePath = item['storagePath'];
       if (id is! String || localPath is! String || deliveryUrl is! String) {
         continue;
       }
-      result.add(
-        SellImage(
-          id: id,
-          localPath: localPath,
-          status: ImageUploadStatus.uploaded,
-          storagePath: storagePath is String ? storagePath : null,
-          deliveryUrl: deliveryUrl,
-        ),
-      );
+      try {
+        result.add(SellImage.fromJson(Map<String, dynamic>.from(item)));
+      } on Object {
+        continue; // defensive: drop malformed entries
+      }
     }
     return result;
   }

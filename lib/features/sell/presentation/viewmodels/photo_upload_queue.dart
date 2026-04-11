@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
-import 'package:deelmarkt/features/sell/domain/exceptions/image_upload_exceptions.dart';
-import 'package:deelmarkt/features/sell/domain/repositories/image_upload_repository.dart';
+import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
+import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
 import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 
 /// Result of a single upload attempt as observed by the queue.
@@ -17,31 +18,48 @@ class PhotoUploadStarted extends PhotoUploadOutcome {
 }
 
 class PhotoUploadSucceeded extends PhotoUploadOutcome {
-  const PhotoUploadSucceeded(super.id, this.image);
-  final UploadedImage image;
+  const PhotoUploadSucceeded(super.id, this.response);
+  final ImageUploadResponse response;
 }
 
 class PhotoUploadFailed extends PhotoUploadOutcome {
   const PhotoUploadFailed(super.id, this.exception);
-  final ImageUploadException exception;
+
+  /// The [AppException] that caused the failure.
+  ///
+  /// [NetworkException] → retryable (transient infra error).
+  /// [ValidationException] with key `error.image.rate_limited` → retryable.
+  /// [AuthException] or other [ValidationException] → terminal (non-retryable).
+  final AppException exception;
+
+  /// Whether the UI should show a retry affordance for this failure.
+  bool get isRetryable => switch (exception) {
+    NetworkException() => true,
+    ValidationException(messageKey: 'error.image.rate_limited') => true,
+    _ => false,
+  };
 }
 
 /// Bounded-concurrency queue that uploads picked images via
-/// [ImageUploadRepository] with capped retries and exponential backoff.
+/// [ImageUploadService] with capped retries and exponential backoff.
 ///
 /// Concurrency is fixed at [maxConcurrent] (default 3, see plan §3.4).
 /// The queue does NOT touch state directly — it emits [PhotoUploadOutcome]
 /// events on a stream so the ViewModel can apply id-based state patches.
+///
+/// Cancellation is cooperative: [CancellationToken.throwIfCancelled] is
+/// called before and after each `await` boundary (CP-1..CP-4) so a photo
+/// removed mid-upload triggers a clean, silent abort.
 class PhotoUploadQueue {
   PhotoUploadQueue({
-    required ImageUploadRepository repository,
+    required ImageUploadService service,
     this.maxConcurrent = 3,
     this.maxAttempts = 3,
     Random? random,
-  }) : _repository = repository,
+  }) : _service = service,
        _random = random ?? Random();
 
-  final ImageUploadRepository _repository;
+  final ImageUploadService _service;
   final int maxConcurrent;
   final int maxAttempts;
   final Random _random;
@@ -108,21 +126,19 @@ class PhotoUploadQueue {
       while (true) {
         attempt++;
         try {
-          final result = await _repository.upload(
-            id: job.id,
-            localPath: job.localPath,
-            token: job.token,
-          );
-          if (job.token.isCancelled) return;
-          _emit(PhotoUploadSucceeded(job.id, result));
+          job.token.throwIfCancelled(); // CP-1: before upload
+          final response = await _service.uploadAndProcess(File(job.localPath));
+          job.token.throwIfCancelled(); // CP-2: after upload
+          _emit(PhotoUploadSucceeded(job.id, response));
           return;
-        } on ImageUploadCancelledException {
-          return; // silent drop
-        } on ImageUploadException catch (e) {
-          if (!e.isRetryable || attempt >= maxAttempts) {
+        } on UploadCancelledException {
+          return; // silent drop — user removed the photo
+        } on AppException catch (e) {
+          final failed = PhotoUploadFailed(job.id, e);
+          if (!failed.isRetryable || attempt >= maxAttempts) {
             // Guard: don't emit failure for photos removed during upload.
             if (job.token.isCancelled) return;
-            _emit(PhotoUploadFailed(job.id, e));
+            _emit(failed);
             return;
           }
           await _backoff(attempt, job.token);
@@ -144,7 +160,7 @@ class PhotoUploadQueue {
     final ceil = exp.clamp(baseMs, capMs);
     final delayMs = _random.nextInt(ceil);
     await Future<void>.delayed(Duration(milliseconds: delayMs));
-    token.throwIfCancelled();
+    token.throwIfCancelled(); // CP-3: after backoff delay
   }
 
   void _emit(PhotoUploadOutcome outcome) {

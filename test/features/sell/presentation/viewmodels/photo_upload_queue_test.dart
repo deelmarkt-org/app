@@ -1,21 +1,36 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'dart:io';
 
-import 'package:deelmarkt/features/sell/domain/entities/uploaded_image.dart';
-import 'package:deelmarkt/features/sell/domain/exceptions/image_upload_exceptions.dart';
-import 'package:deelmarkt/features/sell/domain/repositories/image_upload_repository.dart';
-import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
+import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 
 // ---------------------------------------------------------------------------
-// Fake repository
+// Minimal Supabase mock so _FakeService can satisfy the base class constructor
+// without a live Supabase session. All upload/delete methods are overridden.
+// ---------------------------------------------------------------------------
+class _MockSupabaseClient extends Mock implements SupabaseClient {}
+
+// ---------------------------------------------------------------------------
+// Fake ImageUploadService (no network needed)
 // ---------------------------------------------------------------------------
 
 enum _FakeBehavior { succeed, throwNetwork, throwBlocked }
 
-class _FakeRepo implements ImageUploadRepository {
+class _FakeService extends ImageUploadService {
+  _FakeService._() : super(_MockSupabaseClient());
+
+  static _FakeService create([_FakeBehavior b = _FakeBehavior.succeed]) {
+    return _FakeService._()..behavior = b;
+  }
+
   _FakeBehavior behavior = _FakeBehavior.succeed;
 
-  static const _fakeImage = UploadedImage(
+  static const _fakeResponse = ImageUploadResponse(
     storagePath: 'uid/fake.jpg',
     deliveryUrl: 'https://cdn/fake.jpg',
     publicId: 'uid/fake',
@@ -26,22 +41,20 @@ class _FakeRepo implements ImageUploadRepository {
   );
 
   @override
-  Future<UploadedImage> upload({
-    required String id,
-    required String localPath,
-    CancellationToken? token,
-  }) async {
-    // Yield control to allow cancellation tokens to be set before we process.
+  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
+    // Yield control so cancellation tokens can be set before processing.
     await Future<void>.delayed(Duration.zero);
-    token?.throwIfCancelled();
 
     switch (behavior) {
       case _FakeBehavior.succeed:
-        return _fakeImage;
+        return _fakeResponse;
       case _FakeBehavior.throwNetwork:
-        throw const ImageUploadNetworkException();
+        throw const NetworkException(debugMessage: 'fake network error');
       case _FakeBehavior.throwBlocked:
-        throw const ImageUploadBlockedException();
+        throw const ValidationException(
+          'error.image.blocked',
+          debugMessage: 'fake blocked',
+        );
     }
   }
 
@@ -54,12 +67,12 @@ class _FakeRepo implements ImageUploadRepository {
 // ---------------------------------------------------------------------------
 
 PhotoUploadQueue _makeQueue(
-  _FakeRepo repo, {
+  ImageUploadService svc, {
   int maxAttempts = 3,
   int maxConcurrent = 1,
 }) {
   return PhotoUploadQueue(
-    repository: repo,
+    service: svc,
     maxConcurrent: maxConcurrent,
     maxAttempts: maxAttempts,
   );
@@ -71,14 +84,14 @@ PhotoUploadQueue _makeQueue(
 
 void main() {
   group('PhotoUploadQueue', () {
-    late _FakeRepo repo;
+    late _FakeService service;
 
     setUp(() {
-      repo = _FakeRepo();
+      service = _FakeService.create();
     });
 
     test('enqueue → Started then Succeeded', () async {
-      final queue = _makeQueue(repo);
+      final queue = _makeQueue(service);
       addTearDown(queue.dispose);
 
       final outcomesFuture = queue.outcomes.take(2).toList();
@@ -91,13 +104,25 @@ void main() {
       expect((outcomes[1] as PhotoUploadSucceeded).id, 'img-1');
     });
 
+    test('succeeded outcome carries ImageUploadResponse', () async {
+      final queue = _makeQueue(service);
+      addTearDown(queue.dispose);
+
+      final outcomesFuture = queue.outcomes.take(2).toList();
+      queue.enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg');
+
+      final outcomes = await outcomesFuture;
+      final succeeded = outcomes[1] as PhotoUploadSucceeded;
+      expect(succeeded.response.deliveryUrl, 'https://cdn/fake.jpg');
+      expect(succeeded.response.publicId, 'uid/fake');
+    });
+
     test(
       'cancel before queue processes: no Succeeded/Failed for that id',
       () async {
-        final queue = _makeQueue(repo);
+        final queue = _makeQueue(service);
         addTearDown(queue.dispose);
 
-        // Collect outcomes for a short window.
         final collected = <PhotoUploadOutcome>[];
         final sub = queue.outcomes.listen(collected.add);
 
@@ -110,7 +135,6 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 50));
         await sub.cancel();
 
-        // If Started was emitted before cancel, it may appear; but Succeeded/Failed must not.
         final succeeded = collected.whereType<PhotoUploadSucceeded>();
         final failed = collected.whereType<PhotoUploadFailed>();
         expect(succeeded.where((o) => o.id == 'img-cancel'), isEmpty);
@@ -119,17 +143,16 @@ void main() {
     );
 
     test('cancel of non-existent id is a no-op', () {
-      final queue = _makeQueue(repo);
+      final queue = _makeQueue(service);
       addTearDown(queue.dispose);
-      // Should not throw.
       expect(() => queue.cancel('does-not-exist'), returnsNormally);
     });
 
     test(
       'non-retryable failure → Started then Failed immediately (no retry)',
       () async {
-        repo.behavior = _FakeBehavior.throwBlocked;
-        final queue = _makeQueue(repo);
+        final blockedService = _FakeService.create(_FakeBehavior.throwBlocked);
+        final queue = _makeQueue(blockedService);
         addTearDown(queue.dispose);
 
         final outcomesFuture = queue.outcomes.take(2).toList();
@@ -139,12 +162,25 @@ void main() {
         expect(outcomes[0], isA<PhotoUploadStarted>());
         expect(outcomes[1], isA<PhotoUploadFailed>());
         final failed = outcomes[1] as PhotoUploadFailed;
-        expect(failed.exception.isRetryable, isFalse);
+        expect(failed.isRetryable, isFalse);
       },
     );
 
+    test('network failure is retryable', () async {
+      final networkService = _FakeService.create(_FakeBehavior.throwNetwork);
+      final queue = _makeQueue(networkService, maxAttempts: 2);
+      addTearDown(queue.dispose);
+
+      final outcomesFuture = queue.outcomes.take(2).toList();
+      queue.enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg');
+
+      final outcomes = await outcomesFuture.timeout(const Duration(seconds: 5));
+      final failed = outcomes[1] as PhotoUploadFailed;
+      expect(failed.isRetryable, isTrue);
+    });
+
     test('inFlight is 0 after completion', () async {
-      final queue = _makeQueue(repo);
+      final queue = _makeQueue(service);
       addTearDown(queue.dispose);
 
       final outcomesFuture = queue.outcomes.take(2).toList();
@@ -157,7 +193,7 @@ void main() {
     test(
       'idempotent enqueue: same id enqueued twice only processes once',
       () async {
-        final queue = _makeQueue(repo);
+        final queue = _makeQueue(service);
         addTearDown(queue.dispose);
 
         final outcomes = <PhotoUploadOutcome>[];
@@ -167,7 +203,6 @@ void main() {
           ..enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg')
           ..enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg'); // duplicate
 
-        // Wait for the first upload to fully complete.
         await Future<void>.delayed(const Duration(milliseconds: 100));
         await sub.cancel();
 
@@ -177,25 +212,24 @@ void main() {
     );
 
     test('retryable failure → retry → success on second attempt', () async {
-      // First call throws network error, second call succeeds.
       var callCount = 0;
-      final mixedRepo = _CallCountRepo(
+      final mixedService = _CallCountService(
         onCall: () {
           callCount++;
-          if (callCount == 1) throw const ImageUploadNetworkException();
-          return _FakeRepo._fakeImage;
+          if (callCount == 1) {
+            throw const NetworkException(debugMessage: 'first call network');
+          }
+          return _FakeService._fakeResponse;
         },
       );
 
       final queue = PhotoUploadQueue(
-        repository: mixedRepo,
+        service: mixedService,
         maxConcurrent: 1,
         maxAttempts: 2,
       );
       addTearDown(queue.dispose);
 
-      // The queue emits Started once (before the retry loop) then Succeeded.
-      // Retries happen internally — no second Started is emitted.
       final outcomesFuture = queue.outcomes.take(2).toList();
       queue.enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg');
 
@@ -208,21 +242,17 @@ void main() {
 }
 
 // ---------------------------------------------------------------------------
-// Helper repo that delegates to a callback for each upload call
+// Helper service that delegates to a callback for each upload call
 // ---------------------------------------------------------------------------
 
-class _CallCountRepo implements ImageUploadRepository {
-  _CallCountRepo({required this.onCall});
-  final UploadedImage Function() onCall;
+class _CallCountService extends ImageUploadService {
+  _CallCountService({required this.onCall}) : super(_MockSupabaseClient());
+
+  final ImageUploadResponse Function() onCall;
 
   @override
-  Future<UploadedImage> upload({
-    required String id,
-    required String localPath,
-    CancellationToken? token,
-  }) async {
+  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
     await Future<void>.delayed(Duration.zero);
-    token?.throwIfCancelled();
     return onCall();
   }
 

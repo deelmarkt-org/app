@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 
@@ -65,7 +66,7 @@ List<Override> buildPhotoStepOverrides(
     () => stub ?? StubListingCreationNotifier(state),
   ),
   imagePickerServiceProvider.overrideWithValue(MockImagePickerService()),
-  imageUploadRepositoryProvider.overrideWithValue(FakeImageUploadRepository()),
+  imageUploadServiceProvider.overrideWithValue(FakeImageUploadService()),
   listingCreationRepositoryProvider.overrideWithValue(
     MockListingCreationRepository(),
   ),

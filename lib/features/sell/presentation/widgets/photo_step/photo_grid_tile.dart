@@ -49,6 +49,17 @@ class PhotoGridTile extends StatelessWidget {
   }
 
   Widget _buildFilledTile(BuildContext context, SellImage img) {
+    // Prefer the Cloudinary delivery URL once uploaded — avoids loading
+    // from a potentially stale or missing local file path (M7).
+    // Prefer the Cloudinary delivery URL once uploaded — avoids loading
+    // from a potentially stale or missing local file path (M7).
+    // ResizeImage caps memory cache at 300×300 logical pixels for both
+    // network and file sources (cacheWidth/Height not available on Image()).
+    final ImageProvider rawProvider =
+        img.isUploaded && img.deliveryUrl != null
+            ? NetworkImage(img.deliveryUrl!)
+            : FileImage(File(img.localPath));
+    final imageProvider = ResizeImage(rawProvider, width: 300, height: 300);
     return ClipRRect(
       borderRadius: BorderRadius.circular(DeelmarktRadius.md),
       child: Stack(
@@ -56,12 +67,7 @@ class PhotoGridTile extends StatelessWidget {
         children: [
           Opacity(
             opacity: img.isUploaded ? 1.0 : 0.6,
-            child: Image.file(
-              File(img.localPath),
-              cacheWidth: 300,
-              cacheHeight: 300,
-              fit: BoxFit.cover,
-            ),
+            child: Image(image: imageProvider, fit: BoxFit.cover),
           ),
           if (img.isPending) const _UploadingOverlay(),
           if (img.isFailed)

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/features/sell/domain/exceptions/image_upload_exceptions.dart';
 import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 
 void main() {
@@ -19,12 +18,12 @@ void main() {
     });
 
     test(
-      'throwIfCancelled() throws ImageUploadCancelledException when cancelled',
+      'throwIfCancelled() throws UploadCancelledException when cancelled',
       () {
         final token = CancellationToken()..cancel();
         expect(
           () => token.throwIfCancelled(),
-          throwsA(isA<ImageUploadCancelledException>()),
+          throwsA(isA<UploadCancelledException>()),
         );
       },
     );

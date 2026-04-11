@@ -1,12 +1,10 @@
-import 'package:deelmarkt/features/sell/domain/exceptions/image_upload_exceptions.dart';
-
 /// Cooperative cancellation signal for long-running operations.
 ///
 /// Dart has no native way to cancel an in-flight `Future`. Instead we pass
 /// a [CancellationToken] into async functions and the callee polls
-/// [isCancelled] at explicit checkpoints (CP-1..CP-5 in the plan) between
-/// `await` boundaries. On each checkpoint, [throwIfCancelled] raises an
-/// [ImageUploadCancelledException] which the caller treats as a no-op.
+/// [isCancelled] at explicit checkpoints between `await` boundaries. On each
+/// checkpoint, [throwIfCancelled] raises a [UploadCancelledException] which
+/// the caller treats as a no-op.
 ///
 /// Pure domain — no Flutter imports.
 class CancellationToken {
@@ -22,8 +20,14 @@ class CancellationToken {
 
   /// Throw if cancelled. Call at every await checkpoint.
   void throwIfCancelled() {
-    if (_cancelled) {
-      throw const ImageUploadCancelledException();
-    }
+    if (_cancelled) throw const UploadCancelledException();
   }
+}
+
+/// Thrown by [CancellationToken.throwIfCancelled] when an upload is cancelled.
+///
+/// Not an [AppException] subtype — this is purely an internal control-flow
+/// signal that the queue catches and silently discards.
+class UploadCancelledException implements Exception {
+  const UploadCancelledException();
 }

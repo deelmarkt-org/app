@@ -7,7 +7,7 @@ void main() {
     const id = 'abc-123';
     const localPath = '/tmp/photo.jpg';
 
-    test('defaults: pending status, attemptCount 0, isRetryable true', () {
+    test('defaults: pending status, userRetryCount 0, isRetryable true', () {
       const image = SellImage(id: id, localPath: localPath);
 
       expect(image.id, id);
@@ -15,8 +15,9 @@ void main() {
       expect(image.status, ImageUploadStatus.pending);
       expect(image.storagePath, isNull);
       expect(image.deliveryUrl, isNull);
+      expect(image.publicId, isNull);
       expect(image.errorKey, isNull);
-      expect(image.attemptCount, 0);
+      expect(image.userRetryCount, 0);
       expect(image.isRetryable, isTrue);
     });
 
@@ -57,7 +58,7 @@ void main() {
           id: id,
           localPath: localPath,
           status: ImageUploadStatus.failed,
-          errorKey: 'sell.uploadErrorNetwork',
+          errorKey: 'error.network',
         );
         expect(image.isFailed, isTrue);
         expect(image.canRetry, isTrue);
@@ -68,7 +69,7 @@ void main() {
           id: id,
           localPath: localPath,
           status: ImageUploadStatus.failed,
-          errorKey: 'sell.uploadErrorBlocked',
+          errorKey: 'error.image.blocked',
           isRetryable: false,
         );
         expect(image.isFailed, isTrue);
@@ -83,15 +84,17 @@ void main() {
         expect(base.copyWith(), equals(base));
       });
 
-      test('overrides status and deliveryUrl', () {
+      test('overrides status, deliveryUrl, storagePath, publicId', () {
         final next = base.copyWith(
           status: ImageUploadStatus.uploaded,
           deliveryUrl: () => 'https://cdn/x.jpg',
           storagePath: () => 'uid/x.jpg',
+          publicId: () => 'uid/x',
         );
         expect(next.status, ImageUploadStatus.uploaded);
         expect(next.deliveryUrl, 'https://cdn/x.jpg');
         expect(next.storagePath, 'uid/x.jpg');
+        expect(next.publicId, 'uid/x');
         expect(next.id, base.id);
         expect(next.localPath, base.localPath);
       });
@@ -100,25 +103,49 @@ void main() {
         const withValues = SellImage(
           id: id,
           localPath: localPath,
-          errorKey: 'sell.uploadErrorNetwork',
+          errorKey: 'error.network',
           deliveryUrl: 'https://cdn/x.jpg',
+          publicId: 'uid/x',
         );
         final cleared = withValues.copyWith(
           errorKey: () => null,
           deliveryUrl: () => null,
+          publicId: () => null,
         );
         expect(cleared.errorKey, isNull);
         expect(cleared.deliveryUrl, isNull);
+        expect(cleared.publicId, isNull);
       });
 
-      test('increments attemptCount', () {
-        final next = base.copyWith(attemptCount: 3);
-        expect(next.attemptCount, 3);
+      test('increments userRetryCount', () {
+        final next = base.copyWith(userRetryCount: 3);
+        expect(next.userRetryCount, 3);
       });
 
       test('overrides isRetryable', () {
         final next = base.copyWith(isRetryable: false);
         expect(next.isRetryable, isFalse);
+      });
+    });
+
+    group('JSON round-trip', () {
+      test('toJson / fromJson preserves all fields', () {
+        const image = SellImage(
+          id: id,
+          localPath: localPath,
+          status: ImageUploadStatus.uploaded,
+          storagePath: 'uid/x.jpg',
+          deliveryUrl: 'https://cdn/x.jpg',
+          publicId: 'uid/x',
+        );
+        final json = image.toJson();
+        final restored = SellImage.fromJson(json);
+        expect(restored.id, image.id);
+        expect(restored.localPath, image.localPath);
+        expect(restored.storagePath, image.storagePath);
+        expect(restored.deliveryUrl, image.deliveryUrl);
+        expect(restored.publicId, image.publicId);
+        expect(restored.status, ImageUploadStatus.uploaded);
       });
     });
 

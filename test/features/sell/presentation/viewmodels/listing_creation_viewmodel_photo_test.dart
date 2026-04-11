@@ -16,7 +16,9 @@ void main() {
 
   group('ListingCreationNotifier -- photo operations', () {
     test('addFromCamera() adds a photo', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       await container
@@ -29,7 +31,9 @@ void main() {
     });
 
     test('addFromGallery() adds photos', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       await container
@@ -41,7 +45,9 @@ void main() {
     });
 
     test('removePhoto(id) removes the photo with that id', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
@@ -57,7 +63,9 @@ void main() {
     });
 
     test('reorderPhotos() changes photo order', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       await container
@@ -75,7 +83,7 @@ void main() {
 
     test('max 12 photos enforced -- addFromCamera() no-ops at limit', () async {
       final mockPicker = MockImagePickerService();
-      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+      final (:container, picker: _, :repo, uploadService: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -111,7 +119,7 @@ void main() {
               type: ImagePickerResultType.permissionDenied,
             );
 
-      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+      final (:container, picker: _, :repo, uploadService: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -133,7 +141,7 @@ void main() {
               type: ImagePickerResultType.permissionDenied,
             );
 
-      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+      final (:container, picker: _, :repo, uploadService: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -157,7 +165,7 @@ void main() {
                 type: ImagePickerResultType.permissionPermanentlyDenied,
               );
 
-        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+        final (:container, picker: _, :repo, uploadService: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -179,7 +187,7 @@ void main() {
               type: ImagePickerResultType.fileTooLarge,
             );
 
-      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+      final (:container, picker: _, :repo, uploadService: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -202,7 +210,7 @@ void main() {
                 type: ImagePickerResultType.unsupportedFormat,
               );
 
-        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+        final (:container, picker: _, :repo, uploadService: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -224,7 +232,7 @@ void main() {
               type: ImagePickerResultType.cancelled,
             );
 
-      final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+      final (:container, picker: _, :repo, uploadService: _) = buildContainer(
         prefs,
         picker: mockPicker,
       );
@@ -249,7 +257,7 @@ void main() {
                 paths: ['/mock/cam.jpg'],
               );
 
-        final (:container, picker: _, :repo, uploadRepo: _) = buildContainer(
+        final (:container, picker: _, :repo, uploadService: _) = buildContainer(
           prefs,
           picker: mockPicker,
         );
@@ -272,7 +280,9 @@ void main() {
     );
 
     test('removePhoto with unknown id is a no-op', () async {
-      final (:container, :picker, :repo, uploadRepo: _) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
