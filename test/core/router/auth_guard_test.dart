@@ -146,6 +146,59 @@ void main() {
         isNull,
       );
     });
+
+    test('redirects /admin to /onboarding when not logged in', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: false,
+          currentPath: '/admin',
+        ),
+        '/onboarding',
+      );
+    });
+
+    test('redirects /admin to / when logged in but not admin', () {
+      expect(
+        authRedirect(isLoading: false, isLoggedIn: true, currentPath: '/admin'),
+        '/',
+      );
+    });
+
+    test('allows /admin when logged in and admin', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/admin',
+          isAdmin: true,
+        ),
+        isNull,
+      );
+    });
+
+    test('redirects /admin/disputes to / when logged in but not admin', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/admin/disputes',
+        ),
+        '/',
+      );
+    });
+
+    test('allows /admin/disputes when logged in and admin', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/admin/disputes',
+          isAdmin: true,
+        ),
+        isNull,
+      );
+    });
   });
 
   group('GoRouterRefreshStream', () {

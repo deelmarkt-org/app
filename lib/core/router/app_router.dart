@@ -29,10 +29,16 @@ import 'package:deelmarkt/features/shipping/presentation/screens/shipping_qr_pag
 import 'package:deelmarkt/features/shipping/presentation/screens/tracking_page.dart';
 import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_page.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/core/router/admin_guard.dart' as admin_guard;
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/router/scaffold_with_nav.dart';
 import 'package:deelmarkt/core/router/splash_screen.dart';
+import 'package:deelmarkt/features/admin/presentation/screens/admin_shell_screen.dart';
+import 'package:deelmarkt/features/admin/presentation/screens/admin_dashboard_screen.dart';
+
+/// Placeholder for admin sub-screens not yet implemented (Phase B-D).
+const _adminComingSoon = Scaffold(body: Center(child: Text('Coming soon')));
 
 /// Central GoRouter configuration with deep link support + auth guard.
 ///
@@ -72,11 +78,13 @@ GoRouter createRouter({
               : authState.valueOrNull?.session != null;
       final onboardingComplete =
           ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
+      final currentUser = supabase.auth.currentUser;
       return authRedirect(
         isLoading: false, // Supabase is always initialized before runApp
         isLoggedIn: isLoggedIn,
         currentPath: state.matchedLocation,
         isOnboardingComplete: onboardingComplete,
+        isAdmin: admin_guard.isAdmin(currentUser),
       );
     },
   );
@@ -205,6 +213,54 @@ GoRouter _buildRouter({
                 ],
               ),
             ],
+          ),
+        ],
+      ),
+
+      // ── Admin panel shell ──
+      ShellRoute(
+        builder: (context, state, child) => AdminShellScreen(child: child),
+        routes: [
+          GoRoute(
+            path: AppRoutes.admin,
+            name: 'admin-dashboard',
+            builder: (context, state) => const AdminDashboardScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.adminFlaggedListings,
+            name: 'admin-flagged-listings',
+            builder: (context, state) => _adminComingSoon,
+          ),
+          GoRoute(
+            path: AppRoutes.adminReportedUsers,
+            name: 'admin-reported-users',
+            builder: (context, state) => _adminComingSoon,
+          ),
+          GoRoute(
+            path: AppRoutes.adminDisputes,
+            name: 'admin-disputes',
+            builder: (context, state) => _adminComingSoon,
+            routes: [
+              GoRoute(
+                path: ':id',
+                name: 'admin-dispute-detail',
+                redirect: _idGuard('id', AppRoutes.adminDisputes),
+                builder:
+                    (context, state) => const Scaffold(
+                      body: Center(child: Text('Coming soon')),
+                    ),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: AppRoutes.adminDsaNotices,
+            name: 'admin-dsa-notices',
+            builder: (context, state) => _adminComingSoon,
+          ),
+          GoRoute(
+            path: AppRoutes.adminAppeals,
+            name: 'admin-appeals',
+            builder: (context, state) => _adminComingSoon,
           ),
         ],
       ),

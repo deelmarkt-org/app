@@ -281,7 +281,7 @@ The agent will:
 - [x] `P-37` Scam alert integration in chat — warning on flagged messages ✅ PR #75
 - [x] `P-38` Rating/review screen (post-transaction) — star + text, blind ✅ PR #75
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
-- [ ] `P-40` Admin moderation panel (Retool) — flagged, disputes, DSA, appeals
+- [x] `P-40` Admin moderation panel — Phase A ✅ PR #110
 - [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores

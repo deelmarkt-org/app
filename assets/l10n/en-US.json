@@ -23,6 +23,93 @@
     "close": "Close",
     "comingSoon": "Coming soon"
   },
+  "admin": {
+    "sidebar": {
+      "title": "Moderation Hub",
+      "subtitle": "Admin Control Panel",
+      "support": "Support",
+      "sign_out": "Sign Out"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "flagged": "Flagged Listings",
+      "reported": "Reported Users",
+      "disputes": "Disputes",
+      "dsa": "DSA Notices",
+      "appeals": "Appeals"
+    },
+    "dashboard": {
+      "title": "Dashboard Overview",
+      "subtitle": "Welcome back. Here is the status of DeelMarkt today."
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "view_all": "View All",
+      "just_now": "Just now",
+      "minutes_ago": "{} min ago",
+      "hours_ago": "{}h ago",
+      "days_ago": "{}d ago",
+      "listingRemoved": {
+        "title": "Listing #{listingId} removed by {moderator}",
+        "subtitle": "Policy violation"
+      },
+      "userVerified": {
+        "title": "User @{userId} verified",
+        "subtitle": "{method} verification completed"
+      },
+      "disputeEscalated": {
+        "title": "Dispute #{disputeId} escalated to {escalatedTo}",
+        "subtitle": "Buyer and seller could not reach an agreement"
+      },
+      "systemUpdate": {
+        "title": "System update {version} deployed",
+        "subtitle": "Security patches and performance improvements"
+      }
+    },
+    "badge": {
+      "today": "{} today",
+      "critical": "Critical",
+      "normal": "Normal",
+      "safe": "Safe"
+    },
+    "empty": {
+      "title": "Everything under control",
+      "subtitle": "No moderation actions required. The marketplace is currently calm.",
+      "refresh": "Refresh",
+      "view_logs": "View Logs",
+      "a11y": "No pending moderation actions",
+      "trends_title": "Activity Trends",
+      "trends_empty": "No activity to display yet"
+    },
+    "narrow_viewport": {
+      "title": "Admin panel requires a desktop browser",
+      "subtitle": "Please use a screen at least 768 px wide"
+    },
+    "sla": {
+      "title": "DSA Compliance Monitor",
+      "subtitle": "Digital Services Act responsiveness within 24 hours.",
+      "status": "DSA 24h SLA: {} of {} handled on time",
+      "a11y": "DSA SLA: {} of {} handled"
+    },
+    "stats": {
+      "openDisputes": "Open disputes",
+      "dsaNotices": "DSA notices (< 24h)",
+      "activeListings": "Active listings",
+      "escrow": "In escrow",
+      "flaggedListings": "Flagged Listings",
+      "reportedUsers": "Reported Users",
+      "approved": "Approved"
+    },
+    "system": {
+      "title": "System Status",
+      "payment_gateway": "Payment gateway",
+      "api_endpoints": "API Endpoints",
+      "mail_server": "Mail Server",
+      "operational": "Operational",
+      "down": "Down"
+    },
+    "comingSoon": "Coming soon"
+  },
   "form": {
     "email": "Email address",
     "name": "Full name",

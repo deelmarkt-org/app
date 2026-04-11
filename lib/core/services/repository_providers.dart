@@ -23,6 +23,9 @@ import 'package:deelmarkt/features/profile/domain/repositories/review_repository
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/admin/data/mock/mock_admin_repository.dart';
+import 'package:deelmarkt/features/admin/data/supabase/supabase_admin_repository.dart';
+import 'package:deelmarkt/features/admin/domain/repositories/admin_repository.dart';
 import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
 import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
@@ -113,6 +116,16 @@ final messageRepositoryProvider = Provider<MessageRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockMessageRepository();
   return SupabaseMessageRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Admin repository — mock or Supabase based on [useMockDataProvider].
+///
+/// Provides moderation dashboard stats and recent activity.
+/// Phase A: dashboard only. Phases B–D add flagged listings, disputes, etc.
+final adminRepositoryProvider = Provider<AdminRepository>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockAdminRepository();
+  return SupabaseAdminRepository(ref.watch(supabaseClientProvider));
 });
 
 /// Sanction repository — mock or Supabase based on [useMockDataProvider].
