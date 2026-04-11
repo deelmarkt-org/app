@@ -1,3 +1,4 @@
+// TODO(#133): File exceeds 300-line limit (364 lines). Split into focused test groups.
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

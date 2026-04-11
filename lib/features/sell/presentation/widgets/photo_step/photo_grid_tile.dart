@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -14,7 +15,7 @@ import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 /// Renders a [SellImage] with per-status overlays:
 /// * pending/uploading → dimmed + centered spinner
 /// * failed (retryable) → error tint + retry button
-/// * failed (terminal) → error tint + remove-only
+/// * failed (terminal) → error tint + warning icon + optional error text
 /// * uploaded → plain image
 class PhotoGridTile extends StatelessWidget {
   const PhotoGridTile({
@@ -51,27 +52,46 @@ class PhotoGridTile extends StatelessWidget {
   Widget _buildFilledTile(BuildContext context, SellImage img) {
     // Prefer the Cloudinary delivery URL once uploaded — avoids loading
     // from a potentially stale or missing local file path (M7).
-    // Prefer the Cloudinary delivery URL once uploaded — avoids loading
-    // from a potentially stale or missing local file path (M7).
+    // On web, dart:io File is not available; kIsWeb guards prevent runtime
+    // errors — the null branch renders a neutral placeholder instead.
     // ResizeImage caps memory cache at 300×300 logical pixels for both
     // network and file sources (cacheWidth/Height not available on Image()).
-    final ImageProvider rawProvider =
+    final ImageProvider? rawProvider =
         img.isUploaded && img.deliveryUrl != null
             ? NetworkImage(img.deliveryUrl!)
+            : kIsWeb
+            ? null // no local File on web — show placeholder
             : FileImage(File(img.localPath));
-    final imageProvider = ResizeImage(rawProvider, width: 300, height: 300);
+
+    final Widget imageWidget =
+        rawProvider != null
+            ? Image(
+              image: ResizeImage(rawProvider, width: 300, height: 300),
+              fit: BoxFit.cover,
+            )
+            : const ColoredBox(
+              color: DeelmarktColors.neutral200,
+              child: Center(
+                child: Icon(
+                  PhosphorIconsRegular.image,
+                  color: DeelmarktColors.neutral500,
+                ),
+              ),
+            );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(DeelmarktRadius.md),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Opacity(
-            opacity: img.isUploaded ? 1.0 : 0.6,
-            child: Image(image: imageProvider, fit: BoxFit.cover),
-          ),
+          Opacity(opacity: img.isUploaded ? 1.0 : 0.6, child: imageWidget),
           if (img.isPending) const _UploadingOverlay(),
           if (img.isFailed)
-            _FailedOverlay(canRetry: img.canRetry, onRetry: onRetry),
+            _FailedOverlay(
+              canRetry: img.canRetry,
+              onRetry: onRetry,
+              errorKey: img.errorKey,
+            ),
           Positioned(
             top: Spacing.s1,
             right: Spacing.s1,
@@ -123,11 +143,17 @@ class _UploadingOverlay extends StatelessWidget {
 }
 
 /// Error overlay shown when upload failed; includes retry when retryable.
+/// Shows a localised error message when [errorKey] is provided.
 class _FailedOverlay extends StatelessWidget {
-  const _FailedOverlay({required this.canRetry, required this.onRetry});
+  const _FailedOverlay({
+    required this.canRetry,
+    required this.onRetry,
+    this.errorKey,
+  });
 
   final bool canRetry;
   final VoidCallback? onRetry;
+  final String? errorKey;
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +173,28 @@ class _FailedOverlay extends StatelessWidget {
                   ),
                 ),
               )
-              : const Icon(
-                PhosphorIconsRegular.warning,
-                color: DeelmarktColors.white,
-                size: 28,
+              : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    PhosphorIconsRegular.warning,
+                    color: DeelmarktColors.white,
+                    size: 28,
+                  ),
+                  if (errorKey != null) ...[
+                    const SizedBox(height: Spacing.s1),
+                    Text(
+                      errorKey!.tr(),
+                      style: const TextStyle(
+                        color: DeelmarktColors.white,
+                        fontSize: 11,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ],
               ),
     );
   }
