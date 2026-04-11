@@ -513,6 +513,13 @@ file_length_exempt:
   - lib/widgets/cards/deel_card.dart
   - lib/widgets/inputs/dutch_address_input.dart
   - lib/features/home/presentation/widgets/home_data_view.dart
+  # 6 distinct optimistic-realtime responsibilities (build, realtime
+  # subscribe, sendText, sendOffer, updateOfferStatus, _optimisticSend)
+  # that share mutable _pendingSnapshot reconciliation state. Helpers
+  # already extracted to chat_thread_optimistic.dart; further splitting
+  # would require closure-passing that hurts readability more than the
+  # extra ~25 lines.
+  - lib/features/messages/presentation/chat_thread_notifier.dart
 
 cross_feature_import_exempt:
   - lib/core/router/app_router.dart

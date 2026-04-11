@@ -24,12 +24,18 @@ abstract final class AppConstants {
   static const int maxRouteIdLength = 64;
 }
 
-/// Quality score thresholds for listing creation (CLAUDE.md §3.2).
+/// Quality score thresholds and weights for listing creation (CLAUDE.md §3.2).
 ///
-/// Used by [CalculateQualityScoreUseCase] and [QualityScoreResult].
-/// Centralised here so the publish gate and score calculation
-/// stay in sync when thresholds are tuned.
+/// Used by [CalculateQualityScoreUseCase] and [QualityScoreResult] on the
+/// client, and mirrored by the server-side R-26 `listing-quality-score`
+/// Edge Function in [supabase/functions/_shared/quality_score_weights.ts].
+///
+/// **Parity is enforced by [scripts/check_quality_score_parity.sh] in the
+/// pre-commit hook.** If you edit the weights or thresholds here, update the
+/// TypeScript mirror in the same commit or the hook will reject it.
 abstract final class ListingQualityThresholds {
+  // ── Thresholds ──────────────────────────────────────────────────────────
+
   /// Minimum number of photos required for a quality pass.
   static const int minPhotos = 3;
 
@@ -44,6 +50,27 @@ abstract final class ListingQualityThresholds {
 
   /// Minimum quality score required to publish a listing (0–100).
   static const int publishThreshold = 40;
+
+  // ── Weights (must sum to 100) ───────────────────────────────────────────
+
+  /// Points awarded when ≥[minPhotos] photos are attached.
+  static const int photosWeight = 25;
+
+  /// Points awarded when the title length is within
+  /// [[minTitleLength], [maxTitleLength]].
+  static const int titleWeight = 15;
+
+  /// Points awarded when the description has ≥[minDescriptionWords].
+  static const int descriptionWeight = 20;
+
+  /// Points awarded when a non-zero price is set.
+  static const int priceWeight = 15;
+
+  /// Points awarded when an L2 category is selected.
+  static const int categoryWeight = 15;
+
+  /// Points awarded when a condition is set.
+  static const int conditionWeight = 10;
 }
 
 /// Star icon size constants used by [StarRow] and rating displays.

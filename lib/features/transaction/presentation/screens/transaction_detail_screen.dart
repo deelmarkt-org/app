@@ -14,6 +14,7 @@ import 'package:deelmarkt/features/transaction/presentation/widgets/escrow_step_
 /// Transaction detail screen — shows escrow timeline, amounts, and actions.
 ///
 /// Reference: docs/screens/04-payments/03-transaction-detail.md
+/// Reference: docs/design-system/patterns.md §Escrow Timeline
 class TransactionDetailScreen extends StatelessWidget {
   const TransactionDetailScreen({required this.transaction, super.key});
 

@@ -1,0 +1,22 @@
+-- R-27: Image upload pipeline — Cloudinary + Cloudmersive secret registration.
+--
+-- This migration is a documentation placeholder. The actual secret values
+-- are NEVER committed to git — they must be inserted manually via the
+-- insert_vault_secret RPC after the EF is deployed. See MANUAL-TASKS-BELENGAZ.md
+-- §R-27 for the exact commands.
+--
+-- Required secrets read by supabase/functions/image-upload-process/index.ts:
+--   CLOUDMERSIVE_API_KEY     — https://account.cloudmersive.com/keys
+--   CLOUDINARY_CLOUD_NAME    — Dashboard → Account Details
+--   CLOUDINARY_API_KEY       — Dashboard → Account Details
+--   CLOUDINARY_API_SECRET    — Dashboard → Account Details
+--
+-- Run after deployment (service_role only):
+--   SELECT insert_vault_secret('CLOUDMERSIVE_API_KEY',  '<key>', 'R-27 virus scan');
+--   SELECT insert_vault_secret('CLOUDINARY_CLOUD_NAME', '<name>', 'R-27 CDN account');
+--   SELECT insert_vault_secret('CLOUDINARY_API_KEY',    '<key>', 'R-27 CDN API key');
+--   SELECT insert_vault_secret('CLOUDINARY_API_SECRET', '<secret>', 'R-27 CDN API secret');
+--
+-- No schema changes — vault helper functions already exist in
+-- 20260321232920_vault_helper_functions.sql.
+SELECT 1;
