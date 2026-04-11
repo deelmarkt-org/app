@@ -29,6 +29,8 @@ final appVersionProvider = FutureProvider<String>((ref) async {
 
 /// Settings screen with 5 sections:
 /// Account, Addresses, Notifications, Privacy, App Info.
+///
+/// Reference: docs/screens/07-profile/03-settings.md
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 

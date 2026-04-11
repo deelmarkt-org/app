@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/listings_tab_view.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/profile_header.dart';
@@ -17,6 +18,8 @@ import 'package:deelmarkt/features/profile/presentation/widgets/verification_bad
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 /// Own profile screen — displays avatar, badges, stats, and tabbed content.
+///
+/// Reference: docs/screens/07-profile/01-own-profile.md
 class OwnProfileScreen extends ConsumerStatefulWidget {
   const OwnProfileScreen({super.key});
 
@@ -58,47 +61,47 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       body: state.user.when(
         loading: () => const ProfileSkeleton(),
         error: (_, _) => Center(child: Text('error.generic'.tr())),
-        data: (user) {
-          if (user == null) {
-            return Center(child: Text('profile.notLoggedIn'.tr()));
-          }
+        data:
+            (user) =>
+                user == null
+                    ? Center(child: Text('profile.notLoggedIn'.tr()))
+                    : _buildLoadedBody(user, state),
+      ),
+    );
+  }
 
-          return ResponsiveBody(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(Spacing.s4),
-              child: Column(
+  Widget _buildLoadedBody(UserEntity user, ProfileState state) {
+    return ResponsiveBody(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(Spacing.s4),
+        child: Column(
+          children: [
+            ProfileHeader(user: user),
+            const SizedBox(height: Spacing.s4),
+            VerificationBadgesRow(badges: user.badges),
+            const SizedBox(height: Spacing.s4),
+            ProfileStatsRow(user: user),
+            const SizedBox(height: Spacing.s6),
+            ProfileTabs(controller: _tabController),
+            const SizedBox(height: Spacing.s4),
+            SizedBox(
+              height: 600,
+              child: TabBarView(
+                controller: _tabController,
                 children: [
-                  ProfileHeader(user: user),
-                  const SizedBox(height: Spacing.s4),
-                  VerificationBadgesRow(badges: user.badges),
-                  const SizedBox(height: Spacing.s4),
-                  ProfileStatsRow(user: user),
-                  const SizedBox(height: Spacing.s6),
-                  ProfileTabs(controller: _tabController),
-                  const SizedBox(height: Spacing.s4),
-                  SizedBox(
-                    height: 600,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        ListingsTabView(
-                          listings: state.listings,
-                          onRetry:
-                              () => ref.invalidate(profileNotifierProvider),
-                        ),
-                        ReviewsTabView(
-                          reviews: state.reviews,
-                          onRetry:
-                              () => ref.invalidate(profileNotifierProvider),
-                        ),
-                      ],
-                    ),
+                  ListingsTabView(
+                    listings: state.listings,
+                    onRetry: () => ref.invalidate(profileNotifierProvider),
+                  ),
+                  ReviewsTabView(
+                    reviews: state.reviews,
+                    onRetry: () => ref.invalidate(profileNotifierProvider),
                   ),
                 ],
               ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

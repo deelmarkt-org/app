@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
+import 'package:deelmarkt/features/messages/presentation/chat_thread_optimistic.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
@@ -47,112 +47,95 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
 
   void _subscribeRealtime(String conversationId) {
     _realtimeSub?.cancel();
-    _realtimeSub = ref
-        .read(messageRepositoryProvider)
-        .watchMessages(conversationId)
-        .listen(
-          (messages) {
-            final current = state.valueOrNull;
-            if (current == null) return;
-            if (current.isSending) {
-              _pendingSnapshot = messages;
-            } else {
-              state = AsyncValue.data(current.copyWith(messages: messages));
-            }
-          },
-          onError:
-              (Object e, StackTrace st) => AppLogger.error(
-                'watchMessages error',
-                tag: 'ChatThreadNotifier',
-                error: e,
-                stackTrace: st,
-              ),
-        );
+    _realtimeSub = ChatThreadOptimistic.subscribeRealtime(
+      repository: ref.read(messageRepositoryProvider),
+      conversationId: conversationId,
+      onSnapshot: (messages) {
+        final current = state.valueOrNull;
+        if (current == null) return;
+        if (current.isSending) {
+          _pendingSnapshot = messages;
+        } else {
+          state = AsyncValue.data(current.copyWith(messages: messages));
+        }
+      },
+    );
   }
 
   Future<void> sendText(String text) async {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
+    final convId = state.valueOrNull?.conversation.id ?? '';
     await _optimisticSend(
-      optimistic: MessageEntity(
-        id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
-        conversationId: state.valueOrNull?.conversation.id ?? '',
-        senderId: kCurrentUserIdStub,
+      ChatThreadOptimistic.buildTextMessage(
+        conversationId: convId,
         text: trimmed,
-        createdAt: DateTime.now(),
       ),
-      send:
-          (convId) => ref.read(sendMessageUseCaseProvider)(
-            conversationId: convId,
-            text: trimmed,
-          ),
-      tag: 'sendText',
+      (id) => ref.read(sendMessageUseCaseProvider)(
+        conversationId: id,
+        text: trimmed,
+      ),
+      'sendText',
     );
   }
 
   Future<void> sendOffer(int amountCents) async {
+    final convId = state.valueOrNull?.conversation.id ?? '';
     final offerText = (amountCents / 100).toStringAsFixed(2);
     await _optimisticSend(
-      optimistic: MessageEntity(
-        id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
-        conversationId: state.valueOrNull?.conversation.id ?? '',
-        senderId: kCurrentUserIdStub,
+      ChatThreadOptimistic.buildOfferMessage(
+        conversationId: convId,
+        amountCents: amountCents,
+      ),
+      (id) => ref.read(sendMessageUseCaseProvider)(
+        conversationId: id,
         text: offerText,
         type: MessageType.offer,
         offerAmountCents: amountCents,
-        offerStatus: OfferStatus.pending,
-        createdAt: DateTime.now(),
       ),
-      send:
-          (convId) => ref.read(sendMessageUseCaseProvider)(
-            conversationId: convId,
-            text: offerText,
-            type: MessageType.offer,
-            offerAmountCents: amountCents,
-          ),
-      tag: 'sendOffer',
+      'sendOffer',
     );
   }
 
-  /// Updates the offer status with optimistic UI — the offer card shows the
-  /// new status immediately and rolls back if the server call fails.
+  /// Updates the offer status with optimistic UI — the offer card
+  /// shows the new status immediately and rolls back if the server
+  /// call fails.
   Future<void> updateOfferStatus(
     String messageId,
     OfferStatus newStatus,
   ) async {
     final current = state.valueOrNull;
     if (current == null) return;
-
-    // Optimistic: update the matching message's offerStatus
-    final updatedMessages = [
-      for (final msg in current.messages)
-        if (msg.id == messageId) msg.copyWith(offerStatus: newStatus) else msg,
-    ];
-    state = AsyncValue.data(current.copyWith(messages: updatedMessages));
-
+    state = AsyncValue.data(
+      current.copyWith(
+        messages: ChatThreadOptimistic.withOfferStatus(
+          current.messages,
+          messageId: messageId,
+          newStatus: newStatus,
+        ),
+      ),
+    );
     try {
       await ref.read(updateOfferStatusUseCaseProvider)(
         messageId: messageId,
         newStatus: newStatus,
       );
     } catch (e, st) {
-      AppLogger.error(
-        'updateOfferStatus',
-        tag: 'ChatThreadNotifier',
+      ChatThreadOptimistic.logSendFailure(
+        tag: 'updateOfferStatus',
         error: e,
         stackTrace: st,
       );
-      // Rollback to original messages
-      state = AsyncValue.data(current.copyWith(messages: current.messages));
+      state = AsyncValue.data(current); // rollback
       rethrow;
     }
   }
 
-  Future<void> _optimisticSend({
-    required MessageEntity optimistic,
-    required Future<MessageEntity> Function(String convId) send,
-    required String tag,
-  }) async {
+  Future<void> _optimisticSend(
+    MessageEntity optimistic,
+    Future<MessageEntity> Function(String convId) send,
+    String tag,
+  ) async {
     final current = state.valueOrNull;
     if (current == null || current.isSending) return;
     state = AsyncValue.data(
@@ -161,19 +144,27 @@ class ChatThreadNotifier extends _$ChatThreadNotifier {
         isSending: true,
       ),
     );
+    List<MessageEntity> drainSnapshot(List<MessageEntity> fallback) {
+      final after = _pendingSnapshot ?? fallback;
+      _pendingSnapshot = null;
+      return after;
+    }
+
     try {
       final sent = await send(current.conversation.id);
-      final after = _pendingSnapshot ?? [...current.messages, sent];
-      _pendingSnapshot = null;
       state = AsyncValue.data(
-        current.copyWith(messages: after, isSending: false),
+        current.copyWith(
+          messages: drainSnapshot([...current.messages, sent]),
+          isSending: false,
+        ),
       );
     } catch (e, st) {
-      AppLogger.error(tag, tag: 'ChatThreadNotifier', error: e, stackTrace: st);
-      final after = _pendingSnapshot ?? current.messages;
-      _pendingSnapshot = null;
+      ChatThreadOptimistic.logSendFailure(tag: tag, error: e, stackTrace: st);
       state = AsyncValue.data(
-        current.copyWith(messages: after, isSending: false),
+        current.copyWith(
+          messages: drainSnapshot(current.messages),
+          isSending: false,
+        ),
       );
       rethrow;
     }

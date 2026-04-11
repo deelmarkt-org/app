@@ -20,6 +20,8 @@ import 'package:deelmarkt/features/sell/presentation/widgets/quality_step/qualit
 ///
 /// On expanded screens, shows a 2-column layout with live preview.
 /// Protects against accidental navigation with an unsaved changes dialog.
+///
+/// Reference: docs/screens/03-listings/02-listing-creation.md
 class ListingCreationScreen extends ConsumerStatefulWidget {
   const ListingCreationScreen({super.key});
 
