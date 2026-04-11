@@ -6,7 +6,7 @@ import 'package:deelmarkt/features/admin/domain/repositories/admin_repository.da
 
 /// In-memory mock for development when Supabase admin RPCs aren't ready.
 ///
-/// Returns hardcoded Dutch sample data matching the design after a simulated
+/// Returns hardcoded sample data matching the design after a simulated
 /// network delay. Toggle via provider override in dev builds (ADR-MOCK-SWAP).
 ///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
@@ -43,29 +43,25 @@ class MockAdminRepository implements AdminRepository {
       ActivityItemEntity(
         id: 'act-001',
         type: ActivityItemType.listingRemoved,
-        title: 'Listing #4321 verwijderd door Moderator A',
-        subtitle: 'Reden: schending van het advertentiebeleid',
+        params: const {'listingId': '4321', 'moderator': 'Moderator A'},
         timestamp: now.subtract(const Duration(minutes: 2)),
       ),
       ActivityItemEntity(
         id: 'act-002',
         type: ActivityItemType.userVerified,
-        title: 'Gebruiker @jansen_m geverifieerd',
-        subtitle: 'iDIN-verificatie succesvol afgerond',
+        params: const {'userId': 'jansen_m', 'method': 'iDIN'},
         timestamp: now.subtract(const Duration(minutes: 15)),
       ),
       ActivityItemEntity(
         id: 'act-003',
         type: ActivityItemType.disputeEscalated,
-        title: 'Dispuut #982 geëscaleerd naar Senior Admin',
-        subtitle: 'Koper en verkoper bereikten geen overeenstemming',
+        params: const {'disputeId': '982', 'escalatedTo': 'Senior Admin'},
         timestamp: now.subtract(const Duration(minutes: 45)),
       ),
       ActivityItemEntity(
         id: 'act-004',
         type: ActivityItemType.systemUpdate,
-        title: 'Systeemupdate v2.4.1 succesvol uitgerold',
-        subtitle: 'Beveiligingspatches en prestatieverbeteringen',
+        params: const {'version': 'v2.4.1'},
         timestamp: now.subtract(const Duration(hours: 2)),
       ),
     ].take(limit).toList();

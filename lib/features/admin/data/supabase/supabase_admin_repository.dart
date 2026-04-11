@@ -18,20 +18,25 @@ class SupabaseAdminRepository implements AdminRepository {
   final SupabaseClient _client;
 
   @override
-  Future<AdminStatsEntity> getStats() {
-    // TODO: Call `get_admin_stats` RPC when migration is ready.
-    throw UnimplementedError(
-      'SupabaseAdminRepository.getStats() not yet implemented — '
-      'awaiting admin RPC migration (P-40 Phase B)',
+  Future<AdminStatsEntity> getStats() async {
+    // TODO(P-40 Phase B): Replace with `get_admin_stats` RPC call when
+    // migration is ready. Returns all-zero stats until then so production
+    // admin builds show an empty dashboard instead of an error screen.
+    return const AdminStatsEntity(
+      openDisputes: 0,
+      dsaNoticesWithin24h: 0,
+      activeListings: 0,
+      escrowAmountCents: 0,
+      flaggedListings: 0,
+      reportedUsers: 0,
+      approvedCount: 0,
     );
   }
 
   @override
-  Future<List<ActivityItemEntity>> getRecentActivity({int limit = 10}) {
-    // TODO: Call `get_admin_activity` RPC when migration is ready.
-    throw UnimplementedError(
-      'SupabaseAdminRepository.getRecentActivity() not yet implemented — '
-      'awaiting admin RPC migration (P-40 Phase B)',
-    );
+  Future<List<ActivityItemEntity>> getRecentActivity({int limit = 10}) async {
+    // TODO(P-40 Phase B): Replace with `get_admin_activity` RPC call when
+    // migration is ready. Returns empty list until then.
+    return const [];
   }
 }

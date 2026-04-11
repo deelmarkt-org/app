@@ -9,8 +9,10 @@ void main() {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'listingRemoved',
-          'title': 'Listing #4321 verwijderd',
-          'subtitle': 'Reden: schending van het advertentiebeleid',
+          'params': <String, dynamic>{
+            'listingId': '4321',
+            'moderator': 'Moderator A',
+          },
           'timestamp': '2026-04-10T12:00:00.000Z',
         };
 
@@ -18,44 +20,43 @@ void main() {
 
         expect(result.id, 'act-001');
         expect(result.type, ActivityItemType.listingRemoved);
-        expect(result.title, 'Listing #4321 verwijderd');
-        expect(result.subtitle, 'Reden: schending van het advertentiebeleid');
+        expect(result.params['listingId'], '4321');
+        expect(result.params['moderator'], 'Moderator A');
         expect(result.timestamp, DateTime.utc(2026, 4, 10, 12));
+      });
+
+      test('accepts missing params field as empty map', () {
+        final json = <String, dynamic>{
+          'id': 'act-001',
+          'type': 'systemUpdate',
+          'timestamp': '2026-04-10T12:00:00.000Z',
+        };
+
+        final result = ActivityItemDto.fromJson(json);
+
+        expect(result.params, isEmpty);
+      });
+
+      test('ignores non-string param values silently', () {
+        final json = <String, dynamic>{
+          'id': 'act-001',
+          'type': 'systemUpdate',
+          'params': <String, dynamic>{
+            'version': 'v2.0',
+            'count': 42, // integer — skipped
+          },
+          'timestamp': '2026-04-10T12:00:00.000Z',
+        };
+
+        final result = ActivityItemDto.fromJson(json);
+
+        expect(result.params, equals({'version': 'v2.0'}));
       });
 
       test('throws FormatException when id is missing', () {
         final json = <String, dynamic>{
           'type': 'listingRemoved',
-          'title': 'Some title',
-          'subtitle': 'Some subtitle',
-          'timestamp': '2026-04-10T12:00:00.000Z',
-        };
-
-        expect(
-          () => ActivityItemDto.fromJson(json),
-          throwsA(isA<FormatException>()),
-        );
-      });
-
-      test('throws FormatException when title is missing', () {
-        final json = <String, dynamic>{
-          'id': 'act-001',
-          'type': 'listingRemoved',
-          'subtitle': 'Some subtitle',
-          'timestamp': '2026-04-10T12:00:00.000Z',
-        };
-
-        expect(
-          () => ActivityItemDto.fromJson(json),
-          throwsA(isA<FormatException>()),
-        );
-      });
-
-      test('throws FormatException when subtitle is missing', () {
-        final json = <String, dynamic>{
-          'id': 'act-001',
-          'type': 'listingRemoved',
-          'title': 'Some title',
+          'params': <String, dynamic>{},
           'timestamp': '2026-04-10T12:00:00.000Z',
         };
 
@@ -69,8 +70,7 @@ void main() {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'unknownType',
-          'title': 'Some title',
-          'subtitle': 'Some subtitle',
+          'params': <String, dynamic>{},
           'timestamp': '2026-04-10T12:00:00.000Z',
         };
 
@@ -82,8 +82,7 @@ void main() {
       test('defaults to systemUpdate when type is null', () {
         final json = <String, dynamic>{
           'id': 'act-001',
-          'title': 'Some title',
-          'subtitle': 'Some subtitle',
+          'params': <String, dynamic>{},
           'timestamp': '2026-04-10T12:00:00.000Z',
         };
 
@@ -96,8 +95,7 @@ void main() {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'userVerified',
-          'title': 'Some title',
-          'subtitle': 'Some subtitle',
+          'params': <String, dynamic>{},
           'timestamp': 'not-a-date',
         };
 
@@ -111,8 +109,7 @@ void main() {
         final json = <String, dynamic>{
           'id': 'act-001',
           'type': 'userVerified',
-          'title': 'Some title',
-          'subtitle': 'Some subtitle',
+          'params': <String, dynamic>{},
         };
 
         expect(
@@ -128,15 +125,16 @@ void main() {
           <String, dynamic>{
             'id': 'act-001',
             'type': 'listingRemoved',
-            'title': 'Title 1',
-            'subtitle': 'Subtitle 1',
+            'params': <String, dynamic>{
+              'listingId': '4321',
+              'moderator': 'Mod A',
+            },
             'timestamp': '2026-04-10T12:00:00.000Z',
           },
           <String, dynamic>{
             'id': 'act-002',
             'type': 'userVerified',
-            'title': 'Title 2',
-            'subtitle': 'Subtitle 2',
+            'params': <String, dynamic>{'userId': 'jansen_m'},
             'timestamp': '2026-04-10T13:00:00.000Z',
           },
         ];
@@ -155,20 +153,19 @@ void main() {
           <String, dynamic>{
             'id': 'act-001',
             'type': 'listingRemoved',
-            'title': 'Title 1',
-            'subtitle': 'Subtitle 1',
+            'params': <String, dynamic>{},
             'timestamp': '2026-04-10T12:00:00.000Z',
           },
           <String, dynamic>{
+            // missing id — will throw FormatException and be skipped
             'type': 'userVerified',
-            'title': 'Missing id',
-            'subtitle': 'Subtitle',
+            'params': <String, dynamic>{},
+            'timestamp': '2026-04-10T13:00:00.000Z',
           },
           <String, dynamic>{
             'id': 'act-003',
             'type': 'systemUpdate',
-            'title': 'Title 3',
-            'subtitle': 'Subtitle 3',
+            'params': <String, dynamic>{},
             'timestamp': '2026-04-10T14:00:00.000Z',
           },
         ];
@@ -188,8 +185,7 @@ void main() {
           <String, dynamic>{
             'id': 'act-001',
             'type': 'listingRemoved',
-            'title': 'Title 1',
-            'subtitle': 'Subtitle 1',
+            'params': <String, dynamic>{},
             'timestamp': '2026-04-10T12:00:00.000Z',
           },
         ];

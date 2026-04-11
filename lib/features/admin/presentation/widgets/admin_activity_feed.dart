@@ -9,8 +9,9 @@ import 'package:deelmarkt/features/admin/domain/entities/activity_item_entity.da
 
 /// Recent activity feed list for the admin dashboard.
 ///
-/// Each row shows an icon (mapped from [ActivityItemType]), bold title,
-/// subtitle text, and a human-readable timestamp.
+/// Each row shows an icon (mapped from [ActivityItemType]), a localised title
+/// and subtitle (built from `admin.activity.<type>.title/subtitle` l10n keys
+/// with `item.params` as named arguments), and a human-readable timestamp.
 ///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class AdminActivityFeed extends StatelessWidget {
@@ -128,10 +129,36 @@ class _ActivityIcon extends StatelessWidget {
 }
 
 /// Title, subtitle, and timestamp for a single activity item.
+///
+/// Display strings are built from the activity [type] and [params] map via
+/// `.tr(namedArgs:)` so all user-visible text is properly localised.
 class _ActivityContent extends StatelessWidget {
   const _ActivityContent({required this.item});
 
   final ActivityItemEntity item;
+
+  /// Returns the l10n key for the primary (title) line of an activity item.
+  String _titleKey(ActivityItemType type) {
+    return switch (type) {
+      ActivityItemType.listingRemoved => 'admin.activity.listingRemoved.title',
+      ActivityItemType.userVerified => 'admin.activity.userVerified.title',
+      ActivityItemType.disputeEscalated =>
+        'admin.activity.disputeEscalated.title',
+      ActivityItemType.systemUpdate => 'admin.activity.systemUpdate.title',
+    };
+  }
+
+  /// Returns the l10n key for the secondary (subtitle) line of an activity item.
+  String _subtitleKey(ActivityItemType type) {
+    return switch (type) {
+      ActivityItemType.listingRemoved =>
+        'admin.activity.listingRemoved.subtitle',
+      ActivityItemType.userVerified => 'admin.activity.userVerified.subtitle',
+      ActivityItemType.disputeEscalated =>
+        'admin.activity.disputeEscalated.subtitle',
+      ActivityItemType.systemUpdate => 'admin.activity.systemUpdate.subtitle',
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +166,7 @@ class _ActivityContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          item.title,
+          _titleKey(item.type).tr(namedArgs: item.params),
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -150,7 +177,7 @@ class _ActivityContent extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.s1),
         Text(
-          item.subtitle,
+          _subtitleKey(item.type).tr(namedArgs: item.params),
           style: const TextStyle(
             fontSize: 12,
             color: DeelmarktColors.neutral500,

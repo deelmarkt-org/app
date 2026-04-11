@@ -4,6 +4,16 @@ import 'package:deelmarkt/features/admin/domain/entities/activity_item_entity.da
 ///
 /// Defensive parsing — validates required fields, uses tryParse for dates.
 ///
+/// Expected JSON shape from admin activity RPC:
+/// ```json
+/// {
+///   "id": "act-001",
+///   "type": "listingRemoved",
+///   "params": {"listingId": "4321", "moderator": "Moderator A"},
+///   "timestamp": "2026-04-10T12:00:00.000Z"
+/// }
+/// ```
+///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class ActivityItemDto {
   const ActivityItemDto._();
@@ -11,13 +21,10 @@ class ActivityItemDto {
   /// Parse a Supabase JSON row from admin activity RPC.
   static ActivityItemEntity fromJson(Map<String, dynamic> json) {
     final id = json['id'];
-    final title = json['title'];
-    final subtitle = json['subtitle'];
-    final timestampRaw = json['timestamp'];
 
-    if (id is! String || title is! String || subtitle is! String) {
+    if (id is! String) {
       throw const FormatException(
-        'ActivityItemDto.fromJson: missing or invalid required fields',
+        'ActivityItemDto.fromJson: missing or invalid required field: id',
       );
     }
 
@@ -27,6 +34,19 @@ class ActivityItemDto {
       orElse: () => ActivityItemType.systemUpdate,
     );
 
+    final rawParams = json['params'];
+    final Map<String, String> params;
+    if (rawParams is Map) {
+      params = {
+        for (final entry in rawParams.entries)
+          if (entry.key is String && entry.value is String)
+            entry.key as String: entry.value as String,
+      };
+    } else {
+      params = const {};
+    }
+
+    final timestampRaw = json['timestamp'];
     if (timestampRaw is! String) {
       throw const FormatException(
         'ActivityItemDto.fromJson: missing timestamp field',
@@ -42,8 +62,7 @@ class ActivityItemDto {
     return ActivityItemEntity(
       id: id,
       type: type,
-      title: title,
-      subtitle: subtitle,
+      params: params,
       timestamp: timestamp,
     );
   }

@@ -48,7 +48,23 @@
       "just_now": "Zojuist",
       "minutes_ago": "{} min geleden",
       "hours_ago": "{}u geleden",
-      "days_ago": "{}d geleden"
+      "days_ago": "{}d geleden",
+      "listingRemoved": {
+        "title": "Advertentie #{listingId} verwijderd door {moderator}",
+        "subtitle": "Schending van het advertentiebeleid"
+      },
+      "userVerified": {
+        "title": "Gebruiker @{userId} geverifieerd",
+        "subtitle": "{method}-verificatie succesvol afgerond"
+      },
+      "disputeEscalated": {
+        "title": "Geschil #{disputeId} geëscaleerd naar {escalatedTo}",
+        "subtitle": "Koper en verkoper bereikten geen overeenstemming"
+      },
+      "systemUpdate": {
+        "title": "Systeemupdate {version} succesvol uitgerold",
+        "subtitle": "Beveiligingspatches en prestatieverbeteringen"
+      }
     },
     "badge": {
       "today": "{} vandaag",

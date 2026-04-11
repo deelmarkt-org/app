@@ -66,13 +66,52 @@ void main() {
         expect(items[3].type, ActivityItemType.systemUpdate);
       });
 
-      test('each activity item has valid title and subtitle', () async {
+      test('each activity item has non-empty params map', () async {
         final items = await repo.getRecentActivity();
 
         for (final item in items) {
-          expect(item.title, isNotEmpty);
-          expect(item.subtitle, isNotEmpty);
+          expect(item.params, isNotEmpty);
         }
+      });
+
+      test(
+        'listingRemoved item contains listingId and moderator params',
+        () async {
+          final items = await repo.getRecentActivity();
+          final removed = items.firstWhere(
+            (i) => i.type == ActivityItemType.listingRemoved,
+          );
+
+          expect(removed.params['listingId'], isNotNull);
+          expect(removed.params['moderator'], isNotNull);
+        },
+      );
+
+      test('userVerified item contains userId param', () async {
+        final items = await repo.getRecentActivity();
+        final verified = items.firstWhere(
+          (i) => i.type == ActivityItemType.userVerified,
+        );
+
+        expect(verified.params['userId'], isNotNull);
+      });
+
+      test('disputeEscalated item contains disputeId param', () async {
+        final items = await repo.getRecentActivity();
+        final escalated = items.firstWhere(
+          (i) => i.type == ActivityItemType.disputeEscalated,
+        );
+
+        expect(escalated.params['disputeId'], isNotNull);
+      });
+
+      test('systemUpdate item contains version param', () async {
+        final items = await repo.getRecentActivity();
+        final update = items.firstWhere(
+          (i) => i.type == ActivityItemType.systemUpdate,
+        );
+
+        expect(update.params['version'], isNotNull);
       });
 
       test('each activity item has a timestamp', () async {

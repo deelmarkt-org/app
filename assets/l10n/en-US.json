@@ -48,7 +48,23 @@
       "just_now": "Just now",
       "minutes_ago": "{} min ago",
       "hours_ago": "{}h ago",
-      "days_ago": "{}d ago"
+      "days_ago": "{}d ago",
+      "listingRemoved": {
+        "title": "Listing #{listingId} removed by {moderator}",
+        "subtitle": "Policy violation"
+      },
+      "userVerified": {
+        "title": "User @{userId} verified",
+        "subtitle": "{method} verification completed"
+      },
+      "disputeEscalated": {
+        "title": "Dispute #{disputeId} escalated to {escalatedTo}",
+        "subtitle": "Buyer and seller could not reach an agreement"
+      },
+      "systemUpdate": {
+        "title": "System update {version} deployed",
+        "subtitle": "Security patches and performance improvements"
+      }
     },
     "badge": {
       "today": "{} today",

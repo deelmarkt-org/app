@@ -73,8 +73,7 @@ final _sampleActivity = <ActivityItemEntity>[
   ActivityItemEntity(
     id: 'act-1',
     type: ActivityItemType.listingRemoved,
-    title: 'Listing removed',
-    subtitle: 'Policy violation',
+    params: const {'listingId': '4321', 'moderator': 'Moderator A'},
     timestamp: DateTime(2026, 4, 10),
   ),
 ];

@@ -6,19 +6,19 @@ import 'package:deelmarkt/features/admin/presentation/widgets/admin_activity_fee
 import '../../../../helpers/pump_app.dart';
 
 void main() {
+  // In tests, .tr() returns the key path string (no translation loaded).
+  // So we verify that the correct l10n key paths are rendered.
   final testItems = [
     ActivityItemEntity(
       id: 'a1',
       type: ActivityItemType.listingRemoved,
-      title: 'Item removed',
-      subtitle: 'Policy violation',
+      params: const {'listingId': '4321', 'moderator': 'Moderator A'},
       timestamp: DateTime(2026),
     ),
     ActivityItemEntity(
       id: 'a2',
       type: ActivityItemType.userVerified,
-      title: 'User verified',
-      subtitle: 'KYC passed',
+      params: const {'userId': 'jansen_m', 'method': 'iDIN'},
       timestamp: DateTime(2026),
     ),
   ];
@@ -30,18 +30,37 @@ void main() {
       expect(find.text('admin.activity.title'), findsOneWidget);
     });
 
-    testWidgets('renders activity item titles', (tester) async {
+    testWidgets('renders listingRemoved title l10n key', (tester) async {
       await pumpTestWidget(tester, AdminActivityFeed(items: testItems));
 
-      expect(find.text('Item removed'), findsOneWidget);
-      expect(find.text('User verified'), findsOneWidget);
+      expect(find.text('admin.activity.listingRemoved.title'), findsOneWidget);
     });
 
-    testWidgets('renders activity item subtitles', (tester) async {
+    testWidgets('renders userVerified title l10n key', (tester) async {
       await pumpTestWidget(tester, AdminActivityFeed(items: testItems));
 
-      expect(find.text('Policy violation'), findsOneWidget);
-      expect(find.text('KYC passed'), findsOneWidget);
+      expect(find.text('admin.activity.userVerified.title'), findsOneWidget);
+    });
+
+    testWidgets('renders listingRemoved subtitle l10n key', (tester) async {
+      await pumpTestWidget(tester, AdminActivityFeed(items: testItems));
+
+      expect(
+        find.text('admin.activity.listingRemoved.subtitle'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('renders userVerified subtitle l10n key', (tester) async {
+      await pumpTestWidget(tester, AdminActivityFeed(items: testItems));
+
+      expect(find.text('admin.activity.userVerified.subtitle'), findsOneWidget);
+    });
+
+    testWidgets('renders empty list without error', (tester) async {
+      await pumpTestWidget(tester, const AdminActivityFeed(items: []));
+
+      expect(find.text('admin.activity.title'), findsOneWidget);
     });
   });
 }

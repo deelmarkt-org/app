@@ -7,8 +7,7 @@ void main() {
     test('implements AdminRepository', () {
       // Compile-time verification: SupabaseAdminRepository is-a AdminRepository.
       // Constructor requires SupabaseClient which we cannot instantiate in
-      // unit tests without a live instance. The stub behaviour (throws
-      // UnimplementedError) is verified at integration level.
+      // unit tests without a live instance.
       expect(SupabaseAdminRepository, isNotNull);
     });
   });

@@ -32,12 +32,12 @@ void main() {
 
   group('ActivityItemEntity', () {
     final timestamp = DateTime(2026, 4, 10, 12);
+    const testParams = {'listingId': '4321', 'moderator': 'Moderator A'};
 
     final entity = ActivityItemEntity(
       id: 'act-001',
       type: ActivityItemType.listingRemoved,
-      title: 'Listing #4321 removed',
-      subtitle: 'Removed by Moderator A',
+      params: testParams,
       timestamp: timestamp,
     );
 
@@ -45,8 +45,7 @@ void main() {
       final other = ActivityItemEntity(
         id: 'act-001',
         type: ActivityItemType.listingRemoved,
-        title: 'Listing #4321 removed',
-        subtitle: 'Removed by Moderator A',
+        params: testParams,
         timestamp: timestamp,
       );
 
@@ -57,8 +56,7 @@ void main() {
       final other = ActivityItemEntity(
         id: 'act-999',
         type: ActivityItemType.listingRemoved,
-        title: 'Listing #4321 removed',
-        subtitle: 'Removed by Moderator A',
+        params: testParams,
         timestamp: timestamp,
       );
 
@@ -69,32 +67,18 @@ void main() {
       final other = ActivityItemEntity(
         id: 'act-001',
         type: ActivityItemType.systemUpdate,
-        title: 'Listing #4321 removed',
-        subtitle: 'Removed by Moderator A',
+        params: testParams,
         timestamp: timestamp,
       );
 
       expect(entity, isNot(equals(other)));
     });
 
-    test('different title produces inequality', () {
+    test('different params produces inequality', () {
       final other = ActivityItemEntity(
         id: 'act-001',
         type: ActivityItemType.listingRemoved,
-        title: 'Different title',
-        subtitle: 'Removed by Moderator A',
-        timestamp: timestamp,
-      );
-
-      expect(entity, isNot(equals(other)));
-    });
-
-    test('different subtitle produces inequality', () {
-      final other = ActivityItemEntity(
-        id: 'act-001',
-        type: ActivityItemType.listingRemoved,
-        title: 'Listing #4321 removed',
-        subtitle: 'Different subtitle',
+        params: const {'listingId': '9999', 'moderator': 'Other'},
         timestamp: timestamp,
       );
 
@@ -105,26 +89,35 @@ void main() {
       final other = ActivityItemEntity(
         id: 'act-001',
         type: ActivityItemType.listingRemoved,
-        title: 'Listing #4321 removed',
-        subtitle: 'Removed by Moderator A',
+        params: testParams,
         timestamp: DateTime(2025),
       );
 
       expect(entity, isNot(equals(other)));
     });
 
-    test('props contains all 5 fields', () {
-      expect(entity.props.length, equals(5));
+    test('props contains all 4 fields', () {
+      expect(entity.props.length, equals(4));
       expect(
         entity.props,
         equals([
           'act-001',
           ActivityItemType.listingRemoved,
-          'Listing #4321 removed',
-          'Removed by Moderator A',
+          testParams,
           timestamp,
         ]),
       );
+    });
+
+    test('empty params map is valid', () {
+      final emptyParamsEntity = ActivityItemEntity(
+        id: 'act-002',
+        type: ActivityItemType.systemUpdate,
+        params: const {},
+        timestamp: timestamp,
+      );
+
+      expect(emptyParamsEntity.params, isEmpty);
     });
   });
 }
