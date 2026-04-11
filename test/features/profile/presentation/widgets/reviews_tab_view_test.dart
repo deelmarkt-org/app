@@ -26,7 +26,7 @@ ReviewEntity _review(String id) => ReviewEntity(
   revieweeId: 'u2',
   listingId: 'l1',
   rating: 4,
-  text: 'Great!',
+  body: 'Great!',
   createdAt: DateTime(2025),
 );
 
@@ -86,7 +86,7 @@ void main() {
           revieweeId: 'u1',
           listingId: 'l1',
           rating: 5.0,
-          text: 'Top verkoper!',
+          body: 'Top verkoper!',
           createdAt: DateTime(2026, 3, 15),
         ),
         ReviewEntity(
@@ -96,7 +96,7 @@ void main() {
           revieweeId: 'u1',
           listingId: 'l2',
           rating: 4.0,
-          text: 'Goede communicatie.',
+          body: 'Goede communicatie.',
           createdAt: DateTime(2026, 3, 10),
         ),
       ];
@@ -123,7 +123,7 @@ void main() {
           revieweeId: 'u1',
           listingId: 'l1',
           rating: 3.0,
-          text: 'Okay transaction',
+          body: 'Okay transaction',
           createdAt: DateTime(2026),
         ),
       ];

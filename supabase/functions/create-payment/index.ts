@@ -47,7 +47,7 @@ async function createMolliePayment(
     webhookUrl: string;
     transactionId: string;
     method: string;
-  }
+  },
 ): Promise<MollieCreateResponse> {
   const amount = (params.amountCents / 100).toFixed(2);
 
@@ -92,16 +92,21 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return jsonError("Missing Authorization header", 401);
   }
 
-  const userClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
-    global: { headers: { Authorization: authHeader } },
-  });
+  const userClient = createClient(
+    supabaseUrl,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    {
+      global: { headers: { Authorization: authHeader } },
+    },
+  );
   const serviceClient = createClient(supabaseUrl, serviceRoleKey);
 
   try {
     const body = await req.json();
     const input = CreatePaymentSchema.parse(body);
 
-    const { data: { user }, error: authError } = await userClient.auth.getUser();
+    const { data: { user }, error: authError } = await userClient.auth
+      .getUser();
     if (authError || !user) {
       return jsonError("Unauthorized", 401);
     }
@@ -112,13 +117,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
     try {
       const redisCreds = getRedisCredentials();
       const { allowed, remaining, resetSeconds } = await checkRateLimit(
-        redisCreds, user.id, "create-payment",
+        redisCreds,
+        user.id,
+        "create-payment",
         { maxRequests: 10, windowSeconds: 3600 },
       );
       if (!allowed) {
         return new Response(
           JSON.stringify({
-            error: "Too many payment requests. Please wait before trying again.",
+            error:
+              "Too many payment requests. Please wait before trying again.",
             retry_after_seconds: resetSeconds,
           }),
           {
@@ -133,10 +141,17 @@ Deno.serve(async (req: Request): Promise<Response> => {
       }
       // Expose remaining quota in response headers (informational)
       // Note: headers added to success response below
-      console.log(`[create-payment] Rate limit: ${remaining} remaining for user ${user.id.slice(0, 8)}`);
+      console.log(
+        `[create-payment] Rate limit: ${remaining} remaining for user ${
+          user.id.slice(0, 8)
+        }`,
+      );
     } catch (rateLimitErr) {
       // Fail open — log and continue
-      console.warn(`[create-payment] Rate limit check failed, proceeding:`, rateLimitErr);
+      console.warn(
+        `[create-payment] Rate limit check failed, proceeding:`,
+        rateLimitErr,
+      );
     }
 
     const { data: txn, error: txnError } = await serviceClient
@@ -157,20 +172,24 @@ Deno.serve(async (req: Request): Promise<Response> => {
     if (txn.status !== "created") {
       return jsonError(
         `Cannot create payment for transaction in '${txn.status}' state. Only 'created' transactions can initiate payment.`,
-        409
+        409,
       );
     }
 
-    const totalCents =
-      txn.item_amount_cents + txn.platform_fee_cents + txn.shipping_cost_cents;
+    const totalCents = txn.item_amount_cents + txn.platform_fee_cents +
+      txn.shipping_cost_cents;
 
-    const mollieApiKey = await getVaultSecret(serviceClient, "mollie_test_api_key");
+    const mollieApiKey = await getVaultSecret(
+      serviceClient,
+      "mollie_test_api_key",
+    );
     const webhookUrl = `${supabaseUrl}/functions/v1/mollie-webhook`;
 
     const molliePayment = await createMolliePayment(mollieApiKey, {
       amountCents: totalCents,
       currency: txn.currency,
-      description: input.description ?? `DeelMarkt #${input.transaction_id.slice(0, 8)}`,
+      description: input.description ??
+        `DeelMarkt #${input.transaction_id.slice(0, 8)}`,
       redirectUrl: input.redirect_url,
       webhookUrl,
       transactionId: input.transaction_id,
@@ -194,7 +213,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
     console.log(
-      `[create-payment] Created ${molliePayment.id} for txn ${input.transaction_id}`
+      `[create-payment] Created ${molliePayment.id} for txn ${input.transaction_id}`,
     );
 
     return new Response(
@@ -203,13 +222,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
         checkout_url: molliePayment._links.checkout.href,
         expires_at: molliePayment.expiresAt ?? null,
       }),
-      { status: 201, headers: { "Content-Type": "application/json" } }
+      { status: 201, headers: { "Content-Type": "application/json" } },
     );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return jsonError(
         `Validation error: ${error.errors.map((e) => e.message).join(", ")}`,
-        400
+        400,
       );
     }
 

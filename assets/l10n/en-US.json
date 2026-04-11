@@ -51,7 +51,23 @@
     "image_upload_failed": "Image upload failed",
     "payment_failed": "Payment failed",
     "offline": "You are offline",
-    "offline_with_cache": "You are offline — showing previously loaded data"
+    "offline_with_cache": "You are offline — showing previously loaded data",
+    "auth": {
+      "unauthenticated": "Please sign in to continue"
+    },
+    "image": {
+      "too_large": "This image is over the 15 MB limit",
+      "unsupported_format": "Only JPG, PNG, WebP, or HEIC images are supported",
+      "ownership_mismatch": "You can't upload to another user's folder",
+      "blocked": "This image was blocked by our safety check",
+      "rate_limited": "Too many uploads — please wait a moment and try again",
+      "scan_unavailable": "Our safety check is temporarily unavailable — please try again in a moment",
+      "upload_failed": "Image upload failed — please try again",
+      "not_found": "That image vanished before processing — please re-select it"
+    },
+    "quality_score": {
+      "invalid_request": "Couldn't check listing quality — please try again"
+    }
   },
   "empty": {
     "favorites": "No favorites yet",
@@ -217,7 +233,13 @@
     "countdownHint": "48 hours to confirm",
     "deadlineHint": "Confirm before {date}",
     "fundsHeld": "Funds held in escrow",
-    "fundsReleased": "Funds released to seller"
+    "fundsReleased": "Funds released to seller",
+    "stepDetail": {
+      "completedAt": "Completed at",
+      "notReached": "Not yet reached",
+      "deadline": "Confirm before",
+      "disputedAt": "Disputed at"
+    }
   },
   "condition": {
     "newWithTags": "New with tags",
@@ -262,13 +284,17 @@
     "closed": "Closed",
     "selectThisShop": "Select this point",
     "selectFromList": "Select a service point from the list",
-    "noShopsFound": "No service points found nearby"
+    "noShopsFound": "No service points found nearby",
+    "details": "Shipping details",
+    "viewQrCode": "View QR code"
   },
   "tracking": {
     "title": "Track shipment",
     "shipment": "shipment",
     "updates": "Tracking updates",
     "noUpdates": "No tracking updates yet",
+    "viewTracking": "View tracking",
+    "latestUpdate": "Latest update",
     "labelCreated": "Label created",
     "droppedOff": "Dropped off at service point",
     "pickedUp": "Picked up by carrier",
@@ -386,6 +412,11 @@
       "phone_number_request": "This message asks for your phone number or messaging app",
       "suspicious_pricing": "This price seems suspiciously low for this item",
       "urgency_pressure": "This message uses urgency tactics to pressure a quick decision",
+      "credential_harvesting": "This message asks for passwords, login details, or identity documents",
+      "advance_payment_request": "This message asks for advance payment or a deposit before delivery",
+      "fake_escrow": "This message promotes an external escrow service outside DeelMarkt",
+      "shipping_scam": "This message contains a suspicious shipping payment request",
+      "prohibited_item": "This message references items that are prohibited on DeelMarkt",
       "other": "This message was flagged by our scam detector"
     }
   },
@@ -749,5 +780,36 @@
     "month_ago": "1 month ago",
     "months_ago": "{n} months ago",
     "year_ago": "1 year ago"
+  },
+  "sanction": {
+    "type": {
+      "warning": "Warning",
+      "suspension": "Suspension",
+      "ban": "Ban"
+    },
+    "screen": {
+      "title": "Account suspended",
+      "reason_label": "Reason",
+      "expires_label": "Suspended until",
+      "permanent": "Permanent",
+      "appeal_title": "Submit an appeal",
+      "appeal_hint": "Explain why you believe this decision is incorrect (max 1000 characters)",
+      "appeal_submit": "Submit appeal",
+      "appeal_submitted_title": "Appeal submitted",
+      "appeal_submitted_body": "We will review your appeal within 72 hours.",
+      "appeal_pending_title": "Appeal under review",
+      "appeal_pending_body": "Your appeal is being reviewed. We will notify you of the decision within 72 hours.",
+      "appeal_upheld_title": "Appeal upheld",
+      "appeal_upheld_body": "Your appeal was reviewed and the decision stands.",
+      "appeal_overturned_title": "Account reinstated",
+      "appeal_overturned_body": "Your appeal was accepted. Your account has been fully restored.",
+      "appeal_window_closed": "The 14-day appeal window for this sanction has closed.",
+      "appeal_not_eligible": "Warnings cannot be appealed.",
+      "contact_support": "Contact support"
+    },
+    "a11y": {
+      "sanction_icon": "Account suspended icon",
+      "appeal_form": "Appeal form"
+    }
   }
 }

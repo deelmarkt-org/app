@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
+import 'package:deelmarkt/features/messages/data/supabase/message_scam_scanner.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
@@ -11,24 +12,16 @@ import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
-///
-/// - REST queries via PostgREST for initial fetches.
-/// - [watchMessages] uses a Supabase Realtime subscription on the `messages`
-///   table filtered by `conversation_id`. On each INSERT event the new message
-///   is appended from the Realtime payload. If parsing fails, falls back to a
-///   full re-fetch so the stream stays alive.
-/// - [getConversations] calls the `get_conversations_for_user` RPC which
-///   joins listings + user_profiles in one query (avoids N+1).
-/// - [getOrCreateConversation] calls `get_or_create_conversation` RPC which
-///   is idempotent (UPSERT with ON CONFLICT DO NOTHING).
-///
 /// Reference: docs/epics/E04-messaging.md §Supabase Realtime Messaging
 class SupabaseMessageRepository implements MessageRepository {
-  SupabaseMessageRepository(this._client);
+  SupabaseMessageRepository(this._client)
+    : _scamScanner = MessageScamScanner(_client);
 
   final SupabaseClient _client;
+  final MessageScamScanner _scamScanner;
 
   static const _messagesTable = 'messages';
+  static const _conversationIdCol = 'conversation_id';
   static const _channelPrefix = 'messages:conv:';
 
   @override
@@ -52,7 +45,7 @@ class SupabaseMessageRepository implements MessageRepository {
       var query = _client
           .from(_messagesTable)
           .select()
-          .eq('conversation_id', conversationId)
+          .eq(_conversationIdCol, conversationId)
           .order('created_at');
 
       if (limit != null) {
@@ -89,8 +82,7 @@ class SupabaseMessageRepository implements MessageRepository {
     return controller.stream;
   }
 
-  /// Fetches the current message list and pushes it onto [controller].
-  /// Returns `false` if an error occurred and was forwarded to the controller.
+  /// Emits current messages onto [controller]. Returns false on error.
   Future<bool> _emitSnapshot(
     String conversationId,
     StreamController<List<MessageEntity>> controller,
@@ -105,17 +97,14 @@ class SupabaseMessageRepository implements MessageRepository {
     }
   }
 
-  /// Subscribes to INSERT and UPDATE events for [conversationId] and
-  /// re-emits a full snapshot on each event. UPDATE is required so that
-  /// offer_status changes (accept/decline via R-32 RPC) are reflected
-  /// in real-time without a manual refresh.
+  /// Subscribes to INSERT + UPDATE events, re-emitting a full snapshot each time.
   RealtimeChannel _subscribeChanges(
     String conversationId,
     StreamController<List<MessageEntity>> controller,
   ) {
     final filter = PostgresChangeFilter(
       type: PostgresChangeFilterType.eq,
-      column: 'conversation_id',
+      column: _conversationIdCol,
       value: conversationId,
     );
     void onEvent(_) => _emitSnapshot(conversationId, controller);
@@ -165,7 +154,10 @@ class SupabaseMessageRepository implements MessageRepository {
               .select()
               .single();
 
-      return MessageDto.fromJson(response);
+      final sentMessage = MessageDto.fromJson(response);
+      _scamScanner.scan(sentMessage); // fire-and-forget R-35 scam check
+
+      return sentMessage;
     } on PostgrestException catch (e) {
       throw Exception('Failed to send message: ${e.message}');
     }
@@ -181,7 +173,7 @@ class SupabaseMessageRepository implements MessageRepository {
       throw ArgumentError.value(
         newStatus,
         'newStatus',
-        'Only accepted or declined are valid transitions',
+        'Only accepted or declined',
       );
     }
     try {

@@ -9,9 +9,11 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/transaction/presentation/widgets/action_section.dart';
 import 'package:deelmarkt/features/transaction/presentation/widgets/amount_section.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/escrow_step_detail_sheet.dart';
 
 /// Transaction detail screen — shows escrow timeline, amounts, and actions.
 ///
+/// Reference: docs/screens/04-payments/03-transaction-detail.md
 /// Reference: docs/design-system/patterns.md §Escrow Timeline
 class TransactionDetailScreen extends StatelessWidget {
   const TransactionDetailScreen({required this.transaction, super.key});
@@ -33,6 +35,12 @@ class TransactionDetailScreen extends StatelessWidget {
               EscrowTimeline(
                 currentStatus: transaction.status,
                 escrowDeadline: transaction.escrowDeadline,
+                onStepTapped:
+                    (step) => EscrowStepDetailSheet.show(
+                      context,
+                      step: step,
+                      transaction: transaction,
+                    ),
               ),
               const SizedBox(height: Spacing.s6),
               AmountSection(transaction: transaction),

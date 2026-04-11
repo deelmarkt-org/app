@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
-import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 
@@ -34,7 +33,8 @@ class FeaturedListingsGrid extends StatelessWidget {
           return DeelCard.grid(
             imageUrl:
                 listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-            priceFormatted: Formatters.euroFromCents(listing.priceInCents),
+            priceInCents: listing.priceInCents,
+            originalPriceInCents: listing.originalPriceInCents,
             title: listing.title,
             location: listing.location,
             isFavourited: listing.isFavourited,

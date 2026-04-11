@@ -17,6 +17,7 @@ ShippingLabel _label() => ShippingLabel(
   qrData: 'https://postnl.nl/qr/3SDEVC1234567',
   trackingNumber: '3SDEVC1234567',
   carrier: ShippingCarrier.postnl,
+  destinationPostalCode: '2521CA',
   shipByDeadline: DateTime(2026, 3, 25, 18),
   createdAt: DateTime(2026, 3, 23),
 );
@@ -167,6 +168,7 @@ void main() {
         qrData: 'https://dhl.nl/qr/JJD000123456',
         trackingNumber: 'JJD000123456',
         carrier: ShippingCarrier.dhl,
+        destinationPostalCode: '1015AA',
         shipByDeadline: DateTime(2026, 3, 25, 18),
         createdAt: DateTime(2026, 3, 23),
       );

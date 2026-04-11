@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/widgets/badges/deel_badge.dart';
 import 'package:deelmarkt/widgets/badges/deel_badge_data.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_favourite_button.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_image.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
+import 'package:deelmarkt/widgets/price/price_tag.dart';
 
 /// Listing card with grid and list variants.
 ///
 /// Features: image with Hero, favourite toggle with bounce animation,
-/// optional escrow badge, price-first layout.
+/// optional escrow badge, price-first layout via [PriceTag].
 ///
 /// Reference: docs/design-system/components.md §Listing Card
 class DeelCard extends StatelessWidget {
   /// Grid variant: 4:3 image on top, details below.
   const DeelCard.grid({
     required this.imageUrl,
-    required this.priceFormatted,
+    required this.priceInCents,
     required this.title,
     required this.onTap,
+    this.originalPriceInCents,
     this.heroTag,
     this.location,
     this.distanceFormatted,
@@ -34,9 +37,10 @@ class DeelCard extends StatelessWidget {
   /// List variant: 1:1 thumbnail left, details right.
   const DeelCard.list({
     required this.imageUrl,
-    required this.priceFormatted,
+    required this.priceInCents,
     required this.title,
     required this.onTap,
+    this.originalPriceInCents,
     this.heroTag,
     this.location,
     this.distanceFormatted,
@@ -47,7 +51,13 @@ class DeelCard extends StatelessWidget {
   }) : _variant = DeelCardVariant.list;
 
   final String imageUrl;
-  final String priceFormatted;
+
+  /// Price in cents (e.g. 4500 = €45.00).
+  final int priceInCents;
+
+  /// Original price before discount, in cents. Null when no discount.
+  final int? originalPriceInCents;
+
   final String title;
   final VoidCallback onTap;
   final String? heroTag;
@@ -62,7 +72,7 @@ class DeelCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
-      label: '$priceFormatted, $title',
+      label: '${Formatters.euroFromCents(priceInCents)}, $title',
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -169,12 +179,10 @@ class DeelCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          priceFormatted,
-          style: theme.titleSmall?.copyWith(
-            fontSize: DeelCardTokens.priceFontSize,
-            fontWeight: FontWeight.bold,
-          ),
+        PriceTag(
+          priceInCents: priceInCents,
+          originalPriceInCents: originalPriceInCents,
+          size: PriceTagSize.small,
         ),
         const SizedBox(height: Spacing.s1),
         Text(

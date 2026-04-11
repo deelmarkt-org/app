@@ -19,7 +19,8 @@ class FavouriteCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DeelCard.grid(
       imageUrl: listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-      priceFormatted: Formatters.euroFromCents(listing.priceInCents),
+      priceInCents: listing.priceInCents,
+      originalPriceInCents: listing.originalPriceInCents,
       title: listing.title,
       isFavourited: true,
       location: listing.location,

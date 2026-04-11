@@ -50,7 +50,7 @@ class ReviewCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.s1),
-                Text(review.text, style: Theme.of(context).textTheme.bodySmall),
+                Text(review.body, style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ),

@@ -6,11 +6,10 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/design_system/typography.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
-
 import 'package:deelmarkt/widgets/location/location.dart';
+import 'package:deelmarkt/widgets/price/price_tag.dart';
 
 /// Minimum touch target size (44x44) per WCAG / EAA requirements.
 const _kTouchTargetSize = 44.0;
@@ -34,14 +33,14 @@ class ListingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final price = Formatters.euroFromCents(listing.priceInCents);
+    final priceLabel = Formatters.euroFromCents(listing.priceInCents);
     final distance =
         listing.distanceKm != null
             ? ', ${Formatters.distanceKm(listing.distanceKm!)}'
             : '';
 
     return Semantics(
-      label: '${listing.title}, $price$distance',
+      label: '${listing.title}, $priceLabel$distance',
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
@@ -70,7 +69,11 @@ class ListingCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(price, style: DeelmarktTypography.priceSm),
+                      PriceTag(
+                        priceInCents: listing.priceInCents,
+                        originalPriceInCents: listing.originalPriceInCents,
+                        size: PriceTagSize.small,
+                      ),
                       const SizedBox(height: Spacing.s1),
                       Text(
                         listing.title,

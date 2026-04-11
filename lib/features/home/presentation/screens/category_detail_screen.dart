@@ -16,6 +16,9 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 /// Category detail screen — hero, subcategory chips, and featured listings.
 ///
 /// Route: `/categories/:id` (AppRoutes.categoryDetail)
+///
+/// Reference: docs/screens/02-home/04-category-browse.md (sub-screen of
+/// the category browse flow — same spec governs L2 list rendering).
 class CategoryDetailScreen extends ConsumerWidget {
   const CategoryDetailScreen({required this.categoryId, super.key});
 

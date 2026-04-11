@@ -351,7 +351,8 @@ Format for UI tasks:
 - `detect-secrets` — no hardcoded secrets
 - No commits to `main` or `dev` directly
 - `bash scripts/check_edge_functions.sh` — Edge Function structure + schema cross-reference (on `.ts`/`.sql` files)
-- `deno lint` + `deno fmt --check` — TypeScript linting (gracefully skips if deno not installed)
+- `deno lint` + `deno fmt --check` — TypeScript linting (**deno is required** — run `bash scripts/setup.sh` to install)
+- `build_runner` freshness check — ensures `.g.dart` files exist before `flutter analyze`
 
 ### On Every Push
 
@@ -384,6 +385,9 @@ git push origin feature/...
 - Edge Functions use Zod for input validation
 - Webhook handlers MUST be idempotent (Upstash Redis NX pattern)
 - Database schema changes require a migration file
+- **Migrations MUST be applied** after creating/modifying `.sql` files — run `bash scripts/check_deployments.sh --deploy`
+- **Edge Functions MUST be deployed** after creating/modifying — run `bash scripts/check_deployments.sh --deploy`
+- Before marking a task as done, verify deployment: `bash scripts/check_deployments.sh`
 
 ---
 
@@ -430,9 +434,10 @@ The European Accessibility Act is enforceable. These are not optional:
 1. Run `flutter analyze` — zero warnings
 2. Run `dart run scripts/check_quality.dart` — zero violations on your files
 3. Run `bash scripts/check_edge_functions.sh --all` — zero new violations (if you touched Edge Functions)
-4. Run `flutter test` — all passing
-5. Commit with proper message format
-6. Update epic acceptance criteria checkboxes if applicable
+4. Run `bash scripts/check_deployments.sh` — zero pending migrations or undeployed functions
+5. Run `flutter test` — all passing
+6. Commit with proper message format
+7. Update epic acceptance criteria checkboxes if applicable
 
 ### Quality Gate Scripts
 
@@ -444,6 +449,10 @@ The European Accessibility Act is enforceable. These are not optional:
 | `dart run scripts/check_new_code_coverage.dart` | Pre-push (auto) | ≥80% coverage on new code (mirrors SonarCloud) |
 | `bash scripts/check_edge_functions.sh` | Pre-commit (auto) | Edge Function structure + schema cross-reference (staged .ts/.sql) |
 | `bash scripts/check_edge_functions.sh --all` | Manual | Check all Edge Functions |
+| `deno lint` + `deno fmt --check` | Pre-commit (auto) + CI | TypeScript lint + formatting on Edge Functions |
+| `build_runner` freshness check | Pre-commit (auto) | Ensures .g.dart files exist (auto-runs build_runner if stale) |
+| `bash scripts/check_deployments.sh` | Before ending session | Detects pending migrations + undeployed Edge Functions |
+| `bash scripts/check_deployments.sh --deploy` | After creating migration/function | Auto-applies pending migrations + deploys functions |
 
 ### Setup for New or Existing Developers
 
@@ -487,6 +496,7 @@ setState_allowlist:
   - lib/features/profile/presentation/widgets/address_form_modal.dart
   - lib/features/transaction/presentation/screens/mollie_checkout_screen.dart
   - lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart
+  - lib/features/transaction/presentation/widgets/action_section.dart
   - lib/features/dev/**
   - lib/widgets/inputs/deel_search_input.dart
   - lib/features/profile/presentation/widgets/delete_account_dialog.dart
@@ -503,6 +513,13 @@ file_length_exempt:
   - lib/widgets/cards/deel_card.dart
   - lib/widgets/inputs/dutch_address_input.dart
   - lib/features/home/presentation/widgets/home_data_view.dart
+  # 6 distinct optimistic-realtime responsibilities (build, realtime
+  # subscribe, sendText, sendOffer, updateOfferStatus, _optimisticSend)
+  # that share mutable _pendingSnapshot reconciliation state. Helpers
+  # already extracted to chat_thread_optimistic.dart; further splitting
+  # would require closure-passing that hurts readability more than the
+  # extra ~25 lines.
+  - lib/features/messages/presentation/chat_thread_notifier.dart
 
 cross_feature_import_exempt:
   - lib/core/router/app_router.dart

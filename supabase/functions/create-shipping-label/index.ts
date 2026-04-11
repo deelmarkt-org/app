@@ -33,7 +33,9 @@ const AddressSchema = z.object({
   street: z.string().min(1),
   houseNumber: z.string().min(1),
   houseNumberAddition: z.string().optional(),
-  postcode: z.string().transform((v) => v.toUpperCase()).pipe(z.string().regex(/^\d{4}[A-Z]{2}$/)),
+  postcode: z.string().transform((v) => v.toUpperCase()).pipe(
+    z.string().regex(/^\d{4}[A-Z]{2}$/),
+  ),
   city: z.string().min(1),
   countryCode: z.string().length(2).default("NL"),
 });
@@ -112,7 +114,9 @@ async function createViaEctaro(
   // Ectaro returns 200 even on failure — check response body
   if (!resp.ok || data.error || !data.trackingCode) {
     throw new Error(
-      `Ectaro label creation failed: ${data.error ?? data.message ?? resp.statusText}`,
+      `Ectaro label creation failed: ${
+        data.error ?? data.message ?? resp.statusText
+      }`,
     );
   }
 
@@ -127,22 +131,22 @@ async function createViaEctaro(
 }
 
 // --- PostNL Shipment v2 API (failover for PostNL labels) ---
-// Verified via sandbox testing 2026-03-29:
+// Verified via sandbox testing 2026-03-29, updated per PostNL guidance 2026-04-09:
 //   Barcode:  GET  /shipment/v1_1/barcode
-//   Confirm:  POST /shipment/v2/confirm
-//   Label:    POST /shipment/v2_2/label
+//   Label:    POST /shipment/v2_2/label  (confirm is included automatically)
 //   Status:   GET  /shipment/v2/status/barcode/:barcode
+// Note: separate /shipment/v2/confirm is NOT needed — label endpoint auto-confirms.
 
 /** PostNL base URL — sandbox or production based on POSTNL_ENV. */
 function getPostNLBaseUrl(): string {
   const postnlEnv = Deno.env.get("POSTNL_ENV");
   if (!postnlEnv) {
-    console.warn("[create-shipping-label] POSTNL_ENV not set — defaulting to sandbox. Set POSTNL_ENV=production for live API.");
+    console.warn(
+      "[create-shipping-label] POSTNL_ENV not set — defaulting to sandbox. Set POSTNL_ENV=production for live API.",
+    );
   }
   const isSandbox = postnlEnv !== "production";
-  return isSandbox
-    ? "https://api-sandbox.postnl.nl"
-    : "https://api.postnl.nl";
+  return isSandbox ? "https://api-sandbox.postnl.nl" : "https://api.postnl.nl";
 }
 
 async function createViaPostNL(
@@ -154,7 +158,9 @@ async function createViaPostNL(
   const customerNumber = Deno.env.get("POSTNL_CUSTOMER_NUMBER");
   const collectionLocation = Deno.env.get("POSTNL_COLLECTION_LOCATION");
   if (!customerCode || !customerNumber || !collectionLocation) {
-    throw new Error("Missing PostNL account config: POSTNL_CUSTOMER_CODE, POSTNL_CUSTOMER_NUMBER, POSTNL_COLLECTION_LOCATION");
+    throw new Error(
+      "Missing PostNL account config: POSTNL_CUSTOMER_CODE, POSTNL_CUSTOMER_NUMBER, POSTNL_COLLECTION_LOCATION",
+    );
   }
 
   const baseUrl = getPostNLBaseUrl();
@@ -178,7 +184,9 @@ async function createViaPostNL(
 
   if (!barcodeResp.ok) {
     const text = await barcodeResp.text();
-    throw new Error(`PostNL Barcode v1_1 failed (${barcodeResp.status}): ${text}`);
+    throw new Error(
+      `PostNL Barcode v1_1 failed (${barcodeResp.status}): ${text}`,
+    );
   }
 
   const barcodeData = await barcodeResp.json();
@@ -190,7 +198,11 @@ async function createViaPostNL(
   // PostNL timestamp format: DD-MM-YYYY HH:MM:SS (UTC to avoid timezone issues)
   const now = new Date();
   const pad = (n: number) => n.toString().padStart(2, "0");
-  const messageTimestamp = `${pad(now.getUTCDate())}-${pad(now.getUTCMonth() + 1)}-${now.getUTCFullYear()} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`;
+  const messageTimestamp = `${pad(now.getUTCDate())}-${
+    pad(now.getUTCMonth() + 1)
+  }-${now.getUTCFullYear()} ${pad(now.getUTCHours())}:${
+    pad(now.getUTCMinutes())
+  }:${pad(now.getUTCSeconds())}`;
 
   const shipmentPayload = {
     Customer: {
@@ -237,43 +249,34 @@ async function createViaPostNL(
     }],
   };
 
-  // Stringify once for confirm, then update MessageID for label
-  const confirmBody = JSON.stringify(shipmentPayload);
-
-  // Step 2: Confirm shipment via POST /shipment/v2/confirm
-  const confirmResp = await fetch(`${baseUrl}/shipment/v2/confirm`, {
-    method: "POST",
-    headers,
-    body: confirmBody,
-  });
-
-  if (!confirmResp.ok) {
-    const text = await confirmResp.text();
-    throw new Error(`PostNL Shipment v2/confirm failed (${confirmResp.status}): ${text}`);
-  }
-
-  const confirmData = await confirmResp.json();
-  const errors = confirmData.ResponseShipments?.[0]?.Errors;
-  if (errors && errors.length > 0) {
-    throw new Error(`PostNL shipment errors: ${errors.map((e: { ErrorMsg: string }) => e.ErrorMsg).join(", ")}`);
-  }
-
-  // Step 3: Generate label via POST /shipment/v2_2/label
-  // New MessageID required — confirm and label are distinct API calls
-  shipmentPayload.Message.MessageID = crypto.randomUUID();
+  // Step 2: Generate label via POST /shipment/v2_2/label
+  // Confirmation is included automatically — no separate /confirm call needed
+  // (confirmed by PostNL support, Chi-Ho Tse, 2026-03-31)
   const labelResp = await fetch(`${baseUrl}/shipment/v2_2/label`, {
     method: "POST",
     headers,
     body: JSON.stringify(shipmentPayload),
   });
 
-  let labelPdf: string | undefined;
-  if (labelResp.ok) {
-    const labelData = await labelResp.json();
-    labelPdf = labelData.ResponseShipments?.[0]?.Labels?.[0]?.Content;
-  } else {
-    console.warn(`[create-shipping-label] PostNL label generation failed (${labelResp.status}) — shipment confirmed but no PDF`);
+  if (!labelResp.ok) {
+    const text = await labelResp.text();
+    throw new Error(
+      `PostNL Label v2_2 failed (${labelResp.status}): ${text}`,
+    );
   }
+
+  const labelData = await labelResp.json();
+  const errors = labelData.ResponseShipments?.[0]?.Errors;
+  if (errors && errors.length > 0) {
+    throw new Error(
+      `PostNL shipment errors: ${
+        errors.map((e: { ErrorMsg: string }) => e.ErrorMsg).join(", ")
+      }`,
+    );
+  }
+
+  const labelPdf: string | undefined = labelData.ResponseShipments?.[0]?.Labels
+    ?.[0]?.Content;
 
   return {
     trackingNumber: barcode,
@@ -292,6 +295,7 @@ async function createViaPostNL(
 //
 // Fallback: poll /shipment/v2/status/barcode/:barcode for status updates.
 
+// deno-lint-ignore no-unused-vars
 async function pollPostNLStatus(
   barcode: string,
   postnlKey: string,
@@ -352,7 +356,8 @@ Deno.serve(async (req: Request) => {
     }
     if (txn.status !== "paid") {
       return jsonResponse({
-        error: `Cannot create label: status is '${txn.status}', expected 'paid'`,
+        error:
+          `Cannot create label: status is '${txn.status}', expected 'paid'`,
       }, 422);
     }
 
@@ -382,7 +387,9 @@ Deno.serve(async (req: Request) => {
       provider = "ectaro";
     } catch (ectaroError) {
       console.warn(
-        `[create-shipping-label] Ectaro failed: ${(ectaroError as Error).message}`,
+        `[create-shipping-label] Ectaro failed: ${
+          (ectaroError as Error).message
+        }`,
       );
 
       if (input.carrier === "postnl") {
@@ -392,7 +399,9 @@ Deno.serve(async (req: Request) => {
       } else {
         // DHL direct failover not yet implemented
         throw new Error(
-          `DHL direct failover unavailable. Ectaro: ${(ectaroError as Error).message}`,
+          `DHL direct failover unavailable. Ectaro: ${
+            (ectaroError as Error).message
+          }`,
         );
       }
     }

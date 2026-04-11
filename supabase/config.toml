@@ -485,3 +485,43 @@ enabled = true
 verify_jwt = false
 import_map = "./functions/tracking-webhook/deno.json"
 entrypoint = "./functions/tracking-webhook/index.ts"
+
+# R-33: Seller response time — cron-triggered, service_role auth
+[functions.seller-response-time]
+enabled = true
+verify_jwt = false
+import_map = "./functions/seller-response-time/deno.json"
+entrypoint = "./functions/seller-response-time/index.ts"
+
+# R-34: FCM push notifications — triggered by DB, service_role auth
+[functions.send-push-notification]
+enabled = true
+verify_jwt = false
+import_map = "./functions/send-push-notification/deno.json"
+entrypoint = "./functions/send-push-notification/index.ts"
+
+# R-35: Scam detection — called by Flutter client after message send.
+# verify_jwt = true — Supabase gateway validates the user JWT.
+# Internally uses service_role client for flag_message_scam RPC.
+[functions.scam-detection]
+enabled = true
+verify_jwt = true
+import_map = "./functions/scam-detection/deno.json"
+entrypoint = "./functions/scam-detection/index.ts"
+
+# R-26: Listing quality score — pure calculation, no DB I/O.
+# verify_jwt = true — Supabase gateway validates user JWT before handler runs.
+[functions.listing-quality-score]
+enabled = true
+verify_jwt = true
+import_map = "./functions/listing-quality-score/deno.json"
+entrypoint = "./functions/listing-quality-score/index.ts"
+
+# R-27: Listing image upload pipeline — virus scan (Cloudmersive)
+# + Cloudinary transform + DB metadata. Called per image from the sell
+# flow. verify_jwt = true — user must own the storage path being processed.
+[functions.image-upload-process]
+enabled = true
+verify_jwt = true
+import_map = "./functions/image-upload-process/deno.json"
+entrypoint = "./functions/image-upload-process/index.ts"

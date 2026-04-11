@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_image.dart';
+import 'package:deelmarkt/widgets/price/price_tag.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 
 import 'deel_card_test_helper.dart';
@@ -15,14 +16,14 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 25,00',
+            priceInCents: 2500,
             title: 'Vintage Chair',
             onTap: () {},
           ),
         ),
       );
 
-      expect(find.text('\u20AC 25,00'), findsOneWidget);
+      expect(find.byType(PriceTag), findsOneWidget);
       expect(find.text('Vintage Chair'), findsOneWidget);
       expect(find.byType(DeelCardImage), findsOneWidget);
     });
@@ -32,7 +33,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 10,00',
+            priceInCents: 1000,
             title: 'Lamp',
             onTap: () {},
             location: 'Amsterdam',
@@ -51,7 +52,7 @@ void main() {
         buildCardApp(
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 5,00',
+            priceInCents: 500,
             title: 'Book',
             onTap: () => tapped = true,
           ),
@@ -69,14 +70,14 @@ void main() {
         buildCardApp(
           child: DeelCard.list(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 15,00',
+            priceInCents: 1500,
             title: 'Table',
             onTap: () {},
           ),
         ),
       );
 
-      expect(find.text('\u20AC 15,00'), findsOneWidget);
+      expect(find.byType(PriceTag), findsOneWidget);
       expect(find.text('Table'), findsOneWidget);
     });
 
@@ -85,7 +86,7 @@ void main() {
         buildCardApp(
           child: DeelCard.list(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 15,00',
+            priceInCents: 1500,
             title: 'Table',
             onTap: () {},
           ),
@@ -108,7 +109,7 @@ void main() {
           theme: DeelmarktTheme.dark,
           child: DeelCard.grid(
             imageUrl: 'https://example.com/img.jpg',
-            priceFormatted: '\u20AC 20,00',
+            priceInCents: 2000,
             title: 'Dark Item',
             onTap: () {},
           ),

@@ -16,6 +16,7 @@ import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { triggerPagerDuty } from "../_shared/pagerduty.ts";
 import { verifyServiceRole } from "../_shared/auth.ts";
+import { jsonResponse } from "../_shared/response.ts";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -41,7 +42,7 @@ interface CheckResult {
 
 // H1: Batch query instead of N+1
 async function checkPerTransactionLedger(
-  supabase: ReturnType<typeof createClient>
+  supabase: ReturnType<typeof createClient>,
 ): Promise<CheckResult> {
   const since = new Date();
   since.setHours(since.getHours() - 24);
@@ -54,22 +55,38 @@ async function checkPerTransactionLedger(
     .gte("created_at", since.toISOString());
 
   if (eventError) {
-    return { name: "per_txn_ledger", passed: false, details: `Query error: ${eventError.message}`, severity: "SEV-2" };
+    return {
+      name: "per_txn_ledger",
+      passed: false,
+      details: `Query error: ${eventError.message}`,
+      severity: "SEV-2",
+    };
   }
 
   if (!paidEvents || paidEvents.length === 0) {
-    return { name: "per_txn_ledger", passed: true, details: "No paid events in last 24h", severity: "INFO" };
+    return {
+      name: "per_txn_ledger",
+      passed: true,
+      details: "No paid events in last 24h",
+      severity: "INFO",
+    };
   }
 
   // Extract transaction IDs from event metadata
   const txnIds: string[] = [];
   for (const event of paidEvents) {
-    const txnId = (event.payload as Record<string, Record<string, string>>)?.metadata?.transaction_id;
+    const txnId = (event.payload as Record<string, Record<string, string>>)
+      ?.metadata?.transaction_id;
     if (txnId) txnIds.push(txnId);
   }
 
   if (txnIds.length === 0) {
-    return { name: "per_txn_ledger", passed: false, details: "Paid events have no transaction_id in metadata", severity: "SEV-1" };
+    return {
+      name: "per_txn_ledger",
+      passed: false,
+      details: "Paid events have no transaction_id in metadata",
+      severity: "SEV-1",
+    };
   }
 
   // B-20: Validate deposit entries + fee split entries (only for non-zero fee txns)
@@ -80,7 +97,8 @@ async function checkPerTransactionLedger(
     .from("transactions")
     .select("id, platform_fee_cents")
     .in("id", txnIds);
-  const nonZeroFeeIds = (txns ?? []).filter((t) => t.platform_fee_cents > 0).map((t) => t.id);
+  const nonZeroFeeIds = (txns ?? []).filter((t) => t.platform_fee_cents > 0)
+    .map((t) => t.id);
   const feeKeys = nonZeroFeeIds.map((id) => `fee:platform:${id}`);
   const allKeys = [...depositKeys, ...feeKeys];
 
@@ -90,12 +108,21 @@ async function checkPerTransactionLedger(
     .in("idempotency_key", allKeys);
 
   if (ledgerError) {
-    return { name: "per_txn_ledger", passed: false, details: `Ledger query error: ${ledgerError.message}`, severity: "SEV-2" };
+    return {
+      name: "per_txn_ledger",
+      passed: false,
+      details: `Ledger query error: ${ledgerError.message}`,
+      severity: "SEV-2",
+    };
   }
 
   const foundKeys = new Set((entries ?? []).map((e) => e.idempotency_key));
-  const missingDeposits = txnIds.filter((id) => !foundKeys.has(`deposit:buyer:${id}`));
-  const missingFees = nonZeroFeeIds.filter((id) => !foundKeys.has(`fee:platform:${id}`));
+  const missingDeposits = txnIds.filter((id) =>
+    !foundKeys.has(`deposit:buyer:${id}`)
+  );
+  const missingFees = nonZeroFeeIds.filter((id) =>
+    !foundKeys.has(`fee:platform:${id}`)
+  );
   const allMissing = [
     ...missingDeposits.map((id) => `deposit missing: ${id}`),
     ...missingFees.map((id) => `fee split missing: ${id}`),
@@ -113,7 +140,7 @@ async function checkPerTransactionLedger(
 }
 
 async function checkStuckEvents(
-  supabase: ReturnType<typeof createClient>
+  supabase: ReturnType<typeof createClient>,
 ): Promise<CheckResult> {
   const threshold = new Date();
   threshold.setMinutes(threshold.getMinutes() - STUCK_EVENT_THRESHOLD_MINUTES);
@@ -127,7 +154,12 @@ async function checkStuckEvents(
     .limit(50);
 
   if (error) {
-    return { name: "stuck_events", passed: false, details: `Query error: ${error.message}`, severity: "SEV-2" };
+    return {
+      name: "stuck_events",
+      passed: false,
+      details: `Query error: ${error.message}`,
+      severity: "SEV-2",
+    };
   }
 
   const count = stuck?.length ?? 0;
@@ -138,14 +170,16 @@ async function checkStuckEvents(
     passed,
     details: passed
       ? `No stuck events (threshold: ${STUCK_EVENT_THRESHOLD_MINUTES}min)`
-      : `${count} unprocessed events older than ${STUCK_EVENT_THRESHOLD_MINUTES}min: ${stuck!.map((e) => e.mollie_id).join(", ")}`,
+      : `${count} unprocessed events older than ${STUCK_EVENT_THRESHOLD_MINUTES}min: ${
+        stuck!.map((e) => e.mollie_id).join(", ")
+      }`,
     severity: passed ? "INFO" : "SEV-1",
   };
 }
 
 // M6: Single IN query instead of N+1
 async function checkEscrowBalance(
-  supabase: ReturnType<typeof createClient>
+  supabase: ReturnType<typeof createClient>,
 ): Promise<CheckResult> {
   const { data: released, error } = await supabase
     .from("transactions")
@@ -154,11 +188,21 @@ async function checkEscrowBalance(
     .limit(100);
 
   if (error) {
-    return { name: "escrow_balance", passed: false, details: `Query error: ${error.message}`, severity: "SEV-2" };
+    return {
+      name: "escrow_balance",
+      passed: false,
+      details: `Query error: ${error.message}`,
+      severity: "SEV-2",
+    };
   }
 
   if (!released || released.length === 0) {
-    return { name: "escrow_balance", passed: true, details: "No released transactions to check", severity: "INFO" };
+    return {
+      name: "escrow_balance",
+      passed: true,
+      details: "No released transactions to check",
+      severity: "INFO",
+    };
   }
 
   const txnIds = released.map((t) => t.id);
@@ -168,24 +212,37 @@ async function checkEscrowBalance(
     .in("transaction_id", txnIds);
 
   if (ledgerError) {
-    return { name: "escrow_balance", passed: false, details: `Ledger query error: ${ledgerError.message}`, severity: "SEV-2" };
+    return {
+      name: "escrow_balance",
+      passed: false,
+      details: `Ledger query error: ${ledgerError.message}`,
+      severity: "SEV-2",
+    };
   }
 
   const imbalanced: string[] = [];
 
   for (const txn of released) {
-    const entries = (allEntries ?? []).filter((e) => e.transaction_id === txn.id);
+    const entries = (allEntries ?? []).filter((e) =>
+      e.transaction_id === txn.id
+    );
     const escrowAccount = `escrow:${txn.id}`;
     let debitsToEscrow = 0;
     let creditsFromEscrow = 0;
 
     for (const entry of entries) {
-      if (entry.credit_account === escrowAccount) debitsToEscrow += entry.amount_cents;
-      if (entry.debit_account === escrowAccount) creditsFromEscrow += entry.amount_cents;
+      if (entry.credit_account === escrowAccount) {
+        debitsToEscrow += entry.amount_cents;
+      }
+      if (entry.debit_account === escrowAccount) {
+        creditsFromEscrow += entry.amount_cents;
+      }
     }
 
     if (debitsToEscrow !== creditsFromEscrow) {
-      imbalanced.push(`${txn.id}: in=${debitsToEscrow} out=${creditsFromEscrow}`);
+      imbalanced.push(
+        `${txn.id}: in=${debitsToEscrow} out=${creditsFromEscrow}`,
+      );
     }
   }
 
@@ -217,7 +274,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
   try {
@@ -237,31 +294,37 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
         await triggerPagerDuty(
           pagerdutyKey,
-          `Reconciliation ${hasSev1 ? "CRITICAL" : "WARNING"}: ${failedChecks.map((c) => c.name).join(", ")}`,
+          `Reconciliation ${hasSev1 ? "CRITICAL" : "WARNING"}: ${
+            failedChecks.map((c) => c.name).join(", ")
+          }`,
           hasSev1 ? "critical" : "warning",
           { checks: failedChecks },
-          { source: "daily-reconciliation" }
+          { source: "daily-reconciliation" },
         );
       }
 
-      console.error(`[reconciliation] MISMATCH: ${JSON.stringify(checks.filter((c) => !c.passed))}`);
+      console.error(
+        `[reconciliation] MISMATCH: ${
+          JSON.stringify(checks.filter((c) => !c.passed))
+        }`,
+      );
     } else {
       console.log(`[reconciliation] All checks passed`);
     }
 
     return jsonResponse(
-      { status: allPassed ? "ok" : "mismatch", checks, timestamp: new Date().toISOString() },
-      allPassed ? 200 : 409
+      {
+        status: allPassed ? "ok" : "mismatch",
+        checks,
+        timestamp: new Date().toISOString(),
+      },
+      allPassed ? 200 : 409,
     );
   } catch (error) {
     console.error(`[reconciliation] Error: ${(error as Error).message}`);
-    return jsonResponse({ status: "error", message: (error as Error).message }, 500);
+    return jsonResponse(
+      { status: "error", message: (error as Error).message },
+      500,
+    );
   }
 });
-
-function jsonResponse(body: Record<string, unknown>, status: number): Response {
-  return new Response(JSON.stringify(body, null, 2), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}

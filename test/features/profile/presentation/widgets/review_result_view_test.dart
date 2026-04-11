@@ -16,7 +16,7 @@ final _review1 = ReviewEntity(
   revieweeId: 'u2',
   listingId: 'l1',
   rating: 4,
-  text: 'Great!',
+  body: 'Great!',
   createdAt: DateTime(2025),
 );
 
@@ -27,7 +27,7 @@ final _review2 = ReviewEntity(
   revieweeId: 'u1',
   listingId: 'l1',
   rating: 3,
-  text: 'OK',
+  body: 'OK',
   createdAt: DateTime(2025),
 );
 

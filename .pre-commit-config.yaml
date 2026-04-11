@@ -89,26 +89,47 @@ repos:
         exclude: _test\.ts$
         stages: [pre-commit]
 
+      # Build runner freshness — ensures .g.dart files exist before analyze.
+      # Without this, flutter analyze fails on generated code references.
+      - id: build-runner-check
+        name: build_runner freshness
+        language: system
+        entry: >-
+          bash -c 'STALE=false; for src in $(grep -rl "part '\''.*\.g\.dart'\''" lib/ 2>/dev/null); do g="${src%.dart}.g.dart"; if [ ! -f "$g" ]; then STALE=true; break; fi; done; if $STALE; then echo "Generated files missing — running build_runner..."; flutter pub run build_runner build --delete-conflicting-outputs; fi'
+        pass_filenames: false
+        files: \.dart$
+        stages: [pre-commit]
+
       # Deno lint — catches unused imports, type errors, style issues
-      # Gracefully skips if deno is not installed (prints a warning)
+      # Fails if deno is not installed — run: bash scripts/setup.sh
       - id: deno-lint
         name: deno lint (Edge Functions)
         language: system
         entry: >-
-          bash -c 'if command -v deno &>/dev/null; then deno lint supabase/functions/ --compact; else echo "deno not installed - skipping lint"; fi'
+          bash -c 'if ! command -v deno &>/dev/null; then echo "ERROR: deno not installed. Run: bash scripts/setup.sh"; exit 1; fi; deno lint supabase/functions/ --compact'
         pass_filenames: false
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]
 
       # Deno format check — consistent TypeScript formatting
-      # Gracefully skips if deno is not installed
+      # Fails if deno is not installed — run: bash scripts/setup.sh
       - id: deno-fmt-check
         name: deno fmt check (Edge Functions)
         language: system
         entry: >-
-          bash -c 'if command -v deno &>/dev/null; then deno fmt --check supabase/functions/; else echo "deno not installed - skipping fmt check"; fi'
+          bash -c 'if ! command -v deno &>/dev/null; then echo "ERROR: deno not installed. Run: bash scripts/setup.sh"; exit 1; fi; deno fmt --check supabase/functions/'
         pass_filenames: false
         files: ^supabase/functions/.*\.ts$
+        stages: [pre-commit]
+
+      # R-26: Quality score parity — keeps Dart client + TS Edge Function
+      # weights/thresholds in lock-step. Triggers when either source changes.
+      - id: quality-score-parity
+        name: quality score Dart↔TS parity
+        language: system
+        entry: bash scripts/check_quality_score_parity.sh
+        pass_filenames: false
+        files: ^(lib/core/constants\.dart|supabase/functions/_shared/quality_score_weights\.ts)$
         stages: [pre-commit]
 
       # ── Push-time gates ────────────────────────────────────────────────
@@ -120,6 +141,18 @@ repos:
         entry: bash -c 'flutter analyze --no-pub --fatal-infos'
         pass_filenames: false
         files: \.dart$
+        stages: [pre-push]
+
+      # Deployment drift check — warns if migrations or Edge Functions are pending.
+      # Runs on push when .sql or .ts files under supabase/ are staged.
+      # Warning only (|| true) — does not block push if supabase CLI is missing.
+      - id: deployment-drift
+        name: deployment drift check
+        language: system
+        entry: >-
+          bash -c 'if command -v supabase &>/dev/null && [[ -f supabase/.temp/project-ref ]]; then bash scripts/check_deployments.sh; else echo "supabase CLI not linked — skipping deployment check"; fi || true'
+        pass_filenames: false
+        files: ^supabase/
         stages: [pre-push]
 
       # New-code coverage gate — blocks push if changed files < 80% covered

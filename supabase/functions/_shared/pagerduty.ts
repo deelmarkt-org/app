@@ -7,7 +7,7 @@ export async function triggerPagerDuty(
   summary: string,
   severity: "critical" | "error" | "warning" | "info",
   details: Record<string, unknown>,
-  options?: { source?: string; dedupKey?: string; component?: string }
+  options?: { source?: string; dedupKey?: string; component?: string },
 ): Promise<void> {
   const payload: Record<string, unknown> = {
     routing_key: routingKey,
@@ -35,13 +35,15 @@ export async function triggerPagerDuty(
     if (!response.ok) {
       console.error(
         `[pagerduty] ALERT DELIVERY FAILED — PagerDuty returned ${response.status}. ` +
-          `Original alert: ${summary}. Details: ${JSON.stringify(details)}`
+          `Original alert: ${summary}. Details: ${JSON.stringify(details)}`,
       );
     }
   } catch (err) {
     console.error(
-      `[pagerduty] ALERT DELIVERY FAILED — PagerDuty unreachable: ${(err as Error).message}. ` +
-        `Original alert: ${summary}. Details: ${JSON.stringify(details)}`
+      `[pagerduty] ALERT DELIVERY FAILED — PagerDuty unreachable: ${
+        (err as Error).message
+      }. ` +
+        `Original alert: ${summary}. Details: ${JSON.stringify(details)}`,
     );
   }
 }
