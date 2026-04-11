@@ -10,6 +10,13 @@ import 'package:deelmarkt/features/admin/domain/repositories/admin_repository.da
 /// The RPCs will be service_role-gated at the DB level — this repository
 /// only exposes the read path for authenticated admin users.
 ///
+/// SECURITY-TODO (P-40 Phase B):
+///   • All RPC calls must use the service_role key — never the anon key.
+///   • Verify admin role claim from JWT before executing any RPC.
+///   • Row-level security on admin_audit_log must prevent non-admins from
+///     reading other users' data even if the RPC is called directly.
+///   • Rate-limit admin endpoints at the Edge Function / API gateway level.
+///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class SupabaseAdminRepository implements AdminRepository {
   const SupabaseAdminRepository(this._client);

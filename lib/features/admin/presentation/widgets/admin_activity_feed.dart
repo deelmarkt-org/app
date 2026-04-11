@@ -15,10 +15,14 @@ import 'package:deelmarkt/features/admin/domain/entities/activity_item_entity.da
 ///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class AdminActivityFeed extends StatelessWidget {
-  const AdminActivityFeed({required this.items, super.key});
+  const AdminActivityFeed({required this.items, this.onViewAll, super.key});
 
   /// Activity items to render, ordered newest-first.
   final List<ActivityItemEntity> items;
+
+  /// Called when the user taps "View All". When null the link is still
+  /// shown but calls a no-op (Phase A — full log page TBD).
+  final VoidCallback? onViewAll;
 
   @override
   Widget build(BuildContext context) {
@@ -47,23 +51,27 @@ class AdminActivityFeed extends StatelessWidget {
       children: [
         Text(
           'admin.activity.title'.tr(),
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: DeelmarktColors.neutral900,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: DeelmarktColors.neutral900),
         ),
         Semantics(
           label: 'admin.activity.view_all'.tr(),
           button: true,
-          child: GestureDetector(
-            onTap: () {},
-            child: Text(
-              'admin.activity.view_all'.tr(),
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: DeelmarktColors.primary,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+            onTap: onViewAll ?? () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.s2,
+                vertical: Spacing.s1,
+              ),
+              child: Text(
+                'admin.activity.view_all'.tr(),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: DeelmarktColors.primary,
+                ),
               ),
             ),
           ),
@@ -167,30 +175,27 @@ class _ActivityContent extends StatelessWidget {
       children: [
         Text(
           _titleKey(item.type).tr(namedArgs: item.params),
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: DeelmarktColors.neutral900,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: DeelmarktColors.neutral900),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: Spacing.s1),
         Text(
           _subtitleKey(item.type).tr(namedArgs: item.params),
-          style: const TextStyle(
-            fontSize: 12,
-            color: DeelmarktColors.neutral500,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral500),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: Spacing.s1),
         Text(
           _formatTimestamp(item.timestamp),
-          style: const TextStyle(
-            fontSize: 11,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
             color: DeelmarktColors.neutral300,
+            letterSpacing: 0,
           ),
         ),
       ],

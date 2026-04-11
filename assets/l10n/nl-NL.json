@@ -77,7 +77,13 @@
       "subtitle": "Nog geen moderatie-acties vereist. De marktplaats is momenteel rustig.",
       "refresh": "Vernieuwen",
       "view_logs": "Bekijk Logs",
-      "a11y": "Geen openstaande moderatie-acties"
+      "a11y": "Geen openstaande moderatie-acties",
+      "trends_title": "Activiteitstrends",
+      "trends_empty": "Nog geen activiteit om te tonen"
+    },
+    "narrow_viewport": {
+      "title": "Admin-paneel vereist een desktopbrowser",
+      "subtitle": "Gebruik een scherm van minimaal 768 px breed"
     },
     "sla": {
       "title": "DSA Compliance Monitor",

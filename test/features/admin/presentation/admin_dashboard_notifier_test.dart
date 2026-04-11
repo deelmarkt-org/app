@@ -18,8 +18,8 @@ void main() {
     const emptyStats = AdminStatsEntity(
       openDisputes: 0,
       dsaNoticesWithin24h: 0,
-      activeListings: 50,
-      escrowAmountCents: 10000,
+      activeListings: 0,
+      escrowAmountCents: 0,
       flaggedListings: 0,
       reportedUsers: 0,
       approvedCount: 0,

@@ -16,10 +16,11 @@ class AdminDashboardState extends Equatable {
   final AdminStatsEntity stats;
   final List<ActivityItemEntity> activity;
 
-  /// True when all stat counters are zero.
+  /// True when all stat counters are zero (nothing requires moderation attention).
   bool get isEmpty =>
       stats.openDisputes == 0 &&
       stats.dsaNoticesWithin24h == 0 &&
+      stats.activeListings == 0 &&
       stats.flaggedListings == 0 &&
       stats.reportedUsers == 0;
 
@@ -42,9 +43,16 @@ class AdminDashboardNotifier extends _$AdminDashboardNotifier {
     return AdminDashboardState(stats: stats, activity: activity);
   }
 
-  /// Pull-to-refresh — invalidates and refetches.
+  Future<AdminDashboardState> _fetchData() async {
+    final repo = ref.read(adminRepositoryProvider);
+    final (stats, activity) =
+        await (repo.getStats(), repo.getRecentActivity()).wait;
+    return AdminDashboardState(stats: stats, activity: activity);
+  }
+
+  /// Pull-to-refresh — shows loading indicator, then fetches fresh data.
   Future<void> refresh() async {
-    ref.invalidateSelf();
-    await future;
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(_fetchData);
   }
 }

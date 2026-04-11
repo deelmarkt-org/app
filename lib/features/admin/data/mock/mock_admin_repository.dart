@@ -35,7 +35,6 @@ class MockAdminRepository implements AdminRepository {
   static final _mockNow = DateTime(2026, 4, 10, 9);
 
   @override
-  // ignore: avoid_redundant_argument_values
   Future<List<ActivityItemEntity>> getRecentActivity({int limit = 10}) async {
     await _simulateDelay();
     final now = _mockNow;

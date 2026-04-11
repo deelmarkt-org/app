@@ -19,8 +19,6 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 /// Composes stat cards, SLA bar, activity feed, and system status
 /// from [AdminDashboardNotifier] state.
 ///
-final _thousandsFormat = NumberFormat('#,##0', 'nl_NL');
-
 /// Reference: docs/screens/08-admin/designs/admin_dashboard_main_view/
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -40,9 +38,14 @@ class AdminDashboardScreen extends ConsumerWidget {
       data: (data) {
         if (data.isEmpty) {
           return AdminEmptyState(
+            stats: data.stats,
             onRefresh:
                 () =>
                     ref.read(adminDashboardNotifierProvider.notifier).refresh(),
+            onViewLogs:
+                () => ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('admin.comingSoon'.tr())),
+                ),
           );
         }
         return _DataView(data: data);
@@ -50,6 +53,8 @@ class AdminDashboardScreen extends ConsumerWidget {
     );
   }
 }
+
+final _thousandsFormat = NumberFormat('#,##0', 'nl_NL');
 
 class _DataView extends StatelessWidget {
   const _DataView({required this.data});
@@ -67,7 +72,7 @@ class _DataView extends StatelessWidget {
           const SizedBox(height: Spacing.s6),
           _statCards(),
           const SizedBox(height: Spacing.s6),
-          _slaAndActivity(),
+          _slaAndActivity(context),
         ],
       ),
     );
@@ -149,7 +154,7 @@ class _DataView extends StatelessWidget {
   // Placeholder SLA completion rate for Phase A mock data.
   static const double _slaFallbackCompletion = 0.66;
 
-  Widget _slaAndActivity() {
+  Widget _slaAndActivity(BuildContext context) {
     final stats = data.stats;
     final slaTotal =
         stats.dsaNoticesWithin24h > 0
@@ -171,7 +176,13 @@ class _DataView extends StatelessWidget {
                 total: slaTotal,
               ),
               const SizedBox(height: Spacing.s6),
-              AdminActivityFeed(items: data.activity),
+              AdminActivityFeed(
+                items: data.activity,
+                onViewAll:
+                    () => ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('admin.comingSoon'.tr())),
+                    ),
+              ),
             ],
           ),
         ),

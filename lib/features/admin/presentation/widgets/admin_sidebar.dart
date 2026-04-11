@@ -14,14 +14,17 @@ class AdminSidebar extends StatelessWidget {
     required this.selectedIndex,
     required this.onItemTap,
     required this.onSignOut,
+    this.onSupport,
     super.key,
   });
 
   final int selectedIndex;
   final ValueChanged<int> onItemTap;
-
-  /// Fired when the Sign Out footer link is tapped.
   final VoidCallback onSignOut;
+
+  /// Fired when the Support footer link is tapped.
+  /// When null, shows a no-op link (Phase A — support page TBD).
+  final VoidCallback? onSupport;
 
   static const double _width = 240;
 
@@ -41,16 +44,16 @@ class AdminSidebar extends StatelessWidget {
       color: DeelmarktColors.white,
       child: Column(
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           const SizedBox(height: Spacing.s4),
           Expanded(child: _buildNavItems()),
-          _buildFooter(),
+          _buildFooter(context),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         Spacing.s4,
@@ -63,8 +66,7 @@ class AdminSidebar extends StatelessWidget {
         children: [
           Text(
             'admin.sidebar.title'.tr(),
-            style: const TextStyle(
-              fontSize: 20,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: DeelmarktColors.primary,
             ),
@@ -72,10 +74,9 @@ class AdminSidebar extends StatelessWidget {
           const SizedBox(height: Spacing.s1),
           Text(
             'admin.sidebar.subtitle'.tr(),
-            style: const TextStyle(
-              fontSize: 12,
-              color: DeelmarktColors.neutral500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: DeelmarktColors.neutral500),
           ),
         ],
       ),
@@ -89,55 +90,17 @@ class AdminSidebar extends StatelessWidget {
       separatorBuilder: (_, _) => const SizedBox(height: Spacing.s1),
       itemBuilder: (_, index) {
         final (icon, key) = _items[index];
-        return _navTile(icon, key.tr(), index == selectedIndex, index);
+        return _NavTile(
+          icon: icon,
+          label: key.tr(),
+          selected: index == selectedIndex,
+          onTap: () => onItemTap(index),
+        );
       },
     );
   }
 
-  Widget _navTile(IconData icon, String label, bool selected, int index) {
-    final bg = selected ? DeelmarktColors.primarySurface : Colors.transparent;
-    final fg = selected ? DeelmarktColors.primary : DeelmarktColors.neutral700;
-    final radius = BorderRadius.circular(DeelmarktRadius.sm);
-
-    return Semantics(
-      label: label,
-      button: true,
-      selected: selected,
-      child: Material(
-        color: bg,
-        borderRadius: radius,
-        child: InkWell(
-          borderRadius: radius,
-          onTap: () => onItemTap(index),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.s3,
-              vertical: Spacing.s2,
-            ),
-            child: Row(
-              children: [
-                Icon(icon, size: 20, color: fg),
-                const SizedBox(width: Spacing.s3),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                      color: fg,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFooter() {
+  Widget _buildFooter(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(Spacing.s4),
       child: Column(
@@ -145,12 +108,14 @@ class AdminSidebar extends StatelessWidget {
           const Divider(color: DeelmarktColors.neutral200),
           const SizedBox(height: Spacing.s2),
           _footerLink(
+            context,
             PhosphorIconsRegular.question,
             'admin.sidebar.support'.tr(),
-            onTap: () {},
+            onTap: onSupport ?? () {},
           ),
           const SizedBox(height: Spacing.s2),
           _footerLink(
+            context,
             PhosphorIconsRegular.signOut,
             'admin.sidebar.sign_out'.tr(),
             onTap: onSignOut,
@@ -161,6 +126,7 @@ class AdminSidebar extends StatelessWidget {
   }
 
   Widget _footerLink(
+    BuildContext context,
     IconData icon,
     String label, {
     required VoidCallback onTap,
@@ -183,14 +149,70 @@ class AdminSidebar extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(
-                    fontSize: 13,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: DeelmarktColors.neutral500,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavTile extends StatelessWidget {
+  const _NavTile({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = selected ? DeelmarktColors.primarySurface : Colors.transparent;
+    final fg = selected ? DeelmarktColors.primary : DeelmarktColors.neutral700;
+    final radius = BorderRadius.circular(DeelmarktRadius.sm);
+
+    return Semantics(
+      label: label,
+      button: true,
+      selected: selected,
+      child: Material(
+        color: bg,
+        borderRadius: radius,
+        child: InkWell(
+          borderRadius: radius,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.s3,
+              vertical: Spacing.s2,
+            ),
+            child: Row(
+              children: [
+                Icon(icon, size: 20, color: fg),
+                const SizedBox(width: Spacing.s3),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: (selected
+                            ? Theme.of(context).textTheme.labelLarge
+                            : Theme.of(context).textTheme.bodyMedium)
+                        ?.copyWith(color: fg),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

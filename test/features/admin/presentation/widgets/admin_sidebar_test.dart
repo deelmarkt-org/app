@@ -11,6 +11,7 @@ void main() {
       int selectedIndex = 0,
       ValueChanged<int>? onItemTap,
       VoidCallback? onSignOut,
+      VoidCallback? onSupport,
     }) {
       return Scaffold(
         body: Row(
@@ -19,6 +20,7 @@ void main() {
               selectedIndex: selectedIndex,
               onItemTap: onItemTap ?? (_) {},
               onSignOut: onSignOut ?? () {},
+              onSupport: onSupport,
             ),
             const Expanded(child: SizedBox.shrink()),
           ],
@@ -91,6 +93,21 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(signedOut, isTrue);
+    });
+
+    testWidgets('support footer link fires onSupport callback', (tester) async {
+      suppressOverflowErrors();
+      var supportTapped = false;
+
+      await pumpTestScreen(
+        tester,
+        buildSidebar(onSupport: () => supportTapped = true),
+      );
+
+      await tester.tap(find.text('admin.sidebar.support'));
+      await tester.pumpAndSettle();
+
+      expect(supportTapped, isTrue);
     });
   });
 }

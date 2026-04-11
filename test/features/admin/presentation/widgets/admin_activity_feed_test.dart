@@ -62,5 +62,18 @@ void main() {
 
       expect(find.text('admin.activity.title'), findsOneWidget);
     });
+
+    testWidgets('tapping view_all fires onViewAll callback', (tester) async {
+      var tapped = false;
+      await pumpTestWidget(
+        tester,
+        AdminActivityFeed(items: const [], onViewAll: () => tapped = true),
+      );
+
+      await tester.tap(find.text('admin.activity.view_all'));
+      await tester.pumpAndSettle();
+
+      expect(tapped, isTrue);
+    });
   });
 }

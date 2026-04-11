@@ -35,12 +35,12 @@ class AdminLoadingSkeleton extends StatelessWidget {
 
   Widget _buildStatCardRow() {
     return Row(
-      children: List.generate(3, (index) {
+      children: List.generate(4, (index) {
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
               left: index == 0 ? 0 : Spacing.s2,
-              right: index == 2 ? 0 : Spacing.s2,
+              right: index == 3 ? 0 : Spacing.s2,
             ),
             child: const SkeletonBox(borderRadius: DeelmarktRadius.xl),
           ),

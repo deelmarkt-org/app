@@ -77,7 +77,13 @@
       "subtitle": "No moderation actions required. The marketplace is currently calm.",
       "refresh": "Refresh",
       "view_logs": "View Logs",
-      "a11y": "No pending moderation actions"
+      "a11y": "No pending moderation actions",
+      "trends_title": "Activity Trends",
+      "trends_empty": "No activity to display yet"
+    },
+    "narrow_viewport": {
+      "title": "Admin panel requires a desktop browser",
+      "subtitle": "Please use a screen at least 768 px wide"
     },
     "sla": {
       "title": "DSA Compliance Monitor",

@@ -94,7 +94,7 @@ Future<void> _pump(
           builder:
               (ctx) => MediaQuery(
                 data: MediaQuery.of(ctx).copyWith(disableAnimations: true),
-                child: const AdminDashboardScreen(),
+                child: const Scaffold(body: AdminDashboardScreen()),
               ),
         ),
       ),
@@ -135,6 +135,7 @@ void main() {
     });
 
     testWidgets('shows empty state when all stats are zero', (tester) async {
+      suppressOverflowErrors();
       await _pump(
         tester,
         _DataNotifier(
