@@ -116,14 +116,14 @@ The agent will:
 
 **Branch:** `feature/reso-E02-auth` | **Epic:** [E02](epics/E02-user-auth-kyc.md)
 
-- [ ] `R-13` Supabase Auth email + phone OTP flow — user can register and verify
-- [ ] `R-14` JWT refresh token handling in Dio interceptor — tokens refresh silently
-- [ ] `R-15` Biometric auth (Face ID / Fingerprint) — works on iOS + Android
-- [ ] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts
-- [ ] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it
-- [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing
+- [x] `R-13` Supabase Auth email + phone OTP flow — user can register and verify *(fully implemented; 308 tests pass)*
+- [x] `R-14` JWT refresh token handling — tokens refresh silently via Supabase SDK native session management (no custom Dio interceptor needed; app uses Supabase Flutter SDK throughout)
+- [x] `R-15` Biometric auth (Face ID / Fingerprint) — works on iOS + Android *(implemented in `AuthRepositoryImpl.loginWithBiometric`)*
+- [x] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts *(configured in `supabase/config.toml` `[auth.rate_limit]` section)*
+- [x] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it *(`kyc_level` enum + index in migration; `CheckKycRequiredUseCase` logic; `KycPromptNotifier` VM)*
+- [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing *(branch: `feature/reso-E02-r13-auth-otp`)*
 - [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
-- [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data
+- [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data *(branch: `feature/reso-E02-r13-auth-otp`; EF implemented, needs `user-data-exports` bucket + RLS)*
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
 
@@ -249,7 +249,7 @@ The agent will:
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
 - [x] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(PR #102)* **[backend-only — UI tracked as P-53]**
   > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
-- [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(branch: `feature/reso-E06-r38-dsa-reports`)*
+- [x] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(PR #103)*
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
 
