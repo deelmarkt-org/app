@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
@@ -50,6 +51,57 @@ class _ImagePreview extends StatelessWidget {
 
   final List<SellImage> imageFiles;
 
+  Widget _buildPreviewImage(List<SellImage> images) {
+    if (images.isEmpty) {
+      return const Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 48,
+          color: DeelmarktColors.neutral500,
+        ),
+      );
+    }
+
+    final first = images.first;
+
+    // Prefer Cloudinary delivery URL (available once uploaded).
+    // On web, dart:io File is unavailable; kIsWeb guard prevents runtime error.
+    if (first.isUploaded && first.deliveryUrl != null) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        child: Image.network(
+          first.deliveryUrl!,
+          fit: BoxFit.cover,
+          errorBuilder:
+              (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.image, size: 48)),
+        ),
+      );
+    }
+
+    if (!kIsWeb) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        child: Image.file(
+          File(first.localPath),
+          fit: BoxFit.cover,
+          errorBuilder:
+              (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.image, size: 48)),
+        ),
+      );
+    }
+
+    // Web + no delivery URL yet → neutral placeholder.
+    return const Center(
+      child: Icon(
+        Icons.image_outlined,
+        size: 48,
+        color: DeelmarktColors.neutral500,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -59,25 +111,7 @@ class _ImagePreview extends StatelessWidget {
           color: DeelmarktColors.neutral100,
           borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
         ),
-        child:
-            imageFiles.isNotEmpty
-                ? ClipRRect(
-                  borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
-                  child: Image.file(
-                    File(imageFiles.first.localPath),
-                    fit: BoxFit.cover,
-                    errorBuilder:
-                        (_, e, st) =>
-                            const Center(child: Icon(Icons.image, size: 48)),
-                  ),
-                )
-                : const Center(
-                  child: Icon(
-                    Icons.image_outlined,
-                    size: 48,
-                    color: DeelmarktColors.neutral500,
-                  ),
-                ),
+        child: _buildPreviewImage(imageFiles),
       ),
     );
   }

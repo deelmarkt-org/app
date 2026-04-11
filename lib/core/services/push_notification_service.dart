@@ -69,9 +69,14 @@ class PushNotificationService extends _$PushNotificationService {
     final userId = client.auth.currentUser?.id;
     if (userId == null) return;
 
-    // kIsWeb guard ensures Platform.isIOS is never evaluated on web.
-    final nativePlatform = Platform.isIOS ? 'ios' : 'android';
-    final platform = kIsWeb ? 'web' : nativePlatform;
+    // Use an if-block so Platform.isIOS is only evaluated on native.
+    // A ternary chain would evaluate it eagerly on web (throws at runtime).
+    final String platform;
+    if (kIsWeb) {
+      platform = 'web';
+    } else {
+      platform = Platform.isIOS ? 'ios' : 'android';
+    }
 
     // Upsert — if the token already exists, update the timestamp.
     try {

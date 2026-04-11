@@ -1,3 +1,4 @@
+// TODO(#133): File exceeds 200-line limit (217 lines). Extract sub-widgets.
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';

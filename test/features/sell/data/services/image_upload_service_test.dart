@@ -1,3 +1,4 @@
+// TODO(#133): File exceeds 300-line limit (497 lines). Split into focused test groups.
 import 'dart:async';
 import 'dart:io';
 
