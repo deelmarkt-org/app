@@ -79,6 +79,13 @@ Widget _buildWithRouter(
           return const Scaffold();
         },
       ),
+      GoRoute(
+        path: '/transactions/:id',
+        builder: (context, routerState) {
+          pushedRoutes.add('/transactions/${routerState.pathParameters['id']}');
+          return const Scaffold();
+        },
+      ),
     ],
   );
 
@@ -203,36 +210,41 @@ void main() {
       expect(expectedPath, equals('/messages/conv-abc'));
     });
 
-    testWidgets('tapping shipOrder action tile navigates to shipping route', (
-      tester,
-    ) async {
-      final pushedRoutes = <String>[];
-      const shipAction = ActionItemEntity(
-        id: 'ship-1',
-        type: ActionItemType.shipOrder,
-        referenceId: 'txn-xyz',
-      );
+    // B1 fix: ship order tile now routes to transaction detail, not shipping
+    // detail — the referenceId is a transaction ID, not a shipping label ID.
+    testWidgets(
+      'tapping shipOrder action tile navigates to transaction detail route',
+      (tester) async {
+        final pushedRoutes = <String>[];
+        const shipAction = ActionItemEntity(
+          id: 'ship-1',
+          type: ActionItemType.shipOrder,
+          referenceId: 'txn-xyz',
+        );
 
-      final state = SellerHomeState(
-        stats: _mockStats,
-        actions: const [shipAction],
-        listings: [_makeListing('1')],
-      );
+        final state = SellerHomeState(
+          stats: _mockStats,
+          actions: const [shipAction],
+          listings: [_makeListing('1')],
+        );
 
-      await tester.pumpWidget(_buildWithRouter(state, prefs, pushedRoutes));
-      await tester.pump();
-      consumeKnownStatCardOverflow(tester);
-
-      final inkWells = find.byType(InkWell);
-      for (var i = 0; i < inkWells.evaluate().length; i++) {
-        await tester.tap(inkWells.at(i), warnIfMissed: false);
+        await tester.pumpWidget(_buildWithRouter(state, prefs, pushedRoutes));
         await tester.pump();
-        if (pushedRoutes.isNotEmpty) break;
-      }
-      await tester.pumpAndSettle();
+        consumeKnownStatCardOverflow(tester);
 
-      final expectedPath = AppRoutes.shippingDetailFor('txn-xyz');
-      expect(expectedPath, equals('/shipping/txn-xyz'));
-    });
+        final inkWells = find.byType(InkWell);
+        for (var i = 0; i < inkWells.evaluate().length; i++) {
+          await tester.tap(inkWells.at(i), warnIfMissed: false);
+          await tester.pump();
+          if (pushedRoutes.isNotEmpty) break;
+        }
+        await tester.pumpAndSettle();
+        consumeKnownStatCardOverflow(tester);
+
+        // Navigates to transaction detail — user can open shipping from there.
+        final expectedPath = AppRoutes.transactionDetailFor('txn-xyz');
+        expect(expectedPath, equals('/transactions/txn-xyz'));
+      },
+    );
   });
 }

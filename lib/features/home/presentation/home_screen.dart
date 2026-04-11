@@ -10,7 +10,7 @@ import 'package:deelmarkt/features/home/presentation/home_mode_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/seller_home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_data_view.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/new_listing_fab.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_data_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_empty_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_loading_view.dart';
@@ -84,10 +84,10 @@ class _SellerMode extends ConsumerWidget {
         if (data.isEmpty) {
           return SellerHomeEmptyView(userName: data.userName);
         }
-        return Scaffold(
-          body: SellerHomeDataView(data: data),
-          floatingActionButton: const NewListingFab(),
-        );
+        // M6: "Nieuwe advertentie" is a full-width pill button above the
+        // listings list, matching the design spec. FAB removed to avoid
+        // overlap with the bottom nav bar on small screens.
+        return SellerHomeDataView(data: data);
       },
     );
   }
@@ -107,10 +107,23 @@ class _BuyerLoadingView extends StatelessWidget {
       crossAxisCount = 3;
     }
 
+    // M7: buyer loading view now includes the SliverAppBar so logo + pill
+    // switch persist through the loading→data transition without flickering.
     return Semantics(
       label: 'a11y.loading'.tr(),
       child: CustomScrollView(
         slivers: [
+          SliverAppBar(
+            floating: true,
+            title: Text(
+              'app.name'.tr(),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            actions: const [HomeModePillSwitch(), SizedBox(width: Spacing.s3)],
+          ),
           SliverPadding(
             padding: const EdgeInsets.all(Spacing.s4),
             sliver: SliverGrid.count(

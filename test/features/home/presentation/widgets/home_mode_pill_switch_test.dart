@@ -3,12 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/home/domain/entities/home_mode.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
+
+User _testUser() => const User(
+  id: 'test-user-1',
+  appMetadata: {},
+  userMetadata: {},
+  aud: 'authenticated',
+  createdAt: '2026-01-01T00:00:00.000Z',
+);
 
 void main() {
   setUpAll(() async {
@@ -23,7 +32,7 @@ void main() {
     prefs = await SharedPreferences.getInstance();
   });
 
-  Widget buildSubject() {
+  Widget buildSubject({bool authenticated = true}) {
     return EasyLocalization(
       supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
       fallbackLocale: const Locale('en', 'US'),
@@ -32,6 +41,10 @@ void main() {
         overrides: [
           useMockDataProvider.overrideWithValue(true),
           sharedPreferencesProvider.overrideWithValue(prefs),
+          // Audit A1: pill is hidden for unauthenticated users.
+          currentUserProvider.overrideWithValue(
+            authenticated ? _testUser() : null,
+          ),
         ],
         child: MaterialApp(
           theme: DeelmarktTheme.light,
@@ -82,6 +95,7 @@ void main() {
           overrides: [
             useMockDataProvider.overrideWithValue(true),
             sharedPreferencesProvider.overrideWithValue(sellerPrefs),
+            currentUserProvider.overrideWithValue(_testUser()),
           ],
           child: MaterialApp(
             theme: DeelmarktTheme.light,
@@ -105,6 +119,7 @@ void main() {
           overrides: [
             useMockDataProvider.overrideWithValue(true),
             sharedPreferencesProvider.overrideWithValue(prefs),
+            currentUserProvider.overrideWithValue(_testUser()),
           ],
           child: MaterialApp(
             theme: DeelmarktTheme.dark,
@@ -117,6 +132,15 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SegmentedButton<HomeMode>), findsOneWidget);
+    });
+
+    testWidgets('hidden when user is unauthenticated (Audit A1)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject(authenticated: false));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SegmentedButton<HomeMode>), findsNothing);
     });
 
     testWidgets('has two segments for buyer and seller', (tester) async {

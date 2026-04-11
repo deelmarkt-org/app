@@ -21,9 +21,16 @@ abstract final class AppRoutes {
 
   /// Builds the concrete path for a shipping detail screen.
   ///
-  /// Percent-encodes [transactionId] for the same reason as [chatThreadFor].
-  static String shippingDetailFor(String transactionId) =>
-      '/shipping/${Uri.encodeComponent(transactionId)}';
+  /// Percent-encodes [shippingLabelId] for the same reason as [chatThreadFor].
+  static String shippingDetailFor(String shippingLabelId) =>
+      '/shipping/${Uri.encodeComponent(shippingLabelId)}';
+
+  /// Builds the concrete path for a transaction detail screen.
+  ///
+  /// Used by the seller "Ship order" action tile to navigate to the transaction,
+  /// from which the user can open the shipping flow.
+  static String transactionDetailFor(String transactionId) =>
+      '/transactions/${Uri.encodeComponent(transactionId)}';
 
   static const profile = '/profile';
 

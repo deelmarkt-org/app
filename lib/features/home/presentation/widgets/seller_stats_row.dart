@@ -28,7 +28,7 @@ class SellerStatsRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
         children: [
           _StatCard(
-            icon: PhosphorIcons.currencyEur(PhosphorIconsStyle.fill),
+            icon: PhosphorIcons.trendUp(PhosphorIconsStyle.fill),
             iconColor: DeelmarktColors.success,
             value: Formatters.euroFromCents(stats.totalSalesCents),
             label: 'home.seller.totalSales'.tr(),

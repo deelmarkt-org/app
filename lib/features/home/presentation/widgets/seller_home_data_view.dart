@@ -12,6 +12,7 @@ import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_swit
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_listing_tile.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_stats_row.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Seller mode home data view — greeting, stats, actions, my listings.
 ///
@@ -33,9 +34,10 @@ class SellerHomeDataView extends ConsumerWidget {
           _greeting(context),
           _stats(),
           if (data.actions.isNotEmpty) _actions(context),
+          _newListingButton(context),
           _listingsHeader(context),
           _listingsList(context),
-          const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s16)),
+          const SliverToBoxAdapter(child: SizedBox(height: Spacing.s16)),
         ],
       ),
     );
@@ -96,7 +98,26 @@ class SellerHomeDataView extends ConsumerWidget {
     );
   }
 
+  Widget _newListingButton(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.s4,
+          Spacing.s2,
+          Spacing.s4,
+          Spacing.s4,
+        ),
+        child: DeelButton(
+          label: 'home.seller.newListing'.tr(),
+          onPressed: () => context.go(AppRoutes.sell),
+        ),
+      ),
+    );
+  }
+
   Widget _listingsHeader(BuildContext context) {
+    // TODO(P-54): add filter/sort icon affordance next to "Mijn advertenties"
+    // matching the design — see seller_mode_home_mobile_light/screen.png.
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.only(bottom: Spacing.s3),
@@ -124,8 +145,12 @@ class SellerHomeDataView extends ConsumerWidget {
 
   void _handleActionTap(BuildContext context, ActionItemEntity action) {
     switch (action.type) {
+      // B1 fix: referenceId is a transaction ID, not a shipping label ID.
+      // Navigate to transaction detail where the user can open the shipping
+      // flow. A direct /shipping/:labelId route requires resolving the label
+      // by transaction ID first (tracked as P-54 follow-up).
       case ActionItemType.shipOrder:
-        context.push(AppRoutes.shippingDetailFor(action.referenceId));
+        context.push(AppRoutes.transactionDetailFor(action.referenceId));
       case ActionItemType.replyMessage:
         context.push(AppRoutes.chatThreadFor(action.referenceId));
     }

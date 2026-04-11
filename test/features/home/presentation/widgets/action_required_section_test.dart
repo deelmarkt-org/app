@@ -47,14 +47,16 @@ void main() {
       await tester.pumpWidget(buildSection(actions: const [_shipAction]));
       await tester.pump();
 
-      expect(find.byType(InkWell), findsOneWidget);
+      // 2 InkWells: 1 action tile + 1 "Alles bekijken" header link.
+      expect(find.byType(InkWell), findsNWidgets(2));
     });
 
     testWidgets('renders one tile for a reply action', (tester) async {
       await tester.pumpWidget(buildSection(actions: const [_replyAction]));
       await tester.pump();
 
-      expect(find.byType(InkWell), findsOneWidget);
+      // 2 InkWells: 1 action tile + 1 "Alles bekijken" header link.
+      expect(find.byType(InkWell), findsNWidgets(2));
     });
 
     testWidgets('renders multiple tiles for multiple actions', (tester) async {
@@ -63,7 +65,8 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.byType(InkWell), findsNWidgets(2));
+      // 3 InkWells: 2 action tiles + 1 "Alles bekijken" header link.
+      expect(find.byType(InkWell), findsNWidgets(3));
     });
 
     testWidgets('calls onActionTap with correct action when tapped', (
@@ -78,7 +81,8 @@ void main() {
       );
       await tester.pump();
 
-      await tester.tap(find.byType(InkWell));
+      // Tap the tile InkWell (last one — header "Alles bekijken" is first).
+      await tester.tap(find.byType(InkWell).last);
       expect(tappedAction, equals(_shipAction));
     });
 
@@ -96,7 +100,8 @@ void main() {
       );
       await tester.pump();
 
-      expect(find.byType(InkWell), findsOneWidget);
+      // 2 InkWells: 1 action tile + 1 "Alles bekijken" header link.
+      expect(find.byType(InkWell), findsNWidgets(2));
     });
   });
 }
