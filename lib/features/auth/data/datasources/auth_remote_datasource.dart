@@ -73,4 +73,12 @@ class AuthRemoteDatasource {
 
   /// Returns the current session or null.
   Session? get currentSession => _client.auth.currentSession;
+
+  /// Initiates iDIN verification via the `initiate-idin` Edge Function.
+  ///
+  /// Returns the raw [FunctionResponse]. URL allowlist validation is enforced
+  /// by [InitiateIdinVerificationUseCase] in the domain layer, not here.
+  Future<FunctionResponse> initiateIdin() {
+    return _client.functions.invoke('initiate-idin');
+  }
 }
