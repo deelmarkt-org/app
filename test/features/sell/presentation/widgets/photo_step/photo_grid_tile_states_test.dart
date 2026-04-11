@@ -204,5 +204,46 @@ void main() {
       final opacity = tester.widget<Opacity>(find.byType(Opacity).first);
       expect(opacity.opacity, lessThan(1.0));
     });
+
+    testWidgets('terminal failure shows translated errorKey text', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        const SizedBox(
+          width: 120,
+          height: 120,
+          child: PhotoGridTile(image: terminalFailedImage, index: 0),
+        ),
+      );
+
+      // _FailedOverlay renders errorKey via .tr() — in tests .tr() returns
+      // the key string itself, so we expect the raw l10n key to appear.
+      expect(find.text('sell.uploadErrorTooLarge'), findsOneWidget);
+    });
+
+    testWidgets('terminal failure without errorKey shows only warning icon', (
+      tester,
+    ) async {
+      const noKeyImage = SellImage(
+        id: 'f2',
+        localPath: '/test/image.jpg',
+        status: ImageUploadStatus.failed,
+        isRetryable: false,
+      );
+
+      await pumpTestWidget(
+        tester,
+        const SizedBox(
+          width: 120,
+          height: 120,
+          child: PhotoGridTile(image: noKeyImage, index: 0),
+        ),
+      );
+
+      expect(find.byIcon(PhosphorIconsRegular.warning), findsOneWidget);
+      // No error text should appear when errorKey is null.
+      expect(find.byType(Text), findsNothing);
+    });
   });
 }
