@@ -927,5 +927,42 @@
       "sanction_icon": "Account suspended icon",
       "appeal_form": "Appeal form"
     }
+  },
+  "dsa_report": {
+    "title": "Report content",
+    "subtitle": "Report illegal or prohibited content to our moderation team.",
+    "target_type": {
+      "listing": "Listing",
+      "message": "Message",
+      "profile": "Profile",
+      "review": "Review"
+    },
+    "category": {
+      "label": "Reason",
+      "illegal_content": "Illegal content",
+      "prohibited_item": "Prohibited item",
+      "counterfeit": "Counterfeit goods",
+      "fraud": "Fraud or scam",
+      "privacy_violation": "Privacy violation",
+      "other": "Other"
+    },
+    "description_label": "Description",
+    "description_hint": "Describe the issue in detail (minimum 10 characters)",
+    "submit": "Submit report",
+    "submit_success": "Your report has been submitted. We will review it within 24 hours.",
+    "submit_error": "Could not submit your report. Please try again.",
+    "status": {
+      "pending": "Pending review",
+      "under_review": "Under review",
+      "actioned": "Action taken",
+      "rejected": "Report rejected"
+    },
+    "sla_breached": "Review overdue",
+    "history_title": "My reports",
+    "history_empty": "You have not submitted any reports.",
+    "a11y": {
+      "report_icon": "Report content icon",
+      "submit_button": "Submit DSA report"
+    }
   }
 }
