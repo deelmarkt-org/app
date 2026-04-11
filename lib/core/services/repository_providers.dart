@@ -2,9 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/features/home/data/mock/mock_category_repository.dart';
 import 'package:deelmarkt/features/home/data/mock/mock_listing_repository.dart';
+import 'package:deelmarkt/features/home/data/shared_prefs_home_mode_repository.dart';
 import 'package:deelmarkt/features/home/data/supabase/supabase_category_repository.dart';
 import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/features/home/domain/repositories/home_mode_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
@@ -28,6 +30,7 @@ import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.d
 import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 
 export 'package:deelmarkt/core/services/supabase_service.dart'
@@ -41,6 +44,11 @@ export 'package:deelmarkt/core/services/supabase_service.dart'
 /// Uses compile-time flag to avoid catching unrelated Supabase errors.
 final useMockDataProvider = Provider<bool>((ref) {
   return const bool.fromEnvironment('USE_MOCK_DATA');
+});
+
+/// Home mode repository — persists buyer/seller toggle via SharedPreferences.
+final homeModeRepositoryProvider = Provider<HomeModeRepository>((ref) {
+  return SharedPrefsHomeModeRepository(ref.watch(sharedPreferencesProvider));
 });
 
 /// Listing repository — mock or Supabase based on [useMockDataProvider].

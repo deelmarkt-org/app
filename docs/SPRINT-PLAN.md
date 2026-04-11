@@ -173,8 +173,8 @@ The agent will:
 
 **Branch:** `feature/reso-E01-listings` | **Epic:** [E01](epics/E01-listing-management.md)
 
-- [ ] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown
-- [ ] `R-27` Image upload Edge Function — resize + EXIF strip + ClamAV + Cloudinary
+- [x] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown *(done by belengaz, PR #105 — Dart↔TS parity enforced by pre-commit)*
+- [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) *(done by belengaz, PR #105 — client wiring in follow-up PR #106, blocked on #104)*
 - [ ] `R-29` `search_outbox` table + trigger — events on listing CRUD
 - [ ] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted
 
@@ -282,7 +282,7 @@ The agent will:
 - [x] `P-38` Rating/review screen (post-transaction) — star + text, blind ✅ PR #75
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
 - [x] `P-40` Admin moderation panel — Phase A ✅ PR #110
-- [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
+- [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
 - [ ] `P-44` Social login (Google + Apple Sign-In) — ⚠️ Requires E02 epic update + reso OAuth backend
