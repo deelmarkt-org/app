@@ -1,3 +1,4 @@
+// TODO(#133): File exceeds 300-line limit (335 lines). Split into focused test groups.
 import 'dart:async';
 import 'dart:io';
 
@@ -72,15 +73,34 @@ void main() {
   };
 
   ListingCreationState draftState({
-    List<String> imageFiles = const ['a.jpg', 'b.jpg', 'c.jpg'],
+    List<SellImage>? imageFiles,
     String title = 'Great item for sale',
     String description = 'A detailed description with many words to pass',
     int priceInCents = 4500,
     String? categoryL2Id = 'cat-phones',
     ListingCondition? condition = ListingCondition.good,
   }) {
+    final files =
+        imageFiles ??
+        const [
+          SellImage(
+            id: 'a',
+            localPath: 'a.jpg',
+            status: ImageUploadStatus.uploaded,
+          ),
+          SellImage(
+            id: 'b',
+            localPath: 'b.jpg',
+            status: ImageUploadStatus.uploaded,
+          ),
+          SellImage(
+            id: 'c',
+            localPath: 'c.jpg',
+            status: ImageUploadStatus.uploaded,
+          ),
+        ];
     return ListingCreationState(
-      imageFiles: imageFiles,
+      imageFiles: files,
       title: title,
       description: description,
       priceInCents: priceInCents,
@@ -126,7 +146,18 @@ void main() {
 
       await service.calculate(
         draftState(
-          imageFiles: const ['a.jpg', 'b.jpg'],
+          imageFiles: const [
+            SellImage(
+              id: 'a',
+              localPath: 'a.jpg',
+              status: ImageUploadStatus.uploaded,
+            ),
+            SellImage(
+              id: 'b',
+              localPath: 'b.jpg',
+              status: ImageUploadStatus.uploaded,
+            ),
+          ],
           title: 'Pants',
           description: 'Nice',
           priceInCents: 1200,

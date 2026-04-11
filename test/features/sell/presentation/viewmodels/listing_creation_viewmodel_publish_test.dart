@@ -17,12 +17,15 @@ void main() {
 
   group('ListingCreationNotifier -- publish', () {
     test('publish() sets step to success with createdListingId', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier);
 
       await notifier.addFromCamera();
+      await pumpUntilUploaded(container);
       notifier
         ..updateTitle('Test Listing')
         ..updateDescription('A description')
@@ -40,7 +43,7 @@ void main() {
 
     test('publish() sets error on failure', () async {
       final mockRepo = MockListingCreationRepository()..shouldFail = true;
-      final (:container, :picker, repo: _) = buildContainer(
+      final (:container, :picker, repo: _, uploadService: _) = buildContainer(
         prefs,
         repo: mockRepo,
       );
@@ -49,6 +52,7 @@ void main() {
       final notifier = container.read(listingCreationNotifierProvider.notifier);
 
       await notifier.addFromCamera();
+      await pumpUntilUploaded(container);
       notifier
         ..updateTitle('Test')
         ..updateDescription('desc')
@@ -66,7 +70,9 @@ void main() {
 
   group('ListingCreationNotifier -- draft save', () {
     test('saveDraft() sets step to success on completion', () async {
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final notifier = container.read(listingCreationNotifierProvider.notifier)
@@ -81,7 +87,7 @@ void main() {
 
     test('saveDraft() sets error on failure', () async {
       final mockRepo = MockListingCreationRepository()..shouldFail = true;
-      final (:container, :picker, repo: _) = buildContainer(
+      final (:container, :picker, repo: _, uploadService: _) = buildContainer(
         prefs,
         repo: mockRepo,
       );
@@ -101,16 +107,24 @@ void main() {
     test('build restores state from draft persistence', () async {
       SharedPreferences.setMockInitialValues({
         'listing_creation_draft':
-            '{"imageFiles":["/saved/photo.jpg"],"title":"Saved Draft","description":"desc","priceInCents":5000}',
+            '{"v":2,"imageFiles":[{"id":"saved-1","localPath":"/saved/photo.jpg","storagePath":"fake/saved-1.jpg","deliveryUrl":"https://cdn.test/saved-1.jpg"}],"title":"Saved Draft","description":"desc","priceInCents":5000}',
       });
       prefs = await SharedPreferences.getInstance();
 
-      final (:container, :picker, :repo) = buildContainer(prefs);
+      final (:container, :picker, :repo, uploadService: _) = buildContainer(
+        prefs,
+      );
       addTearDown(container.dispose);
 
       final state = container.read(listingCreationNotifierProvider);
       expect(state.title, equals('Saved Draft'));
-      expect(state.imageFiles, contains('/saved/photo.jpg'));
+      expect(state.imageFiles, hasLength(1));
+      expect(state.imageFiles.first.id, equals('saved-1'));
+      expect(state.imageFiles.first.localPath, equals('/saved/photo.jpg'));
+      expect(
+        state.imageFiles.first.deliveryUrl,
+        equals('https://cdn.test/saved-1.jpg'),
+      );
       expect(state.priceInCents, equals(5000));
       expect(state.step, equals(ListingCreationStep.photos));
     });

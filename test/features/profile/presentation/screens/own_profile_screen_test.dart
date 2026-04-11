@@ -171,5 +171,38 @@ void main() {
       expect(find.text('Jan de Vries'), findsWidgets);
       expect(find.byType(TabBarView), findsOneWidget);
     });
+
+    testWidgets('uses NestedScrollView (no hardcoded height) when loaded', (
+      tester,
+    ) async {
+      // Reproduce a small-device viewport to confirm no overflow occurs.
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            profileNotifierProvider.overrideWith(
+              () => _StubProfileNotifier(loadedState),
+            ),
+          ],
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: const MaterialApp(home: OwnProfileScreen()),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // NestedScrollView replaces the old SingleChildScrollView + fixed SizedBox.
+      expect(find.byType(NestedScrollView), findsOneWidget);
+
+      // No RenderFlex overflow errors on small viewport.
+      expect(tester.takeException(), isNull);
+    });
   });
 }

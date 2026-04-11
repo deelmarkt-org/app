@@ -1,5 +1,4 @@
-// TODO(#133): 497 lines — split into focused groups per CLAUDE.md §2.1
-// (limit 300 for test files). Track at https://github.com/deelmarkt-org/app/issues/133
+// TODO(#133): File exceeds 300-line limit (497 lines). Split into focused test groups.
 import 'dart:async';
 import 'dart:io';
 

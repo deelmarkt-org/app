@@ -16,7 +16,9 @@ void main() {
     ListingCondition? condition,
   }) {
     return ListingCreationState(
-      imageFiles: imageFiles,
+      imageFiles: imageFiles
+          .map((p) => SellImage(id: p, localPath: p))
+          .toList(growable: false),
       title: title,
       description: description,
       priceInCents: priceInCents,

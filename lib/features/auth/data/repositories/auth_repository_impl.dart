@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 
+import 'package:deelmarkt/core/exceptions/app_exception.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
@@ -101,9 +102,20 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
   @override
   Future<String> initiateIdinVerification() async {
     try {
-      // Tracked: #48 — iDIN Edge Function blocked by R-14
-      // Returns redirect URL — must be validated against allowlist client-side.
-      throw UnimplementedError('iDIN integration pending R-14');
+      final response = await _datasource.initiateIdin();
+      final data = response.data as Map<String, dynamic>?;
+      final url = data?['redirect_url'];
+      if (url is! String || url.isEmpty) {
+        throw const NetworkException(
+          debugMessage: 'iDIN EF returned no redirect_url',
+        );
+      }
+      return url;
+    } on sb.FunctionException catch (e) {
+      if (e.status == 409) {
+        throw const sb.AuthException('A verification is already in progress.');
+      }
+      throw mapGenericError(e);
     } on sb.AuthException catch (e) {
       throw mapAuthError(e);
     } catch (e) {
