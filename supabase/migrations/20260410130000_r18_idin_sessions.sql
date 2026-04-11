@@ -8,7 +8,7 @@
 --   • Completed/failed sessions are kept for the 5-year GDPR audit window.
 --
 -- RPCs:
---   • create_idin_session()     — SECURITY INVOKER (user-facing, rate-limited EF)
+--   • create_idin_session()     — SECURITY DEFINER (service-role only, called by EF)
 --   • upgrade_kyc_to_level2()   — SECURITY DEFINER (service-role only, called by EF)
 --   • complete_idin_session()   — SECURITY DEFINER (service-role only, webhook/callback)
 --   • expire_stale_idin_sessions() — SECURITY DEFINER (cron, marks sessions expired after 1h)
@@ -73,8 +73,10 @@ CREATE POLICY idin_sessions_select_own
 -- ---------------------------------------------------------------------------
 -- create_idin_session — called by initiate-idin EF (service role)
 --
--- Inserts a new pending session and returns the session_token.
--- Raises if user already has a pending session.
+-- Automatically expires any stale pending session for the user (past
+-- expires_at) before inserting a new one. This prevents a user from being
+-- permanently blocked by a session that timed out between cron runs.
+-- Raises if user has a non-expired pending session.
 -- ---------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION create_idin_session(
@@ -87,9 +89,20 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+  -- Expire any stale pending session for this user so they are not blocked
+  -- by a session that timed out before the hourly cron ran.
+  UPDATE idin_sessions
+  SET
+    status         = 'expired',
+    failure_reason = 'Session expired before cron cleanup'
+  WHERE user_id = p_user_id
+    AND status   = 'pending'
+    AND expires_at <= now();
+
   INSERT INTO idin_sessions (user_id, session_token)
   VALUES (p_user_id, p_session_token);
-  -- Unique index on (user_id) WHERE status='pending' raises on conflict.
+  -- Unique index on (user_id) WHERE status='pending' raises on conflict
+  -- only when a genuinely active (non-expired) session already exists.
 EXCEPTION
   WHEN unique_violation THEN
     RAISE EXCEPTION 'User already has a pending iDIN session'

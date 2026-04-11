@@ -8,9 +8,12 @@ class MockSupabaseClient extends Mock implements SupabaseClient {}
 
 class MockGoTrueClient extends Mock implements GoTrueClient {}
 
+class MockFunctionsClient extends Mock implements FunctionsClient {}
+
 void main() {
   late MockSupabaseClient mockClient;
   late MockGoTrueClient mockAuth;
+  late MockFunctionsClient mockFunctions;
   late AuthRemoteDatasource datasource;
 
   final tAuthResponse = AuthResponse();
@@ -22,7 +25,9 @@ void main() {
   setUp(() {
     mockClient = MockSupabaseClient();
     mockAuth = MockGoTrueClient();
+    mockFunctions = MockFunctionsClient();
     when(() => mockClient.auth).thenReturn(mockAuth);
+    when(() => mockClient.functions).thenReturn(mockFunctions);
     datasource = AuthRemoteDatasource(mockClient);
   });
 
@@ -218,6 +223,28 @@ void main() {
       when(() => mockAuth.currentSession).thenReturn(null);
 
       expect(datasource.currentSession, isNull);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // initiateIdin
+  // ---------------------------------------------------------------------------
+  group('initiateIdin', () {
+    test('delegates to client.functions.invoke with initiate-idin', () async {
+      final tResponse = FunctionResponse(
+        status: 200,
+        data: const {
+          'redirect_url': 'https://auth.deelmarkt.nl/idin/mock-complete',
+        },
+      );
+      when(
+        () => mockFunctions.invoke('initiate-idin'),
+      ).thenAnswer((_) async => tResponse);
+
+      final result = await datasource.initiateIdin();
+
+      expect(result, tResponse);
+      verify(() => mockFunctions.invoke('initiate-idin')).called(1);
     });
   });
 }

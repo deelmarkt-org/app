@@ -30,7 +30,11 @@
  */
 
 import "@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "@supabase/supabase-js";
+import {
+  createClient,
+  type SupabaseClient,
+  type User,
+} from "@supabase/supabase-js";
 import { z } from "zod";
 import { jsonResponse } from "../_shared/response.ts";
 import { getRedisCredentials } from "../_shared/redis.ts";
@@ -153,20 +157,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
 // assembleExport — fetches all personal data for the user
 // ---------------------------------------------------------------------------
 
-// deno-lint-ignore no-explicit-any
-async function assembleExport(supabase: any, userId: string, user: any) {
-  const [
-    profile,
-    listings,
-    favourites,
-    sentMessages,
-    reviewsGiven,
-    reviewsReceived,
-    transactionsBuyer,
-    transactionsSeller,
-    idinSessions,
-    dsaReports,
-  ] = await Promise.all([
+async function assembleExport(
+  supabase: SupabaseClient,
+  userId: string,
+  user: User,
+) {
+  const results = await Promise.all([
     supabase.from("user_profiles").select("*").eq("id", userId).maybeSingle(),
     supabase.from("listings").select("*").eq("seller_id", userId),
     supabase.from("favourites").select("listing_id").eq("user_id", userId),
@@ -178,6 +174,28 @@ async function assembleExport(supabase: any, userId: string, user: any) {
     supabase.from("idin_sessions").select("*").eq("user_id", userId),
     supabase.from("dsa_reports").select("*").eq("reporter_id", userId),
   ]);
+
+  // Fail fast: any individual query error means an incomplete export —
+  // return 500 rather than silently omitting personal data (GDPR Art. 20).
+  const firstError = results.find((r) => r.error)?.error;
+  if (firstError) {
+    throw new Error(
+      `Failed to fetch user data for export: ${firstError.message}`,
+    );
+  }
+
+  const [
+    profile,
+    listings,
+    favourites,
+    sentMessages,
+    reviewsGiven,
+    reviewsReceived,
+    transactionsBuyer,
+    transactionsSeller,
+    idinSessions,
+    dsaReports,
+  ] = results;
 
   return {
     exported_at: new Date().toISOString(),
