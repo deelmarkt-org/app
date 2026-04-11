@@ -282,7 +282,7 @@ The agent will:
 - [x] `P-38` Rating/review screen (post-transaction) — star + text, blind ✅ PR #75
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
 - [ ] `P-40` Admin moderation panel (Retool) — flagged, disputes, DSA, appeals
-- [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
+- [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
 - [ ] `P-44` Social login (Google + Apple Sign-In) — ⚠️ Requires E02 epic update + reso OAuth backend

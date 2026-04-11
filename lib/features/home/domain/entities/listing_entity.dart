@@ -32,6 +32,8 @@ class ListingEntity extends Equatable {
     this.isFavourited = false,
     this.qualityScore,
     this.status = ListingStatus.active,
+    this.viewCount = 0,
+    this.favouriteCount = 0,
   });
 
   /// Sentinel for [copyWith] — distinguishes "not passed" from "passed as null".
@@ -63,6 +65,12 @@ class ListingEntity extends Equatable {
   /// Current status of the listing.
   final ListingStatus status;
 
+  /// Number of times this listing has been viewed. Defaults to 0.
+  final int viewCount;
+
+  /// Number of times this listing has been favourited. Defaults to 0.
+  final int favouriteCount;
+
   final DateTime createdAt;
 
   /// Creates a copy with the given fields replaced.
@@ -86,6 +94,8 @@ class ListingEntity extends Equatable {
     bool? isFavourited,
     Object? qualityScore = _sentinel,
     ListingStatus? status,
+    int? viewCount,
+    int? favouriteCount,
     DateTime? createdAt,
   }) {
     return ListingEntity(
@@ -94,23 +104,27 @@ class ListingEntity extends Equatable {
       description: description ?? this.description,
       priceInCents: priceInCents ?? this.priceInCents,
       originalPriceInCents:
-          originalPriceInCents == _sentinel
-              ? this.originalPriceInCents
-              : originalPriceInCents as int?,
+          _ifSentinel(originalPriceInCents, this.originalPriceInCents) as int?,
       sellerId: sellerId ?? this.sellerId,
       sellerName: sellerName ?? this.sellerName,
       condition: condition ?? this.condition,
       categoryId: categoryId ?? this.categoryId,
       imageUrls: imageUrls ?? this.imageUrls,
-      location: location == _sentinel ? this.location : location as String?,
-      distanceKm:
-          distanceKm == _sentinel ? this.distanceKm : distanceKm as double?,
+      location: _ifSentinel(location, this.location) as String?,
+      distanceKm: _ifSentinel(distanceKm, this.distanceKm) as double?,
       isFavourited: isFavourited ?? this.isFavourited,
-      qualityScore:
-          qualityScore == _sentinel ? this.qualityScore : qualityScore as int?,
+      qualityScore: _ifSentinel(qualityScore, this.qualityScore) as int?,
       status: status ?? this.status,
+      viewCount: viewCount ?? this.viewCount,
+      favouriteCount: favouriteCount ?? this.favouriteCount,
       createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  /// Resolves a sentinel-guarded nullable field for [copyWith].
+  static dynamic _ifSentinel(dynamic value, dynamic current) {
+    if (value == _sentinel) return current;
+    return value;
   }
 
   @override
@@ -130,6 +144,8 @@ class ListingEntity extends Equatable {
     isFavourited,
     qualityScore,
     status,
+    viewCount,
+    favouriteCount,
     createdAt,
   ];
 }

@@ -4,6 +4,11 @@ import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 const sampleImageUrl =
     'https://res.cloudinary.com/demo/image/upload/sample.jpg';
 
+// ── Location constants ────────────────────────────────────────────────────────
+
+const _amsterdam = 'Amsterdam';
+const _utrecht = 'Utrecht';
+
 // ── Seller constants ──────────────────────────────────────────────────────────
 
 const _user001 = 'user-001';
@@ -37,8 +42,10 @@ final mockListings = [
     condition: ListingCondition.good,
     categoryId: 'cat-sport',
     imageUrls: const [sampleImageUrl],
-    location: 'Amsterdam',
+    location: _amsterdam,
     distanceKm: 3.2,
+    viewCount: 142,
+    favouriteCount: 12,
     createdAt: DateTime(2026, 3, 20),
   ),
   ListingEntity(
@@ -54,6 +61,8 @@ final mockListings = [
     location: 'Rotterdam',
     distanceKm: 12.5,
     status: ListingStatus.sold,
+    viewCount: 89,
+    favouriteCount: 7,
     createdAt: DateTime(2026, 3, 22),
   ),
   ListingEntity(
@@ -66,8 +75,10 @@ final mockListings = [
     condition: ListingCondition.fair,
     categoryId: 'cat-home',
     imageUrls: const [sampleImageUrl],
-    location: 'Utrecht',
+    location: _utrecht,
     distanceKm: 8.0,
+    viewCount: 56,
+    favouriteCount: 3,
     createdAt: DateTime(2026, 3, 24),
   ),
   ListingEntity(
@@ -83,6 +94,8 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Den Haag',
     distanceKm: 5.1,
+    viewCount: 210,
+    favouriteCount: 18,
     createdAt: DateTime(2026, 3, 25),
   ),
   ListingEntity(
@@ -95,8 +108,10 @@ final mockListings = [
     condition: ListingCondition.likeNew,
     categoryId: 'cat-phones',
     imageUrls: const [sampleImageUrl],
-    location: 'Amsterdam',
+    location: _amsterdam,
     distanceKm: 2.1,
+    viewCount: 178,
+    favouriteCount: 15,
     createdAt: DateTime(2026, 3, 26),
   ),
   ListingEntity(
@@ -109,8 +124,10 @@ final mockListings = [
     condition: ListingCondition.good,
     categoryId: 'cat-bikes',
     imageUrls: const [sampleImageUrl],
-    location: 'Utrecht',
+    location: _utrecht,
     distanceKm: 7.3,
+    viewCount: 95,
+    favouriteCount: 8,
     createdAt: DateTime(2026, 3, 27),
   ),
   ListingEntity(
@@ -125,6 +142,8 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Rotterdam',
     distanceKm: 11.0,
+    viewCount: 34,
+    favouriteCount: 2,
     createdAt: DateTime(2026, 3, 28),
   ),
   ListingEntity(
@@ -139,6 +158,8 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Eindhoven',
     distanceKm: 1.5,
+    viewCount: 67,
+    favouriteCount: 5,
     createdAt: DateTime(2026, 3, 29),
   ),
   ListingEntity(
@@ -151,8 +172,10 @@ final mockListings = [
     condition: ListingCondition.likeNew,
     categoryId: 'cat-fitness',
     imageUrls: const [sampleImageUrl],
-    location: 'Amsterdam',
+    location: _amsterdam,
     distanceKm: 4.2,
+    viewCount: 45,
+    favouriteCount: 4,
     createdAt: DateTime(2026, 3, 30),
   ),
   ListingEntity(
@@ -167,6 +190,8 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Den Haag',
     distanceKm: 6.0,
+    viewCount: 123,
+    favouriteCount: 11,
     createdAt: DateTime(2026, 3, 31),
   ),
   ListingEntity(
@@ -179,8 +204,10 @@ final mockListings = [
     condition: ListingCondition.good,
     categoryId: 'cat-men',
     imageUrls: const [sampleImageUrl],
-    location: 'Utrecht',
+    location: _utrecht,
     distanceKm: 3.0,
+    viewCount: 28,
+    favouriteCount: 1,
     createdAt: DateTime(2026, 4),
   ),
   ListingEntity(
@@ -195,6 +222,8 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Eindhoven',
     distanceKm: 1.2,
+    viewCount: 82,
+    favouriteCount: 9,
     createdAt: DateTime(2026, 4, 2),
   ),
   ListingEntity(
@@ -209,6 +238,7 @@ final mockListings = [
     imageUrls: const [sampleImageUrl],
     location: 'Haarlem',
     distanceKm: 15.0,
+    viewCount: 19,
     createdAt: DateTime(2026, 4, 3),
   ),
 ];

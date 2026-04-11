@@ -90,7 +90,12 @@
     "sold": "Verkocht! 🎉",
     "views": "Bekeken",
     "favorites": "In favorieten",
-    "shipping": "Verzending"
+    "shipping": "Verzending",
+    "status": {
+      "active": "Actief",
+      "sold": "Verkocht",
+      "draft": "Concept"
+    }
   },
   "auth": {
     "login": "Inloggen",
@@ -199,7 +204,8 @@
     "menu": "Menu openen",
     "skipToContent": "Ga naar inhoud",
     "back": "Terug",
-    "consent_banner": "Privacytoestemming"
+    "consent_banner": "Privacytoestemming",
+    "modeSwitch": "Wissel tussen koper en verkoper modus"
   },
   "settings": {
     "language": "Taal",
@@ -386,7 +392,30 @@
     "recentlyAdded": "Recent toegevoegd",
     "categories": "Categorieën",
     "emptyNearby": "Geen advertenties in de buurt",
-    "emptyNearbyAction": "Start met zoeken"
+    "emptyNearbyAction": "Start met zoeken",
+    "seller": {
+      "hello": "Hallo, {name}",
+      "totalSales": "Totale verkopen",
+      "activeListings": "Actieve advertenties",
+      "unreadMessages": "Ongelezen berichten",
+      "actionRequired": "Actie vereist",
+      "shipOrder": "Verzend bestelling",
+      "shipOrderTitle": "Verzend bestelling #{id}",
+      "shipOrderSubtitle": "Bestelling betaald — verzending vereist",
+      "replyTo": "Beantwoord bericht van {name}",
+      "unreadCount": "{count} ongelezen bericht(en)",
+      "myListings": "Mijn advertenties",
+      "newListing": "Nieuwe advertentie",
+      "startSelling": "Start met verkopen",
+      "views": "{count} weergaven",
+      "daysActive": "{count} dagen actief",
+      "emptyTitle": "Je hebt nog geen advertenties",
+      "emptySubtitle": "Begin met het verkopen van spullen die je niet meer gebruikt en geef ze een tweede leven."
+    }
+  },
+  "mode": {
+    "buyer": "Koper",
+    "seller": "Verkoper"
   },
   "listing_card": {
     "escrowAvailable": "Escrow beschikbaar",
