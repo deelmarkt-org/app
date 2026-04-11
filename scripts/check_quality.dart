@@ -464,9 +464,15 @@ void _checkNestedTernaries(
 ) {
   for (var i = 0; i < lines.length; i++) {
     final line = lines[i];
-    // Count ? operators on the line (excluding ?.  and ??)
-    final ternaryCount =
-        RegExp(r'(?<!\?)\?(?!\?|\.|\s*$)').allMatches(line).length;
+    final trimmed = line.trimLeft();
+    // Skip comment lines — type notation in docs (e.g. `T? Function()?`) is
+    // not a ternary operator.
+    if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue;
+    // Ternary `?` is always preceded by a space (dart format guarantees this).
+    // Type-annotation `?` follows a type name directly (no space before `?`).
+    // Counting only space-prefixed `?` avoids false positives on nullable
+    // parameter declarations and method signatures.
+    final ternaryCount = RegExp(r' \?(?!\?|\.)').allMatches(line).length;
     if (ternaryCount >= 2) {
       violations.add(
         '  NESTED_TERNARY  $file:${i + 1}: nested ternary — extract to variable [SonarCloud S3358]',

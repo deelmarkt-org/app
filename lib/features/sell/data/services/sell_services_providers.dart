@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/features/sell/data/mock/mock_image_upload_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
 import 'package:deelmarkt/features/sell/data/services/listing_quality_score_service.dart';
 
@@ -18,7 +20,11 @@ ListingQualityScoreService listingQualityScoreService(Ref ref) {
 }
 
 /// Storage upload + Cloudmersive scan + Cloudinary pipeline client (R-27).
+///
+/// Returns [MockImageUploadService] when [useMockDataProvider] is true so
+/// the sell wizard works in development without a live Supabase project.
 @riverpod
 ImageUploadService imageUploadService(Ref ref) {
+  if (ref.watch(useMockDataProvider)) return MockImageUploadService();
   return ImageUploadService(ref.watch(supabaseClientProvider));
 }

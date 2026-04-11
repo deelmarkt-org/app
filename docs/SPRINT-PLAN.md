@@ -174,7 +174,7 @@ The agent will:
 **Branch:** `feature/reso-E01-listings` | **Epic:** [E01](epics/E01-listing-management.md)
 
 - [x] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown *(done by belengaz, PR #105 — Dart↔TS parity enforced by pre-commit)*
-- [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) *(done by belengaz, PR #105 — client wiring in follow-up PR #106, blocked on #104)*
+- [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) ✅ PR #105 (EF) + PR #106 (service) + PR #111 (upload-on-pick queue)
 - [ ] `R-29` `search_outbox` table + trigger — events on listing CRUD
 - [ ] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted
 
@@ -247,9 +247,9 @@ The agent will:
 - [x] `R-34` FCM push notification on new message — delivered on iOS + Android *(PR #94)*
 - [x] `R-35` E06 scam detection Edge Function — flagged/clean in <1s
 - [x] `R-36` Reviews table + blind review logic — hidden until both submit *(PR #98)*
-- [ ] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(branch: `feature/reso-E06-r37-suspension`)* **[backend-only — UI tracked as P-53]**
+- [x] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(PR #102)* **[backend-only — UI tracked as P-53]**
   > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
-- [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked
+- [ ] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(branch: `feature/reso-E06-r38-dsa-reports`)*
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
 
@@ -281,8 +281,8 @@ The agent will:
 - [x] `P-37` Scam alert integration in chat — warning on flagged messages ✅ PR #75
 - [x] `P-38` Rating/review screen (post-transaction) — star + text, blind ✅ PR #75
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
-- [ ] `P-40` Admin moderation panel (Retool) — flagged, disputes, DSA, appeals
-- [ ] `P-41` Seller/buyer mode home toggle — dashboard adapts
+- [x] `P-40` Admin moderation panel — Phase A ✅ PR #110
+- [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
 - [ ] `P-44` Social login (Google + Apple Sign-In) — ⚠️ Requires E02 epic update + reso OAuth backend

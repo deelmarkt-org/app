@@ -28,7 +28,15 @@ void main() {
   );
 
   const testState = ListingCreationState(
-    imageFiles: ['photo1.jpg'],
+    imageFiles: [
+      SellImage(
+        id: 'img-1',
+        localPath: '/tmp/photo1.jpg',
+        status: ImageUploadStatus.uploaded,
+        storagePath: 'u/img-1.jpg',
+        deliveryUrl: 'https://cdn.test/photo1.jpg',
+      ),
+    ],
     title: 'My draft',
     description: 'Partial description',
     priceInCents: 1000,
@@ -59,7 +67,7 @@ void main() {
           priceInCents: any(named: 'priceInCents'),
           condition: any(named: 'condition'),
           categoryId: any(named: 'categoryId'),
-          imagePaths: any(named: 'imagePaths'),
+          imageUrls: any(named: 'imageUrls'),
           location: any(named: 'location'),
           shippingCarrier: any(named: 'shippingCarrier'),
           weightRange: any(named: 'weightRange'),
@@ -76,7 +84,7 @@ void main() {
           priceInCents: 1000,
           condition: ListingCondition.fair,
           categoryId: 'cat-books',
-          imagePaths: ['photo1.jpg'],
+          imageUrls: const ['https://cdn.test/photo1.jpg'],
           location: '3011HE',
           shippingCarrier: ShippingCarrier.dhl,
           weightRange: WeightRange.twoToFive,
@@ -92,7 +100,7 @@ void main() {
           priceInCents: any(named: 'priceInCents'),
           condition: any(named: 'condition'),
           categoryId: any(named: 'categoryId'),
-          imagePaths: any(named: 'imagePaths'),
+          imageUrls: any(named: 'imageUrls'),
           location: any(named: 'location'),
           shippingCarrier: any(named: 'shippingCarrier'),
           weightRange: any(named: 'weightRange'),

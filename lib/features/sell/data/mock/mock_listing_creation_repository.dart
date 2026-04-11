@@ -27,7 +27,7 @@ class MockListingCreationRepository implements ListingCreationRepository {
     required int priceInCents,
     required ListingCondition condition,
     required String categoryId,
-    required List<String> imagePaths,
+    required List<String> imageUrls,
     String? location,
     ShippingCarrier shippingCarrier = ShippingCarrier.none,
     WeightRange? weightRange,
@@ -43,10 +43,7 @@ class MockListingCreationRepository implements ListingCreationRepository {
       sellerName: 'Test Seller',
       condition: condition,
       categoryId: categoryId,
-      imageUrls:
-          imagePaths
-              .map((path) => 'https://cdn.deelmarkt.nl/images/$path')
-              .toList(),
+      imageUrls: imageUrls,
       location: location,
       // ignore: avoid_redundant_argument_values
       status: ListingStatus.active, // explicit: create always publishes
@@ -61,7 +58,7 @@ class MockListingCreationRepository implements ListingCreationRepository {
     int priceInCents = 0,
     ListingCondition? condition,
     String? categoryId,
-    List<String> imagePaths = const [],
+    List<String> imageUrls = const [],
     String? location,
     ShippingCarrier shippingCarrier = ShippingCarrier.none,
     WeightRange? weightRange,
@@ -77,19 +74,14 @@ class MockListingCreationRepository implements ListingCreationRepository {
       sellerName: 'Test Seller',
       condition: condition ?? ListingCondition.good,
       categoryId: categoryId ?? 'cat-uncategorised',
-      imageUrls:
-          imagePaths
-              .map((path) => 'https://cdn.deelmarkt.nl/images/$path')
-              .toList(),
+      imageUrls: imageUrls,
       location: location,
       status: ListingStatus.draft,
       createdAt: DateTime.now(),
     );
   }
 
-  // TODO(R-27): Server-side sanitization is required in the real
-  // SupabaseListingCreationRepository / Edge Function. This mock
-  // intentionally does NOT sanitize to avoid a false sense of security.
-  // The Supabase implementation must strip HTML tags and validate
-  // input lengths before persisting to the database.
+  // Mock accepts already-uploaded Cloudinary URLs from the presentation
+  // layer. Real SupabaseListingCreationRepository is wired in belengaz's
+  // follow-up PR (R-26/R-27) and will perform server-side sanitization.
 }

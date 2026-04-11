@@ -18,6 +18,20 @@ abstract final class AppRoutes {
   /// non-UUID id ever reaches this helper (security finding F-06).
   static String chatThreadFor(String conversationId) =>
       '/messages/${Uri.encodeComponent(conversationId)}';
+
+  /// Builds the concrete path for a shipping detail screen.
+  ///
+  /// Percent-encodes [shippingLabelId] for the same reason as [chatThreadFor].
+  static String shippingDetailFor(String shippingLabelId) =>
+      '/shipping/${Uri.encodeComponent(shippingLabelId)}';
+
+  /// Builds the concrete path for a transaction detail screen.
+  ///
+  /// Used by the seller "Ship order" action tile to navigate to the transaction,
+  /// from which the user can open the shipping flow.
+  static String transactionDetailFor(String transactionId) =>
+      '/transactions/${Uri.encodeComponent(transactionId)}';
+
   static const profile = '/profile';
 
   /// Bottom nav tab indices — must match StatefulShellBranch order in app_router.
@@ -44,4 +58,13 @@ abstract final class AppRoutes {
   static const shippingQr = '/shipping/:id/qr';
   static const shippingTracking = '/shipping/:id/tracking';
   static const parcelShopSelector = '/shipping/:id/parcel-shops';
+
+  // ── Admin panel ──
+  static const admin = '/admin';
+  static const adminFlaggedListings = '/admin/flagged-listings';
+  static const adminReportedUsers = '/admin/reported-users';
+  static const adminDisputes = '/admin/disputes';
+  static const adminDisputeDetail = '/admin/disputes/:id';
+  static const adminDsaNotices = '/admin/dsa-notices';
+  static const adminAppeals = '/admin/appeals';
 }
