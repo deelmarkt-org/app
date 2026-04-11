@@ -143,7 +143,7 @@
       "unauthenticated": "Log in om door te gaan"
     },
     "image": {
-      "too_large": "Deze afbeelding overschrijdt de limiet van 15 MB",
+      "too_large": "Deze afbeelding overschrijdt de limiet van 15 MiB",
       "unsupported_format": "Alleen JPG-, PNG-, WebP- of HEIC-afbeeldingen zijn toegestaan",
       "ownership_mismatch": "Je kunt niet uploaden naar de map van een andere gebruiker",
       "blocked": "Deze afbeelding is geblokkeerd door onze veiligheidscontrole",
@@ -815,9 +815,21 @@
     "openSettingsHint": "Ga naar Instellingen om cameratoegang in te schakelen voor DeelMarkt",
     "errorPermissionDenied": "Toegang tot camera of fotobibliotheek is geweigerd",
     "errorPermissionPermanent": "Cameratoegang is permanent geweigerd. Schakel in via Instellingen.",
-    "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MB",
+    "errorFileTooLarge": "Deze foto is groter dan de limiet van 15 MiB",
     "errorUnsupportedFormat": "Dit afbeeldingsformaat wordt niet ondersteund",
-    "errorImagePicker": "Kon de fotokiezer niet openen"
+    "errorImagePicker": "Kon de fotokiezer niet openen",
+    "errorImagesUploading": "Wacht tot alle foto's klaar zijn met uploaden",
+    "errorImagesFailed": "Sommige foto's konden niet worden geüpload. Probeer opnieuw of verwijder ze.",
+    "uploadingImage": "Foto uploaden",
+    "uploadingProgress": "Uploaden {current} van {total}",
+    "uploadFailed": "Upload mislukt",
+    "retryUpload": "Upload opnieuw proberen",
+    "uploadErrorBlocked": "Deze foto is afgewezen door onze veiligheidsscan",
+    "uploadErrorTooLarge": "Deze foto is groter dan de limiet van 15 MiB",
+    "uploadErrorNetwork": "Netwerkfout. Probeer het opnieuw.",
+    "uploadErrorAuth": "Meld opnieuw aan om foto's te uploaden",
+    "uploadErrorCancelled": "Upload geannuleerd",
+    "uploadErrorGeneric": "Kon deze foto niet uploaden. Probeer het opnieuw."
   },
   "image_gallery": {
     "close": "Sluiten",

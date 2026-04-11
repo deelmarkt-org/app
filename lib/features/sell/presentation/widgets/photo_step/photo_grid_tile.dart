@@ -7,22 +7,27 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 
 /// A single cell in the photo grid.
 ///
-/// Shows an image with a remove button when [imagePath] is provided,
-/// or a dashed-border placeholder when empty.
+/// Renders a [SellImage] with per-status overlays:
+/// * pending/uploading → dimmed + centered spinner
+/// * failed (retryable) → error tint + retry button
+/// * failed (terminal) → error tint + remove-only
+/// * uploaded → plain image
 class PhotoGridTile extends StatelessWidget {
   const PhotoGridTile({
     required this.index,
-    this.imagePath,
+    this.image,
     this.onRemove,
+    this.onRetry,
     this.onMenuAction,
     super.key,
   });
 
-  /// Path to the local image file, or null for the empty placeholder.
-  final String? imagePath;
+  /// The image model, or null for the empty placeholder.
+  final SellImage? image;
 
   /// Position in the grid (used for reorder context menu).
   final int index;
@@ -30,27 +35,43 @@ class PhotoGridTile extends StatelessWidget {
   /// Called when the user taps the remove button.
   final VoidCallback? onRemove;
 
+  /// Called when the user taps the retry affordance on a failed tile.
+  final VoidCallback? onRetry;
+
   /// Called with a menu action key: 'moveToFront', 'moveUp', 'moveDown'.
   final void Function(String)? onMenuAction;
 
   @override
   Widget build(BuildContext context) {
-    if (imagePath == null) return _buildEmptyTile();
-    return _buildFilledTile();
+    final img = image;
+    if (img == null) return _buildEmptyTile();
+    return _buildFilledTile(context, img);
   }
 
-  Widget _buildFilledTile() {
+  Widget _buildFilledTile(BuildContext context, SellImage img) {
+    // Prefer the Cloudinary delivery URL once uploaded — avoids loading
+    // from a potentially stale or missing local file path (M7).
+    // Prefer the Cloudinary delivery URL once uploaded — avoids loading
+    // from a potentially stale or missing local file path (M7).
+    // ResizeImage caps memory cache at 300×300 logical pixels for both
+    // network and file sources (cacheWidth/Height not available on Image()).
+    final ImageProvider rawProvider =
+        img.isUploaded && img.deliveryUrl != null
+            ? NetworkImage(img.deliveryUrl!)
+            : FileImage(File(img.localPath));
+    final imageProvider = ResizeImage(rawProvider, width: 300, height: 300);
     return ClipRRect(
       borderRadius: BorderRadius.circular(DeelmarktRadius.md),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.file(
-            File(imagePath!),
-            cacheWidth: 300,
-            cacheHeight: 300,
-            fit: BoxFit.cover,
+          Opacity(
+            opacity: img.isUploaded ? 1.0 : 0.6,
+            child: Image(image: imageProvider, fit: BoxFit.cover),
           ),
+          if (img.isPending) const _UploadingOverlay(),
+          if (img.isFailed)
+            _FailedOverlay(canRetry: img.canRetry, onRetry: onRetry),
           Positioned(
             top: Spacing.s1,
             right: Spacing.s1,
@@ -73,6 +94,64 @@ class PhotoGridTile extends StatelessWidget {
           color: DeelmarktColors.neutral500,
         ),
       ),
+    );
+  }
+}
+
+/// Centered spinner shown while a photo is pending/uploading.
+class _UploadingOverlay extends StatelessWidget {
+  const _UploadingOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'sell.uploadingImage'.tr(),
+      child: Container(
+        color: Colors.black26,
+        alignment: Alignment.center,
+        child: const SizedBox(
+          width: 32,
+          height: 32,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            valueColor: AlwaysStoppedAnimation<Color>(DeelmarktColors.white),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Error overlay shown when upload failed; includes retry when retryable.
+class _FailedOverlay extends StatelessWidget {
+  const _FailedOverlay({required this.canRetry, required this.onRetry});
+
+  final bool canRetry;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: DeelmarktColors.error.withValues(alpha: 0.35),
+      alignment: Alignment.center,
+      child:
+          canRetry && onRetry != null
+              ? Semantics(
+                label: 'sell.retryUpload'.tr(),
+                button: true,
+                child: IconButton(
+                  onPressed: onRetry,
+                  icon: const Icon(
+                    PhosphorIconsRegular.arrowClockwise,
+                    color: DeelmarktColors.white,
+                  ),
+                ),
+              )
+              : const Icon(
+                PhosphorIconsRegular.warning,
+                color: DeelmarktColors.white,
+                size: 28,
+              ),
     );
   }
 }

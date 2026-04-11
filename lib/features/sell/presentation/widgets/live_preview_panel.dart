@@ -32,62 +32,91 @@ class LivePreviewPanel extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: Spacing.s3),
-              // Preview image placeholder or first photo.
-              AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: DeelmarktColors.neutral100,
-                    borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
-                  ),
-                  child:
-                      state.imageFiles.isNotEmpty
-                          ? ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              DeelmarktRadius.sm,
-                            ),
-                            child: Image.file(
-                              File(state.imageFiles.first),
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (_, e, st) => const Center(
-                                    child: Icon(Icons.image, size: 48),
-                                  ),
-                            ),
-                          )
-                          : const Center(
-                            child: Icon(
-                              Icons.image_outlined,
-                              size: 48,
-                              color: DeelmarktColors.neutral500,
-                            ),
-                          ),
-                ),
-              ),
+              _ImagePreview(imageFiles: state.imageFiles),
               const SizedBox(height: Spacing.s3),
-              // Preview title.
-              Text(
-                state.title.isNotEmpty
-                    ? state.title
-                    : 'sell.previewTitlePlaceholder'.tr(),
-                style: Theme.of(context).textTheme.titleMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+              _TitleText(title: state.title, context: context),
               const SizedBox(height: Spacing.s1),
-              // Preview price.
-              Text(
-                state.priceInCents > 0
-                    ? '\u20AC ${(state.priceInCents / 100).toStringAsFixed(2)}'
-                    : '\u20AC 0,00',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: DeelmarktColors.primary,
-                ),
-              ),
+              _PriceText(priceInCents: state.priceInCents, context: context),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ImagePreview extends StatelessWidget {
+  const _ImagePreview({required this.imageFiles});
+
+  final List<SellImage> imageFiles;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 4 / 3,
+      child: Container(
+        decoration: BoxDecoration(
+          color: DeelmarktColors.neutral100,
+          borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+        ),
+        child:
+            imageFiles.isNotEmpty
+                ? ClipRRect(
+                  borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+                  child: Image.file(
+                    File(imageFiles.first.localPath),
+                    fit: BoxFit.cover,
+                    errorBuilder:
+                        (_, e, st) =>
+                            const Center(child: Icon(Icons.image, size: 48)),
+                  ),
+                )
+                : const Center(
+                  child: Icon(
+                    Icons.image_outlined,
+                    size: 48,
+                    color: DeelmarktColors.neutral500,
+                  ),
+                ),
+      ),
+    );
+  }
+}
+
+class _TitleText extends StatelessWidget {
+  const _TitleText({required this.title, required this.context});
+
+  final String title;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext _) {
+    return Text(
+      title.isNotEmpty ? title : 'sell.previewTitlePlaceholder'.tr(),
+      style: Theme.of(context).textTheme.titleMedium,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class _PriceText extends StatelessWidget {
+  const _PriceText({required this.priceInCents, required this.context});
+
+  final int priceInCents;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext _) {
+    final label =
+        priceInCents > 0
+            ? '\u20AC ${(priceInCents / 100).toStringAsFixed(2)}'
+            : '\u20AC 0,00';
+    return Text(
+      label,
+      style: Theme.of(
+        context,
+      ).textTheme.titleLarge?.copyWith(color: DeelmarktColors.primary),
     );
   }
 }

@@ -231,6 +231,8 @@ void main() {
           overrides: [
             useMockDataProvider.overrideWithValue(true),
             sharedPreferencesProvider.overrideWithValue(prefs),
+            // imageUploadServiceProvider auto-returns MockImageUploadService
+            // when useMockDataProvider is true — no extra override needed.
           ],
           child: MaterialApp.router(routerConfig: authedRouter),
         ),

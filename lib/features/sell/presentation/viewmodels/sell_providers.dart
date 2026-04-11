@@ -7,12 +7,14 @@ import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/sell/data/mock/mock_listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/data/services/draft_persistence_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
+import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/quality_score_result.dart';
 import 'package:deelmarkt/features/sell/domain/repositories/listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/calculate_quality_score_usecase.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/create_listing_usecase.dart';
 import 'package:deelmarkt/features/sell/domain/usecases/save_draft_usecase.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 
 part 'sell_providers.g.dart';
 
@@ -26,6 +28,20 @@ ListingCreationRepository listingCreationRepository(Ref ref) {
 @riverpod
 ImagePickerService imagePickerService(Ref ref) {
   return ImagePickerService();
+}
+
+/// Bounded-concurrency upload queue. One instance per wizard session;
+/// disposed via [Ref.onDispose] in the consumer.
+///
+/// Uses [imageUploadServiceProvider] from [sell_services_providers.dart]
+/// (the R-27 client wired in PR #106) so there is one upload pipeline.
+@riverpod
+PhotoUploadQueue photoUploadQueue(Ref ref) {
+  final queue = PhotoUploadQueue(
+    service: ref.watch(imageUploadServiceProvider),
+  );
+  ref.onDispose(queue.dispose);
+  return queue;
 }
 
 /// Draft persistence service — saves/restores creation state.
