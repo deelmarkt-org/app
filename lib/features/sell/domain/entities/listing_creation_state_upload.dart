@@ -19,8 +19,12 @@ extension ListingCreationStateUpload on ListingCreationState {
 
   /// Cloudinary delivery URLs of successfully uploaded images, in display
   /// order. Non-uploaded images are dropped (see plan §3.5).
+  ///
+  /// Uses [whereType] to safely skip any uploaded image whose [deliveryUrl]
+  /// is unexpectedly null (defensive; should not occur in normal flow).
   List<String> get uploadedDeliveryUrls => imageFiles
       .where((i) => i.isUploaded)
-      .map((i) => i.deliveryUrl!)
+      .map((i) => i.deliveryUrl)
+      .whereType<String>()
       .toList(growable: false);
 }

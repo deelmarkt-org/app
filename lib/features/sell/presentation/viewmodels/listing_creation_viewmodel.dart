@@ -25,9 +25,10 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   ListingCreationState build() {
     final queue = ref.watch(photoUploadQueueProvider);
     _outcomeSub = queue.outcomes.listen(_onOutcome);
+    // Sub cancel before timer: avoids a done-event race on dispose.
     ref.onDispose(() {
-      _draftTimer?.cancel();
       _outcomeSub?.cancel();
+      _draftTimer?.cancel();
     });
     return ref.read(draftPersistenceServiceProvider).restore() ??
         ListingCreationState.initial();
@@ -63,11 +64,9 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   void retryUpload(String id) {
     final idx = state.imageFiles.indexWhere((i) => i.id == id);
     if (idx == -1 || !state.imageFiles[idx].canRetry) return;
-    final img = state.imageFiles[idx];
+    final im = state.imageFiles[idx];
     apply(PhotoOperations.markRetry(state, id));
-    ref
-        .read(photoUploadQueueProvider)
-        .enqueue(id: img.id, localPath: img.localPath);
+    ref.read(photoUploadQueueProvider).enqueue(id: id, localPath: im.localPath);
   }
 
   bool nextStep() {

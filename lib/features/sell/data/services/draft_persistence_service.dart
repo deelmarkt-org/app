@@ -101,11 +101,11 @@ class DraftPersistenceService {
     for (final item in value) {
       if (item is! Map) continue;
       final id = item['id'];
-      final localPath = item['localPath'];
       final deliveryUrl = item['deliveryUrl'];
-      if (id is! String || localPath is! String || deliveryUrl is! String) {
-        continue;
-      }
+      // localPath is no longer required — restored images render from
+      // deliveryUrl. Older persisted drafts that include localPath are
+      // handled gracefully by SellImage.fromJson (optional field).
+      if (id is! String || deliveryUrl is! String) continue;
       try {
         result.add(SellImage.fromJson(Map<String, dynamic>.from(item)));
       } on Object {

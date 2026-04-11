@@ -16,6 +16,10 @@ void main() {
       expect(image.storagePath, isNull);
       expect(image.deliveryUrl, isNull);
       expect(image.publicId, isNull);
+      expect(image.width, isNull);
+      expect(image.height, isNull);
+      expect(image.bytes, isNull);
+      expect(image.format, isNull);
       expect(image.errorKey, isNull);
       expect(image.userRetryCount, 0);
       expect(image.isRetryable, isTrue);
@@ -84,20 +88,31 @@ void main() {
         expect(base.copyWith(), equals(base));
       });
 
-      test('overrides status, deliveryUrl, storagePath, publicId', () {
-        final next = base.copyWith(
-          status: ImageUploadStatus.uploaded,
-          deliveryUrl: () => 'https://cdn/x.jpg',
-          storagePath: () => 'uid/x.jpg',
-          publicId: () => 'uid/x',
-        );
-        expect(next.status, ImageUploadStatus.uploaded);
-        expect(next.deliveryUrl, 'https://cdn/x.jpg');
-        expect(next.storagePath, 'uid/x.jpg');
-        expect(next.publicId, 'uid/x');
-        expect(next.id, base.id);
-        expect(next.localPath, base.localPath);
-      });
+      test(
+        'overrides status, deliveryUrl, storagePath, publicId, dimensions',
+        () {
+          final next = base.copyWith(
+            status: ImageUploadStatus.uploaded,
+            deliveryUrl: () => 'https://cdn/x.jpg',
+            storagePath: () => 'uid/x.jpg',
+            publicId: () => 'uid/x',
+            width: () => 1920,
+            height: () => 1080,
+            bytes: () => 204800,
+            format: () => 'jpg',
+          );
+          expect(next.status, ImageUploadStatus.uploaded);
+          expect(next.deliveryUrl, 'https://cdn/x.jpg');
+          expect(next.storagePath, 'uid/x.jpg');
+          expect(next.publicId, 'uid/x');
+          expect(next.width, 1920);
+          expect(next.height, 1080);
+          expect(next.bytes, 204800);
+          expect(next.format, 'jpg');
+          expect(next.id, base.id);
+          expect(next.localPath, base.localPath);
+        },
+      );
 
       test('clears nullable fields via explicit null functions', () {
         const withValues = SellImage(
@@ -129,7 +144,7 @@ void main() {
     });
 
     group('JSON round-trip', () {
-      test('toJson / fromJson preserves all fields', () {
+      test('toJson omits localPath; fromJson restores uploaded image', () {
         const image = SellImage(
           id: id,
           localPath: localPath,
@@ -139,12 +154,29 @@ void main() {
           publicId: 'uid/x',
         );
         final json = image.toJson();
+        // localPath is intentionally not persisted (device path is
+        // session-local and may be invalid after restart).
+        expect(json.containsKey('localPath'), isFalse);
         final restored = SellImage.fromJson(json);
         expect(restored.id, image.id);
-        expect(restored.localPath, image.localPath);
+        expect(restored.localPath, ''); // defaults to empty on restore
         expect(restored.storagePath, image.storagePath);
         expect(restored.deliveryUrl, image.deliveryUrl);
         expect(restored.publicId, image.publicId);
+        expect(restored.status, ImageUploadStatus.uploaded);
+      });
+
+      test('fromJson gracefully handles legacy payload with localPath', () {
+        final json = <String, dynamic>{
+          'id': id,
+          'localPath': localPath, // legacy field — still accepted
+          'deliveryUrl': 'https://cdn/x.jpg',
+        };
+        final restored = SellImage.fromJson(json);
+        // Legacy localPath is accepted but ignored by the UI (deliveryUrl
+        // is the canonical source for uploaded images).
+        expect(restored.id, id);
+        expect(restored.deliveryUrl, 'https://cdn/x.jpg');
         expect(restored.status, ImageUploadStatus.uploaded);
       });
     });

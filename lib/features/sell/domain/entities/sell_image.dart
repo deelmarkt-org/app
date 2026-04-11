@@ -22,6 +22,10 @@ class SellImage extends Equatable {
     this.storagePath,
     this.deliveryUrl,
     this.publicId,
+    this.width,
+    this.height,
+    this.bytes,
+    this.format,
     this.errorKey,
     this.userRetryCount = 0,
     this.isRetryable = true,
@@ -31,7 +35,8 @@ class SellImage extends Equatable {
   /// state patching so out-of-order uploads cannot overwrite each other.
   final String id;
 
-  /// Absolute path to the picked file on device.
+  /// Absolute path to the picked file on device. Empty string on restored
+  /// drafts — use [deliveryUrl] to render uploaded images.
   final String localPath;
 
   final ImageUploadStatus status;
@@ -46,6 +51,20 @@ class SellImage extends Equatable {
   /// Cloudinary public_id. Used for targeted deletes/transforms.
   /// Set on successful Edge Function response. Null until uploaded.
   final String? publicId;
+
+  /// Image width in pixels (post-Cloudinary). Used for thumbnail aspect ratios.
+  final int? width;
+
+  /// Image height in pixels (post-Cloudinary). Used for thumbnail aspect ratios.
+  final int? height;
+
+  /// Byte size after Cloudinary processing. Used for analytics and
+  /// R-26 quality-score gate.
+  final int? bytes;
+
+  /// Storage format Cloudinary settled on (e.g. `jpg`, `webp`). Useful for
+  /// analytics.
+  final String? format;
 
   /// l10n key for the current error, null when no error.
   final String? errorKey;
@@ -70,6 +89,10 @@ class SellImage extends Equatable {
     String? Function()? storagePath,
     String? Function()? deliveryUrl,
     String? Function()? publicId,
+    int? Function()? width,
+    int? Function()? height,
+    int? Function()? bytes,
+    String? Function()? format,
     String? Function()? errorKey,
     int? userRetryCount,
     bool? isRetryable,
@@ -81,6 +104,10 @@ class SellImage extends Equatable {
       storagePath: storagePath != null ? storagePath() : this.storagePath,
       deliveryUrl: deliveryUrl != null ? deliveryUrl() : this.deliveryUrl,
       publicId: publicId != null ? publicId() : this.publicId,
+      width: width != null ? width() : this.width,
+      height: height != null ? height() : this.height,
+      bytes: bytes != null ? bytes() : this.bytes,
+      format: format != null ? format() : this.format,
       errorKey: errorKey != null ? errorKey() : this.errorKey,
       userRetryCount: userRetryCount ?? this.userRetryCount,
       isRetryable: isRetryable ?? this.isRetryable,
@@ -88,9 +115,12 @@ class SellImage extends Equatable {
   }
 
   /// Serialise to JSON for draft persistence.
+  ///
+  /// [localPath] is intentionally omitted — device paths are session-local and
+  /// may be invalid after an app restart. Restored images render from
+  /// [deliveryUrl] only (see [DraftPersistenceService]).
   Map<String, Object?> toJson() => {
     'id': id,
-    'localPath': localPath,
     'storagePath': storagePath,
     'deliveryUrl': deliveryUrl,
     'publicId': publicId,
@@ -100,10 +130,12 @@ class SellImage extends Equatable {
   ///
   /// Always restores to [ImageUploadStatus.uploaded] — drafts only persist
   /// images that have already been uploaded (see [DraftPersistenceService]).
+  /// [localPath] defaults to empty string since restored images are rendered
+  /// from [deliveryUrl].
   factory SellImage.fromJson(Map<String, dynamic> json) {
     return SellImage(
       id: json['id'] as String,
-      localPath: json['localPath'] as String,
+      localPath: json['localPath'] as String? ?? '',
       status: ImageUploadStatus.uploaded,
       storagePath: json['storagePath'] as String?,
       deliveryUrl: json['deliveryUrl'] as String?,
@@ -119,6 +151,10 @@ class SellImage extends Equatable {
     storagePath,
     deliveryUrl,
     publicId,
+    width,
+    height,
+    bytes,
+    format,
     errorKey,
     userRetryCount,
     isRetryable,

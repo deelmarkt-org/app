@@ -199,6 +199,10 @@ void main() {
         expect(patched.storagePath, 'uid/abc.jpg');
         expect(patched.deliveryUrl, 'https://cdn/abc.jpg');
         expect(patched.publicId, 'uid/abc');
+        expect(patched.width, 800);
+        expect(patched.height, 600);
+        expect(patched.bytes, 50000);
+        expect(patched.format, 'jpg');
         expect(patched.errorKey, isNull);
       },
     );
