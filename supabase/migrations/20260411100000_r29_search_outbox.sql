@@ -92,11 +92,18 @@ BEGIN
     IF TG_OP = 'INSERT' THEN
       v_event_type := 'listing.created';
     ELSE
-      -- UPDATE: classify by what changed, priority: sold > deleted > updated
+      -- UPDATE: classify by what changed.
+      -- Priority: sold > deleted > reactivated > updated.
+      -- Reactivation (is_active: false→true or is_sold: true→false) is treated
+      -- as 'listing.created' so the EF busts search caches immediately,
+      -- making the listing visible in results without waiting for TTL expiry.
       IF NEW.is_sold = true AND (OLD.is_sold IS DISTINCT FROM true) THEN
         v_event_type := 'listing.sold';
       ELSIF NEW.is_active = false AND (OLD.is_active IS DISTINCT FROM false) THEN
         v_event_type := 'listing.deleted';
+      ELSIF (NEW.is_active = true AND OLD.is_active = false)
+         OR (NEW.is_sold  = false AND OLD.is_sold  = true) THEN
+        v_event_type := 'listing.created';  -- reactivated → must appear in search
       ELSE
         v_event_type := 'listing.updated';
       END IF;
@@ -153,3 +160,39 @@ BEGIN
   RETURN v_count;
 END;
 $$;
+
+-- ---------------------------------------------------------------------------
+-- RPC: delete_processed_outbox_events
+-- ---------------------------------------------------------------------------
+-- Deletes processed outbox rows older than p_older_than_days days to prevent
+-- unbounded table growth and index bloat.
+-- Run daily via pg_cron (see TODO below).
+-- Returns the number of rows deleted.
+-- ---------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION delete_processed_outbox_events(
+  p_older_than_days INT DEFAULT 7
+)
+RETURNS INT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_count INT;
+BEGIN
+  DELETE FROM search_outbox
+  WHERE processed    = true
+    AND processed_at < now() - (p_older_than_days || ' days')::INTERVAL;
+
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+
+-- TODO(R-29 ops): Schedule daily outbox cleanup (pg_cron):
+-- SELECT cron.schedule(
+--   'delete-processed-outbox',
+--   '0 3 * * *',  -- daily at 03:00 UTC
+--   $$SELECT delete_processed_outbox_events(7)$$
+-- );
