@@ -38,6 +38,25 @@ class PhotoStepView extends ConsumerWidget {
             ),
           ),
         ),
+        // Show upload progress caption when uploads are in progress (§3.8)
+        if (state.hasPendingUploads)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
+            child: Semantics(
+              liveRegion: true,
+              child: Text(
+                'sell.uploadingProgress'.tr(
+                  namedArgs: {
+                    'current': '${state.uploadedCount}',
+                    'total': '${state.imageFiles.length}',
+                  },
+                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ),
         const SizedBox(height: Spacing.s3),
         Expanded(
           child: PhotoGrid(
