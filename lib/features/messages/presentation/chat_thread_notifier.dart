@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
-import 'package:deelmarkt/features/messages/presentation/chat_thread_optimistic.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_send_controller.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';

@@ -75,7 +75,6 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
       return Center(child: Text('profile.notLoggedIn'.tr()));
     }
 
-
     return ResponsiveBody(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(Spacing.s4),

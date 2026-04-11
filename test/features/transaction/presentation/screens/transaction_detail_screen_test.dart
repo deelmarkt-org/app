@@ -148,7 +148,9 @@ void main() {
     });
 
     testWidgets('tapping escrow step opens detail sheet', (tester) async {
-      final txn = _buildTransaction().copyWith(paidAt: DateTime(2026, 3, 19, 14, 30));
+      final txn = _buildTransaction().copyWith(
+        paidAt: DateTime(2026, 3, 19, 14, 30),
+      );
       await pumpTestScreen(tester, TransactionDetailScreen(transaction: txn));
 
       // Tap the first step label ("escrow.paid" key returned by easy_localization
