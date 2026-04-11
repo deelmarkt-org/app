@@ -76,8 +76,8 @@ class AuthRemoteDatasource {
 
   /// Initiates iDIN verification via the `initiate-idin` Edge Function.
   ///
-  /// Returns the raw [FunctionResponse]. The repository validates the
-  /// redirect URL against an allowlist before returning it to domain callers.
+  /// Returns the raw [FunctionResponse]. URL allowlist validation is enforced
+  /// by [InitiateIdinVerificationUseCase] in the domain layer, not here.
   Future<FunctionResponse> initiateIdin() {
     return _client.functions.invoke('initiate-idin');
   }

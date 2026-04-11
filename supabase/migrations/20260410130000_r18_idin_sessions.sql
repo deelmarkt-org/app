@@ -195,6 +195,6 @@ BEGIN
 END;
 $$;
 
--- Schedule daily cleanup (pg_cron — requires pg_cron extension enabled in Supabase)
+-- TODO(R-18 ops): Schedule hourly cleanup (pg_cron — requires pg_cron extension enabled in Supabase)
 -- SELECT cron.schedule('expire-idin-sessions', '0 * * * *', 'SELECT expire_stale_idin_sessions()');
 -- Note: uncomment and run once via Supabase SQL editor after enabling pg_cron.

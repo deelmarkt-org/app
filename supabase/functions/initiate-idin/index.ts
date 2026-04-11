@@ -25,7 +25,7 @@
  */
 
 import "@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "jsr:@supabase/supabase-js@2";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { jsonResponse } from "../_shared/response.ts";
 import { getRedisCredentials } from "../_shared/redis.ts";
@@ -174,8 +174,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
 // ---------------------------------------------------------------------------
 
 async function handleMockMode(
-  // deno-lint-ignore no-explicit-any
-  supabase: any,
+  supabase: SupabaseClient,
   userId: string,
   sessionToken: string,
 ): Promise<Response> {
