@@ -39,7 +39,8 @@ import 'package:deelmarkt/features/admin/presentation/screens/admin_shell_screen
 import 'package:deelmarkt/features/admin/presentation/screens/admin_dashboard_screen.dart';
 
 /// Placeholder for admin sub-screens not yet implemented (Phase B-D).
-const _adminComingSoon = Scaffold(body: Center(child: Text('Coming soon')));
+Widget _adminComingSoon(BuildContext context) =>
+    Scaffold(body: Center(child: Text('admin.comingSoon'.tr())));
 
 /// Central GoRouter configuration with deep link support + auth guard.
 ///
@@ -230,25 +231,25 @@ GoRouter _buildRouter({
           GoRoute(
             path: AppRoutes.adminFlaggedListings,
             name: 'admin-flagged-listings',
-            builder: (context, state) => _adminComingSoon,
+            builder: (context, state) => _adminComingSoon(context),
           ),
           GoRoute(
             path: AppRoutes.adminReportedUsers,
             name: 'admin-reported-users',
-            builder: (context, state) => _adminComingSoon,
+            builder: (context, state) => _adminComingSoon(context),
           ),
           GoRoute(
             path: AppRoutes.adminDisputes,
             name: 'admin-disputes',
-            builder: (context, state) => _adminComingSoon,
+            builder: (context, state) => _adminComingSoon(context),
             routes: [
               GoRoute(
                 path: ':id',
                 name: 'admin-dispute-detail',
                 redirect: _idGuard('id', AppRoutes.adminDisputes),
                 builder:
-                    (context, state) => const Scaffold(
-                      body: Center(child: Text('Coming soon')),
+                    (context, state) => Scaffold(
+                      body: Center(child: Text('admin.comingSoon'.tr())),
                     ),
               ),
             ],
@@ -256,12 +257,12 @@ GoRouter _buildRouter({
           GoRoute(
             path: AppRoutes.adminDsaNotices,
             name: 'admin-dsa-notices',
-            builder: (context, state) => _adminComingSoon,
+            builder: (context, state) => _adminComingSoon(context),
           ),
           GoRoute(
             path: AppRoutes.adminAppeals,
             name: 'admin-appeals',
-            builder: (context, state) => _adminComingSoon,
+            builder: (context, state) => _adminComingSoon(context),
           ),
         ],
       ),

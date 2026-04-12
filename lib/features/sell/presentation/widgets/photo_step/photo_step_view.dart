@@ -38,6 +38,12 @@ class PhotoStepView extends ConsumerWidget {
             ),
           ),
         ),
+        // Show upload progress caption when uploads are in progress (§3.8)
+        if (state.hasPendingUploads)
+          _UploadProgressCaption(
+            uploadedCount: state.uploadedCount + 1,
+            total: state.imageFiles.length,
+          ),
         const SizedBox(height: Spacing.s3),
         Expanded(
           child: PhotoGrid(
@@ -145,5 +151,44 @@ class PhotoStepView extends ConsumerWidget {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+/// Inline caption shown below the photo count while uploads are in progress.
+///
+/// Displays "Uploading X of N…" with a live-region so screen readers
+/// announce progress updates automatically (§10).
+class _UploadProgressCaption extends StatelessWidget {
+  const _UploadProgressCaption({
+    required this.uploadedCount,
+    required this.total,
+  });
+
+  /// 1-based count of the photo currently being uploaded.
+  final int uploadedCount;
+
+  /// Total number of photos in the current batch.
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: Spacing.s4,
+        right: Spacing.s4,
+        top: Spacing.s1,
+      ),
+      child: Semantics(
+        liveRegion: true,
+        child: Text(
+          'sell.uploadingProgress'.tr(
+            namedArgs: {'current': '$uploadedCount', 'total': '$total'},
+          ),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
   }
 }
