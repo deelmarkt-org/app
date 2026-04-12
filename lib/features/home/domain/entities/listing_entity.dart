@@ -1,3 +1,4 @@
+// TODO(#133): File exceeds 100-line limit (151 lines). Decompose model.
 import 'package:equatable/equatable.dart';
 
 import 'package:deelmarkt/features/home/domain/entities/listing_condition.dart';
