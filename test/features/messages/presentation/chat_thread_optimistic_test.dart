@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_optimistic.dart';
+
+import '../domain/usecases/_fake_message_repository.dart';
 
 void main() {
   group('ChatThreadOptimistic.buildTextMessage', () {
@@ -109,4 +113,72 @@ void main() {
       expect(result, isEmpty);
     });
   });
+
+  group('ChatThreadOptimistic.logSendFailure', () {
+    test('runs without throwing for any error type', () {
+      expect(
+        () => ChatThreadOptimistic.logSendFailure(
+          tag: 'sendMessage',
+          error: Exception('network timeout'),
+          stackTrace: StackTrace.current,
+        ),
+        returnsNormally,
+      );
+    });
+  });
+
+  group('ChatThreadOptimistic.subscribeRealtime', () {
+    test('forwards snapshots to the callback', () async {
+      final repo = FakeMessageRepository(
+        messages: [
+          MessageEntity(
+            id: 'msg-1',
+            conversationId: 'conv-A',
+            senderId: 'u1',
+            text: 'hi',
+            createdAt: DateTime(2026),
+          ),
+        ],
+      );
+
+      final received = <List<MessageEntity>>[];
+      final sub = ChatThreadOptimistic.subscribeRealtime(
+        repository: repo,
+        conversationId: 'conv-A',
+        onSnapshot: received.add,
+      );
+
+      await Future<void>.delayed(Duration.zero);
+      await sub.cancel();
+
+      expect(received, hasLength(1));
+      expect(received.first.first.id, 'msg-1');
+    });
+
+    test('handles stream error without rethrowing', () async {
+      final controller = StreamController<List<MessageEntity>>();
+      final errorRepo = _ErrorStreamRepository(controller.stream);
+
+      final sub = ChatThreadOptimistic.subscribeRealtime(
+        repository: errorRepo,
+        conversationId: 'conv-err',
+        onSnapshot: (_) {},
+      );
+
+      controller.addError(Exception('stream error'));
+      await Future<void>.delayed(Duration.zero);
+      await sub.cancel();
+      await controller.close();
+      // No exception propagated — logSendFailure swallows it.
+    });
+  });
+}
+
+/// Minimal MessageRepository that exposes a pre-built stream for error testing.
+class _ErrorStreamRepository extends FakeMessageRepository {
+  _ErrorStreamRepository(this._stream);
+  final Stream<List<MessageEntity>> _stream;
+
+  @override
+  Stream<List<MessageEntity>> watchMessages(String conversationId) => _stream;
 }
