@@ -18,12 +18,13 @@ abstract final class ChatThreadOptimistic {
     required String conversationId,
     required String text,
   }) {
+    final now = DateTime.now();
     return MessageEntity(
-      id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+      id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
       senderId: kCurrentUserIdStub,
       text: text,
-      createdAt: DateTime.now(),
+      createdAt: now,
     );
   }
 
@@ -33,15 +34,16 @@ abstract final class ChatThreadOptimistic {
     required String conversationId,
     required int amountCents,
   }) {
+    final now = DateTime.now();
     return MessageEntity(
-      id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+      id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
       senderId: kCurrentUserIdStub,
       text: (amountCents / 100).toStringAsFixed(2),
       type: MessageType.offer,
       offerAmountCents: amountCents,
       offerStatus: OfferStatus.pending,
-      createdAt: DateTime.now(),
+      createdAt: now,
     );
   }
 
