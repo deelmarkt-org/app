@@ -11,6 +11,16 @@ import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service
 /// Path pattern: `avatars/<userId>/<timestamp>.<ext>`
 /// RLS enforces folder-level isolation per user.
 ///
+/// TODO(#148): `avatars` bucket + RLS must be provisioned by reso before
+/// this service is used in production. Until then, [MockAvatarUploadService]
+/// is used via the `useMockDataProvider` gate in [avatarUploadServiceProvider].
+///
+/// TODO(#148): Decide public vs private bucket before provisioning.
+/// `getPublicUrl()` returns a URL that 403s if the bucket is private (GDPR
+/// concern for user PII). Options: public bucket, signed URL with TTL, or
+/// Cloudinary pipeline like listings-images. Agree with reso before creating
+/// the bucket migration.
+///
 /// Reference: docs/screens/07-profile/01-own-profile.md
 class SupabaseAvatarUploadService implements AvatarUploadService {
   SupabaseAvatarUploadService(this._client);
@@ -20,7 +30,8 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
   static const _bucket = 'avatars';
 
   /// Maximum file size: 15 MiB (matches Storage bucket limit).
-  static const _maxFileSizeBytes = 15 * 1024 * 1024;
+  // ignore: avoid_field_initializers_in_const_classes
+  static const maxFileSizeBytes = 15 * 1024 * 1024;
 
   /// Allowed image file extensions.
   static const _allowedExtensions = {'jpg', 'jpeg', 'png', 'webp', 'heic'};
@@ -39,7 +50,7 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
 
     final file = File(filePath);
 
-    _validateFile(file);
+    await _validateFile(file);
 
     final extension = p.extension(filePath).replaceFirst('.', '').toLowerCase();
     final storagePath =
@@ -56,7 +67,7 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
     return _client.storage.from(_bucket).getPublicUrl(storagePath);
   }
 
-  void _validateFile(File file) {
+  Future<void> _validateFile(File file) async {
     final extension =
         p.extension(file.path).replaceFirst('.', '').toLowerCase();
 
@@ -67,11 +78,11 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
       );
     }
 
-    final size = file.lengthSync();
-    if (size > _maxFileSizeBytes) {
+    final size = await file.length();
+    if (size > maxFileSizeBytes) {
       throw FormatException(
         'Image too large: ${(size / 1024 / 1024).toStringAsFixed(1)} MB. '
-        'Maximum: ${_maxFileSizeBytes ~/ 1024 ~/ 1024} MB',
+        'Maximum: ${maxFileSizeBytes ~/ 1024 ~/ 1024} MB',
       );
     }
   }

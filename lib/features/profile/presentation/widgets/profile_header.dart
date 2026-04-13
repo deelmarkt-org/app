@@ -58,7 +58,11 @@ class ProfileHeader extends ConsumerWidget {
     if (source == null || !context.mounted) return;
 
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: source);
+    // requestFullMetadata: false strips EXIF (GPS location) per GDPR.
+    final image = await picker.pickImage(
+      source: source,
+      requestFullMetadata: false,
+    );
 
     if (image != null && context.mounted) {
       try {
