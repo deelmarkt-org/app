@@ -202,7 +202,7 @@ main          ← production-ready, protected, never push directly
 - Branch naming: `feature/`, `fix/`, `chore/`, `docs/` prefix
 - One epic = one or more feature branches
 - Delete branch after merge
-- **Never manually resolve `pubspec.lock` conflicts** — accept either side, then run `flutter pub get`. Flutter resolves to the highest compatible versions automatically. Manual resolution repeatedly causes silent downgrades.
+- **Never manually resolve `pubspec.lock` conflicts** — resolve `pubspec.yaml` first, accept either side of the `pubspec.lock` conflict, then run `flutter pub upgrade`. This ensures Flutter resolves to the highest compatible versions and prevents silent downgrades.
 
 ### 5.3 Commit Messages
 
