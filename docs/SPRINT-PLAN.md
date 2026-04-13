@@ -121,9 +121,9 @@ The agent will:
 - [x] `R-15` Biometric auth (Face ID / Fingerprint) — works on iOS + Android *(implemented in `AuthRepositoryImpl.loginWithBiometric`)*
 - [x] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts *(configured in `supabase/config.toml` `[auth.rate_limit]` section)*
 - [x] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it *(`kyc_level` enum + index in migration; `CheckKycRequiredUseCase` logic; `KycPromptNotifier` VM)*
-- [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing *(branch: `feature/reso-E02-r13-auth-otp`)*
+- [x] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing ✅ PR #132 *(needs `config.toml` entry for `initiate-idin` EF)*
 - [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
-- [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data *(branch: `feature/reso-E02-r13-auth-otp`; EF implemented, needs `user-data-exports` bucket + RLS)*
+- [x] `R-21` Data export endpoint (GDPR portability) — JSON export of user data ✅ PR #132 *(needs `config.toml` entry for `export-user-data` EF + `user-data-exports` storage bucket)*
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
 
