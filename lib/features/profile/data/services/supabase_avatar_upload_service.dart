@@ -30,7 +30,6 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
   static const _bucket = 'avatars';
 
   /// Maximum file size: 15 MiB (matches Storage bucket limit).
-  // ignore: avoid_field_initializers_in_const_classes
   static const maxFileSizeBytes = 15 * 1024 * 1024;
 
   /// Allowed image file extensions.

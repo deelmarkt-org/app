@@ -36,28 +36,22 @@ class DeleteAddressDialog extends StatelessWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(bottom: Spacing.s2),
-          child: Semantics(
-            button: true,
-            child: DeelButton(
-              label: 'action.cancel'.tr(),
-              onPressed: () => Navigator.of(context).pop(),
-              variant: DeelButtonVariant.ghost,
-              size: DeelButtonSize.medium,
-              fullWidth: false,
-            ),
+          child: DeelButton(
+            label: 'action.cancel'.tr(),
+            onPressed: () => Navigator.of(context).pop(),
+            variant: DeelButtonVariant.ghost,
+            size: DeelButtonSize.medium,
+            fullWidth: false,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: Spacing.s2),
-          child: Semantics(
-            button: true,
-            child: DeelButton(
-              label: 'action.delete'.tr(),
-              onPressed: () => Navigator.of(context).pop(true),
-              variant: DeelButtonVariant.destructive,
-              size: DeelButtonSize.medium,
-              fullWidth: false,
-            ),
+          child: DeelButton(
+            label: 'action.delete'.tr(),
+            onPressed: () => Navigator.of(context).pop(true),
+            variant: DeelButtonVariant.destructive,
+            size: DeelButtonSize.medium,
+            fullWidth: false,
           ),
         ),
       ],

@@ -115,9 +115,19 @@ class SettingsScreen extends ConsumerWidget {
                 address,
               );
               if (confirmed == true && context.mounted) {
-                await ref
-                    .read(settingsNotifierProvider.notifier)
-                    .deleteAddress(address);
+                try {
+                  await ref
+                      .read(settingsNotifierProvider.notifier)
+                      .deleteAddress(address);
+                } on Object catch (_) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('settings.deleteAddressFailed'.tr()),
+                      ),
+                    );
+                  }
+                }
               }
             },
           ),

@@ -15,46 +15,54 @@ import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
 /// the selected image via [ProfileNotifier.uploadAvatar].
 ///
 /// Reference: docs/screens/07-profile/01-own-profile.md
+/// Diameter of the upload spinner overlay — matches [DeelAvatarSize.large].
+const _kAvatarSpinnerSize = 80.0;
+
 class ProfileHeader extends ConsumerWidget {
   const ProfileHeader({required this.user, super.key});
 
   final UserEntity user;
 
-  Future<void> _showImagePicker(BuildContext context, WidgetRef ref) async {
-    final source = await showModalBottomSheet<ImageSource>(
+  static Future<ImageSource?> _pickSource(BuildContext context) {
+    return showModalBottomSheet<ImageSource>(
       context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(Spacing.s4),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    'profile.pickPhoto'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge,
+      builder:
+          (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.s4),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      'profile.pickPhoto'.tr(),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
                 ),
-              ),
-              ListTile(
-                leading: Icon(PhosphorIcons.camera()),
-                title: Text('profile.takePhoto'.tr()),
-                onTap: () => Navigator.of(context).pop(ImageSource.camera),
-              ),
-              ListTile(
-                leading: Icon(PhosphorIcons.images()),
-                title: Text('profile.chooseFromGallery'.tr()),
-                onTap: () => Navigator.of(context).pop(ImageSource.gallery),
-              ),
-              const SizedBox(height: Spacing.s2),
-            ],
+                ListTile(
+                  leading: Icon(PhosphorIcons.camera()),
+                  title: Text('profile.takePhoto'.tr()),
+                  onTap: () => Navigator.of(context).pop(ImageSource.camera),
+                ),
+                ListTile(
+                  leading: Icon(PhosphorIcons.images()),
+                  title: Text('profile.chooseFromGallery'.tr()),
+                  onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+                ),
+                const SizedBox(height: Spacing.s2),
+              ],
+            ),
           ),
-        );
-      },
     );
+  }
 
+  Future<void> _showImagePicker(BuildContext context, WidgetRef ref) async {
+    // H1: prevent concurrent uploads — taps pass through the spinner overlay.
+    if (ref.read(profileNotifierProvider).isUploadingAvatar) return;
+
+    final source = await _pickSource(context);
     if (source == null || !context.mounted) return;
 
     final picker = ImagePicker();
@@ -101,8 +109,8 @@ class ProfileHeader extends ConsumerWidget {
               Semantics(
                 label: 'profile.avatarUploading'.tr(),
                 child: const SizedBox(
-                  width: 80,
-                  height: 80,
+                  width: _kAvatarSpinnerSize,
+                  height: _kAvatarSpinnerSize,
                   child: CircularProgressIndicator(strokeWidth: 3),
                 ),
               ),
