@@ -1,0 +1,70 @@
+import 'dart:io';
+
+import 'package:path/path.dart' as p;
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service.dart';
+
+/// Uploads avatar images to the `avatars` Supabase Storage bucket.
+///
+/// Path pattern: `avatars/<userId>/<timestamp>.<ext>`
+/// RLS enforces folder-level isolation per user.
+///
+/// Reference: docs/screens/07-profile/01-own-profile.md
+class SupabaseAvatarUploadService implements AvatarUploadService {
+  SupabaseAvatarUploadService(this._client);
+
+  final SupabaseClient _client;
+
+  static const _bucket = 'avatars';
+
+  /// Maximum file size: 15 MiB (matches Storage bucket limit).
+  static const _maxFileSizeBytes = 15 * 1024 * 1024;
+
+  /// Allowed image file extensions.
+  static const _allowedExtensions = {'jpg', 'jpeg', 'png', 'webp', 'heic'};
+
+  @override
+  Future<String> upload({
+    required String userId,
+    required String filePath,
+  }) async {
+    final file = File(filePath);
+
+    _validateFile(file);
+
+    final extension = p.extension(filePath).replaceFirst('.', '').toLowerCase();
+    final storagePath =
+        '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
+
+    await _client.storage
+        .from(_bucket)
+        .upload(
+          storagePath,
+          file,
+          fileOptions: const FileOptions(upsert: true),
+        );
+
+    return _client.storage.from(_bucket).getPublicUrl(storagePath);
+  }
+
+  void _validateFile(File file) {
+    final extension =
+        p.extension(file.path).replaceFirst('.', '').toLowerCase();
+
+    if (!_allowedExtensions.contains(extension)) {
+      throw FormatException(
+        'Unsupported image format: $extension. '
+        'Allowed: ${_allowedExtensions.join(', ')}',
+      );
+    }
+
+    final size = file.lengthSync();
+    if (size > _maxFileSizeBytes) {
+      throw FormatException(
+        'Image too large: ${(size / 1024 / 1024).toStringAsFixed(1)} MB. '
+        'Maximum: ${_maxFileSizeBytes ~/ 1024 ~/ 1024} MB',
+      );
+    }
+  }
+}

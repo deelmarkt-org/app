@@ -160,10 +160,10 @@ The agent will:
 | [#47](https://github.com/deelmarkt-org/app/issues/47) | ~~`[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)**~~ | belengaz | — | ✅ PR #57 |
 | [#48](https://github.com/deelmarkt-org/app/issues/48) | `[R]` Wire iDIN to Edge Function | reso | R-18 iDIN integration | 3–4 |
 | [#49](https://github.com/deelmarkt-org/app/issues/49) | `[R]` 30-day soft-delete grace period | reso | — | 5–8 |
-| [#50](https://github.com/deelmarkt-org/app/issues/50) | `[P]` Wire address form navigation in Settings | pizmam | — | 5–8 |
-| [#51](https://github.com/deelmarkt-org/app/issues/51) | `[P]` Wire sell screen navigation from empty listings | pizmam | P-24 | 5–8 |
-| [#52](https://github.com/deelmarkt-org/app/issues/52) | `[P]` Wire listing detail navigation from profile | pizmam | B-51 | 5–8 |
-| [#53](https://github.com/deelmarkt-org/app/issues/53) | `[P]` Wire avatar picker navigation | pizmam | — | 9–10 |
+| [#50](https://github.com/deelmarkt-org/app/issues/50) | ~~`[P]` Wire address form navigation in Settings~~ | pizmam | — | ✅ PR #feature/pizmam-deferred-nav-wiring |
+| [#51](https://github.com/deelmarkt-org/app/issues/51) | ~~`[P]` Wire sell screen navigation from empty listings~~ | pizmam | P-24 | ✅ PR #feature/pizmam-deferred-nav-wiring |
+| [#52](https://github.com/deelmarkt-org/app/issues/52) | ~~`[P]` Wire listing detail navigation from profile~~ | pizmam | B-51 | ✅ PR #feature/pizmam-deferred-nav-wiring |
+| [#53](https://github.com/deelmarkt-org/app/issues/53) | ~~`[P]` Wire avatar picker navigation~~ | pizmam | — | ✅ PR #feature/pizmam-deferred-nav-wiring |
 
 ---
 

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_avatar_upload_service.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
 
 /// Creates a container with mock data, subscribes to keep the provider alive,
@@ -96,6 +97,80 @@ void main() {
 
       final repo = container.read(reviewRepositoryProvider);
       expect(repo, isNotNull);
+    });
+  });
+
+  group('ProfileNotifier.uploadAvatar (#53)', () {
+    test(
+      'sets isUploadingAvatar true during upload then false on success',
+      () async {
+        final container = await _loadedContainer();
+        addTearDown(container.dispose);
+
+        var seenUploading = false;
+        container.listen(profileNotifierProvider, (_, state) {
+          if (state.isUploadingAvatar) seenUploading = true;
+        });
+
+        await container
+            .read(profileNotifierProvider.notifier)
+            .uploadAvatar('/tmp/avatar.jpg');
+
+        expect(seenUploading, isTrue);
+        expect(
+          container.read(profileNotifierProvider).isUploadingAvatar,
+          isFalse,
+        );
+      },
+    );
+
+    test('uploadAvatar success updates user.avatarUrl in state', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      final previousUrl =
+          container.read(profileNotifierProvider).user.requireValue?.avatarUrl;
+
+      await container
+          .read(profileNotifierProvider.notifier)
+          .uploadAvatar('/tmp/new_avatar.png');
+
+      final updatedUrl =
+          container.read(profileNotifierProvider).user.requireValue?.avatarUrl;
+
+      // MockAvatarUploadService returns a fake Cloudinary URL containing
+      // the userId; the mock user repo echo-returns it via updateProfile().
+      expect(updatedUrl, isNotNull);
+      expect(updatedUrl, isNot(equals(previousUrl)));
+      expect(updatedUrl, startsWith('https://'));
+    });
+
+    test('uploadAvatar with null user throws StateError', () async {
+      // Container with no load() completion — user is still null.
+      final container = ProviderContainer(
+        overrides: [
+          useMockDataProvider.overrideWithValue(true),
+          // Override with a service that would succeed if user existed.
+          avatarUploadServiceProvider.overrideWithValue(
+            MockAvatarUploadService(),
+          ),
+        ],
+      )..listen(profileNotifierProvider, (_, _) {});
+      addTearDown(container.dispose);
+
+      // Read immediately before the async load() populates user.
+      // The notifier starts with user = AsyncValue.loading(), so userId is null.
+      expect(
+        () => container
+            .read(profileNotifierProvider.notifier)
+            .uploadAvatar('/tmp/avatar.jpg'),
+        throwsA(isA<StateError>()),
+      );
+    });
+
+    test('isUploadingAvatar defaults to false in initial ProfileState', () {
+      const state = ProfileState();
+      expect(state.isUploadingAvatar, isFalse);
     });
   });
 }

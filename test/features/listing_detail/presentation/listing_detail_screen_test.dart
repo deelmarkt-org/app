@@ -7,6 +7,7 @@ import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/listing_detail_screen.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_action_bar.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_loading_view.dart';
+import 'package:deelmarkt/features/listing_detail/presentation/widgets/detail_seller_card.dart';
 import 'package:deelmarkt/features/listing_detail/presentation/widgets/sold_overlay.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
@@ -60,6 +61,22 @@ void main() {
 
       expect(find.byType(SoldOverlay), findsNothing);
       expect(find.byType(DetailActionBar), findsOneWidget);
+    });
+
+    testWidgets('#52 — seller card is rendered and onViewProfile is wired', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildScreen());
+      await tester.pumpAndSettle();
+
+      // DetailSellerCard may be off-screen in a small viewport — use
+      // skipOffstage: false to find it anywhere in the widget tree.
+      final cardFinder = find.byType(DetailSellerCard, skipOffstage: false);
+      expect(cardFinder, findsOneWidget);
+
+      // The seller card has a wired onViewProfile (InkWell is tappable).
+      final card = tester.widget<DetailSellerCard>(cardFinder);
+      expect(card.onViewProfile, isNotNull);
     });
 
     testWidgets('expanded width renders 2-column layout', (tester) async {

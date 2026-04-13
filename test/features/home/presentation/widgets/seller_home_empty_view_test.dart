@@ -84,5 +84,29 @@ void main() {
 
       expect(find.byType(CustomScrollView), findsOneWidget);
     });
+
+    // Task #51: sell-from-empty navigation wiring
+    testWidgets('#51 — DeelButton label is home.seller.startSelling', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
+      final button = tester.widget<DeelButton>(find.byType(DeelButton));
+      // tr() returns key path in test env (translations not loaded).
+      expect(button.label, 'home.seller.startSelling');
+
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('#51 — DeelButton onPressed is not null', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.pump();
+
+      final button = tester.widget<DeelButton>(find.byType(DeelButton));
+      expect(button.onPressed, isNotNull);
+
+      await tester.pumpAndSettle();
+    });
   });
 }

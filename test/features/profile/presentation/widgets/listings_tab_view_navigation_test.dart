@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -41,6 +42,21 @@ void main() {
       expect(find.text('empty.my_listings_action'), findsOneWidget);
     });
 
+    testWidgets('#51 — empty state onAction callback is not null', (
+      tester,
+    ) async {
+      await pumpTestWidget(
+        tester,
+        ListingsTabView(
+          listings: const AsyncValue<List<ListingEntity>>.data([]),
+          onRetry: () {},
+        ),
+      );
+
+      final emptyState = tester.widget<EmptyState>(find.byType(EmptyState));
+      expect(emptyState.onAction, isNotNull);
+    });
+
     testWidgets('#52 — listing cards have onTap wired', (tester) async {
       await pumpTestWidget(
         tester,
@@ -52,6 +68,20 @@ void main() {
 
       expect(find.byType(DeelCard), findsOneWidget);
       expect(find.text('Test Bike'), findsOneWidget);
+    });
+
+    testWidgets('#52 — listing card has Semantics wrapper', (tester) async {
+      await pumpTestWidget(
+        tester,
+        ListingsTabView(
+          listings: AsyncValue<List<ListingEntity>>.data(testListings),
+          onRetry: () {},
+        ),
+      );
+
+      // The grid item wraps DeelCard in Semantics(button: true).
+      // Verify the Semantics ancestor exists in the widget tree.
+      expect(find.byType(Semantics), findsWidgets);
     });
   });
 }

@@ -306,6 +306,8 @@
     "addAddress": "Adres toevoegen",
     "editAddress": "Adres bewerken",
     "addressSaved": "Adres opgeslagen",
+    "deleteAddressTitle": "Adres verwijderen?",
+    "deleteAddressBody": "Dit adres wordt permanent verwijderd.",
     "notifications": "Meldingen",
     "messages": "Berichten",
     "offers": "Biedingen",
@@ -561,6 +563,8 @@
     "takePhoto": "Maak een foto",
     "chooseFromGallery": "Kies uit galerij",
     "photoSelected": "Foto geselecteerd",
+    "avatarUploading": "Foto uploaden...",
+    "avatarUploadFailed": "Foto uploaden mislukt",
     "deletedUser": "Verwijderde gebruiker"
   },
   "review": {

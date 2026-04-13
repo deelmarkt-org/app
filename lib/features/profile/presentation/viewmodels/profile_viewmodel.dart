@@ -15,21 +15,25 @@ class ProfileState {
     this.user = const AsyncValue.loading(),
     this.listings = const AsyncValue.loading(),
     this.reviews = const AsyncValue.loading(),
+    this.isUploadingAvatar = false,
   });
 
   final AsyncValue<UserEntity?> user;
   final AsyncValue<List<ListingEntity>> listings;
   final AsyncValue<List<ReviewEntity>> reviews;
+  final bool isUploadingAvatar;
 
   ProfileState copyWith({
     AsyncValue<UserEntity?>? user,
     AsyncValue<List<ListingEntity>>? listings,
     AsyncValue<List<ReviewEntity>>? reviews,
+    bool? isUploadingAvatar,
   }) {
     return ProfileState(
       user: user ?? this.user,
       listings: listings ?? this.listings,
       reviews: reviews ?? this.reviews,
+      isUploadingAvatar: isUploadingAvatar ?? this.isUploadingAvatar,
     );
   }
 }
@@ -73,5 +77,46 @@ class ProfileNotifier extends _$ProfileNotifier {
       listings: results[0] as AsyncValue<List<ListingEntity>>,
       reviews: results[1] as AsyncValue<List<ReviewEntity>>,
     );
+  }
+
+  /// Uploads a new avatar image and updates the user profile.
+  ///
+  /// Sets [isUploadingAvatar] during the upload. On failure,
+  /// reverts [user.avatarUrl] to the previous value.
+  Future<void> uploadAvatar(String imagePath) async {
+    final previousUrl = state.user.valueOrNull?.avatarUrl;
+    state = state.copyWith(isUploadingAvatar: true);
+
+    try {
+      final userId = state.user.valueOrNull?.id;
+      if (userId == null) {
+        throw StateError('Cannot upload avatar: user not loaded');
+      }
+
+      final service = ref.read(avatarUploadServiceProvider);
+      final publicUrl = await service.upload(
+        userId: userId,
+        filePath: imagePath,
+      );
+
+      final userRepo = ref.read(userRepositoryProvider);
+      final updated = await userRepo.updateProfile(avatarUrl: publicUrl);
+
+      state = state.copyWith(
+        user: AsyncValue.data(updated),
+        isUploadingAvatar: false,
+      );
+    } on Exception {
+      final currentUser = state.user.valueOrNull;
+      if (currentUser != null) {
+        state = state.copyWith(
+          user: AsyncValue.data(currentUser.copyWith(avatarUrl: previousUrl)),
+          isUploadingAvatar: false,
+        );
+      } else {
+        state = state.copyWith(isUploadingAvatar: false);
+      }
+      rethrow;
+    }
   }
 }

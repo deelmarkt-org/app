@@ -75,6 +75,9 @@ dependencies:
   # Image picker — camera + gallery for avatar upload (P-53)
   image_picker: ^1.1.2
 
+  # File path utilities — used by SupabaseAvatarUploadService for extension parsing
+  path: ^1.9.0
+
 
 dev_dependencies:
   flutter_test:
