@@ -106,7 +106,7 @@ class ProfileNotifier extends _$ProfileNotifier {
         user: AsyncValue.data(updated),
         isUploadingAvatar: false,
       );
-    } on Exception {
+    } on Object catch (_) {
       final currentUser = state.user.valueOrNull;
       if (currentUser != null) {
         state = state.copyWith(

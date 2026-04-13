@@ -65,7 +65,7 @@ class ProfileHeader extends ConsumerWidget {
         await ref
             .read(profileNotifierProvider.notifier)
             .uploadAvatar(image.path);
-      } on Exception {
+      } on Object catch (_) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('profile.avatarUploadFailed'.tr())),
