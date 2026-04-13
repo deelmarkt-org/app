@@ -57,14 +57,17 @@ function listingDetailKey(listingId: string): string {
   return `listing:detail:${listingId}`;
 }
 
+function userProfileKey(sellerId: string): string {
+  return `user:profile:${sellerId}`;
+}
+
 /** Increments the search cache version, busting all paginated search caches. */
 async function bustSearchCache(
-  redisUrl: string,
-  redisToken: string,
+  creds: { url: string; token: string },
 ): Promise<void> {
-  const response = await fetch(`${redisUrl}/incr/search:cache:version`, {
+  const response = await fetch(`${creds.url}/incr/search:cache:version`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${redisToken}` },
+    headers: { Authorization: `Bearer ${creds.token}` },
   });
   if (!response.ok) {
     throw new Error(
@@ -141,32 +144,49 @@ Deno.serve(async (req: Request): Promise<Response> => {
   // Deduplication avoids redundant Redis calls when the same listing has
   // multiple events in a single batch (e.g. updated → sold in quick succession).
   const detailKeysToDelete = new Set<string>();
+  const profileKeysToDelete = new Set<string>();
   let needsSearchBust = false;
+
+  // Track valid event IDs — malformed events (missing listing_id) are
+  // excluded from the mark batch so they stay unprocessed for investigation.
+  const validIds: string[] = [];
 
   for (const event of events) {
     const listingId = event.payload?.listing_id;
+    const sellerId = event.payload?.seller_id;
     if (!listingId) {
-      console.warn("Outbox event missing listing_id:", event.id);
+      console.warn("Outbox event missing listing_id — skipping:", event.id);
       continue;
     }
+    validIds.push(event.id);
 
     switch (event.event_type) {
       case "listing.sold":
       case "listing.deleted":
         detailKeysToDelete.add(listingDetailKey(listingId));
+        if (sellerId) profileKeysToDelete.add(userProfileKey(sellerId));
         needsSearchBust = true;
         break;
 
       case "listing.created":
         // Covers new listings and reactivations (is_active: false→true or
         // is_sold: true→false). Both must appear in search results immediately.
+        if (sellerId) profileKeysToDelete.add(userProfileKey(sellerId));
         needsSearchBust = true;
         break;
 
       case "listing.updated":
         detailKeysToDelete.add(listingDetailKey(listingId));
+        // Title/price changes affect search result cards — bust search cache
+        // so buyers see updated info within one cron cycle, not after TTL.
+        needsSearchBust = true;
         break;
     }
+  }
+
+  if (validIds.length === 0) {
+    console.warn("All events in batch were malformed — nothing to process");
+    return jsonResponse({ processed: 0, skipped: events.length });
   }
 
   // ── Execute all Redis operations in parallel ───────────────────────────
@@ -183,9 +203,18 @@ Deno.serve(async (req: Request): Promise<Response> => {
     );
   }
 
+  for (const key of profileKeysToDelete) {
+    tasks.push(
+      redisDel(redisCreds, key).then(() => {}).catch((err) => {
+        console.error(`Redis DEL failed for key ${key}:`, err);
+        cacheErrors++;
+      }),
+    );
+  }
+
   if (needsSearchBust) {
     tasks.push(
-      bustSearchCache(redisCreds.url, redisCreds.token).catch((err) => {
+      bustSearchCache(redisCreds).catch((err) => {
         console.error("Redis search cache bust failed:", err);
         cacheErrors++;
       }),
@@ -194,11 +223,23 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
   await Promise.all(tasks);
 
-  // ── Mark batch as processed ────────────────────────────────────────────
-  const allIds = events.map((e) => e.id);
+  // ── Only mark as processed when all cache ops succeeded ────────────────
+  // On cache failure, leave events unprocessed so the next cron run retries.
+  // This prevents stale caches from persisting silently after Redis outages.
+  if (cacheErrors > 0) {
+    console.error(
+      `process-search-outbox: ${cacheErrors} cache error(s) — ` +
+        `leaving ${validIds.length} events unprocessed for retry`,
+    );
+    return jsonResponse(
+      { processed: 0, cache_errors: cacheErrors, retrying: true },
+      500,
+    );
+  }
+
   const { error: markError } = await supabase.rpc(
     "mark_outbox_events_processed",
-    { p_ids: allIds },
+    { p_ids: validIds },
   );
 
   if (markError) {
@@ -207,15 +248,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
   }
 
   console.info(
-    `process-search-outbox: processed ${allIds.length} events` +
-      (cacheErrors > 0
-        ? ` (${cacheErrors} cache errors — events still marked processed)`
+    `process-search-outbox: processed ${validIds.length} events` +
+      (validIds.length < events.length
+        ? ` (${events.length - validIds.length} malformed — skipped)`
         : ""),
   );
 
   return jsonResponse({
-    processed: allIds.length,
-    cache_errors: cacheErrors,
+    processed: validIds.length,
+    skipped: events.length - validIds.length,
     search_busted: needsSearchBust,
+    profile_keys_busted: profileKeysToDelete.size,
   });
 });

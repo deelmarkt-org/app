@@ -113,6 +113,13 @@ public = false
 file_size_limit = "15MiB"
 allowed_mime_types = ["image/png", "image/jpeg", "image/webp", "image/heic"]
 
+# GDPR data exports bucket — R-21
+# Private; user can only read their own exports. Signed URL valid 24h.
+[storage.buckets.user-data-exports]
+public = false
+file_size_limit = "50MiB"
+allowed_mime_types = ["application/json"]
+
 # Allow connections via S3 compatible clients
 [storage.s3_protocol]
 enabled = true
@@ -525,3 +532,35 @@ enabled = true
 verify_jwt = true
 import_map = "./functions/image-upload-process/deno.json"
 entrypoint = "./functions/image-upload-process/index.ts"
+
+# R-18: iDIN identity verification initiation (E02 KYC).
+# verify_jwt = true — user must be authenticated to initiate verification.
+[functions.initiate-idin]
+enabled = true
+verify_jwt = true
+import_map = "./functions/initiate-idin/deno.json"
+entrypoint = "./functions/initiate-idin/index.ts"
+
+# R-21: GDPR Data Portability — export user data (Art. 20 GDPR).
+# verify_jwt = true — user exports their own data only.
+[functions.export-user-data]
+enabled = true
+verify_jwt = true
+import_map = "./functions/export-user-data/deno.json"
+entrypoint = "./functions/export-user-data/index.ts"
+
+# R-30: Search outbox → Redis cache invalidation cron.
+# verify_jwt = false — triggered by pg_cron via service_role header.
+[functions.process-search-outbox]
+enabled = true
+verify_jwt = false
+import_map = "./functions/process-search-outbox/deno.json"
+entrypoint = "./functions/process-search-outbox/index.ts"
+
+# R-37: Sanction notification — triggered by DB webhook on account_sanctions INSERT.
+# verify_jwt = false — auth via service_role check inside the handler.
+[functions.send-sanction-notification]
+enabled = true
+verify_jwt = false
+import_map = "./functions/send-sanction-notification/deno.json"
+entrypoint = "./functions/send-sanction-notification/index.ts"

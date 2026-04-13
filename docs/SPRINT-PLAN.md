@@ -175,8 +175,8 @@ The agent will:
 
 - [x] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown *(done by belengaz, PR #105 — Dart↔TS parity enforced by pre-commit)*
 - [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) ✅ PR #105 (EF) + PR #106 (service) + PR #111 (upload-on-pick queue)
-- [ ] `R-29` `search_outbox` table + trigger — events on listing CRUD *(branch: `feature/reso-E01-r29-search-outbox`)*
-- [ ] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted *(branch: `feature/reso-E01-r29-search-outbox`)*
+- [x] `R-29` `search_outbox` table + trigger — events on listing CRUD ✅ PR #135
+- [x] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted ✅ PR #135
 
 ### belengaz `[B]` — DB Schemas + Data Layer + Connected Screens
 
