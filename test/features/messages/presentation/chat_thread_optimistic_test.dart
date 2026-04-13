@@ -118,7 +118,7 @@ void main() {
     test('runs without throwing for any error type', () {
       expect(
         () => ChatThreadOptimistic.logSendFailure(
-          tag: 'sendMessage',
+          message: 'sendMessage',
           error: Exception('network timeout'),
           stackTrace: StackTrace.current,
         ),
