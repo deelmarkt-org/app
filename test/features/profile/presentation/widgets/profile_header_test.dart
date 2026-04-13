@@ -2,14 +2,51 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/profile_header.dart';
 import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
+
+// ---------------------------------------------------------------------------
+// ImagePicker mock — replaces the platform channel with a controllable stub.
+// ---------------------------------------------------------------------------
+
+class _MockImagePickerPlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements ImagePickerPlatform {
+  XFile? result;
+
+  @override
+  Future<XFile?> getImageFromSource({
+    required ImageSource source,
+    ImagePickerOptions options = const ImagePickerOptions(),
+  }) async => result;
+}
+
+// ---------------------------------------------------------------------------
+// Notifier stub — uploadAvatar always throws to exercise the error path.
+// ---------------------------------------------------------------------------
+
+class _ThrowingUploadNotifier extends ProfileNotifier {
+  @override
+  ProfileState build() => ProfileState(
+    user: AsyncValue.data(_testUser),
+    listings: const AsyncValue.data([]),
+    reviews: const AsyncValue.data([]),
+  );
+
+  @override
+  Future<void> uploadAvatar(String imagePath) async =>
+      throw Exception('simulated upload failure');
+}
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -234,6 +271,86 @@ void main() {
 
       final avatar = tester.widget<DeelAvatar>(find.byType(DeelAvatar));
       expect(avatar.onEditTap, isNotNull);
+    });
+
+    testWidgets(
+      'picking image via camera triggers uploadAvatar with no error snackbar',
+      (tester) async {
+        final mockPicker =
+            _MockImagePickerPlatform()..result = XFile('/mock/avatar.jpg');
+        ImagePickerPlatform.instance = mockPicker;
+        final originalPicker = ImagePickerPlatform.instance;
+        addTearDown(() => ImagePickerPlatform.instance = originalPicker);
+
+        await _pumpHeader(tester, _testUser);
+
+        await tester.tap(find.byType(DeelAvatar));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('profile.takePhoto'));
+        // Allow MockAvatarUploadService 300ms delay to complete.
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsNothing);
+      },
+    );
+
+    testWidgets('upload failure shows avatarUploadFailed snackbar', (
+      tester,
+    ) async {
+      final mockPicker =
+          _MockImagePickerPlatform()..result = XFile('/mock/avatar.jpg');
+      ImagePickerPlatform.instance = mockPicker;
+      final originalPicker = ImagePickerPlatform.instance;
+      addTearDown(() => ImagePickerPlatform.instance = originalPicker);
+
+      SharedPreferences.setMockInitialValues({});
+      await EasyLocalization.ensureInitialized();
+      await initializeDateFormatting('en');
+      await initializeDateFormatting('nl');
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            useMockDataProvider.overrideWithValue(true),
+            profileNotifierProvider.overrideWith(
+              () => _ThrowingUploadNotifier(),
+            ),
+          ],
+          child: EasyLocalization(
+            supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+            fallbackLocale: const Locale('en', 'US'),
+            path: 'assets/l10n',
+            child: MaterialApp(
+              theme: DeelmarktTheme.light,
+              home: Scaffold(
+                body: Builder(
+                  builder:
+                      (context) => MediaQuery(
+                        data: MediaQuery.of(
+                          context,
+                        ).copyWith(disableAnimations: true),
+                        child: SingleChildScrollView(
+                          child: ProfileHeader(user: _testUser),
+                        ),
+                      ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DeelAvatar));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('profile.takePhoto'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('profile.avatarUploadFailed'), findsOneWidget);
     });
   });
 }

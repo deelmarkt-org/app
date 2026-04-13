@@ -94,6 +94,10 @@ dev_dependencies:
   envied_generator: ^1.1.1
   mocktail: ^1.0.4
 
+  # Platform interface packages — required for ImagePickerPlatform test mocking
+  image_picker_platform_interface: any
+  plugin_platform_interface: any
+
 flutter:
   uses-material-design: true
 
