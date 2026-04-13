@@ -3,7 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/data/mock/mock_avatar_upload_service.dart';
+import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
+
+/// Avatar upload service that always throws [Exception] to simulate failure.
+class _ThrowingAvatarService implements AvatarUploadService {
+  @override
+  Future<String> upload({required String userId, required String filePath}) {
+    throw Exception('Simulated upload failure');
+  }
+}
 
 /// Creates a container with mock data, subscribes to keep the provider alive,
 /// and waits for the initial load to complete.
@@ -171,6 +180,41 @@ void main() {
     test('isUploadingAvatar defaults to false in initial ProfileState', () {
       const state = ProfileState();
       expect(state.isUploadingAvatar, isFalse);
+    });
+
+    test('uploadAvatar failure reverts avatarUrl to previous value', () async {
+      final container = ProviderContainer(
+        overrides: [
+          useMockDataProvider.overrideWithValue(true),
+          avatarUploadServiceProvider.overrideWithValue(
+            _ThrowingAvatarService(),
+          ),
+        ],
+      )..listen(profileNotifierProvider, (_, _) {});
+      addTearDown(container.dispose);
+
+      // Wait for the initial load to populate user.
+      await Future<void>.delayed(const Duration(milliseconds: 800));
+
+      final previousUrl =
+          container.read(profileNotifierProvider).user.requireValue?.avatarUrl;
+
+      // uploadAvatar rethrows after reverting — catch to inspect state.
+      await expectLater(
+        () => container
+            .read(profileNotifierProvider.notifier)
+            .uploadAvatar('/tmp/avatar.jpg'),
+        throwsException,
+      );
+
+      final afterUrl =
+          container.read(profileNotifierProvider).user.requireValue?.avatarUrl;
+
+      expect(afterUrl, equals(previousUrl));
+      expect(
+        container.read(profileNotifierProvider).isUploadingAvatar,
+        isFalse,
+      );
     });
   });
 }

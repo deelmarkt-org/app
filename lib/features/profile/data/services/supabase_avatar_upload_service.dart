@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path/path.dart' as p;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -29,6 +30,13 @@ class SupabaseAvatarUploadService implements AvatarUploadService {
     required String userId,
     required String filePath,
   }) async {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'SupabaseAvatarUploadService does not support web. '
+        'Use a web-specific implementation with Uint8List.',
+      );
+    }
+
     final file = File(filePath);
 
     _validateFile(file);
