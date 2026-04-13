@@ -26,6 +26,9 @@ import 'package:deelmarkt/features/profile/domain/repositories/review_repository
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
+import 'package:deelmarkt/features/profile/data/mock/mock_avatar_upload_service.dart';
+import 'package:deelmarkt/features/profile/data/services/supabase_avatar_upload_service.dart';
+import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service.dart';
 import 'package:deelmarkt/features/admin/data/mock/mock_admin_repository.dart';
 import 'package:deelmarkt/features/admin/data/supabase/supabase_admin_repository.dart';
 import 'package:deelmarkt/features/admin/domain/repositories/admin_repository.dart';
@@ -139,6 +142,16 @@ final sanctionRepositoryProvider = Provider<SanctionRepository>((ref) {
   final useMock = ref.watch(useMockDataProvider);
   if (useMock) return MockSanctionRepository();
   return SupabaseSanctionRepository(ref.watch(supabaseClientProvider));
+});
+
+/// Avatar upload service — mock or Supabase based on [useMockDataProvider].
+///
+/// Uploads avatar images to `avatars/<user_id>/<timestamp>.<ext>` in Storage.
+/// Mock mode returns a fake Cloudinary URL for development/testing.
+final avatarUploadServiceProvider = Provider<AvatarUploadService>((ref) {
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockAvatarUploadService();
+  return SupabaseAvatarUploadService(ref.watch(supabaseClientProvider));
 });
 
 /// DSA report repository — mock or Supabase based on [useMockDataProvider].

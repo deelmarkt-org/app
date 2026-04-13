@@ -427,6 +427,7 @@
     "addAddress": "Add address",
     "editAddress": "Edit address",
     "addressSaved": "Address saved",
+    "deleteAddressTitle": "Delete address?",
     "notifications": "Notifications",
     "messages": "Messages",
     "offers": "Offers",
@@ -561,6 +562,8 @@
     "takePhoto": "Take a photo",
     "chooseFromGallery": "Choose from gallery",
     "photoSelected": "Photo selected",
+    "avatarUploading": "Uploading photo...",
+    "avatarUploadFailed": "Photo upload failed",
     "deletedUser": "Deleted user"
   },
   "review": {
