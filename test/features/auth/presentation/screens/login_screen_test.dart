@@ -311,6 +311,97 @@ void main() {
     });
   });
 
+  group('LoginScreen — _handleAuthResult error snackbars', () {
+    /// Pumps screen with a [_MutableFakeLoginViewModel], then triggers
+    /// [_handleAuthResult] by updating the notifier's state.
+    Future<void> pumpAndSetResult(
+      WidgetTester tester,
+      AuthResult result,
+    ) async {
+      late _MutableFakeLoginViewModel notifier;
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            loginViewModelProvider.overrideWith(() {
+              return notifier = _MutableFakeLoginViewModel();
+            }),
+            authRepositoryProvider.overrideWithValue(mockRepo),
+          ],
+          child: const MaterialApp(home: LoginScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      notifier.setResult(result);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('shows network error SnackBar', (tester) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureNetworkError(message: 'err'),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows rate limited SnackBar', (tester) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureRateLimited(retryAfter: Duration(minutes: 5)),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows session expired SnackBar', (tester) async {
+      await pumpAndSetResult(tester, const AuthFailureSessionExpired());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows biometric failed SnackBar', (tester) async {
+      await pumpAndSetResult(tester, const AuthFailureBiometricFailed());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows generic SnackBar for BiometricUnavailable', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureBiometricUnavailable());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows generic SnackBar for AuthFailureUnknown', (
+      tester,
+    ) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureUnknown(message: 'unexpected'),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('OAuthCancelled result is silent — no SnackBar', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureOAuthCancelled());
+
+      expect(find.byType(SnackBar), findsNothing);
+    });
+
+    testWidgets('OAuthUnavailable result is silent — no SnackBar', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureOAuthUnavailable());
+
+      expect(find.byType(SnackBar), findsNothing);
+    });
+  });
+
   group('LoginScreen — accessibility', () {
     testWidgets('login button meets minimum touch target', (tester) async {
       await pumpLoginScreen(tester);
@@ -345,4 +436,23 @@ class _FakeLoginViewModel extends LoginViewModel {
 
   @override
   Future<void> loginWithBiometric({required String localizedReason}) async {}
+}
+
+/// Mutable fake that exposes [setResult] so tests can trigger [ref.listen].
+class _MutableFakeLoginViewModel extends LoginViewModel {
+  @override
+  LoginState build() => const LoginState();
+
+  @override
+  Future<void> init() async {}
+
+  @override
+  Future<void> submitLogin() async {}
+
+  @override
+  Future<void> loginWithBiometric({required String localizedReason}) async {}
+
+  void setResult(AuthResult result) {
+    state = state.copyWith(lastResult: () => result);
+  }
 }

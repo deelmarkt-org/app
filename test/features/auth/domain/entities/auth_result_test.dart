@@ -45,6 +45,43 @@ void main() {
       expect(a, equals(b));
     });
 
+    test('AuthFailureBiometricUnavailable equality', () {
+      const a = AuthFailureBiometricUnavailable();
+      const b = AuthFailureBiometricUnavailable();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureBiometricFailed equality', () {
+      const a = AuthFailureBiometricFailed();
+      const b = AuthFailureBiometricFailed();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureUnknown equality', () {
+      const a = AuthFailureUnknown(message: 'err');
+      const b = AuthFailureUnknown(message: 'err');
+      const c = AuthFailureUnknown(message: 'other');
+
+      expect(a, equals(b));
+      expect(a, isNot(equals(c)));
+    });
+
+    test('AuthFailureOAuthCancelled equality', () {
+      const a = AuthFailureOAuthCancelled();
+      const b = AuthFailureOAuthCancelled();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureOAuthUnavailable equality', () {
+      const a = AuthFailureOAuthUnavailable();
+      const b = AuthFailureOAuthUnavailable();
+
+      expect(a, equals(b));
+    });
+
     test('different subtypes are not equal', () {
       const success = AuthSuccess(userId: 'abc');
       const invalid = AuthFailureInvalidCredentials();
