@@ -8,6 +8,8 @@ import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart
 /// Simulates registration flow with delays. Accepts any 6-digit OTP.
 /// Toggle via provider override in dev builds.
 class MockAuthRepository implements AuthRepository {
+  static const String _mockUserId = 'mock-user-id';
+
   MockAuthRepository() {
     if (kReleaseMode) {
       throw StateError('MockAuthRepository cannot be used in release builds');
@@ -61,7 +63,7 @@ class MockAuthRepository implements AuthRepository {
     // Simulate invalid credentials for test convenience.
     final isInvalid = password == 'wrong'; // pragma: allowlist secret
     if (isInvalid) return const AuthFailureInvalidCredentials();
-    return const AuthSuccess(userId: 'mock-user-id');
+    return const AuthSuccess(userId: _mockUserId);
   }
 
   @override
@@ -69,7 +71,7 @@ class MockAuthRepository implements AuthRepository {
     required String localizedReason,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
-    return const AuthSuccess(userId: 'mock-user-id');
+    return const AuthSuccess(userId: _mockUserId);
   }
 
   @override
@@ -77,6 +79,12 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<BiometricMethod?> get availableBiometricMethod async => null;
+
+  @override
+  Future<AuthResult> loginWithOAuth(OAuthProvider provider) async {
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    return const AuthSuccess(userId: _mockUserId);
+  }
 
   @override
   Future<String> initiateIdinVerification() async {

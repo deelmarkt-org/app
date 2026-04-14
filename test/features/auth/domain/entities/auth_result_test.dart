@@ -66,6 +66,8 @@ void main() {
         AuthFailureBiometricFailed() => 'bio_fail',
         AuthFailureSessionExpired() => 'session',
         AuthFailureUnknown() => 'unknown',
+        AuthFailureOAuthCancelled() => 'oauth_cancelled',
+        AuthFailureOAuthUnavailable() => 'oauth_unavailable',
       };
       expect(label, 'success');
     });

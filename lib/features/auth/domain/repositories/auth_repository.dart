@@ -51,4 +51,13 @@ abstract interface class AuthRepository {
   /// Returns the redirect URL for the iDIN bank selection page.
   /// The URL MUST be validated against an allowlist before opening.
   Future<String> initiateIdinVerification();
+
+  // ── Social Login (P-44) ──
+
+  /// Sign in via Google or Apple OAuth.
+  ///
+  /// Opens the platform OAuth consent sheet. Returns [AuthFailureOAuthCancelled]
+  /// if the user dismisses it, or [AuthFailureOAuthUnavailable] when the provider
+  /// is not yet configured in Supabase.
+  Future<AuthResult> loginWithOAuth(OAuthProvider provider);
 }

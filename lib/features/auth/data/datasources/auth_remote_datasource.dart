@@ -81,4 +81,25 @@ class AuthRemoteDatasource {
   Future<FunctionResponse> initiateIdin() {
     return _client.functions.invoke('initiate-idin');
   }
+
+  // ── Social Login (P-44) ──
+
+  /// Opens the Google OAuth consent sheet.
+  /// Returns true on completion, false when the user cancels.
+  /// Throws [AuthException] when Google is not configured in Supabase.
+  Future<bool> signInWithGoogle() => _client.auth.signInWithOAuth(
+    OAuthProvider.google,
+    authScreenLaunchMode: LaunchMode.inAppBrowserView,
+  );
+
+  /// Opens the Apple Sign-In sheet.
+  /// Returns true on completion, false when the user cancels.
+  /// Throws [AuthException] when Apple is not configured in Supabase.
+  Future<bool> signInWithApple() => _client.auth.signInWithOAuth(
+    OAuthProvider.apple,
+    authScreenLaunchMode: LaunchMode.inAppBrowserView,
+  );
+
+  /// Returns the authenticated user from the current session, or null.
+  User? get currentUser => _client.auth.currentUser;
 }

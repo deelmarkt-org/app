@@ -224,7 +224,8 @@
     "welcomeSubtitle": "Log in om verder te gaan met veilig handelen.",
     "invalidCredentials": "Onjuist e-mailadres of wachtwoord",
     "forgotPasswordComingSoon": "Wachtwoord resetten komt binnenkort!",
-    "socialLoginComingSoon": "Inloggen via social media komt binnenkort!"
+    "socialLoginComingSoon": "Inloggen via social media komt binnenkort!",
+    "oauthUnavailable": "Sociaal inloggen is momenteel niet beschikbaar. Log in met e-mail."
   },
   "validation": {
     "email_required": "Voer je e-mailadres in",

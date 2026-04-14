@@ -13,6 +13,15 @@ mixin AuthErrorMapper {
 
   // ── Login error mappers (return AuthResult) ──────────────────────────
 
+  /// Maps OAuth-specific auth errors (provider disabled → unavailable, rest → login).
+  AuthResult mapOAuthAuthError(sb.AuthException e) {
+    final msg = e.message.toLowerCase();
+    if (msg.contains('provider') && msg.contains('disabled')) {
+      return const AuthFailureOAuthUnavailable();
+    }
+    return mapLoginAuthError(e);
+  }
+
   AuthResult mapLoginAuthError(sb.AuthException e) {
     final code = e.statusCode;
     if (code == '429') {

@@ -7,16 +7,8 @@ import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.
 import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_error_mapper.dart';
 
-/// Supabase-backed [AuthRepository] implementation.
-///
-/// Catches platform exceptions and translates them to domain
-/// [AppException] subtypes with l10n error keys.
-///
-/// Login methods return [AuthResult] (sealed class) instead of throwing,
-/// enabling exhaustive `switch` in the ViewModel.
-///
-/// Error mapping is extracted to [AuthErrorMapper] to keep this file
-/// under the 200-line limit per CLAUDE.md §2.1.
+/// Supabase-backed [AuthRepository]. Translates platform exceptions to domain
+/// [AuthResult] / [AppException] types. Error mapping logic lives in [AuthErrorMapper].
 class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
   AuthRepositoryImpl(this._datasource, {required this.biometricService});
   final AuthRemoteDatasource _datasource;
@@ -123,8 +115,6 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
     }
   }
 
-  // ── Login (P-16) ──
-
   @override
   Future<AuthResult> loginWithEmail({
     required String email,
@@ -185,4 +175,22 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
   @override
   Future<BiometricMethod?> get availableBiometricMethod =>
       biometricService.availableMethod;
+
+  @override
+  Future<AuthResult> loginWithOAuth(OAuthProvider provider) async {
+    try {
+      final completed = await switch (provider) {
+        OAuthProvider.google => _datasource.signInWithGoogle(),
+        OAuthProvider.apple => _datasource.signInWithApple(),
+      };
+      if (!completed) return const AuthFailureOAuthCancelled();
+      final userId = _datasource.currentUser?.id;
+      if (userId == null) return const AuthFailureOAuthCancelled();
+      return AuthSuccess(userId: userId);
+    } on sb.AuthException catch (e) {
+      return mapOAuthAuthError(e);
+    } on Object catch (e) {
+      return mapLoginGenericError(e);
+    }
+  }
 }

@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/view_models/login_view_model.dart';
+import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
 
 import '../../../../helpers/a11y_touch_target_utils.dart';
 
+class MockAuthRepository extends Mock implements AuthRepository {}
+
 void main() {
+  late MockAuthRepository mockRepo;
+
+  setUpAll(() {
+    registerFallbackValue(OAuthProvider.google);
+  });
+
+  setUp(() {
+    mockRepo = MockAuthRepository();
+    // Default: OAuth cancelled (silent) — avoids Supabase in social button tests.
+    when(
+      () => mockRepo.loginWithOAuth(any()),
+    ).thenAnswer((_) async => const AuthFailureOAuthCancelled());
+  });
+
   /// Pump LoginScreen with a pre-seeded LoginState via override.
   ///
   /// Always overrides the ViewModel to avoid Supabase initialization.
@@ -22,6 +41,7 @@ void main() {
       loginViewModelProvider.overrideWith(() {
         return _FakeLoginViewModel(initialState ?? const LoginState());
       }),
+      authRepositoryProvider.overrideWithValue(mockRepo),
     ];
 
     await tester.pumpWidget(
@@ -266,22 +286,28 @@ void main() {
   });
 
   group('LoginScreen — social login buttons', () {
-    testWidgets('Google button shows coming soon SnackBar', (tester) async {
+    testWidgets('Google button calls loginWithOAuth and is silent on cancel', (
+      tester,
+    ) async {
       await pumpLoginScreen(tester);
 
       await tester.tap(find.text('auth.continueWithGoogle'));
       await tester.pumpAndSettle();
 
-      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+      verify(() => mockRepo.loginWithOAuth(OAuthProvider.google)).called(1);
+      expect(find.byType(SnackBar), findsNothing);
     });
 
-    testWidgets('Apple button shows coming soon SnackBar', (tester) async {
+    testWidgets('Apple button calls loginWithOAuth and is silent on cancel', (
+      tester,
+    ) async {
       await pumpLoginScreen(tester);
 
       await tester.tap(find.text('auth.continueWithApple'));
       await tester.pumpAndSettle();
 
-      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+      verify(() => mockRepo.loginWithOAuth(OAuthProvider.apple)).called(1);
+      expect(find.byType(SnackBar), findsNothing);
     });
   });
 
