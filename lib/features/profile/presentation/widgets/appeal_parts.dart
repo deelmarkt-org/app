@@ -178,7 +178,7 @@ class AppealCharCounter extends StatelessWidget {
 
     return Semantics(
       liveRegion: true,
-      value: '$charCount of 1000 characters',
+      value: 'sanction.a11y.char_count'.tr(namedArgs: {'count': '$charCount'}),
       excludeSemantics: true,
       child: Text(
         '$charCount / 1000',

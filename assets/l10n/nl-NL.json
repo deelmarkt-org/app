@@ -944,7 +944,8 @@
     },
     "a11y": {
       "sanction_icon": "Pictogram account geschorst",
-      "appeal_form": "Bezwaarformulier"
+      "appeal_form": "Bezwaarformulier",
+      "char_count": "{count} van 1000 tekens"
     }
   },
   "dsa_report": {

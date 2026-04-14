@@ -67,8 +67,17 @@ GoRouter createRouter({
   required Ref ref,
   required Stream<AuthState> authStream,
 }) {
+  // Re-triggers GoRouter redirect whenever the sanction state changes so the
+  // suspension gate activates / deactivates without needing an auth event.
+  final sanctionNotifier = _SanctionRefreshNotifier();
+  ref.listen<AsyncValue<SanctionEntity?>>(
+    activeSanctionProvider,
+    (prev, next) => sanctionNotifier.ping(),
+  );
+
   return _buildRouter(
     authStream: authStream,
+    extraListenable: sanctionNotifier,
     redirect: (context, state) {
       // Read auth state at redirect-time (not router-creation-time).
       // When the stream hasn't emitted yet (AsyncValue.loading), fall back
@@ -135,14 +144,33 @@ GoRouterRedirect _idGuard(String param, String fallback) {
   };
 }
 
+/// Notifies GoRouter whenever [activeSanctionProvider] changes state.
+///
+/// Required so that GoRouter re-evaluates the suspension gate redirect when
+/// the sanction check completes (loading→data) or when an appeal is resolved.
+/// Without this, only auth stream events would trigger re-evaluation, leaving
+/// the user stuck on /splash after the sanction provider resolves.
+class _SanctionRefreshNotifier extends ChangeNotifier {
+  _SanctionRefreshNotifier();
+
+  void ping() => notifyListeners();
+}
+
 GoRouter _buildRouter({
   required Stream<AuthState> authStream,
   required GoRouterRedirect redirect,
+  Listenable? extraListenable,
 }) {
+  final authListenable = GoRouterRefreshStream(authStream);
+  final refreshListenable =
+      extraListenable != null
+          ? Listenable.merge([authListenable, extraListenable])
+          : authListenable;
+
   return GoRouter(
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: kDebugMode,
-    refreshListenable: GoRouterRefreshStream(authStream),
+    refreshListenable: refreshListenable,
     redirect: redirect,
     routes: [
       // ── Auth routes (outside shell) ──

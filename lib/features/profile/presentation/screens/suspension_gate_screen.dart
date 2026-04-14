@@ -12,13 +12,11 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/services/analytics/sanction_analytics.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
@@ -110,12 +108,9 @@ class SuspensionGateScreen extends ConsumerWidget {
             message: 'error.generic'.tr(),
           ),
       data: (sanction) {
-        if (sanction == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (context.mounted) context.go(AppRoutes.home);
-          });
-          return const SizedBox.shrink();
-        }
+        // null means no active sanction — the router redirect (_SanctionRefreshNotifier)
+        // will navigate away from /suspended automatically. Show nothing while it fires.
+        if (sanction == null) return const SizedBox.shrink();
         return SuspensionGateSanctionBody(
           sanction: sanction,
           onContactSupport: () => _launchSupport(context, sanction.id),

@@ -944,7 +944,8 @@
     },
     "a11y": {
       "sanction_icon": "Account suspended icon",
-      "appeal_form": "Appeal form"
+      "appeal_form": "Appeal form",
+      "char_count": "{count} of 1000 characters"
     }
   },
   "dsa_report": {

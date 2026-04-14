@@ -164,6 +164,64 @@ void main() {
     });
   });
 
+  // ---------------------------------------------------------------------------
+  // Scenario E — fail-open: sanction error does NOT block the user
+  // ---------------------------------------------------------------------------
+  // POLICY DECISION (documented here intentionally):
+  //   When activeSanctionProvider throws (e.g. network outage, Supabase down),
+  //   `sanctionAsync.valueOrNull` returns null, so `hasActiveSanction` defaults
+  //   to false. This is a deliberate fail-OPEN design: availability takes
+  //   priority over strict enforcement during backend outages. The trade-off is
+  //   that a suspended user on a poor connection may temporarily bypass the gate.
+  //   Mitigation: RLS policies on the backend still enforce access at the DB level.
+  // ---------------------------------------------------------------------------
+
+  group('Scenario E — sanction provider error → fail-open', () {
+    test(
+      'authRedirect passes user through when hasActiveSanction=false (error case)',
+      () {
+        // Simulate: sanctionAsync.valueOrNull == null (from AsyncError or AsyncData(null))
+        // hasActiveSanction computed as: null?.isActive ?? false = false
+        final redirect = authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/',
+          hasActiveSanction:
+              false, // ignore: avoid_redundant_argument_values — error state → null → false (fail-open)
+        );
+        // EXPECTED: fail-open — user stays on /home, not redirected to /suspended.
+        expect(
+          redirect,
+          isNull,
+          reason: 'Fail-open: sanction error must not trap the user',
+        );
+      },
+    );
+
+    test(
+      'authRedirect does NOT redirect to /suspended when hasActiveSanction=false',
+      () {
+        // failOpenValue: AsyncError → valueOrNull=null → isActive ?? false = false
+        // ignore: avoid_redundant_argument_values
+        const failOpenValue = false;
+        for (final path in ['/', '/sell', '/messages', '/profile']) {
+          final redirect = authRedirect(
+            isLoading: false,
+            isLoggedIn: true,
+            currentPath: path,
+            hasActiveSanction:
+                failOpenValue, // ignore: avoid_redundant_argument_values
+          );
+          expect(
+            redirect,
+            isNot(equals('/suspended')),
+            reason: 'Path $path must not redirect to /suspended on error',
+          );
+        }
+      },
+    );
+  });
+
   group('GoRouterRefreshStream — sanity', () {
     test('notifies listeners on stream event', () async {
       final controller = StreamController<int>.broadcast();
