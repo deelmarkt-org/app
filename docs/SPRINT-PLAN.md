@@ -121,9 +121,9 @@ The agent will:
 - [x] `R-15` Biometric auth (Face ID / Fingerprint) — works on iOS + Android *(implemented in `AuthRepositoryImpl.loginWithBiometric`)*
 - [x] `R-16` Rate-limited login (Supabase config) — blocks after 5 failed attempts *(configured in `supabase/config.toml` `[auth.rate_limit]` section)*
 - [x] `R-17` KYC state machine (levels 0–2) — `kyc_level` column, RLS references it *(`kyc_level` enum + index in migration; `CheckKycRequiredUseCase` logic; `KycPromptNotifier` VM)*
-- [ ] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing *(branch: `feature/reso-E02-r13-auth-otp`)*
+- [x] `R-18` iDIN integration (or mock for dev) — Level 2 triggers on first listing *(PR #132)*
 - [x] `R-20` Account deletion Edge Function (GDPR) — PII deleted in 30 days, audit log *(done by belengaz)*
-- [ ] `R-21` Data export endpoint (GDPR portability) — JSON export of user data *(branch: `feature/reso-E02-r13-auth-otp`; EF implemented, needs `user-data-exports` bucket + RLS)*
+- [x] `R-21` Data export endpoint (GDPR portability) — JSON export of user data *(PR #132)*
 
 ### belengaz `[B]` — Payment Foundation (COMPLETED)
 
@@ -160,10 +160,10 @@ The agent will:
 | [#47](https://github.com/deelmarkt-org/app/issues/47) | ~~`[R]` Implement SupabaseSettingsRepository **(P0 launch blocker)**~~ | belengaz | — | ✅ PR #57 |
 | [#48](https://github.com/deelmarkt-org/app/issues/48) | `[R]` Wire iDIN to Edge Function | reso | R-18 iDIN integration | 3–4 |
 | [#49](https://github.com/deelmarkt-org/app/issues/49) | `[R]` 30-day soft-delete grace period | reso | — | 5–8 |
-| [#50](https://github.com/deelmarkt-org/app/issues/50) | `[P]` Wire address form navigation in Settings | pizmam | — | 5–8 |
-| [#51](https://github.com/deelmarkt-org/app/issues/51) | `[P]` Wire sell screen navigation from empty listings | pizmam | P-24 | 5–8 |
-| [#52](https://github.com/deelmarkt-org/app/issues/52) | `[P]` Wire listing detail navigation from profile | pizmam | B-51 | 5–8 |
-| [#53](https://github.com/deelmarkt-org/app/issues/53) | `[P]` Wire avatar picker navigation | pizmam | — | 9–10 |
+| [#50](https://github.com/deelmarkt-org/app/issues/50) | ~~`[P]` Wire address form navigation in Settings~~ | pizmam | — | ✅ PR #149 |
+| [#51](https://github.com/deelmarkt-org/app/issues/51) | ~~`[P]` Wire sell screen navigation from empty listings~~ | pizmam | P-24 | ✅ PR #149 |
+| [#52](https://github.com/deelmarkt-org/app/issues/52) | ~~`[P]` Wire listing detail navigation from profile~~ | pizmam | B-51 | ✅ PR #149 |
+| [#53](https://github.com/deelmarkt-org/app/issues/53) | ~~`[P]` Wire avatar picker navigation~~ | pizmam | — | ✅ PR #149 |
 
 ---
 
@@ -175,8 +175,8 @@ The agent will:
 
 - [x] `R-26` Listing quality score Edge Function — returns 0–100, per-field breakdown *(done by belengaz, PR #105 — Dart↔TS parity enforced by pre-commit)*
 - [x] `R-27` Image upload Edge Function — Cloudmersive virus scan + Cloudinary (strip EXIF + WebP) ✅ PR #105 (EF) + PR #106 (service) + PR #111 (upload-on-pick queue)
-- [ ] `R-29` `search_outbox` table + trigger — events on listing CRUD
-- [ ] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted
+- [x] `R-29` `search_outbox` table + trigger — events on listing CRUD ✅ PR #135
+- [x] `R-30` Outbox → Redis cache invalidation — cache cleared on sold/deleted ✅ PR #135
 
 ### belengaz `[B]` — DB Schemas + Data Layer + Connected Screens
 

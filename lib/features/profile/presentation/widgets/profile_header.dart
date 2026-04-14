@@ -1,87 +1,120 @@
-import 'dart:developer' as developer;
-
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/user_entity.dart';
+import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
 import 'package:deelmarkt/widgets/badges/deel_avatar.dart';
 
 /// Profile header with avatar, display name, and member-since date.
-class ProfileHeader extends StatelessWidget {
+///
+/// Tapping the avatar edit overlay opens an image picker and uploads
+/// the selected image via [ProfileNotifier.uploadAvatar].
+///
+/// Reference: docs/screens/07-profile/01-own-profile.md
+/// Diameter of the upload spinner overlay — matches [DeelAvatarSize.large].
+const _kAvatarSpinnerSize = 80.0;
+
+class ProfileHeader extends ConsumerWidget {
   const ProfileHeader({required this.user, super.key});
 
   final UserEntity user;
 
-  Future<void> _showImagePicker(BuildContext context) async {
-    final source = await showModalBottomSheet<ImageSource>(
+  static Future<ImageSource?> _pickSource(BuildContext context) {
+    return showModalBottomSheet<ImageSource>(
       context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(Spacing.s4),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    'profile.pickPhoto'.tr(),
-                    style: Theme.of(context).textTheme.titleLarge,
+      builder:
+          (context) => SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.s4),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      'profile.pickPhoto'.tr(),
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
                 ),
-              ),
-              ListTile(
-                leading: Icon(PhosphorIcons.camera()),
-                title: Text('profile.takePhoto'.tr()),
-                onTap: () => Navigator.of(context).pop(ImageSource.camera),
-              ),
-              ListTile(
-                leading: Icon(PhosphorIcons.images()),
-                title: Text('profile.chooseFromGallery'.tr()),
-                onTap: () => Navigator.of(context).pop(ImageSource.gallery),
-              ),
-              const SizedBox(height: Spacing.s2),
-            ],
+                ListTile(
+                  leading: Icon(PhosphorIcons.camera()),
+                  title: Text('profile.takePhoto'.tr()),
+                  onTap: () => Navigator.of(context).pop(ImageSource.camera),
+                ),
+                ListTile(
+                  leading: Icon(PhosphorIcons.images()),
+                  title: Text('profile.chooseFromGallery'.tr()),
+                  onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+                ),
+                const SizedBox(height: Spacing.s2),
+              ],
+            ),
           ),
-        );
-      },
     );
+  }
 
+  Future<void> _showImagePicker(BuildContext context, WidgetRef ref) async {
+    // H1: prevent concurrent uploads — taps pass through the spinner overlay.
+    if (ref.read(profileNotifierProvider).isUploadingAvatar) return;
+
+    final source = await _pickSource(context);
     if (source == null || !context.mounted) return;
 
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: source);
+    // requestFullMetadata: false strips EXIF (GPS location) per GDPR.
+    final image = await picker.pickImage(
+      source: source,
+      requestFullMetadata: false,
+    );
 
     if (image != null && context.mounted) {
-      if (kDebugMode) {
-        developer.log(
-          'Avatar image selected: ${image.path}',
-          name: 'ProfileHeader',
-        );
+      try {
+        await ref
+            .read(profileNotifierProvider.notifier)
+            .uploadAvatar(image.path);
+      } on Object catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('profile.avatarUploadFailed'.tr())),
+          );
+        }
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('profile.photoSelected'.tr())));
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final locale = context.locale.languageCode;
     final memberSince = DateFormat.yMMM(locale).format(user.createdAt);
+    final profileState = ref.watch(profileNotifierProvider);
 
     return Column(
       children: [
-        DeelAvatar(
-          displayName: user.displayName,
-          imageUrl: user.avatarUrl,
-          size: DeelAvatarSize.large,
-          showEditOverlay: true,
-          onEditTap: () => _showImagePicker(context),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            DeelAvatar(
+              displayName: user.displayName,
+              imageUrl: user.avatarUrl,
+              size: DeelAvatarSize.large,
+              showEditOverlay: true,
+              onEditTap: () => _showImagePicker(context, ref),
+            ),
+            if (profileState.isUploadingAvatar)
+              Semantics(
+                label: 'profile.avatarUploading'.tr(),
+                child: const SizedBox(
+                  width: _kAvatarSpinnerSize,
+                  height: _kAvatarSpinnerSize,
+                  child: CircularProgressIndicator(strokeWidth: 3),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: Spacing.s3),
         Text(

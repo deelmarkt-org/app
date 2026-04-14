@@ -11,6 +11,7 @@ import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/address_form_modal.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_account_dialog.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/delete_address_dialog.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/notifications_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/privacy_section.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/profile_viewmodel.dart';
@@ -108,10 +109,27 @@ class SettingsScreen extends ConsumerWidget {
             onEdit:
                 (address) =>
                     _saveAddressFromModal(context, ref, existing: address),
-            onDelete:
-                (address) => ref
-                    .read(settingsNotifierProvider.notifier)
-                    .deleteAddress(address),
+            onDelete: (address) async {
+              final confirmed = await DeleteAddressDialog.show(
+                context,
+                address,
+              );
+              if (confirmed == true && context.mounted) {
+                try {
+                  await ref
+                      .read(settingsNotifierProvider.notifier)
+                      .deleteAddress(address);
+                } on Object catch (_) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('settings.deleteAddressFailed'.tr()),
+                      ),
+                    );
+                  }
+                }
+              }
+            },
           ),
     );
   }

@@ -101,8 +101,9 @@ class SettingsNotifier extends _$SettingsNotifier {
       await _repo.deleteAddress(address);
       final addresses = await _repo.getAddresses();
       state = state.copyWith(addresses: AsyncValue.data(addresses));
-    } on Exception {
+    } on Object {
       state = state.copyWith(error: _errorKey);
+      rethrow;
     }
   }
 

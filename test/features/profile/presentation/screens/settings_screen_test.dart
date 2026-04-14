@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/account_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/addresses_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/delete_address_dialog.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/notifications_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/privacy_section.dart';
 
@@ -210,6 +211,65 @@ void main() {
       await pumpSettingsScreen(tester);
 
       expect(find.byType(AppInfoSection), findsOneWidget);
+    });
+
+    // Task #50: delete confirmation dialog tests
+    testWidgets('tapping delete opens DeleteAddressDialog', (tester) async {
+      await pumpSettingsScreen(tester);
+
+      await tester.tap(find.byTooltip('action.delete'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DeleteAddressDialog), findsOneWidget);
+      expect(find.text('settings.deleteAddressTitle'), findsOneWidget);
+    });
+
+    testWidgets('confirming delete dismisses dialog and calls repo', (
+      tester,
+    ) async {
+      await pumpSettingsScreen(tester);
+
+      await tester.tap(find.byTooltip('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Confirm deletion.
+      await tester.tap(find.text('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Dialog should be dismissed after confirmation.
+      expect(find.byType(DeleteAddressDialog), findsNothing);
+    });
+
+    testWidgets('cancelling delete keeps address in list', (tester) async {
+      await pumpSettingsScreen(tester);
+
+      await tester.tap(find.byTooltip('action.delete'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('action.cancel'));
+      await tester.pumpAndSettle();
+
+      // Dialog dismissed, address still present.
+      expect(find.byType(DeleteAddressDialog), findsNothing);
+      expect(find.text('Damstraat 42, 1012 AB Amsterdam'), findsOneWidget);
+    });
+
+    testWidgets('delete failure shows error snackbar (M2)', (tester) async {
+      await pumpSettingsScreen(
+        tester,
+        settingsRepo: ThrowingDeleteSettingsRepository(),
+      );
+
+      // Open delete dialog.
+      await tester.tap(find.byTooltip('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Confirm deletion — repo will throw.
+      await tester.tap(find.text('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Error snackbar should appear.
+      expect(find.text('settings.deleteAddressFailed'), findsOneWidget);
     });
   });
 }

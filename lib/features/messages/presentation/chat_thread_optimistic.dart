@@ -18,12 +18,13 @@ abstract final class ChatThreadOptimistic {
     required String conversationId,
     required String text,
   }) {
+    final now = DateTime.now();
     return MessageEntity(
-      id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+      id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
       senderId: kCurrentUserIdStub,
       text: text,
-      createdAt: DateTime.now(),
+      createdAt: now,
     );
   }
 
@@ -33,27 +34,28 @@ abstract final class ChatThreadOptimistic {
     required String conversationId,
     required int amountCents,
   }) {
+    final now = DateTime.now();
     return MessageEntity(
-      id: '_optimistic_${DateTime.now().microsecondsSinceEpoch}',
+      id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
       senderId: kCurrentUserIdStub,
       text: (amountCents / 100).toStringAsFixed(2),
       type: MessageType.offer,
       offerAmountCents: amountCents,
       offerStatus: OfferStatus.pending,
-      createdAt: DateTime.now(),
+      createdAt: now,
     );
   }
 
   /// Logs the failure path of an optimistic send. Pulled out so the
   /// notifier doesn't repeat the AppLogger call shape inline.
   static void logSendFailure({
-    required String tag,
+    required String message,
     required Object error,
     required StackTrace stackTrace,
   }) {
     AppLogger.error(
-      tag,
+      message,
       tag: 'ChatThreadNotifier',
       error: error,
       stackTrace: stackTrace,
@@ -62,7 +64,7 @@ abstract final class ChatThreadOptimistic {
 
   /// Subscribes to the realtime message stream for [conversationId]
   /// and forwards snapshots to [onSnapshot]. Errors go through
-  /// [logSendFailure] with a fixed `watchMessages error` tag so the
+  /// [logSendFailure] with a fixed `watchMessages error` message so the
   /// notifier doesn't have to redeclare that boilerplate.
   static StreamSubscription<List<MessageEntity>> subscribeRealtime({
     required MessageRepository repository,
@@ -75,7 +77,7 @@ abstract final class ChatThreadOptimistic {
           onSnapshot,
           onError:
               (Object e, StackTrace st) => logSendFailure(
-                tag: 'watchMessages error',
+                message: 'watchMessages error',
                 error: e,
                 stackTrace: st,
               ),

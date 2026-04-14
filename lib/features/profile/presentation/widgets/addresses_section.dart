@@ -78,10 +78,17 @@ class _AddressTile extends StatelessWidget {
               onPressed: onEdit,
               tooltip: 'action.edit'.tr(),
             ),
-            IconButton(
-              icon: Icon(PhosphorIcons.trash(), color: theme.colorScheme.error),
-              onPressed: onDelete,
-              tooltip: 'action.delete'.tr(),
+            Semantics(
+              button: true,
+              label: '${'action.delete'.tr()} ${address.formatted}',
+              child: IconButton(
+                icon: Icon(
+                  PhosphorIcons.trash(),
+                  color: theme.colorScheme.error,
+                ),
+                onPressed: onDelete,
+                tooltip: 'action.delete'.tr(),
+              ),
             ),
           ],
         ),
