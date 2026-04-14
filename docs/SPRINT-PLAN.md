@@ -293,7 +293,7 @@ The agent will:
 - [x] `P-50` GoRouter auth guard + splash screen + `/onboarding` route ✅ PR #14
 - [x] `P-51` Mock data layer (5 entities + 4 repository interfaces + 4 mock implementations) ✅ PR #14
 - [x] `P-52` Web error boundary + font loading strategy ✅ PR #14
-- [ ] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator *(blocked by R-37 merge)*
+- [x] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator ✅ PRs #152–#153
 
 ---
 

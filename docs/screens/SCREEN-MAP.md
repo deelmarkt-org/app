@@ -11,6 +11,8 @@
 | `lib/features/auth/presentation/screens/login_screen.dart` | [03-login.md](01-auth/03-login.md) | `01-auth/designs/login_*` (4) |
 | *(KYC modal — embedded in screens)* | [04-kyc-prompt.md](01-auth/04-kyc-prompt.md) | `01-auth/designs/kyc_*` (4) |
 | *(Social login — embedded in login)* | [05-social-login.md](01-auth/05-social-login.md) | `01-auth/designs/social_*` (2) |
+| `lib/features/profile/presentation/screens/suspension_gate_screen.dart` | [06-suspension-gate.md](01-auth/06-suspension-gate.md) | `01-auth/designs/suspension_gate_*` (designer handoff pending) |
+| `lib/features/profile/presentation/screens/appeal_screen.dart` | [07-appeal-form.md](01-auth/07-appeal-form.md) | `01-auth/designs/appeal_form_*` (designer handoff pending) |
 | `lib/features/home/presentation/home_screen.dart` | [01-home-buyer.md](02-home/01-home-buyer.md) | `02-home/designs/home_*` (5) |
 | *(Seller mode toggle — same screen)* | [02-home-seller.md](02-home/02-home-seller.md) | `02-home/designs/seller_*` (2) |
 | `lib/features/search/presentation/search_screen.dart` | [03-search.md](02-home/03-search.md) | `02-home/designs/search_*` (5) |

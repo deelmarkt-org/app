@@ -40,6 +40,7 @@ abstract final class AppRoutes {
   static const settings = '/profile/settings';
 
   // ── Auth flow ──
+  static const splash = '/splash';
   static const onboarding = '/onboarding';
   static const login = '/login';
   static const register = '/register';
@@ -58,6 +59,17 @@ abstract final class AppRoutes {
   static const shippingQr = '/shipping/:id/qr';
   static const shippingTracking = '/shipping/:id/tracking';
   static const parcelShopSelector = '/shipping/:id/parcel-shops';
+
+  // ── Suspension gate ──
+  /// Full-screen gate shown when the user has an active sanction.
+  static const suspended = '/suspended';
+
+  /// Appeal form — pushed from [suspended] when [SanctionEntity.canAppeal].
+  static const suspendedAppeal = '/suspended/appeal';
+
+  // ── Support ──
+  /// External support flow. Used as fallback for email deep-link.
+  static const support = '/support';
 
   // ── Admin panel ──
   static const admin = '/admin';

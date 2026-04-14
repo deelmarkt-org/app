@@ -37,6 +37,10 @@ import 'package:deelmarkt/core/router/scaffold_with_nav.dart';
 import 'package:deelmarkt/core/router/splash_screen.dart';
 import 'package:deelmarkt/features/admin/presentation/screens/admin_shell_screen.dart';
 import 'package:deelmarkt/features/admin/presentation/screens/admin_dashboard_screen.dart';
+import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/appeal_screen.dart';
+import 'package:deelmarkt/features/profile/presentation/screens/suspension_gate_screen.dart';
+import 'package:deelmarkt/features/profile/presentation/viewmodels/active_sanction_provider.dart';
 
 /// Placeholder for admin sub-screens not yet implemented (Phase B-D).
 Widget _adminComingSoon(BuildContext context) =>
@@ -63,8 +67,19 @@ GoRouter createRouter({
   required Ref ref,
   required Stream<AuthState> authStream,
 }) {
+  // Re-triggers GoRouter redirect whenever the sanction state changes so the
+  // suspension gate activates / deactivates without needing an auth event.
+  final sanctionNotifier = _SanctionRefreshNotifier();
+  ref
+    ..onDispose(sanctionNotifier.dispose)
+    ..listen<AsyncValue<SanctionEntity?>>(
+      activeSanctionProvider,
+      (prev, next) => sanctionNotifier.ping(),
+    );
+
   return _buildRouter(
     authStream: authStream,
+    extraListenable: sanctionNotifier,
     redirect: (context, state) {
       // Read auth state at redirect-time (not router-creation-time).
       // When the stream hasn't emitted yet (AsyncValue.loading), fall back
@@ -81,12 +96,28 @@ GoRouter createRouter({
       final onboardingComplete =
           ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
       final currentUser = supabase.auth.currentUser;
+
+      // P-53 Suspension gate: read active sanction to gate all navigation.
+      // Using ref.read here (not watch) because GoRouter re-runs redirect
+      // via refreshListenable; use invalidate + notifyListeners to trigger
+      // re-evaluation when sanction state changes.
+      final sanctionAsync = ref.read(activeSanctionProvider);
+      // While sanction is loading and the user is logged in, hold on splash
+      // to prevent a flash of home before the gate can activate.
+      if (isLoggedIn &&
+          sanctionAsync.isLoading &&
+          state.matchedLocation != AppRoutes.splash) {
+        return AppRoutes.splash;
+      }
+      final hasActiveSanction = sanctionAsync.valueOrNull?.isActive ?? false;
+
       return authRedirect(
         isLoading: false, // Supabase is always initialized before runApp
         isLoggedIn: isLoggedIn,
         currentPath: state.matchedLocation,
         isOnboardingComplete: onboardingComplete,
         isAdmin: admin_guard.isAdmin(currentUser),
+        hasActiveSanction: hasActiveSanction,
       );
     },
   );
@@ -115,18 +146,37 @@ GoRouterRedirect _idGuard(String param, String fallback) {
   };
 }
 
+/// Notifies GoRouter whenever [activeSanctionProvider] changes state.
+///
+/// Required so that GoRouter re-evaluates the suspension gate redirect when
+/// the sanction check completes (loading→data) or when an appeal is resolved.
+/// Without this, only auth stream events would trigger re-evaluation, leaving
+/// the user stuck on /splash after the sanction provider resolves.
+class _SanctionRefreshNotifier extends ChangeNotifier {
+  _SanctionRefreshNotifier();
+
+  void ping() => notifyListeners();
+}
+
 GoRouter _buildRouter({
   required Stream<AuthState> authStream,
   required GoRouterRedirect redirect,
+  Listenable? extraListenable,
 }) {
+  final authListenable = GoRouterRefreshStream(authStream);
+  final refreshListenable =
+      extraListenable != null
+          ? Listenable.merge([authListenable, extraListenable])
+          : authListenable;
+
   return GoRouter(
     initialLocation: AppRoutes.home,
     debugLogDiagnostics: kDebugMode,
-    refreshListenable: GoRouterRefreshStream(authStream),
+    refreshListenable: refreshListenable,
     redirect: redirect,
     routes: [
       // ── Auth routes (outside shell) ──
-      GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
+      GoRoute(path: AppRoutes.splash, builder: (_, _) => const SplashScreen()),
       GoRoute(
         path: AppRoutes.onboarding,
         name: 'onboarding',
@@ -141,6 +191,25 @@ GoRouter _buildRouter({
         path: AppRoutes.register,
         name: 'register',
         builder: (_, _) => const RegisterScreen(),
+      ),
+
+      // ── Suspension gate (P-53) — outside shell, no bottom nav ──
+      GoRoute(
+        path: AppRoutes.suspended,
+        name: 'suspended',
+        builder: (context, state) => const SuspensionGateScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.suspendedAppeal,
+        name: 'suspended-appeal',
+        builder: (ctx, state) {
+          final sanction = state.extra;
+          if (sanction is! SanctionEntity) {
+            // Missing/invalid extra — bounce back to gate.
+            return const SuspensionGateScreen();
+          }
+          return AppealScreen(sanction: sanction);
+        },
       ),
 
       // ── Bottom navigation shell ──
