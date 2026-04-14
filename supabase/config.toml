@@ -305,9 +305,23 @@ max_frequency = "5s"
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
+# P-44: Google Sign-In
+# Credentials: Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID
+# Authorised redirect URI: https://<project-ref>.supabase.co/auth/v1/callback
+[auth.external.google]
+enabled = false  # Set to true once credentials are added to Supabase Vault
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)" # pragma: allowlist secret
+skip_nonce_check = false
+email_optional = false
+
+# P-44: Apple Sign-In
+# Credentials: Apple Developer → Certificates, Identifiers & Profiles → Services IDs
+# Callback URL: https://<project-ref>.supabase.co/auth/v1/callback
 [auth.external.apple]
-enabled = false
-client_id = ""
+enabled = false  # Set to true once credentials are added to Supabase Vault
+client_id = "env(SUPABASE_AUTH_EXTERNAL_APPLE_CLIENT_ID)"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
 secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)" # pragma: allowlist secret
 # Overrides the default auth redirectUrl.
