@@ -65,6 +65,32 @@ void main() {
       expect(prefs.getString('theme_mode'), 'light');
     });
 
+    test(
+      'setThemeMode(system) round-trips through SharedPreferences',
+      () async {
+        final container = await makeContainer(
+          initialValues: {'theme_mode': 'dark'},
+        );
+        addTearDown(container.dispose);
+
+        // Switch to system
+        container
+            .read(themeModeNotifierProvider.notifier)
+            .setThemeMode(ThemeMode.system);
+
+        expect(container.read(themeModeNotifierProvider), ThemeMode.system);
+        final prefs = container.read(sharedPreferencesProvider);
+        expect(prefs.getString('theme_mode'), 'system');
+
+        // Simulate app restart by reading persisted value
+        final container2 = await makeContainer(
+          initialValues: {'theme_mode': prefs.getString('theme_mode')!},
+        );
+        addTearDown(container2.dispose);
+        expect(container2.read(themeModeNotifierProvider), ThemeMode.system);
+      },
+    );
+
     test('unknown stored value falls back to ThemeMode.system', () async {
       final container = await makeContainer(
         initialValues: {'theme_mode': 'invalid_value'},

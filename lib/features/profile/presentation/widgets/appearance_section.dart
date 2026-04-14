@@ -60,6 +60,12 @@ class _ThemeOption extends StatelessWidget {
 
   final String label;
   final ThemeMode value;
+
+  /// The currently selected [ThemeMode].
+  ///
+  /// NOT wired into [RadioListTile] — the ancestor [RadioGroup] propagates
+  /// `groupValue` and `onChanged` via InheritedWidget.
+  /// Used exclusively for [Semantics.checked] to satisfy WCAG 4.1.2.
   final ThemeMode groupValue;
 
   @override

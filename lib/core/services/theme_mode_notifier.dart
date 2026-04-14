@@ -31,7 +31,8 @@ class ThemeModeNotifier extends _$ThemeModeNotifier {
   static ThemeMode _fromString(String? value) => switch (value) {
     'light' => ThemeMode.light,
     'dark' => ThemeMode.dark,
-    _ => ThemeMode.system,
+    'system' => ThemeMode.system, // explicit — mirrors _toString output
+    _ => ThemeMode.system, // null / unknown / first launch
   };
 
   static String _toString(ThemeMode mode) => switch (mode) {
