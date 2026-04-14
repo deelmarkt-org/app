@@ -33,8 +33,10 @@ import 'package:deelmarkt/features/profile/domain/repositories/settings_reposito
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service.dart';
 import 'package:deelmarkt/features/shipping/data/mock/mock_shipping_repository.dart';
+import 'package:deelmarkt/features/shipping/data/supabase/supabase_shipping_repository.dart';
 import 'package:deelmarkt/features/shipping/domain/repositories/shipping_repository.dart';
 import 'package:deelmarkt/features/transaction/data/mock/mock_transaction_repository.dart';
+import 'package:deelmarkt/features/transaction/data/supabase/supabase_transaction_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
@@ -88,18 +90,11 @@ final reviewRepositoryProvider = Provider<ReviewRepository>((ref) {
   return SupabaseReviewRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Transaction repository — mock-only until [SupabaseTransactionRepository]
-/// ships with the E03 backend tasks.
-///
-/// TODO(belengaz): add `useMockDataProvider` gate once real implementation
-/// exists — same pattern as [listingRepositoryProvider]:
-/// ```dart
-/// final useMock = ref.watch(useMockDataProvider);
-/// if (useMock) return MockTransactionRepository();
-/// return SupabaseTransactionRepository(ref.watch(supabaseClientProvider));
-/// ```
+/// Transaction repository — mock or Supabase based on [useMockDataProvider].
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
-  return MockTransactionRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockTransactionRepository();
+  return SupabaseTransactionRepository(ref.watch(supabaseClientProvider));
 });
 
 /// Settings repository — mock or Supabase based on [useMockDataProvider].
@@ -109,12 +104,11 @@ final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SupabaseSettingsRepository(ref.watch(supabaseClientProvider));
 });
 
-/// Shipping repository — mock-only until shipping tables ship.
-///
-/// TODO(belengaz): add `useMockDataProvider` gate once real implementation
-/// exists — same pattern as [listingRepositoryProvider].
+/// Shipping repository — mock or Supabase based on [useMockDataProvider].
 final shippingRepositoryProvider = Provider<ShippingRepository>((ref) {
-  return MockShippingRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockShippingRepository();
+  return SupabaseShippingRepository(ref.watch(supabaseClientProvider));
 });
 
 /// Message repository — real Supabase implementation (B-53).

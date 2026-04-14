@@ -76,4 +76,29 @@ enum TransactionStatus {
   /// Whether transitioning to [next] is allowed.
   bool canTransitionTo(TransactionStatus next) =>
       validTransitions.contains(next);
+
+  /// Convert to DB snake_case value.
+  String toDb() => switch (this) {
+    TransactionStatus.paymentPending => 'payment_pending',
+    _ => name,
+  };
+
+  /// Parse from DB snake_case value.
+  /// Unknown values default to [created] for forward-compatibility.
+  static TransactionStatus fromDb(String value) => switch (value) {
+    'created' => TransactionStatus.created,
+    'payment_pending' => TransactionStatus.paymentPending,
+    'paid' => TransactionStatus.paid,
+    'shipped' => TransactionStatus.shipped,
+    'delivered' => TransactionStatus.delivered,
+    'confirmed' => TransactionStatus.confirmed,
+    'released' => TransactionStatus.released,
+    'expired' => TransactionStatus.expired,
+    'failed' => TransactionStatus.failed,
+    'disputed' => TransactionStatus.disputed,
+    'resolved' => TransactionStatus.resolved,
+    'refunded' => TransactionStatus.refunded,
+    'cancelled' => TransactionStatus.cancelled,
+    _ => TransactionStatus.created,
+  };
 }

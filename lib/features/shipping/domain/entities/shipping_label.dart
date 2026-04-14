@@ -12,7 +12,7 @@ class ShippingLabel {
     required this.trackingNumber,
     required this.carrier,
     required this.destinationPostalCode,
-    required this.shipByDeadline,
+    this.shipByDeadline,
     required this.createdAt,
   });
 
@@ -31,8 +31,8 @@ class ShippingLabel {
   /// Destination postal code for parcel shop lookup.
   final String destinationPostalCode;
 
-  /// Seller must ship by this deadline.
-  final DateTime shipByDeadline;
+  /// Seller must ship by this deadline. Null if backend hasn't set one yet.
+  final DateTime? shipByDeadline;
 
   final DateTime createdAt;
 
