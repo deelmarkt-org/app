@@ -702,24 +702,21 @@ void main() {
         reason: 'Privacy checkbox should start unchecked',
       );
 
-      // Terms and Privacy use Text.rich with TextSpan — find via rich text
-      // The combined text for terms contains the prefix + link text
+      // Terms and Privacy use separate Text widgets inside a Wrap
+      // (refactored from Text.rich for WCAG 2.4.4 link semantics).
+      // l10n keys are used as fallback text when localization is not loaded.
       expect(
         find.byWidgetPredicate(
-          (w) =>
-              w is Text &&
-              w.textSpan?.toPlainText().contains('auth.terms') == true,
+          (w) => w is Text && (w.data?.contains('auth.terms') == true),
         ),
-        findsOneWidget,
+        findsWidgets,
         reason: 'Terms checkbox should contain terms text',
       );
       expect(
         find.byWidgetPredicate(
-          (w) =>
-              w is Text &&
-              w.textSpan?.toPlainText().contains('auth.privacy') == true,
+          (w) => w is Text && (w.data?.contains('auth.privacy') == true),
         ),
-        findsOneWidget,
+        findsWidgets,
         reason: 'Privacy checkbox should contain privacy text',
       );
     });
