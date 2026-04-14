@@ -2,6 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/profile/data/dto/sanction_dto.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
+import 'package:deelmarkt/features/profile/domain/exceptions/sanction_exceptions.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 
 /// Supabase implementation of [SanctionRepository].
@@ -35,7 +36,9 @@ class SupabaseSanctionRepository implements SanctionRepository {
 
       return SanctionDto.fromJson(rows.first as Map<String, dynamic>);
     } on PostgrestException catch (e) {
-      throw Exception(
+      // PGRST116 = no rows — treated as "no active sanction", not an error.
+      if (e.code == 'PGRST116') return null;
+      throw UnknownSanctionError(
         'Failed to fetch active sanction for user $userId: ${e.message}',
       );
     }
@@ -76,11 +79,11 @@ class SupabaseSanctionRepository implements SanctionRepository {
 
       final rows = response as List<dynamic>;
       if (rows.isEmpty) {
-        throw Exception('submit_appeal RPC returned no rows');
+        throw const UnknownSanctionError('submit_appeal RPC returned no rows');
       }
       return SanctionDto.fromJson(rows.first as Map<String, dynamic>);
     } on PostgrestException catch (e) {
-      throw Exception('Failed to submit appeal: ${e.message}');
+      throw SanctionException.fromPostgrestError(e);
     }
   }
 }

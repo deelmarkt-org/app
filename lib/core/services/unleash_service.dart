@@ -13,6 +13,11 @@ abstract final class FeatureFlags {
   static const String snapToListEnabled = 'snap_to_list_enabled';
   static const String streamChatMigration = 'stream_chat_migration';
   static const String phase2PromotedListings = 'phase2_promoted_listings';
+
+  /// P-53: Suspension gate — shows [SuspensionGateScreen] when user has an
+  /// active ban or suspension. Default ON in all environments.
+  /// Toggle in Unleash to bypass for emergency hotfixes.
+  static const String p53SuspensionGate = 'p53_suspension_gate';
 }
 
 /// Initialise Unleash feature flags in `main()` before `runApp`.
