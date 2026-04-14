@@ -16,6 +16,9 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
   final SupabaseClient _client;
 
   static const _table = 'listings';
+
+  /// Fallback category for drafts without a selection.
+  /// Seeded in migration 20260329161637_phase_a (categories INSERT, row 8).
   static const _uncategorisedId = 'c1000000-0000-0000-0000-000000000008';
 
   // Column names — shared between insert maps and row parsing.

@@ -19,6 +19,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_calculate_platform_fee
+CREATE OR REPLACE TRIGGER trg_calculate_platform_fee
   BEFORE INSERT OR UPDATE OF item_amount_cents ON transactions
   FOR EACH ROW EXECUTE FUNCTION calculate_platform_fee();
