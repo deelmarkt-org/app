@@ -70,10 +70,12 @@ GoRouter createRouter({
   // Re-triggers GoRouter redirect whenever the sanction state changes so the
   // suspension gate activates / deactivates without needing an auth event.
   final sanctionNotifier = _SanctionRefreshNotifier();
-  ref.listen<AsyncValue<SanctionEntity?>>(
-    activeSanctionProvider,
-    (prev, next) => sanctionNotifier.ping(),
-  );
+  ref
+    ..onDispose(sanctionNotifier.dispose)
+    ..listen<AsyncValue<SanctionEntity?>>(
+      activeSanctionProvider,
+      (prev, next) => sanctionNotifier.ping(),
+    );
 
   return _buildRouter(
     authStream: authStream,

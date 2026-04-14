@@ -78,38 +78,45 @@ void main() {
   });
 
   group('AppealNotifier — submit() validation', () {
-    test('throws ArgumentError when body is fewer than 10 chars', () async {
+    // G1: Body-length validation now sets AsyncError state rather than
+    // throwing ArgumentError, so the error is surfaced through the UI via
+    // ref.watch() instead of being an unhandled exception that bypasses the
+    // on Exception catch block.
+    test('sets AsyncError state when body is fewer than 10 chars', () async {
       final container = _container(repo: repo, analytics: analytics);
       addTearDown(container.dispose);
 
       final notifier = container.read(appealNotifierProvider.notifier);
-      await expectLater(
-        () => notifier.submit(sanctionId: 's-1', body: 'short'),
-        throwsA(isA<ArgumentError>()),
-      );
+      await notifier.submit(sanctionId: 's-1', body: 'short');
+
+      final state = container.read(appealNotifierProvider);
+      expect(state, isA<AsyncError<void>>());
+      expect(state.error, isA<UnknownSanctionError>());
     });
 
-    test('throws ArgumentError when body is exactly 9 chars', () async {
+    test('sets AsyncError state when body is exactly 9 chars', () async {
       final container = _container(repo: repo, analytics: analytics);
       addTearDown(container.dispose);
 
       final notifier = container.read(appealNotifierProvider.notifier);
-      await expectLater(
-        () => notifier.submit(sanctionId: 's-1', body: '123456789'),
-        throwsA(isA<ArgumentError>()),
-      );
+      await notifier.submit(sanctionId: 's-1', body: '123456789');
+
+      final state = container.read(appealNotifierProvider);
+      expect(state, isA<AsyncError<void>>());
+      expect(state.error, isA<UnknownSanctionError>());
     });
 
-    test('throws ArgumentError when body exceeds 1000 chars', () async {
+    test('sets AsyncError state when body exceeds 1000 chars', () async {
       final container = _container(repo: repo, analytics: analytics);
       addTearDown(container.dispose);
 
       final notifier = container.read(appealNotifierProvider.notifier);
       final longBody = 'a' * 1001;
-      await expectLater(
-        () => notifier.submit(sanctionId: 's-1', body: longBody),
-        throwsA(isA<ArgumentError>()),
-      );
+      await notifier.submit(sanctionId: 's-1', body: longBody);
+
+      final state = container.read(appealNotifierProvider);
+      expect(state, isA<AsyncError<void>>());
+      expect(state.error, isA<UnknownSanctionError>());
     });
 
     test('does not throw at exactly 10 chars', () async {

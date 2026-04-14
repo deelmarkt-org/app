@@ -37,7 +37,11 @@ class AppealNotifier extends _$AppealNotifier {
     required String body,
   }) async {
     if (body.trim().length < 10 || body.length > 1000) {
-      throw ArgumentError('invalid appeal body length');
+      state = AsyncError(
+        const UnknownSanctionError('invalid appeal body length'),
+        StackTrace.current,
+      );
+      return;
     }
 
     state = const AsyncLoading();

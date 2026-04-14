@@ -142,7 +142,12 @@ class SuspensionGateScreen extends ConsumerWidget {
   }
 
   Future<void> _launchSupport(BuildContext context, String sanctionId) async {
-    final uri = 'mailto:support@deelmarkt.com?subject=Sanction%20$sanctionId';
+    final uri =
+        Uri(
+          scheme: 'mailto',
+          path: 'support@deelmarkt.com',
+          queryParameters: {'subject': 'Sanction $sanctionId'},
+        ).toString();
     if (!await launchUrlString(uri)) {
       if (context.mounted) {
         ScaffoldMessenger.of(

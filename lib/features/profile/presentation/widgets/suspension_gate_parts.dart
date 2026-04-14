@@ -165,7 +165,10 @@ class SuspensionGateCountdownChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final daysLeft = expiresAt.difference(DateTime.now()).inDays.clamp(0, 9999);
+    // Ceiling division so 23 h remaining shows "1 day left" instead of "0 days".
+    final daysLeft = (expiresAt.difference(DateTime.now()).inHours / 24)
+        .ceil()
+        .clamp(0, 9999);
     final label = 'sanction.screen.countdown_days'.tr(
       namedArgs: {'count': daysLeft.toString()},
     );
