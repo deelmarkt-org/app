@@ -28,6 +28,8 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
   static const _kLocation = 'location';
   static const _kIsActive = 'is_active';
   static const _kIsSold = 'is_sold';
+  static const _kShippingCarrier = 'shipping_carrier';
+  static const _kWeightRange = 'weight_range';
 
   @override
   Future<ListingEntity> create({
@@ -51,6 +53,8 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
         _kCategoryId: categoryId,
         _kImageUrls: imageUrls,
         _kLocation: location,
+        _kShippingCarrier: shippingCarrier.toDb(),
+        if (weightRange != null) _kWeightRange: weightRange.toDb(),
       },
     );
   }
@@ -79,6 +83,8 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
         _kCategoryId: categoryId ?? _uncategorisedId,
         _kImageUrls: imageUrls,
         _kLocation: location,
+        _kShippingCarrier: shippingCarrier.toDb(),
+        if (weightRange != null) _kWeightRange: weightRange.toDb(),
       },
     );
   }
