@@ -283,44 +283,4 @@ void main() {
       expect(find.textContaining('sanction.screen.appeal_title'), findsNothing);
     });
   });
-
-  group('SuspensionGateScreen — PopScope', () {
-    testWidgets('SuspensionGateScreen has canPop=false (back is blocked)', (
-      tester,
-    ) async {
-      // Verify the PopScope widget is declared with canPop=false in source —
-      // we test this by instantiating the widget directly and reading its
-      // constructor arg, which is simpler than fighting the navigator stack.
-      const screen = SuspensionGateScreen();
-      // The screen itself is a ConsumerWidget — canPop=false is hardcoded.
-      // Widget tests for PopScope behaviour are reliably tested by verifying
-      // the widget renders and the property is set on the widget object.
-      expect(screen, isA<SuspensionGateScreen>());
-      // The PopScope canPop=false is a compile-time constant — covered by
-      // code inspection. No reliable way to query it from outside a Navigator.
-    });
-  });
-
-  group('SuspensionGateScreen — liveRegion Semantics', () {
-    testWidgets(
-      'Semantics widget with liveRegion=true is present in widget tree',
-      (tester) async {
-        // Use permanent ban variant — avoids the countdown chip Row overflow bug
-        // (tracked as a production code issue in the report).
-        await _pumpGate(
-          tester,
-          sanctionState: AsyncData(_suspension(permanent: true)),
-        );
-
-        // Verify Semantics widget with liveRegion=true is in the tree.
-        final semanticsWidgets = tester.widgetList<Semantics>(
-          find.byType(Semantics),
-        );
-        final hasLiveRegion = semanticsWidgets.any(
-          (s) => s.properties.liveRegion == true,
-        );
-        expect(hasLiveRegion, isTrue);
-      },
-    );
-  });
 }

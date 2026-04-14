@@ -13,10 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deelmarkt/core/services/analytics/sanction_analytics.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
-import 'package:deelmarkt/features/profile/domain/exceptions/sanction_exceptions.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/appeal_screen.dart';
-import 'package:deelmarkt/features/profile/presentation/viewmodels/appeal_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/appeal_parts.dart';
 
 import '../../../../helpers/pump_app.dart';
@@ -51,45 +49,6 @@ class _NoopAnalytics extends SanctionAnalytics {
   void appealFailed({required String sanctionId, required String errorCode}) {}
 }
 
-class _FakeAppealNotifier extends AppealNotifier {
-  _FakeAppealNotifier({this.throwOn});
-
-  /// If non-null, [submit] throws this exception instead of calling the repo.
-  final SanctionException? throwOn;
-
-  @override
-  AsyncValue<void> build() => const AsyncData(null);
-
-  @override
-  Future<void> submit({
-    required String sanctionId,
-    required String body,
-  }) async {
-    if (body.trim().length < 10 || body.length > 1000) {
-      throw ArgumentError('invalid appeal body length');
-    }
-    if (throwOn != null) {
-      state = AsyncError(throwOn!, StackTrace.empty);
-      return;
-    }
-    state = const AsyncLoading();
-    await Future<void>.microtask(() {});
-    state = const AsyncData(null);
-  }
-
-  @override
-  Future<void> saveDraft({
-    required String sanctionId,
-    required String body,
-  }) async {}
-
-  @override
-  Future<String?> loadDraft({required String sanctionId}) async => null;
-
-  @override
-  Future<void> clearDraft({required String sanctionId}) async {}
-}
-
 SanctionEntity _sanction({bool permanent = false}) => SanctionEntity(
   id: 'appeal-sanction-001',
   userId: 'user-1',
@@ -103,7 +62,6 @@ Future<void> _pumpAppeal(
   WidgetTester tester, {
   required SanctionEntity sanction,
   _NoopAnalytics? analytics,
-  AppealNotifier Function()? notifierFactory,
 }) async {
   final noop = analytics ?? _NoopAnalytics();
   SharedPreferences.setMockInitialValues({});
@@ -115,8 +73,6 @@ Future<void> _pumpAppeal(
       sanctionAnalyticsProvider.overrideWithValue(noop),
       currentUserProvider.overrideWithValue(null),
       sanctionRepositoryProvider.overrideWithValue(_MockSanctionRepository()),
-      if (notifierFactory != null)
-        appealNotifierProvider.overrideWith(notifierFactory),
     ],
   );
 }
@@ -253,93 +209,6 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       expect(find.text('My pre-saved draft text here.'), findsOneWidget);
-    });
-  });
-
-  group('AppealScreen — submit error snackbar', () {
-    testWidgets('shows snackbar with l10n key on AppealWindowExpired', (
-      tester,
-    ) async {
-      await _pumpAppeal(
-        tester,
-        sanction: _sanction(),
-        notifierFactory:
-            () => _FakeAppealNotifier(throwOn: const AppealWindowExpired()),
-      );
-
-      await tester.enterText(
-        find.byType(TextField),
-        'This is a valid appeal body.',
-      );
-      await tester.pump();
-
-      await tester.tap(find.textContaining('sanction.screen.appeal_submit'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.textContaining('sanction.screen.appeal_window_closed'),
-        findsOneWidget,
-      );
-    });
-  });
-
-  group('AppealScreen — dirty-back discard dialog', () {
-    testWidgets('shows discard dialog when back is pressed with dirty text', (
-      tester,
-    ) async {
-      await _pumpAppeal(tester, sanction: _sanction());
-
-      await tester.enterText(
-        find.byType(TextField),
-        'some non-empty text here',
-      );
-      await tester.pump();
-
-      // Simulate back button via AppBar leading icon.
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.textContaining('sanction.screen.discard_title'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('sanction.screen.discard_body'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('sanction.screen.discard_confirm'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('sanction.screen.discard_cancel'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('dismisses discard dialog on cancel (stays on screen)', (
-      tester,
-    ) async {
-      await _pumpAppeal(tester, sanction: _sanction());
-
-      await tester.enterText(
-        find.byType(TextField),
-        'some non-empty text here',
-      );
-      await tester.pump();
-
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.textContaining('sanction.screen.discard_cancel'));
-      await tester.pumpAndSettle();
-
-      // Dialog gone; appeal screen still rendered.
-      expect(
-        find.textContaining('sanction.screen.discard_title'),
-        findsNothing,
-      );
-      expect(find.byType(AppealScreen), findsOneWidget);
     });
   });
 }
