@@ -55,7 +55,7 @@ class AdminStatCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(Spacing.s4),
         decoration: BoxDecoration(
-          color: backgroundColor ?? DeelmarktColors.white,
+          color: backgroundColor ?? Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
           border: Border.all(color: DeelmarktColors.neutral200),
         ),

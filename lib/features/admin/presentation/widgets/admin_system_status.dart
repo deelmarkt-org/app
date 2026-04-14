@@ -28,7 +28,7 @@ class AdminSystemStatus extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.s4),
       decoration: BoxDecoration(
-        color: DeelmarktColors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
         border: Border.all(color: DeelmarktColors.neutral200),
       ),
