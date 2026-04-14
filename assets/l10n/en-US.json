@@ -933,7 +933,14 @@
       "appeal_overturned_body": "Your appeal was accepted. Your account has been fully restored.",
       "appeal_window_closed": "The 14-day appeal window for this sanction has closed.",
       "appeal_not_eligible": "Warnings cannot be appealed.",
-      "contact_support": "Contact support"
+      "contact_support": "Contact support",
+      "countdown_days": "{count, plural, one{1 day left} other{{count} days left}}",
+      "receipt": "Submitted {time} · Reference {id}",
+      "sla_72h": "We'll review your appeal within 72 hours",
+      "discard_title": "Discard draft?",
+      "discard_body": "Your appeal draft will be lost if you go back.",
+      "discard_confirm": "Discard",
+      "discard_cancel": "Keep editing"
     },
     "a11y": {
       "sanction_icon": "Account suspended icon",

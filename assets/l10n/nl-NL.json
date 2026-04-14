@@ -933,7 +933,14 @@
       "appeal_overturned_body": "Je bezwaar is geaccepteerd. Je account is volledig hersteld.",
       "appeal_window_closed": "De bezwaartermijn van 14 dagen voor deze sanctie is verlopen.",
       "appeal_not_eligible": "Waarschuwingen kunnen niet worden aangevochten.",
-      "contact_support": "Neem contact op met support"
+      "contact_support": "Neem contact op met support",
+      "countdown_days": "{count, plural, one{Nog 1 dag} other{Nog {count} dagen}}",
+      "receipt": "Ingediend {time} · Referentie {id}",
+      "sla_72h": "We beoordelen je beroep binnen 72 uur",
+      "discard_title": "Concept verwijderen?",
+      "discard_body": "Je bezwaarconcept gaat verloren als je teruggaat.",
+      "discard_confirm": "Verwijderen",
+      "discard_cancel": "Doorgaan met bewerken"
     },
     "a11y": {
       "sanction_icon": "Pictogram account geschorst",

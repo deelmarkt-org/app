@@ -29,6 +29,11 @@ const _authRoutes = ['/onboarding', '/login', '/register'];
 /// - Unauthenticated + onboarding not complete → `/onboarding`
 /// - Unauthenticated + onboarding complete + protected route → `/login`
 /// - Authenticated + auth route → `/home`
+/// - Authenticated + active sanction + not on `/suspended` → `/suspended`
+///   (P-53 suspension gate: all navigation is blocked until the sanction
+///    expires or is overturned on appeal)
+/// - Authenticated + no active sanction + on `/suspended` → `/home`
+///   (clears the gate once the sanction is lifted)
 /// - Otherwise → no redirect
 String? authRedirect({
   required bool isLoading,
@@ -36,6 +41,7 @@ String? authRedirect({
   required String currentPath,
   bool isOnboardingComplete = false,
   bool isAdmin = false,
+  bool hasActiveSanction = false,
 }) {
   if (isLoading) return '/splash';
 
@@ -58,6 +64,20 @@ String? authRedirect({
   if (isLoggedIn && isAdminRoute && !isAdmin) return AppRoutes.home;
 
   if (isLoggedIn && _authRoutes.contains(currentPath)) return AppRoutes.home;
+
+  // Suspension gate (P-53): block all navigation for active sanctions.
+  // /suspended and /suspended/appeal are allowed; everything else is blocked.
+  if (isLoggedIn &&
+      hasActiveSanction &&
+      !currentPath.startsWith('/suspended')) {
+    return AppRoutes.suspended;
+  }
+  // Lift the gate once the sanction is resolved.
+  if (isLoggedIn &&
+      !hasActiveSanction &&
+      currentPath.startsWith('/suspended')) {
+    return AppRoutes.home;
+  }
 
   return null;
 }
