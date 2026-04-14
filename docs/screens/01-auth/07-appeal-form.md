@@ -171,6 +171,6 @@ Navigated to from the "Appeal" CTA on the suspension gate screen, exclusively wh
 
 ## Design Reference
 
-- Spec: `docs/screens/01-auth/06-appeal-form.md` (this file)
+- Spec: `docs/screens/01-auth/07-appeal-form.md` (this file)
 - Designs: `01-auth/designs/appeal_form_*` — to be created by designer
 - Variants required: `light_idle`, `light_typing`, `light_submitting`, `light_error`, `dark_idle`

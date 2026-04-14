@@ -1,9 +1,11 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/firebase_service.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
+
+part 'sanction_analytics.g.dart';
 
 /// Analytics wrapper for P-53 Suspension Gate + Appeal flow events.
 ///
@@ -79,6 +81,7 @@ class SanctionAnalytics {
 ///
 /// Depends on [firebaseAnalyticsProvider] so it can be overridden in tests
 /// with a fake [FirebaseAnalytics] instance via [ProviderScope.overrides].
-final sanctionAnalyticsProvider = Provider<SanctionAnalytics>((ref) {
+@Riverpod(keepAlive: true)
+SanctionAnalytics sanctionAnalytics(SanctionAnalyticsRef ref) {
   return SanctionAnalytics(analytics: ref.watch(firebaseAnalyticsProvider));
-});
+}

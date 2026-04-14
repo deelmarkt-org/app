@@ -162,6 +162,6 @@ Displayed whenever the router guard detects an active sanction returned by the `
 
 ## Design Reference
 
-- Spec: `docs/screens/01-auth/05-suspension-gate.md` (this file)
+- Spec: `docs/screens/01-auth/06-suspension-gate.md` (this file)
 - Designs: `01-auth/designs/suspension_gate_*` — to be created by designer
 - Variants required: `light_active`, `light_pending`, `light_upheld`, `dark_active`, `dark_pending`
