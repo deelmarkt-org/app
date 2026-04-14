@@ -54,6 +54,10 @@ class TransactionDto {
     );
   }
 
+  /// Build INSERT JSON. `platform_fee_cents` is omitted — it is computed
+  /// server-side by the `trg_calculate_platform_fee` trigger (2.5% of
+  /// item_amount_cents, ceil-rounded). See migration
+  /// `20260414180000_b55_server_side_platform_fee.sql`.
   static Map<String, dynamic> toInsertJson({
     required String listingId,
     required String buyerId,
@@ -66,7 +70,6 @@ class TransactionDto {
       'buyer_id': buyerId,
       'seller_id': sellerId,
       'item_amount_cents': itemAmountCents,
-      'platform_fee_cents': _calculatePlatformFee(itemAmountCents),
       'shipping_cost_cents': shippingCostCents,
       'currency': 'EUR',
     };
@@ -74,11 +77,6 @@ class TransactionDto {
 
   static List<TransactionEntity> fromJsonList(List<dynamic> jsonList) {
     return jsonList.whereType<Map<String, dynamic>>().map(fromJson).toList();
-  }
-
-  /// Platform fee: 2.5% of item amount, rounded up.
-  static int _calculatePlatformFee(int itemAmountCents) {
-    return (itemAmountCents * 0.025).ceil();
   }
 
   static DateTime? _parseOptionalDate(Object? value) {

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/core/models/transaction_status.dart';
 import 'package:deelmarkt/features/transaction/data/supabase/supabase_transaction_repository.dart';
 
 class MockSupabaseClient extends Mock implements SupabaseClient {}
@@ -26,9 +27,8 @@ void main() {
     });
 
     group('createTransaction', () {
-      test('calls insert on transactions table', () async {
-        // Without a real PostgREST mock, verify the method exists
-        // and throws when Supabase is not configured.
+      test('attempts to insert into transactions table', () async {
+        // Unstubbed mock — verifies the method calls _client.from().
         expect(
           () => repo.createTransaction(
             listingId: 'listing-001',
@@ -37,14 +37,14 @@ void main() {
             itemAmountCents: 5000,
             shippingCostCents: 495,
           ),
-          throwsA(anything),
+          throwsA(isA<TypeError>()),
         );
       });
     });
 
     group('getTransaction', () {
-      test('calls select on transactions table', () async {
-        expect(() => repo.getTransaction('txn-001'), throwsA(anything));
+      test('attempts to query transactions table', () async {
+        expect(() => repo.getTransaction('txn-001'), throwsA(isA<TypeError>()));
       });
     });
 
@@ -52,7 +52,39 @@ void main() {
       test('queries by buyer_id or seller_id', () async {
         expect(
           () => repo.getTransactionsForUser('user-001'),
-          throwsA(anything),
+          throwsA(isA<TypeError>()),
+        );
+      });
+    });
+
+    group('service-role-only methods', () {
+      test('updateStatus throws UnsupportedError', () async {
+        expect(
+          () => repo.updateStatus(
+            transactionId: 'txn-001',
+            newStatus: TransactionStatus.paid,
+          ),
+          throwsA(isA<UnsupportedError>()),
+        );
+      });
+
+      test('setMolliePaymentId throws UnsupportedError', () async {
+        expect(
+          () => repo.setMolliePaymentId(
+            transactionId: 'txn-001',
+            molliePaymentId: 'tr_123',
+          ),
+          throwsA(isA<UnsupportedError>()),
+        );
+      });
+
+      test('setEscrowDeadline throws UnsupportedError', () async {
+        expect(
+          () => repo.setEscrowDeadline(
+            transactionId: 'txn-001',
+            deadline: DateTime(2026, 5, 15),
+          ),
+          throwsA(isA<UnsupportedError>()),
         );
       });
     });

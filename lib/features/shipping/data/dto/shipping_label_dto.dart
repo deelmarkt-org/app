@@ -34,9 +34,7 @@ class ShippingLabelDto {
       trackingNumber: barcode,
       carrier: _carrierFromDb(carrierRaw),
       destinationPostalCode: '', // Not stored in DB — derived from transaction
-      shipByDeadline:
-          _parseOptionalDate(json['ship_by_deadline']) ??
-          DateTime.now().add(const Duration(days: 5)),
+      shipByDeadline: _parseOptionalDate(json['ship_by_deadline']),
       createdAt: DateTime.tryParse(createdAtRaw) ?? DateTime.now(),
     );
   }

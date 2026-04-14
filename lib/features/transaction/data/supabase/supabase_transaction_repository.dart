@@ -80,24 +80,19 @@ class SupabaseTransactionRepository implements TransactionRepository {
     }
   }
 
+  // ── Service-role-only mutations ──────────────────────────────────────
+  // These operations require `service_role` (Edge Functions).
+  // RLS blocks them from the Flutter client. Throw early to make
+  // the contract explicit and prevent accidental UI calls.
+
   @override
   Future<TransactionEntity> updateStatus({
     required String transactionId,
     required TransactionStatus newStatus,
   }) async {
-    try {
-      final response =
-          await _client
-              .from(_table)
-              .update({'status': newStatus.toDb()})
-              .eq('id', transactionId)
-              .select()
-              .single();
-
-      return TransactionDto.fromJson(response);
-    } on PostgrestException catch (e) {
-      throw Exception('Failed to update transaction status: ${e.message}');
-    }
+    throw UnsupportedError(
+      'updateStatus requires service_role — invoke via Edge Function',
+    );
   }
 
   @override
@@ -105,19 +100,9 @@ class SupabaseTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String molliePaymentId,
   }) async {
-    try {
-      final response =
-          await _client
-              .from(_table)
-              .update({'mollie_payment_id': molliePaymentId})
-              .eq('id', transactionId)
-              .select()
-              .single();
-
-      return TransactionDto.fromJson(response);
-    } on PostgrestException catch (e) {
-      throw Exception('Failed to set Mollie payment ID: ${e.message}');
-    }
+    throw UnsupportedError(
+      'setMolliePaymentId requires service_role — invoke via Edge Function',
+    );
   }
 
   @override
@@ -125,18 +110,8 @@ class SupabaseTransactionRepository implements TransactionRepository {
     required String transactionId,
     required DateTime deadline,
   }) async {
-    try {
-      final response =
-          await _client
-              .from(_table)
-              .update({'escrow_deadline': deadline.toUtc().toIso8601String()})
-              .eq('id', transactionId)
-              .select()
-              .single();
-
-      return TransactionDto.fromJson(response);
-    } on PostgrestException catch (e) {
-      throw Exception('Failed to set escrow deadline: ${e.message}');
-    }
+    throw UnsupportedError(
+      'setEscrowDeadline requires service_role — invoke via Edge Function',
+    );
   }
 }

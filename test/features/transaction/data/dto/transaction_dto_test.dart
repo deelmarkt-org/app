@@ -83,7 +83,7 @@ void main() {
     });
 
     group('toInsertJson', () {
-      test('calculates platform fee at 2.5%', () {
+      test('omits platform_fee_cents (server-side trigger)', () {
         final json = TransactionDto.toInsertJson(
           listingId: 'listing-001',
           buyerId: 'buyer-001',
@@ -92,20 +92,10 @@ void main() {
           shippingCostCents: 495,
         );
 
-        expect(json['platform_fee_cents'], 250); // 2.5% of 10000
+        expect(json.containsKey('platform_fee_cents'), isFalse);
         expect(json['currency'], 'EUR');
-      });
-
-      test('rounds platform fee up', () {
-        // 2.5% of 999 = 24.975 → ceil → 25
-        final json = TransactionDto.toInsertJson(
-          listingId: 'l',
-          buyerId: 'b',
-          sellerId: 's',
-          itemAmountCents: 999,
-          shippingCostCents: 0,
-        );
-        expect(json['platform_fee_cents'], 25);
+        expect(json['item_amount_cents'], 10000);
+        expect(json['shipping_cost_cents'], 495);
       });
     });
   });

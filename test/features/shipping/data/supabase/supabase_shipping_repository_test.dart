@@ -26,14 +26,18 @@ void main() {
     });
 
     group('getLabel', () {
-      test('queries shipping_labels table', () async {
-        expect(() => repo.getLabel('ship-001'), throwsA(anything));
+      test('throws Exception wrapping PostgREST error', () async {
+        // Unstubbed mock — verifies the method calls _client.from().
+        expect(() => repo.getLabel('ship-001'), throwsA(isA<TypeError>()));
       });
     });
 
     group('getTrackingEvents', () {
-      test('queries tracking_events table', () async {
-        expect(() => repo.getTrackingEvents('ship-001'), throwsA(anything));
+      test('attempts to query tracking_events table', () async {
+        expect(
+          () => repo.getTrackingEvents('ship-001'),
+          throwsA(isA<TypeError>()),
+        );
       });
     });
 

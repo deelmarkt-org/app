@@ -18,6 +18,17 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
   static const _table = 'listings';
   static const _uncategorisedId = 'c1000000-0000-0000-0000-000000000008';
 
+  // Column names — shared between insert maps and row parsing.
+  static const _kTitle = 'title';
+  static const _kDescription = 'description';
+  static const _kPriceCents = 'price_cents';
+  static const _kCondition = 'condition';
+  static const _kCategoryId = 'category_id';
+  static const _kImageUrls = 'image_urls';
+  static const _kLocation = 'location';
+  static const _kIsActive = 'is_active';
+  static const _kIsSold = 'is_sold';
+
   @override
   Future<ListingEntity> create({
     required String title,
@@ -31,14 +42,16 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
     WeightRange? weightRange,
   }) async {
     return _insert(
-      title: title,
-      description: description,
-      priceInCents: priceInCents,
-      condition: condition,
-      categoryId: categoryId,
-      imageUrls: imageUrls,
-      location: location,
       isActive: true,
+      fields: {
+        _kTitle: title,
+        _kDescription: description,
+        _kPriceCents: priceInCents,
+        _kCondition: condition.toDb(),
+        _kCategoryId: categoryId,
+        _kImageUrls: imageUrls,
+        _kLocation: location,
+      },
     );
   }
 
@@ -55,29 +68,28 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
     WeightRange? weightRange,
   }) async {
     return _insert(
-      title: title.isEmpty ? 'Draft' : title,
-      description: description.isEmpty ? 'Draft listing' : description,
-      priceInCents: priceInCents > 0 ? priceInCents : 1,
-      condition: condition ?? ListingCondition.good,
-      categoryId: categoryId ?? _uncategorisedId,
-      imageUrls: imageUrls,
-      location: location,
       isActive: false,
+      fields: {
+        _kTitle: title.isEmpty ? 'Draft' : title,
+        _kDescription: description.isEmpty ? 'Draft listing' : description,
+        // DB CHECK constraint requires price_cents > 0; use 1 as sentinel
+        // for "not yet set". The publish flow (create) enforces real prices.
+        _kPriceCents: priceInCents > 0 ? priceInCents : 1,
+        _kCondition: (condition ?? ListingCondition.good).toDb(),
+        _kCategoryId: categoryId ?? _uncategorisedId,
+        _kImageUrls: imageUrls,
+        _kLocation: location,
+      },
     );
   }
 
   Future<ListingEntity> _insert({
-    required String title,
-    required String description,
-    required int priceInCents,
-    required ListingCondition condition,
-    required String categoryId,
-    required List<String> imageUrls,
     required bool isActive,
-    String? location,
+    required Map<String, Object?> fields,
   }) async {
-    final userId = _client.auth.currentUser?.id;
-    if (userId == null) throw Exception('Not authenticated');
+    final currentUser = _client.auth.currentUser;
+    if (currentUser == null) throw Exception('Not authenticated');
+    final userId = currentUser.id;
 
     try {
       final response =
@@ -85,20 +97,16 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
               .from(_table)
               .insert({
                 'seller_id': userId,
-                'title': title,
-                'description': description,
-                'price_cents': priceInCents,
-                'condition': condition.toDb(),
-                'category_id': categoryId,
-                'image_urls': imageUrls,
-                'location': location,
-                'is_active': isActive,
-                'is_sold': false,
+                ...fields,
+                _kIsActive: isActive,
+                _kIsSold: false,
               })
               .select()
               .single();
 
-      return _entityFromRow(response, userId);
+      final sellerName =
+          currentUser.userMetadata?['display_name'] as String? ?? '';
+      return _entityFromRow(response, userId, sellerName);
     } on PostgrestException catch (e) {
       throw Exception(
         'Failed to ${isActive ? "create" : "save draft"}: ${e.message}',
@@ -109,27 +117,26 @@ class SupabaseListingCreationRepository implements ListingCreationRepository {
   static ListingEntity _entityFromRow(
     Map<String, dynamic> json,
     String sellerId,
+    String sellerName,
   ) {
     return ListingEntity(
       id: json['id'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      priceInCents: json['price_cents'] as int,
+      title: json[_kTitle] as String,
+      description: json[_kDescription] as String,
+      priceInCents: json[_kPriceCents] as int,
       sellerId: sellerId,
-      sellerName: '',
+      sellerName: sellerName,
       condition: ListingCondition.fromDb(
-        (json['condition'] as String?) ?? 'good',
+        (json[_kCondition] as String?) ?? 'good',
       ),
-      categoryId: (json['category_id'] as String?) ?? '',
+      categoryId: (json[_kCategoryId] as String?) ?? '',
       imageUrls:
-          (json['image_urls'] as List<dynamic>?)
-              ?.whereType<String>()
-              .toList() ??
+          (json[_kImageUrls] as List<dynamic>?)?.whereType<String>().toList() ??
           [],
-      location: json['location'] as String?,
+      location: json[_kLocation] as String?,
       status: _statusFromBooleans(
-        isActive: json['is_active'] as bool? ?? true,
-        isSold: json['is_sold'] as bool? ?? false,
+        isActive: json[_kIsActive] as bool? ?? true,
+        isSold: json[_kIsSold] as bool? ?? false,
       ),
       createdAt:
           DateTime.tryParse((json['created_at'] as String?) ?? '') ??

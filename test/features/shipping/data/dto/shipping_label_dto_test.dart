@@ -32,9 +32,14 @@ void main() {
         final json = _validJson();
         json['ship_by_deadline'] = '2026-04-12T00:00:00Z';
         final label = ShippingLabelDto.fromJson(json);
-        expect(label.shipByDeadline.year, 2026);
-        expect(label.shipByDeadline.month, 4);
-        expect(label.shipByDeadline.day, 12);
+        expect(label.shipByDeadline?.year, 2026);
+        expect(label.shipByDeadline?.month, 4);
+        expect(label.shipByDeadline?.day, 12);
+      });
+
+      test('returns null shipByDeadline when not in JSON', () {
+        final label = ShippingLabelDto.fromJson(_validJson());
+        expect(label.shipByDeadline, isNull);
       });
 
       test('throws FormatException on missing required fields', () {

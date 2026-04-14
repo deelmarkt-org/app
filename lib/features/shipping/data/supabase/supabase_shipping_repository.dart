@@ -19,6 +19,8 @@ class SupabaseShippingRepository implements ShippingRepository {
 
   final SupabaseClient _client;
 
+  static const _parcelShopsFunction = 'get-parcel-shops';
+
   @override
   Future<ShippingLabel?> getLabel(String shippingId) async {
     try {
@@ -55,7 +57,7 @@ class SupabaseShippingRepository implements ShippingRepository {
   Future<List<ParcelShop>> getParcelShops(String postalCode) async {
     try {
       final response = await _client.functions.invoke(
-        'get-parcel-shops',
+        _parcelShopsFunction,
         body: {'postal_code': postalCode},
       );
 
