@@ -189,3 +189,10 @@ class DeletingSettingsRepository extends InstantSettingsRepository {
   Future<void> deleteAccount({required String password}) =>
       Completer<void>().future;
 }
+
+/// Settings repository where deleteAddress throws — tests error SnackBar (M2).
+class ThrowingDeleteSettingsRepository extends InstantSettingsRepository {
+  @override
+  Future<void> deleteAddress(DutchAddress address) =>
+      throw Exception('Network error');
+}

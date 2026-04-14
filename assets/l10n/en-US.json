@@ -428,6 +428,7 @@
     "editAddress": "Edit address",
     "addressSaved": "Address saved",
     "deleteAddressTitle": "Delete address?",
+    "deleteAddressFailed": "Could not delete address. Please try again.",
     "notifications": "Notifications",
     "messages": "Messages",
     "offers": "Offers",

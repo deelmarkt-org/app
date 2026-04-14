@@ -307,6 +307,7 @@
     "editAddress": "Adres bewerken",
     "addressSaved": "Adres opgeslagen",
     "deleteAddressTitle": "Adres verwijderen?",
+    "deleteAddressFailed": "Adres verwijderen mislukt. Probeer het opnieuw.",
     "notifications": "Meldingen",
     "messages": "Berichten",
     "offers": "Biedingen",

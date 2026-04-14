@@ -253,5 +253,23 @@ void main() {
       expect(find.byType(DeleteAddressDialog), findsNothing);
       expect(find.text('Damstraat 42, 1012 AB Amsterdam'), findsOneWidget);
     });
+
+    testWidgets('delete failure shows error snackbar (M2)', (tester) async {
+      await pumpSettingsScreen(
+        tester,
+        settingsRepo: ThrowingDeleteSettingsRepository(),
+      );
+
+      // Open delete dialog.
+      await tester.tap(find.byTooltip('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Confirm deletion — repo will throw.
+      await tester.tap(find.text('action.delete'));
+      await tester.pumpAndSettle();
+
+      // Error snackbar should appear.
+      expect(find.text('settings.deleteAddressFailed'), findsOneWidget);
+    });
   });
 }
