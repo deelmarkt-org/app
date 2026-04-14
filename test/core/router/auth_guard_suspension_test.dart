@@ -126,124 +126,134 @@ void main() {
     },
   );
 
-  group(
-    'authRedirect — pre-existing branches unaffected by hasActiveSanction',
-    () {
-      test('returns /splash while loading regardless of sanction flag', () {
-        expect(
-          authRedirect(
-            isLoading: true,
-            isLoggedIn: true,
-            currentPath: AppRoutes.home,
-            hasActiveSanction: true,
-          ),
-          '/splash',
-        );
-      });
+  group('authRedirect — pre-existing branches unaffected by hasActiveSanction', () {
+    test('returns /splash while loading regardless of sanction flag', () {
+      expect(
+        authRedirect(
+          isLoading: true,
+          isLoggedIn: true,
+          currentPath: AppRoutes.home,
+          hasActiveSanction: true,
+        ),
+        '/splash',
+      );
+    });
 
-      test('redirects unauthenticated /home to null (not protected)', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: false,
-            currentPath: AppRoutes.home,
-          ),
-          isNull,
-        );
-      });
+    test('redirects unauthenticated /home to null (not protected)', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: false,
+          currentPath: AppRoutes.home,
+        ),
+        isNull,
+      );
+    });
 
-      test('redirects unauthenticated /sell to /onboarding', () {
+    test('redirects unauthenticated /sell to /onboarding', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: false,
+          currentPath: AppRoutes.sell,
+        ),
+        '/onboarding',
+      );
+    });
+
+    test(
+      'redirects unauthenticated /sell to /login when onboarding complete',
+      () {
         expect(
           authRedirect(
             isLoading: false,
             isLoggedIn: false,
             currentPath: AppRoutes.sell,
+            isOnboardingComplete: true,
           ),
-          '/onboarding',
+          '/login',
         );
-      });
+      },
+    );
 
-      test(
-        'redirects unauthenticated /sell to /login when onboarding complete',
-        () {
-          expect(
-            authRedirect(
-              isLoading: false,
-              isLoggedIn: false,
-              currentPath: AppRoutes.sell,
-              isOnboardingComplete: true,
-            ),
-            '/login',
-          );
-        },
+    test('redirects /admin to /home when logged in but not admin', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: AppRoutes.admin,
+        ),
+        AppRoutes.home,
       );
+    });
 
-      test('redirects /admin to /home when logged in but not admin', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: true,
-            currentPath: AppRoutes.admin,
-          ),
-          AppRoutes.home,
-        );
-      });
+    test('allows /admin when logged in and is admin', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: AppRoutes.admin,
+          isAdmin: true,
+        ),
+        isNull,
+      );
+    });
 
-      test('allows /admin when logged in and is admin', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: true,
-            currentPath: AppRoutes.admin,
-            isAdmin: true,
-          ),
-          isNull,
-        );
-      });
+    test('redirects /login to /home when logged in (no sanction)', () {
+      expect(
+        authRedirect(isLoading: false, isLoggedIn: true, currentPath: '/login'),
+        AppRoutes.home,
+      );
+    });
 
-      test('redirects /login to /home when logged in (no sanction)', () {
+    // M5 regression: suspended user deep-linking to /login must hit the
+    // suspension gate before the auth-route redirect (fix for redirect order bug).
+    test(
+      'suspended user on /login → /suspended (gate precedes auth-route redirect)',
+      () {
         expect(
           authRedirect(
             isLoading: false,
             isLoggedIn: true,
             currentPath: '/login',
+            hasActiveSanction: true,
           ),
-          AppRoutes.home,
+          AppRoutes.suspended,
         );
-      });
+      },
+    );
 
-      test('allows /home when logged in with no sanction', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: true,
-            currentPath: AppRoutes.home,
-          ),
-          isNull,
-        );
-      });
+    test('allows /home when logged in with no sanction', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: AppRoutes.home,
+        ),
+        isNull,
+      );
+    });
 
-      test('/splash → /home when resolved and logged in (no sanction)', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: true,
-            currentPath: '/splash',
-          ),
-          AppRoutes.home,
-        );
-      });
+    test('/splash → /home when resolved and logged in (no sanction)', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: true,
+          currentPath: '/splash',
+        ),
+        AppRoutes.home,
+      );
+    });
 
-      test('allows /search for unauthenticated (no sanction)', () {
-        expect(
-          authRedirect(
-            isLoading: false,
-            isLoggedIn: false,
-            currentPath: AppRoutes.search,
-          ),
-          isNull,
-        );
-      });
-    },
-  );
+    test('allows /search for unauthenticated (no sanction)', () {
+      expect(
+        authRedirect(
+          isLoading: false,
+          isLoggedIn: false,
+          currentPath: AppRoutes.search,
+        ),
+        isNull,
+      );
+    });
+  });
 }
