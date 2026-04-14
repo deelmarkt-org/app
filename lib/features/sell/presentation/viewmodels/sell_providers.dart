@@ -3,8 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/sell/data/mock/mock_listing_creation_repository.dart';
+import 'package:deelmarkt/features/sell/data/supabase/supabase_listing_creation_repository.dart';
 import 'package:deelmarkt/features/sell/data/services/draft_persistence_service.dart';
 import 'package:deelmarkt/features/sell/data/services/image_picker_service.dart';
 import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
@@ -18,10 +20,12 @@ import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_que
 
 part 'sell_providers.g.dart';
 
-/// Listing creation repository — mock for Phase 1, swap for Supabase later.
+/// Listing creation repository — mock or Supabase based on [useMockDataProvider].
 @riverpod
 ListingCreationRepository listingCreationRepository(Ref ref) {
-  return MockListingCreationRepository();
+  final useMock = ref.watch(useMockDataProvider);
+  if (useMock) return MockListingCreationRepository();
+  return SupabaseListingCreationRepository(ref.watch(supabaseClientProvider));
 }
 
 /// Image picker service for camera/gallery operations.

@@ -257,7 +257,7 @@ The agent will:
 
 - [x] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB *(PR #96)*
 - [x] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
-- [ ] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
+- [x] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
 
