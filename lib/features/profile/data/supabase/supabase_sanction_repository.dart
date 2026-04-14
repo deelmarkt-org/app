@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/profile/data/dto/sanction_dto.dart';
@@ -83,7 +84,40 @@ class SupabaseSanctionRepository implements SanctionRepository {
       }
       return SanctionDto.fromJson(rows.first as Map<String, dynamic>);
     } on PostgrestException catch (e) {
-      throw SanctionException.fromPostgrestError(e);
+      throw mapSanctionError(e);
     }
+  }
+
+  /// Maps a [PostgrestException] from the sanction RPCs to the correct
+  /// [SanctionException] subclass. Kept in the data layer so the domain
+  /// remains pure Dart (CLAUDE.md §1.2).
+  ///
+  /// Exposed for testing via `@visibleForTesting`; call sites within the
+  /// production code should go through [submitAppeal].
+  ///
+  /// Mapping rules:
+  /// - Message contains "14 days" / "14-day" → [AppealWindowExpired]
+  /// - Message contains "final decision" / "counter-appeal" → [AppealAlreadyResolved]
+  /// - [PostgrestException.code] is "PGRST116" (no rows) → [SanctionNotFound]
+  /// - HTTP status 429 or message contains "rate" → [AppealRateLimited]
+  /// - Everything else → [UnknownSanctionError]
+  @visibleForTesting
+  static SanctionException mapSanctionError(PostgrestException e) {
+    final msg = e.message.toLowerCase();
+
+    if (msg.contains('14 day') || msg.contains('14-day')) {
+      return const AppealWindowExpired();
+    }
+    if (msg.contains('final decision') || msg.contains('counter-appeal')) {
+      return const AppealAlreadyResolved();
+    }
+    if (e.code == 'PGRST116') {
+      return const SanctionNotFound();
+    }
+    if ((e.details?.toString().contains('429') ?? false) ||
+        msg.contains('rate')) {
+      return const AppealRateLimited();
+    }
+    return UnknownSanctionError(e.message);
   }
 }

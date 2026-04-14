@@ -1,15 +1,15 @@
-/// Unit tests for [SanctionException] hierarchy and [fromPostgrestError] mapping.
+/// Unit tests for [SanctionException] hierarchy (pure-Dart domain exceptions).
+///
+/// PostgrestException mapping tests live in
+/// test/features/profile/data/supabase/supabase_sanction_repository_test.dart
+/// because the mapper is part of the data layer (CLAUDE.md §1.2).
 ///
 /// Reference: lib/features/profile/domain/exceptions/sanction_exceptions.dart
 library;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/profile/domain/exceptions/sanction_exceptions.dart';
-
-PostgrestException _pgError(String message, {String? code, dynamic details}) =>
-    PostgrestException(message: message, code: code, details: details);
 
 void main() {
   group('AppealWindowExpired', () {
@@ -119,90 +119,6 @@ void main() {
 
     test('is a SanctionException', () {
       expect(ex, isA<SanctionException>());
-    });
-  });
-
-  group('SanctionException.fromPostgrestError', () {
-    test('maps "14 days" message → AppealWindowExpired', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('appeal window of 14 days has passed'),
-      );
-      expect(result, isA<AppealWindowExpired>());
-    });
-
-    test('maps "14-day" message → AppealWindowExpired', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('The 14-day appeal window is closed'),
-      );
-      expect(result, isA<AppealWindowExpired>());
-    });
-
-    test('case-insensitive 14-day match', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('14 DAY window expired'),
-      );
-      expect(result, isA<AppealWindowExpired>());
-    });
-
-    test('maps "final decision" message → AppealAlreadyResolved', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('A final decision has been made on this appeal'),
-      );
-      expect(result, isA<AppealAlreadyResolved>());
-    });
-
-    test('maps "counter-appeal" message → AppealAlreadyResolved', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('counter-appeal not allowed'),
-      );
-      expect(result, isA<AppealAlreadyResolved>());
-    });
-
-    test('PGRST116 code → SanctionNotFound', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('no rows returned', code: 'PGRST116'),
-      );
-      expect(result, isA<SanctionNotFound>());
-    });
-
-    test('details containing 429 → AppealRateLimited', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('request failed', details: '429 Too Many Requests'),
-      );
-      expect(result, isA<AppealRateLimited>());
-    });
-
-    test('message containing "rate" → AppealRateLimited', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('rate limit exceeded'),
-      );
-      expect(result, isA<AppealRateLimited>());
-    });
-
-    test('unknown message → UnknownSanctionError with original message', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('unexpected server failure'),
-      );
-      expect(result, isA<UnknownSanctionError>());
-      expect(
-        (result as UnknownSanctionError).message,
-        'unexpected server failure',
-      );
-    });
-
-    test('PGRST116 takes precedence over generic fallback', () {
-      final result = SanctionException.fromPostgrestError(
-        _pgError('some message', code: 'PGRST116'),
-      );
-      expect(result, isA<SanctionNotFound>());
-    });
-
-    test('14-day match takes precedence over rate keyword in same message', () {
-      // Message with 14-day should win.
-      final result = SanctionException.fromPostgrestError(
-        _pgError('14-day window rate exceeded'),
-      );
-      expect(result, isA<AppealWindowExpired>());
     });
   });
 }

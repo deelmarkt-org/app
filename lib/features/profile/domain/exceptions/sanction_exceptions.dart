@@ -1,9 +1,7 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 /// Sealed exception hierarchy for sanction and appeal operations.
 ///
-/// Use [SanctionException.fromPostgrestError] to convert [PostgrestException]
-/// instances from the [submit_appeal] / [get_active_sanction] RPCs.
+/// [PostgrestException] mapping is handled in the data layer
+/// ([SupabaseSanctionRepository.submitAppeal]) to keep this class pure Dart.
 ///
 /// Reference: docs/epics/E06-trust-moderation.md §Account Suspension & Recovery
 /// Reference: supabase/migrations/20260410100000_r37_account_sanctions.sql lines 146–202
@@ -12,33 +10,6 @@ sealed class SanctionException implements Exception {
 
   /// Stable code string used in analytics events (see [SanctionAnalytics]).
   String get code;
-
-  /// Maps a [PostgrestException] from the sanction RPCs to the correct subclass.
-  ///
-  /// Mapping rules:
-  /// - Message contains "14 days" / "14-day" → [AppealWindowExpired]
-  /// - Message contains "final decision" / "counter-appeal" → [AppealAlreadyResolved]
-  /// - [PostgrestException.code] is "PGRST116" (no rows) → [SanctionNotFound]
-  /// - HTTP status 429 or message contains "rate" → [AppealRateLimited]
-  /// - Everything else → [UnknownSanctionError]
-  static SanctionException fromPostgrestError(PostgrestException e) {
-    final msg = e.message.toLowerCase();
-
-    if (msg.contains('14 day') || msg.contains('14-day')) {
-      return const AppealWindowExpired();
-    }
-    if (msg.contains('final decision') || msg.contains('counter-appeal')) {
-      return const AppealAlreadyResolved();
-    }
-    if (e.code == 'PGRST116') {
-      return const SanctionNotFound();
-    }
-    if ((e.details?.toString().contains('429') ?? false) ||
-        msg.contains('rate')) {
-      return const AppealRateLimited();
-    }
-    return UnknownSanctionError(e.message);
-  }
 }
 
 /// The 14-day window in which an appeal may be submitted has closed.
