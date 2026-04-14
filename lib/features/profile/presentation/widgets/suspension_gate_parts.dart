@@ -1,20 +1,26 @@
 /// Extracted sub-widgets for [SuspensionGateScreen].
 ///
+/// Re-exports [SuspensionGateCountdownChip], [SuspensionGatePermanentChip],
+/// [SuspensionGateReceiptBanner], [SuspensionGateUpheldBody] (from
+/// `suspension_gate_status.dart`) and [SuspensionGateCtaRow] (from
+/// `suspension_gate_cta.dart`) so callers only need a single import.
+///
 /// Reference: docs/screens/01-auth/06-suspension-gate.md
 library;
 
+export 'suspension_gate_cta.dart';
+export 'suspension_gate_status.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
-import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_cta.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_status.dart';
 
 class SuspensionGateSanctionBody extends StatelessWidget {
   const SuspensionGateSanctionBody({
@@ -153,212 +159,6 @@ class SuspensionGateReasonCard extends StatelessWidget {
           Text(reason, style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
-    );
-  }
-}
-
-class SuspensionGateCountdownChip extends StatelessWidget {
-  const SuspensionGateCountdownChip({required this.expiresAt, super.key});
-
-  final DateTime expiresAt;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Ceiling division so 23 h remaining shows "1 day left" instead of "0 days".
-    final daysLeft = (expiresAt.difference(DateTime.now()).inHours / 24)
-        .ceil()
-        .clamp(0, 9999);
-    final label = 'sanction.screen.countdown_days'.tr(
-      namedArgs: {'count': daysLeft.toString()},
-    );
-
-    return Semantics(
-      label: label,
-      excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.s3,
-          vertical: Spacing.s2,
-        ),
-        decoration: BoxDecoration(
-          color:
-              isDark
-                  ? DeelmarktColors.darkSurfaceElevated
-                  : DeelmarktColors.warningSurface,
-          borderRadius: BorderRadius.circular(DeelmarktRadius.md),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              PhosphorIcons.timer(),
-              size: 16,
-              color:
-                  isDark
-                      ? DeelmarktColors.darkWarning
-                      : DeelmarktColors.warning,
-            ),
-            const SizedBox(width: Spacing.s1),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color:
-                    isDark
-                        ? DeelmarktColors.darkWarning
-                        : DeelmarktColors.warning,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SuspensionGatePermanentChip extends StatelessWidget {
-  const SuspensionGatePermanentChip({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final label = 'sanction.screen.permanent'.tr();
-
-    return Semantics(
-      label: label,
-      excludeSemantics: true,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.s3,
-          vertical: Spacing.s2,
-        ),
-        decoration: BoxDecoration(
-          color:
-              isDark
-                  ? DeelmarktColors.darkErrorSurface
-                  : DeelmarktColors.errorSurface,
-          borderRadius: BorderRadius.circular(DeelmarktRadius.md),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              PhosphorIcons.prohibit(),
-              size: 16,
-              color: isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
-            ),
-            const SizedBox(width: Spacing.s1),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color:
-                    isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SuspensionGateReceiptBanner extends StatelessWidget {
-  const SuspensionGateReceiptBanner({required this.sanction, super.key});
-
-  final SanctionEntity sanction;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final time = DateFormat.yMd().add_Hm().format(sanction.appealedAt!);
-
-    return Container(
-      padding: const EdgeInsets.all(Spacing.s3),
-      decoration: BoxDecoration(
-        color:
-            isDark
-                ? DeelmarktColors.darkInfoSurface
-                : DeelmarktColors.infoSurface,
-        borderRadius: BorderRadius.circular(DeelmarktRadius.md),
-        border: Border.all(
-          color: isDark ? DeelmarktColors.darkInfo : DeelmarktColors.info,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'sanction.screen.receipt'.tr(
-              namedArgs: {'time': time, 'id': sanction.id},
-            ),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          const SizedBox(height: Spacing.s2),
-          Text(
-            'sanction.screen.sla_72h'.tr(),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color:
-                  isDark
-                      ? DeelmarktColors.darkOnSurfaceSecondary
-                      : DeelmarktColors.neutral700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SuspensionGateUpheldBody extends StatelessWidget {
-  const SuspensionGateUpheldBody({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.s2),
-      child: Text(
-        'sanction.screen.appeal_upheld_body'.tr(),
-        style: Theme.of(context).textTheme.bodyLarge,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-class SuspensionGateCtaRow extends ConsumerWidget {
-  const SuspensionGateCtaRow({
-    required this.sanction,
-    required this.onContactSupport,
-    super.key,
-  });
-
-  final SanctionEntity sanction;
-  final VoidCallback onContactSupport;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final showAppealCta =
-        sanction.canAppeal &&
-        !sanction.isAppealPending &&
-        sanction.appealDecision == null;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (showAppealCta) ...[
-          DeelButton(
-            label: 'sanction.screen.appeal_title'.tr(),
-            onPressed:
-                () => context.push(AppRoutes.suspendedAppeal, extra: sanction),
-          ),
-          const SizedBox(height: Spacing.s3),
-        ],
-        DeelButton(
-          label: 'sanction.screen.contact_support'.tr(),
-          onPressed: onContactSupport,
-          variant: DeelButtonVariant.ghost,
-        ),
-      ],
     );
   }
 }
