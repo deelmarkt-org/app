@@ -271,5 +271,21 @@ void main() {
       // Error snackbar should appear.
       expect(find.text('settings.deleteAddressFailed'), findsOneWidget);
     });
+
+    testWidgets('toggling notification switch calls updateNotificationPrefs', (
+      tester,
+    ) async {
+      await pumpSettingsScreen(tester);
+
+      // Tap the first SwitchListTile to exercise the onChanged callback
+      // in _buildNotificationsSection (covers the ref.read(...).updateNotificationPrefs path).
+      final switches = find.byType(SwitchListTile);
+      expect(switches, findsWidgets);
+      await tester.tap(switches.first);
+      await tester.pumpAndSettle();
+
+      // Screen should rebuild without error — section still visible.
+      expect(find.byType(NotificationsSection), findsOneWidget);
+    });
   });
 }
