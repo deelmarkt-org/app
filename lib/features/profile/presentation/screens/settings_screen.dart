@@ -9,6 +9,7 @@ import 'package:deelmarkt/features/profile/presentation/widgets/account_section.
 import 'package:deelmarkt/features/profile/presentation/widgets/addresses_section.dart';
 import 'package:deelmarkt/core/domain/entities/dutch_address.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/address_form_modal.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/appearance_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/app_info_section.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_account_dialog.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/delete_address_dialog.dart';
@@ -53,6 +54,8 @@ class SettingsScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const LanguageSwitch(),
+              const SizedBox(height: Spacing.s4),
+              const AppearanceSection(),
               const SizedBox(height: Spacing.s4),
               _buildAccountSection(profileState),
               _buildAddressesSection(state, ref, context),
