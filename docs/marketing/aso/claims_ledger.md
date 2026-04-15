@@ -26,11 +26,10 @@
 
 ## Action Items Before App Store Submission
 
-- [ ] **Soften "Kopersbescherming inbegrepen" / "Buyer protection included"**
-  - Change to: "Escrow beschermt jouw betaling" / "Escrow protects your payment"
+- [x] **Soften "Kopersbescherming inbegrepen" / "Buyer protection included"** ✓ done in commit b6f5a89
+  - Changed to: "Escrow beschermt jouw betaling" / "Escrow protects your payment"
   - Rationale: Full dispute resolution UI not in v1.0
-  - Owner: pizmam
-  - Target: before first TestFlight external review
+  - Completed: 2026-04-15
 
 ---
 

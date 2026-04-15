@@ -78,7 +78,7 @@ NL: `tweedehands,marktplaats alternatief,escrow betaling,iDIN,p2p,veilig verkope
 EN: `secondhand,safe marketplace,escrow,dutch,p2p,verified seller,buy sell`
 
 > Note: App name + subtitle are also indexed — avoid repeating words already in those fields.
-> Current name: "DeelMarkt" | subtitle NL: "Veilig tweedehands kopen en verkopen"
+> Current name: "DeelMarkt" | subtitle NL: "Veilig tweedehands handelen" | subtitle EN: "Safe Dutch P2P Marketplace"
 
 ### Android (indexed from title + description — no keywords field)
 Keywords are woven into the description naturally. See `full_description.txt`.
