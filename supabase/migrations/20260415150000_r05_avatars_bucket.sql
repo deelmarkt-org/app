@@ -28,11 +28,21 @@ VALUES (
   15728640,     -- 15 MiB
   ARRAY['image/png', 'image/jpeg', 'image/webp', 'image/heic']
 )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  public             = EXCLUDED.public,
+  file_size_limit    = EXCLUDED.file_size_limit,
+  allowed_mime_types = EXCLUDED.allowed_mime_types;
 
 -- =============================================================================
 -- RLS policies for storage.objects (bucket: avatars)
 -- =============================================================================
+
+-- Drop existing policies first so the migration is idempotent on re-run
+-- (partial rollback, manual policy creation on staging, supabase db push edge cases).
+DROP POLICY IF EXISTS storage_avatars_insert ON storage.objects;
+DROP POLICY IF EXISTS storage_avatars_update ON storage.objects;
+DROP POLICY IF EXISTS storage_avatars_delete ON storage.objects;
+DROP POLICY IF EXISTS storage_avatars_select ON storage.objects;
 
 -- Authenticated users can upload avatars to their own folder only.
 CREATE POLICY storage_avatars_insert ON storage.objects
@@ -43,9 +53,15 @@ CREATE POLICY storage_avatars_insert ON storage.objects
   );
 
 -- Authenticated users can replace (upsert) their own avatar.
+-- WITH CHECK prevents path-rename attacks: even if USING passes (user owns
+-- the source row), the destination folder must also be the user's own.
 CREATE POLICY storage_avatars_update ON storage.objects
   FOR UPDATE TO authenticated
   USING (
+    bucket_id = 'avatars'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  )
+  WITH CHECK (
     bucket_id = 'avatars'
     AND (storage.foldername(name))[1] = auth.uid()::text
   );

@@ -23,5 +23,5 @@ WHERE jobname = 'expire-idin-sessions';
 SELECT cron.schedule(
   'expire-idin-sessions',
   '0 * * * *',  -- every hour at :00
-  $$SELECT expire_stale_idin_sessions()$$
+  $$SELECT public.expire_stale_idin_sessions()$$
 );

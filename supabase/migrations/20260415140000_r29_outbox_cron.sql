@@ -21,5 +21,5 @@ WHERE jobname = 'delete-processed-outbox';
 SELECT cron.schedule(
   'delete-processed-outbox',
   '0 3 * * *',  -- daily at 03:00 UTC
-  $$SELECT delete_processed_outbox_events(7)$$
+  $$SELECT public.delete_processed_outbox_events(7)$$
 );
