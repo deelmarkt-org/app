@@ -526,3 +526,43 @@ cross_feature_import_exempt:
   - lib/core/router/app_router.dart
   - lib/core/services/repository_providers.dart
 QUALITY_RULES_END -->
+
+## §13 — Marketing Assets (AI Guardrail)
+
+> **This section is a hard gate.** AI agents MUST NOT modify marketing assets
+> without explicit human approval. Violations can cause App Store rejection or
+> GDPR incidents.
+
+### Files covered by this guardrail
+
+| Path | Why gated |
+|:-----|:----------|
+| `fastlane/metadata/**` | App Store / Play Console copy — char-budget + policy compliance |
+| `fastlane/android/metadata/**` | Same |
+| `fastlane/metadata/review_information/privacy_details.yaml` | Apple privacy labels — legal document |
+| `docs/marketing/aso/claims_ledger.md` | Every claim must map to a shipped feature |
+| `docs/marketing/aso/play_data_safety.md` | Play Console data safety — legal document |
+| `docs/marketing/aso/keywords_research.md` | Evidence-based keyword decisions |
+
+### Rules for AI agents
+
+1. **Never auto-edit** any file listed above during a code implementation task,
+   even if the task touches related features.
+2. **Never auto-approve** marketing claims. Every claim in copy files MUST be
+   manually cross-referenced against `docs/marketing/aso/claims_ledger.md`.
+3. **Character budget is law.** Run `dart run scripts/check_aso.dart` before
+   committing any change to metadata files. Reject if it exits non-zero.
+4. **Locale parity is required.** Any change to `nl-NL` copy MUST have a
+   corresponding change to `en-US` and vice versa — both committed together.
+5. **Privacy labels require legal review.** Changes to `privacy_details.yaml`
+   or `play_data_safety.md` require explicit human approval from a developer
+   with GDPR sign-off authority (currently: reso or belengaz).
+
+### Allowed AI actions (no approval needed)
+
+- Running `dart run scripts/check_aso.dart` to check existing copy
+- Running `bash scripts/check_screenshots.sh` to audit PNGs
+- Reading marketing files to answer questions
+- Adding rows to `claims_ledger.md` for NEW features (never editing existing rows)
+
+---

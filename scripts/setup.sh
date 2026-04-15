@@ -200,6 +200,33 @@ fi
 
 echo ""
 
+# ── 5b. Fastlane setup (App Store / Play Console pipeline) ─────────────────
+# .gitattributes tracks golden PNGs via Git LFS (already installed above).
+# Fastlane requires Ruby + Bundler. Install if missing.
+info "Setting up Fastlane..."
+
+if ! check_cmd ruby; then
+  warn "Ruby not found — required for Fastlane. Install via Homebrew: brew install ruby"
+else
+  ok "Ruby found: $(ruby --version)"
+fi
+
+if ! check_cmd bundle; then
+  warn "Bundler not found. Installing..."
+  gem install bundler 2>/dev/null && ok "Bundler installed" || \
+    warn "Cannot install Bundler. Run: gem install bundler"
+else
+  ok "Bundler found: $(bundle --version)"
+fi
+
+if [[ -f fastlane/Gemfile || -f Gemfile ]]; then
+  info "Installing Fastlane gems (bundle install)..."
+  bundle install && ok "Fastlane gems installed" || \
+    warn "bundle install failed — check Ruby environment"
+fi
+
+echo ""
+
 # ── 6. Verify hooks work ────────────────────────────────────────────────────
 info "Verifying pre-commit hooks..."
 

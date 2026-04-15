@@ -149,11 +149,15 @@ class ShippingQrCard extends StatelessWidget {
               color: DeelmarktColors.warning,
             ),
             const SizedBox(width: Spacing.s1),
-            Text(
-              deadlineText,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: DeelmarktColors.neutral700,
-                fontWeight: FontWeight.w500,
+            Flexible(
+              child: Text(
+                deadlineText,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: DeelmarktColors.neutral700,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

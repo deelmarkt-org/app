@@ -1,0 +1,12 @@
+# DeelMarkt Appfile
+#
+# Credentials are passed via environment variables — never committed.
+# See .github/secrets documentation for required secret names.
+
+# iOS
+app_identifier("nl.deelmarkt.deelmarkt")
+apple_id(ENV["APPLE_ID"])
+itc_team_id(ENV["ITC_TEAM_ID"])
+
+# Android
+package_name("nl.deelmarkt.deelmarkt")
