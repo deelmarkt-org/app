@@ -6,23 +6,23 @@
 /// To generate all 240 App Store / Play Console screenshots, run the drivers
 /// directory directly:
 ///
-///   flutter test --update-goldens integration_test/screenshots/drivers/
+///   flutter test --update-goldens test/screenshots/drivers/
 ///
 /// To verify existing goldens match (CI mode):
 ///
-///   flutter test integration_test/screenshots/drivers/
+///   flutter test test/screenshots/drivers/
 ///
 /// Individual drivers (each generates 24 PNGs: 6 devices × 2 locales × 2 themes):
-///   integration_test/screenshots/drivers/home_buyer_screenshot_test.dart
-///   integration_test/screenshots/drivers/seller_home_screenshot_test.dart
-///   integration_test/screenshots/drivers/listing_detail_screenshot_test.dart
-///   integration_test/screenshots/drivers/listing_creation_screenshot_test.dart
-///   integration_test/screenshots/drivers/category_browse_screenshot_test.dart
-///   integration_test/screenshots/drivers/search_screenshot_test.dart
-///   integration_test/screenshots/drivers/chat_thread_screenshot_test.dart
-///   integration_test/screenshots/drivers/transaction_detail_screenshot_test.dart
-///   integration_test/screenshots/drivers/shipping_qr_screenshot_test.dart
-///   integration_test/screenshots/drivers/own_profile_screenshot_test.dart
+///   test/screenshots/drivers/home_buyer_screenshot_test.dart
+///   test/screenshots/drivers/seller_home_screenshot_test.dart
+///   test/screenshots/drivers/listing_detail_screenshot_test.dart
+///   test/screenshots/drivers/listing_creation_screenshot_test.dart
+///   test/screenshots/drivers/category_browse_screenshot_test.dart
+///   test/screenshots/drivers/search_screenshot_test.dart
+///   test/screenshots/drivers/chat_thread_screenshot_test.dart
+///   test/screenshots/drivers/transaction_detail_screenshot_test.dart
+///   test/screenshots/drivers/shipping_qr_screenshot_test.dart
+///   test/screenshots/drivers/own_profile_screenshot_test.dart
 ///
 /// Reference: PLAN-p43-aso.md §WS-A / §WS-B
 library;

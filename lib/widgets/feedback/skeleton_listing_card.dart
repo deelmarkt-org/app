@@ -38,6 +38,14 @@ class SkeletonListingCard extends StatelessWidget {
           children: [
             // Image placeholder — Expanded so the skeleton fills whatever
             // height the parent grid cell allocates (e.g. childAspectRatio).
+            //
+            // ⚠️ CONSTRAINT: Expanded requires a bounded-height parent. This
+            // widget is designed for use inside GridView (which provides bounds).
+            // Using it in an unbounded context (e.g. ListView without a fixed
+            // height) will throw a RenderFlex error. The SkeletonBox height:180
+            // is overridden by Expanded and has no visual effect — it is kept
+            // only as documentation of the intended image height when there is
+            // no parent to constrain it.
             Expanded(
               child: SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
             ),
