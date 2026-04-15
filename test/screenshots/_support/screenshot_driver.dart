@@ -142,8 +142,12 @@ Future<void> captureScreenshot({
       EnginePhase.sendSemanticsUpdate,
       const Duration(milliseconds: 800),
     );
-  } on FlutterError {
-    // Shimmer infinite ticker — drain remaining frames with fixed pumps.
+  } on FlutterError catch (e) {
+    // Only swallow the Shimmer infinite-ticker timeout; re-throw anything else
+    // so real widget errors (overflow, null dereference, etc.) are not hidden.
+    if (!e.message.contains('pumpAndSettle timed out')) rethrow;
+    // Shimmer's AnimationController.repeat() fires unconditionally even with
+    // disableAnimations: true — drain remaining frames with fixed pumps.
     await tester.pump(const Duration(milliseconds: 200));
     await tester.pump(const Duration(milliseconds: 200));
     await tester.pump(const Duration(milliseconds: 200));

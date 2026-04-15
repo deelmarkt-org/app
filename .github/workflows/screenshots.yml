@@ -4,6 +4,10 @@ name: Screenshots
 # goldens to catch unintended visual regressions.
 #
 # Runs on macOS-14 (ARM) for font consistency — see PLAN-p43-aso.md §D-1.
+#
+# Security note: this workflow uses contents:write to auto-commit updated
+# golden baselines back to the PR branch. It is restricted to same-repo PRs
+# (see job-level `if:`) so fork PRs never receive a write-scoped token.
 
 on:
   pull_request:
@@ -28,6 +32,10 @@ jobs:
     name: Regenerate & Diff Screenshots
     runs-on: macos-14
     timeout-minutes: 30
+    # Restrict to same-repo PRs only: fork PRs would run untrusted code
+    # (pub get, build_runner, flutter test) with a contents:write token,
+    # which could exfiltrate the token or push malicious commits.
+    if: github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - uses: actions/checkout@v4
@@ -64,6 +72,8 @@ jobs:
         # don't need to run --update-goldens locally when CI rendering differs
         # slightly from their machine (e.g. different font hinting on macos-14).
         # Uses GITHUB_TOKEN with contents:write permission.
+        # GITHUB_TOKEN pushes do NOT trigger new workflow runs (GitHub's built-in
+        # recursion guard), so there is no infinite-loop risk.
         run: |
           git diff --name-only test/screenshots/drivers/goldens/ > /tmp/changed_goldens.txt
           if [ -s /tmp/changed_goldens.txt ]; then
