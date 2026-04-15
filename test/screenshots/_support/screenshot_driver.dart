@@ -169,6 +169,13 @@ Future<void> captureScreenshot({
   }
 
   await expectLater(find.byType(MaterialApp), matchesGoldenFile(goldenPath));
+
+  // Drain any timers that are still pending after the golden capture.
+  // MockRepository Future.delayed(200ms) timers may still be tracked by
+  // fake_async after pumpWidget replaces the tree; without this drain the
+  // test framework reports "A Timer is still pending" on the first device
+  // variant of each locale (before the fake-clock has advanced past them).
+  await tester.pump(const Duration(seconds: 30));
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
