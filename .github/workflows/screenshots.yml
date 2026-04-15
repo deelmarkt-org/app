@@ -32,6 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Check out the branch tip, not the PR merge commit.
+          # Without this, Actions creates a detached HEAD at the merge commit;
+          # the auto-commit golden step then can't push back to the branch
+          # (rejected as non-fast-forward because the branch HEAD differs).
+          ref: ${{ github.head_ref }}
           lfs: true
 
       - uses: ./.github/actions/setup-flutter
@@ -69,7 +74,7 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add test/screenshots/drivers/goldens/
             git commit -m "chore(screenshots): update ${COUNT} golden baseline(s) [ci auto-commit]"
-            git push origin HEAD:${{ github.head_ref }}
+            git push --force-with-lease origin HEAD:${{ github.head_ref }}
             echo "Goldens committed and pushed to ${{ github.head_ref }}."
           else
             echo "All goldens match committed baselines."
