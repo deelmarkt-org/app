@@ -35,10 +35,12 @@ class SkeletonListingCard extends StatelessWidget {
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            // Image placeholder.
-            SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
+            // Image placeholder — Expanded so the skeleton fills whatever
+            // height the parent grid cell allocates (e.g. childAspectRatio).
+            Expanded(
+              child: SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
+            ),
             Padding(
               padding: EdgeInsets.all(Spacing.s3),
               child: Column(
