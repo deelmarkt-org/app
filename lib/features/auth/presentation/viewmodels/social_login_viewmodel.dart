@@ -16,13 +16,6 @@ class SocialLoginState {
   final AuthResult? result;
 
   bool get isLoading => loadingProvider != null;
-
-  SocialLoginState copyWith({
-    OAuthProvider? loadingProvider,
-    AuthResult? result,
-  }) {
-    return SocialLoginState(loadingProvider: loadingProvider, result: result);
-  }
 }
 
 /// ViewModel for Google + Apple sign-in buttons.

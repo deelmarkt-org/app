@@ -39,6 +39,12 @@ User registration via Supabase Auth, biometric login, progressive KYC (Levels 0�
 - Rate-limited login attempts
 - Password hashing: bcrypt (cost 12) via Supabase Auth
 - **All API keys and third-party credentials (iDIN, Mollie, PostNL) stored in Supabase Vault** — no secrets in env vars or source code
+- **Social login (P-44):** Google + Apple Sign-In
+  - iOS: native `sign_in_with_apple` (ASAuthorizationController) + SHA-256 nonce → `signInWithIdToken`
+  - Android: native `google_sign_in` (Play Services) → `signInWithIdToken`; Apple via web sheet fallback
+  - Web: `signInWithOAuth` redirect with `onAuthStateChange` listener
+  - `user_profiles` row auto-created by `handle_new_auth_user()` trigger on first sign-in
+  - OAuth provider enablement + secret rotation: see `docs/operations/oauth-runbook.md`
 
 ### Progressive KYC — Levels 0–2 (2 weeks)
 - **Level 0:** Email + phone verification → browse, save favourites
@@ -67,6 +73,12 @@ User registration via Supabase Auth, biometric login, progressive KYC (Levels 0�
 
 - [ ] Registration flow works end-to-end (email + phone OTP)
 - [ ] Biometric login works on iOS (Face ID) and Android (Fingerprint)
+- [ ] Google Sign-In works on iOS, Android, and Web (native flow on mobile, redirect on web)
+- [ ] Apple Sign-In works on iOS (native sheet per Apple HIG — never via WebView for App Review compliance)
+- [ ] `user_profiles` row auto-created on first OAuth sign-in via `handle_new_auth_user()` trigger
+- [ ] Apple `@privaterelay.appleid.com` emails accepted (email_optional=true)
+- [ ] Cancelled OAuth sign-ins are silent (no error SnackBar)
+- [ ] OAuth provider-disabled errors surface `auth.oauthUnavailable` with email fallback CTA
 - [ ] iDIN verification triggers on first listing creation
 - [ ] itsme is offered as an alternative when triggered for Level 2 KYC
 - [ ] Verification badges display correctly on profiles

@@ -6,13 +6,20 @@ import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_error_mapper.dart';
+import 'package:deelmarkt/features/auth/data/repositories/oauth_login_orchestrator.dart';
 
 /// Supabase-backed [AuthRepository]. Translates platform exceptions to domain
-/// [AuthResult] / [AppException] types. Error mapping logic lives in [AuthErrorMapper].
+/// [AuthResult] / [AppException] types. Error mapping lives in [AuthErrorMapper];
+/// OAuth flow orchestration in [OAuthLoginOrchestrator].
 class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
-  AuthRepositoryImpl(this._datasource, {required this.biometricService});
+  AuthRepositoryImpl(
+    this._datasource, {
+    required this.biometricService,
+    Duration oauthTimeout = const Duration(seconds: 60),
+  }) : _oauth = OAuthLoginOrchestrator(_datasource, timeout: oauthTimeout);
   final AuthRemoteDatasource _datasource;
   final BiometricService biometricService;
+  final OAuthLoginOrchestrator _oauth;
 
   @override
   Future<void> registerWithEmail({
@@ -177,20 +184,6 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
       biometricService.availableMethod;
 
   @override
-  Future<AuthResult> loginWithOAuth(OAuthProvider provider) async {
-    try {
-      final completed = await switch (provider) {
-        OAuthProvider.google => _datasource.signInWithGoogle(),
-        OAuthProvider.apple => _datasource.signInWithApple(),
-      };
-      if (!completed) return const AuthFailureOAuthCancelled();
-      final userId = _datasource.currentUser?.id;
-      if (userId == null) return const AuthFailureOAuthCancelled();
-      return AuthSuccess(userId: userId);
-    } on sb.AuthException catch (e) {
-      return mapOAuthAuthError(e);
-    } on Object catch (e) {
-      return mapLoginGenericError(e);
-    }
-  }
+  Future<AuthResult> loginWithOAuth(OAuthProvider provider) =>
+      _oauth.loginWithOAuth(provider);
 }

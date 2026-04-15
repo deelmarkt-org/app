@@ -225,7 +225,12 @@
     "invalidCredentials": "Incorrect email or password",
     "forgotPasswordComingSoon": "Password reset is coming soon!",
     "socialLoginComingSoon": "Social login is coming soon!",
-    "oauthUnavailable": "Social login is not available right now. Please sign in with email."
+    "oauthUnavailable": "Social login is not available right now. Please sign in with email.",
+    "signInWith": "Sign in with",
+    "signInEmail": "Sign in with email",
+    "agreeTerms": "By signing in you agree to our",
+    "terms": "Terms",
+    "privacy": "Privacy Policy"
   },
   "validation": {
     "email_required": "Enter your email address",

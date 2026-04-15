@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/social_login_viewmodel.dart';
@@ -12,6 +14,9 @@ import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 ///
 /// Each button shows an independent loading indicator while its OAuth sheet
 /// is open. Errors are surfaced via a SnackBar so they don't block the form.
+///
+/// Apple button uses a filled-black style per Apple HIG §Sign in with Apple.
+/// Google button uses the Material-compliant outline variant from DeelButton.
 ///
 /// Reference: docs/screens/01-auth/05-social-login.md
 class LoginSocialButtons extends ConsumerWidget {
@@ -30,10 +35,7 @@ class LoginSocialButtons extends ConsumerWidget {
 
     switch (result) {
       case AuthSuccess():
-        // Navigation is handled by the auth state listener in the router.
-        break;
       case AuthFailureOAuthCancelled():
-        // User dismissed the sheet — silent, no message needed.
         break;
       case AuthFailureOAuthUnavailable():
         ScaffoldMessenger.of(
@@ -71,21 +73,80 @@ class LoginSocialButtons extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.s3),
-        Semantics(
-          button: true,
-          label: 'auth.continueWithApple'.tr(),
-          child: DeelButton(
-            label: 'auth.continueWithApple'.tr(),
-            variant: DeelButtonVariant.outline,
-            leadingIcon: PhosphorIconsDuotone.appleLogo,
-            isLoading: state.loadingProvider == OAuthProvider.apple,
-            onPressed:
-                state.isLoading
-                    ? null
-                    : () => _signIn(context, ref, OAuthProvider.apple),
-          ),
+        _AppleSignInButton(
+          isLoading: state.loadingProvider == OAuthProvider.apple,
+          onPressed:
+              state.isLoading
+                  ? null
+                  : () => _signIn(context, ref, OAuthProvider.apple),
         ),
       ],
+    );
+  }
+}
+
+/// Apple HIG-compliant filled-black button with white Apple logo + text.
+/// 52 px min height satisfies CLAUDE.md §10 (≥44×44 touch target).
+class _AppleSignInButton extends StatelessWidget {
+  const _AppleSignInButton({required this.isLoading, required this.onPressed});
+
+  final bool isLoading;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = 'auth.continueWithApple'.tr();
+    return Semantics(
+      button: true,
+      label: label,
+      child: SizedBox(
+        height: 52,
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: DeelmarktColors.neutral900,
+            foregroundColor: DeelmarktColors.white,
+            disabledBackgroundColor: DeelmarktColors.neutral900.withValues(
+              alpha: 0.5,
+            ),
+            disabledForegroundColor: DeelmarktColors.white.withValues(
+              alpha: 0.8,
+            ),
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(DeelmarktRadius.md),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          child:
+              isLoading
+                  ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        DeelmarktColors.white,
+                      ),
+                    ),
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(PhosphorIconsFill.appleLogo, size: 20),
+                      const SizedBox(width: Spacing.s2),
+                      Flexible(
+                        child: Text(label, overflow: TextOverflow.ellipsis),
+                      ),
+                    ],
+                  ),
+        ),
+      ),
     );
   }
 }

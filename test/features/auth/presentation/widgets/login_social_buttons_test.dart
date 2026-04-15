@@ -10,6 +10,7 @@ import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.d
 import 'package:deelmarkt/features/auth/presentation/widgets/login_social_buttons.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
+import '../../../../helpers/a11y_touch_target_utils.dart';
 import '../../../../helpers/pump_app.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}
@@ -27,81 +28,80 @@ void main() {
     overrides: [authRepositoryProvider.overrideWithValue(mockRepo)],
   );
 
+  // Google is rendered via DeelButton (outline). Apple is a custom filled-black
+  // ElevatedButton per HIG.
+  Finder googleButton() => find.byType(DeelButton);
+  Finder appleButton() => find.byType(ElevatedButton);
+
   group('LoginSocialButtons', () {
-    testWidgets('renders two buttons in idle state', (tester) async {
-      await pump(tester);
-
-      expect(find.byType(DeelButton), findsNWidgets(2));
-    });
-
-    testWidgets('both buttons are enabled when not loading', (tester) async {
-      await pump(tester);
-
-      final buttons =
-          tester.widgetList<DeelButton>(find.byType(DeelButton)).toList();
-      expect(buttons[0].onPressed, isNotNull);
-      expect(buttons[1].onPressed, isNotNull);
-    });
-
-    testWidgets('tapping Google button calls loginWithOAuth(google)', (
+    testWidgets('renders Google (DeelButton) + Apple (ElevatedButton)', (
       tester,
     ) async {
+      await pump(tester);
+
+      expect(googleButton(), findsOneWidget);
+      expect(appleButton(), findsOneWidget);
+    });
+
+    testWidgets('both buttons enabled when idle', (tester) async {
+      await pump(tester);
+
+      final google = tester.widget<DeelButton>(googleButton());
+      final apple = tester.widget<ElevatedButton>(appleButton());
+      expect(google.onPressed, isNotNull);
+      expect(apple.onPressed, isNotNull);
+    });
+
+    testWidgets('tapping Google calls loginWithOAuth(google)', (tester) async {
       when(
         () => mockRepo.loginWithOAuth(OAuthProvider.google),
       ).thenAnswer((_) async => const AuthFailureOAuthCancelled());
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).first);
+      await tester.tap(googleButton());
       await tester.pump();
 
       verify(() => mockRepo.loginWithOAuth(OAuthProvider.google)).called(1);
     });
 
-    testWidgets('tapping Apple button calls loginWithOAuth(apple)', (
-      tester,
-    ) async {
+    testWidgets('tapping Apple calls loginWithOAuth(apple)', (tester) async {
       when(
         () => mockRepo.loginWithOAuth(OAuthProvider.apple),
       ).thenAnswer((_) async => const AuthFailureOAuthCancelled());
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).last);
+      await tester.tap(appleButton());
       await tester.pump();
 
       verify(() => mockRepo.loginWithOAuth(OAuthProvider.apple)).called(1);
     });
 
-    testWidgets('buttons are disabled while any OAuth is loading', (
-      tester,
-    ) async {
+    testWidgets('buttons disabled while any OAuth is loading', (tester) async {
       final completer = Completer<AuthResult>();
       when(
         () => mockRepo.loginWithOAuth(OAuthProvider.google),
       ).thenAnswer((_) => completer.future);
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).first);
-      await tester.pump(); // trigger state update
+      await tester.tap(googleButton());
+      await tester.pump();
 
-      final buttons =
-          tester.widgetList<DeelButton>(find.byType(DeelButton)).toList();
-      expect(buttons[0].onPressed, isNull);
-      expect(buttons[1].onPressed, isNull);
+      final google = tester.widget<DeelButton>(googleButton());
+      final apple = tester.widget<ElevatedButton>(appleButton());
+      expect(google.onPressed, isNull);
+      expect(apple.onPressed, isNull);
 
-      // Complete to avoid pending timer warning
       completer.complete(const AuthFailureOAuthCancelled());
       await tester.pumpAndSettle();
     });
 
-    testWidgets('OAuthCancelled result is silent — no SnackBar', (
-      tester,
-    ) async {
+    testWidgets('OAuthCancelled is silent', (tester) async {
       when(
         () => mockRepo.loginWithOAuth(OAuthProvider.google),
       ).thenAnswer((_) async => const AuthFailureOAuthCancelled());
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).first);
+      await tester.tap(googleButton());
       await tester.pumpAndSettle();
 
       expect(find.byType(SnackBar), findsNothing);
@@ -113,7 +113,7 @@ void main() {
       ).thenAnswer((_) async => const AuthFailureOAuthUnavailable());
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).first);
+      await tester.tap(googleButton());
       await tester.pumpAndSettle();
 
       expect(find.byType(SnackBar), findsOneWidget);
@@ -125,10 +125,37 @@ void main() {
       ).thenAnswer((_) async => const AuthFailureNetworkError(message: 'err'));
 
       await pump(tester);
-      await tester.tap(find.byType(DeelButton).first);
+      await tester.tap(googleButton());
       await tester.pumpAndSettle();
 
       expect(find.byType(SnackBar), findsOneWidget);
+    });
+  });
+
+  group('LoginSocialButtons — accessibility', () {
+    testWidgets('both buttons meet WCAG 2.2 AA 44×44 touch target', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      expectMeetsMinTouchTarget(tester, googleButton());
+      expectMeetsMinTouchTarget(tester, appleButton());
+    });
+
+    testWidgets('Apple button meets 52px HIG height', (tester) async {
+      await pump(tester);
+
+      final size = tester.getSize(appleButton());
+      expect(size.height, greaterThanOrEqualTo(52));
+    });
+
+    testWidgets('both buttons render a localisation-key label', (tester) async {
+      await pump(tester);
+
+      // easy_localization .tr() falls back to the key when no translation is
+      // loaded in the test context, so we assert the key itself is rendered.
+      expect(find.text('auth.continueWithGoogle'), findsWidgets);
+      expect(find.text('auth.continueWithApple'), findsWidgets);
     });
   });
 }

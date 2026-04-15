@@ -1,105 +1,67 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Wraps [SupabaseClient.auth] calls for registration and OTP verification.
-///
-/// This class is the only layer that knows about Supabase. The repository
-/// catches exceptions from here and translates them to domain exceptions.
-class AuthRemoteDatasource {
-  const AuthRemoteDatasource(this._client);
-  final SupabaseClient _client;
+import 'package:deelmarkt/features/auth/data/datasources/oauth_native_client.dart';
 
-  /// Register with email + password. Consent timestamps are stored
-  /// in `auth.users.raw_user_meta_data` for GDPR audit trail.
+/// Wraps [SupabaseClient.auth] calls for registration, OTP, and OAuth sign-in.
+///
+/// This class is the only layer that knows about Supabase and OAuth packages.
+/// The repository translates datasource exceptions into domain types.
+/// Native OAuth logic lives in [OAuthNativeClient] to keep this file small.
+class AuthRemoteDatasource {
+  AuthRemoteDatasource(this._client, {OAuthNativeClient? oauth})
+    : _oauth = oauth ?? OAuthNativeClient(_client);
+
+  final SupabaseClient _client;
+  final OAuthNativeClient _oauth;
+
+  /// Register with email + password. Consent timestamps are stored in
+  /// `auth.users.raw_user_meta_data` for GDPR audit trail.
   Future<AuthResponse> signUpWithEmail({
     required String email,
     required String password,
     required Map<String, dynamic> metadata,
-  }) {
-    return _client.auth.signUp(
-      email: email,
-      password: password,
-      data: metadata,
-    );
-  }
+  }) => _client.auth.signUp(email: email, password: password, data: metadata);
 
-  /// Resend the email OTP for an existing registration.
-  Future<void> resendEmailOtp({required String email}) async {
-    await _client.auth.resend(type: OtpType.signup, email: email);
-  }
+  Future<void> resendEmailOtp({required String email}) =>
+      _client.auth.resend(type: OtpType.signup, email: email);
 
-  /// Verify the email OTP token sent during registration.
   Future<AuthResponse> verifyEmailOtp({
     required String email,
     required String token,
-  }) {
-    return _client.auth.verifyOTP(
-      type: OtpType.email,
-      email: email,
-      token: token,
-    );
-  }
+  }) => _client.auth.verifyOTP(type: OtpType.email, email: email, token: token);
 
-  /// Send an SMS OTP to [phone] (E.164 format).
-  Future<void> sendPhoneOtp({required String phone}) async {
-    await _client.auth.signInWithOtp(phone: phone);
-  }
+  Future<void> sendPhoneOtp({required String phone}) =>
+      _client.auth.signInWithOtp(phone: phone);
 
-  /// Verify the phone SMS OTP.
   Future<AuthResponse> verifyPhoneOtp({
     required String phone,
     required String token,
-  }) {
-    return _client.auth.verifyOTP(
-      type: OtpType.sms,
-      phone: phone,
-      token: token,
-    );
-  }
+  }) => _client.auth.verifyOTP(type: OtpType.sms, phone: phone, token: token);
 
   // ── Login (P-16) ──
 
-  /// Sign in with email + password.
   Future<AuthResponse> signInWithPassword({
     required String email,
     required String password,
-  }) {
-    return _client.auth.signInWithPassword(email: email, password: password);
-  }
+  }) => _client.auth.signInWithPassword(email: email, password: password);
 
-  /// Refresh the current session (for biometric re-auth).
-  Future<AuthResponse> refreshSession() {
-    return _client.auth.refreshSession();
-  }
+  Future<AuthResponse> refreshSession() => _client.auth.refreshSession();
 
-  /// Returns the current session or null.
   Session? get currentSession => _client.auth.currentSession;
+  User? get currentUser => _client.auth.currentUser;
 
-  /// Initiates iDIN verification via the `initiate-idin` Edge Function.
-  ///
-  /// Returns the raw [FunctionResponse]. URL allowlist validation is enforced
-  /// by [InitiateIdinVerificationUseCase] in the domain layer, not here.
-  Future<FunctionResponse> initiateIdin() {
-    return _client.functions.invoke('initiate-idin');
-  }
+  Future<FunctionResponse> initiateIdin() =>
+      _client.functions.invoke('initiate-idin');
 
   // ── Social Login (P-44) ──
 
-  /// Opens the Google OAuth consent sheet.
-  /// Returns true on completion, false when the user cancels.
-  /// Throws [AuthException] when Google is not configured in Supabase.
-  Future<bool> signInWithGoogle() => _client.auth.signInWithOAuth(
-    OAuthProvider.google,
-    authScreenLaunchMode: LaunchMode.inAppBrowserView,
-  );
+  /// Stream of Supabase auth state changes — used by the repository to
+  /// observe the `signedIn` event after a web OAuth redirect completes.
+  Stream<AuthState> get authStateChanges => _client.auth.onAuthStateChange;
 
-  /// Opens the Apple Sign-In sheet.
-  /// Returns true on completion, false when the user cancels.
-  /// Throws [AuthException] when Apple is not configured in Supabase.
-  Future<bool> signInWithApple() => _client.auth.signInWithOAuth(
-    OAuthProvider.apple,
-    authScreenLaunchMode: LaunchMode.inAppBrowserView,
-  );
+  /// Google Sign-In — see [OAuthNativeClient.signInWithGoogle].
+  Future<AuthResponse?> signInWithGoogle() => _oauth.signInWithGoogle();
 
-  /// Returns the authenticated user from the current session, or null.
-  User? get currentUser => _client.auth.currentUser;
+  /// Apple Sign-In — see [OAuthNativeClient.signInWithApple].
+  Future<AuthResponse?> signInWithApple() => _oauth.signInWithApple();
 }
