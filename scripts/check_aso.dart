@@ -55,7 +55,7 @@ const _forbiddenTerms = [
 
 // ── Main ─────────────────────────────────────────────────────────────────────
 
-void main(List<String> args) {
+Future<void> main(List<String> args) async {
   final checkUrls = args.contains('--check-urls');
   final verbose = args.contains('--verbose');
   final errors = <String>[];
@@ -70,7 +70,7 @@ void main(List<String> args) {
   _checkKeywordDeduplication('en-US', errors, warnings);
 
   if (checkUrls) {
-    _checkUrls(errors, warnings);
+    await _checkUrls(errors, warnings);
   }
 
   // ── Report ─────────────────────────────────────────────────────────────────
@@ -208,19 +208,24 @@ void _checkKeywordDeduplication(
   final keywords =
       File('fastlane/metadata/$locale/keywords.txt').readAsStringSync().trim();
 
-  final nameWords = name.toLowerCase().split(RegExp(r'[\s,]+'));
-  final subtitleWords = subtitle.toLowerCase().split(RegExp(r'[\s,]+'));
+  // Gemini MED: use whole-phrase regex instead of word-splitting so that
+  // multi-word keywords (e.g. "safe marketplace") are correctly matched
+  // against name/subtitle, not just their individual words.
+  final nameLower = name.toLowerCase();
+  final subtitleLower = subtitle.toLowerCase();
   final keywordList = keywords.toLowerCase().split(',').map((k) => k.trim());
 
   for (final kw in keywordList) {
     if (kw.isEmpty) continue;
-    if (nameWords.any((w) => w == kw)) {
+    // Match kw as a whole word/phrase (word boundaries on both sides).
+    final pattern = RegExp(r'(?<![a-z])' + RegExp.escape(kw) + r'(?![a-z])');
+    if (pattern.hasMatch(nameLower)) {
       warnings.add(
         'KEYWORD_DUPE [$locale]: "$kw" in keywords is already in name '
         '(wasted budget)',
       );
     }
-    if (subtitleWords.any((w) => w == kw)) {
+    if (pattern.hasMatch(subtitleLower)) {
       warnings.add(
         'KEYWORD_DUPE [$locale]: "$kw" in keywords is already in subtitle '
         '(wasted budget)',
@@ -242,18 +247,52 @@ void _checkForbiddenTerms(String path, String content, List<String> errors) {
 
 // ── URL checks (optional) ─────────────────────────────────────────────────────
 
-void _checkUrls(List<String> errors, List<String> warnings) {
+// Gemini MED: implement actual HTTP HEAD request instead of a stub.
+// Only invoked with --check-urls flag; requires network access.
+Future<void> _checkUrls(List<String> errors, List<String> warnings) async {
   final urlFields = ['support_url', 'marketing_url', 'privacy_url'];
-  for (final locale in ['nl-NL', 'en-US']) {
-    for (final field in urlFields) {
-      final file = File('fastlane/metadata/$locale/$field.txt');
-      if (!file.existsSync()) continue;
-      final url = file.readAsStringSync().trim();
-      if (url.isEmpty || url.contains('[TODO')) continue;
-      // Note: actual HTTP check requires dart:io HttpClient — skipped in
-      // offline/CI environments without network. Add --check-urls flag only
-      // when running locally with network access.
-      stdout.writeln('  URL (not checked in offline mode): $url');
+  final client = HttpClient()..connectionTimeout = const Duration(seconds: 10);
+  try {
+    for (final locale in ['nl-NL', 'en-US']) {
+      for (final field in urlFields) {
+        final file = File('fastlane/metadata/$locale/$field.txt');
+        if (!file.existsSync()) continue;
+        final url = file.readAsStringSync().trim();
+        if (url.isEmpty || url.contains('[TODO')) continue;
+        Uri uri;
+        try {
+          uri = Uri.parse(url);
+        } on FormatException {
+          errors.add('URL_INVALID [$locale/$field]: "$url" is not a valid URI');
+          continue;
+        }
+        try {
+          final request = await client.headUrl(uri);
+          request.headers.set('User-Agent', 'check_aso.dart/1.0');
+          final response = await request.close();
+          await response.drain<void>();
+          if (response.statusCode >= 400) {
+            errors.add(
+              'URL_UNREACHABLE [$locale/$field]: "$url" returned HTTP '
+              '${response.statusCode}',
+            );
+          } else {
+            stdout.writeln(
+              '  URL OK [$locale/$field]: $url (HTTP ${response.statusCode})',
+            );
+          }
+        } on SocketException catch (e) {
+          errors.add(
+            'URL_UNREACHABLE [$locale/$field]: "$url" — socket error: $e',
+          );
+        } on HttpException catch (e) {
+          errors.add(
+            'URL_UNREACHABLE [$locale/$field]: "$url" — HTTP error: $e',
+          );
+        }
+      }
     }
+  } finally {
+    client.close();
   }
 }
