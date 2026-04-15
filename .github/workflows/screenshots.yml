@@ -1,0 +1,79 @@
+name: Screenshots
+
+# Regenerate screenshots when UI files change, then diff against committed
+# goldens to catch unintended visual regressions.
+#
+# Runs on macOS-14 (ARM) for font consistency — see PLAN-p43-aso.md §D-1.
+
+on:
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - "lib/**"
+      - "assets/**"
+      - "test/screenshots/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    name: Regenerate & Diff Screenshots
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: ./.github/actions/setup-flutter
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run build_runner (ensure .g.dart files are fresh)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Regenerate golden screenshots
+        run: flutter test --update-goldens test/screenshots/drivers/ --no-pub
+
+      - name: Verify all 240 PNGs generated
+        run: |
+          count=$(find test/screenshots/drivers/goldens -name "*.png" | wc -l)
+          echo "Generated $count golden PNGs"
+          if [ "$count" -lt 240 ]; then
+            echo "Error: expected 240 goldens, got $count" >&2
+            exit 1
+          fi
+
+      - name: Check for golden diffs (fail on unexpected changes)
+        run: |
+          git diff --name-only test/screenshots/drivers/goldens/ > /tmp/changed_goldens.txt
+          if [ -s /tmp/changed_goldens.txt ]; then
+            echo "The following screenshot goldens changed:"
+            cat /tmp/changed_goldens.txt
+            echo ""
+            echo "If this is intentional, regenerate goldens locally and commit them:"
+            echo "  flutter test --update-goldens test/screenshots/drivers/ --no-pub"
+            echo "  git add test/screenshots/drivers/goldens/"
+            echo "  git commit -m 'chore(screenshots): update golden baselines'"
+            exit 1
+          fi
+          echo "All goldens match committed baselines."
+
+      - name: Upload screenshot artifacts (for PR review)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ github.run_id }}
+          path: test/screenshots/drivers/goldens/
+          retention-days: 14
+          if-no-files-found: warn

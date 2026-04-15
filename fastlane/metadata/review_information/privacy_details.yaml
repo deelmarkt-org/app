@@ -1,0 +1,112 @@
+# DeelMarkt — App Store Privacy Nutrition Labels
+# Reference: Apple App Privacy Details — https://developer.apple.com/app-store/app-privacy-details/
+# Last reviewed: 2026-04-15
+# Reviewer: pizmam
+#
+# Legend:
+#   linked_to_identity: data is associated with user's identity (linked in App Privacy section)
+#   used_for_tracking: data is used to track users across apps/websites (triggers ATT prompt)
+#
+# IMPORTANT: This file is the source of truth. Any code change that collects
+# new personal data MUST update this file and get a human approval before merge.
+# See CLAUDE.md §13.
+
+categories:
+  # ── Contact Info ──────────────────────────────────────────────────────────────
+  - category: contact_info
+    data_types:
+      - type: email_address
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - account_management   # Supabase Auth (auth.users.email)
+          - app_functionality    # Transaction notifications, KYC correspondence
+      - type: phone_number
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - account_management   # Optional: 2FA via phone
+          - app_functionality    # Shipping label contact (PostNL API)
+      - type: name
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - account_management   # Display name on profile + listings
+          - app_functionality    # iDIN KYC identity verification
+
+  # ── Financial Info ────────────────────────────────────────────────────────────
+  - category: financial_info
+    data_types:
+      - type: payment_info
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # Mollie payment processing (IBAN for payouts)
+        note: >
+          Payment data processed by Mollie BV (PSD2 licensed PSP).
+          DeelMarkt stores only payment status + reference — never raw card data.
+
+  # ── Identifiers ───────────────────────────────────────────────────────────────
+  - category: identifiers
+    data_types:
+      - type: user_id
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - account_management   # Supabase auth.users.id (UUID)
+          - app_functionality    # Foreign key for all user-owned records
+          - product_interaction  # Trust score, transaction history
+
+  # ── Location ─────────────────────────────────────────────────────────────────
+  - category: location
+    data_types:
+      - type: coarse_location
+        linked_to_identity: false
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # "Nearby listings" feature (city-level only)
+        note: >
+          Only city/region — never GPS coordinates stored on server.
+          Derived from postal code entered by user, not GPS.
+
+  # ── Usage Data ────────────────────────────────────────────────────────────────
+  - category: usage_data
+    data_types:
+      - type: product_interaction
+        linked_to_identity: false
+        used_for_tracking: false
+        purposes:
+          - analytics            # Aggregate feature usage (no personal identifiers)
+          - app_functionality    # Recommendation signals (anonymous)
+
+  # ── Diagnostics ───────────────────────────────────────────────────────────────
+  - category: diagnostics
+    data_types:
+      - type: crash_data
+        linked_to_identity: false
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # Sentry crash reports (device type, stack trace)
+        note: >
+          Sentry DSN configured to exclude PII. Stack traces may contain
+          user-generated content if present in widget state — reviewed quarterly.
+      - type: performance_data
+        linked_to_identity: false
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # Supabase query latency, cold start timing
+
+# ── Review information ────────────────────────────────────────────────────────
+# Filled before first TestFlight submission.
+review_information:
+  first_name: "[TODO]"
+  last_name: "[TODO]"
+  phone_number: "[TODO]"
+  email_address: "support@deelmarkt.com"
+  demo_user: "[TODO — create reviewer demo account]"
+  demo_password: "[TODO — set in 1Password 'App Store reviewer' entry]"
+  notes: >
+    DeelMarkt is a Dutch P2P marketplace requiring iDIN identity verification.
+    The demo account is pre-verified to allow full feature access without
+    the iDIN bank authentication flow (which requires a Dutch bank account).
+    Please use the demo account credentials above to explore all features.

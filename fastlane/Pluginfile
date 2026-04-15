@@ -1,0 +1,4 @@
+# Fastlane Pluginfile — managed by `fastlane add_plugin <name>`
+# Run `bundle install` after adding plugins.
+
+gem "fastlane"
