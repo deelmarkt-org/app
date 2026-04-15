@@ -105,4 +105,68 @@ void main() {
       expect(result, isA<AuthFailureUnknown>());
     });
   });
+
+  group('OAuthLoginOrchestrator (web redirect flow)', () {
+    late _MockDatasource wds;
+    late OAuthLoginOrchestrator webOrchestrator;
+    late StreamController<sb.AuthState> authStream;
+
+    setUp(() {
+      wds = _MockDatasource();
+      authStream = StreamController<sb.AuthState>.broadcast();
+      when(() => wds.authStateChanges).thenAnswer((_) => authStream.stream);
+      webOrchestrator = OAuthLoginOrchestrator(
+        wds,
+        timeout: const Duration(milliseconds: 200),
+        awaitWebRedirect: true,
+      );
+    });
+
+    tearDown(() => authStream.close());
+
+    test('signedIn event with user resolves to AuthSuccess', () async {
+      when(() => wds.signInWithGoogle()).thenAnswer((_) async => null);
+      final user = sb.User(
+        id: 'web-uid',
+        appMetadata: const {},
+        userMetadata: const {},
+        aud: 'authenticated',
+        createdAt: DateTime(2026).toIso8601String(),
+      );
+      final session = sb.Session(
+        accessToken: 'a',
+        tokenType: 'bearer',
+        user: user,
+        refreshToken: 'r',
+      );
+
+      final future = webOrchestrator.loginWithOAuth(OAuthProvider.google);
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      authStream.add(sb.AuthState(sb.AuthChangeEvent.signedIn, session));
+
+      final result = await future;
+      expect(result, isA<AuthSuccess>());
+      expect((result as AuthSuccess).userId, 'web-uid');
+    });
+
+    test('timeout with no signedIn event returns OAuthCancelled', () async {
+      when(() => wds.signInWithGoogle()).thenAnswer((_) async => null);
+
+      final result = await webOrchestrator.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthFailureOAuthCancelled>());
+    });
+
+    test('non-signedIn events are ignored until timeout', () async {
+      when(() => wds.signInWithApple()).thenAnswer((_) async => null);
+
+      final future = webOrchestrator.loginWithOAuth(OAuthProvider.apple);
+      authStream
+        ..add(const sb.AuthState(sb.AuthChangeEvent.tokenRefreshed, null))
+        ..add(const sb.AuthState(sb.AuthChangeEvent.signedOut, null));
+
+      final result = await future;
+      expect(result, isA<AuthFailureOAuthCancelled>());
+    });
+  });
 }

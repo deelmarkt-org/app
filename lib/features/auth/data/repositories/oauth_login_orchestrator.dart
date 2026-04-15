@@ -18,16 +18,21 @@ import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 /// Extracted from `AuthRepositoryImpl` to keep that file under the 200-line
 /// cap per CLAUDE.md §2.1.
 class OAuthLoginOrchestrator with AuthErrorMapper {
-  OAuthLoginOrchestrator(this._datasource, {this.timeout = _defaultTimeout});
+  OAuthLoginOrchestrator(
+    this._datasource, {
+    this.timeout = _defaultTimeout,
+    @visibleForTesting bool? awaitWebRedirect,
+  }) : _awaitWebRedirect = awaitWebRedirect ?? kIsWeb;
 
   static const Duration _defaultTimeout = Duration(seconds: 60);
 
   final AuthRemoteDatasource _datasource;
   final Duration timeout;
+  final bool _awaitWebRedirect;
 
   Future<AuthResult> loginWithOAuth(OAuthProvider provider) async {
     // Subscribe BEFORE triggering the redirect to avoid racing the event.
-    final webSignInFuture = kIsWeb ? _awaitSignedInEvent() : null;
+    final webSignInFuture = _awaitWebRedirect ? _awaitSignedInEvent() : null;
 
     try {
       final response = await switch (provider) {
