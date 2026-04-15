@@ -155,11 +155,18 @@ Future<void> captureScreenshot({
       'goldens/${goldenName}_${locale}_${themeId}_${device.id}.png';
 
   // Golden pixel comparison is macOS-only: goldens are generated on macos-14
-  // (arm64) by screenshots.yml. Linux CI (Test & Coverage) renders fonts
-  // differently and would produce false positives — it still pumps the widget
+  // (arm64) by screenshots.yml. Linux/Windows CI renders fonts differently
+  // and would produce false positives — it still pumps the widget
   // above for coverage, but skips the pixel assertion.
   // Gemini MED (screenshot_driver.dart:136): animation-aware pump added above.
-  if (!Platform.isMacOS) return;
+  if (!Platform.isMacOS) {
+    // Advance the fake timer clock past any pending dart:async Timer deadlines.
+    // EasyLocalization schedules a zero-duration Timer on first locale load;
+    // without this drain, the test framework reports "A Timer is still pending"
+    // when the widget tree is disposed after the test body returns.
+    await tester.pump(const Duration(seconds: 30));
+    return;
+  }
 
   await expectLater(find.byType(MaterialApp), matchesGoldenFile(goldenPath));
 }
