@@ -115,7 +115,9 @@ class _AppealScreenState extends ConsumerState<AppealScreen> {
                 onPressed: () => Navigator.of(ctx).pop(true),
                 child: Text(
                   'sanction.screen.discard_confirm'.tr(),
-                  style: const TextStyle(color: DeelmarktColors.error),
+                  style: Theme.of(ctx).textTheme.labelLarge?.copyWith(
+                    color: DeelmarktColors.error,
+                  ),
                 ),
               ),
             ],
