@@ -1,1 +1,1 @@
-secondhand,escrow,verified seller,safe buy sell,classifieds,used goods,peer to peer
+secondhand,safe marketplace,escrow,dutch,p2p,verified seller,buy sell

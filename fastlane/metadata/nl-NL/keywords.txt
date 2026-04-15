@@ -1,1 +1,1 @@
-marktplaats,escrow,iDIN,p2p,veilig verkopen,particulier,secondhand,kopen verkopen
+tweedehands,marktplaats alternatief,escrow betaling,iDIN,p2p,veilig verkopen
