@@ -1,80 +1,114 @@
-# Social Login Screen (P-44)
+# Social Login (P-44)
 
 | Field | Value |
 |-------|-------|
 | Task | P-44 |
 | Epic | E02 — Auth + KYC |
-| Status | Not started |
-| Route | `/auth/social` |
+| Status | Implemented (embedded pattern) |
+| Route | *Embedded on `/auth/login`* — no dedicated screen |
 | States | Default, Loading (per provider), Error |
 | Dependencies | R-02 (Supabase Auth), R-08 (Firebase Auth) |
 
 ---
 
-## Layout
+## Pattern decision (2026-04-15)
 
-1. **Back arrow** — returns to login screen
-2. **Heading** — "Inloggen met" / "Sign in with"
-3. **Social provider buttons** (full width, stacked, 52px height each):
-   - Google — white background, Google "G" logo, "Doorgaan met Google"
-   - Apple — black background, Apple logo, "Doorgaan met Apple"
-   - (Future: Facebook, DigiD)
-4. **Divider** — "of" / "or" centered divider line
-5. **Email fallback link** — "Inloggen met e-mail" / "Sign in with email" text link
-6. **Terms footer** — "Door in te loggen ga je akkoord met onze Voorwaarden en Privacybeleid"
+The original design proposed a dedicated `/auth/social` route with full-screen
+buttons, a divider, an email-fallback link, and a terms footer.
 
----
+**We ship the embedded pattern instead:** Google + Apple buttons live directly
+on the login screen above the email/password form, and the full terms-footer
+language is owned by `docs/screens/01-auth/03-login.md`.
 
-## Design Prompt
+**Why:**
+- Fewer screens, one less navigation hop — the dominant pattern in modern
+  mobile apps (Uber, Airbnb, Stripe, Supabase's own examples).
+- The divider, "or", and email-fallback affordances are already present on the
+  login screen itself — re-implementing them on a standalone screen would be
+  duplicative.
+- A dedicated screen implies social-first positioning. DeelMarkt is
+  email-first (KYC + iDIN attaches to email-verified accounts); social is a
+  convenience accelerator.
 
-```
-SCREEN: Social Login — DeelMarkt Dutch P2P marketplace app
-
-LAYOUT (mobile 390x844):
-- Status bar (dark text on light background)
-- Top: back arrow (44x44 tap target)
-- 48px top spacing
-- Heading: "Inloggen met" — 24px SemiBold, #1A1A2E
-- 32px spacing
-- Google button: full width, white #FFFFFF background, 1px #E5E5E5 border,
-  rounded 12px, 52px height, Google "G" logo 24px + "Doorgaan met Google"
-  16px Medium #1A1A2E, centered
-- 12px spacing
-- Apple button: full width, black #1A1A2E background,
-  rounded 12px, 52px height, Apple logo 24px white + "Doorgaan met Apple"
-  16px Medium #FFFFFF, centered
-- 24px spacing
-- Centered divider: thin line #E5E5E5 with "of" label in 14px Regular
-  #6B7280 on white background interrupting the line
-- 24px spacing
-- Email link: "Inloggen met e-mail" 16px Medium #FF6B00 centered
-- Flex spacer
-- Terms footer: "Door in te loggen ga je akkoord met onze" 12px Regular
-  #6B7280, "Voorwaarden" and "Privacybeleid" as #FF6B00 links
-
-LAYOUT (web >=1024px):
-- Centered card (480px max), white background, rounded 16px, subtle shadow
-- Same content layout inside the card
-- Background: neutral50 #F9FAFB
-
-STYLE: Clean, minimal, trust-focused. White background, generous spacing.
-Social buttons feel native to each platform (Google Material, Apple HIG).
-
-ACCESSIBILITY: All buttons 52px height (exceeds 44px minimum), focus rings
-visible, button labels include provider name for screen readers.
-```
+The designed PNG assets at
+[`designs/social_login_mobile_light/`](designs/social_login_mobile_light/) and
+[`designs/social_login_desktop_light/`](designs/social_login_desktop_light/)
+remain as reference for button styling, spacing, and Apple HIG compliance
+(black-filled Apple button, white Google button with border).
 
 ---
 
-## L10n Keys
+## Components on the login screen
+
+1. **Google button** — `DeelButton` outline variant, white background with
+   1 px border, Phosphor duotone "G" logo, label `auth.continueWithGoogle`.
+2. **Apple button** — filled black (`DeelmarktColors.neutral900`), white Apple
+   logo + text, 52 px height (Apple HIG). See
+   [`login_social_buttons.dart`](../../../lib/features/auth/presentation/widgets/login_social_buttons.dart).
+3. **Divider + "or"** — owned by `03-login.md`.
+4. **Email + password form** — owned by `03-login.md`.
+5. **Terms footer** — owned by `03-login.md`.
+
+Each button shows an independent loading indicator while its OAuth sheet is
+open (per-provider `SocialLoginNotifier.loadingProvider`). Cancelled sign-ins
+are silent — no SnackBar. Provider-unavailable errors show
+`auth.oauthUnavailable`; network errors show `error.network`.
+
+---
+
+## Platform flows
+
+| Platform | Apple | Google |
+|---|---|---|
+| iOS | Native `ASAuthorizationController` via `sign_in_with_apple` → `signInWithIdToken(apple, idToken, nonce)` | Native `google_sign_in` → `signInWithIdToken(google, idToken, accessToken)` |
+| Android | Native `sign_in_with_apple` web sheet (fallback, not HIG) → `signInWithIdToken` | Native `google_sign_in` (Play Services) → `signInWithIdToken` |
+| Web | `supabase.auth.signInWithOAuth(apple)` → redirect → session via `onAuthStateChange` | Same pattern |
+
+Nonce is generated per sign-in (32 random bytes → base64url), SHA-256-hashed
+for the Apple request, and the raw value passed to Supabase so Apple's
+signature can be verified.
+
+See [`AuthRemoteDatasource.signInWithApple`](../../../lib/features/auth/data/datasources/auth_remote_datasource.dart)
+and [`AuthRepositoryImpl.loginWithOAuth`](../../../lib/features/auth/data/repositories/auth_repository_impl.dart).
+
+---
+
+## L10n keys (in use)
 
 ```
-auth.signInWith: "Inloggen met" / "Sign in with"
-auth.continueGoogle: "Doorgaan met Google" / "Continue with Google"
-auth.continueApple: "Doorgaan met Apple" / "Continue with Apple"
-auth.or: "of" / "or"
-auth.signInEmail: "Inloggen met e-mail" / "Sign in with email"
-auth.agreeTerms: "Door in te loggen ga je akkoord met onze" / "By signing in you agree to our"
-auth.terms: "Voorwaarden" / "Terms"
-auth.privacy: "Privacybeleid" / "Privacy Policy"
+auth.continueWithGoogle: "Doorgaan met Google" / "Continue with Google"
+auth.continueWithApple:  "Doorgaan met Apple"  / "Continue with Apple"
+auth.oauthUnavailable:   "Sociaal inloggen is momenteel niet beschikbaar. Log in met e-mail." / "Social login is not available right now. Please sign in with email."
 ```
+
+Additional spec keys kept for future dedicated-screen variant:
+```
+auth.signInWith, auth.signInEmail, auth.agreeTerms, auth.terms, auth.privacy
+```
+
+---
+
+## Accessibility
+
+- Each button wrapped in `Semantics(button: true, label: …)` with localised
+  provider name.
+- Apple button enforces 52 px height; Google button inherits `DeelButton`
+  large size (52 px). Both exceed the 44 × 44 minimum in CLAUDE.md §10.
+- Per-button loading indicator uses `CircularProgressIndicator`; screen-reader
+  announces loading state via `Semantics(enabled: !isLoading)`.
+- Disabled state (while another provider is mid-flight) dims both buttons and
+  ignores taps.
+
+---
+
+## Reference implementation
+
+| File | Purpose |
+|---|---|
+| [`lib/features/auth/data/datasources/auth_remote_datasource.dart`](../../../lib/features/auth/data/datasources/auth_remote_datasource.dart) | Native OAuth + nonce, web fallback |
+| [`lib/features/auth/data/repositories/auth_repository_impl.dart`](../../../lib/features/auth/data/repositories/auth_repository_impl.dart) | `loginWithOAuth` orchestrator + web auth-state listener |
+| [`lib/features/auth/data/repositories/auth_error_mapper.dart`](../../../lib/features/auth/data/repositories/auth_error_mapper.dart) | Supabase error-code → `AuthResult` mapping |
+| [`lib/features/auth/presentation/viewmodels/social_login_viewmodel.dart`](../../../lib/features/auth/presentation/viewmodels/social_login_viewmodel.dart) | Per-provider loading state |
+| [`lib/features/auth/presentation/widgets/login_social_buttons.dart`](../../../lib/features/auth/presentation/widgets/login_social_buttons.dart) | Button visual + HIG-compliant Apple button |
+| [`supabase/migrations/20260415120000_p44_oauth_user_profile_trigger.sql`](../../../supabase/migrations/20260415120000_p44_oauth_user_profile_trigger.sql) | `user_profiles` auto-provisioning |
+| [`docs/operations/oauth-runbook.md`](../../operations/oauth-runbook.md) | Secret rotation, troubleshooting |

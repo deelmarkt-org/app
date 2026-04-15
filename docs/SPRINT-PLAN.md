@@ -285,7 +285,7 @@ The agent will:
 - [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
 - [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA 🔄 PR #155 open (EAA blockers: issue #156)
 - [ ] `P-43` App Store screenshots + ASO metadata — both stores
-- [ ] `P-44` Social login (Google + Apple Sign-In) — ⚠️ Requires E02 epic update + reso OAuth backend
+- [x] `P-44` Social login (Google + Apple Sign-In) — native flow (iOS ASAuth + Android google_sign_in) + web redirect, `user_profiles` auto-trigger, Apple HIG button ✅ PR #159
 - [x] `P-45` Flutter Web performance budget & CanvasKit strategy ✅ PR #14
 - [x] `P-47` Dark mode implementation & validation ✅ PR #157
 - [x] `P-48` ADR-019 PWA strategy document ✅ PR #14

@@ -1088,4 +1088,101 @@ void main() {
       );
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // loginWithOAuth (P-44) — native flow
+  // ---------------------------------------------------------------------------
+  group('loginWithOAuth', () {
+    setUp(() {
+      // Short stream so any accidental web-path subscription closes cleanly.
+      when(
+        () => mockDatasource.authStateChanges,
+      ).thenAnswer((_) => const Stream<sb.AuthState>.empty());
+    });
+
+    sb.AuthResponse responseWithUser(String id) {
+      // AuthResponse.user is derived from its session; simplest to stub a
+      // Session with a fake User via sb.User construction.
+      return sb.AuthResponse(
+        user: sb.User(
+          id: id,
+          appMetadata: const {},
+          userMetadata: const {},
+          aud: 'authenticated',
+          createdAt: DateTime(2026).toIso8601String(),
+        ),
+      );
+    }
+
+    test('Google native success returns AuthSuccess with user id', () async {
+      when(
+        () => mockDatasource.signInWithGoogle(),
+      ).thenAnswer((_) async => responseWithUser('uid-g'));
+
+      final result = await repository.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthSuccess>());
+      expect((result as AuthSuccess).userId, 'uid-g');
+    });
+
+    test('Apple native success returns AuthSuccess', () async {
+      when(
+        () => mockDatasource.signInWithApple(),
+      ).thenAnswer((_) async => responseWithUser('uid-a'));
+
+      final result = await repository.loginWithOAuth(OAuthProvider.apple);
+
+      expect(result, isA<AuthSuccess>());
+    });
+
+    test('null datasource response returns OAuthCancelled', () async {
+      when(
+        () => mockDatasource.signInWithGoogle(),
+      ).thenAnswer((_) async => null);
+
+      final result = await repository.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthFailureOAuthCancelled>());
+    });
+
+    test('AuthException provider_disabled → OAuthUnavailable', () async {
+      when(() => mockDatasource.signInWithApple()).thenThrow(
+        const sb.AuthException('Provider is disabled', statusCode: '422'),
+      );
+
+      final result = await repository.loginWithOAuth(OAuthProvider.apple);
+
+      expect(result, isA<AuthFailureOAuthUnavailable>());
+    });
+
+    test('AuthException 429 → RateLimited via mapOAuthAuthError', () async {
+      when(
+        () => mockDatasource.signInWithGoogle(),
+      ).thenThrow(const sb.AuthException('rate limited', statusCode: '429'));
+
+      final result = await repository.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthFailureRateLimited>());
+    });
+
+    test('generic network error → NetworkError', () async {
+      when(
+        () => mockDatasource.signInWithGoogle(),
+      ).thenThrow(Exception('SocketException: connection refused'));
+
+      final result = await repository.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthFailureNetworkError>());
+    });
+
+    test('AuthResponse without user id returns AuthFailureUnknown', () async {
+      when(
+        () => mockDatasource.signInWithGoogle(),
+      ).thenAnswer((_) async => sb.AuthResponse()); // no session, no user
+
+      final result = await repository.loginWithOAuth(OAuthProvider.google);
+
+      expect(result, isA<AuthFailureUnknown>());
+    });
+  });
 }

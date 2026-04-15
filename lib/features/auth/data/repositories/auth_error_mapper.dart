@@ -13,6 +13,31 @@ mixin AuthErrorMapper {
 
   // ── Login error mappers (return AuthResult) ──────────────────────────
 
+  /// Maps OAuth-specific auth errors (provider disabled → unavailable, rest → login).
+  ///
+  /// Prefers Supabase's stable error [code] (e.g. `validation_failed`,
+  /// `provider_disabled`, 422 with provider body) over substring matching on
+  /// [message], which is localisable and may change between SDK versions.
+  AuthResult mapOAuthAuthError(sb.AuthException e) {
+    final code = e.code?.toLowerCase();
+    if (code == 'provider_disabled' ||
+        code == 'oauth_provider_not_supported' ||
+        code == 'validation_failed' ||
+        code == 'unsupported_provider') {
+      return const AuthFailureOAuthUnavailable();
+    }
+    // Supabase returns 422 with body `error_code: validation_failed` when a
+    // provider isn't configured. Fall back to message match for older SDKs.
+    final msg = e.message.toLowerCase();
+    if (msg.contains('provider') &&
+        (msg.contains('disabled') ||
+            msg.contains('not configured') ||
+            msg.contains('not supported'))) {
+      return const AuthFailureOAuthUnavailable();
+    }
+    return mapLoginAuthError(e);
+  }
+
   AuthResult mapLoginAuthError(sb.AuthException e) {
     final code = e.statusCode;
     if (code == '429') {

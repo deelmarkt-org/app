@@ -83,5 +83,24 @@ final class AuthFailureUnknown extends AuthResult {
   List<Object?> get props => [message];
 }
 
+/// User dismissed the OAuth consent sheet before completing sign-in.
+final class AuthFailureOAuthCancelled extends AuthResult {
+  const AuthFailureOAuthCancelled();
+
+  @override
+  List<Object?> get props => [];
+}
+
+/// OAuth provider not configured or temporarily unavailable.
+final class AuthFailureOAuthUnavailable extends AuthResult {
+  const AuthFailureOAuthUnavailable();
+
+  @override
+  List<Object?> get props => [];
+}
+
 /// Domain-level biometric type — avoids importing `local_auth` in domain layer.
 enum BiometricMethod { face, fingerprint }
+
+/// Domain-level OAuth provider — avoids importing Supabase in domain layer.
+enum OAuthProvider { google, apple }
