@@ -1,1 +1,8 @@
-First release of DeelMarkt — the trust-first Dutch P2P marketplace.
+Welcome to DeelMarkt 1.0!
+
+• Safe buying and selling via escrow
+• Identity verification via iDIN
+• Integrated PostNL shipping with QR code
+• Built-in secure chat
+• Trust score for every user
+• Category browsing and location-based search

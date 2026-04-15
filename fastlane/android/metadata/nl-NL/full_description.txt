@@ -1,1 +1,18 @@
-[TODO Phase 4 — fill in before Play Console submission]
+DeelMarkt is de vertrouwde Nederlandse P2P-marktplaats voor tweedehands spullen — veilig, geverifieerd en zonder oplichting.
+
+🔐 ESCROW BETALINGEN
+Betaal pas als jij tevreden bent. Jouw geld staat veilig in escrow totdat je het item hebt goedgekeurd. Geen risico voor koper én verkoper.
+
+✅ iDIN VERIFICATIE
+Alle gebruikers zijn geverifieerd via iDIN — de bankidentificatiestandaard van ING, ABN AMRO en Rabobank. Altijd weten met wie je handelt.
+
+📦 POSTNL QR-VERZENDING
+Maak een verzendetiket aan in de app en scan de QR-code bij het PostNL-punt. Volledig traceerbaar, geïntegreerd in elke transactie.
+
+🌟 TRUSTSCORES
+Transparante trustscores op elk profiel — gebaseerd op afgeronde transacties en beoordelingen.
+
+💬 BEVEILIGDE CHAT
+Onderhandel en sluit deals af binnen de app. Geen privégegevens buiten het platform.
+
+Tweedehands kopen en verkopen in Nederland — veilig, eerlijk, en eenvoudig.

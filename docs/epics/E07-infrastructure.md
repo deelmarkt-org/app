@@ -135,6 +135,14 @@ Foundation infrastructure: Supabase project, Firebase setup, CI/CD pipeline, Clo
 - [ ] Accessibility: 4.5:1 contrast + 44×44px touch targets verified
 - [ ] Pre-launch pentest scheduled
 - [ ] ≥70% test coverage enforced
+- [x] **P-43** Fastlane installed with metadata for iOS + Android in NL + EN ✅
+- [x] **P-43** 240 hero screenshots (10 × 2 locales × 2 themes × 6 devices) deterministic ✅
+- [x] **P-43** App Store privacy labels YAML committed ✅
+- [x] **P-43** Play Console Data Safety documented ✅
+- [x] **P-43** ASO keyword research documented (40 keywords) ✅
+- [x] **P-43** check_aso.dart fails on over-budget copy ✅
+- [x] **P-43** check_screenshots.sh validates PII and size ✅
+- [x] **P-43** CI workflow regenerates screenshots on lib/ changes ✅
 
 ---
 

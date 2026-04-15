@@ -1,1 +1,8 @@
-Eerste versie van DeelMarkt — de betrouwbare Nederlandse P2P marktplaats.
+Welkom bij DeelMarkt 1.0!
+
+• Veilig kopen en verkopen via escrow
+• Identiteitsverificatie via iDIN
+• Geïntegreerde PostNL verzending met QR-code
+• Ingebouwde beveiligde chat
+• Trustscore voor elke gebruiker
+• Categoriebladeren en zoeken op locatie

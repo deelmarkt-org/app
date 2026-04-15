@@ -1,1 +1,37 @@
-[TODO Phase 4 — fill in before App Store submission]
+DeelMarkt is the trusted Dutch P2P marketplace for safe secondhand buying and selling — no scams, no stress.
+
+🔐 ALWAYS PAY SAFELY WITH ESCROW
+Your money is held in escrow until you receive and approve your item. No payment to the seller until you're satisfied. That simple.
+
+✅ VERIFIED SELLERS VIA iDIN
+Every DeelMarkt user is verified via iDIN — the Dutch banking identity standard used by ING, ABN AMRO, and Rabobank. You always know who you're dealing with.
+
+📦 SHIP WITH QR CODE
+Create a shipping label in the app, scan the QR code at a PostNL drop-off point, and your parcel is on its way. Fully trackable, integrated into the transaction.
+
+🌟 TRUST SCORE ON EVERY PROFILE
+Every buyer and seller has a transparent trust score based on completed transactions, response time, and reviews. Always choose reliable traders.
+
+💬 SECURE CHAT WITH BUILT-IN PAYMENTS
+Negotiate, ask questions, and close deals — all within the app. No sharing private details over WhatsApp or email.
+
+🔍 SEARCH BY CATEGORY, LOCATION OR KEYWORD
+From vintage clothing and electronics to furniture and sporting goods — find what you're looking for near you.
+
+---
+
+FOR BUYERS:
+• Pay only when satisfied (escrow guarantee)
+• Sellers are always verified via iDIN
+• Fully trackable parcels via PostNL integration
+• Buyer protection included
+
+FOR SELLERS:
+• Free listings
+• Payment guaranteed — escrow protects you too
+• Professional profile with trust score
+• Fast payout after buyer approval
+
+---
+
+DeelMarkt is built for fair trading in the Netherlands. No worries about fake buyers, no payments that never arrive. Just safe secondhand trade, the way it should be.
