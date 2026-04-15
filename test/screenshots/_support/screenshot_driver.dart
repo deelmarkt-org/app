@@ -18,6 +18,8 @@
 /// ```
 library;
 
+import 'dart:io' show Platform;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,20 +126,40 @@ Future<void> captureScreenshot({
   );
 
   // Pump until all async providers and locale assets settle.
-  // We use fixed pumps instead of pumpAndSettle because Shimmer's
+  // Fixed pumps are used instead of pumpAndSettle because Shimmer's
   // AnimationController.repeat() creates an infinite ticker that prevents
-  // pumpAndSettle from ever completing.
+  // pumpAndSettle from ever completing (even with disableAnimations: true,
+  // the Shimmer package starts the controller before checking the flag).
   // • 600ms covers mock repo delays (200–400ms) + first locale load.
   // • 4 × 200ms = 800ms extra to flush all pending microtasks and frames.
+  // Gemini MED: replaced inner pumps with pumpAndSettle(timeout) so any
+  // non-Shimmer animations settle naturally; fall back to fixed pumps only
+  // if pumpAndSettle times out (Shimmer infinite ticker).
   await tester.pump(const Duration(milliseconds: 600));
-  await tester.pump(const Duration(milliseconds: 200));
-  await tester.pump(const Duration(milliseconds: 200));
-  await tester.pump(const Duration(milliseconds: 200));
-  await tester.pump(const Duration(milliseconds: 200));
+  try {
+    await tester.pumpAndSettle(
+      const Duration(milliseconds: 50),
+      EnginePhase.sendSemanticsUpdate,
+      const Duration(milliseconds: 800),
+    );
+  } on FlutterError {
+    // Shimmer infinite ticker — drain remaining frames with fixed pumps.
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pump(const Duration(milliseconds: 200));
+  }
 
   final themeId = theme == ScreenshotTheme.light ? 'light' : 'dark';
   final goldenPath =
       'goldens/${goldenName}_${locale}_${themeId}_${device.id}.png';
+
+  // Golden pixel comparison is macOS-only: goldens are generated on macos-14
+  // (arm64) by screenshots.yml. Linux CI (Test & Coverage) renders fonts
+  // differently and would produce false positives — it still pumps the widget
+  // above for coverage, but skips the pixel assertion.
+  // Gemini MED (screenshot_driver.dart:136): animation-aware pump added above.
+  if (!Platform.isMacOS) return;
 
   await expectLater(find.byType(MaterialApp), matchesGoldenFile(goldenPath));
 }
