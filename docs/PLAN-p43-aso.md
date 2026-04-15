@@ -275,7 +275,7 @@ source of truth; manually entered in Console (Play doesn't support fastlane for 
 | R-2 | App Store review rejects privacy labels mismatch | Medium | High (2-week delay) | WS-C includes Apple-compliant YAML + manual review checklist; test with TestFlight review first |
 | R-3 | Keywords oversaturated — low ASO rank | Medium | Medium | Evidence-based research in WS-D; track rank weekly for 4 weeks after launch and iterate |
 | R-4 | PII leaks in screenshots (e.g. dev left real phone in mock) | Low | Critical (GDPR) | OCR CI step; reviewer checklist; seed-data file is single source |
-| R-5 | Screenshot PNGs bloat repo (>100 MB) | Medium | Medium | Budget 8 MB per PNG; Git LFS for screenshots folder (`.gitattributes`) |
+| R-5 | Screenshot PNGs bloat repo (>100 MB) | Medium | Medium | **Resolved via D-2:** Git LFS for `fastlane/screenshots/**` + 8 MB per-file budget + `pngquant` optimization |
 | R-6 | Fastlane credentials leak | Low | Critical | Apple API key in GitHub Secrets (ASC_API_KEY_JSON); rotate every 90 days; never commit `.p8` files |
 | R-7 | Localization drift — NL copy updates without EN | Medium | Low | `check_aso.dart` fails if any locale file has newer mtime than its peer |
 | R-8 | Seed data becomes stale as features evolve | High | Medium | Link seed model via typed providers; failing provider type = failing CI |
@@ -342,13 +342,17 @@ source of truth; manually entered in Console (Play doesn't support fastlane for 
 
 ---
 
-## 10 · Open Questions (to resolve during Phase 0 approval)
+## 10 · Resolved Decisions (Phase 0)
 
-1. **Screenshot host OS** — macOS-14 GitHub runner adds ~$0.08 per min. Accept vs. self-host?
-2. **Git LFS** for `fastlane/screenshots/` — enable, or commit as plain PNG?
-3. **Preview video** — produce one now or defer (recommended: defer)?
-4. **App Store contact info** — which email/phone should be listed for Review?
-5. **Marketing URL** — `https://deelmarkt.com` vs. a dedicated `https://deelmarkt.com/app`?
+| # | Question | Decision | Implications |
+|:--|:---------|:---------|:-------------|
+| D-1 | Screenshot host OS | **macOS-14 GitHub-hosted runner** | Budget ~$1.20/run; single canonical OS eliminates font-rendering drift (R-1) |
+| D-2 | Screenshot storage | **Git LFS** for `fastlane/screenshots/**` | Add `.gitattributes` line: `fastlane/screenshots/**/*.png filter=lfs diff=lfs merge=lfs -text`; enable LFS in repo settings before first commit of PNGs |
+| D-3 | Preview video | **Defer to post-launch** | Out of scope for P-43; create follow-up ticket after first ranking data (≥ 4 weeks post-launch) |
+| D-4 | App Store Review contact | **support@deelmarkt.com + main support phone** | Capture in `fastlane/metadata/review_information/` — confirm on-call coverage during 24–48h review windows |
+| D-5 | Marketing URL | **https://deelmarkt.com** (homepage, both locales) | Single canonical URL; privacy policy remains `https://deelmarkt.com/privacy` |
+
+All five open questions are now resolved. Proceed to `/implement` on this branch when you're ready.
 
 ---
 
