@@ -68,6 +68,7 @@ Future<void> main(List<String> args) async {
   _checkLocaleParity(errors);
   _checkKeywordDeduplication('nl-NL', errors, warnings);
   _checkKeywordDeduplication('en-US', errors, warnings);
+  _checkReviewInformation(warnings);
 
   if (checkUrls) {
     await _checkUrls(errors, warnings);
@@ -242,6 +243,27 @@ void _checkForbiddenTerms(String path, String content, List<String> errors) {
     if (lower.contains(term.toLowerCase())) {
       errors.add('FORBIDDEN_TERM: "$term" found in $path');
     }
+  }
+}
+
+// ── Review information TODO check ────────────────────────────────────────────
+// Warns when TestFlight review_information fields still contain [TODO] markers.
+// These won't block dev merges but WILL block App Store submission.
+
+void _checkReviewInformation(List<String> warnings) {
+  final file = File(
+    'fastlane/metadata/review_information/privacy_details.yaml',
+  );
+  if (!file.existsSync()) return;
+  final content = file.readAsStringSync();
+  // Match any value wrapped in quotes that starts with [TODO
+  final todoPattern = RegExp(r'"(\[TODO[^"]*)"');
+  final matches = todoPattern.allMatches(content);
+  for (final match in matches) {
+    warnings.add(
+      'REVIEW_INFO_TODO: review_information field still contains TODO marker '
+      '("${match.group(1)}") — fill in before TestFlight submission.',
+    );
   }
 }
 

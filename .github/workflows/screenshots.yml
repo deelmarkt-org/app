@@ -38,7 +38,8 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
-      - uses: actions/checkout@v4
+      # L1 (belengaz review): pin to SHA consistent with ci.yml
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           # Check out the branch tip, not the PR merge commit.
           # Without this, Actions creates a detached HEAD at the merge commit;
@@ -47,13 +48,9 @@ jobs:
           ref: ${{ github.head_ref }}
           lfs: true
 
+      # setup-flutter already runs flutter pub get + build_runner (L2 — belengaz review:
+      # removed duplicate steps that were redundant with the composite action).
       - uses: ./.github/actions/setup-flutter
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run build_runner (ensure .g.dart files are fresh)
-        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Regenerate golden screenshots
         run: flutter test --update-goldens test/screenshots/drivers/ --no-pub
@@ -74,6 +71,10 @@ jobs:
         # Uses GITHUB_TOKEN with contents:write permission.
         # GITHUB_TOKEN pushes do NOT trigger new workflow runs (GitHub's built-in
         # recursion guard), so there is no infinite-loop risk.
+        # M1 (belengaz review): github.head_ref mapped to env var to prevent
+        # shell injection — never interpolate GitHub context directly in run:.
+        env:
+          BRANCH: ${{ github.head_ref }}
         run: |
           git diff --name-only test/screenshots/drivers/goldens/ > /tmp/changed_goldens.txt
           if [ -s /tmp/changed_goldens.txt ]; then
@@ -84,8 +85,8 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add test/screenshots/drivers/goldens/
             git commit -m "chore(screenshots): update ${COUNT} golden baseline(s) [ci auto-commit]"
-            git push --force-with-lease origin HEAD:${{ github.head_ref }}
-            echo "Goldens committed and pushed to ${{ github.head_ref }}."
+            git push --force-with-lease origin HEAD:"$BRANCH"
+            echo "Goldens committed and pushed to $BRANCH."
           else
             echo "All goldens match committed baselines."
           fi
