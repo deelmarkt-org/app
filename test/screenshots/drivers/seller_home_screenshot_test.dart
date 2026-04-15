@@ -16,6 +16,11 @@ import '../_support/screenshot_driver.dart';
 import '../_support/seed_data.dart';
 
 // Forces seller mode without needing a real Supabase User.
+//
+// Subclasses HomeModeNotifier and overrides build() to return a constant.
+// Skipping super.build() is intentional — for a Notifier, build() IS the
+// state initializer; we simply replace it with a fixed value. This is the
+// standard Riverpod test pattern (see Riverpod docs §Testing).
 class _SellerModeNotifier extends HomeModeNotifier {
   @override
   HomeMode build() => HomeMode.seller;

@@ -98,7 +98,9 @@ end
 # ─── Private helpers ───────────────────────────────────────────────────────────
 
 # Regenerate all 240 golden PNGs and organise them for fastlane.
-lane :_regenerate_screenshots do
+# L8 (belengaz review): use private_lane so it cannot be called directly
+# from the command line — it is an internal helper only.
+private_lane :_regenerate_screenshots do
   # Gemini MED: use `path:` option instead of `cd ..` so the lane is
   # independent of the directory Fastlane is executed from.
   sh("flutter test --update-goldens test/screenshots/drivers/ --no-pub", path: "..")

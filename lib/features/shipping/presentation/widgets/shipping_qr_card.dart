@@ -152,6 +152,8 @@ class ShippingQrCard extends StatelessWidget {
             Flexible(
               child: Text(
                 deadlineText,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: DeelmarktColors.neutral700,
                   fontWeight: FontWeight.w500,
