@@ -34,6 +34,10 @@ import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'device_frames.dart';
 import 'seed_data.dart';
 
+// Flutter's pumpAndSettle timeout message — stable since Flutter 2.x.
+// Extracted so a single place needs updating if Flutter ever changes the wording.
+const _kPumpAndSettleTimeoutMsg = 'pumpAndSettle timed out';
+
 /// One-time async setup — call in `setUpAll` of each screenshot test group.
 Future<void> initScreenshotEnvironment() async {
   SharedPreferences.setMockInitialValues({});
@@ -145,7 +149,7 @@ Future<void> captureScreenshot({
   } on FlutterError catch (e) {
     // Only swallow the Shimmer infinite-ticker timeout; re-throw anything else
     // so real widget errors (overflow, null dereference, etc.) are not hidden.
-    if (!e.message.contains('pumpAndSettle timed out')) rethrow;
+    if (!e.message.contains(_kPumpAndSettleTimeoutMsg)) rethrow;
     // Shimmer's AnimationController.repeat() fires unconditionally even with
     // disableAnimations: true — drain remaining frames with fixed pumps.
     await tester.pump(const Duration(milliseconds: 200));
