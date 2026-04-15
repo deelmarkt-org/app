@@ -46,6 +46,26 @@ This triggers a soft-delete in Supabase with hard-delete after 30 days (GDPR com
 **Note:** Raw payment card data is NEVER collected by the app. Mollie processes payments
 under their PSD2 licence. We store only payment status + Mollie reference ID.
 
+### Photos and videos
+
+| Data type | Collected | Shared | Required | Prominent disclosure |
+|-----------|-----------|--------|----------|---------------------|
+| Photos | ✅ | With Cloudinary (processor) | Required (to create listings) | No |
+
+**Purpose:** Listing images uploaded by sellers to Cloudinary / Supabase Storage.
+Users voluntarily upload their own photos to create product listings.
+Photos are stored under the user's account and deleted on account deletion.
+
+### Messages
+
+| Data type | Collected | Shared | Required | Prominent disclosure |
+|-----------|-----------|--------|----------|---------------------|
+| In-app messages | ✅ | ❌ | Required (to transact) | No |
+
+**Purpose:** In-app chat messages between buyers and sellers (E04).
+Messages are encrypted in transit (TLS) and stored per conversation.
+Users can delete their account to trigger removal.
+
 ### Location
 
 | Data type | Collected | Shared | Required | Prominent disclosure |
@@ -88,3 +108,4 @@ under their PSD2 licence. We store only payment status + Mollie reference ID.
 | Date | Change | Reviewer |
 |------|--------|----------|
 | 2026-04-15 | Initial form | pizmam |
+| 2026-04-15 | Add Photos/Videos + Messages categories (H1 from belengaz review) | belengaz |

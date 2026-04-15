@@ -1,7 +1,7 @@
 # DeelMarkt — App Store Privacy Nutrition Labels
 # Reference: Apple App Privacy Details — https://developer.apple.com/app-store/app-privacy-details/
-# Last reviewed: 2026-04-15
-# Reviewer: pizmam
+# Last reviewed: 2026-04-15 (updated 2026-04-15)
+# Reviewer: pizmam → belengaz (GDPR sign-off: user_content addition)
 #
 # Legend:
 #   linked_to_identity: data is associated with user's identity (linked in App Privacy section)
@@ -78,6 +78,24 @@ categories:
         purposes:
           - analytics            # Aggregate feature usage (no personal identifiers)
           - app_functionality    # Recommendation signals (anonymous)
+
+  # ── User Content ─────────────────────────────────────────────────────────────
+  # Required: app allows users to upload photos (listing images → Cloudinary /
+  # Supabase Storage) and send chat messages (E04). Apple requires these to be
+  # declared under user_content even when they are user-generated (not collected
+  # for profiling). See Apple App Privacy Details §User Content.
+  - category: user_content
+    data_types:
+      - type: photos_or_videos
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # Listing photos uploaded by user to Cloudinary/Storage
+      - type: other_user_content
+        linked_to_identity: true
+        used_for_tracking: false
+        purposes:
+          - app_functionality    # Chat messages (E04) — stored per conversation
 
   # ── Diagnostics ───────────────────────────────────────────────────────────────
   - category: diagnostics
