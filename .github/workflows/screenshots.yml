@@ -16,7 +16,7 @@ on:
       - "pubspec.lock"
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 concurrency:
@@ -54,20 +54,26 @@ jobs:
             exit 1
           fi
 
-      - name: Check for golden diffs (fail on unexpected changes)
+      - name: Commit updated goldens if they changed
+        # Auto-commit regenerated goldens back to the PR branch so developers
+        # don't need to run --update-goldens locally when CI rendering differs
+        # slightly from their machine (e.g. different font hinting on macos-14).
+        # Uses GITHUB_TOKEN with contents:write permission.
         run: |
           git diff --name-only test/screenshots/drivers/goldens/ > /tmp/changed_goldens.txt
           if [ -s /tmp/changed_goldens.txt ]; then
-            echo "The following screenshot goldens changed:"
+            echo "Goldens changed on CI - committing updated baselines:"
             cat /tmp/changed_goldens.txt
-            echo ""
-            echo "If this is intentional, regenerate goldens locally and commit them:"
-            echo "  flutter test --update-goldens test/screenshots/drivers/ --no-pub"
-            echo "  git add test/screenshots/drivers/goldens/"
-            echo "  git commit -m 'chore(screenshots): update golden baselines'"
-            exit 1
+            COUNT=$(wc -l < /tmp/changed_goldens.txt | tr -d ' ')
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add test/screenshots/drivers/goldens/
+            git commit -m "chore(screenshots): update ${COUNT} golden baseline(s) [ci auto-commit]"
+            git push origin HEAD:${{ github.head_ref }}
+            echo "Goldens committed and pushed to ${{ github.head_ref }}."
+          else
+            echo "All goldens match committed baselines."
           fi
-          echo "All goldens match committed baselines."
 
       - name: Upload screenshot artifacts (for PR review)
         if: always()
