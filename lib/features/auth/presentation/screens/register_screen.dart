@@ -98,14 +98,20 @@ class _StepView extends ConsumerWidget {
       ),
       isLoading: state.isLoading,
       errorText: state.errorKey,
-      onCompleted: ref.read(registerViewModelProvider.notifier).verifyEmail,
+      // Fix #128: wrap tearoffs in lambdas so ref.read is evaluated at call-time,
+      // not at build-time. Prevents stale-notifier captures after provider invalidation.
+      onCompleted:
+          (otp) =>
+              ref.read(registerViewModelProvider.notifier).verifyEmail(otp),
       onResend:
           () => ref.read(registerViewModelProvider.notifier).resendEmailOtp(),
     ),
     RegistrationStep.phoneForm => PhoneFormView(
       isLoading: state.isLoading,
       errorText: state.errorKey,
-      onSubmit: ref.read(registerViewModelProvider.notifier).submitPhone,
+      onSubmit:
+          (phone) =>
+              ref.read(registerViewModelProvider.notifier).submitPhone(phone),
     ),
     RegistrationStep.phoneVerification => OtpVerificationView(
       title: 'auth.verify_phone_title'.tr(),
@@ -114,7 +120,9 @@ class _StepView extends ConsumerWidget {
       ),
       isLoading: state.isLoading,
       errorText: state.errorKey,
-      onCompleted: ref.read(registerViewModelProvider.notifier).verifyPhone,
+      onCompleted:
+          (otp) =>
+              ref.read(registerViewModelProvider.notifier).verifyPhone(otp),
       onResend:
           () => ref.read(registerViewModelProvider.notifier).resendPhoneOtp(),
     ),

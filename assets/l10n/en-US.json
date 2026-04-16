@@ -299,7 +299,8 @@
     "skipToContent": "Skip to content",
     "back": "Go back",
     "consent_banner": "Privacy consent",
-    "modeSwitch": "Switch between buyer and seller mode"
+    "modeSwitch": "Switch between buyer and seller mode",
+    "listing_stats": "{views} views, {favourites} favourites, {days} days active"
   },
   "payment": {
     "orderSummary": "Order summary",
