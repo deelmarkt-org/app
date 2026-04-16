@@ -27,8 +27,8 @@
 | `lib/features/shipping/presentation/screens/tracking_screen.dart` | [02-tracking-timeline.md](05-shipping/02-tracking-timeline.md) | `05-shipping/designs/tracking_*` (4) |
 | `lib/features/shipping/presentation/screens/parcel_shop_selector_screen.dart` | [03-parcel-shop-selector.md](05-shipping/03-parcel-shop-selector.md) | `05-shipping/designs/parcel_*` (4) |
 | `lib/features/messages/presentation/screens/conversation_list_screen.dart` | [01-conversation-list.md](06-chat/01-conversation-list.md) | `06-chat/designs/messages_*` (4) |
-| `lib/features/messages/presentation/screens/chat_thread_screen.dart` | [02-chat-thread.md](06-chat/02-chat-thread.md) | `06-chat/designs/chat_*` (6) |
-| *(Scam alert — embedded widget)* | [03-scam-alert.md](06-chat/03-scam-alert.md) | `06-chat/designs/scam_*` (2) |
+| `lib/features/messages/presentation/screens/chat_thread_screen.dart` | [02-chat-thread.md](06-chat/02-chat-thread.md) | `06-chat/designs/chat_*` (4) |
+| *(Scam alert — embedded widget)* | [03-scam-alert.md](06-chat/03-scam-alert.md) | `06-chat/designs/scam_*` (4) |
 | `lib/features/profile/presentation/screens/own_profile_screen.dart` | [01-own-profile.md](07-profile/01-own-profile.md) | `07-profile/designs/own_*` (4) |
 | `lib/features/profile/presentation/screens/public_profile_screen.dart` | [02-seller-profile.md](07-profile/02-seller-profile.md) | `07-profile/designs/public_*` (5) |
 | `lib/features/profile/presentation/screens/settings_screen.dart` | [03-settings.md](07-profile/03-settings.md) | `07-profile/designs/settings_*` (4) |
