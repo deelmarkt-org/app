@@ -129,7 +129,9 @@ class _AppleSignInButton extends StatelessWidget {
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(fgColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        fgColor.withValues(alpha: 0.8),
+                      ),
                     ),
                   )
                   : Row(
