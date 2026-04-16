@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
@@ -82,6 +83,6 @@ class SanctionAnalytics {
 /// Depends on [firebaseAnalyticsProvider] so it can be overridden in tests
 /// with a fake [FirebaseAnalytics] instance via [ProviderScope.overrides].
 @Riverpod(keepAlive: true)
-SanctionAnalytics sanctionAnalytics(SanctionAnalyticsRef ref) {
+SanctionAnalytics sanctionAnalytics(Ref ref) {
   return SanctionAnalytics(analytics: ref.watch(firebaseAnalyticsProvider));
 }

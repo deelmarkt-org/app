@@ -96,6 +96,10 @@ class _AppleSignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = 'auth.continueWithApple'.tr();
+    // Apple HIG: dark mode requires white background + black foreground.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? DeelmarktColors.white : DeelmarktColors.neutral900;
+    final fgColor = isDark ? DeelmarktColors.neutral900 : DeelmarktColors.white;
     return Semantics(
       button: true,
       label: label,
@@ -105,14 +109,10 @@ class _AppleSignInButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: DeelmarktColors.neutral900,
-            foregroundColor: DeelmarktColors.white,
-            disabledBackgroundColor: DeelmarktColors.neutral900.withValues(
-              alpha: 0.5,
-            ),
-            disabledForegroundColor: DeelmarktColors.white.withValues(
-              alpha: 0.8,
-            ),
+            backgroundColor: bgColor,
+            foregroundColor: fgColor,
+            disabledBackgroundColor: bgColor.withValues(alpha: 0.5),
+            disabledForegroundColor: fgColor.withValues(alpha: 0.8),
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(DeelmarktRadius.md),
@@ -124,14 +124,12 @@ class _AppleSignInButton extends StatelessWidget {
           ),
           child:
               isLoading
-                  ? const SizedBox(
+                  ? SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        DeelmarktColors.white,
-                      ),
+                      valueColor: AlwaysStoppedAnimation<Color>(fgColor),
                     ),
                   )
                   : Row(
