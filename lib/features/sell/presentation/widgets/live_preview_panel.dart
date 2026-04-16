@@ -35,9 +35,9 @@ class LivePreviewPanel extends StatelessWidget {
               const SizedBox(height: Spacing.s3),
               _ImagePreview(imageFiles: state.imageFiles),
               const SizedBox(height: Spacing.s3),
-              _TitleText(title: state.title, context: context),
+              _TitleText(title: state.title),
               const SizedBox(height: Spacing.s1),
-              _PriceText(priceInCents: state.priceInCents, context: context),
+              _PriceText(priceInCents: state.priceInCents),
             ],
           ),
         ),
@@ -118,13 +118,12 @@ class _ImagePreview extends StatelessWidget {
 }
 
 class _TitleText extends StatelessWidget {
-  const _TitleText({required this.title, required this.context});
+  const _TitleText({required this.title});
 
   final String title;
-  final BuildContext context;
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return Text(
       title.isNotEmpty ? title : 'sell.previewTitlePlaceholder'.tr(),
       style: Theme.of(context).textTheme.titleMedium,
@@ -135,13 +134,12 @@ class _TitleText extends StatelessWidget {
 }
 
 class _PriceText extends StatelessWidget {
-  const _PriceText({required this.priceInCents, required this.context});
+  const _PriceText({required this.priceInCents});
 
   final int priceInCents;
-  final BuildContext context;
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     final label =
         priceInCents > 0
             ? '\u20AC ${(priceInCents / 100).toStringAsFixed(2)}'
