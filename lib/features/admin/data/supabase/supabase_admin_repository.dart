@@ -46,4 +46,21 @@ class SupabaseAdminRepository implements AdminRepository {
     // migration is ready. Returns empty list until then.
     return const [];
   }
+
+  @override
+  Future<bool> verifyAdminRole() async {
+    // TODO(Phase 1.12 — reso): Replace with `public.is_admin()` SECURITY DEFINER
+    // RPC call once the SQL function is deployed.
+    //
+    //   final result = await _client.rpc('is_admin');
+    //   return result as bool? ?? false;
+    //
+    // Do NOT use `_client.auth.currentUser?.appMetadata['role']` here —
+    // that is client-side and writable by an attacker (threat E1 in
+    // docs/security/threat-model-auth.md).
+    //
+    // This method falls back to false until reso deploys the SQL function and
+    // the [FeatureFlags.adminServerVerify] flag is enabled.
+    return false;
+  }
 }

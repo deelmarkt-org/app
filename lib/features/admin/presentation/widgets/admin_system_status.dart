@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 
 /// Static system status card for the admin dashboard sidebar.
 ///
@@ -36,26 +37,25 @@ class AdminSystemStatus extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildTitle(),
+          _buildTitle(context),
           const SizedBox(height: Spacing.s4),
-          ..._services.map(_buildServiceRow),
+          ..._services.map((s) => _buildServiceRow(context, s)),
         ],
       ),
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     return Text(
       'admin.system.title'.tr(),
-      style: const TextStyle(
-        fontSize: 15,
+      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         fontWeight: FontWeight.w600,
         color: DeelmarktColors.neutral900,
       ),
     );
   }
 
-  Widget _buildServiceRow(_ServiceStatus service) {
+  Widget _buildServiceRow(BuildContext context, _ServiceStatus service) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.s2),
       child: Semantics(
@@ -79,8 +79,7 @@ class AdminSystemStatus extends StatelessWidget {
             Expanded(
               child: Text(
                 service.labelKey.tr(),
-                style: const TextStyle(
-                  fontSize: 13,
+                style: DeelmarktTypography.statLabel.copyWith(
                   color: DeelmarktColors.neutral700,
                 ),
               ),
@@ -89,13 +88,11 @@ class AdminSystemStatus extends StatelessWidget {
               service.isOperational
                   ? 'admin.system.operational'.tr()
                   : 'admin.system.down'.tr(),
-              style: TextStyle(
-                fontSize: 12,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color:
                     service.isOperational
                         ? DeelmarktColors.success
                         : DeelmarktColors.error,
-                fontWeight: FontWeight.w500,
               ),
             ),
           ],

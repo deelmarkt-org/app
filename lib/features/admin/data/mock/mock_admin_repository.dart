@@ -66,6 +66,15 @@ class MockAdminRepository implements AdminRepository {
     ].take(limit).toList();
   }
 
+  @override
+  Future<bool> verifyAdminRole() async {
+    // Mock: always returns true in dev/test mode.
+    // Real implementation calls public.is_admin() SECURITY DEFINER RPC.
+    // See docs/adr/ADR-001-reactive-auth-guard.md (reso must deploy SQL fn).
+    await _simulateDelay();
+    return true;
+  }
+
   Future<void> _simulateDelay() =>
       Future<void>.delayed(const Duration(milliseconds: 300));
 }
