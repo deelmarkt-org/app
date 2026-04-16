@@ -79,9 +79,10 @@ class _ConsentRow extends StatelessWidget {
       mode: LaunchMode.externalApplication,
     );
     if (!launched && context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('error.url_open_failed'.tr())));
+      // Clear any queued SnackBars first so rapid taps do not stack messages.
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text('error.url_open_failed'.tr())));
     }
   }
 
@@ -99,6 +100,7 @@ class _ConsentRow extends StatelessWidget {
       controlAffinity: ListTileControlAffinity.leading,
       contentPadding: EdgeInsets.zero,
       title: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(prefixKey.tr(), style: theme.textTheme.bodyMedium),
           Semantics(

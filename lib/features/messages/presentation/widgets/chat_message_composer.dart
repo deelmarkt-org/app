@@ -172,8 +172,13 @@ class _SendButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Keep primary background when busy so the spinner (colorScheme.onPrimary)
+    // maintains sufficient contrast. neutral300 is only used when the button
+    // is truly inactive (no text typed, not sending).
     final bgColor =
-        enabled ? DeelmarktColors.primary : DeelmarktColors.neutral300;
+        (enabled || busy)
+            ? DeelmarktColors.primary
+            : DeelmarktColors.neutral300;
     return Semantics(
       button: true,
       label: 'chat.sendA11y'.tr(),
