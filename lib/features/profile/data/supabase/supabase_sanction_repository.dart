@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/profile/data/dto/sanction_dto.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
+import 'package:deelmarkt/features/profile/domain/exceptions/sanction_exceptions.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 
 /// Supabase implementation of [SanctionRepository].
@@ -35,7 +37,9 @@ class SupabaseSanctionRepository implements SanctionRepository {
 
       return SanctionDto.fromJson(rows.first as Map<String, dynamic>);
     } on PostgrestException catch (e) {
-      throw Exception(
+      // PGRST116 = no rows — treated as "no active sanction", not an error.
+      if (e.code == 'PGRST116') return null;
+      throw UnknownSanctionError(
         'Failed to fetch active sanction for user $userId: ${e.message}',
       );
     }
@@ -76,11 +80,44 @@ class SupabaseSanctionRepository implements SanctionRepository {
 
       final rows = response as List<dynamic>;
       if (rows.isEmpty) {
-        throw Exception('submit_appeal RPC returned no rows');
+        throw const UnknownSanctionError('submit_appeal RPC returned no rows');
       }
       return SanctionDto.fromJson(rows.first as Map<String, dynamic>);
     } on PostgrestException catch (e) {
-      throw Exception('Failed to submit appeal: ${e.message}');
+      throw mapSanctionError(e);
     }
+  }
+
+  /// Maps a [PostgrestException] from the sanction RPCs to the correct
+  /// [SanctionException] subclass. Kept in the data layer so the domain
+  /// remains pure Dart (CLAUDE.md §1.2).
+  ///
+  /// Exposed for testing via `@visibleForTesting`; call sites within the
+  /// production code should go through [submitAppeal].
+  ///
+  /// Mapping rules:
+  /// - Message contains "14 days" / "14-day" → [AppealWindowExpired]
+  /// - Message contains "final decision" / "counter-appeal" → [AppealAlreadyResolved]
+  /// - [PostgrestException.code] is "PGRST116" (no rows) → [SanctionNotFound]
+  /// - HTTP status 429 or message contains "rate" → [AppealRateLimited]
+  /// - Everything else → [UnknownSanctionError]
+  @visibleForTesting
+  static SanctionException mapSanctionError(PostgrestException e) {
+    final msg = e.message.toLowerCase();
+
+    if (msg.contains('14 day') || msg.contains('14-day')) {
+      return const AppealWindowExpired();
+    }
+    if (msg.contains('final decision') || msg.contains('counter-appeal')) {
+      return const AppealAlreadyResolved();
+    }
+    if (e.code == 'PGRST116') {
+      return const SanctionNotFound();
+    }
+    if ((e.details?.toString().contains('429') ?? false) ||
+        msg.contains('rate')) {
+      return const AppealRateLimited();
+    }
+    return UnknownSanctionError(e.message);
   }
 }

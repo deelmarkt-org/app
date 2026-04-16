@@ -35,10 +35,19 @@ class SkeletonListingCard extends StatelessWidget {
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            // Image placeholder.
-            SkeletonBox(height: 180, borderRadius: DeelmarktRadius.xl),
+            // Image placeholder — AspectRatio keeps the 4:3 shape regardless
+            // of parent constraints. Must match ListingCard.aspectRatio (4:3)
+            // to prevent Cumulative Layout Shift when skeleton resolves to
+            // actual content. Safe in both GridView (bounded) and
+            // ListView/Column (unbounded) contexts.
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: SkeletonBox(
+                height: double.infinity,
+                borderRadius: DeelmarktRadius.xl,
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(Spacing.s3),
               child: Column(

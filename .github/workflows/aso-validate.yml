@@ -1,0 +1,63 @@
+name: ASO Validate
+
+# Validates ASO copy files and screenshots on every PR that touches
+# fastlane/ metadata or docs/marketing/aso/.
+#
+# Runs check_aso.dart (copy lint) and check_screenshots.sh (PNG audit).
+
+on:
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - "fastlane/metadata/**"
+      - "fastlane/android/metadata/**"
+      - "docs/marketing/aso/**"
+      - "scripts/check_aso.dart"
+      - "scripts/check_screenshots.sh"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: aso-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aso-copy-lint:
+    name: ASO Copy Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-flutter
+
+      - name: Run ASO copy validator
+        run: dart run scripts/check_aso.dart --verbose
+
+  screenshot-audit:
+    name: Screenshot Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Run screenshot checks
+        run: bash scripts/check_screenshots.sh
+
+      - name: Comment on PR (on failure)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Screenshot audit failed.** Run `bash scripts/check_screenshots.sh` locally to see details.'
+            })

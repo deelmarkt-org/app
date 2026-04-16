@@ -67,40 +67,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // React to auth results
-    ref.listen(loginViewModelProvider, (prev, next) {
-      final result = next.lastResult;
-      if (result == null || result == prev?.lastResult) return;
+  void _handleAuthResult(AuthResult result) {
+    switch (result) {
+      case AuthSuccess():
+        TextInput.finishAutofillContext();
+        context.go(AppRoutes.home);
+      case AuthFailureInvalidCredentials():
+        // Inline error set by ViewModel (passwordError)
+        break;
+      case AuthFailureNetworkError():
+        _showErrorSnackBar('error.network'.tr());
+      case AuthFailureRateLimited(:final retryAfter):
+        _showErrorSnackBar(
+          'auth.errorRateLimited'.tr(args: [retryAfter.inMinutes.toString()]),
+        );
+      case AuthFailureSessionExpired():
+        _showErrorSnackBar('auth.errorSessionExpired'.tr());
+      case AuthFailureBiometricFailed():
+        _showErrorSnackBar('auth.errorBiometricFailed'.tr());
+      case AuthFailureBiometricUnavailable():
+      case AuthFailureUnknown():
+        _showErrorSnackBar('error.generic'.tr());
+      case AuthFailureOAuthCancelled():
+      case AuthFailureOAuthUnavailable():
+        // Handled by LoginSocialButtons — never emitted by loginViewModelProvider.
+        break;
+    }
+  }
 
-      switch (result) {
-        case AuthSuccess():
-          TextInput.finishAutofillContext();
-          context.go(AppRoutes.home);
-        case AuthFailureInvalidCredentials():
-          // Inline error set by ViewModel (passwordError)
-          break;
-        case AuthFailureNetworkError():
-          _showErrorSnackBar('error.network'.tr());
-        case AuthFailureRateLimited(:final retryAfter):
-          _showErrorSnackBar(
-            'auth.errorRateLimited'.tr(args: [retryAfter.inMinutes.toString()]),
-          );
-        case AuthFailureSessionExpired():
-          _showErrorSnackBar('auth.errorSessionExpired'.tr());
-        case AuthFailureBiometricFailed():
-          _showErrorSnackBar('auth.errorBiometricFailed'.tr());
-        case AuthFailureBiometricUnavailable():
-        case AuthFailureUnknown():
-          _showErrorSnackBar('error.generic'.tr());
-      }
-    });
-
-    final isExpanded = Breakpoints.isExpanded(context);
-    final theme = Theme.of(context);
-
-    Widget content = AutofillGroup(
+  Widget _buildContent() {
+    return AutofillGroup(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -127,6 +123,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen(loginViewModelProvider, (prev, next) {
+      final result = next.lastResult;
+      if (result == null || result == prev?.lastResult) return;
+      _handleAuthResult(result);
+    });
+
+    final isExpanded = Breakpoints.isExpanded(context);
+    final theme = Theme.of(context);
+    Widget content = _buildContent();
 
     // Wrap in elevated card on expanded (tablet/desktop) layouts.
     if (isExpanded) {

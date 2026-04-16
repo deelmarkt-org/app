@@ -1,0 +1,108 @@
+# DeelMarkt Fastfile
+#
+# Lanes:
+#   ios_screenshots      — generate + upload screenshots to App Store Connect
+#   ios_metadata         — upload metadata only (no binary, no screenshots)
+#   android_screenshots  — generate + upload screenshots to Play Console
+#   android_metadata     — upload metadata only to Play Console
+#   deliver_dry_run      — dry-run validation for both stores
+#
+# Required environment variables (set in GitHub Secrets or .env):
+#   APPLE_ID             — Apple ID email
+#   ITC_TEAM_ID          — App Store Connect team ID
+#   ASC_API_KEY_JSON     — App Store Connect API key JSON (base64 or path)
+#   GOOGLE_PLAY_JSON_KEY — Path to Google Play service account JSON key
+
+fastlane_version "2.220.0"
+
+default_platform(:ios)
+
+# ─── iOS ───────────────────────────────────────────────────────────────────────
+
+platform :ios do
+  # Regenerate goldens + organise into fastlane/screenshots/ then upload.
+  lane :ios_screenshots do
+    _regenerate_screenshots
+    deliver(
+      api_key_path: ENV["ASC_API_KEY_JSON"],
+      skip_metadata: true,
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      screenshots_path: "fastlane/screenshots",
+      submit_for_review: false,
+    )
+    UI.success "iOS screenshots uploaded successfully"
+  end
+
+  # Upload metadata only — no binary, no screenshots.
+  lane :ios_metadata do
+    deliver(
+      api_key_path: ENV["ASC_API_KEY_JSON"],
+      skip_screenshots: true,
+      skip_binary_upload: true,
+      skip_app_version_strings: false,
+      metadata_path: "fastlane/metadata",
+      force: true,
+      submit_for_review: false,
+    )
+    UI.success "iOS metadata uploaded successfully"
+  end
+
+  # Dry-run: validates metadata + screenshots locally without uploading.
+  lane :deliver_dry_run do
+    deliver(
+      api_key_path: ENV["ASC_API_KEY_JSON"],
+      skip_binary_upload: true,
+      run_precheck_before_submit: true,
+      precheck_default_rule_level: :warn,
+      submit_for_review: false,
+    )
+    UI.success "deliver dry-run passed — Ready to submit"
+  end
+end
+
+# ─── Android ───────────────────────────────────────────────────────────────────
+
+platform :android do
+  # Regenerate goldens + organise into fastlane/android/screenshots/ then upload.
+  lane :android_screenshots do
+    _regenerate_screenshots
+    supply(
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "nl.deelmarkt.deelmarkt",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      track: "internal",
+      screenshots_path: "fastlane/android/screenshots",
+    )
+    UI.success "Android screenshots uploaded successfully"
+  end
+
+  # Upload metadata only to Play Console.
+  lane :android_metadata do
+    supply(
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "nl.deelmarkt.deelmarkt",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_screenshots: true,
+      metadata_path: "fastlane/android/metadata",
+      track: "internal",
+    )
+    UI.success "Android metadata uploaded successfully"
+  end
+end
+
+# ─── Private helpers ───────────────────────────────────────────────────────────
+
+# Regenerate all 240 golden PNGs and organise them for fastlane.
+# L8 (belengaz review): use private_lane so it cannot be called directly
+# from the command line — it is an internal helper only.
+private_lane :_regenerate_screenshots do
+  # Gemini MED: use `path:` option instead of `cd ..` so the lane is
+  # independent of the directory Fastlane is executed from.
+  sh("flutter test --update-goldens test/screenshots/drivers/ --no-pub", path: "..")
+  sh("bash scripts/screenshots_to_fastlane.sh", path: "..")
+end

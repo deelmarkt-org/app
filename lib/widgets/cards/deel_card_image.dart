@@ -6,6 +6,11 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 
 /// Image component for [DeelCard] with Hero transition, loading, and error states.
+///
+/// The image is wrapped in [ExcludeSemantics] because [DeelCard] already provides
+/// a comprehensive semantic label (price + title) for the whole card. Exposing the
+/// unlabelled image node separately would cause TalkBack/VoiceOver to announce
+/// "image" without context, which is worse than omitting it.
 class DeelCardImage extends StatelessWidget {
   const DeelCardImage({
     required this.imageUrl,
@@ -31,27 +36,29 @@ class DeelCardImage extends StatelessWidget {
         borderRadius ??
         const BorderRadius.vertical(top: Radius.circular(DeelmarktRadius.xl));
 
-    Widget image = AspectRatio(
-      aspectRatio: aspectRatio,
-      child: ClipRRect(
-        borderRadius: effectiveBorderRadius,
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded || frame != null) {
-              return AnimatedOpacity(
-                opacity: 1.0,
-                duration: duration,
-                curve: DeelmarktAnimation.curveStandard,
-                child: child,
-              );
-            }
-            return _placeholder(context);
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return _placeholder(context);
-          },
+    Widget image = ExcludeSemantics(
+      child: AspectRatio(
+        aspectRatio: aspectRatio,
+        child: ClipRRect(
+          borderRadius: effectiveBorderRadius,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              if (wasSynchronouslyLoaded || frame != null) {
+                return AnimatedOpacity(
+                  opacity: 1.0,
+                  duration: duration,
+                  curve: DeelmarktAnimation.curveStandard,
+                  child: child,
+                );
+              }
+              return _placeholder(context);
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return _placeholder(context);
+            },
+          ),
         ),
       ),
     );

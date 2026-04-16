@@ -28,6 +28,10 @@ const _authRoutes = ['/onboarding', '/login', '/register'];
 /// - While auth state is loading → `/splash` (prevents FOUC)
 /// - Unauthenticated + onboarding not complete → `/onboarding`
 /// - Unauthenticated + onboarding complete + protected route → `/login`
+/// - Authenticated + active sanction + not on `/suspended` → `/suspended`
+///   (P-53 gate is checked before auth-route redirect to prevent a suspended
+///    user deep-linking to `/login` from reaching `/home` first)
+/// - Authenticated + no active sanction + on `/suspended` → `/home`
 /// - Authenticated + auth route → `/home`
 /// - Otherwise → no redirect
 String? authRedirect({
@@ -36,6 +40,7 @@ String? authRedirect({
   required String currentPath,
   bool isOnboardingComplete = false,
   bool isAdmin = false,
+  bool hasActiveSanction = false,
 }) {
   if (isLoading) return '/splash';
 
@@ -57,8 +62,42 @@ String? authRedirect({
   final isAdminRoute = currentPath.startsWith('/admin');
   if (isLoggedIn && isAdminRoute && !isAdmin) return AppRoutes.home;
 
+  // Suspension gate (P-53) — must run before the auth-route redirect.
+  // If checked after, a suspended user landing on /login via deep link would
+  // be sent to /home, bypassing the gate for one redirect cycle.
+  final sanctionRedirect = _sanctionRedirect(
+    isLoggedIn: isLoggedIn,
+    hasActiveSanction: hasActiveSanction,
+    currentPath: currentPath,
+  );
+  if (sanctionRedirect != null) return sanctionRedirect;
+
   if (isLoggedIn && _authRoutes.contains(currentPath)) return AppRoutes.home;
 
+  return null;
+}
+
+/// Returns the suspension-gate redirect when applicable, or `null`.
+///
+/// Extracted to reduce [authRedirect] cognitive complexity (SonarCloud
+/// dart:S3776). Handles both directions of the gate:
+/// - Active sanction → force to `/suspended`
+/// - Sanction lifted → release from `/suspended` to `/home`
+String? _sanctionRedirect({
+  required bool isLoggedIn,
+  required bool hasActiveSanction,
+  required String currentPath,
+}) {
+  if (isLoggedIn &&
+      hasActiveSanction &&
+      !currentPath.startsWith('/suspended')) {
+    return AppRoutes.suspended;
+  }
+  if (isLoggedIn &&
+      !hasActiveSanction &&
+      currentPath.startsWith('/suspended')) {
+    return AppRoutes.home;
+  }
   return null;
 }
 

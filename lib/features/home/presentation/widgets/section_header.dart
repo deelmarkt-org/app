@@ -33,6 +33,7 @@ class SectionHeader extends StatelessWidget {
           if (actionLabel != null && onAction != null)
             Semantics(
               button: true,
+              label: actionLabel,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(

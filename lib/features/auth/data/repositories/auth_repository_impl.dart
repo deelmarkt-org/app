@@ -6,21 +6,20 @@ import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart
 import 'package:deelmarkt/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:deelmarkt/features/auth/data/biometric_service.dart';
 import 'package:deelmarkt/features/auth/data/repositories/auth_error_mapper.dart';
+import 'package:deelmarkt/features/auth/data/repositories/oauth_login_orchestrator.dart';
 
-/// Supabase-backed [AuthRepository] implementation.
-///
-/// Catches platform exceptions and translates them to domain
-/// [AppException] subtypes with l10n error keys.
-///
-/// Login methods return [AuthResult] (sealed class) instead of throwing,
-/// enabling exhaustive `switch` in the ViewModel.
-///
-/// Error mapping is extracted to [AuthErrorMapper] to keep this file
-/// under the 200-line limit per CLAUDE.md §2.1.
+/// Supabase-backed [AuthRepository]. Translates platform exceptions to domain
+/// [AuthResult] / [AppException] types. Error mapping lives in [AuthErrorMapper];
+/// OAuth flow orchestration in [OAuthLoginOrchestrator].
 class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
-  AuthRepositoryImpl(this._datasource, {required this.biometricService});
+  AuthRepositoryImpl(
+    this._datasource, {
+    required this.biometricService,
+    Duration oauthTimeout = const Duration(seconds: 60),
+  }) : _oauth = OAuthLoginOrchestrator(_datasource, timeout: oauthTimeout);
   final AuthRemoteDatasource _datasource;
   final BiometricService biometricService;
+  final OAuthLoginOrchestrator _oauth;
 
   @override
   Future<void> registerWithEmail({
@@ -123,8 +122,6 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
     }
   }
 
-  // ── Login (P-16) ──
-
   @override
   Future<AuthResult> loginWithEmail({
     required String email,
@@ -185,4 +182,8 @@ class AuthRepositoryImpl with AuthErrorMapper implements AuthRepository {
   @override
   Future<BiometricMethod?> get availableBiometricMethod =>
       biometricService.availableMethod;
+
+  @override
+  Future<AuthResult> loginWithOAuth(OAuthProvider provider) =>
+      _oauth.loginWithOAuth(provider);
 }

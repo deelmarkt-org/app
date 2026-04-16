@@ -38,8 +38,10 @@ class ShippingQrCard extends StatelessWidget {
             _qrCode(context),
             const SizedBox(height: Spacing.s4),
             _trackingInfo(context),
-            const SizedBox(height: Spacing.s3),
-            _deadlineInfo(context),
+            if (label.shipByDeadline != null) ...[
+              const SizedBox(height: Spacing.s3),
+              _deadlineInfo(context),
+            ],
           ],
         ),
       ),
@@ -123,7 +125,7 @@ class ShippingQrCard extends StatelessWidget {
   Widget _deadlineInfo(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     final deadlineText = 'shipping.shipByDeadline'.tr(
-      args: [Formatters.shortDateTime(label.shipByDeadline, locale: locale)],
+      args: [Formatters.shortDateTime(label.shipByDeadline!, locale: locale)],
     );
 
     return Semantics(
@@ -147,11 +149,15 @@ class ShippingQrCard extends StatelessWidget {
               color: DeelmarktColors.warning,
             ),
             const SizedBox(width: Spacing.s1),
-            Text(
-              deadlineText,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: DeelmarktColors.neutral700,
-                fontWeight: FontWeight.w500,
+            Flexible(
+              child: Text(
+                deadlineText,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: DeelmarktColors.neutral700,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],

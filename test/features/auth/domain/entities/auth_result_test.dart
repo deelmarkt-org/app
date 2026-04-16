@@ -45,6 +45,43 @@ void main() {
       expect(a, equals(b));
     });
 
+    test('AuthFailureBiometricUnavailable equality', () {
+      const a = AuthFailureBiometricUnavailable();
+      const b = AuthFailureBiometricUnavailable();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureBiometricFailed equality', () {
+      const a = AuthFailureBiometricFailed();
+      const b = AuthFailureBiometricFailed();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureUnknown equality', () {
+      const a = AuthFailureUnknown(message: 'err');
+      const b = AuthFailureUnknown(message: 'err');
+      const c = AuthFailureUnknown(message: 'other');
+
+      expect(a, equals(b));
+      expect(a, isNot(equals(c)));
+    });
+
+    test('AuthFailureOAuthCancelled equality', () {
+      const a = AuthFailureOAuthCancelled();
+      const b = AuthFailureOAuthCancelled();
+
+      expect(a, equals(b));
+    });
+
+    test('AuthFailureOAuthUnavailable equality', () {
+      const a = AuthFailureOAuthUnavailable();
+      const b = AuthFailureOAuthUnavailable();
+
+      expect(a, equals(b));
+    });
+
     test('different subtypes are not equal', () {
       const success = AuthSuccess(userId: 'abc');
       const invalid = AuthFailureInvalidCredentials();
@@ -66,6 +103,8 @@ void main() {
         AuthFailureBiometricFailed() => 'bio_fail',
         AuthFailureSessionExpired() => 'session',
         AuthFailureUnknown() => 'unknown',
+        AuthFailureOAuthCancelled() => 'oauth_cancelled',
+        AuthFailureOAuthUnavailable() => 'oauth_unavailable',
       };
       expect(label, 'success');
     });
@@ -76,6 +115,40 @@ void main() {
       expect(BiometricMethod.values, hasLength(2));
       expect(BiometricMethod.values, contains(BiometricMethod.face));
       expect(BiometricMethod.values, contains(BiometricMethod.fingerprint));
+    });
+  });
+
+  group('OAuthProvider', () {
+    test('has google and apple values', () {
+      expect(OAuthProvider.values, hasLength(2));
+      expect(OAuthProvider.values, contains(OAuthProvider.google));
+      expect(OAuthProvider.values, contains(OAuthProvider.apple));
+    });
+  });
+
+  group('props getters', () {
+    // Calling .props directly (not via ==) always executes the getter —
+    // the identical() short-circuit only applies inside operator==.
+    test('zero-arg subtypes expose empty props', () {
+      expect(const AuthFailureInvalidCredentials().props, isEmpty);
+      expect(const AuthFailureBiometricUnavailable().props, isEmpty);
+      expect(const AuthFailureBiometricFailed().props, isEmpty);
+      expect(const AuthFailureSessionExpired().props, isEmpty);
+      expect(const AuthFailureOAuthCancelled().props, isEmpty);
+      expect(const AuthFailureOAuthUnavailable().props, isEmpty);
+    });
+
+    test('field-bearing subtypes expose correct props', () {
+      expect(const AuthSuccess(userId: 'u1').props, equals(['u1']));
+      expect(
+        const AuthFailureNetworkError(message: 'timeout').props,
+        equals(['timeout']),
+      );
+      expect(
+        const AuthFailureRateLimited(retryAfter: Duration(minutes: 5)).props,
+        equals([const Duration(minutes: 5)]),
+      );
+      expect(const AuthFailureUnknown(message: 'err').props, equals(['err']));
     });
   });
 }

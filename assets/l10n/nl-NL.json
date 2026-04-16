@@ -224,7 +224,13 @@
     "welcomeSubtitle": "Log in om verder te gaan met veilig handelen.",
     "invalidCredentials": "Onjuist e-mailadres of wachtwoord",
     "forgotPasswordComingSoon": "Wachtwoord resetten komt binnenkort!",
-    "socialLoginComingSoon": "Inloggen via social media komt binnenkort!"
+    "socialLoginComingSoon": "Inloggen via social media komt binnenkort!",
+    "oauthUnavailable": "Sociaal inloggen is momenteel niet beschikbaar. Log in met e-mail.",
+    "signInWith": "Inloggen met",
+    "signInEmail": "Inloggen met e-mail",
+    "agreeTerms": "Door in te loggen ga je akkoord met onze",
+    "terms": "Voorwaarden",
+    "privacy": "Privacybeleid"
   },
   "validation": {
     "email_required": "Voer je e-mailadres in",
@@ -308,6 +314,10 @@
     "addressSaved": "Adres opgeslagen",
     "deleteAddressTitle": "Adres verwijderen?",
     "deleteAddressFailed": "Adres verwijderen mislukt. Probeer het opnieuw.",
+    "appearanceTitle": "Weergave",
+    "themeLight": "Licht",
+    "themeDark": "Donker",
+    "themeSystem": "Systeemstandaard",
     "notifications": "Meldingen",
     "messages": "Berichten",
     "offers": "Biedingen",
@@ -937,11 +947,19 @@
       "appeal_overturned_body": "Je bezwaar is geaccepteerd. Je account is volledig hersteld.",
       "appeal_window_closed": "De bezwaartermijn van 14 dagen voor deze sanctie is verlopen.",
       "appeal_not_eligible": "Waarschuwingen kunnen niet worden aangevochten.",
-      "contact_support": "Neem contact op met support"
+      "contact_support": "Neem contact op met support",
+      "countdown_days": "{count, plural, one{Nog 1 dag} other{Nog {count} dagen}}",
+      "receipt": "Ingediend {time} · Referentie {id}",
+      "sla_72h": "We beoordelen je beroep binnen 72 uur",
+      "discard_title": "Concept verwijderen?",
+      "discard_body": "Je bezwaarconcept gaat verloren als je teruggaat.",
+      "discard_confirm": "Verwijderen",
+      "discard_cancel": "Doorgaan met bewerken"
     },
     "a11y": {
       "sanction_icon": "Pictogram account geschorst",
-      "appeal_form": "Bezwaarformulier"
+      "appeal_form": "Bezwaarformulier",
+      "char_count": "{count} van 1000 tekens"
     }
   },
   "dsa_report": {

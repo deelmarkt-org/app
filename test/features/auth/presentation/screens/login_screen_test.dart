@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
+import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/presentation/screens/login_screen.dart';
 import 'package:deelmarkt/features/auth/presentation/view_models/login_view_model.dart';
+import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
 
 import '../../../../helpers/a11y_touch_target_utils.dart';
 
+class MockAuthRepository extends Mock implements AuthRepository {}
+
 void main() {
+  late MockAuthRepository mockRepo;
+
+  setUpAll(() {
+    registerFallbackValue(OAuthProvider.google);
+  });
+
+  setUp(() {
+    mockRepo = MockAuthRepository();
+    // Default: OAuth cancelled (silent) — avoids Supabase in social button tests.
+    when(
+      () => mockRepo.loginWithOAuth(any()),
+    ).thenAnswer((_) async => const AuthFailureOAuthCancelled());
+  });
+
   /// Pump LoginScreen with a pre-seeded LoginState via override.
   ///
   /// Always overrides the ViewModel to avoid Supabase initialization.
@@ -22,6 +41,7 @@ void main() {
       loginViewModelProvider.overrideWith(() {
         return _FakeLoginViewModel(initialState ?? const LoginState());
       }),
+      authRepositoryProvider.overrideWithValue(mockRepo),
     ];
 
     await tester.pumpWidget(
@@ -266,22 +286,119 @@ void main() {
   });
 
   group('LoginScreen — social login buttons', () {
-    testWidgets('Google button shows coming soon SnackBar', (tester) async {
+    testWidgets('Google button calls loginWithOAuth and is silent on cancel', (
+      tester,
+    ) async {
       await pumpLoginScreen(tester);
 
       await tester.tap(find.text('auth.continueWithGoogle'));
       await tester.pumpAndSettle();
 
-      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+      verify(() => mockRepo.loginWithOAuth(OAuthProvider.google)).called(1);
+      expect(find.byType(SnackBar), findsNothing);
     });
 
-    testWidgets('Apple button shows coming soon SnackBar', (tester) async {
+    testWidgets('Apple button calls loginWithOAuth and is silent on cancel', (
+      tester,
+    ) async {
       await pumpLoginScreen(tester);
 
       await tester.tap(find.text('auth.continueWithApple'));
       await tester.pumpAndSettle();
 
-      expect(find.text('auth.socialLoginComingSoon'), findsOneWidget);
+      verify(() => mockRepo.loginWithOAuth(OAuthProvider.apple)).called(1);
+      expect(find.byType(SnackBar), findsNothing);
+    });
+  });
+
+  group('LoginScreen — _handleAuthResult error snackbars', () {
+    /// Pumps screen with a [_MutableFakeLoginViewModel], then triggers
+    /// [_handleAuthResult] by updating the notifier's state.
+    Future<void> pumpAndSetResult(
+      WidgetTester tester,
+      AuthResult result,
+    ) async {
+      late _MutableFakeLoginViewModel notifier;
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            loginViewModelProvider.overrideWith(() {
+              return notifier = _MutableFakeLoginViewModel();
+            }),
+            authRepositoryProvider.overrideWithValue(mockRepo),
+          ],
+          child: const MaterialApp(home: LoginScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      notifier.setResult(result);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('shows network error SnackBar', (tester) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureNetworkError(message: 'err'),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows rate limited SnackBar', (tester) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureRateLimited(retryAfter: Duration(minutes: 5)),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows session expired SnackBar', (tester) async {
+      await pumpAndSetResult(tester, const AuthFailureSessionExpired());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows biometric failed SnackBar', (tester) async {
+      await pumpAndSetResult(tester, const AuthFailureBiometricFailed());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows generic SnackBar for BiometricUnavailable', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureBiometricUnavailable());
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows generic SnackBar for AuthFailureUnknown', (
+      tester,
+    ) async {
+      await pumpAndSetResult(
+        tester,
+        const AuthFailureUnknown(message: 'unexpected'),
+      );
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('OAuthCancelled result is silent — no SnackBar', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureOAuthCancelled());
+
+      expect(find.byType(SnackBar), findsNothing);
+    });
+
+    testWidgets('OAuthUnavailable result is silent — no SnackBar', (
+      tester,
+    ) async {
+      await pumpAndSetResult(tester, const AuthFailureOAuthUnavailable());
+
+      expect(find.byType(SnackBar), findsNothing);
     });
   });
 
@@ -319,4 +436,23 @@ class _FakeLoginViewModel extends LoginViewModel {
 
   @override
   Future<void> loginWithBiometric({required String localizedReason}) async {}
+}
+
+/// Mutable fake that exposes [setResult] so tests can trigger [ref.listen].
+class _MutableFakeLoginViewModel extends LoginViewModel {
+  @override
+  LoginState build() => const LoginState();
+
+  @override
+  Future<void> init() async {}
+
+  @override
+  Future<void> submitLogin() async {}
+
+  @override
+  Future<void> loginWithBiometric({required String localizedReason}) async {}
+
+  void setResult(AuthResult result) {
+    state = state.copyWith(lastResult: () => result);
+  }
 }

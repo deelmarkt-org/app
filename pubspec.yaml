@@ -69,6 +69,11 @@ dependencies:
   local_auth: ^2.3.0
   url_launcher: ^6.3.2
 
+  # Social login — native OAuth (P-44)
+  sign_in_with_apple: ^6.1.4
+  google_sign_in: ^6.2.2
+  crypto: ^3.0.5
+
   # App info — version display in settings
   package_info_plus: ^8.2.1
 

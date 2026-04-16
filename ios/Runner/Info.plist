@@ -65,6 +65,22 @@
 	<string>DeelMarkt needs camera access to photograph items you want to sell.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>DeelMarkt needs photo library access to add photos to your listing.</string>
+	<!-- P-44 Supabase OAuth callback (custom scheme). -->
+	<!-- Consumed by `app_links` to complete Google sign-in on iOS. -->
+	<!-- Sign in with Apple uses the native ASAuthorizationController sheet and does NOT need a URL scheme. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>io.supabase.deelmarkt</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>io.supabase.deelmarkt</string>
+			</array>
+		</dict>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

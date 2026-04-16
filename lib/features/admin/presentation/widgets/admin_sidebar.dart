@@ -42,7 +42,7 @@ class AdminSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: _width,
-      color: DeelmarktColors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: Column(
         children: [
           _buildHeader(context),

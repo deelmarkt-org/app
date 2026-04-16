@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/l10n/l10n.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/settings_repository.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/user_repository.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/settings_screen.dart';
@@ -31,6 +32,7 @@ Future<void> pumpSettingsScreen(
   bool hasAnimations = false,
 }) async {
   SharedPreferences.setMockInitialValues({});
+  await initSharedPreferences();
   await EasyLocalization.ensureInitialized();
 
   final overrides = <Override>[

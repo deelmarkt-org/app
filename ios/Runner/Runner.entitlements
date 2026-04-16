@@ -7,5 +7,10 @@
 		<string>applinks:deelmarkt.com</string>
 		<string>webcredentials:deelmarkt.com</string>
 	</array>
+	<!-- P-44 Sign in with Apple capability. Required by Apple HIG §Sign in with Apple for native ASAuthorization flow. -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>

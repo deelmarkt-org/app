@@ -257,7 +257,7 @@ The agent will:
 
 - [x] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB *(PR #96)*
 - [x] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
-- [ ] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
+- [x] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
 - [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
 - [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
 
@@ -283,17 +283,18 @@ The agent will:
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
 - [x] `P-40` Admin moderation panel — Phase A ✅ PR #110
 - [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
-- [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA
-- [ ] `P-43` App Store screenshots + ASO metadata — both stores
-- [ ] `P-44` Social login (Google + Apple Sign-In) — ⚠️ Requires E02 epic update + reso OAuth backend
+- [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA 🔄 PR #155 open (EAA blockers: issue #156)
+- [ ] `P-43` App Store screenshots + ASO metadata — both stores 🔄 PR #161 open (feature/pizmam-P43-aso)
+  - ⏳ Blocked on designer handoff: dark mode chat thread PNG missing — issue #164
+- [x] `P-44` Social login (Google + Apple Sign-In) — native flow (iOS ASAuth + Android google_sign_in) + web redirect, `user_profiles` auto-trigger, Apple HIG button ✅ PR #159
 - [x] `P-45` Flutter Web performance budget & CanvasKit strategy ✅ PR #14
-- [ ] `P-47` Dark mode implementation & validation — 12h (spread across phases)
+- [x] `P-47` Dark mode implementation & validation ✅ PR #157
 - [x] `P-48` ADR-019 PWA strategy document ✅ PR #14
 - [x] `P-49` Responsive shell validation (4 breakpoints, 840px nav switch) ✅ PR #14
 - [x] `P-50` GoRouter auth guard + splash screen + `/onboarding` route ✅ PR #14
 - [x] `P-51` Mock data layer (5 entities + 4 repository interfaces + 4 mock implementations) ✅ PR #14
 - [x] `P-52` Web error boundary + font loading strategy ✅ PR #14
-- [ ] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator *(blocked by R-37 merge)*
+- [x] `P-53` Suspension gate + appeal screen — auth guard shows suspension screen (type/reason/expires), appeal form with 14-day window indicator ✅ PRs #152–#153
 
 ---
 
