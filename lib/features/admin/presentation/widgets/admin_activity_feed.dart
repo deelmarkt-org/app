@@ -21,8 +21,8 @@ class AdminActivityFeed extends StatelessWidget {
   /// Activity items to render, ordered newest-first.
   final List<ActivityItemEntity> items;
 
-  /// Called when the user taps "View All". When null the link is still
-  /// shown but calls a no-op (Phase A — full log page TBD).
+  /// Called when the user taps "View All". When null the link is hidden
+  /// (WCAG 4.1.2 — interactive elements must have a determinable purpose).
   final VoidCallback? onViewAll;
 
   @override
@@ -56,27 +56,28 @@ class AdminActivityFeed extends StatelessWidget {
             context,
           ).textTheme.labelLarge?.copyWith(color: DeelmarktColors.neutral900),
         ),
-        Semantics(
-          label: 'admin.activity.view_all'.tr(),
-          button: true,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
-            onTap: onViewAll ?? () {},
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.s2,
-                vertical: Spacing.s1,
-              ),
-              child: Text(
-                'admin.activity.view_all'.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: DeelmarktColors.primary,
+        if (onViewAll != null)
+          Semantics(
+            label: 'admin.activity.view_all'.tr(),
+            button: true,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
+              onTap: onViewAll,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.s2,
+                  vertical: Spacing.s1,
+                ),
+                child: Text(
+                  'admin.activity.view_all'.tr(),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: DeelmarktColors.primary,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

@@ -30,6 +30,8 @@ class _FakeService extends ImageUploadService {
 
   _FakeBehavior behavior = _FakeBehavior.succeed;
 
+  static const _fakePath = 'uid/fake.jpg';
+
   static const _fakeResponse = ImageUploadResponse(
     storagePath: 'uid/fake.jpg',
     deliveryUrl: 'https://cdn/fake.jpg',
@@ -40,14 +42,14 @@ class _FakeService extends ImageUploadService {
     format: 'jpg',
   );
 
+  /// Phase 1 refactored the queue to call reserveAndUpload + processUploaded
+  /// separately (for orphan-cleanup on cancellation). Fakes must match.
   @override
-  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
-    // Yield control so cancellation tokens can be set before processing.
+  Future<String> reserveAndUpload(File localFile) async {
     await Future<void>.delayed(Duration.zero);
-
     switch (behavior) {
       case _FakeBehavior.succeed:
-        return _fakeResponse;
+        return _fakePath;
       case _FakeBehavior.throwNetwork:
         throw const NetworkException(debugMessage: 'fake network error');
       case _FakeBehavior.throwBlocked:
@@ -56,6 +58,12 @@ class _FakeService extends ImageUploadService {
           debugMessage: 'fake blocked',
         );
     }
+  }
+
+  @override
+  Future<ImageUploadResponse> processUploaded(String storagePath) async {
+    await Future<void>.delayed(Duration.zero);
+    return _fakeResponse;
   }
 
   @override
@@ -248,12 +256,21 @@ void main() {
 class _CallCountService extends ImageUploadService {
   _CallCountService({required this.onCall}) : super(_MockSupabaseClient());
 
+  /// Called once per upload attempt (in reserveAndUpload).
+  /// Throw to simulate failure; return anything to simulate success.
   final ImageUploadResponse Function() onCall;
 
   @override
-  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
+  Future<String> reserveAndUpload(File localFile) async {
     await Future<void>.delayed(Duration.zero);
-    return onCall();
+    onCall(); // increments callCount; throws on failure attempts
+    return _FakeService._fakePath;
+  }
+
+  @override
+  Future<ImageUploadResponse> processUploaded(String storagePath) async {
+    await Future<void>.delayed(Duration.zero);
+    return _FakeService._fakeResponse;
   }
 
   @override

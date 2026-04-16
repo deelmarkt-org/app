@@ -94,7 +94,9 @@ void main() {
       expect(find.byType(DeelButton), findsNothing);
     });
 
-    testWidgets('renders with shipped status', (tester) async {
+    testWidgets('shipped status shows info row and no action buttons', (
+      tester,
+    ) async {
       await pumpTestScreen(
         tester,
         TransactionDetailScreen(
@@ -102,10 +104,17 @@ void main() {
         ),
       );
 
-      expect(find.byType(TransactionDetailScreen), findsOneWidget);
+      // Shipped = awaiting delivery confirmation; no buyer action available yet.
+      expect(find.byType(DeelButton), findsNothing);
+      // Info row with shipped-state l10n key rendered (keys returned in test env).
+      // Note: 'escrow.shipped' appears in both the EscrowTimeline step label and
+      // the action section info row — both are correct, so findsWidgets.
+      expect(find.textContaining('escrow.shipped'), findsWidgets);
     });
 
-    testWidgets('renders with disputed status', (tester) async {
+    testWidgets('disputed status shows dispute info row and no action buttons', (
+      tester,
+    ) async {
       await pumpTestScreen(
         tester,
         TransactionDetailScreen(
@@ -113,7 +122,10 @@ void main() {
         ),
       );
 
-      expect(find.byType(TransactionDetailScreen), findsOneWidget);
+      // Disputed = awaiting resolution; no further buyer actions while disputed.
+      expect(find.byType(DeelButton), findsNothing);
+      // Info row with dispute-state l10n key rendered (keys returned in test env).
+      expect(find.textContaining('transaction.disputed'), findsOneWidget);
     });
 
     testWidgets('amount section has Semantics', (tester) async {

@@ -93,4 +93,20 @@ class DeelmarktTypography {
     fontWeight: FontWeight.w600,
     fontFeatures: [FontFeature.tabularFigures()],
   );
+
+  /// Admin stat card — large metric count (e.g. "156", "€12.450").
+  /// Fix #120: replaces inline TextStyle in AdminStatCard._buildCount.
+  static const statCount = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    fontFeatures: [FontFeature.tabularFigures()],
+  );
+
+  /// Admin stat card — short description label below the count.
+  /// Fix #120: replaces inline TextStyle in AdminStatCard._buildLabel.
+  static const statLabel = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+    height: 1.38,
+  );
 }

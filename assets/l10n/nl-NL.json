@@ -299,7 +299,8 @@
     "skipToContent": "Ga naar inhoud",
     "back": "Terug",
     "consent_banner": "Privacytoestemming",
-    "modeSwitch": "Wissel tussen koper en verkoper modus"
+    "modeSwitch": "Wissel tussen koper en verkoper modus",
+    "listing_stats": "{views} weergaven, {favourites} favorieten, {days} dagen actief"
   },
   "settings": {
     "language": "Taal",

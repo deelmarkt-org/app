@@ -1,3 +1,4 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -5,6 +6,7 @@ import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/sell/data/services/sell_services_providers.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_copy_with.dart';
+import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_upload.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_form_updaters.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_operations.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
@@ -25,7 +27,6 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   ListingCreationState build() {
     final queue = ref.watch(photoUploadQueueProvider);
     _outcomeSub = queue.outcomes.listen(_onOutcome);
-    // Sub cancel before timer: avoids a done-event race on dispose.
     ref.onDispose(() {
       _outcomeSub?.cancel();
       _draftTimer?.cancel();
@@ -96,20 +97,22 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
       apply(_F.shipping(state, c, r));
   void updateLocation(String? pc) => apply(_F.location(state, pc));
 
-  Future<void> publish() => _submit(() async {
-    final l = await ref.read(createListingUseCaseProvider).call(state: state);
-    return state.copyWith(
-      isLoading: false,
-      step: ListingCreationStep.success,
-      createdListingId: () => l.id,
-    );
-  }, 'sell.publishError');
+  Future<void> publish() {
+    if (!state.allImagesUploaded) throw StateError('images not all uploaded');
+    return _submit(() async {
+      final l = await ref.read(createListingUseCaseProvider).call(state: state);
+      return state.copyWith(
+        isLoading: false,
+        step: ListingCreationStep.success,
+        createdListingId: () => l.id,
+      );
+    }, 'sell.publishError');
+  }
 
   Future<void> saveDraft() => _submit(() async {
     await ref.read(saveDraftUseCaseProvider).call(state: state);
     return state.copyWith(isLoading: false, step: ListingCreationStep.success);
   }, 'sell.draftError');
-
   Future<void> _submit(
     Future<ListingCreationState> Function() action,
     String errorKey,
@@ -136,9 +139,7 @@ class ListingCreationNotifier extends _$ListingCreationNotifier {
   void _applyPick(({ListingCreationState state, List<SellImage> newImages}) o) {
     apply(o.state);
     final q = ref.read(photoUploadQueueProvider);
-    for (final i in o.newImages) {
-      q.enqueue(id: i.id, localPath: i.localPath);
-    }
+    for (final i in o.newImages) q.enqueue(id: i.id, localPath: i.localPath);
   }
 
   void _onOutcome(PhotoUploadOutcome outcome) {

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/features/admin/presentation/widgets/admin_narrow_viewport_message.dart';
 import 'package:deelmarkt/features/admin/presentation/widgets/admin_sidebar.dart';
@@ -37,8 +38,23 @@ class AdminShellScreen extends ConsumerWidget {
                 AdminSidebar(
                   selectedIndex: _selectedIndex(context),
                   onItemTap: (index) => _onTap(context, index),
-                  onSignOut:
-                      () => ref.read(supabaseClientProvider).auth.signOut(),
+                  // Fix #1.11: await signOut before navigation — prevents a race
+                  // window where the user navigates while the session is still active.
+                  // Error is caught + logged; navigation proceeds regardless so admin
+                  // is not left stranded on a broken session.
+                  onSignOut: () async {
+                    try {
+                      await ref.read(supabaseClientProvider).auth.signOut();
+                    } on Object catch (e, st) {
+                      AppLogger.error(
+                        'Admin signOut failed',
+                        error: e,
+                        stackTrace: st,
+                        tag: 'admin',
+                      );
+                    }
+                    if (context.mounted) context.go(AppRoutes.login);
+                  },
                   onSupport:
                       () => ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('admin.comingSoon'.tr())),

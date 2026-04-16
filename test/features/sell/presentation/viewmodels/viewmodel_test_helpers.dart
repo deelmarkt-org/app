@@ -117,13 +117,18 @@ class FakeImageUploadService extends ImageUploadService {
   final List<String> deletedPaths = [];
 
   @override
-  Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
+  Future<String> reserveAndUpload(File localFile) async {
     if (shouldFail) throw Exception('upload failed');
     final name = localFile.path.split(RegExp(r'[/\\]')).last;
+    return 'fake/$name';
+  }
+
+  @override
+  Future<ImageUploadResponse> processUploaded(String storagePath) async {
     return ImageUploadResponse(
-      storagePath: 'fake/$name',
-      deliveryUrl: 'https://cdn.test/$name',
-      publicId: 'fake/$name',
+      storagePath: storagePath,
+      deliveryUrl: 'https://cdn.test/${storagePath.split('/').last}',
+      publicId: storagePath,
       width: 1024,
       height: 1024,
       bytes: 1000,
