@@ -23,10 +23,7 @@ class GetSellerStatsUseCase {
   final TransactionRepository _transactionRepo;
 
   Future<SellerStatsEntity> call(String userId) async {
-    // limit: 100 is an intentional cap for the dashboard stats card.
-    // The active listings count is therefore approximate for prolific sellers
-    // (>100 listings). A dedicated countActiveListings repository method
-    // is tracked in P-54 for a future sprint.
+    // limit: 100 — approximate cap for the stats card (P-54 tracks exact count).
     final (listings, conversations, transactions) =
         await (
           _listingRepo.getByUserId(userId, limit: 100),
@@ -46,7 +43,12 @@ class GetSellerStatsUseCase {
         )
         .fold<int>(0, (sum, t) => sum + t.itemAmountCents);
 
-    final unreadCount = conversations.where((c) => c.unreadCount > 0).length;
+    // Sum unreadCount across ALL conversations — not just the count of conversations
+    // that have unread messages. Bug #115: .length was counting conversations, not messages.
+    final unreadCount = conversations.fold<int>(
+      0,
+      (sum, c) => sum + c.unreadCount,
+    );
 
     return SellerStatsEntity(
       totalSalesCents: totalSalesCents,
