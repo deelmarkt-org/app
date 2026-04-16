@@ -16,6 +16,8 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/sell/domain/entities/sell_image.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid_tile.dart';
 
+import '../../../../../helpers/tolerant_golden_comparator.dart';
+
 const _uploadedImage = SellImage(
   id: 'uploaded-1',
   localPath: '/test/image.jpg',
@@ -55,6 +57,18 @@ Widget _buildTile(SellImage image, ThemeData theme, {VoidCallback? onRetry}) {
 }
 
 void main() {
+  // Use a tolerant comparator so sub-pixel font-rendering differences between
+  // Linux CI (Freetype) and developer machines (macOS CoreText / Windows
+  // DirectWrite) do not cause false failures. 0.5% tolerance is well above
+  // the observed 0.01% diff on the failed_terminal variants and well below
+  // any real regression (which would produce ≥1% diff).
+  setUpAll(() {
+    goldenFileComparator = TolerantGoldenFileComparator.forTestFile(
+      'test/features/sell/presentation/widgets/photo_step/'
+      'photo_grid_tile_golden_test.dart',
+    );
+  });
+
   // Suppress image decode errors for fake file paths used in golden tests.
   final origHandler = FlutterError.onError;
   setUp(
