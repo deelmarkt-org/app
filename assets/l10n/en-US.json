@@ -154,7 +154,8 @@
     },
     "quality_score": {
       "invalid_request": "Couldn't check listing quality — please try again"
-    }
+    },
+    "url_open_failed": "Couldn't open the link — please try again"
   },
   "empty": {
     "favorites": "No favorites yet",

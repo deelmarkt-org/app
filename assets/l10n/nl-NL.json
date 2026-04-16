@@ -154,7 +154,8 @@
     },
     "quality_score": {
       "invalid_request": "Kwaliteit van je advertentie kon niet worden gecontroleerd — probeer opnieuw"
-    }
+    },
+    "url_open_failed": "Kon de link niet openen — probeer het opnieuw"
   },
   "empty": {
     "favorites": "Nog geen favorieten",

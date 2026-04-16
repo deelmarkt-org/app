@@ -22,7 +22,11 @@
 4. **Email field** — label "E-mailadres", validation, error state
 5. **Phone field** — label "Telefoonnummer", +31 prefix, Dutch format
 6. **Password field** — label "Wachtwoord", strength indicator, show/hide toggle
-7. **Terms checkbox** — "Ik ga akkoord met de [Algemene voorwaarden] en [Privacybeleid]"
+7. **Two consent checkboxes** (GDPR Art. 7 — separate granular consent required):
+   - Checkbox A: "Ik ga akkoord met de [Algemene voorwaarden]"
+   - Checkbox B: "Ik ga akkoord met het [Privacybeleid]"
+   - Both must be checked before submit is enabled
+   - Links open in external browser (`LaunchMode.externalApplication`)
 8. **Submit button** — "Account aanmaken" (primary orange, full-width)
 9. **Login link** — "Al een account? Inloggen" (bottom)
 
@@ -80,9 +84,10 @@ auth.or: "of" / "or"
 auth.email: "E-mailadres" / "Email address"
 auth.phone: "Telefoonnummer" / "Phone number"
 auth.password: "Wachtwoord" / "Password"  # pragma: allowlist secret
-auth.agreeTerms: "Ik ga akkoord met de" / "I agree to the"
-auth.terms: "Algemene voorwaarden" / "Terms and conditions"
-auth.privacy: "Privacybeleid" / "Privacy policy"
+auth.terms_agree_prefix: "Ik ga akkoord met de " / "I agree to the "
+auth.terms_link: "Algemene voorwaarden" / "Terms and conditions"
+auth.privacy_agree_prefix: "Ik ga akkoord met het " / "I agree to the "
+auth.privacy_link: "Privacybeleid" / "Privacy policy"
 auth.haveAccount: "Al een account?" / "Already have an account?"
 auth.login: "Inloggen" / "Log in"
 auth.verification: "Verificatie" / "Verification"
