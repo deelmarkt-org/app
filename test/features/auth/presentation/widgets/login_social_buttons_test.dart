@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/domain/repositories/auth_repository.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/auth_providers.dart';
@@ -22,11 +24,13 @@ void main() {
     mockRepo = MockAuthRepository();
   });
 
-  Future<void> pump(WidgetTester tester) => pumpTestScreenWithProviders(
-    tester,
-    const Scaffold(body: LoginSocialButtons()),
-    overrides: [authRepositoryProvider.overrideWithValue(mockRepo)],
-  );
+  Future<void> pump(WidgetTester tester, {ThemeData? theme}) =>
+      pumpTestScreenWithProviders(
+        tester,
+        const Scaffold(body: LoginSocialButtons()),
+        overrides: [authRepositoryProvider.overrideWithValue(mockRepo)],
+        theme: theme,
+      );
 
   // Google is rendered via DeelButton (outline). Apple is a custom filled-black
   // ElevatedButton per HIG.
@@ -156,6 +160,48 @@ void main() {
       // loaded in the test context, so we assert the key itself is rendered.
       expect(find.text('auth.continueWithGoogle'), findsWidgets);
       expect(find.text('auth.continueWithApple'), findsWidgets);
+    });
+  });
+
+  group('LoginSocialButtons — Apple HIG dark mode', () {
+    testWidgets('Apple button uses dark bg + white fg in light mode', (
+      tester,
+    ) async {
+      await pump(tester, theme: DeelmarktTheme.light);
+
+      final apple = tester.widget<ElevatedButton>(appleButton());
+      final bg = apple.style!.backgroundColor!.resolve(<WidgetState>{});
+      final fg = apple.style!.foregroundColor!.resolve(<WidgetState>{});
+      expect(bg, DeelmarktColors.neutral900);
+      expect(fg, DeelmarktColors.white);
+    });
+
+    testWidgets('Apple button uses white bg + dark fg in dark mode', (
+      tester,
+    ) async {
+      await pump(tester, theme: DeelmarktTheme.dark);
+
+      final apple = tester.widget<ElevatedButton>(appleButton());
+      final bg = apple.style!.backgroundColor!.resolve(<WidgetState>{});
+      final fg = apple.style!.foregroundColor!.resolve(<WidgetState>{});
+      expect(bg, DeelmarktColors.white);
+      expect(fg, DeelmarktColors.neutral900);
+    });
+
+    testWidgets('Apple loading spinner renders in dark mode', (tester) async {
+      final completer = Completer<AuthResult>();
+      when(
+        () => mockRepo.loginWithOAuth(OAuthProvider.apple),
+      ).thenAnswer((_) => completer.future);
+
+      await pump(tester, theme: DeelmarktTheme.dark);
+      await tester.tap(appleButton());
+      await tester.pump();
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      completer.complete(const AuthFailureOAuthCancelled());
+      await tester.pumpAndSettle();
     });
   });
 }

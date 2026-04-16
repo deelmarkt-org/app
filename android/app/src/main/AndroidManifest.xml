@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Network access — required for all Supabase, FCM, OAuth, and HTTP calls.
+         Without this, release builds silently lose all networking. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- FCM push notifications (Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- Biometric authentication — Face ID / Fingerprint (P-16) -->

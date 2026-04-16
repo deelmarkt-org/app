@@ -162,14 +162,18 @@ void main() {
   group('SkeletonListingCard', () {
     testWidgets('has exactly one Shimmer widget', (tester) async {
       await tester.pumpWidget(
-        buildFeedbackApp(child: const SkeletonListingCard()),
+        buildFeedbackApp(
+          child: const SizedBox(width: 320, child: SkeletonListingCard()),
+        ),
       );
       expect(find.byType(Shimmer), findsOneWidget);
     });
 
     testWidgets('contains expected shape types', (tester) async {
       await tester.pumpWidget(
-        buildFeedbackApp(child: const SkeletonListingCard()),
+        buildFeedbackApp(
+          child: const SizedBox(width: 320, child: SkeletonListingCard()),
+        ),
       );
       expect(find.byType(SkeletonBox), findsOneWidget);
       expect(find.byType(SkeletonLine), findsNWidgets(3));
