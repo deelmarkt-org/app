@@ -54,7 +54,6 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colors = ChatThemeColors.of(context);
 
     return SafeArea(
@@ -80,44 +79,7 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
               tooltip: 'chat.cameraA11y'.tr(),
               constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
             ),
-            Expanded(
-              child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 44,
-                  maxHeight: 120,
-                ),
-                decoration: BoxDecoration(
-                  color: colors.surfaceMuted,
-                  borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-                  border: Border.all(color: colors.border),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.s4,
-                  vertical: Spacing.s2,
-                ),
-                child: TextField(
-                  controller: _controller,
-                  minLines: 1,
-                  maxLines: 4,
-                  // Bound the payload to a sane upper limit — pre-empts
-                  // wasteful regex work in offer_message_card.dart and
-                  // keeps request bodies bounded (security finding F-07).
-                  // Server-side validation remains the source of truth.
-                  maxLength: 4000,
-                  style: theme.textTheme.bodyLarge,
-                  textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    counterText: '',
-                    hintText: 'chat.typeMessage'.tr(),
-                    hintStyle: theme.textTheme.bodyLarge?.copyWith(
-                      color: colors.textTertiary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            Expanded(child: _ComposerTextField(controller: _controller)),
             const SizedBox(width: Spacing.s2),
             TextButton(
               onPressed: widget.isSending ? null : widget.onMakeOfferTap,
@@ -141,6 +103,56 @@ class _ChatMessageComposerState extends State<ChatMessageComposer> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Styled text-input area for the composer.
+///
+/// Extracted from [_ChatMessageComposerState.build] to keep the method
+/// under the 60-line SonarCloud cognitive-complexity threshold.
+class _ComposerTextField extends StatelessWidget {
+  const _ComposerTextField({required this.controller});
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = ChatThemeColors.of(context);
+
+    return Container(
+      constraints: const BoxConstraints(minHeight: 44, maxHeight: 120),
+      decoration: BoxDecoration(
+        color: colors.surfaceMuted,
+        borderRadius: BorderRadius.circular(DeelmarktRadius.full),
+        border: Border.all(color: colors.border),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.s4,
+        vertical: Spacing.s2,
+      ),
+      child: TextField(
+        controller: controller,
+        minLines: 1,
+        maxLines: 4,
+        // Bound the payload to a sane upper limit — pre-empts
+        // wasteful regex work in offer_message_card.dart and
+        // keeps request bodies bounded (security finding F-07).
+        // Server-side validation remains the source of truth.
+        maxLength: 4000,
+        style: theme.textTheme.bodyLarge,
+        textInputAction: TextInputAction.newline,
+        decoration: InputDecoration(
+          isDense: true,
+          border: InputBorder.none,
+          counterText: '',
+          hintText: 'chat.typeMessage'.tr(),
+          hintStyle: theme.textTheme.bodyLarge?.copyWith(
+            color: colors.textTertiary,
+          ),
         ),
       ),
     );
@@ -176,18 +188,18 @@ class _SendButton extends StatelessWidget {
             height: 44,
             child:
                 busy
-                    ? const Padding(
-                      padding: EdgeInsets.all(12),
+                    ? Padding(
+                      padding: const EdgeInsets.all(12),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation(
-                          DeelmarktColors.white,
+                          Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                     )
-                    : const Icon(
+                    : Icon(
                       Icons.arrow_upward,
-                      color: DeelmarktColors.white,
+                      color: Theme.of(context).colorScheme.onPrimary,
                       size: 22,
                     ),
           ),

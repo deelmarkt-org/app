@@ -102,6 +102,7 @@ dev_dependencies:
   # Platform interface packages — required for ImagePickerPlatform test mocking
   image_picker_platform_interface: any
   plugin_platform_interface: any
+  url_launcher_platform_interface: any
 
 flutter:
   uses-material-design: true
