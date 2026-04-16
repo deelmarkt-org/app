@@ -30,6 +30,7 @@ import 'package:deelmarkt/features/shipping/presentation/screens/shipping_qr_pag
 import 'package:deelmarkt/features/shipping/presentation/screens/tracking_page.dart';
 import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_page.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 import 'package:deelmarkt/core/router/admin_guard.dart' as admin_guard;
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -87,15 +88,58 @@ GoRouter createRouter({
       // Supabase's INITIAL_SESSION event when it subscribes after init.
       final authState = ref.read(authStateChangesProvider);
       final supabase = ref.read(supabaseClientProvider);
-      // Once Supabase.initialize() has completed, currentSession is available
-      // synchronously — use it instead of treating the state as still loading.
-      final isLoggedIn =
+
+      // Fix #118: Unified session source — no split-brain between isLoggedIn
+      // and currentUser. Both are derived from the same Session object.
+      // See docs/adr/ADR-001-reactive-auth-guard.md for full rationale.
+      final useReactiveGuard = ref.read(
+        isFeatureEnabledProvider(FeatureFlags.authGuardReactive),
+      );
+
+      final Session? session =
           authState.isLoading
-              ? supabase.auth.currentSession != null
-              : authState.valueOrNull?.session != null;
+              ? supabase.auth.currentSession
+              : authState.valueOrNull?.session;
+
+      final bool isLoggedIn;
+      final User? currentUser;
+
+      if (useReactiveGuard) {
+        // New path: validate session expiry and derive both values from Session.
+        final isSessionValid = session != null && !_isSessionExpired(session);
+        isLoggedIn = isSessionValid;
+        currentUser = isSessionValid ? session.user : null;
+
+        // Proactively refresh when within 60s of expiry but still valid.
+        if (isSessionValid && session.expiresAt != null) {
+          final secondsLeft =
+              session.expiresAt! -
+              DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+          if (secondsLeft < 60) {
+            supabase.auth.refreshSession().catchError((
+              Object e,
+              StackTrace st,
+            ) {
+              AppLogger.warning(
+                'Proactive session refresh failed',
+                tag: 'auth',
+                error: e,
+              );
+              return AuthResponse();
+            });
+          }
+        }
+      } else {
+        // Legacy path: retained for canary rollback (flag off = original behaviour).
+        isLoggedIn =
+            authState.isLoading
+                ? supabase.auth.currentSession != null
+                : authState.valueOrNull?.session != null;
+        currentUser = supabase.auth.currentUser; // legacy stale read
+      }
+
       final onboardingComplete =
           ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
-      final currentUser = supabase.auth.currentUser;
 
       // P-53 Suspension gate: read active sanction to gate all navigation.
       // Using ref.read here (not watch) because GoRouter re-runs redirect
@@ -120,6 +164,25 @@ GoRouter createRouter({
         hasActiveSanction: hasActiveSanction,
       );
     },
+  );
+}
+
+/// Returns true if [session] has expired (or is within 30 s of expiry).
+///
+/// The 30-second buffer triggers proactive refresh before hard expiry to
+/// avoid a scenario where the token expires between the guard check and the
+/// actual Supabase API call. Service-role tokens with no expiry return false.
+///
+/// Only called when [FeatureFlags.authGuardReactive] is enabled.
+bool _isSessionExpired(Session session) {
+  final expiresAt = session.expiresAt;
+  if (expiresAt == null) return false; // no-expiry service token
+  final expiry = DateTime.fromMillisecondsSinceEpoch(
+    expiresAt * 1000,
+    isUtc: true,
+  );
+  return DateTime.now().toUtc().isAfter(
+    expiry.subtract(const Duration(seconds: 30)),
   );
 }
 
