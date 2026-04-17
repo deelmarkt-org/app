@@ -109,6 +109,15 @@ class DeelCardImage extends StatelessWidget {
     );
   }
 
+  /// Test hook for [_reportImageError]. Not part of the public API.
+  @visibleForTesting
+  static void reportImageError(String url, Object error) =>
+      _reportImageError(url, error);
+
+  /// Test hook for [_extractHttpStatus]. Not part of the public API.
+  @visibleForTesting
+  static int? extractHttpStatus(Object error) => _extractHttpStatus(error);
+
   /// Captures `image_load_failed` in Sentry with a hashed URL (no PII).
   static void _reportImageError(String url, Object error) {
     final urlHash = sha256.convert(utf8.encode(url)).toString();

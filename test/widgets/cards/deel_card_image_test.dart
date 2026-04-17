@@ -48,4 +48,56 @@ void main() {
       expect(aspectWidget.aspectRatio, 1.0);
     });
   });
+
+  group('extractHttpStatus', () {
+    test('extracts status from statusCode= pattern', () {
+      expect(DeelCardImage.extractHttpStatus(Exception('statusCode=404')), 404);
+    });
+
+    test('extracts status from statusCode: pattern', () {
+      expect(
+        DeelCardImage.extractHttpStatus(
+          Exception('HTTP error statusCode: 503'),
+        ),
+        503,
+      );
+    });
+
+    test('extracts status from statusCode space pattern', () {
+      expect(DeelCardImage.extractHttpStatus(Exception('statusCode 200')), 200);
+    });
+
+    test('returns null when no status code present', () {
+      expect(
+        DeelCardImage.extractHttpStatus(Exception('connection refused')),
+        isNull,
+      );
+    });
+
+    test('returns null for empty error message', () {
+      expect(DeelCardImage.extractHttpStatus(Exception('')), isNull);
+    });
+  });
+
+  group('reportImageError', () {
+    test('does not throw when Sentry is not initialized', () {
+      expect(
+        () => DeelCardImage.reportImageError(
+          'https://example.com/img.jpg',
+          Exception('statusCode: 404'),
+        ),
+        returnsNormally,
+      );
+    });
+
+    test('does not throw for error without http status', () {
+      expect(
+        () => DeelCardImage.reportImageError(
+          'https://example.com/img.jpg',
+          Exception('network unreachable'),
+        ),
+        returnsNormally,
+      );
+    });
+  });
 }
