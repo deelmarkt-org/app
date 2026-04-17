@@ -124,8 +124,11 @@ review_information:
   last_name: "Kaya"
   phone_number: "+31686433636"
   email_address: "support@deelmarkt.com"
-  demo_user: "${ASC_DEMO_USER}"      # appstore-reviewer@deelmarkt.com (see 1Password)
-  demo_password: "${ASC_DEMO_PASSWORD}"  # injected via Fastfile ENV at deliver time
+  # Left blank on purpose — YAML does not expand ${VAR}. Fastlane reads
+  # demo credentials exclusively via Fastfile._demo_review_information,
+  # which pulls ENV[ASC_DEMO_USER] / ENV[ASC_DEMO_PASSWORD] at deliver time.
+  demo_user: ""
+  demo_password: ""
   notes: >
     DeelMarkt is a Dutch P2P marketplace requiring iDIN identity verification.
     The demo account is pre-verified (kyc_level=level2) to allow full feature

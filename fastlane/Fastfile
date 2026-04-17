@@ -38,7 +38,7 @@ platform :ios do
 
   # Upload metadata only — no binary, no screenshots.
   lane :ios_metadata do
-    _require_demo_credentials
+    _preflight
     deliver(
       api_key_path: ENV["ASC_API_KEY_JSON"],
       skip_screenshots: true,
@@ -54,7 +54,7 @@ platform :ios do
 
   # Dry-run: validates metadata + screenshots locally without uploading.
   lane :deliver_dry_run do
-    _require_demo_credentials
+    _preflight
     deliver(
       api_key_path: ENV["ASC_API_KEY_JSON"],
       skip_binary_upload: true,
@@ -113,15 +113,18 @@ private_lane :_regenerate_screenshots do
   sh("bash scripts/screenshots_to_fastlane.sh", path: "..")
 end
 
-# Fail fast if reviewer demo credentials are missing from the environment.
-# They are sourced from 1Password ("App Store reviewer" entry) and must be
-# exported before running ios_metadata or deliver_dry_run.
-private_lane :_require_demo_credentials do
-  missing = ["ASC_DEMO_USER", "ASC_DEMO_PASSWORD"].reject { |k| ENV[k] && !ENV[k].empty? }
+# Fail fast if any ENV required by `deliver` is missing. Running deliver
+# without these produces a cryptic Apple / option error several stack
+# frames deep; surfacing them here gives an actionable message pointing
+# straight at 1Password.
+private_lane :_preflight do
+  required = ["ASC_DEMO_USER", "ASC_DEMO_PASSWORD", "ASC_API_KEY_JSON"] # pragma: allowlist secret
+  missing = required.select { |k| ENV[k].to_s.empty? }
   unless missing.empty?
     UI.user_error!(
       "Missing required ENV: #{missing.join(", ")}. " \
-      "Source from 1Password 'App Store reviewer' before running this lane."
+      "See the team vault entries 'App Store reviewer' (demo account) " \
+      "and 'App Store Connect API key' for each value."
     )
   end
 end
