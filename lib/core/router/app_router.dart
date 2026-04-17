@@ -146,14 +146,18 @@ GoRouter createRouter({
       // via refreshListenable; use invalidate + notifyListeners to trigger
       // re-evaluation when sanction state changes.
       final sanctionAsync = ref.read(activeSanctionProvider);
-      // While sanction is loading and the user is logged in, hold on splash
-      // to prevent a flash of home before the gate can activate.
-      if (isLoggedIn &&
-          sanctionAsync.isLoading &&
-          state.matchedLocation != AppRoutes.splash) {
-        return AppRoutes.splash;
-      }
-      final hasActiveSanction = sanctionAsync.valueOrNull?.isActive ?? false;
+      final asyncRedirect = sanctionAsyncRedirect(
+        isLoggedIn: isLoggedIn,
+        sanctionAsync: sanctionAsync,
+        currentPath: state.matchedLocation,
+      );
+      if (asyncRedirect != null) return asyncRedirect;
+      // Treat an error as an active sanction so that authRedirect's
+      // _sanctionRedirect does NOT release the user from /suspended while the
+      // provider is still in error state (i.e. the redirect-cycle bypass).
+      final hasActiveSanction =
+          sanctionAsync.hasError ||
+          (sanctionAsync.valueOrNull?.isActive ?? false);
 
       return authRedirect(
         isLoading: false, // Supabase is always initialized before runApp
@@ -184,6 +188,46 @@ bool _isSessionExpired(Session session) {
   return DateTime.now().toUtc().isAfter(
     expiry.subtract(const Duration(seconds: 30)),
   );
+}
+
+/// Maps the current [activeSanctionProvider] [AsyncValue] to a router
+/// redirect, enforcing the P-53 suspension gate's loading + error semantics.
+///
+/// - **Loading + logged in**: hold on `/splash` to prevent a flash of `/home`
+///   before the gate can activate.
+/// - **Error + logged in**: fail-CLOSED — route to `/suspended`. A
+///   suspended/banned user must NOT be able to bypass the gate by forcing
+///   the sanction lookup to fail (e.g. dropping the network). The
+///   [SuspensionGateScreen] surfaces the error with a retry CTA; a
+///   successful retry that resolves to `null` releases the user back to
+///   `/home`.
+/// - **Data**: returns `null` — the data branch is handled by [authRedirect]
+///   via the `hasActiveSanction` flag.
+///
+/// Reference: Gemini security review on PR #171, comment id 3096148637 —
+/// the previous implementation defaulted to `false` on error (fail-OPEN),
+/// allowing suspended users through during transport failures.
+@visibleForTesting
+String? sanctionAsyncRedirect({
+  required bool isLoggedIn,
+  required AsyncValue<SanctionEntity?> sanctionAsync,
+  required String currentPath,
+}) {
+  if (!isLoggedIn) return null;
+  if (sanctionAsync.isLoading &&
+      currentPath != AppRoutes.splash &&
+      !currentPath.startsWith(AppRoutes.suspended)) {
+    return AppRoutes.splash;
+  }
+  if (sanctionAsync.hasError && !currentPath.startsWith(AppRoutes.suspended)) {
+    AppLogger.warning(
+      'Sanction lookup failed — fail-closed redirect to /suspended',
+      tag: 'router',
+      error: sanctionAsync.error,
+    );
+    return AppRoutes.suspended;
+  }
+  return null;
 }
 
 /// Test-only factory — accepts a pre-configured redirect function.
