@@ -8,7 +8,8 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
-import 'package:deelmarkt/widgets/listing_card.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
+import 'package:deelmarkt/widgets/cards/deel_card.dart';
 
 /// Search results grid with filter chips, result count, and infinite scroll.
 class SearchResultsView extends StatelessWidget {
@@ -116,8 +117,19 @@ class SearchResultsView extends StatelessWidget {
         childAspectRatio: 0.7,
         children:
             data.listings.map((listing) {
-              return ListingCard(
-                listing: listing,
+              return DeelCard.grid(
+                imageUrl:
+                    listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
+                priceInCents: listing.priceInCents,
+                originalPriceInCents: listing.originalPriceInCents,
+                title: listing.title,
+                heroTag: 'listing-${listing.id}',
+                location: listing.location,
+                distanceFormatted:
+                    listing.distanceKm != null
+                        ? Formatters.distanceKm(listing.distanceKm!)
+                        : null,
+                isFavourited: listing.isFavourited,
                 onTap: () => onListingTap(listing.id),
                 onFavouriteTap: () => onFavouriteTap(listing.id),
               );
