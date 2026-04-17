@@ -111,7 +111,7 @@ class DeelCardImage extends StatelessWidget {
 
   /// Captures `image_load_failed` in Sentry with a hashed URL (no PII).
   static void _reportImageError(String url, Object error) {
-    final urlHash = md5.convert(utf8.encode(url)).toString();
+    final urlHash = sha256.convert(utf8.encode(url)).toString();
     final httpStatus = _extractHttpStatus(error);
     Sentry.captureMessage(
       'image_load_failed',
