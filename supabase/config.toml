@@ -113,6 +113,14 @@ public = false
 file_size_limit = "15MiB"
 allowed_mime_types = ["image/png", "image/jpeg", "image/webp", "image/heic"]
 
+# R-05b: Avatars bucket — public bucket for user profile pictures (Issue #148).
+# Public = true so getPublicUrl() works in SupabaseAvatarUploadService.
+# RLS enforces owner-only writes; reads are open (profiles visible to all).
+[storage.buckets.avatars]
+public = true
+file_size_limit = "15MiB"
+allowed_mime_types = ["image/png", "image/jpeg", "image/webp", "image/heic"]
+
 # GDPR data exports bucket — R-21
 # Private; user can only read their own exports. Signed URL valid 24h.
 [storage.buckets.user-data-exports]
