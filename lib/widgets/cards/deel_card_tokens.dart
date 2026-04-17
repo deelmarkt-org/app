@@ -11,6 +11,10 @@ abstract final class DeelCardTokens {
   static const double gridImageAspectWidth = 4;
   static const double gridImageAspectHeight = 3;
 
+  /// SliverGrid childAspectRatio for all listing grid surfaces
+  /// (home nearby, search results, favourites, profile listings).
+  static const double gridChildAspectRatio = 0.7;
+
   // List variant
   static const double listThumbnailSize = 120;
 

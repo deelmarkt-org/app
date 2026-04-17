@@ -1,11 +1,21 @@
+import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/services/image_cache_manager.dart';
+import 'package:deelmarkt/core/utils/deel_image_url.dart';
 
 /// Image component for [DeelCard] with Hero transition, loading, and error states.
+///
+/// Uses [CachedNetworkImage] with [DeelCacheManager] for disk-backed caching and
+/// [DeelImageUrl] for Cloudinary `f_auto,q_auto,w_N` transforms (ADR-022).
 ///
 /// The image is wrapped in [ExcludeSemantics] because [DeelCard] already provides
 /// a comprehensive semantic label (price + title) for the whole card. Exposing the
@@ -35,30 +45,34 @@ class DeelCardImage extends StatelessWidget {
     final effectiveBorderRadius =
         borderRadius ??
         const BorderRadius.vertical(top: Radius.circular(DeelmarktRadius.xl));
+    final dpr = MediaQuery.of(context).devicePixelRatio;
 
     Widget image = ExcludeSemantics(
       child: AspectRatio(
         aspectRatio: aspectRatio,
-        child: ClipRRect(
-          borderRadius: effectiveBorderRadius,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-              if (wasSynchronouslyLoaded || frame != null) {
-                return AnimatedOpacity(
-                  opacity: 1.0,
-                  duration: duration,
-                  curve: DeelmarktAnimation.curveStandard,
-                  child: child,
-                );
-              }
-              return _placeholder(context);
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return _placeholder(context);
-            },
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final transformedUrl = DeelImageUrl.transform(
+              imageUrl,
+              renderWidth: constraints.maxWidth,
+              devicePixelRatio: dpr,
+            );
+            return ClipRRect(
+              borderRadius: effectiveBorderRadius,
+              child: CachedNetworkImage(
+                imageUrl: transformedUrl,
+                cacheManager: DeelCacheManager(),
+                fit: BoxFit.cover,
+                fadeInDuration: duration,
+                fadeInCurve: DeelmarktAnimation.curveStandard,
+                placeholder: (context, url) => _placeholder(context),
+                errorWidget: (context, url, error) {
+                  _reportImageError(url, error);
+                  return _placeholder(context);
+                },
+              ),
+            );
+          },
         ),
       ),
     );
@@ -88,5 +102,34 @@ class DeelCardImage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Test hook for [_reportImageError]. Not part of the public API.
+  @visibleForTesting
+  static void reportImageError(String url, Object error) =>
+      _reportImageError(url, error);
+
+  /// Test hook for [_extractHttpStatus]. Not part of the public API.
+  @visibleForTesting
+  static int? extractHttpStatus(Object error) => _extractHttpStatus(error);
+
+  /// Captures `image_load_failed` in Sentry with a hashed URL (no PII).
+  static void _reportImageError(String url, Object error) {
+    final urlHash = sha256.convert(utf8.encode(url)).toString();
+    final httpStatus = _extractHttpStatus(error);
+    Sentry.captureMessage(
+      'image_load_failed',
+      level: SentryLevel.warning,
+      withScope: (scope) {
+        scope.setTag('url_hash', urlHash);
+        if (httpStatus != null) scope.setTag('http_status', '$httpStatus');
+      },
+    );
+  }
+
+  static int? _extractHttpStatus(Object error) {
+    final message = error.toString();
+    final match = RegExp(r'statusCode[=: ]+(\d{3})').firstMatch(message);
+    return match != null ? int.tryParse(match.group(1)!) : null;
   }
 }

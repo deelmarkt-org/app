@@ -8,7 +8,7 @@ import 'package:deelmarkt/widgets/feedback/skeleton_shapes.dart';
 
 /// Composite skeleton placeholder for a listing card.
 ///
-/// Layout mirrors [ListingCard] (E01) — update if ListingCard changes.
+/// Layout mirrors [DeelCard.grid] — update if DeelCard grid layout changes.
 ///
 /// Wraps all shapes in a single [SkeletonLoader] (one [AnimationController]).
 ///

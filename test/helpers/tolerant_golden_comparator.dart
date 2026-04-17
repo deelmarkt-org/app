@@ -52,6 +52,8 @@ class TolerantGoldenFileComparator extends LocalFileComparator {
 
   @override
   Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    // When --update-goldens is passed, the framework calls update() directly —
+    // compare() is not invoked in that path, so no autoUpdate guard is needed.
     final ComparisonResult result = await GoldenFileComparator.compareLists(
       imageBytes,
       await getGoldenBytes(golden),
@@ -70,6 +72,8 @@ class TolerantGoldenFileComparator extends LocalFileComparator {
       return true;
     }
 
-    return false;
+    // Delegate to super so the framework generates diff artifacts and throws
+    // a TestFailure with the standard golden-mismatch message.
+    return super.compare(imageBytes, golden);
   }
 }

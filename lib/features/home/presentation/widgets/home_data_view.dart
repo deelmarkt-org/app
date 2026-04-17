@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
@@ -13,7 +14,7 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/listing_card.dart';
+import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
 
 /// Height of the recent listings horizontal row.
@@ -139,11 +140,11 @@ class HomeDataView extends ConsumerWidget {
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: Spacing.s3,
         crossAxisSpacing: Spacing.s3,
-        childAspectRatio: 0.65,
+        childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children: [
           for (final listing in data.nearby)
-            ListingCard(
-              listing: listing,
+            listingDeelCard(
+              listing,
               onTap:
                   () => context.goNamed(
                     'listing-detail',
@@ -195,8 +196,8 @@ class HomeDataView extends ConsumerWidget {
             final listing = data.recent[index];
             return SizedBox(
               width: _recentCardWidth,
-              child: ListingCard(
-                listing: listing,
+              child: listingDeelCard(
+                listing,
                 onTap:
                     () => context.goNamed(
                       'listing-detail',

@@ -227,6 +227,7 @@ The agent will:
 - [x] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` ✅ PR #99
 - [x] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough ✅ PR #66
 - [x] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` ✅ PR #99
+  - ⚠ **Deferred `[R]`:** `listings.original_price_cents` DB column not yet created. DTO field is forward-compatible (nullable). Tracked via [#100](https://github.com/deelmarkt-org/app/issues/100) item 3. reso to open migration ticket when discount feature is scoped.
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
 - [x] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` ✅ PR #101
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
