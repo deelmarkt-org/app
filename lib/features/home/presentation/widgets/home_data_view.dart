@@ -13,8 +13,7 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
-import 'package:deelmarkt/core/utils/formatters.dart';
-import 'package:deelmarkt/widgets/cards/deel_card.dart';
+import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
 
 /// Height of the recent listings horizontal row.
@@ -143,19 +142,8 @@ class HomeDataView extends ConsumerWidget {
         childAspectRatio: 0.65,
         children: [
           for (final listing in data.nearby)
-            DeelCard.grid(
-              imageUrl:
-                  listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-              priceInCents: listing.priceInCents,
-              originalPriceInCents: listing.originalPriceInCents,
-              title: listing.title,
-              heroTag: 'listing-${listing.id}',
-              location: listing.location,
-              distanceFormatted:
-                  listing.distanceKm != null
-                      ? Formatters.distanceKm(listing.distanceKm!)
-                      : null,
-              isFavourited: listing.isFavourited,
+            listingDeelCard(
+              listing,
               onTap:
                   () => context.goNamed(
                     'listing-detail',
@@ -207,19 +195,8 @@ class HomeDataView extends ConsumerWidget {
             final listing = data.recent[index];
             return SizedBox(
               width: _recentCardWidth,
-              child: DeelCard.grid(
-                imageUrl:
-                    listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-                priceInCents: listing.priceInCents,
-                originalPriceInCents: listing.originalPriceInCents,
-                title: listing.title,
-                heroTag: 'listing-${listing.id}',
-                location: listing.location,
-                distanceFormatted:
-                    listing.distanceKm != null
-                        ? Formatters.distanceKm(listing.distanceKm!)
-                        : null,
-                isFavourited: listing.isFavourited,
+              child: listingDeelCard(
+                listing,
                 onTap:
                     () => context.goNamed(
                       'listing-detail',
