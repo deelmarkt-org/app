@@ -115,16 +115,20 @@ categories:
           - app_functionality    # Supabase query latency, cold start timing
 
 # ── Review information ────────────────────────────────────────────────────────
-# Filled before first TestFlight submission.
+# Non-secret fields are mirrored into individual .txt files under this directory
+# so `fastlane deliver` transmits them to App Store Connect. Demo credentials
+# are injected at deliver time from ENV (ASC_DEMO_USER / ASC_DEMO_PASSWORD) —
+# never committed. Store credentials in 1Password "App Store reviewer" entry.
 review_information:
-  first_name: "[TODO]"
-  last_name: "[TODO]"
-  phone_number: "[TODO]"
+  first_name: "Mahmut"
+  last_name: "Kaya"
+  phone_number: "+31686433636"
   email_address: "support@deelmarkt.com"
-  demo_user: "[TODO — create reviewer demo account]"
-  demo_password: "[TODO — set in 1Password 'App Store reviewer' entry]"
+  demo_user: "${ASC_DEMO_USER}"      # appstore-reviewer@deelmarkt.com (see 1Password)
+  demo_password: "${ASC_DEMO_PASSWORD}"  # injected via Fastfile ENV at deliver time
   notes: >
     DeelMarkt is a Dutch P2P marketplace requiring iDIN identity verification.
-    The demo account is pre-verified to allow full feature access without
-    the iDIN bank authentication flow (which requires a Dutch bank account).
-    Please use the demo account credentials above to explore all features.
+    The demo account is pre-verified (kyc_level=level2) to allow full feature
+    access without the iDIN bank authentication flow (which requires a Dutch
+    bank account). Please use the demo account credentials above to explore
+    all features.
