@@ -41,12 +41,37 @@ class ImageUploadService {
   /// wrong extension, server-blocked threat) or
   /// [NetworkException] for transport failures and server-side outages.
   Future<ImageUploadResponse> uploadAndProcess(File localFile) async {
+    final storagePath = await reserveAndUpload(localFile);
+    return processUploaded(storagePath);
+  }
+
+  /// Step 1 of the two-step pipeline — validates, generates a storage path,
+  /// and uploads the raw bytes to Supabase Storage.
+  ///
+  /// Returns [storagePath] for use in [processUploaded]. Callers that need
+  /// cancellation-safe orphan cleanup (e.g. [PhotoUploadQueue]) call these
+  /// two methods separately so they can track whether storage upload completed.
+  ///
+  /// Fix #123 / Phase 1.6: exposing storagePath lets the queue delete orphans
+  /// when the user cancels after upload but before processing completes.
+  ///
+  /// NOTE: Storage bucket RLS must enforce:
+  ///   `auth.uid()::text = split_part(name, '/', 1)`
+  /// so only the uploading user can read/delete their own objects.
+  /// Verify migration: supabase/migrations/*_listings_images_rls.sql
+  /// (reso review required — coordinate via E07 infrastructure epic).
+  Future<String> reserveAndUpload(File localFile) async {
     final userId = _requireUserId();
     final ext = await _validateLocalFile(localFile);
     final storagePath = '$userId/${_generateFilename(ext)}';
     await _uploadToStorage(storagePath, localFile);
-    return _invokeProcessingFunction(storagePath);
+    return storagePath;
   }
+
+  /// Step 2 — invokes `image-upload-process` to run virus scan + Cloudinary upload.
+  /// [storagePath] must be the value returned by [reserveAndUpload].
+  Future<ImageUploadResponse> processUploaded(String storagePath) =>
+      _invokeProcessingFunction(storagePath);
 
   /// Returns the signed-in user id, or throws [AuthException].
   String _requireUserId() {

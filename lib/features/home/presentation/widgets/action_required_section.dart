@@ -115,8 +115,9 @@ class _ActionTile extends StatelessWidget {
             // M3: orange left-border accent for ship order tiles (design spec).
             decoration:
                 isShipTile
-                    ? const BoxDecoration(
-                      border: Border(
+                    ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+                      border: const Border(
                         left: BorderSide(
                           color: DeelmarktColors.primary,
                           width: 3,

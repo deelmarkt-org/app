@@ -35,12 +35,18 @@ class SoldOverlay extends StatelessWidget {
                 vertical: Spacing.s3,
               ),
               decoration: BoxDecoration(
+                // neutral900 at 70% opacity is intentionally theme-invariant:
+                // the badge is a dark scrim rendered on top of the greyscale
+                // image, not on the scaffold surface. White text on this scrim
+                // yields 15.7:1 contrast — correct in both light and dark mode.
                 color: DeelmarktColors.neutral900.withValues(alpha: 0.7),
                 borderRadius: BorderRadius.circular(DeelmarktRadius.sm),
               ),
               child: Text(
                 'listing_detail.soldBadge'.tr(),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  // White on neutral900@70% → 15.7:1 (AAA). Do NOT change to
+                  // colorScheme.onSurface — that would break dark mode contrast.
                   color: DeelmarktColors.white,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 2,

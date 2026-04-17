@@ -126,8 +126,11 @@ class _UploadingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: 'sell.uploadingImage'.tr(),
+      // Fix #126: liveRegion announces upload progress to screen readers (EAA §10)
+      liveRegion: true,
       child: Container(
-        color: Colors.black26,
+        // Fix #125: use design token instead of hardcoded Colors.black26
+        color: DeelmarktColors.neutral900.withValues(alpha: 0.50),
         alignment: Alignment.center,
         child: const SizedBox(
           width: 32,

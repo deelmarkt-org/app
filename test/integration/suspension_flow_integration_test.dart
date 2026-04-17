@@ -165,62 +165,30 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // Scenario E — fail-open: sanction error does NOT block the user
+  // Scenario E — fail-CLOSED: sanction error routes user to /suspended
   // ---------------------------------------------------------------------------
-  // POLICY DECISION (documented here intentionally):
+  // POLICY (revised after Gemini PR #171 HIGH security finding,
+  // comment id 3096148637):
   //   When activeSanctionProvider throws (e.g. network outage, Supabase down),
-  //   `sanctionAsync.valueOrNull` returns null, so `hasActiveSanction` defaults
-  //   to false. This is a deliberate fail-OPEN design: availability takes
-  //   priority over strict enforcement during backend outages. The trade-off is
-  //   that a suspended user on a poor connection may temporarily bypass the gate.
-  //   Mitigation: RLS policies on the backend still enforce access at the DB level.
+  //   the redirect closure in app_router.dart treats the error as a gate
+  //   activation and routes logged-in users to /suspended. This is a deliberate
+  //   fail-CLOSED design: a suspended/banned user must NOT be able to bypass
+  //   the gate by forcing the sanction lookup to fail.
+  //
+  //   The /suspended screen surfaces the error with a retry CTA; if the retry
+  //   resolves to `null` (no active sanction), the router immediately releases
+  //   the user back to /home — so a non-suspended user with a transient
+  //   network blip sees a brief retry screen rather than silently bypassing
+  //   the gate.
+  //
+  //   Defence in depth: RLS policies on the backend still enforce access at
+  //   the DB level; the client-side gate is the first line of defence.
   // ---------------------------------------------------------------------------
-
-  group('Scenario E — sanction provider error → fail-open', () {
-    test(
-      'authRedirect passes user through when hasActiveSanction=false (error case)',
-      () {
-        // Simulate: sanctionAsync.valueOrNull == null (from AsyncError or AsyncData(null))
-        // hasActiveSanction computed as: null?.isActive ?? false = false
-        final redirect = authRedirect(
-          isLoading: false,
-          isLoggedIn: true,
-          currentPath: '/',
-          hasActiveSanction:
-              false, // ignore: avoid_redundant_argument_values — error state → null → false (fail-open)
-        );
-        // EXPECTED: fail-open — user stays on /home, not redirected to /suspended.
-        expect(
-          redirect,
-          isNull,
-          reason: 'Fail-open: sanction error must not trap the user',
-        );
-      },
-    );
-
-    test(
-      'authRedirect does NOT redirect to /suspended when hasActiveSanction=false',
-      () {
-        // failOpenValue: AsyncError → valueOrNull=null → isActive ?? false = false
-        // ignore: avoid_redundant_argument_values
-        const failOpenValue = false;
-        for (final path in ['/', '/sell', '/messages', '/profile']) {
-          final redirect = authRedirect(
-            isLoading: false,
-            isLoggedIn: true,
-            currentPath: path,
-            hasActiveSanction:
-                failOpenValue, // ignore: avoid_redundant_argument_values
-          );
-          expect(
-            redirect,
-            isNot(equals('/suspended')),
-            reason: 'Path $path must not redirect to /suspended on error',
-          );
-        }
-      },
-    );
-  });
+  // The fail-closed branch lives in app_router.dart's redirect closure (it
+  // inspects `sanctionAsync.hasError` directly, before calling authRedirect).
+  // Pure-logic tests of authRedirect can't exercise that branch — it's
+  // covered by the widget test in
+  // test/core/router/suspension_fail_closed_test.dart.
 
   group('GoRouterRefreshStream — sanity', () {
     test('notifies listeners on stream event', () async {

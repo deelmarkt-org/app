@@ -18,6 +18,17 @@ abstract final class FeatureFlags {
   /// active ban or suspension. Default ON in all environments.
   /// Toggle in Unleash to bypass for emergency hotfixes.
   static const String p53SuspensionGate = 'p53_suspension_gate';
+
+  /// Fix #118: Reactive auth guard with JWT expiry check.
+  /// Replaces stale supabase.auth.currentUser read with session-derived user.
+  /// Canary rollout: 10% day-3 → 50% day-7 → 100% day-10.
+  /// See docs/adr/ADR-001-reactive-auth-guard.md + docs/operations/rollback-playbook.md
+  static const String authGuardReactive = 'auth_guard_reactive_enabled';
+
+  /// Fix #118 (Phase 1.12): Server-side admin role verification via SECURITY DEFINER RPC.
+  /// Client-side isAdmin() remains as fast-path; server check is authoritative.
+  /// Requires reso to deploy public.is_admin() SQL function before enabling.
+  static const String adminServerVerify = 'admin_server_verify_enabled';
 }
 
 /// Initialise Unleash feature flags in `main()` before `runApp`.

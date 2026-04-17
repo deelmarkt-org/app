@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
@@ -13,6 +14,11 @@ import 'package:deelmarkt/features/home/domain/entities/home_mode.dart';
 import 'package:deelmarkt/features/home/presentation/home_mode_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/home_screen.dart';
+import 'package:deelmarkt/features/home/presentation/seller_home_notifier.dart';
+import 'package:deelmarkt/features/home/domain/entities/seller_stats_entity.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_data_view.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/seller_home_empty_view.dart';
+import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 
 void main() {
@@ -126,8 +132,115 @@ void main() {
 
       expect(find.byType(Scaffold), findsWidgets);
     });
+
+    // ── Phase 3.3 additions ────────────────────────────────────────────────
+
+    testWidgets('buyer mode error state shows ErrorState widget', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildSubject(
+          extraOverrides: [
+            currentUserProvider.overrideWithValue(null),
+            homeModeNotifierProvider.overrideWith(
+              () => _StubHomeModeNotifier(HomeMode.buyer),
+            ),
+            homeNotifierProvider.overrideWith(() => _ErrorHomeNotifier()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ErrorState), findsOneWidget);
+    });
+
+    testWidgets('buyer mode error state retry triggers refresh', (
+      tester,
+    ) async {
+      final notifier = _TrackingErrorHomeNotifier();
+      await tester.pumpWidget(
+        buildSubject(
+          extraOverrides: [
+            currentUserProvider.overrideWithValue(null),
+            homeModeNotifierProvider.overrideWith(
+              () => _StubHomeModeNotifier(HomeMode.buyer),
+            ),
+            homeNotifierProvider.overrideWith(() => notifier),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ErrorState), findsOneWidget);
+      await tester.tap(find.byType(ElevatedButton).first);
+      await tester.pumpAndSettle();
+
+      expect(notifier.refreshCallCount, 1);
+    });
+
+    testWidgets('buyer mode data state shows HomeDataView', (tester) async {
+      await tester.pumpWidget(
+        buildSubject(
+          extraOverrides: [
+            currentUserProvider.overrideWithValue(null),
+            homeModeNotifierProvider.overrideWith(
+              () => _StubHomeModeNotifier(HomeMode.buyer),
+            ),
+            homeNotifierProvider.overrideWith(
+              () => _DataHomeNotifier(const HomeState()),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeDataView), findsOneWidget);
+    });
+
+    testWidgets('seller mode empty data shows SellerHomeEmptyView', (
+      tester,
+    ) async {
+      const emptyState = SellerHomeState(
+        stats: SellerStatsEntity(
+          totalSalesCents: 0,
+          activeListingsCount: 0,
+          unreadMessagesCount: 0,
+        ),
+        actions: [],
+        listings: [],
+      );
+      await tester.pumpWidget(
+        buildSubject(
+          extraOverrides: [
+            // Authenticated user required so the auth guard does not force buyer mode.
+            currentUserProvider.overrideWith((_) => _stubUser),
+            homeModeNotifierProvider.overrideWith(
+              () => _StubHomeModeNotifier(HomeMode.seller),
+            ),
+            sellerHomeNotifierProvider.overrideWith(
+              () => _StubSellerHomeNotifier(emptyState),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SellerHomeEmptyView), findsOneWidget);
+    });
   });
 }
+
+// ---------------------------------------------------------------------------
+// Stub helpers
+// ---------------------------------------------------------------------------
+
+const _stubUser = User(
+  id: 'user-stub',
+  appMetadata: {},
+  userMetadata: {},
+  aud: 'authenticated',
+  createdAt: '2026-01-01T00:00:00Z',
+);
 
 // ---------------------------------------------------------------------------
 // Stub notifiers
@@ -152,4 +265,62 @@ class _StubHomeModeNotifier extends HomeModeNotifier {
 
   @override
   HomeMode build() => _mode;
+}
+
+/// Always throws — triggers the error branch in buyer mode.
+class _ErrorHomeNotifier extends HomeNotifier {
+  @override
+  Future<HomeState> build() async => throw Exception('network error');
+
+  @override
+  Future<void> refresh() async {
+    state = AsyncValue.error(Exception('network error'), StackTrace.empty);
+  }
+
+  @override
+  Future<void> toggleFavourite(String listingId) async {}
+}
+
+/// Throws on build but tracks refresh calls — for retry assertion.
+class _TrackingErrorHomeNotifier extends HomeNotifier {
+  int refreshCallCount = 0;
+
+  @override
+  Future<HomeState> build() async => throw Exception('network error');
+
+  @override
+  Future<void> refresh() async {
+    refreshCallCount++;
+    state = AsyncValue.error(Exception('network error'), StackTrace.empty);
+  }
+
+  @override
+  Future<void> toggleFavourite(String listingId) async {}
+}
+
+/// Returns fixed HomeState — triggers the data branch.
+class _DataHomeNotifier extends HomeNotifier {
+  _DataHomeNotifier(this._data);
+  final HomeState _data;
+
+  @override
+  Future<HomeState> build() async => _data;
+
+  @override
+  Future<void> refresh() async {}
+
+  @override
+  Future<void> toggleFavourite(String listingId) async {}
+}
+
+/// Stub for seller home — returns fixed state.
+class _StubSellerHomeNotifier extends SellerHomeNotifier {
+  _StubSellerHomeNotifier(this._state);
+  final SellerHomeState _state;
+
+  @override
+  Future<SellerHomeState> build() async => _state;
+
+  @override
+  Future<void> refresh() async => state = AsyncValue.data(_state);
 }

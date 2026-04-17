@@ -17,7 +17,7 @@ void main() {
 
   // Mirror ADR-025 sentinel pattern from scripts/check_quality.dart
   final sentinelPattern = RegExp(
-    r'\w+\s*!=\s*null\s*\?\s*\w+\(\)\s*:\s*this\.\w+',
+    r'[\w$]+\s*!=\s*null\s*\?\s*[\w$]+\(\)\s*:\s*this\.[\w$]+',
   );
 
   int countTernaries(String line) =>

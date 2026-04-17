@@ -1,68 +1,79 @@
-import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Golden comparator that tolerates minor per-pixel colour differences.
+/// A [GoldenFileComparator] that tolerates a small percentage of mismatched
+/// pixels between the golden baseline and the rendered image.
 ///
-/// Needed because macOS and Linux differ in font-hinting and sub-pixel
-/// rendering, producing pixel-level RGB deltas on text-heavy goldens.
-/// A tolerance of [maxDeltaRatio] (default 1%) suppresses platform noise
-/// while still catching real regressions (layout shifts, wrong colours, etc.).
+/// CI runners (Linux/Freetype) and developer machines (macOS/CoreText or
+/// Windows/DirectWrite) apply slightly different sub-pixel font hinting.
+/// This causes pixel-level differences in golden screenshots that are
+/// visually imperceptible but cause strict [LocalFileComparator] to fail.
 ///
-/// Register in [flutter_test_config.dart] or per-test:
+/// Use this comparator in golden test files that need to pass on both
+/// platforms:
+///
 /// ```dart
-/// goldenFileComparator = TolerantGoldenComparator(Uri.file('test/path/'));
+/// setUpAll(() {
+///   goldenFileComparator = TolerantGoldenFileComparator.forTestFile(
+///     'test/path/to/my_golden_test.dart',
+///     maxDiffPercentage: 0.5,
+///   );
+/// });
 /// ```
-class TolerantGoldenComparator extends LocalFileComparator {
-  TolerantGoldenComparator(super.testFile, {this.maxDeltaRatio = 0.01});
+///
+/// The [maxDiffPercentage] defaults to [defaultMaxDiffPercentage] (0.5%).
+/// Increase only if sub-pixel differences are larger; keep as small as
+/// possible to catch real regressions.
+class TolerantGoldenFileComparator extends LocalFileComparator {
+  TolerantGoldenFileComparator(
+    super.testFile, {
+    this.maxDiffPercentage = defaultMaxDiffPercentage,
+  });
 
-  /// Maximum fraction of pixels that may differ (0.01 = 1%).
-  final double maxDeltaRatio;
+  /// Default tolerance: 0.5% of total pixels.
+  static const double defaultMaxDiffPercentage = 0.5;
+
+  /// Maximum percentage of differing pixels before the comparison fails.
+  final double maxDiffPercentage;
+
+  /// Convenience factory that resolves [relativeTestFilePath] against
+  /// the current working directory (i.e. the project root when running
+  /// `flutter test`).
+  factory TolerantGoldenFileComparator.forTestFile(
+    String relativeTestFilePath, {
+    double maxDiffPercentage = defaultMaxDiffPercentage,
+  }) {
+    return TolerantGoldenFileComparator(
+      Uri.base.resolve(relativeTestFilePath),
+      maxDiffPercentage: maxDiffPercentage,
+    );
+  }
 
   @override
   Future<bool> compare(Uint8List imageBytes, Uri golden) async {
-    final result = await GoldenFileComparator.compareLists(
+    // When --update-goldens is passed, the framework calls update() directly —
+    // compare() is not invoked in that path, so no autoUpdate guard is needed.
+    final ComparisonResult result = await GoldenFileComparator.compareLists(
       imageBytes,
       await getGoldenBytes(golden),
     );
 
     if (result.passed) return true;
 
-    if (result.diffPercent <= maxDeltaRatio) return true;
+    final double diffPercent = result.diffPercent * 100;
+    if (diffPercent <= maxDiffPercentage) {
+      // ignore: avoid_print
+      print(
+        'TolerantGoldenFileComparator: $golden — '
+        '${diffPercent.toStringAsFixed(4)}% diff '
+        '(≤ $maxDiffPercentage% tolerance) → PASS',
+      );
+      return true;
+    }
 
-    final percentage = (result.diffPercent * 100).toStringAsFixed(2);
-    fail(
-      'Golden "$golden" differs by $percentage% '
-      '(limit ${(maxDeltaRatio * 100).toStringAsFixed(0)}%). '
-      'Run `flutter test --update-goldens` to regenerate.',
-    );
+    // Delegate to super so the framework generates diff artifacts and throws
+    // a TestFailure with the standard golden-mismatch message.
+    return super.compare(imageBytes, golden);
   }
-}
-
-/// Registers [TolerantGoldenComparator] for the given test file URI.
-///
-/// Call once per test file (or globally in flutter_test_config.dart).
-void useTolerantGoldenComparator({double maxDeltaRatio = 0.01}) {
-  final Uri testUri = (goldenFileComparator as LocalFileComparator).basedir;
-  goldenFileComparator = TolerantGoldenComparator(
-    testUri.resolve('dummy_test.dart'),
-    maxDeltaRatio: maxDeltaRatio,
-  );
-}
-
-/// Pixel-level RGB Euclidean distance helper (unused in comparator but
-/// available for diagnostic assertions in tests).
-double pixelDistance(Color a, Color b) {
-  final ar = (a.r * 255).round();
-  final ag = (a.g * 255).round();
-  final ab = (a.b * 255).round();
-  final br = (b.r * 255).round();
-  final bg = (b.g * 255).round();
-  final bb = (b.b * 255).round();
-  final dr = (ar - br).toDouble();
-  final dg = (ag - bg).toDouble();
-  final db = (ab - bb).toDouble();
-  return math.sqrt(dr * dr + dg * dg + db * db) / (255 * math.sqrt(3));
 }

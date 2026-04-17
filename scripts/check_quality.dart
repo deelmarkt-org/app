@@ -462,7 +462,7 @@ void _checkDuplicateStrings(
 // This is a single-level ternary implementing nullable-field sentinel, not a
 // true nested ternary. Allowlisted to suppress SonarCloud S3358 false alarm.
 final _sentinelCopyWithPattern = RegExp(
-  r'\w+\s*!=\s*null\s*\?\s*\w+\(\)\s*:\s*this\.\w+',
+  r'[\w$]+\s*!=\s*null\s*\?\s*[\w$]+\(\)\s*:\s*this\.[\w$]+',
 );
 
 bool _isSentinelCopyWithFile(String file) => file.endsWith('_copy_with.dart');
