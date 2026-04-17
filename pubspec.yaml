@@ -56,6 +56,10 @@ dependencies:
   # UUID generation — stable ids for per-image upload state (P-24 R-27 wiring)
   uuid: ^4.5.1
 
+  # Image caching — disk + memory cache with Cloudinary transform support (ADR-022)
+  cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
+
   # Error tracking — Sentry (free tier)
   sentry_flutter: ^9.0.0
 
