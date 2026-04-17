@@ -152,7 +152,12 @@ GoRouter createRouter({
         currentPath: state.matchedLocation,
       );
       if (asyncRedirect != null) return asyncRedirect;
-      final hasActiveSanction = sanctionAsync.valueOrNull?.isActive ?? false;
+      // Treat an error as an active sanction so that authRedirect's
+      // _sanctionRedirect does NOT release the user from /suspended while the
+      // provider is still in error state (i.e. the redirect-cycle bypass).
+      final hasActiveSanction =
+          sanctionAsync.hasError ||
+          (sanctionAsync.valueOrNull?.isActive ?? false);
 
       return authRedirect(
         isLoading: false, // Supabase is always initialized before runApp
@@ -209,7 +214,9 @@ String? sanctionAsyncRedirect({
   required String currentPath,
 }) {
   if (!isLoggedIn) return null;
-  if (sanctionAsync.isLoading && currentPath != AppRoutes.splash) {
+  if (sanctionAsync.isLoading &&
+      currentPath != AppRoutes.splash &&
+      !currentPath.startsWith(AppRoutes.suspended)) {
     return AppRoutes.splash;
   }
   if (sanctionAsync.hasError && !currentPath.startsWith(AppRoutes.suspended)) {
