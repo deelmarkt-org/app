@@ -28,4 +28,5 @@ Both CDN origins allow CORS from `https://deelmarkt.com`. Flutter Web builds usi
 
 ## Re-verification schedule
 
-CI job `ci.yml` runs weekly `curl` headers assertion (to be added in Task A PR). Manual re-verify after any Cloudinary or Supabase Storage CORS policy change.
+Manual re-verify after any Cloudinary or Supabase Storage CORS policy change.
+Run `bash scripts/web_smoke.sh` for a quick local re-check.

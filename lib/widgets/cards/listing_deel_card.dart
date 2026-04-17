@@ -10,6 +10,9 @@ import 'package:deelmarkt/widgets/cards/deel_card.dart';
 /// Centralises the entity→card translation so call sites only supply the
 /// feature-specific callbacks and optional overrides. Eliminates the repeated
 /// 8-parameter block that would otherwise appear in every listing surface.
+///
+/// Reference: docs/screens/02-home/01-home-buyer.md (grid card),
+/// docs/screens/03-search/01-search-results.md
 Widget listingDeelCard(
   ListingEntity listing, {
   required VoidCallback onTap,

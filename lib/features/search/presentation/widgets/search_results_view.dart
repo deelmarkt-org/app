@@ -7,6 +7,7 @@ import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
+import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
 
@@ -113,7 +114,7 @@ class SearchResultsView extends StatelessWidget {
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: Spacing.s3,
         crossAxisSpacing: Spacing.s3,
-        childAspectRatio: 0.7,
+        childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children:
             data.listings.map((listing) {
               return listingDeelCard(

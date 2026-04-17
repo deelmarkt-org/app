@@ -26,7 +26,7 @@ Adopt **`cached_network_image: ^3.4.1`** as the canonical image loader for all n
    - `PaintingBinding.instance.imageCache.maximumSize = 100`
    - `PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024` (50 MB)
 2. **`DeelImageUrl` helper** (`lib/core/utils/deel_image_url.dart`) that rewrites Cloudinary URLs with `f_auto,q_auto,w_{target}` transforms derived from `MediaQuery.devicePixelRatio × renderWidth`.
-3. **Sentry error listener** on every `CachedNetworkImage` — capture `image_load_failed` with `{url_hash, http_status}` (URL is md5-hashed, no PII).
+3. **Sentry error listener** on every `CachedNetworkImage` — capture `image_load_failed` with `{url_hash, http_status}` (URL is sha256-hashed, no PII).
 4. **Flutter Web guard**: pre-flight CORS check committed as `docs/verifications/cdn-cors.md`; CI job runs `curl` headers assertion weekly.
 
 ### Consequences
@@ -41,7 +41,7 @@ Adopt **`cached_network_image: ^3.4.1`** as the canonical image loader for all n
 #### Negative
 - New transitive deps: `flutter_cache_manager`, `path_provider`, `sqflite` (mobile only). `path_provider` init must precede first image load.
 - Flutter Web uses `window.fetch` — requires Cloudinary + Supabase Storage CORS headers to include our origins (verified pre-merge, see `docs/verifications/cdn-cors.md`).
-- Golden test drift expected from fade-in curve difference vs stdlib `AnimatedOpacity`. Mitigated by `test/helpers/tolerant_golden_comparator.dart` (already in tree).
+- Golden test drift expected from fade-in curve difference (`CachedNetworkImage.fadeInDuration/fadeInCurve` vs stdlib rendering). Mitigated by `test/helpers/tolerant_golden_comparator.dart` (already in tree).
 
 ### Alternatives Considered
 

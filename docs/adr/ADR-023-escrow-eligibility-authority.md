@@ -2,7 +2,7 @@
 
 ### Status
 
-**Accepted** — 2026-04-17 · Author: pizmam · **Blocks:** GitHub issue [#59](https://github.com/deelmarkt-org/app/issues/59) · **Requires coordination:** reso (migration), belengaz (DTO)
+**Accepted — Implementation pending** — Decision ratified 2026-04-17 · Author: pizmam · **Blocks:** GitHub issue [#59](https://github.com/deelmarkt-org/app/issues/59) · **Waiting on:** reso (`supabase/migrations/*_listings_escrow_eligible.sql` + trigger) · belengaz (`ListingDto.escrowEligible` field)
 
 ### Context
 
@@ -15,7 +15,7 @@ bool get isEscrowAvailable =>
     (qualityScore ?? 0) >= 50;
 ```
 
-The Tier-1 audit ([PLAN-pizmam-open-issues-AUDIT.md §C1](../PLAN-pizmam-open-issues-AUDIT.md)) classified this as a critical legal risk:
+A pre-implementation audit classified this as a critical legal risk:
 
 - **EU Consumer Rights Directive 2011/83 Art. 6(1)(r)** requires pre-contractual information to be accurate.
 - **Omnibus Directive 2019/2161** escalates misleading-practice penalties up to 4% of EU turnover.

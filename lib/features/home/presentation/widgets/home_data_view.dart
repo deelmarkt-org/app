@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
@@ -139,7 +140,7 @@ class HomeDataView extends ConsumerWidget {
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: Spacing.s3,
         crossAxisSpacing: Spacing.s3,
-        childAspectRatio: 0.65,
+        childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children: [
           for (final listing in data.nearby)
             listingDeelCard(

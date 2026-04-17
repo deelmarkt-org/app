@@ -63,13 +63,8 @@ class DeelCardImage extends StatelessWidget {
                 imageUrl: transformedUrl,
                 cacheManager: DeelCacheManager(),
                 fit: BoxFit.cover,
-                imageBuilder:
-                    (context, imageProvider) => AnimatedOpacity(
-                      opacity: 1.0,
-                      duration: duration,
-                      curve: DeelmarktAnimation.curveStandard,
-                      child: Image(image: imageProvider, fit: BoxFit.cover),
-                    ),
+                fadeInDuration: duration,
+                fadeInCurve: DeelmarktAnimation.curveStandard,
                 placeholder: (context, url) => _placeholder(context),
                 errorWidget: (context, url, error) {
                   _reportImageError(url, error);

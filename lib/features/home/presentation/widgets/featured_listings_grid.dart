@@ -5,6 +5,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
+import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 
 /// 2-column sliver grid of featured listing cards for category detail.
 class FeaturedListingsGrid extends StatelessWidget {
@@ -26,7 +27,7 @@ class FeaturedListingsGrid extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: Spacing.listingCardGap,
           crossAxisSpacing: Spacing.listingCardGap,
-          childAspectRatio: 0.7,
+          childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
           final listing = listings[index];
