@@ -11,10 +11,15 @@ import 'package:deelmarkt/features/profile/domain/services/avatar_upload_service
 /// Path pattern: `avatars/<userId>/<timestamp>.<ext>`
 /// RLS enforces folder-level isolation per user.
 ///
-/// Bucket is public — [getPublicUrl] resolves without a signed-URL TTL so
-/// avatars render on profile cards and listings. See migration
-/// `supabase/migrations/20260415150000_r05_avatars_bucket.sql` for the
-/// bucket + RLS definition.
+/// TODO(#148): `avatars` bucket + RLS must be provisioned by reso before
+/// this service is used in production. Until then, [MockAvatarUploadService]
+/// is used via the `useMockDataProvider` gate in [avatarUploadServiceProvider].
+///
+/// TODO(#148): Decide public vs private bucket before provisioning.
+/// `getPublicUrl()` returns a URL that 403s if the bucket is private (GDPR
+/// concern for user PII). Options: public bucket, signed URL with TTL, or
+/// Cloudinary pipeline like listings-images. Agree with reso before creating
+/// the bucket migration.
 ///
 /// Reference: docs/screens/07-profile/01-own-profile.md
 class SupabaseAvatarUploadService implements AvatarUploadService {
