@@ -101,3 +101,8 @@ fastlane/metadata/review_information/demo_user.txt
 fastlane/metadata/review_information/demo_password.txt
 fastlane/report.xml
 fastlane/Preview.html
+fastlane/README.md
+
+# Ruby / Bundler — local gem installs
+.bundle/
+vendor/bundle/

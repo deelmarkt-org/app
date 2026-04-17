@@ -45,8 +45,7 @@ platform :ios do
       skip_binary_upload: true,
       skip_app_version_strings: false,
       metadata_path: "fastlane/metadata",
-      demo_account_name: ENV["ASC_DEMO_USER"],
-      demo_account_password: ENV["ASC_DEMO_PASSWORD"],
+      app_review_information: _demo_review_information,
       force: true,
       submit_for_review: false,
     )
@@ -61,8 +60,7 @@ platform :ios do
       skip_binary_upload: true,
       run_precheck_before_submit: true,
       precheck_default_rule_level: :warn,
-      demo_account_name: ENV["ASC_DEMO_USER"],
-      demo_account_password: ENV["ASC_DEMO_PASSWORD"],
+      app_review_information: _demo_review_information,
       submit_for_review: false,
     )
     UI.success "deliver dry-run passed — Ready to submit"
@@ -126,4 +124,15 @@ private_lane :_require_demo_credentials do
       "Source from 1Password 'App Store reviewer' before running this lane."
     )
   end
+end
+
+# Returns only the demo credentials. Other review_information fields
+# (first_name, last_name, phone_number, email_address, notes) are read from
+# their individual .txt files under fastlane/metadata/review_information/
+# and merged by deliver.
+def _demo_review_information
+  {
+    demo_user: ENV["ASC_DEMO_USER"],
+    demo_password: ENV["ASC_DEMO_PASSWORD"],
+  }
 end
