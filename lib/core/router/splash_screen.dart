@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
-
 /// Minimal splash screen shown while auth state loads.
 ///
 /// Prevents flash of unauthenticated content (FOUC) on app start.
@@ -12,11 +10,8 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor:
-          isDark ? DeelmarktColors.darkScaffold : DeelmarktColors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
         child: Semantics(
           label: 'a11y.loading'.tr(),

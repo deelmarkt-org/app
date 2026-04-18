@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 
 /// Initial search view — recent searches + popular categories.
@@ -27,84 +28,99 @@ class SearchInitialView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final categoriesAsync = ref.watch(topLevelCategoriesProvider);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
       children: [
-        if (recentSearches.isNotEmpty) ...[
-          _SectionHeader(
-            title: 'search.recentSearches'.tr(),
-            action: Semantics(
-              button: true,
-              label: 'search.clearAll'.tr(),
-              child: TextButton(
-                onPressed: onClearAll,
-                child: Text('search.clearAll'.tr()),
-              ),
-            ),
-          ),
-          ...recentSearches.map(
-            (q) => Semantics(
-              button: true,
-              label: q,
-              child: ListTile(
-                leading: Icon(
-                  PhosphorIcons.clockCounterClockwise(),
-                  size: DeelmarktIconSize.sm,
-                ),
-                title: Text(q),
-                trailing: Semantics(
-                  button: true,
-                  label: 'action.delete'.tr(),
-                  child: IconButton(
-                    icon: Icon(PhosphorIcons.x(), size: DeelmarktIconSize.sm),
-                    onPressed: () => onRemoveRecent(q),
-                    constraints: const BoxConstraints(
-                      minWidth: 44,
-                      minHeight: 44,
-                    ),
-                  ),
-                ),
-                onTap: () => onRecentTap(q),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          const SizedBox(height: Spacing.s4),
-        ],
+        if (recentSearches.isNotEmpty) ..._buildRecentSection(context),
         _SectionHeader(title: 'search.popularCategories'.tr()),
         const SizedBox(height: Spacing.s2),
         categoriesAsync.when(
-          loading: () => const SizedBox(height: 48),
+          loading: () => const SizedBox(height: Spacing.s12),
           error: (_, _) => const SizedBox.shrink(),
           data:
-              (categories) => Wrap(
-                spacing: Spacing.s2,
-                runSpacing: Spacing.s2,
-                children:
-                    categories.map((cat) {
-                      return Semantics(
-                        button: true,
-                        label: cat.name,
-                        child: ActionChip(
-                          label: Text(cat.name),
-                          onPressed: () => onCategoryTap(cat.id),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              DeelmarktRadius.xxl,
-                            ),
-                            side: BorderSide(
-                              color: theme.colorScheme.outlineVariant,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+              (categories) => _CategoriesWrap(
+                categories: categories,
+                onCategoryTap: onCategoryTap,
               ),
         ),
       ],
+    );
+  }
+
+  List<Widget> _buildRecentSection(BuildContext context) {
+    return [
+      _SectionHeader(
+        title: 'search.recentSearches'.tr(),
+        action: Semantics(
+          button: true,
+          label: 'search.clearAll'.tr(),
+          child: TextButton(
+            onPressed: onClearAll,
+            child: Text('search.clearAll'.tr()),
+          ),
+        ),
+      ),
+      ...recentSearches.map(
+        (q) => Semantics(
+          button: true,
+          label: q,
+          child: ListTile(
+            leading: Icon(
+              PhosphorIcons.clockCounterClockwise(),
+              size: DeelmarktIconSize.sm,
+            ),
+            title: Text(q),
+            trailing: Semantics(
+              button: true,
+              label: 'action.delete'.tr(),
+              child: IconButton(
+                icon: Icon(PhosphorIcons.x(), size: DeelmarktIconSize.sm),
+                onPressed: () => onRemoveRecent(q),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+              ),
+            ),
+            onTap: () => onRecentTap(q),
+            contentPadding: EdgeInsets.zero,
+          ),
+        ),
+      ),
+      const SizedBox(height: Spacing.s4),
+    ];
+  }
+}
+
+class _CategoriesWrap extends StatelessWidget {
+  const _CategoriesWrap({
+    required this.categories,
+    required this.onCategoryTap,
+  });
+
+  final List<CategoryEntity> categories;
+  final ValueChanged<String> onCategoryTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Wrap(
+      spacing: Spacing.s2,
+      runSpacing: Spacing.s2,
+      children:
+          categories.map((cat) {
+            return Semantics(
+              button: true,
+              label: cat.name,
+              child: ActionChip(
+                label: Text(cat.name),
+                onPressed: () => onCategoryTap(cat.id),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(DeelmarktRadius.xxl),
+                  side: BorderSide(color: theme.colorScheme.outlineVariant),
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 }

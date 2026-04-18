@@ -12,8 +12,6 @@ import 'package:deelmarkt/features/messages/presentation/chat_thread_send_contro
 import 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 import 'package:deelmarkt/features/messages/presentation/conversation_list_notifier.dart';
 
-export 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart'
-    show kCurrentUserIdStub;
 export 'package:deelmarkt/features/messages/presentation/chat_thread_state.dart';
 
 part 'chat_thread_notifier.g.dart';

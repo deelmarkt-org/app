@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
@@ -181,7 +182,7 @@ class _StatusRow extends StatelessWidget {
     final label = accepted ? 'chat.accepted'.tr() : 'chat.declined'.tr();
     return Row(
       children: [
-        Icon(icon, color: color, size: 20),
+        Icon(icon, color: color, size: DeelmarktIconSize.sm),
         const SizedBox(width: Spacing.s2),
         Text(
           label,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
@@ -207,7 +208,7 @@ class _NavTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: fg),
+                Icon(icon, size: DeelmarktIconSize.sm, color: fg),
                 const SizedBox(width: Spacing.s3),
                 Expanded(
                   child: Text(

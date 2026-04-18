@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/chat_date_formatter.dart';
@@ -127,10 +128,10 @@ class _Footer extends StatelessWidget {
           ),
         ),
         if (showReadReceipt) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: Spacing.s1),
           Icon(
             isRead ? Icons.done_all : Icons.done,
-            size: 14,
+            size: DeelmarktIconSize.xs,
             color: isRead ? colors.readReceipt : colors.textTertiary,
             semanticLabel: 'chat.readReceiptA11y'.tr(),
           ),
