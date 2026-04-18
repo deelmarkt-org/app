@@ -119,28 +119,31 @@ class _ActionTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 72),
-            padding: const EdgeInsets.all(Spacing.s4),
-            // ClipRRect applies rounding; BoxDecoration stays border-only to avoid
-            // Flutter's "borderRadius can only be given for uniform Border" assertion.
-            child:
-                isShipTile
-                    ? ClipRRect(
-                      borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            left: BorderSide(
-                              color: DeelmarktColors.primary,
-                              width: 3,
-                            ),
+          // ClipRRect applies rounding; the inner BoxDecoration stays border-only
+          // to avoid Flutter's "borderRadius can only be given for a uniform
+          // Border" assertion. The clip + decoration wrap the padded content so
+          // the left-accent border sits flush with the tile edge (not indented
+          // by the inner Spacing.s4 padding).
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+            child: DecoratedBox(
+              decoration:
+                  isShipTile
+                      ? const BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            color: DeelmarktColors.primary,
+                            width: 3,
                           ),
                         ),
-                        child: row,
-                      ),
-                    )
-                    : row,
+                      )
+                      : const BoxDecoration(),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 72),
+                padding: const EdgeInsets.all(Spacing.s4),
+                child: row,
+              ),
+            ),
           ),
         ),
       ),
