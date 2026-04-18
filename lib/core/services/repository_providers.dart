@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repositor
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/home_mode_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/home/domain/usecases/toggle_favourite_usecase.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
@@ -65,6 +66,12 @@ final listingRepositoryProvider = Provider<ListingRepository>((ref) {
   if (useMock) return MockListingRepository();
   return SupabaseListingRepository(ref.watch(supabaseClientProvider));
 });
+
+/// ToggleFavouriteUseCase — shared across home, search, favourites, and
+/// category-detail notifiers so feature modules don't import each other.
+final toggleFavouriteUseCaseProvider = Provider<ToggleFavouriteUseCase>(
+  (ref) => ToggleFavouriteUseCase(ref.watch(listingRepositoryProvider)),
+);
 
 /// Category repository — mock or Supabase based on [useMockDataProvider].
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {

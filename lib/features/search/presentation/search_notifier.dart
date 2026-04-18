@@ -2,13 +2,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
+import 'package:deelmarkt/features/search/presentation/search_favourites_mixin.dart';
 import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
 
 part 'search_notifier.g.dart';
 
 @riverpod
-class SearchNotifier extends _$SearchNotifier {
+class SearchNotifier extends _$SearchNotifier with SearchFavouritesMixin {
   static const _logTag = 'search';
 
   @override

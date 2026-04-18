@@ -106,3 +106,6 @@ fastlane/README.md
 # Ruby / Bundler — local gem installs
 .bundle/
 vendor/bundle/
+
+# Golden test diff artifacts
+test/screenshots/drivers/failures/
