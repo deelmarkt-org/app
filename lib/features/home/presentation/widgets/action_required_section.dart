@@ -98,6 +98,15 @@ class _ActionTile extends StatelessWidget {
     final bgColor =
         isDark ? DeelmarktColors.darkSurface : DeelmarktColors.neutral50;
     final isShipTile = action.type == ActionItemType.shipOrder;
+    final row = Row(
+      children: [
+        _icon(),
+        const SizedBox(width: Spacing.s3),
+        _content(context, isDark, title, subtitle),
+        const SizedBox(width: Spacing.s2),
+        _chevron(isDark),
+      ],
+    );
     return Padding(
       padding: const EdgeInsets.only(
         left: Spacing.s4,
@@ -113,28 +122,25 @@ class _ActionTile extends StatelessWidget {
           child: Container(
             constraints: const BoxConstraints(minHeight: 72),
             padding: const EdgeInsets.all(Spacing.s4),
-            // M3: orange left-border accent for ship order tiles (design spec).
-            decoration:
+            // ClipRRect applies rounding; BoxDecoration stays border-only to avoid
+            // Flutter's "borderRadius can only be given for uniform Border" assertion.
+            child:
                 isShipTile
-                    ? BoxDecoration(
+                    ? ClipRRect(
                       borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
-                      border: const Border(
-                        left: BorderSide(
-                          color: DeelmarktColors.primary,
-                          width: 3,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: DeelmarktColors.primary,
+                              width: 3,
+                            ),
+                          ),
                         ),
+                        child: row,
                       ),
                     )
-                    : null,
-            child: Row(
-              children: [
-                _icon(),
-                const SizedBox(width: Spacing.s3),
-                _content(context, isDark, title, subtitle),
-                const SizedBox(width: Spacing.s2),
-                _chevron(isDark),
-              ],
-            ),
+                    : row,
           ),
         ),
       ),

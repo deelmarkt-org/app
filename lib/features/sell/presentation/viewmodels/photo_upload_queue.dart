@@ -3,23 +3,17 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
 import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_outcome.dart';
 
 export 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_outcome.dart';
 
-/// Bounded-concurrency queue that uploads picked images via
-/// [ImageUploadService] with capped retries and exponential backoff.
-///
-/// Concurrency is fixed at [maxConcurrent] (default 3, see plan §3.4).
-/// The queue does NOT touch state directly — it emits [PhotoUploadOutcome]
-/// events on a stream so the ViewModel can apply id-based state patches.
-///
-/// Cancellation is cooperative: [CancellationToken.throwIfCancelled] is
-/// called before and after each `await` boundary (CP-1..CP-4) so a photo
-/// removed mid-upload triggers a clean, silent abort.
+/// Bounded-concurrency upload queue; emits [PhotoUploadOutcome] events on [outcomes].
 class PhotoUploadQueue {
+  static const _logTag = 'photo-upload-queue';
+
   PhotoUploadQueue({
     required ImageUploadService service,
     this.maxConcurrent = 3,
@@ -104,7 +98,6 @@ class PhotoUploadQueue {
             ..storagePath = storagePath
             ..uploadCompleted =
                 true; // State B: orphan cleanup required on cancel
-
           // CP-2: after storage upload — if cancelled here, we must delete the orphan.
           job.token.throwIfCancelled();
           final response = await _service.processUploaded(storagePath);
@@ -119,10 +112,7 @@ class PhotoUploadQueue {
           // Orphan cleanup: delete from Storage only if upload completed but
           // processing did not (State B). See state machine comment above.
           if (job.uploadCompleted && !job.processingCompleted) {
-            final path = job.storagePath;
-            if (path != null) {
-              await _service.deleteStorageObject(path);
-            }
+            await _deleteOrphan(job.storagePath);
           }
           return; // silent drop — user removed the photo
         } on AppException catch (e) {
@@ -138,7 +128,11 @@ class PhotoUploadQueue {
             ..storagePath = null
             ..uploadCompleted = false
             ..processingCompleted = false;
-          await _backoff(attempt, job.token);
+          try {
+            await _backoff(attempt, job.token);
+          } on UploadCancelledException {
+            return; // cancelled during backoff — same treatment as mid-upload cancel
+          }
           if (job.token.isCancelled) return;
         }
       }
@@ -146,6 +140,19 @@ class PhotoUploadQueue {
       _tokens.remove(job.id);
       _running--;
       _pump();
+    }
+  }
+
+  Future<void> _deleteOrphan(String? path) async {
+    if (path == null) return;
+    try {
+      await _service.deleteStorageObject(path);
+    } on Exception catch (e) {
+      AppLogger.warning(
+        'Orphan cleanup failed — object may linger in Storage',
+        error: e,
+        tag: _logTag,
+      );
     }
   }
 
@@ -166,11 +173,7 @@ class PhotoUploadQueue {
   }
 }
 
-/// Mutable job descriptor for the upload queue.
-///
-/// [storagePath], [uploadCompleted], and [processingCompleted] track the
-/// state machine described in [PhotoUploadQueue._runJob] for orphan cleanup
-/// on cancellation (fix #123 / Phase 1.6).
+/// Mutable job descriptor; tracks upload state machine for orphan cleanup.
 class _Job {
   _Job({required this.id, required this.localPath, required this.token});
 
@@ -178,8 +181,6 @@ class _Job {
   final String localPath;
   final CancellationToken token;
 
-  /// Storage path assigned after [ImageUploadService.reserveAndUpload] succeeds.
-  /// Null until upload completes (State A), set in State B and C.
   String? storagePath;
 
   /// True after [ImageUploadService.reserveAndUpload] returns successfully.
