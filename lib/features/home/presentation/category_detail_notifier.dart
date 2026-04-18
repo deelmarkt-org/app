@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_category_by_id_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_listings_by_category_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_subcategories_usecase.dart';
+import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 
 /// State for a single category detail screen.
 class CategoryDetailState extends Equatable {
