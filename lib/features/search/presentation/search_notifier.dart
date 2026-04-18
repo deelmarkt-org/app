@@ -1,16 +1,15 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
-import 'package:deelmarkt/core/services/repository_providers.dart';
-import 'package:deelmarkt/core/utils/listing_list_extensions.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
+import 'package:deelmarkt/features/search/presentation/search_favourites_mixin.dart';
 import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
 
 part 'search_notifier.g.dart';
 
 @riverpod
-class SearchNotifier extends _$SearchNotifier {
+class SearchNotifier extends _$SearchNotifier with SearchFavouritesMixin {
   static const _logTag = 'search';
 
   @override
@@ -122,26 +121,6 @@ class SearchNotifier extends _$SearchNotifier {
     final current = state.valueOrNull;
     if (current != null) {
       state = AsyncValue.data(current.copyWith(recentSearches: const []));
-    }
-  }
-
-  /// Optimistic favourite toggle on a search-result listing. Reverts on failure.
-  Future<void> toggleFavourite(String listingId) async {
-    final current = state.valueOrNull;
-    if (current == null) return;
-    state = AsyncValue.data(
-      current.copyWith(listings: current.listings.toggleFavourited(listingId)),
-    );
-    try {
-      final updated = await ref.read(toggleFavouriteUseCaseProvider)(listingId);
-      final latest = state.valueOrNull;
-      if (latest == null) return;
-      state = AsyncValue.data(
-        latest.copyWith(listings: latest.listings.replaceById(updated)),
-      );
-    } on Exception catch (e) {
-      AppLogger.error('Failed to toggle favourite', error: e, tag: _logTag);
-      state = AsyncValue.data(current);
     }
   }
 }
