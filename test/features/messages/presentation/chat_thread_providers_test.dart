@@ -41,8 +41,4 @@ void main() {
       isA<UpdateOfferStatusUseCase>(),
     );
   });
-
-  test('kCurrentUserIdStub is non-empty stub value', () {
-    expect(kCurrentUserIdStub, isNotEmpty);
-  });
 }

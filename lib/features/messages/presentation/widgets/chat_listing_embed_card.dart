@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/design_system/typography.dart';
@@ -107,7 +108,7 @@ class _Thumb extends StatelessWidget {
               ? null
               : Icon(
                 Icons.image_outlined,
-                size: 20,
+                size: DeelmarktIconSize.sm,
                 color: colors.textTertiary,
               ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
@@ -59,7 +60,7 @@ class AdminSlaBar extends StatelessWidget {
       children: [
         const Icon(
           PhosphorIconsRegular.shieldCheck,
-          size: 20,
+          size: DeelmarktIconSize.sm,
           color: DeelmarktColors.primary,
         ),
         const SizedBox(width: Spacing.s2),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/admin/domain/entities/activity_item_entity.dart';
@@ -111,7 +112,7 @@ class _ActivityIcon extends StatelessWidget {
         color: color.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, size: 16, color: color),
+      child: Icon(icon, size: DeelmarktIconSize.xs, color: color),
     );
   }
 

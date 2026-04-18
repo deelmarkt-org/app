@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -29,19 +30,7 @@ class ConversationListEmptyState extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 96,
-                height: 96,
-                decoration: BoxDecoration(
-                  color: colors.surfaceElevated,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  PhosphorIcons.chatCircleText(PhosphorIconsStyle.duotone),
-                  size: 48,
-                  color: colors.textTertiary,
-                ),
-              ),
+              _ChatIcon(colors: colors),
               const SizedBox(height: Spacing.s6),
               Text(
                 'messages.noConversations'.tr(),
@@ -76,6 +65,28 @@ class ConversationListEmptyState extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ChatIcon extends StatelessWidget {
+  const _ChatIcon({required this.colors});
+  final ChatThemeColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 96,
+      decoration: BoxDecoration(
+        color: colors.surfaceElevated,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        PhosphorIcons.chatCircleText(PhosphorIconsStyle.duotone),
+        size: DeelmarktIconSize.xl,
+        color: colors.textTertiary,
       ),
     );
   }

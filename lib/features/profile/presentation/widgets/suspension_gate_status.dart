@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
@@ -48,7 +49,7 @@ class SuspensionGateCountdownChip extends StatelessWidget {
           children: [
             Icon(
               PhosphorIcons.timer(),
-              size: 16,
+              size: DeelmarktIconSize.xs,
               color:
                   isDark
                       ? DeelmarktColors.darkWarning
@@ -99,7 +100,7 @@ class SuspensionGatePermanentChip extends StatelessWidget {
           children: [
             Icon(
               PhosphorIcons.prohibit(),
-              size: 16,
+              size: DeelmarktIconSize.xs,
               color: isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
             ),
             const SizedBox(width: Spacing.s1),

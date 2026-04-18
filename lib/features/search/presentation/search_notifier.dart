@@ -1,6 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
+import 'package:deelmarkt/core/services/repository_providers.dart'
+    show toggleFavouriteUseCaseProvider;
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_providers.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
@@ -21,7 +23,6 @@ class SearchNotifier extends _$SearchNotifier {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
 
-    // Preserve active filters when user types a new query
     final current = state.valueOrNull;
     final filter =
         current != null && current.filter.hasActiveFilters
@@ -80,7 +81,6 @@ class SearchNotifier extends _$SearchNotifier {
     final current = state.valueOrNull;
     if (current == null) return;
 
-    // Preserve current query if the new filter doesn't specify one
     final query = filter.query.isNotEmpty ? filter.query : current.filter.query;
     final updated = filter.copyWith(query: query);
     state = const AsyncValue.loading();
@@ -120,6 +120,30 @@ class SearchNotifier extends _$SearchNotifier {
     final current = state.valueOrNull;
     if (current != null) {
       state = AsyncValue.data(current.copyWith(recentSearches: const []));
+    }
+  }
+
+  Future<void> toggleFavourite(String listingId) async {
+    final current = state.valueOrNull;
+    if (current == null) return;
+    final optimistic = [
+      for (final l in current.listings)
+        if (l.id == listingId) l.copyWith(isFavourited: !l.isFavourited) else l,
+    ];
+    state = AsyncValue.data(current.copyWith(listings: optimistic));
+
+    try {
+      final result = await ref.read(toggleFavouriteUseCaseProvider)(listingId);
+      final afterCurrent = state.valueOrNull ?? current;
+      final synced = [
+        for (final l in afterCurrent.listings)
+          if (l.id == listingId) result else l,
+      ];
+      state = AsyncValue.data(afterCurrent.copyWith(listings: synced));
+    } on Exception catch (e) {
+      AppLogger.error('toggleFavourite failed', error: e, tag: _logTag);
+      state = AsyncValue.data(current);
+      rethrow;
     }
   }
 }

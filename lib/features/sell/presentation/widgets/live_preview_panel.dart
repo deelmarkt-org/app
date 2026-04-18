@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
@@ -56,7 +57,7 @@ class _ImagePreview extends StatelessWidget {
       return const Center(
         child: Icon(
           Icons.image_outlined,
-          size: 48,
+          size: DeelmarktIconSize.xl,
           color: DeelmarktColors.neutral500,
         ),
       );
@@ -73,8 +74,9 @@ class _ImagePreview extends StatelessWidget {
           first.deliveryUrl!,
           fit: BoxFit.cover,
           errorBuilder:
-              (context, error, stackTrace) =>
-                  const Center(child: Icon(Icons.image, size: 48)),
+              (context, error, stackTrace) => const Center(
+                child: Icon(Icons.image, size: DeelmarktIconSize.xl),
+              ),
         ),
       );
     }
@@ -86,8 +88,9 @@ class _ImagePreview extends StatelessWidget {
           File(first.localPath),
           fit: BoxFit.cover,
           errorBuilder:
-              (context, error, stackTrace) =>
-                  const Center(child: Icon(Icons.image, size: 48)),
+              (context, error, stackTrace) => const Center(
+                child: Icon(Icons.image, size: DeelmarktIconSize.xl),
+              ),
         ),
       );
     }
@@ -96,7 +99,7 @@ class _ImagePreview extends StatelessWidget {
     return const Center(
       child: Icon(
         Icons.image_outlined,
-        size: 48,
+        size: DeelmarktIconSize.xl,
         color: DeelmarktColors.neutral500,
       ),
     );

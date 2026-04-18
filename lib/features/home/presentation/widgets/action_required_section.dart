@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -155,7 +156,7 @@ class _ActionTile extends StatelessWidget {
         isShip
             ? PhosphorIcons.package(PhosphorIconsStyle.fill)
             : PhosphorIcons.chatCircle(PhosphorIconsStyle.fill),
-        size: 24,
+        size: DeelmarktIconSize.md,
         color: isShip ? DeelmarktColors.primary : DeelmarktColors.secondary,
       ),
     );
@@ -201,7 +202,7 @@ class _ActionTile extends StatelessWidget {
   Widget _chevron(bool isDark) {
     return Icon(
       PhosphorIcons.caretRight(),
-      size: 20,
+      size: DeelmarktIconSize.sm,
       color:
           isDark
               ? DeelmarktColors.darkOnSurfaceSecondary

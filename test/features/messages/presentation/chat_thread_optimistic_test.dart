@@ -14,6 +14,7 @@ void main() {
     test('returns a text message tagged as optimistic', () {
       final msg = ChatThreadOptimistic.buildTextMessage(
         conversationId: 'conv-1',
+        senderId: 'user-1',
         text: 'Hello',
       );
       expect(msg.conversationId, 'conv-1');
@@ -29,6 +30,7 @@ void main() {
     test('formats the price with two decimals', () {
       final msg = ChatThreadOptimistic.buildOfferMessage(
         conversationId: 'conv-1',
+        senderId: 'user-1',
         amountCents: 4500,
       );
       expect(msg.text, '45.00');
@@ -37,6 +39,7 @@ void main() {
     test('formats sub-euro amounts with leading zero', () {
       final msg = ChatThreadOptimistic.buildOfferMessage(
         conversationId: 'conv-1',
+        senderId: 'user-1',
         amountCents: 50,
       );
       expect(msg.text, '0.50');
@@ -45,6 +48,7 @@ void main() {
     test('marks the message as a pending offer', () {
       final msg = ChatThreadOptimistic.buildOfferMessage(
         conversationId: 'conv-1',
+        senderId: 'user-1',
         amountCents: 1234,
       );
       expect(msg.type, MessageType.offer);

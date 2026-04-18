@@ -127,7 +127,7 @@ class _Footer extends StatelessWidget {
           ),
         ),
         if (showReadReceipt) ...[
-          const SizedBox(width: 4),
+          const SizedBox(width: Spacing.s1),
           Icon(
             isRead ? Icons.done_all : Icons.done,
             size: 14,

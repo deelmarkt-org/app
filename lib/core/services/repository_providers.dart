@@ -8,6 +8,7 @@ import 'package:deelmarkt/features/home/data/supabase/supabase_listing_repositor
 import 'package:deelmarkt/features/home/domain/repositories/category_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/home_mode_repository.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
+import 'package:deelmarkt/features/home/domain/usecases/toggle_favourite_usecase.dart';
 import 'package:deelmarkt/features/messages/data/mock/mock_message_repository.dart';
 import 'package:deelmarkt/features/messages/data/supabase/supabase_message_repository.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
@@ -43,6 +44,11 @@ import 'package:deelmarkt/core/services/supabase_service.dart';
 
 export 'package:deelmarkt/core/services/supabase_service.dart'
     show currentUserProvider;
+
+/// Riverpod provider for [ToggleFavouriteUseCase] — shared by home and search.
+final toggleFavouriteUseCaseProvider = Provider<ToggleFavouriteUseCase>(
+  (ref) => ToggleFavouriteUseCase(ref.watch(listingRepositoryProvider)),
+);
 
 /// Whether to use real Supabase or mock repositories.
 ///

@@ -4,8 +4,6 @@ import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_favourites_usecase.dart';
-import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
-
 part 'favourites_notifier.g.dart';
 
 /// Riverpod provider for [GetFavouritesUseCase].

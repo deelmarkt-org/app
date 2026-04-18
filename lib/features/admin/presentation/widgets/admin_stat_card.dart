@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
@@ -88,7 +89,7 @@ class AdminStatCard extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            size: 20,
+            size: DeelmarktIconSize.sm,
             color: iconColor ?? DeelmarktColors.primary,
           ),
         ),

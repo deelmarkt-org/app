@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/review_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
@@ -25,7 +26,7 @@ class ReviewIneligibleView extends StatelessWidget {
           children: [
             Icon(
               PhosphorIcons.warning(PhosphorIconsStyle.fill),
-              size: 48,
+              size: DeelmarktIconSize.xl,
               color: DeelmarktColors.warning,
             ),
             const SizedBox(height: Spacing.s4),
@@ -60,7 +61,7 @@ class ReviewSubmittedView extends StatelessWidget {
           children: [
             Icon(
               PhosphorIcons.checkCircle(PhosphorIconsStyle.fill),
-              size: 64,
+              size: DeelmarktIconSize.hero,
               color: DeelmarktColors.success,
             ),
             const SizedBox(height: Spacing.s4),
@@ -159,7 +160,7 @@ class ReviewErrorView extends StatelessWidget {
           children: [
             Icon(
               PhosphorIcons.warning(PhosphorIconsStyle.fill),
-              size: 48,
+              size: DeelmarktIconSize.xl,
               color: DeelmarktColors.error,
             ),
             const SizedBox(height: Spacing.s4),
