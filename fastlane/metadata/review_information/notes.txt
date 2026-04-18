@@ -1,0 +1,5 @@
+DeelMarkt is a Dutch P2P marketplace requiring iDIN identity verification.
+The demo account is pre-verified (kyc_level=level2) to allow full feature
+access without the iDIN bank authentication flow (which requires a Dutch
+bank account). Please use the demo account credentials above to explore
+all features.
