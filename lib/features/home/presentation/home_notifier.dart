@@ -8,7 +8,6 @@ import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_nearby_listings_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_recent_listings_usecase.dart';
 import 'package:deelmarkt/features/home/domain/usecases/get_top_categories_usecase.dart';
-import 'package:deelmarkt/features/home/domain/usecases/toggle_favourite_usecase.dart';
 
 part 'home_notifier.g.dart';
 
@@ -40,11 +39,6 @@ final getNearbyListingsUseCaseProvider = Provider<GetNearbyListingsUseCase>(
 /// Riverpod provider for [GetRecentListingsUseCase].
 final getRecentListingsUseCaseProvider = Provider<GetRecentListingsUseCase>(
   (ref) => GetRecentListingsUseCase(ref.watch(listingRepositoryProvider)),
-);
-
-/// Riverpod provider for [ToggleFavouriteUseCase].
-final toggleFavouriteUseCaseProvider = Provider<ToggleFavouriteUseCase>(
-  (ref) => ToggleFavouriteUseCase(ref.watch(listingRepositoryProvider)),
 );
 
 @riverpod

@@ -170,6 +170,41 @@ void main() {
       expect(data.filter.hasQuery, isFalse);
     });
 
+    test('toggleFavourite() flips isFavourited for matching result', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      final before = container.read(searchNotifierProvider).requireValue;
+      expect(before.listings, isNotEmpty);
+
+      final target = before.listings.first;
+      await container
+          .read(searchNotifierProvider.notifier)
+          .toggleFavourite(target.id);
+
+      final after = container.read(searchNotifierProvider).requireValue;
+      final updated = after.listings.firstWhere((l) => l.id == target.id);
+      expect(updated.isFavourited, !target.isFavourited);
+    });
+
+    test('toggleFavourite() twice returns to original state', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      final initial = container.read(searchNotifierProvider).requireValue;
+      final id = initial.listings.first.id;
+      final originalFavourited = initial.listings.first.isFavourited;
+
+      await container.read(searchNotifierProvider.notifier).toggleFavourite(id);
+      await container.read(searchNotifierProvider.notifier).toggleFavourite(id);
+
+      final after = container.read(searchNotifierProvider).requireValue;
+      final restored = after.listings.firstWhere((l) => l.id == id);
+      expect(restored.isFavourited, originalFavourited);
+    });
+
     test('removeRecentSearch() removes specific query', () async {
       final container = await _loadedContainer();
       addTearDown(container.dispose);
