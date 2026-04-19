@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
 import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
+import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 
@@ -246,7 +247,101 @@ void main() {
       expect(outcomes[1], isA<PhotoUploadSucceeded>());
       expect(callCount, 2); // confirms a retry did occur
     });
+
+    // ── Coverage for PR #175 review fixes (M-1, M-2) ──
+
+    test(
+      'orphan cleanup swallows deleteStorageObject failure (no rethrow)',
+      () async {
+        // State B: reserveAndUpload succeeds, processUploaded blocks long
+        // enough for the user to cancel — triggers _deleteOrphan path.
+        final svc = _OrphanCleanupService(deleteThrows: true);
+        final queue = _makeQueue(svc);
+        addTearDown(queue.dispose);
+
+        final outcomesFuture =
+            queue.outcomes
+                .take(1)
+                .toList(); // only Started — cancel discards the rest
+
+        queue.enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg');
+        // Allow reserveAndUpload to complete and processUploaded to start.
+        await Future<void>.delayed(const Duration(milliseconds: 30));
+        queue.cancel('img-1');
+
+        // Wait for the run to drain. If the unguarded exception escaped, the
+        // future would never complete or would surface as an unhandled error.
+        await outcomesFuture.timeout(const Duration(seconds: 2));
+        expect(svc.deleteCallCount, 1);
+        // Cancellation: only Started should have been emitted.
+      },
+    );
+
+    test('cancel during backoff returns silently (no Failed emitted)', () async {
+      // First attempt fails (retryable network) → enters backoff. We cancel
+      // while the backoff timer is still pending, exercising the
+      // UploadCancelledException catch around _backoff().
+      var attempts = 0;
+      final svc = _CallCountService(
+        onCall: () {
+          attempts++;
+          throw const NetworkException(debugMessage: 'first attempt fails');
+        },
+      );
+      final queue = _makeQueue(svc, maxAttempts: 5);
+      addTearDown(queue.dispose);
+
+      // Collect outcomes for 200ms to verify no Failed event fires.
+      final emitted = <PhotoUploadOutcome>[];
+      final sub = queue.outcomes.listen(emitted.add);
+      addTearDown(sub.cancel);
+
+      queue.enqueue(id: 'img-1', localPath: '/tmp/img-1.jpg');
+      // Allow first attempt to fail and the backoff sleep to start.
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      queue.cancel('img-1');
+      // Drain pending microtasks + any in-flight backoff (full jitter ≤ 500ms).
+      await Future<void>.delayed(const Duration(milliseconds: 600));
+
+      expect(attempts, 1); // no retry happened after cancel
+      expect(emitted.whereType<PhotoUploadFailed>().isEmpty, isTrue);
+    });
   });
+}
+
+// ---------------------------------------------------------------------------
+// Service that holds processUploaded open so we can cancel during State B
+// (upload completed, processing in-flight) and toggles delete failure.
+// ---------------------------------------------------------------------------
+
+class _OrphanCleanupService extends ImageUploadService {
+  _OrphanCleanupService({required this.deleteThrows})
+    : super(_MockSupabaseClient());
+
+  final bool deleteThrows;
+  int deleteCallCount = 0;
+
+  @override
+  Future<String> reserveAndUpload(File localFile) async {
+    await Future<void>.delayed(const Duration(milliseconds: 5));
+    return _FakeService._fakePath;
+  }
+
+  @override
+  Future<ImageUploadResponse> processUploaded(String storagePath) async {
+    // Simulate a cooperative cancel detected during processing — fires the
+    // orphan-cleanup branch (uploadCompleted=true, processingCompleted=false).
+    await Future<void>.delayed(const Duration(milliseconds: 5));
+    throw const UploadCancelledException();
+  }
+
+  @override
+  Future<void> deleteStorageObject(String storagePath) async {
+    deleteCallCount++;
+    if (deleteThrows) {
+      throw const NetworkException(debugMessage: 'storage cleanup down');
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------

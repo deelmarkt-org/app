@@ -82,61 +82,9 @@ GoRouter createRouter({
     authStream: authStream,
     extraListenable: sanctionNotifier,
     redirect: (context, state) {
-      // Read auth state at redirect-time (not router-creation-time).
-      // When the stream hasn't emitted yet (AsyncValue.loading), fall back
-      // to the synchronous current session. GoRouterRefreshStream can miss
-      // Supabase's INITIAL_SESSION event when it subscribes after init.
-      final authState = ref.read(authStateChangesProvider);
-      final supabase = ref.read(supabaseClientProvider);
-
-      // Fix #118: Unified session source — no split-brain between isLoggedIn
-      // and currentUser. Both are derived from the same Session object.
-      // See docs/adr/ADR-001-reactive-auth-guard.md for full rationale.
-      final useReactiveGuard = ref.read(
-        isFeatureEnabledProvider(FeatureFlags.authGuardReactive),
-      );
-
-      final Session? session =
-          authState.isLoading
-              ? supabase.auth.currentSession
-              : authState.valueOrNull?.session;
-
-      final bool isLoggedIn;
-      final User? currentUser;
-
-      if (useReactiveGuard) {
-        // New path: validate session expiry and derive both values from Session.
-        final isSessionValid = session != null && !_isSessionExpired(session);
-        isLoggedIn = isSessionValid;
-        currentUser = isSessionValid ? session.user : null;
-
-        // Proactively refresh when within 60s of expiry but still valid.
-        if (isSessionValid && session.expiresAt != null) {
-          final secondsLeft =
-              session.expiresAt! -
-              DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-          if (secondsLeft < 60) {
-            supabase.auth.refreshSession().catchError((
-              Object e,
-              StackTrace st,
-            ) {
-              AppLogger.warning(
-                'Proactive session refresh failed',
-                tag: 'auth',
-                error: e,
-              );
-              return AuthResponse();
-            });
-          }
-        }
-      } else {
-        // Legacy path: retained for canary rollback (flag off = original behaviour).
-        isLoggedIn =
-            authState.isLoading
-                ? supabase.auth.currentSession != null
-                : authState.valueOrNull?.session != null;
-        currentUser = supabase.auth.currentUser; // legacy stale read
-      }
+      final auth = _resolveAuthContext(ref);
+      final isLoggedIn = auth.isLoggedIn;
+      final currentUser = auth.currentUser;
 
       final onboardingComplete =
           ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
@@ -169,6 +117,78 @@ GoRouter createRouter({
       );
     },
   );
+}
+
+/// Resolved auth context used by the GoRouter `redirect` callback.
+class _AuthContext {
+  const _AuthContext({required this.isLoggedIn, required this.currentUser});
+  final bool isLoggedIn;
+  final User? currentUser;
+}
+
+/// Derives `(isLoggedIn, currentUser)` from the auth stream + Supabase client.
+///
+/// Extracted from the `redirect` closure to keep cognitive complexity under
+/// the SonarCloud S3776 budget (was 23, limit 15). Handles the feature-flagged
+/// split between the reactive guard (validates expiry, triggers proactive
+/// refresh) and the legacy canary-rollback path.
+_AuthContext _resolveAuthContext(Ref ref) {
+  // Read auth state at redirect-time (not router-creation-time). When the
+  // stream hasn't emitted yet (AsyncValue.loading), fall back to the
+  // synchronous current session — GoRouterRefreshStream can miss Supabase's
+  // INITIAL_SESSION event when it subscribes after init.
+  final authState = ref.read(authStateChangesProvider);
+  final supabase = ref.read(supabaseClientProvider);
+  final useReactiveGuard = ref.read(
+    isFeatureEnabledProvider(FeatureFlags.authGuardReactive),
+  );
+
+  if (!useReactiveGuard) {
+    // Legacy path: retained for canary rollback (flag off = original behaviour).
+    final isLoggedIn =
+        authState.isLoading
+            ? supabase.auth.currentSession != null
+            : authState.valueOrNull?.session != null;
+    return _AuthContext(
+      isLoggedIn: isLoggedIn,
+      currentUser: supabase.auth.currentUser, // legacy stale read
+    );
+  }
+
+  // Fix #118: Unified session source — no split-brain between isLoggedIn and
+  // currentUser. Both are derived from the same Session object. See
+  // docs/adr/ADR-001-reactive-auth-guard.md for full rationale.
+  final session =
+      authState.isLoading
+          ? supabase.auth.currentSession
+          : authState.valueOrNull?.session;
+  final isSessionValid = session != null && !_isSessionExpired(session);
+  if (isSessionValid) {
+    _maybeProactivelyRefresh(supabase, session);
+  }
+  return _AuthContext(
+    isLoggedIn: isSessionValid,
+    currentUser: isSessionValid ? session.user : null,
+  );
+}
+
+/// Proactively refreshes the session when within 60 s of expiry.
+/// Fire-and-forget — any failure is logged; the existing valid session
+/// continues to be used until it hard-expires.
+void _maybeProactivelyRefresh(SupabaseClient supabase, Session session) {
+  final expiresAt = session.expiresAt;
+  if (expiresAt == null) return;
+  final secondsLeft =
+      expiresAt - DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+  if (secondsLeft >= 60) return;
+  supabase.auth.refreshSession().catchError((Object e, StackTrace st) {
+    AppLogger.warning(
+      'Proactive session refresh failed',
+      tag: 'auth',
+      error: e,
+    );
+    return AuthResponse();
+  });
 }
 
 /// Returns true if [session] has expired (or is within 30 s of expiry).
