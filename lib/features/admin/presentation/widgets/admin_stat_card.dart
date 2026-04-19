@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 
 /// Reusable stat card for the admin dashboard overview grid.
 ///
@@ -64,7 +66,7 @@ class AdminStatCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildIconRow(),
+            _buildIconRow(context),
             const SizedBox(height: Spacing.s3),
             _buildCount(context),
             const SizedBox(height: Spacing.s1),
@@ -75,7 +77,7 @@ class AdminStatCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIconRow() {
+  Widget _buildIconRow(BuildContext context) {
     return Row(
       children: [
         Container(
@@ -88,19 +90,19 @@ class AdminStatCard extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            size: 20,
+            size: DeelmarktIconSize.sm,
             color: iconColor ?? DeelmarktColors.primary,
           ),
         ),
         if (badgeText != null) ...[
           const SizedBox(width: Spacing.s2),
-          _buildBadge(),
+          _buildBadge(context),
         ],
       ],
     );
   }
 
-  Widget _buildBadge() {
+  Widget _buildBadge(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.s2,
@@ -112,11 +114,9 @@ class AdminStatCard extends StatelessWidget {
       ),
       child: Text(
         badgeText!,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: _badgeTextColor(),
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall!.copyWith(color: _badgeTextColor()),
       ),
     );
   }
@@ -150,9 +150,7 @@ class AdminStatCard extends StatelessWidget {
   Widget _buildCount(BuildContext context) {
     return Text(
       countText ?? '$count',
-      style: const TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w700,
+      style: DeelmarktTypography.statCount.copyWith(
         color: DeelmarktColors.neutral900,
       ),
     );
@@ -161,7 +159,9 @@ class AdminStatCard extends StatelessWidget {
   Widget _buildLabel(BuildContext context) {
     return Text(
       label,
-      style: const TextStyle(fontSize: 13, color: DeelmarktColors.neutral500),
+      style: DeelmarktTypography.statLabel.copyWith(
+        color: DeelmarktColors.neutral500,
+      ),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );

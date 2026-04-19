@@ -104,33 +104,43 @@ class SellerListingTile extends StatelessWidget {
   }
 
   Widget _statsRow(BuildContext context, Color subtitleColor, int daysActive) {
-    return Row(
-      children: [
-        Icon(PhosphorIcons.eye(), size: 14, color: subtitleColor),
-        const SizedBox(width: Spacing.s1),
-        Text(
-          '${listing.viewCount}',
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: subtitleColor),
-        ),
-        const SizedBox(width: Spacing.s3),
-        Icon(PhosphorIcons.heart(), size: 14, color: subtitleColor),
-        const SizedBox(width: Spacing.s1),
-        Text(
-          '${listing.favouriteCount}',
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: subtitleColor),
-        ),
-        const SizedBox(width: Spacing.s3),
-        Text(
-          'home.seller.daysActive'.tr(args: [daysActive.toString()]),
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: subtitleColor),
-        ),
-      ],
+    return Semantics(
+      label: 'a11y.listing_stats'.tr(
+        namedArgs: {
+          'views': '${listing.viewCount}',
+          'favourites': '${listing.favouriteCount}',
+          'days': '$daysActive',
+        },
+      ),
+      excludeSemantics: true,
+      child: Row(
+        children: [
+          Icon(PhosphorIcons.eye(), size: 14, color: subtitleColor),
+          const SizedBox(width: Spacing.s1),
+          Text(
+            '${listing.viewCount}',
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: subtitleColor),
+          ),
+          const SizedBox(width: Spacing.s3),
+          Icon(PhosphorIcons.heart(), size: 14, color: subtitleColor),
+          const SizedBox(width: Spacing.s1),
+          Text(
+            '${listing.favouriteCount}',
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: subtitleColor),
+          ),
+          const SizedBox(width: Spacing.s3),
+          Text(
+            'home.seller.daysActive'.tr(args: [daysActive.toString()]),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: subtitleColor),
+          ),
+        ],
+      ),
     );
   }
 

@@ -227,6 +227,7 @@ The agent will:
 - [x] `P-30-wire` Wire `ImageGallery` into `DetailImageGallery` via `overlayBuilder` ✅ PR #99
 - [x] `P-31` `PriceTag` widget — Euro formatting, BTW, strikethrough ✅ PR #66
 - [x] `P-31-wire` Wire `PriceTag` into `DeelCard`, `DetailInfoSection`, `ListingCard`; add `originalPriceInCents` to `ListingEntity` ✅ PR #99
+  - ⚠ **Deferred `[R]`:** `listings.original_price_cents` DB column not yet created. DTO field is forward-compatible (nullable). Tracked via [#100](https://github.com/deelmarkt-org/app/issues/100) item 3. reso to open migration ticket when discount feature is scoped.
 - [x] `P-32` `LocationBadge` widget — distance + pin icon
 - [x] `P-32-wire-detail` Migrate `_LocationBlock` in `DetailInfoSection` to `LocationBadge(variant: detail, showMapPlaceholder: true)` ✅ PR #101
 - [x] `P-33` `EscrowTimeline` widget — horizontal stepper with states
@@ -283,9 +284,8 @@ The agent will:
 - [x] `P-39` Seller profile screen (public ratings) — average + reviews + badges ✅ PR #75
 - [x] `P-40` Admin moderation panel — Phase A ✅ PR #110
 - [x] `P-41` Seller/buyer mode home toggle — dashboard adapts ✅ PR #107
-- [ ] `P-42` Accessibility final audit — all screens WCAG 2.2 AA 🔄 PR #155 open (EAA blockers: issue #156)
-- [ ] `P-43` App Store screenshots + ASO metadata — both stores 🔄 PR #161 open (feature/pizmam-P43-aso)
-  - ⏳ Blocked on designer handoff: dark mode chat thread PNG missing — issue #164
+- [x] `P-42` Accessibility final audit — all screens WCAG 2.2 AA ✅ PR #155 merged + EAA blockers resolved (issue #156 closed via feature/pizmam-a11y-darkmode-followup)
+- [x] `P-43` App Store screenshots + ASO metadata — both stores ✅ PR #161 (dark-mode chat thread design added as follow-up — closes issue #164)
 - [x] `P-44` Social login (Google + Apple Sign-In) — native flow (iOS ASAuth + Android google_sign_in) + web redirect, `user_profiles` auto-trigger, Apple HIG button ✅ PR #159
 - [x] `P-45` Flutter Web performance budget & CanvasKit strategy ✅ PR #14
 - [x] `P-47` Dark mode implementation & validation ✅ PR #157

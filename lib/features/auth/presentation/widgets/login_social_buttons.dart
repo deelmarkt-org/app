@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
@@ -138,7 +139,10 @@ class _AppleSignInButton extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(PhosphorIconsFill.appleLogo, size: 20),
+                      const Icon(
+                        PhosphorIconsFill.appleLogo,
+                        size: DeelmarktIconSize.sm,
+                      ),
                       const SizedBox(width: Spacing.s2),
                       Flexible(
                         child: Text(label, overflow: TextOverflow.ellipsis),

@@ -1,9 +1,11 @@
 // TODO(#133): File exceeds 200-line limit (221 lines). Extract sub-widgets.
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
@@ -21,10 +23,14 @@ class AdminSidebar extends StatelessWidget {
 
   final int selectedIndex;
   final ValueChanged<int> onItemTap;
-  final VoidCallback onSignOut;
+  // Fix #1.11: typed as AsyncCallback so callers can await signOut before
+  // navigation. ListTile.onTap discards the future at the tap site (unavoidable
+  // with the ListTile API), but the async body runs correctly to completion.
+  final AsyncCallback onSignOut;
 
   /// Fired when the Support footer link is tapped.
-  /// When null, shows a no-op link (Phase A — support page TBD).
+  /// When null, the link is hidden (WCAG 4.1.2 — interactive elements must
+  /// have a determinable purpose).
   final VoidCallback? onSupport;
 
   static const double _width = 240;
@@ -108,13 +114,15 @@ class AdminSidebar extends StatelessWidget {
         children: [
           const Divider(color: DeelmarktColors.neutral200),
           const SizedBox(height: Spacing.s2),
-          _footerLink(
-            context,
-            PhosphorIconsRegular.question,
-            'admin.sidebar.support'.tr(),
-            onTap: onSupport ?? () {},
-          ),
-          const SizedBox(height: Spacing.s2),
+          if (onSupport != null) ...[
+            _footerLink(
+              context,
+              PhosphorIconsRegular.question,
+              'admin.sidebar.support'.tr(),
+              onTap: onSupport!,
+            ),
+            const SizedBox(height: Spacing.s2),
+          ],
           _footerLink(
             context,
             PhosphorIconsRegular.signOut,
@@ -200,7 +208,7 @@ class _NavTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: fg),
+                Icon(icon, size: DeelmarktIconSize.sm, color: fg),
                 const SizedBox(width: Spacing.s3),
                 Expanded(
                   child: Text(

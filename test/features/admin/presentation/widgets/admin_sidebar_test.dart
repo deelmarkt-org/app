@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,7 +11,7 @@ void main() {
     Widget buildSidebar({
       int selectedIndex = 0,
       ValueChanged<int>? onItemTap,
-      VoidCallback? onSignOut,
+      AsyncCallback? onSignOut,
       VoidCallback? onSupport,
     }) {
       return Scaffold(
@@ -19,7 +20,7 @@ void main() {
             AdminSidebar(
               selectedIndex: selectedIndex,
               onItemTap: onItemTap ?? (_) {},
-              onSignOut: onSignOut ?? () {},
+              onSignOut: onSignOut ?? () async {},
               onSupport: onSupport,
             ),
             const Expanded(child: SizedBox.shrink()),
@@ -86,7 +87,11 @@ void main() {
 
       await pumpTestScreen(
         tester,
-        buildSidebar(onSignOut: () => signedOut = true),
+        buildSidebar(
+          onSignOut: () async {
+            signedOut = true;
+          },
+        ),
       );
 
       await tester.tap(find.text('admin.sidebar.sign_out'));

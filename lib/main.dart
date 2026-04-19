@@ -13,6 +13,7 @@ import 'package:deelmarkt/core/services/sentry_service.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/core/services/theme_mode_notifier.dart';
+import 'package:deelmarkt/core/services/image_cache_manager.dart';
 import 'package:deelmarkt/core/services/unleash_service.dart';
 
 /// Fatal error message shown when app crashes before l10n is available.
@@ -36,6 +37,9 @@ void main() async {
   usePathUrlStrategy();
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Cap decoded-image memory before any images load (ADR-022).
+  DeelCacheManager.configureMemoryCache();
 
   // Sentry first — so it captures errors from other service inits.
   await initSentry();

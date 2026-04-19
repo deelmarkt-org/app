@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
@@ -97,7 +98,7 @@ class SuspensionGateHeader extends StatelessWidget {
         Semantics(
           label: 'sanction.a11y.sanction_icon'.tr(),
           excludeSemantics: true,
-          child: Icon(icon, size: 64, color: color),
+          child: Icon(icon, size: DeelmarktIconSize.hero, color: color),
         ),
         const SizedBox(height: Spacing.s3),
         Container(

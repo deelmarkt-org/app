@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/utils/response_time_formatter.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
@@ -157,7 +158,11 @@ class _SmallAvatar extends StatelessWidget {
       child:
           _hasImage
               ? null
-              : Icon(Icons.person, size: 20, color: colors.textTertiary),
+              : Icon(
+                Icons.person,
+                size: DeelmarktIconSize.sm,
+                color: colors.textTertiary,
+              ),
     );
   }
 

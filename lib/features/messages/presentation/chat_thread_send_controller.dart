@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
+import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
@@ -42,7 +43,7 @@ class ChatThreadSendController {
       optimistic: MessageEntity(
         id: '_optimistic_${now.microsecondsSinceEpoch}',
         conversationId: getState()?.conversation.id ?? '',
-        senderId: kCurrentUserIdStub,
+        senderId: ref.read(currentUserProvider)?.id ?? '',
         text: trimmed,
         createdAt: now,
       ),
@@ -62,7 +63,7 @@ class ChatThreadSendController {
       optimistic: MessageEntity(
         id: '_optimistic_${now.microsecondsSinceEpoch}',
         conversationId: getState()?.conversation.id ?? '',
-        senderId: kCurrentUserIdStub,
+        senderId: ref.read(currentUserProvider)?.id ?? '',
         text: offerText,
         type: MessageType.offer,
         offerAmountCents: amountCents,

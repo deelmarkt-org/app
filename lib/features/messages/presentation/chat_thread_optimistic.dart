@@ -5,7 +5,6 @@ import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart'
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
-import 'package:deelmarkt/features/messages/presentation/chat_thread_providers.dart';
 
 /// Optimistic-message factories for the chat thread (P-36).
 ///
@@ -16,13 +15,14 @@ abstract final class ChatThreadOptimistic {
   /// Builds an optimistic plain-text message.
   static MessageEntity buildTextMessage({
     required String conversationId,
+    required String senderId,
     required String text,
   }) {
     final now = DateTime.now();
     return MessageEntity(
       id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
-      senderId: kCurrentUserIdStub,
+      senderId: senderId,
       text: text,
       createdAt: now,
     );
@@ -32,13 +32,14 @@ abstract final class ChatThreadOptimistic {
   /// decimals so the bubble matches the formatter the EF returns.
   static MessageEntity buildOfferMessage({
     required String conversationId,
+    required String senderId,
     required int amountCents,
   }) {
     final now = DateTime.now();
     return MessageEntity(
       id: '_optimistic_${now.microsecondsSinceEpoch}',
       conversationId: conversationId,
-      senderId: kCurrentUserIdStub,
+      senderId: senderId,
       text: (amountCents / 100).toStringAsFixed(2),
       type: MessageType.offer,
       offerAmountCents: amountCents,

@@ -30,6 +30,7 @@ import 'package:deelmarkt/features/shipping/presentation/screens/shipping_qr_pag
 import 'package:deelmarkt/features/shipping/presentation/screens/tracking_page.dart';
 import 'package:deelmarkt/features/transaction/presentation/screens/transaction_detail_page.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 import 'package:deelmarkt/core/router/admin_guard.dart' as admin_guard;
 import 'package:deelmarkt/core/router/auth_guard.dart';
 import 'package:deelmarkt/core/router/routes.dart';
@@ -81,35 +82,30 @@ GoRouter createRouter({
     authStream: authStream,
     extraListenable: sanctionNotifier,
     redirect: (context, state) {
-      // Read auth state at redirect-time (not router-creation-time).
-      // When the stream hasn't emitted yet (AsyncValue.loading), fall back
-      // to the synchronous current session. GoRouterRefreshStream can miss
-      // Supabase's INITIAL_SESSION event when it subscribes after init.
-      final authState = ref.read(authStateChangesProvider);
-      final supabase = ref.read(supabaseClientProvider);
-      // Once Supabase.initialize() has completed, currentSession is available
-      // synchronously — use it instead of treating the state as still loading.
-      final isLoggedIn =
-          authState.isLoading
-              ? supabase.auth.currentSession != null
-              : authState.valueOrNull?.session != null;
+      final auth = _resolveAuthContext(ref);
+      final isLoggedIn = auth.isLoggedIn;
+      final currentUser = auth.currentUser;
+
       final onboardingComplete =
           ref.read(isOnboardingCompleteProvider).valueOrNull ?? false;
-      final currentUser = supabase.auth.currentUser;
 
       // P-53 Suspension gate: read active sanction to gate all navigation.
       // Using ref.read here (not watch) because GoRouter re-runs redirect
       // via refreshListenable; use invalidate + notifyListeners to trigger
       // re-evaluation when sanction state changes.
       final sanctionAsync = ref.read(activeSanctionProvider);
-      // While sanction is loading and the user is logged in, hold on splash
-      // to prevent a flash of home before the gate can activate.
-      if (isLoggedIn &&
-          sanctionAsync.isLoading &&
-          state.matchedLocation != AppRoutes.splash) {
-        return AppRoutes.splash;
-      }
-      final hasActiveSanction = sanctionAsync.valueOrNull?.isActive ?? false;
+      final asyncRedirect = sanctionAsyncRedirect(
+        isLoggedIn: isLoggedIn,
+        sanctionAsync: sanctionAsync,
+        currentPath: state.matchedLocation,
+      );
+      if (asyncRedirect != null) return asyncRedirect;
+      // Treat an error as an active sanction so that authRedirect's
+      // _sanctionRedirect does NOT release the user from /suspended while the
+      // provider is still in error state (i.e. the redirect-cycle bypass).
+      final hasActiveSanction =
+          sanctionAsync.hasError ||
+          (sanctionAsync.valueOrNull?.isActive ?? false);
 
       return authRedirect(
         isLoading: false, // Supabase is always initialized before runApp
@@ -121,6 +117,137 @@ GoRouter createRouter({
       );
     },
   );
+}
+
+/// Resolved auth context used by the GoRouter `redirect` callback.
+class _AuthContext {
+  const _AuthContext({required this.isLoggedIn, required this.currentUser});
+  final bool isLoggedIn;
+  final User? currentUser;
+}
+
+/// Derives `(isLoggedIn, currentUser)` from the auth stream + Supabase client.
+///
+/// Extracted from the `redirect` closure to keep cognitive complexity under
+/// the SonarCloud S3776 budget (was 23, limit 15). Handles the feature-flagged
+/// split between the reactive guard (validates expiry, triggers proactive
+/// refresh) and the legacy canary-rollback path.
+_AuthContext _resolveAuthContext(Ref ref) {
+  // Read auth state at redirect-time (not router-creation-time). When the
+  // stream hasn't emitted yet (AsyncValue.loading), fall back to the
+  // synchronous current session — GoRouterRefreshStream can miss Supabase's
+  // INITIAL_SESSION event when it subscribes after init.
+  final authState = ref.read(authStateChangesProvider);
+  final supabase = ref.read(supabaseClientProvider);
+  final useReactiveGuard = ref.read(
+    isFeatureEnabledProvider(FeatureFlags.authGuardReactive),
+  );
+
+  if (!useReactiveGuard) {
+    // Legacy path: retained for canary rollback (flag off = original behaviour).
+    final isLoggedIn =
+        authState.isLoading
+            ? supabase.auth.currentSession != null
+            : authState.valueOrNull?.session != null;
+    return _AuthContext(
+      isLoggedIn: isLoggedIn,
+      currentUser: supabase.auth.currentUser, // legacy stale read
+    );
+  }
+
+  // Fix #118: Unified session source — no split-brain between isLoggedIn and
+  // currentUser. Both are derived from the same Session object. See
+  // docs/adr/ADR-001-reactive-auth-guard.md for full rationale.
+  final session =
+      authState.isLoading
+          ? supabase.auth.currentSession
+          : authState.valueOrNull?.session;
+  final isSessionValid = session != null && !_isSessionExpired(session);
+  if (isSessionValid) {
+    _maybeProactivelyRefresh(supabase, session);
+  }
+  return _AuthContext(
+    isLoggedIn: isSessionValid,
+    currentUser: isSessionValid ? session.user : null,
+  );
+}
+
+/// Proactively refreshes the session when within 60 s of expiry.
+/// Fire-and-forget — any failure is logged; the existing valid session
+/// continues to be used until it hard-expires.
+void _maybeProactivelyRefresh(SupabaseClient supabase, Session session) {
+  final expiresAt = session.expiresAt;
+  if (expiresAt == null) return;
+  final secondsLeft =
+      expiresAt - DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+  if (secondsLeft >= 60) return;
+  supabase.auth.refreshSession().catchError((Object e, StackTrace st) {
+    AppLogger.warning(
+      'Proactive session refresh failed',
+      tag: 'auth',
+      error: e,
+    );
+    return AuthResponse();
+  });
+}
+
+/// Returns true if [session] has expired (or is within 30 s of expiry).
+///
+/// The 30-second buffer triggers proactive refresh before hard expiry to
+/// avoid a scenario where the token expires between the guard check and the
+/// actual Supabase API call. Service-role tokens with no expiry return false.
+///
+/// Only called when [FeatureFlags.authGuardReactive] is enabled.
+bool _isSessionExpired(Session session) {
+  final expiresAt = session.expiresAt;
+  if (expiresAt == null) return false; // no-expiry service token
+  final expiry = DateTime.fromMillisecondsSinceEpoch(
+    expiresAt * 1000,
+    isUtc: true,
+  );
+  return DateTime.now().toUtc().isAfter(
+    expiry.subtract(const Duration(seconds: 30)),
+  );
+}
+
+/// Maps the current [activeSanctionProvider] [AsyncValue] to a router
+/// redirect, enforcing the P-53 suspension gate's loading + error semantics.
+///
+/// - **Loading + logged in**: hold on `/splash` to prevent a flash of `/home`
+///   before the gate can activate.
+/// - **Error + logged in**: fail-CLOSED — route to `/suspended`. A
+///   suspended/banned user must NOT be able to bypass the gate by forcing
+///   the sanction lookup to fail (e.g. dropping the network). The
+///   [SuspensionGateScreen] surfaces the error with a retry CTA; a
+///   successful retry that resolves to `null` releases the user back to
+///   `/home`.
+/// - **Data**: returns `null` — the data branch is handled by [authRedirect]
+///   via the `hasActiveSanction` flag.
+///
+/// Reference: Gemini security review on PR #171, comment id 3096148637 —
+/// the previous implementation defaulted to `false` on error (fail-OPEN),
+/// allowing suspended users through during transport failures.
+@visibleForTesting
+String? sanctionAsyncRedirect({
+  required bool isLoggedIn,
+  required AsyncValue<SanctionEntity?> sanctionAsync,
+  required String currentPath,
+}) {
+  if (!isLoggedIn) return null;
+  if (sanctionAsync.isLoading &&
+      currentPath != AppRoutes.splash &&
+      !currentPath.startsWith(AppRoutes.suspended)) {
+    return AppRoutes.splash;
+  }
+  if (sanctionAsync.hasError && !currentPath.startsWith(AppRoutes.suspended)) {
+    AppLogger.warning(
+      'Sanction lookup failed — fail-closed redirect to /suspended',
+      tag: 'router',
+      error: sanctionAsync.error,
+    );
+    return AppRoutes.suspended;
+  }
+  return null;
 }
 
 /// Test-only factory — accepts a pre-configured redirect function.

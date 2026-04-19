@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
@@ -55,7 +56,11 @@ class ConversationListTileAvatar extends StatelessWidget {
       child:
           _hasImage
               ? null
-              : Icon(Icons.person, size: 32, color: colors.textTertiary),
+              : Icon(
+                Icons.person,
+                size: DeelmarktIconSize.lg,
+                color: colors.textTertiary,
+              ),
     );
   }
 
@@ -137,7 +142,7 @@ class ConversationListTileListingThumb extends StatelessWidget {
               ? null
               : Icon(
                 Icons.image_outlined,
-                size: 20,
+                size: DeelmarktIconSize.sm,
                 color: colors.textTertiary,
               ),
     );

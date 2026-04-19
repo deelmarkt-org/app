@@ -3,23 +3,17 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:deelmarkt/core/exceptions/app_exception.dart';
+import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart';
 import 'package:deelmarkt/features/sell/domain/utils/cancellation_token.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_outcome.dart';
 
 export 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_outcome.dart';
 
-/// Bounded-concurrency queue that uploads picked images via
-/// [ImageUploadService] with capped retries and exponential backoff.
-///
-/// Concurrency is fixed at [maxConcurrent] (default 3, see plan §3.4).
-/// The queue does NOT touch state directly — it emits [PhotoUploadOutcome]
-/// events on a stream so the ViewModel can apply id-based state patches.
-///
-/// Cancellation is cooperative: [CancellationToken.throwIfCancelled] is
-/// called before and after each `await` boundary (CP-1..CP-4) so a photo
-/// removed mid-upload triggers a clean, silent abort.
+/// Bounded-concurrency upload queue; emits [PhotoUploadOutcome] events on [outcomes].
 class PhotoUploadQueue {
+  static const _logTag = 'photo-upload-queue';
+
   PhotoUploadQueue({
     required ImageUploadService service,
     this.maxConcurrent = 3,
@@ -95,12 +89,31 @@ class PhotoUploadQueue {
       while (true) {
         attempt++;
         try {
-          job.token.throwIfCancelled(); // CP-1: before upload
-          final response = await _service.uploadAndProcess(File(job.localPath));
-          job.token.throwIfCancelled(); // CP-2: after upload
+          // CP-1: before upload — if cancelled here, nothing was stored.
+          job.token.throwIfCancelled();
+          final storagePath = await _service.reserveAndUpload(
+            File(job.localPath),
+          );
+          job
+            ..storagePath = storagePath
+            ..uploadCompleted =
+                true; // State B: orphan cleanup required on cancel
+          // CP-2: after storage upload — if cancelled here, we must delete the orphan.
+          job.token.throwIfCancelled();
+          final response = await _service.processUploaded(storagePath);
+          job.processingCompleted = true; // State C: no cleanup needed
+
+          // CP-3: after processing — if cancelled here, response is discarded but
+          // file is already in Cloudinary. No orphan in Supabase Storage.
+          job.token.throwIfCancelled();
           _emit(PhotoUploadSucceeded(job.id, response));
           return;
         } on UploadCancelledException {
+          // Orphan cleanup: delete from Storage only if upload completed but
+          // processing did not (State B). See state machine comment above.
+          if (job.uploadCompleted && !job.processingCompleted) {
+            await _deleteOrphan(job.storagePath);
+          }
           return; // silent drop — user removed the photo
         } on AppException catch (e) {
           final failed = PhotoUploadFailed(job.id, e);
@@ -110,7 +123,16 @@ class PhotoUploadQueue {
             _emit(failed);
             return;
           }
-          await _backoff(attempt, job.token);
+          // Reset state for retry attempt — upload will re-reserve a new path.
+          job
+            ..storagePath = null
+            ..uploadCompleted = false
+            ..processingCompleted = false;
+          try {
+            await _backoff(attempt, job.token);
+          } on UploadCancelledException {
+            return; // cancelled during backoff — same treatment as mid-upload cancel
+          }
           if (job.token.isCancelled) return;
         }
       }
@@ -118,6 +140,19 @@ class PhotoUploadQueue {
       _tokens.remove(job.id);
       _running--;
       _pump();
+    }
+  }
+
+  Future<void> _deleteOrphan(String? path) async {
+    if (path == null) return;
+    try {
+      await _service.deleteStorageObject(path);
+    } on Exception catch (e) {
+      AppLogger.warning(
+        'Orphan cleanup failed — object may linger in Storage',
+        error: e,
+        tag: _logTag,
+      );
     }
   }
 
@@ -138,9 +173,19 @@ class PhotoUploadQueue {
   }
 }
 
+/// Mutable job descriptor; tracks upload state machine for orphan cleanup.
 class _Job {
   _Job({required this.id, required this.localPath, required this.token});
+
   final String id;
   final String localPath;
   final CancellationToken token;
+
+  String? storagePath;
+
+  /// True after [ImageUploadService.reserveAndUpload] returns successfully.
+  bool uploadCompleted = false;
+
+  /// True after [ImageUploadService.processUploaded] returns successfully.
+  bool processingCompleted = false;
 }

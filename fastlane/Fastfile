@@ -12,6 +12,8 @@
 #   ITC_TEAM_ID          — App Store Connect team ID
 #   ASC_API_KEY_JSON     — App Store Connect API key JSON (base64 or path)
 #   GOOGLE_PLAY_JSON_KEY — Path to Google Play service account JSON key
+#   ASC_DEMO_USER        — Demo reviewer account email (stored in 1Password)
+#   ASC_DEMO_PASSWORD    — Demo reviewer account password (stored in 1Password)
 
 fastlane_version "2.220.0"
 
@@ -36,12 +38,14 @@ platform :ios do
 
   # Upload metadata only — no binary, no screenshots.
   lane :ios_metadata do
+    _preflight
     deliver(
       api_key_path: ENV["ASC_API_KEY_JSON"],
       skip_screenshots: true,
       skip_binary_upload: true,
       skip_app_version_strings: false,
       metadata_path: "fastlane/metadata",
+      app_review_information: _demo_review_information,
       force: true,
       submit_for_review: false,
     )
@@ -50,11 +54,13 @@ platform :ios do
 
   # Dry-run: validates metadata + screenshots locally without uploading.
   lane :deliver_dry_run do
+    _preflight
     deliver(
       api_key_path: ENV["ASC_API_KEY_JSON"],
       skip_binary_upload: true,
       run_precheck_before_submit: true,
       precheck_default_rule_level: :warn,
+      app_review_information: _demo_review_information,
       submit_for_review: false,
     )
     UI.success "deliver dry-run passed — Ready to submit"
@@ -105,4 +111,31 @@ private_lane :_regenerate_screenshots do
   # independent of the directory Fastlane is executed from.
   sh("flutter test --update-goldens test/screenshots/drivers/ --no-pub", path: "..")
   sh("bash scripts/screenshots_to_fastlane.sh", path: "..")
+end
+
+# Fail fast if any ENV required by `deliver` is missing. Running deliver
+# without these produces a cryptic Apple / option error several stack
+# frames deep; surfacing them here gives an actionable message pointing
+# straight at 1Password.
+private_lane :_preflight do
+  required = ["ASC_DEMO_USER", "ASC_DEMO_PASSWORD", "ASC_API_KEY_JSON"] # pragma: allowlist secret
+  missing = required.select { |k| ENV[k].to_s.empty? }
+  unless missing.empty?
+    UI.user_error!(
+      "Missing required ENV: #{missing.join(", ")}. " \
+      "See the team vault entries 'App Store reviewer' (demo account) " \
+      "and 'App Store Connect API key' for each value."
+    )
+  end
+end
+
+# Returns only the demo credentials. Other review_information fields
+# (first_name, last_name, phone_number, email_address, notes) are read from
+# their individual .txt files under fastlane/metadata/review_information/
+# and merged by deliver.
+def _demo_review_information
+  {
+    demo_user: ENV["ASC_DEMO_USER"],
+    demo_password: ENV["ASC_DEMO_PASSWORD"],
+  }
 end

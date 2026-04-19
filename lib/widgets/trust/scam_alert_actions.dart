@@ -34,6 +34,7 @@ class _ReportButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
+      label: 'scam_alert.report'.tr(),
       child: Material(
         color:
             isHigh
@@ -69,6 +70,7 @@ class _InlineDismissButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
+      label: 'scam_alert.dismiss'.tr(),
       child: Material(
         color: Colors.transparent,
         shape: RoundedRectangleBorder(

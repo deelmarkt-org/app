@@ -154,7 +154,8 @@
     },
     "quality_score": {
       "invalid_request": "Couldn't check listing quality — please try again"
-    }
+    },
+    "url_open_failed": "Couldn't open the link — please try again"
   },
   "empty": {
     "favorites": "No favorites yet",
@@ -298,7 +299,8 @@
     "skipToContent": "Skip to content",
     "back": "Go back",
     "consent_banner": "Privacy consent",
-    "modeSwitch": "Switch between buyer and seller mode"
+    "modeSwitch": "Switch between buyer and seller mode",
+    "listing_stats": "{views} views, {favourites} favourites, {days} days active"
   },
   "payment": {
     "orderSummary": "Order summary",

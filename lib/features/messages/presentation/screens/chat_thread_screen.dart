@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
 import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
+import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_notifier.dart'
-    show ChatThreadState, chatThreadNotifierProvider, kCurrentUserIdStub;
+    show ChatThreadState, chatThreadNotifierProvider;
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_error_view.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
@@ -43,6 +44,9 @@ class ChatThreadScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
+  static const _logTag = 'ChatThreadScreen';
+  static const _errorTitleKey = 'messages.errorTitle';
+
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -79,14 +83,14 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     final cents = await MakeOfferSheet.show(context);
     if (cents == null || !mounted) return;
     final messenger = ScaffoldMessenger.of(context);
-    final errorLabel = 'messages.errorTitle'.tr();
+    final errorLabel = _errorTitleKey.tr();
     try {
       await ref
           .read(chatThreadNotifierProvider(widget.conversationId).notifier)
           .sendOffer(cents);
     } on Exception catch (e) {
       if (!mounted) return;
-      AppLogger.error('sendOffer failed', tag: 'ChatThreadScreen', error: e);
+      AppLogger.error('sendOffer failed', tag: _logTag, error: e);
       messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
     }
   }
@@ -96,32 +100,28 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     OfferStatus response,
   ) async {
     final messenger = ScaffoldMessenger.of(context);
-    final errorLabel = 'messages.errorTitle'.tr();
+    final errorLabel = _errorTitleKey.tr();
     try {
       await ref
           .read(chatThreadNotifierProvider(widget.conversationId).notifier)
           .updateOfferStatus(messageId, response);
     } on Exception catch (e) {
       if (!mounted) return;
-      AppLogger.error(
-        'updateOfferStatus failed',
-        tag: 'ChatThreadScreen',
-        error: e,
-      );
+      AppLogger.error('updateOfferStatus failed', tag: _logTag, error: e);
       messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
     }
   }
 
   Future<void> _handleSend(String text) async {
     final messenger = ScaffoldMessenger.of(context);
-    final errorLabel = 'messages.errorTitle'.tr();
+    final errorLabel = _errorTitleKey.tr();
     try {
       await ref
           .read(chatThreadNotifierProvider(widget.conversationId).notifier)
           .sendText(text);
     } on Exception catch (e) {
       if (!mounted) return;
-      AppLogger.error('sendText failed', tag: 'ChatThreadScreen', error: e);
+      AppLogger.error('sendText failed', tag: _logTag, error: e);
       messenger.showSnackBar(SnackBar(content: Text(errorLabel)));
     }
   }
@@ -205,7 +205,7 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
             child: ChatThreadList(
               scrollController: _scrollController,
               messages: state.messages,
-              currentUserId: kCurrentUserIdStub,
+              currentUserId: ref.watch(currentUserProvider)?.id ?? '',
               onOfferRespond: _handleOfferRespond,
             ),
           ),

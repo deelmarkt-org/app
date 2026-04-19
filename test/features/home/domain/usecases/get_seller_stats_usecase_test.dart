@@ -222,7 +222,9 @@ void main() {
 
       expect(stats.activeListingsCount, 2);
       expect(stats.totalSalesCents, 8000);
-      expect(stats.unreadMessagesCount, 2);
+      // Bug #115 fix: sum of unreadCount per conversation (2+0+1=3), not count of
+      // conversations that have unread messages.
+      expect(stats.unreadMessagesCount, 3);
     });
 
     test('returns zero stats when all repos empty', () async {

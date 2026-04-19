@@ -94,3 +94,18 @@ dev/null/
 
 # Kit init backup directories
 .agent.backup-*/
+
+# Fastlane reviewer demo credentials — injected at deliver time from ENV
+# (ASC_DEMO_USER / ASC_DEMO_PASSWORD). Never commit these files.
+fastlane/metadata/review_information/demo_user.txt
+fastlane/metadata/review_information/demo_password.txt
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/README.md
+
+# Ruby / Bundler — local gem installs
+.bundle/
+vendor/bundle/
+
+# Golden test diff artifacts
+test/screenshots/drivers/failures/

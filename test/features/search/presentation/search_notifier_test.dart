@@ -2,11 +2,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/features/home/domain/usecases/toggle_favourite_usecase.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_notifier.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
+
+class _FailingToggleFavouriteUseCase implements ToggleFavouriteUseCase {
+  const _FailingToggleFavouriteUseCase();
+
+  @override
+  Future<ListingEntity> call(String listingId) =>
+      Future.error(Exception('Network error'));
+}
 
 Future<ProviderContainer> _loadedContainer() async {
   SharedPreferences.setMockInitialValues({});
@@ -169,6 +179,84 @@ void main() {
       final data = container.read(searchNotifierProvider).requireValue;
       expect(data.filter.hasQuery, isFalse);
     });
+
+    test('toggleFavourite() flips isFavourited for matching result', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      final before = container.read(searchNotifierProvider).requireValue;
+      expect(before.listings, isNotEmpty);
+
+      final target = before.listings.first;
+      await container
+          .read(searchNotifierProvider.notifier)
+          .toggleFavourite(target.id);
+
+      final after = container.read(searchNotifierProvider).requireValue;
+      final updated = after.listings.firstWhere((l) => l.id == target.id);
+      expect(updated.isFavourited, !target.isFavourited);
+    });
+
+    test('toggleFavourite() twice returns to original state', () async {
+      final container = await _loadedContainer();
+      addTearDown(container.dispose);
+
+      await container.read(searchNotifierProvider.notifier).search('e');
+      final initial = container.read(searchNotifierProvider).requireValue;
+      final id = initial.listings.first.id;
+      final originalFavourited = initial.listings.first.isFavourited;
+
+      await container.read(searchNotifierProvider.notifier).toggleFavourite(id);
+      await container.read(searchNotifierProvider.notifier).toggleFavourite(id);
+
+      final after = container.read(searchNotifierProvider).requireValue;
+      final restored = after.listings.firstWhere((l) => l.id == id);
+      expect(restored.isFavourited, originalFavourited);
+    });
+
+    test(
+      'toggleFavourite() reverts only the target listing on failure',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final container = ProviderContainer(
+          overrides: [
+            useMockDataProvider.overrideWithValue(true),
+            sharedPreferencesProvider.overrideWithValue(prefs),
+            toggleFavouriteUseCaseProvider.overrideWith(
+              (ref) => const _FailingToggleFavouriteUseCase(),
+            ),
+          ],
+        )..listen(searchNotifierProvider, (_, _) {});
+        addTearDown(container.dispose);
+        await container.read(searchNotifierProvider.future);
+
+        await container.read(searchNotifierProvider.notifier).search('e');
+        final before = container.read(searchNotifierProvider).requireValue;
+        expect(before.listings, isNotEmpty);
+
+        final id = before.listings.first.id;
+        final originalFav = before.listings.first.isFavourited;
+
+        await container
+            .read(searchNotifierProvider.notifier)
+            .toggleFavourite(id);
+
+        final after = container.read(searchNotifierProvider).requireValue;
+        final reverted = after.listings.firstWhere((l) => l.id == id);
+        expect(
+          reverted.isFavourited,
+          originalFav,
+          reason: 'Should revert to original on failure',
+        );
+        expect(
+          after.listings.length,
+          before.listings.length,
+          reason: 'Should preserve all other listings',
+        );
+      },
+    );
 
     test('removeRecentSearch() removes specific query', () async {
       final container = await _loadedContainer();

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/features/auth/domain/entities/auth_result.dart';
 import 'package:deelmarkt/features/auth/presentation/view_models/login_view_model.dart';
 
@@ -45,7 +46,7 @@ class BiometricSection extends ConsumerWidget {
               isFace
                   ? PhosphorIconsDuotone.scan
                   : PhosphorIconsDuotone.fingerprint,
-              size: 32,
+              size: DeelmarktIconSize.lg,
               color: secondaryColor,
             ),
             onPressed:

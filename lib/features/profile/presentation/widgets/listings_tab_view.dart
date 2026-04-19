@@ -9,6 +9,7 @@ import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
+import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
@@ -23,70 +24,70 @@ class ListingsTabView extends StatelessWidget {
   final AsyncValue<List<ListingEntity>> listings;
   final VoidCallback onRetry;
 
+  static const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    crossAxisSpacing: Spacing.listingCardGap,
+    mainAxisSpacing: Spacing.listingCardGap,
+    childAspectRatio: DeelCardTokens.gridChildAspectRatio,
+  );
+
   @override
   Widget build(BuildContext context) {
     return listings.when(
-      loading:
-          () => GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: Spacing.listingCardGap,
-              mainAxisSpacing: Spacing.listingCardGap,
-              childAspectRatio: 0.7,
-            ),
-            itemCount: 4,
-            itemBuilder: (_, _) => const DeelCardSkeleton(),
-          ),
+      loading: _buildLoadingGrid,
       error:
           (_, _) => ErrorState(message: 'error.generic'.tr(), onRetry: onRetry),
-      data: (items) {
-        if (items.isEmpty) {
-          return EmptyState(
-            variant: EmptyStateVariant.myListings,
-            onAction: () {
-              StatefulNavigationShell.of(
-                context,
-              ).goBranch(AppRoutes.sellTabIndex);
-            },
-          );
-        }
+      data: (items) => _buildDataGrid(context, items),
+    );
+  }
 
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: Spacing.listingCardGap,
-            mainAxisSpacing: Spacing.listingCardGap,
-            childAspectRatio: 0.7,
-          ),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final listing = items[index];
-            return Semantics(
-              button: true,
-              label:
-                  '${'listing.price'.tr()} ${Formatters.euroFromCents(listing.priceInCents)}, ${listing.title}',
-              child: DeelCard.grid(
-                imageUrl:
-                    listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
-                priceInCents: listing.priceInCents,
-                originalPriceInCents: listing.originalPriceInCents,
-                title: listing.title,
-                onTap: () {
-                  context.pushNamed(
-                    'listing-detail',
-                    pathParameters: {'id': listing.id},
-                  );
-                },
-                location: listing.location,
-              ),
-            );
-          },
-        );
-      },
+  Widget _buildLoadingGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: _gridDelegate,
+      itemCount: 4,
+      itemBuilder: (_, _) => const DeelCardSkeleton(),
+    );
+  }
+
+  Widget _buildDataGrid(BuildContext context, List<ListingEntity> items) {
+    if (items.isEmpty) {
+      return EmptyState(
+        variant: EmptyStateVariant.myListings,
+        onAction: () {
+          StatefulNavigationShell.of(context).goBranch(AppRoutes.sellTabIndex);
+        },
+      );
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: _gridDelegate,
+      itemCount: items.length,
+      itemBuilder: (context, index) => _buildCard(context, items[index]),
+    );
+  }
+
+  Widget _buildCard(BuildContext context, ListingEntity listing) {
+    return Semantics(
+      button: true,
+      label:
+          '${'listing.price'.tr()} ${Formatters.euroFromCents(listing.priceInCents)}, ${listing.title}',
+      child: DeelCard.grid(
+        imageUrl: listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
+        priceInCents: listing.priceInCents,
+        originalPriceInCents: listing.originalPriceInCents,
+        title: listing.title,
+        onTap: () {
+          context.pushNamed(
+            'listing-detail',
+            pathParameters: {'id': listing.id},
+          );
+        },
+        location: listing.location,
+      ),
     );
   }
 }

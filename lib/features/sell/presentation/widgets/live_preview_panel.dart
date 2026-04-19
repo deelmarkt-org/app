@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state.dart';
@@ -35,9 +36,9 @@ class LivePreviewPanel extends StatelessWidget {
               const SizedBox(height: Spacing.s3),
               _ImagePreview(imageFiles: state.imageFiles),
               const SizedBox(height: Spacing.s3),
-              _TitleText(title: state.title, context: context),
+              _TitleText(title: state.title),
               const SizedBox(height: Spacing.s1),
-              _PriceText(priceInCents: state.priceInCents, context: context),
+              _PriceText(priceInCents: state.priceInCents),
             ],
           ),
         ),
@@ -56,7 +57,7 @@ class _ImagePreview extends StatelessWidget {
       return const Center(
         child: Icon(
           Icons.image_outlined,
-          size: 48,
+          size: DeelmarktIconSize.xl,
           color: DeelmarktColors.neutral500,
         ),
       );
@@ -73,8 +74,9 @@ class _ImagePreview extends StatelessWidget {
           first.deliveryUrl!,
           fit: BoxFit.cover,
           errorBuilder:
-              (context, error, stackTrace) =>
-                  const Center(child: Icon(Icons.image, size: 48)),
+              (context, error, stackTrace) => const Center(
+                child: Icon(Icons.image, size: DeelmarktIconSize.xl),
+              ),
         ),
       );
     }
@@ -86,8 +88,9 @@ class _ImagePreview extends StatelessWidget {
           File(first.localPath),
           fit: BoxFit.cover,
           errorBuilder:
-              (context, error, stackTrace) =>
-                  const Center(child: Icon(Icons.image, size: 48)),
+              (context, error, stackTrace) => const Center(
+                child: Icon(Icons.image, size: DeelmarktIconSize.xl),
+              ),
         ),
       );
     }
@@ -96,7 +99,7 @@ class _ImagePreview extends StatelessWidget {
     return const Center(
       child: Icon(
         Icons.image_outlined,
-        size: 48,
+        size: DeelmarktIconSize.xl,
         color: DeelmarktColors.neutral500,
       ),
     );
@@ -118,13 +121,12 @@ class _ImagePreview extends StatelessWidget {
 }
 
 class _TitleText extends StatelessWidget {
-  const _TitleText({required this.title, required this.context});
+  const _TitleText({required this.title});
 
   final String title;
-  final BuildContext context;
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return Text(
       title.isNotEmpty ? title : 'sell.previewTitlePlaceholder'.tr(),
       style: Theme.of(context).textTheme.titleMedium,
@@ -135,13 +137,12 @@ class _TitleText extends StatelessWidget {
 }
 
 class _PriceText extends StatelessWidget {
-  const _PriceText({required this.priceInCents, required this.context});
+  const _PriceText({required this.priceInCents});
 
   final int priceInCents;
-  final BuildContext context;
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     final label =
         priceInCents > 0
             ? '\u20AC ${(priceInCents / 100).toStringAsFixed(2)}'

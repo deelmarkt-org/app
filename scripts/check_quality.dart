@@ -457,6 +457,16 @@ void _checkDuplicateStrings(
   }
 }
 
+// ADR-025: sentinel pattern in *_copy_with.dart files is a false-positive.
+// Pattern: `identifier != null ? identifier() : this.identifier`
+// This is a single-level ternary implementing nullable-field sentinel, not a
+// true nested ternary. Allowlisted to suppress SonarCloud S3358 false alarm.
+final _sentinelCopyWithPattern = RegExp(
+  r'[\w$]+\s*!=\s*null\s*\?\s*[\w$]+\(\)\s*:\s*this\.[\w$]+',
+);
+
+bool _isSentinelCopyWithFile(String file) => file.endsWith('_copy_with.dart');
+
 void _checkNestedTernaries(
   String file,
   List<String> lines,
@@ -468,6 +478,11 @@ void _checkNestedTernaries(
     // Skip comment lines — type notation in docs (e.g. `T? Function()?`) is
     // not a ternary operator.
     if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue;
+    // ADR-025: skip sentinel copyWith pattern in *_copy_with.dart files.
+    if (_isSentinelCopyWithFile(file) &&
+        _sentinelCopyWithPattern.hasMatch(line)) {
+      continue;
+    }
     // Ternary `?` is always preceded by a space (dart format guarantees this).
     // Type-annotation `?` follows a type name directly (no space before `?`).
     // Counting only space-prefixed `?` avoids false positives on nullable

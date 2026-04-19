@@ -154,7 +154,8 @@
     },
     "quality_score": {
       "invalid_request": "Kwaliteit van je advertentie kon niet worden gecontroleerd — probeer opnieuw"
-    }
+    },
+    "url_open_failed": "Kon de link niet openen — probeer het opnieuw"
   },
   "empty": {
     "favorites": "Nog geen favorieten",
@@ -298,7 +299,8 @@
     "skipToContent": "Ga naar inhoud",
     "back": "Terug",
     "consent_banner": "Privacytoestemming",
-    "modeSwitch": "Wissel tussen koper en verkoper modus"
+    "modeSwitch": "Wissel tussen koper en verkoper modus",
+    "listing_stats": "{views} weergaven, {favourites} favorieten, {days} dagen actief"
   },
   "settings": {
     "language": "Taal",

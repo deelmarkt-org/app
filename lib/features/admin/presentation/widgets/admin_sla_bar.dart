@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
+import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/typography.dart';
 
 /// DSA Compliance Monitor card with progress bar.
 ///
@@ -43,23 +45,23 @@ class AdminSlaBar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
+            _buildHeader(context),
             const SizedBox(height: Spacing.s4),
             _buildProgressBar(),
             const SizedBox(height: Spacing.s3),
-            _buildStatusText(),
+            _buildStatusText(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
         const Icon(
           PhosphorIconsRegular.shieldCheck,
-          size: 20,
+          size: DeelmarktIconSize.sm,
           color: DeelmarktColors.primary,
         ),
         const SizedBox(width: Spacing.s2),
@@ -69,8 +71,7 @@ class AdminSlaBar extends StatelessWidget {
             children: [
               Text(
                 'admin.sla.title'.tr(),
-                style: const TextStyle(
-                  fontSize: 15,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                   fontWeight: FontWeight.w600,
                   color: DeelmarktColors.neutral900,
                 ),
@@ -78,8 +79,7 @@ class AdminSlaBar extends StatelessWidget {
               const SizedBox(height: Spacing.s1),
               Text(
                 'admin.sla.subtitle'.tr(),
-                style: const TextStyle(
-                  fontSize: 12,
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: DeelmarktColors.neutral500,
                 ),
               ),
@@ -104,8 +104,7 @@ class AdminSlaBar extends StatelessWidget {
       ),
       child: Text(
         '$percentage%',
-        style: TextStyle(
-          fontSize: 13,
+        style: DeelmarktTypography.statLabel.copyWith(
           fontWeight: FontWeight.w600,
           color: _progressColor(),
         ),
@@ -125,10 +124,12 @@ class AdminSlaBar extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusText() {
+  Widget _buildStatusText(BuildContext context) {
     return Text(
       'admin.sla.status'.tr(args: ['$completed', '$total']),
-      style: const TextStyle(fontSize: 13, color: DeelmarktColors.neutral500),
+      style: DeelmarktTypography.statLabel.copyWith(
+        color: DeelmarktColors.neutral500,
+      ),
     );
   }
 

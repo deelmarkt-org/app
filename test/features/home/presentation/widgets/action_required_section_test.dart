@@ -103,5 +103,26 @@ void main() {
       // 2 InkWells: 1 action tile + 1 "Alles bekijken" header link.
       expect(find.byType(InkWell), findsNWidgets(2));
     });
+
+    // Regression guard for PR #175 H-1: a BoxDecoration with non-uniform
+    // Border + borderRadius asserts in debug paint and silently drops
+    // rounding in release. Fix wraps the padded content with ClipRRect +
+    // border-only DecoratedBox so the accent sits flush with the tile edge.
+    testWidgets('ship tile renders without paint assertion', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: DeelmarktTheme.light,
+          home: Scaffold(
+            body: ActionRequiredSection(
+              actions: const [_shipAction],
+              onActionTap: (_) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(ClipRRect), findsWidgets);
+    });
   });
 }
