@@ -122,7 +122,9 @@ platform :android do
     )
     supply(
       json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
-      package_name: "nl.deelmarkt.deelmarkt",
+      # PACKAGE_NAME is exported by codemagic.yaml env; default keeps the lane
+      # runnable locally via `bundle exec fastlane android android_beta`.
+      package_name: ENV["PACKAGE_NAME"] || "nl.deelmarkt.deelmarkt",
       aab: "build/app/outputs/bundle/release/app-release.aab",
       track: "internal",
       skip_upload_apk: true,

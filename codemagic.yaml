@@ -74,7 +74,8 @@ workflows:
 
       - name: Install pods
         script: |
-          find . -name "Podfile" -execdir pod install \;
+          # Explicit target — `find -execdir` can stray into .pub-cache Podfiles.
+          cd ios && pod install
 
       - name: Build & upload via Fastlane
         script: |
