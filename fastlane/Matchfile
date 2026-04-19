@@ -1,0 +1,22 @@
+# DeelMarkt Matchfile
+#
+# Manages iOS code signing via fastlane Match (git storage).
+# Repository URL is set via CM_MATCH_REPO env var (Codemagic secret).
+#
+# Required environment variables (Codemagic secrets / GitHub Secrets):
+#   CM_MATCH_REPO          — HTTPS URL to the private certificates repo
+#   MATCH_PASSWORD         — Encryption passphrase for the certificates repo
+#   ASC_API_KEY_JSON       — App Store Connect API key JSON
+
+git_url(ENV["CM_MATCH_REPO"])
+
+storage_mode("git")
+
+type("appstore")
+
+app_identifier(["nl.deelmarkt.deelmarkt"])
+
+username(ENV["APPLE_ID"])
+
+# Readonly in CI — certificates are provisioned by the team, not regenerated.
+readonly(true)

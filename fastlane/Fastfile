@@ -52,6 +52,29 @@ platform :ios do
     UI.success "iOS metadata uploaded successfully"
   end
 
+  # Build + sign + upload to TestFlight (Codemagic CI calls this).
+  lane :ios_beta do
+    _preflight
+    match(
+      type: "appstore",
+      readonly: true,
+    )
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build/ios",
+      output_name: "DeelMarkt.ipa",
+    )
+    upload_to_testflight(
+      api_key_path: ENV["ASC_API_KEY_JSON"],
+      skip_waiting_for_build_processing: true,
+      changelog: ENV.fetch("CM_COMMIT_MESSAGE", "Beta build"),
+    )
+    UI.success "iOS beta uploaded to TestFlight"
+  end
+
   # Dry-run: validates metadata + screenshots locally without uploading.
   lane :deliver_dry_run do
     _preflight
@@ -84,6 +107,30 @@ platform :android do
       screenshots_path: "fastlane/android/screenshots",
     )
     UI.success "Android screenshots uploaded successfully"
+  end
+
+  # Build AAB + upload to Play internal track (Codemagic CI calls this).
+  lane :android_beta do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android/",
+      properties: {
+        "flutter.buildMode" => "release",
+      },
+    )
+    supply(
+      json_key: ENV["GOOGLE_PLAY_JSON_KEY"],
+      package_name: "nl.deelmarkt.deelmarkt",
+      aab: "build/app/outputs/bundle/release/app-release.aab",
+      track: "internal",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: true,
+      release_status: "draft",
+    )
+    UI.success "Android beta uploaded to Play internal track"
   end
 
   # Upload metadata only to Play Console.
