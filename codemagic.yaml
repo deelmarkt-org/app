@@ -1,0 +1,142 @@
+# DeelMarkt — Codemagic CI/CD
+#
+# Workflows:
+#   ios-testflight      — Flutter iOS build → TestFlight (triggers on push to main)
+#   android-play-internal — Flutter Android AAB → Play internal track (triggers on push to main)
+#
+# Required secrets (set in Codemagic dashboard → Team → Global variables):
+#   APP_STORE_CONNECT_KEY_IDENTIFIER  — Key ID from App Store Connect API key
+#   APP_STORE_CONNECT_ISSUER_ID       — Issuer ID from App Store Connect
+#   APP_STORE_CONNECT_PRIVATE_KEY     — .p8 contents of the API key (PEM)
+#   CERTIFICATE_PRIVATE_KEY           — Private key matching the signing certificate
+#   CM_MATCH_REPO                     — HTTPS URL of the Match certificates repo
+#   MATCH_PASSWORD                    — Encryption passphrase for Match repo
+#   GOOGLE_PLAY_JSON_KEY              — Google Play service account JSON (base64 or raw)
+#   APPLE_ID                          — Apple ID email (used by Fastfile Appfile)
+#   ITC_TEAM_ID                       — App Store Connect team ID
+#   ASC_DEMO_USER                     — Reviewer demo account email (1Password)
+#   ASC_DEMO_PASSWORD                 — Reviewer demo account password (1Password)
+
+definitions:
+  # Aligned with GitHub Actions setup-flutter (channel: stable, no explicit version).
+  # Pin to an exact version (e.g. "3.29.3") once the team standardises on a release.
+  flutter_version: &flutter_version stable
+
+  # Shared Flutter setup steps reused in both workflows.
+  flutter_setup: &flutter_setup
+    - name: Set up Flutter
+      script: |
+        flutter pub get
+        dart run build_runner build --delete-conflicting-outputs
+
+  # Shared artifact export paths.
+  ios_artifacts: &ios_artifacts
+    - build/ios/DeelMarkt.ipa
+    - /tmp/xcodebuild_logs/*.log
+
+  android_artifacts: &android_artifacts
+    - build/app/outputs/bundle/release/app-release.aab
+
+workflows:
+  # ─── iOS → TestFlight ────────────────────────────────────────────────────────
+  ios-testflight:
+    name: iOS → TestFlight
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    environment:
+      flutter: *flutter_version
+      # Pin to an explicit Xcode release for reproducible iOS builds.
+      # Update this when the team upgrades Xcode (check codemagic.io/pricing for available versions).
+      xcode: "16.2"
+      cocoapods: default
+      vars:
+        BUNDLE_ID: nl.deelmarkt.deelmarkt
+        XCODE_SCHEME: Runner
+        XCODE_WORKSPACE: Runner.xcworkspace
+      app_store_connect:
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        key: $APP_STORE_CONNECT_PRIVATE_KEY
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: nl.deelmarkt.deelmarkt
+
+    scripts:
+      - *flutter_setup
+
+      - name: Install pods
+        script: |
+          # Explicit target — `find -execdir` can stray into .pub-cache Podfiles.
+          cd ios && pod install
+
+      - name: Build & upload via Fastlane
+        script: |
+          # CM_COMMIT_MESSAGE is used as TestFlight changelog.
+          export CM_COMMIT_MESSAGE="${CM_COMMIT_MESSAGE:-$(git log -1 --pretty=%s)}"
+          cd fastlane
+          bundle exec fastlane ios ios_beta
+
+    artifacts: *ios_artifacts
+
+    publishing:
+      email:
+        recipients:
+          - info.deelmarkt@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ─── Android → Play internal ─────────────────────────────────────────────────
+  android-play-internal:
+    name: Android → Play internal
+    max_build_duration: 60
+    instance_type: linux_x2
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    environment:
+      flutter: *flutter_version
+      vars:
+        PACKAGE_NAME: nl.deelmarkt.deelmarkt
+
+    scripts:
+      - *flutter_setup
+
+      - name: Set up keystore
+        script: |
+          # Keystore is injected via Codemagic code signing (Android keystore).
+          # No manual keytool step needed — CM exports the file and sets
+          # FCI_KEYSTORE_PATH, FCI_KEY_ALIAS, FCI_KEY_PASSWORD, FCI_KEYSTORE_PASSWORD.
+          echo "Keystore path: $FCI_KEYSTORE_PATH"
+
+      - name: Build & upload via Fastlane
+        script: |
+          cd fastlane
+          bundle exec fastlane android android_beta
+
+    artifacts: *android_artifacts
+
+    publishing:
+      # google_play publishing block intentionally omitted.
+      # Fastlane android_beta (supply) is the single publish path — avoids
+      # double-upload race where CM and Fastlane would both try to submit
+      # the same AAB and one would fail with "version already exists".
+      email:
+        recipients:
+          - info.deelmarkt@gmail.com
+        notify:
+          success: true
+          failure: true

@@ -263,3 +263,106 @@ jobs:
           else
             echo "All Actions pinned."
           fi
+
+  # ──────────────────────────────────────────────
+  # 5. OWASP ZAP — web app scanner (staging)
+  # ──────────────────────────────────────────────
+  zap-scan:
+    name: OWASP ZAP Web Scan (Staging)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Only run when STAGING_URL is configured.
+    if: ${{ vars.STAGING_URL != '' }}
+    # Job-level env so the Slack step's `if:` guard can evaluate SLACK_WEBHOOK_URL.
+    # Step-level env is not available during `if:` expression evaluation.
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: ZAP full scan
+        uses: zaproxy/action-full-scan@70c8d444bc63672c4f7a16dc1a0190eee5458e5b # v0.10.0
+        with:
+          target: ${{ vars.STAGING_URL }}
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+          # fail_action false — WARN/FAIL rules in rules.tsv drive Slack alert instead.
+          fail_action: false
+
+      - name: Parse ZAP report and build summary
+        id: parse
+        if: always()
+        run: |
+          REPORT="report_json.json"
+          if [ ! -f "$REPORT" ]; then
+            echo "ZAP report not found — scan may have failed to start."
+            exit 0
+          fi
+
+          python3 << 'PYEOF'
+          import json, os, sys
+
+          with open('report_json.json') as f:
+              data = json.load(f)
+
+          alerts = data.get('site', [{}])[0].get('alerts', [])
+          by_risk = {'High': [], 'Medium': [], 'Low': [], 'Informational': []}
+          for a in alerts:
+              risk = a.get('riskdesc', 'Informational').split(' ')[0]
+              by_risk.setdefault(risk, []).append(a.get('alert', 'Unknown'))
+
+          lines = ['## OWASP ZAP Scan Results']
+          for level in ('High', 'Medium', 'Low', 'Informational'):
+              items = by_risk.get(level, [])
+              emoji = {'High': '🔴', 'Medium': '🟠', 'Low': '🟡', 'Informational': '🔵'}[level]
+              lines.append(f'{emoji} **{level}**: {len(items)}')
+              for name in items[:5]:
+                  lines.append(f'  - {name}')
+              if len(items) > 5:
+                  lines.append(f'  - …and {len(items) - 5} more')
+
+          summary = '\n'.join(lines)
+          print(summary)
+
+          # Write to $GITHUB_STEP_SUMMARY
+          summary_path = os.environ.get('GITHUB_STEP_SUMMARY', '/dev/null')
+          with open(summary_path, 'a') as f:
+              f.write(summary + '\n')
+
+          # Set outputs for Slack step
+          high_count = len(by_risk.get('High', []))
+          med_count  = len(by_risk.get('Medium', []))
+          with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
+              f.write(f'high_count={high_count}\n')
+              f.write(f'med_count={med_count}\n')
+          PYEOF
+
+      - name: Notify Slack
+        if: always() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          HIGH: ${{ steps.parse.outputs.high_count }}
+          MED:  ${{ steps.parse.outputs.med_count }}
+          RUN:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          COLOR="good"
+          [ "${HIGH:-0}" -gt 0 ] && COLOR="danger"
+          [ "${HIGH:-0}" -eq 0 ] && [ "${MED:-0}" -gt 0 ] && COLOR="warning"
+
+          curl -s -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"attachments\": [{
+                \"color\": \"$COLOR\",
+                \"title\": \"OWASP ZAP — DeelMarkt Staging\",
+                \"text\": \"High: ${HIGH:-?}  Medium: ${MED:-?}\",
+                \"footer\": \"<$RUN|View run>\"
+              }]
+            }"
+
+      - name: Upload ZAP HTML report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: zap-report
+          path: report_html.html
+          retention-days: 30
