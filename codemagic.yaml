@@ -53,7 +53,9 @@ workflows:
 
     environment:
       flutter: *flutter_version
-      xcode: latest
+      # Pin to an explicit Xcode release for reproducible iOS builds.
+      # Update this when the team upgrades Xcode (check codemagic.io/pricing for available versions).
+      xcode: "16.2"
       cocoapods: default
       vars:
         BUNDLE_ID: nl.deelmarkt.deelmarkt
@@ -127,10 +129,10 @@ workflows:
     artifacts: *android_artifacts
 
     publishing:
-      google_play:
-        credentials: $GOOGLE_PLAY_JSON_KEY
-        track: internal
-        submit_as_draft: true
+      # google_play publishing block intentionally omitted.
+      # Fastlane android_beta (supply) is the single publish path — avoids
+      # double-upload race where CM and Fastlane would both try to submit
+      # the same AAB and one would fail with "version already exists".
       email:
         recipients:
           - info.deelmarkt@gmail.com

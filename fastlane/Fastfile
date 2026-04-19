@@ -111,6 +111,7 @@ platform :android do
 
   # Build AAB + upload to Play internal track (Codemagic CI calls this).
   lane :android_beta do
+    _android_preflight
     gradle(
       task: "bundle",
       build_type: "Release",
@@ -172,6 +173,19 @@ private_lane :_preflight do
       "Missing required ENV: #{missing.join(", ")}. " \
       "See the team vault entries 'App Store reviewer' (demo account) " \
       "and 'App Store Connect API key' for each value."
+    )
+  end
+end
+
+# Fail fast if any ENV required by `supply` (android_beta) is missing.
+# Mirrors _preflight convention established for iOS lanes.
+private_lane :_android_preflight do
+  required = ["GOOGLE_PLAY_JSON_KEY"] # pragma: allowlist secret
+  missing = required.select { |k| ENV[k].to_s.empty? }
+  unless missing.empty?
+    UI.user_error!(
+      "Missing required ENV: #{missing.join(", ")}. " \
+      "See the team vault entry 'Google Play service account' for the key."
     )
   end
 end
