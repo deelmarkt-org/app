@@ -19,6 +19,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
 
   static const _formatError = 'Unexpected data format from server';
   static const _tableAddresses = 'user_addresses';
+  static const _tableNotificationPrefs = 'notification_preferences';
   static const _colUserId = 'user_id';
   static const _colAddition = 'addition';
 
@@ -33,7 +34,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
     try {
       final response =
           await _client
-              .from('notification_preferences')
+              .from(_tableNotificationPrefs)
               .select()
               .eq(_colUserId, _userId)
               .maybeSingle();
@@ -54,7 +55,7 @@ class SupabaseSettingsRepository implements SettingsRepository {
     try {
       final response =
           await _client
-              .from('notification_preferences')
+              .from(_tableNotificationPrefs)
               .upsert({
                 _colUserId: _userId,
                 'messages': prefs.messages,

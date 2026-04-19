@@ -49,7 +49,7 @@ typedef _TintConfig =
       Color darkForeground,
     });
 
-final Map<String, _TintConfig> _standardTints = {
+const Map<String, _TintConfig> _standardTints = {
   'cat-electronics': (
     lightSurface: DeelmarktColors.secondarySurface,
     darkSurface: DeelmarktColors.darkInfoSurface,
