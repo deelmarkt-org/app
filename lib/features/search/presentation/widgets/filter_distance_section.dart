@@ -21,6 +21,7 @@ class FilterDistanceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final distance = filter.maxDistanceKm ?? _maxDistanceKm;
+    final distanceLabel = '${distance.round()} km';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,13 +35,13 @@ class FilterDistanceSection extends StatelessWidget {
         const SizedBox(height: Spacing.s2),
         Semantics(
           label: 'search.filter.distance'.tr(),
-          value: '${distance.round()} km',
+          value: distanceLabel,
           child: Slider(
             value: distance,
             min: 1,
             max: _maxDistanceKm,
             divisions: 99,
-            label: '${distance.round()} km',
+            label: distanceLabel,
             onChanged: (value) {
               onChanged(
                 filter.copyWith(
@@ -57,7 +58,7 @@ class FilterDistanceSection extends StatelessWidget {
             Text(
               distance >= _maxDistanceKm
                   ? 'search.filter.anyDistance'.tr()
-                  : '${distance.round()} km',
+                  : distanceLabel,
               style: theme.textTheme.bodySmall,
             ),
           ],

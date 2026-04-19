@@ -13,11 +13,13 @@ class SupabaseCategoryRepository implements CategoryRepository {
 
   final SupabaseClient _client;
 
+  static const _table = 'categories';
+
   @override
   Future<List<CategoryEntity>> getTopLevel() async {
     try {
       final response = await _client
-          .from('categories')
+          .from(_table)
           .select()
           .isFilter('parent_id', null)
           .order('sort_order');
@@ -32,7 +34,7 @@ class SupabaseCategoryRepository implements CategoryRepository {
   Future<CategoryEntity?> getById(String id) async {
     try {
       final response =
-          await _client.from('categories').select().eq('id', id).maybeSingle();
+          await _client.from(_table).select().eq('id', id).maybeSingle();
       if (response == null) return null;
       return CategoryDto.fromJson(response);
     } on PostgrestException catch (e) {
@@ -44,7 +46,7 @@ class SupabaseCategoryRepository implements CategoryRepository {
   Future<List<CategoryEntity>> getSubcategories(String parentId) async {
     try {
       final response = await _client
-          .from('categories')
+          .from(_table)
           .select()
           .eq('parent_id', parentId)
           .order('sort_order');
