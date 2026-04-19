@@ -11,7 +11,8 @@
 
 # X-Frame-Options — set at the Cloudflare edge (not in app-level headers).
 # ZAP scans the origin, not the CDN layer, so it doesn't see the edge header.
-10020	IGNORE	X-Frame-Options set at Cloudflare edge; not visible to ZAP origin scan
+# WARN (not IGNORE) so we detect if edge config drifts and stops emitting the header.
+10020	WARN	X-Frame-Options set at Cloudflare edge; WARN to catch edge config drift
 
 # Storable and Cacheable Content — CDN caching is intentional for static assets.
 10049	IGNORE	CDN cache headers on static Flutter web assets are by design
@@ -21,8 +22,9 @@
 10036	WARN	Server header exposed by upstream (Supabase/Cloudflare); low risk
 
 # Missing Anti-CSRF — Flutter web SPA uses Authorization headers (not cookies)
-# for all state-mutating requests; CSRF via form POST is not applicable.
-10202	IGNORE	SPA uses Authorization header Bearer tokens; CSRF via form not applicable
+# for all state-mutating requests; CSRF via form POST is not applicable for SPA endpoints.
+# WARN (not IGNORE) to surface any cookie-authenticated admin/Supabase endpoints if they appear.
+10202	WARN	SPA uses Bearer tokens; WARN to catch any future cookie-auth endpoints
 
 # Timestamp disclosure — Supabase response timestamps are intentional metadata.
 10096	IGNORE	Supabase timestamps in JSON responses are intentional API data

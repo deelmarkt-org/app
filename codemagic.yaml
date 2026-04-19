@@ -18,7 +18,9 @@
 #   ASC_DEMO_PASSWORD                 — Reviewer demo account password (1Password)
 
 definitions:
-  flutter_version: &flutter_version "3.x"
+  # Aligned with GitHub Actions setup-flutter (channel: stable, no explicit version).
+  # Pin to an exact version (e.g. "3.29.3") once the team standardises on a release.
+  flutter_version: &flutter_version stable
 
   # Shared Flutter setup steps reused in both workflows.
   flutter_setup: &flutter_setup

@@ -286,6 +286,7 @@ jobs:
           fail_action: false
 
       - name: Parse ZAP report and build summary
+        id: parse
         if: always()
         run: |
           REPORT="report_json.json"
