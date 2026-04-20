@@ -31,13 +31,13 @@ A client-derived badge will diverge from server-side eligibility the moment E03 
    ```sql
    ALTER TABLE listings ADD COLUMN escrow_eligible BOOLEAN NOT NULL DEFAULT false;
    ```
-2. **Computation** (reso): `BEFORE INSERT OR UPDATE` trigger sets `escrow_eligible` from:
-   - `status = 'active'`
+2. **Computation** (reso): `BEFORE INSERT OR UPDATE` trigger sets `escrow_eligible` from (matching the shipped `compute_escrow_eligible_for` function in `20260420154314_listings_escrow_eligible.sql`):
+   - `is_active = true AND is_sold = false` (listings uses two booleans rather than a `status` ENUM — see [phase-a migration](../../supabase/migrations/20260329161637_phase_a_user_profiles_listings_categories_b39_to_b44.sql#L125-L126))
    - `price_cents >= 5000`
    - `quality_score >= 50`
-   - Seller's `user_profiles.kyc_level >= 1`
-   - Seller not suspended, no active dispute count > 2 in last 90 days
-   - Category is escrow-eligible (excludes services, digital goods — see `categories.escrow_eligible` flag)
+   - Seller's `user_profiles.kyc_level <> 'level0'` (ENUM; `level0` is unverified)
+   - Category is escrow-eligible (`categories.escrow_eligible` — excludes services, digital goods)
+   - **Deferred**: dispute-count predicate (seller not suspended, no active dispute count > 2 in last 90 days) — waits on the `disputes` table shipping with E03 Phase 2. Tracked by the TODO in the migration function.
 3. **DTO** (belengaz): `ListingDto` gains `escrowEligible: bool` (default `false` on deserialization failure — **fail-closed**).
 4. **Entity** (pizmam): `ListingEntity.isEscrowAvailable` is a **final field**, not a getter. Default `false`. Tests cover the fail-closed default.
 5. **UI** (pizmam): `EscrowBadge` shown only when `listing.isEscrowAvailable && unleash.isEnabled('listings_escrow_badge')`.
@@ -47,7 +47,7 @@ A client-derived badge will diverge from server-side eligibility the moment E03 
 
 #### Positive
 - Single source of truth; client and server cannot diverge.
-- Audit trail: `escrow_eligible` flips are logged via `audit_log` table (existing infra).
+- Audit trail: `escrow_eligible` flips are captured by the standard `updated_at` touch on `listings` (triggered by the primary + cascade functions). Long-form audit records land in the existing `audit_logs` table (plural — `20260403100000_r20_account_deletion_support.sql`).
 - Server-side update can expand rules without app release.
 - Fail-closed default (`false`) means any serialization error hides the badge rather than showing a wrong one.
 - Legal defensibility: "badge displayed == row stated eligible at fetch time" is a defensible UI claim.
