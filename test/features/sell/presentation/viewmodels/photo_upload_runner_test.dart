@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -27,6 +28,14 @@ class _FakeRunnerService extends ImageUploadService {
   int processCount = 0;
   int deleteCount = 0;
 
+  /// When set, [reserveAndUpload] signals [_uploadStarted] then awaits
+  /// [_releaseUpload] before returning. This lets a test interpose a
+  /// `token.cancel()` while the upload is "in flight" and guarantees the
+  /// runner executes `throwIfCancelled` between upload-complete and
+  /// process-start — the exact precondition for `_deleteOrphan`.
+  Completer<void>? _uploadStarted;
+  Completer<void>? _releaseUpload;
+
   static const _response = ImageUploadResponse(
     storagePath: 'u/x.jpg',
     deliveryUrl: 'https://cdn/x.jpg',
@@ -42,6 +51,10 @@ class _FakeRunnerService extends ImageUploadService {
     uploadCount++;
     await Future<void>.delayed(Duration.zero);
     if (_error != null) throw _error!;
+    if (_uploadStarted != null) {
+      _uploadStarted!.complete();
+      await _releaseUpload!.future;
+    }
     return 'u/x.jpg';
   }
 
@@ -135,33 +148,35 @@ void main() {
     });
 
     test(
-      'cancellation after upload but before processing deletes orphan',
+      'cancellation between upload and processing deletes orphan (deterministic)',
       () async {
-        final svc = _FakeRunnerService.ok();
+        // Gate processUploaded on a Completer so cancellation lands after
+        // reserveAndUpload finished (uploadCompleted=true) but before
+        // processUploaded started (processingCompleted=false). This is the
+        // exact precondition that must trigger `_deleteOrphan`.
+        final svc =
+            _FakeRunnerService.ok()
+              .._uploadStarted = Completer<void>()
+              .._releaseUpload = Completer<void>();
         final token = CancellationToken();
-        final outcomes = <PhotoUploadOutcome>[];
         final runner = PhotoUploadRunner(
           service: svc,
           maxAttempts: 1,
           random: Random(0),
-          onOutcome: outcomes.add,
+          onOutcome: (_) {},
           onMarkRetrying: (_) {},
           onClearRetrying: (_) {},
         );
 
-        final job = _job(token: token);
-        final done = runner.run(job);
-        // Cancel before any awaits complete — first throwIfCancelled trips.
+        final done = runner.run(_job(token: token));
+        await svc._uploadStarted!.future;
         token.cancel();
+        svc._releaseUpload!.complete();
         await done;
 
-        // Upload may or may not have fired depending on microtask ordering, but
-        // if it did, orphan delete must be invoked when upload completed without
-        // processing. Tolerant assertion: if uploadCount>0 and processCount==0,
-        // deleteCount must equal uploadCount.
-        if (svc.uploadCount > 0 && svc.processCount == 0) {
-          expect(svc.deleteCount, svc.uploadCount);
-        }
+        expect(svc.uploadCount, 1);
+        expect(svc.processCount, 0);
+        expect(svc.deleteCount, 1);
       },
     );
   });
