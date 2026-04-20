@@ -34,18 +34,20 @@ class PhotoUploadRunner {
 
   Future<void> run(PhotoUploadJob job) async {
     onOutcome(PhotoUploadStarted(job.id));
-    final deadline = DateTime.now().add(PhotoUploadRetryPolicy.totalDeadline);
+    // Monotonic clock — immune to NTP sync, DST, and user clock changes.
+    // Matches industry practice (Stripe, GitHub SDKs). See ADR-026.
+    final clock = Stopwatch()..start();
     var attempt = 0;
     while (true) {
       attempt++;
-      if (!await _runAttempt(job, attempt, deadline)) return;
+      if (!await _runAttempt(job, attempt, clock)) return;
     }
   }
 
   Future<bool> _runAttempt(
     PhotoUploadJob job,
     int attempt,
-    DateTime deadline,
+    Stopwatch clock,
   ) async {
     try {
       job.token.throwIfCancelled();
@@ -65,7 +67,7 @@ class PhotoUploadRunner {
       }
       return false;
     } on AppException catch (e) {
-      return _scheduleRetry(job, attempt, e, deadline);
+      return _scheduleRetry(job, attempt, e, clock);
     }
   }
 
@@ -73,7 +75,7 @@ class PhotoUploadRunner {
     PhotoUploadJob job,
     int attempt,
     AppException e,
-    DateTime deadline,
+    Stopwatch clock,
   ) async {
     final failed = PhotoUploadFailed(job.id, e);
     if (!failed.isRetryable || attempt >= maxAttempts) {
@@ -91,7 +93,7 @@ class PhotoUploadRunner {
       lastException: e,
     );
 
-    if (DateTime.now().add(delay).isAfter(deadline)) {
+    if (clock.elapsed + delay > PhotoUploadRetryPolicy.totalDeadline) {
       if (!job.token.isCancelled) onOutcome(failed);
       retry_log.logRetryBudgetExhausted(
         photoId: job.id,
@@ -111,15 +113,19 @@ class PhotoUploadRunner {
       delay: delay,
       exception: e,
     );
-    try {
-      await Future<void>.delayed(delay);
-      job.token.throwIfCancelled();
-    } on UploadCancelledException {
+    // Race the backoff against cancellation so a cancelled job releases
+    // its concurrency slot immediately instead of holding it for up to
+    // `rateLimitCap` (30 s). See ADR-026 §M-2.
+    await Future.any<void>([
+      Future<void>.delayed(delay),
+      job.token.whenCancelled,
+    ]);
+    if (job.token.isCancelled) {
       onClearRetrying(job.id);
       return false;
     }
     onClearRetrying(job.id);
-    return !job.token.isCancelled;
+    return true;
   }
 
   Future<void> _deleteOrphan(String? path) async {
