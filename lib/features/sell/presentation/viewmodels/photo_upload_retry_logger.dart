@@ -3,10 +3,11 @@ import 'package:deelmarkt/core/services/app_logger.dart';
 
 const _logTag = 'photo-upload-queue';
 
-/// Structured log of a single retry attempt boundary. Feeds Sentry
-/// breadcrumbs and on-call dashboards. Fields are sanitized — only the
-/// photo UUID, attempt count, delay, and exception runtime type are
-/// emitted. No URL, filename, or user id. See ADR-026 §Observability.
+/// Structured log of a single retry attempt boundary. Routes through
+/// [AppLogger.warning] — `developer.log` in debug and Crashlytics
+/// non-fatal events in release. Fields are sanitized — only the photo
+/// UUID, attempt count, delay, and exception runtime type are emitted.
+/// No URL, filename, or user id. See ADR-026 §Observability.
 void logRetry({
   required String photoId,
   required int attempt,

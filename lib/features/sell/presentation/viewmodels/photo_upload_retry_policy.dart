@@ -2,7 +2,7 @@ import 'package:deelmarkt/core/exceptions/app_exception.dart';
 
 /// Pure retry-delay policy for [PhotoUploadQueue].
 ///
-/// Extracted so the queue file stays under the 250-line repository limit
+/// Extracted so the queue file stays under the 150-line ViewModel cap
 /// (CLAUDE.md §2.1) and so this pure, deterministic function is trivially
 /// unit-testable without touching queue state. See ADR-026.
 abstract final class PhotoUploadRetryPolicy {
@@ -41,6 +41,10 @@ abstract final class PhotoUploadRetryPolicy {
     const capMs = 8000;
     final exp = baseMs * (1 << (attempt - 1));
     final ceil = exp.clamp(baseMs, capMs);
+    // Modulo bias is bounded by `ceil / (1<<30)` — at most ~7.4e-6 for our
+    // largest `ceil` (8000 ms). Accepted trade-off for a compact, testable
+    // API where `seed < ceil ⇒ delay == seed` (see unit tests). See ADR-026
+    // §Observability.
     final jitteredMs = randomSeedMs % ceil;
 
     final floor = _computeRateLimitFloor(lastException);
