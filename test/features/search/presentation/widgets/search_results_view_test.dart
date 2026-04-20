@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/design_system/theme.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
@@ -23,15 +25,24 @@ final _testListing = ListingEntity(
 
 void main() {
   Widget buildView({required SearchState data}) {
-    return MaterialApp(
-      theme: DeelmarktTheme.light,
-      home: Scaffold(
-        body: SearchResultsView(
-          data: data,
-          onListingTap: (_) {},
-          onFavouriteTap: (_) {},
-          onLoadMore: () {},
-          onFilterTap: () {},
+    return ProviderScope(
+      overrides: [
+        // GH-59: EscrowAwareListingCard reads the Unleash flag — override
+        // it here so widget tests don't try to contact the real SDK.
+        isFeatureEnabledProvider(
+          FeatureFlags.listingsEscrowBadge,
+        ).overrideWith((ref) => false),
+      ],
+      child: MaterialApp(
+        theme: DeelmarktTheme.light,
+        home: Scaffold(
+          body: SearchResultsView(
+            data: data,
+            onListingTap: (_) {},
+            onFavouriteTap: (_) {},
+            onLoadMore: () {},
+            onFilterTap: () {},
+          ),
         ),
       ),
     );
@@ -94,19 +105,26 @@ void main() {
 
     testWidgets('renders with dark theme', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: DeelmarktTheme.dark,
-          home: Scaffold(
-            body: SearchResultsView(
-              data: SearchState(
-                listings: [_testListing],
-                filter: const SearchFilter(query: 'test'),
-                total: 1,
+        ProviderScope(
+          overrides: [
+            isFeatureEnabledProvider(
+              FeatureFlags.listingsEscrowBadge,
+            ).overrideWith((ref) => false),
+          ],
+          child: MaterialApp(
+            theme: DeelmarktTheme.dark,
+            home: Scaffold(
+              body: SearchResultsView(
+                data: SearchState(
+                  listings: [_testListing],
+                  filter: const SearchFilter(query: 'test'),
+                  total: 1,
+                ),
+                onListingTap: (_) {},
+                onFavouriteTap: (_) {},
+                onLoadMore: () {},
+                onFilterTap: () {},
               ),
-              onListingTap: (_) {},
-              onFavouriteTap: (_) {},
-              onLoadMore: () {},
-              onFilterTap: () {},
             ),
           ),
         ),

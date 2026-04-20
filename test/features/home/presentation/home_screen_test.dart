@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 import 'package:deelmarkt/features/home/domain/entities/home_mode.dart';
 import 'package:deelmarkt/features/home/presentation/home_mode_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
@@ -50,6 +51,10 @@ void main() {
           homeNotifierProvider.overrideWith(
             () => _NeverResolvingHomeNotifier(),
           ),
+          // GH-59: EscrowAwareListingCard reads this flag via Unleash.
+          isFeatureEnabledProvider(
+            FeatureFlags.listingsEscrowBadge,
+          ).overrideWith((ref) => false),
           ...extraOverrides,
         ],
         child: MaterialApp(

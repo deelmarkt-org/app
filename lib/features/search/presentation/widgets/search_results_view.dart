@@ -8,8 +8,8 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
+import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
-import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
 
 /// Search results grid with filter chips, result count, and infinite scroll.
 class SearchResultsView extends StatelessWidget {
@@ -117,8 +117,8 @@ class SearchResultsView extends StatelessWidget {
         childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children:
             data.listings.map((listing) {
-              return listingDeelCard(
-                listing,
+              return EscrowAwareListingCard(
+                listing: listing,
                 onTap: () => onListingTap(listing.id),
                 onFavouriteTap: () => onFavouriteTap(listing.id),
               );
