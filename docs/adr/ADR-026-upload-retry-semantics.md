@@ -42,10 +42,13 @@ Codify retry semantics with four architectural decisions:
      client SDKs). Defuses hostile hints (H1).
    - `totalDeadline = 60 s` — absolute retry budget per job. Beyond this the
      queue emits `PhotoUploadFailed` so the UI can surface the error.
-3. **Structured retry logging** via `AppLogger.warning` at every backoff
-   boundary, with fields `{photoId, attempt, delayMs, rateLimited, cause}`.
-   Routes to `developer.log` in debug and Crashlytics non-fatal events in
-   release (current `AppLogger` transport).
+3. **Dual-sink retry logging** at every backoff boundary, with fields
+   `{photoId, attempt, delayMs, rateLimited, cause}`:
+   - `AppLogger.warning` — `developer.log` in debug, Crashlytics non-fatal
+     in release (current `AppLogger` transport).
+   - `Sentry.addBreadcrumb` for per-retry events and `Sentry.captureMessage`
+     for `upload_retry_budget_exhausted` — matches the read-path pattern
+     established in ADR-022 (`deel_card_image.dart` image-load failures).
 4. **A11y live-region** for retry state. `PhotoUploadQueue` exposes
    `Stream<Set<String>> retryingIds`; UI switches the tile's `Semantics.label`
    to `sell.uploadRetrying` (NL + EN) while preserving `liveRegion: true`.
@@ -126,11 +129,19 @@ Log events emitted from `PhotoUploadQueue`:
 | `upload_retry` | `photo-upload-queue` | photoId, attempt/max, delayMs, rateLimited, cause |
 | `upload_retry_budget_exhausted` | `photo-upload-queue` | photoId, attempt/max, totalDeadlineSec, cause |
 
-Downstream: both events route through `AppLogger.warning` — which emits
-`developer.log` in debug and is wired to Crashlytics as non-fatal events
-in release (see `lib/core/services/app_logger.dart`). No new telemetry
-plumbing is added by this PR; a Sentry breadcrumb bridge, if added later,
-would pick these events up without further changes.
+Downstream transports:
+
+- **`AppLogger.warning`** — `developer.log` in debug; Crashlytics non-fatal
+  in release (see `lib/core/services/app_logger.dart`).
+- **Sentry** — `upload_retry` is recorded as a `Breadcrumb`
+  (attached to any later captured exception so on-call can see the retry
+  trail); `upload_retry_budget_exhausted` is a full `captureMessage` with
+  tags (`photoId`, `cause`) and a `retry` context (`attempt`,
+  `maxAttempts`, `totalDeadlineSec`). Parity with the read-path
+  `image_load_failed` capture established in ADR-022.
+
+No PII leaves the device — `photoId` is a UUID, `cause` is the exception
+runtime type, `attempt`/`delay` are numeric.
 
 ### Rollback
 
