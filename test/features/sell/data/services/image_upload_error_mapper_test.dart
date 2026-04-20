@@ -44,16 +44,61 @@ void main() {
     });
 
     test(
-      '429 → ValidationException(error.image.rate_limited) with retry_after in debugMessage',
+      '429 → ValidationException(error.image.rate_limited) with typed retryAfter',
       () {
         final exception = ImageUploadErrorMapper.map(429, const {
           'retry_after_seconds': 120,
         });
         expect(exception, isA<ValidationException>());
         expect(exception.messageKey, 'error.image.rate_limited');
+        expect(
+          (exception as ValidationException).retryAfter,
+          const Duration(seconds: 120),
+        );
         expect(exception.debugMessage, contains('120'));
       },
     );
+
+    test('429 w/o body → ValidationException with retryAfter == null', () {
+      final exception = ImageUploadErrorMapper.map(429, null);
+      expect(exception, isA<ValidationException>());
+      expect((exception as ValidationException).retryAfter, isNull);
+    });
+
+    test(
+      '429 with malformed body (string instead of map) → retryAfter == null',
+      () {
+        final exception = ImageUploadErrorMapper.map(429, 'totally-wrong');
+        expect((exception as ValidationException).retryAfter, isNull);
+      },
+    );
+
+    test(
+      '429 with negative retry_after_seconds → retryAfter == null (defensive)',
+      () {
+        final exception = ImageUploadErrorMapper.map(429, const {
+          'retry_after_seconds': -5,
+        });
+        expect((exception as ValidationException).retryAfter, isNull);
+      },
+    );
+
+    test('429 with non-numeric retry_after_seconds → retryAfter == null', () {
+      final exception = ImageUploadErrorMapper.map(429, const {
+        'retry_after_seconds': 'soon',
+      });
+      expect((exception as ValidationException).retryAfter, isNull);
+    });
+
+    test('429 with string retry_after_seconds is parsed into Duration', () {
+      final exception = ImageUploadErrorMapper.map(429, const {
+        'retry_after_seconds': '45',
+      });
+      expect(
+        (exception as ValidationException).retryAfter,
+        const Duration(seconds: 45),
+      );
+    });
   });
 
   group('ImageUploadErrorMapper.map — transport errors', () {

@@ -40,6 +40,22 @@ final class NetworkException extends AppException {
 }
 
 /// Input validation failures.
+///
+/// Carries an optional [retryAfter] hint for transient-validation failures
+/// such as HTTP 429 rate limiting. The data layer maps wire-format
+/// `retry_after_seconds` into a typed [Duration] here so the presentation
+/// layer consumes a compile-time contract instead of parsing log strings.
+/// See ADR-026.
 final class ValidationException extends AppException {
-  const ValidationException(super.messageKey, {super.debugMessage});
+  const ValidationException(
+    super.messageKey, {
+    super.debugMessage,
+    this.retryAfter,
+  });
+
+  /// Server-advised minimum wait before retrying. Null when the server did
+  /// not provide a hint (or for non-rate-limit validation failures).
+  /// Callers must clamp to a local safety range before use — a hostile or
+  /// buggy backend could otherwise stall the client indefinitely.
+  final Duration? retryAfter;
 }

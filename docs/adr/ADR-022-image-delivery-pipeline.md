@@ -53,3 +53,7 @@ Adopt **`cached_network_image: ^3.4.1`** as the canonical image loader for all n
 ### Rollback
 
 Single-commit revert; `CachedNetworkImage` has identical API surface (url, width, height, fit, loadingBuilder, errorBuilder → placeholder, errorWidget). Cache dir `.deel_image_cache` can be deleted on rollback via `DefaultCacheManager().emptyCache()`.
+
+### Related
+
+- [ADR-026](ADR-026-upload-retry-semantics.md) — Photo upload retry semantics (write-path counterpart to this read-path decision).

@@ -10,7 +10,7 @@
 |-------|-------|
 | Route | `/sell` (from bottom nav) → multi-step flow |
 | Auth | Required |
-| States | Photo capture, Form, Quality score, Publishing, Published success |
+| States | Photo capture, Form, Quality score, Publishing, Published success, Per-tile upload: Uploading / Retrying / Uploaded / Failed (retryable) / Failed (terminal) |
 | Responsive | Compact: full-screen steps, Expanded: 2-column (preview left, form right) |
 | Dark mode | Required |
 
@@ -22,6 +22,20 @@
 - "Foto's toevoegen" (Add photos) button
 - Max 12 photos, minimum 1
 - Progress: "3 van 12 foto's" (3 of 12 photos)
+
+#### Per-tile upload states
+
+Each photo-grid tile renders one of the following states. Transitions are
+driven by `PhotoUploadQueue` outcomes and `retryingIds` stream; tile
+`Semantics` exposes a `liveRegion: true` label that flips with the state.
+
+| State | Trigger | Visible UI | `Semantics.label` key |
+|:------|:--------|:-----------|:----------------------|
+| **Uploading** | `PhotoUploadStarted` emitted; tile not in `retryingIds` | Determinate/indeterminate progress caption on thumbnail | `sell.uploadingImage` |
+| **Retrying** | Job enters `retryingIds` after a retryable 429 / network failure — scheduled backoff in `[2 s, 30 s]`, up to a 60 s total deadline per job (see ADR-026) | Same thumbnail, caption swapped to "Opnieuw proberen…" / "Retrying…" | `sell.uploadRetrying` |
+| **Uploaded** | `PhotoUploadSucceeded` | Clean thumbnail, remove button enabled | (none — decorative) |
+| **Failed (retryable)** | `PhotoUploadFailed` with `isRetryable: true` after budget exhausted or `maxAttempts` reached | Red border, retry icon overlay | `sell.uploadFailed` + `sell.retryUpload` |
+| **Failed (terminal)** | `PhotoUploadFailed` with `isRetryable: false` (validation/blocked) | Red border, no retry affordance, error icon | `sell.uploadErrorBlocked` (or equivalent) |
 
 ### Step 2 — Details form
 - Titel (Title) — text input, required
@@ -108,4 +122,10 @@ sell.published: "Gepubliceerd!" / "Published!"
 sell.viewListing: "Bekijk advertentie" / "View listing"
 sell.next: "Volgende" / "Next"
 sell.tipMorePhotos: "Advertenties met 5+ foto's verkopen 3x sneller" / "Listings with 5+ photos sell 3x faster"
+sell.uploadingImage: "Foto uploaden" / "Uploading photo"
+sell.uploadingProgress: "Uploaden {current} van {total}" / "Uploading {current} of {total}"
+sell.uploadRetrying: "Uploaden wordt zo opnieuw geprobeerd" / "Retrying upload in a moment"
+sell.uploadFailed: "Upload mislukt" / "Upload failed"
+sell.retryUpload: "Opnieuw proberen" / "Retry upload"
+sell.uploadErrorBlocked: "Deze foto is afgewezen door onze veiligheidscheck" / "This photo was rejected by our safety scan"
 ```

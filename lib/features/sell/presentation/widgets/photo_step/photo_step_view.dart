@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/sell/domain/entities/listing_creation_state_upload.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/listing_creation_viewmodel.dart';
+import 'package:deelmarkt/features/sell/presentation/viewmodels/sell_providers.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_grid.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
@@ -22,6 +23,8 @@ class PhotoStepView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(listingCreationNotifierProvider);
     final notifier = ref.read(listingCreationNotifierProvider.notifier);
+    final retryingIds =
+        ref.watch(retryingPhotoIdsProvider).asData?.value ?? const <String>{};
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,6 +54,7 @@ class PhotoStepView extends ConsumerWidget {
             onRemove: notifier.removePhoto,
             onRetry: notifier.retryUpload,
             onReorder: notifier.reorderPhotos,
+            retryingIds: retryingIds,
           ),
         ),
         if (state.imageFiles.length < _maxPhotos)

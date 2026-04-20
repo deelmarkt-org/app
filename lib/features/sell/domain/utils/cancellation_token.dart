@@ -1,3 +1,5 @@
+import 'dart:async';
+
 /// Cooperative cancellation signal for long-running operations.
 ///
 /// Dart has no native way to cancel an in-flight `Future`. Instead we pass
@@ -11,11 +13,20 @@ class CancellationToken {
   CancellationToken();
 
   bool _cancelled = false;
+  final Completer<void> _cancelCompleter = Completer<void>();
 
   bool get isCancelled => _cancelled;
 
+  /// Future that completes when [cancel] is invoked. Enables racing an
+  /// awaited delay against cancellation (e.g. `Future.any([delay,
+  /// token.whenCancelled])`) so a cancelled job does not hold a concurrency
+  /// slot through the full backoff. Never errors; completes with `null`.
+  Future<void> get whenCancelled => _cancelCompleter.future;
+
   void cancel() {
+    if (_cancelled) return;
     _cancelled = true;
+    _cancelCompleter.complete();
   }
 
   /// Throw if cancelled. Call at every await checkpoint.
