@@ -166,4 +166,46 @@ void main() {
       expect(ListingCondition.values, contains(ListingCondition.poor));
     });
   });
+
+  group('ListingEntity.isEscrowAvailable', () {
+    test('defaults to false (fail-closed, ADR-023)', () {
+      expect(listing.isEscrowAvailable, isFalse);
+    });
+
+    test('can be set via the constructor', () {
+      final eligible = ListingEntity(
+        id: 'test-2',
+        title: 'Eligible',
+        description: 'desc',
+        priceInCents: 10000,
+        sellerId: 'user-1',
+        sellerName: 'Test',
+        condition: ListingCondition.good,
+        categoryId: 'cat-1',
+        imageUrls: const [],
+        createdAt: DateTime(2026),
+        isEscrowAvailable: true,
+      );
+      expect(eligible.isEscrowAvailable, isTrue);
+    });
+
+    test('copyWith toggles the value while preserving others', () {
+      final flipped = listing.copyWith(isEscrowAvailable: true);
+      expect(flipped.isEscrowAvailable, isTrue);
+      expect(flipped.id, equals(listing.id));
+      expect(flipped.priceInCents, equals(listing.priceInCents));
+    });
+
+    test('copyWith without isEscrowAvailable keeps the current value', () {
+      final eligible = listing.copyWith(isEscrowAvailable: true);
+      final reTitled = eligible.copyWith(title: 'New title');
+      expect(reTitled.isEscrowAvailable, isTrue);
+    });
+
+    test('equality distinguishes entities that differ only by escrow flag', () {
+      final eligible = listing.copyWith(isEscrowAvailable: true);
+      expect(eligible, isNot(equals(listing)));
+      expect(eligible.hashCode, isNot(equals(listing.hashCode)));
+    });
+  });
 }

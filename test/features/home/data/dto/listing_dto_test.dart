@@ -131,5 +131,64 @@ void main() {
       final entity = ListingDto.fromJson(json);
       expect(entity.condition, ListingCondition.good);
     });
+
+    group('escrow_eligible parse (ADR-023, fail-closed)', () {
+      test('maps escrow_eligible=true to isEscrowAvailable=true', () {
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': true,
+        });
+        expect(entity.isEscrowAvailable, isTrue);
+      });
+
+      test('maps escrow_eligible=false to isEscrowAvailable=false', () {
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': false,
+        });
+        expect(entity.isEscrowAvailable, isFalse);
+      });
+
+      test('missing escrow_eligible key → false (fail-closed)', () {
+        final entity = ListingDto.fromJson(sampleJson);
+        expect(entity.isEscrowAvailable, isFalse);
+      });
+
+      test('escrow_eligible=null → false (fail-closed)', () {
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': null,
+        });
+        expect(entity.isEscrowAvailable, isFalse);
+      });
+
+      test('escrow_eligible=non-bool (e.g. "true" string) → false', () {
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': 'true',
+        });
+        expect(entity.isEscrowAvailable, isFalse);
+      });
+
+      test('escrow_eligible=1 (integer truthy) → false (strict bool-only)', () {
+        // Supabase REST can serialise booleans as integers in rare RPC
+        // projections; the DTO must not coerce 1 to true — that would
+        // bypass the server-authoritative boolean contract.
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': 1,
+        });
+        expect(entity.isEscrowAvailable, isFalse);
+      });
+
+      test('toJson does NOT include escrow_eligible (server-owned)', () {
+        final entity = ListingDto.fromJson({
+          ...sampleJson,
+          'escrow_eligible': true,
+        });
+        final json = ListingDto.toJson(entity);
+        expect(json.containsKey('escrow_eligible'), isFalse);
+      });
+    });
   });
 }
