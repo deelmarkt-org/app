@@ -24,11 +24,21 @@ class ChatThreadSendController {
   final Ref ref;
   final ChatThreadState? Function() getState;
 
-  /// Plain-state setter — cannot produce `AsyncValue.loading` or
-  /// `AsyncValue.error`. No current send path needs to emit loading
-  /// or error states, but if a future refactor surfaces Realtime
-  /// errors or inflight indicators through the controller, replace
-  /// the signature with `void Function(AsyncValue<ChatThreadState>)`.
+  /// Plain-state setter — accepts only completed [ChatThreadState] values.
+  ///
+  /// **Constraint:** Cannot emit `AsyncValue.loading` or `AsyncValue.error`
+  /// directly. All inflight indicators and error surfaces must be managed by
+  /// the enclosing [ChatThreadNotifier] via its own `state = AsyncValue.loading()`
+  /// or `state = AsyncValue.error(e, st)` calls, not through this callback.
+  ///
+  /// **Why:** Keeps [ChatThreadSendController] testable in isolation — callers
+  /// pass a simple `(s) => state = AsyncValue.data(s)` lambda without needing
+  /// to expose the full `Notifier.state` setter.
+  ///
+  /// **Refactor trigger:** If a future task requires per-send loading
+  /// indicators or realtime-disconnect banners surfaced *through* this
+  /// controller, change the signature to
+  /// `void Function(AsyncValue<ChatThreadState>)` and update all call sites.
   final void Function(ChatThreadState) writeState;
 
   /// Snapshot from realtime that arrived while a send was in flight; applied
@@ -108,8 +118,8 @@ class ChatThreadSendController {
         error: e,
         stackTrace: st,
       );
-      // `current` is the pre-optimistic snapshot captured at method
-      // entry, so writing it back is the rollback — no copyWith needed.
+      // Rollback: `current` was captured before the optimistic write, so
+      // writing it back restores the pre-attempt state in one setter call.
       writeState(current);
       rethrow;
     }
