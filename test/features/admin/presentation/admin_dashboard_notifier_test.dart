@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -214,33 +216,39 @@ void main() {
     test(
       'parallel fetch: stats and activity are awaited concurrently, not sequentially',
       () async {
-        // Each use case sleeps 100ms. If run sequentially the total is ≥200ms;
-        // if concurrent via `.wait` the total is ~100ms.
+        // Deterministic concurrency assertion: each mock signals "started"
+        // immediately and blocks on a shared release Completer. If the
+        // notifier awaited them sequentially, only `statsStarted` would
+        // fire before we release — `activityStarted` would still be pending.
+        // We assert BOTH have started before we release either side.
+        final statsStarted = Completer<void>();
+        final activityStarted = Completer<void>();
+        final release = Completer<void>();
+
         when(() => repo.getStats()).thenAnswer((_) async {
-          await Future<void>.delayed(const Duration(milliseconds: 100));
+          statsStarted.complete();
+          await release.future;
           return _stats();
         });
         when(
           () => repo.getRecentActivity(limit: any(named: 'limit')),
         ).thenAnswer((_) async {
-          await Future<void>.delayed(const Duration(milliseconds: 100));
+          activityStarted.complete();
+          await release.future;
           return _activity;
         });
 
         final container = _makeContainer(repo: repo);
         addTearDown(container.dispose);
 
-        final sw = Stopwatch()..start();
-        await container.read(adminDashboardNotifierProvider.future);
-        sw.stop();
-
-        expect(
-          sw.elapsedMilliseconds,
-          lessThan(180),
-          reason:
-              'stats + activity must resolve concurrently (<180ms), '
-              'got ${sw.elapsedMilliseconds}ms — sequential regression',
+        final buildFuture = container.read(
+          adminDashboardNotifierProvider.future,
         );
+
+        // Both calls must be in flight before either returns.
+        await Future.wait([statsStarted.future, activityStarted.future]);
+        release.complete();
+        await buildFuture;
       },
     );
 

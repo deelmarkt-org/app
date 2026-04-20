@@ -11,15 +11,18 @@ import 'package:deelmarkt/features/sell/data/services/image_upload_service.dart'
 import 'package:deelmarkt/features/sell/data/services/models/image_upload_response.dart';
 import 'package:deelmarkt/features/sell/presentation/viewmodels/photo_upload_queue.dart';
 
-/// Integration-style test: wires the real [ImageUploadErrorMapper] and
+/// **Seam test** — wires the real [ImageUploadErrorMapper] and
 /// [PhotoUploadQueue] together via a stubbed [ImageUploadService] that
 /// emits the mapper's output on the first attempt and succeeds thereafter.
 ///
-/// This exercises the full 429 retry contract end-to-end:
-///   server body → mapper → typed retryAfter → queue backoff → retry → success.
-/// Single-component unit tests exist in `photo_upload_queue_test.dart` and
-/// `image_upload_error_mapper_test.dart`; this file is the seam test between
-/// them to guarantee the contract does not drift silently.
+/// Exercises the 429 retry *contract seam* end-to-end in the data/view-model
+/// layer: `server body → mapper → typed retryAfter → queue backoff → retry
+/// → success`. This is NOT a widget-pump integration test; the UI-layer
+/// live-region flip is covered by [photo_grid_tile_states_test]. Keeping
+/// this file as a seam test avoids a false "widget integration" signal
+/// while still catching silent contract drift between mapper and queue.
+/// Single-component unit tests live in `photo_upload_queue_test.dart` and
+/// `image_upload_error_mapper_test.dart`.
 class _MockSupabaseClient extends Mock implements SupabaseClient {}
 
 class _MapperBacked429Service extends ImageUploadService {
@@ -63,7 +66,7 @@ class _MapperBacked429Service extends ImageUploadService {
 }
 
 void main() {
-  group('Rate-limit flow integration (mapper ↔ queue)', () {
+  group('Rate-limit seam (mapper ↔ queue)', () {
     test(
       '429 with retry_after_seconds=2 → queue honours hint, retries, succeeds',
       () async {
