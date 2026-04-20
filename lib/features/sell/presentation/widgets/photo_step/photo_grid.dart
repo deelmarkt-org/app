@@ -11,12 +11,17 @@ import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_gr
 ///
 /// Uses [LongPressDraggable] + [DragTarget] for reordering, with a
 /// [PopupMenuButton] fallback for WCAG 2.5.7 non-drag accessibility.
+///
+/// [retryingIds] is injected by the parent (typically via
+/// `ref.watch(retryingPhotoIdsProvider)`) — keeping this widget stateless
+/// and free of Riverpod coupling simplifies testing.
 class PhotoGrid extends StatelessWidget {
   const PhotoGrid({
     required this.imageFiles,
     required this.onRemove,
     required this.onRetry,
     required this.onReorder,
+    this.retryingIds = const <String>{},
     super.key,
   });
 
@@ -32,6 +37,10 @@ class PhotoGrid extends StatelessWidget {
   /// Called to reorder a photo from [oldIndex] to [newIndex].
   final void Function(int oldIndex, int newIndex) onReorder;
 
+  /// Photo IDs currently in retry backoff. The matching tile's overlay
+  /// switches its Semantics label to `sell.uploadRetrying` for EAA §10.
+  final Set<String> retryingIds;
+
   @override
   Widget build(BuildContext context) {
     final columns = Breakpoints.isCompact(context) ? 2 : 3;
@@ -44,12 +53,19 @@ class PhotoGrid extends StatelessWidget {
         mainAxisSpacing: Spacing.s2,
       ),
       itemCount: imageFiles.length,
-      itemBuilder: (context, index) => _buildDraggableCell(context, index),
+      itemBuilder:
+          (context, index) => _buildDraggableCell(context, index, retryingIds),
     );
   }
 
-  Widget _buildDraggableCell(BuildContext context, int index) {
-    final tile = _buildTileWithMenu(index);
+  Widget _buildDraggableCell(
+    BuildContext context,
+    int index,
+    Set<String> retryingIds,
+  ) {
+    final tile = _buildTileWithMenu(index, retryingIds);
+    final img = imageFiles[index];
+    final isRetrying = retryingIds.contains(img.id);
 
     return LongPressDraggable<int>(
       data: index,
@@ -59,7 +75,11 @@ class PhotoGrid extends StatelessWidget {
         child: SizedBox(
           width: 120,
           height: 120,
-          child: PhotoGridTile(image: imageFiles[index], index: index),
+          child: PhotoGridTile(
+            image: img,
+            index: index,
+            isRetrying: isRetrying,
+          ),
         ),
       ),
       childWhenDragging: Opacity(opacity: 0.3, child: tile),
@@ -85,7 +105,7 @@ class PhotoGrid extends StatelessWidget {
   }
 
   /// Builds a tile with a popup menu for WCAG 2.5.7 non-drag alternative.
-  Widget _buildTileWithMenu(int index) {
+  Widget _buildTileWithMenu(int index, Set<String> retryingIds) {
     final isFirst = index == 0;
     final isLast = index == imageFiles.length - 1;
     final img = imageFiles[index];
@@ -97,6 +117,7 @@ class PhotoGrid extends StatelessWidget {
           index: index,
           onRemove: () => onRemove(img.id),
           onRetry: () => onRetry(img.id),
+          isRetrying: retryingIds.contains(img.id),
         ),
         if (!isFirst || !isLast)
           Positioned(

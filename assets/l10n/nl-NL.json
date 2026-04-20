@@ -838,6 +838,7 @@
     "errorImagesFailed": "Sommige foto's konden niet worden geüpload. Probeer opnieuw of verwijder ze.",
     "uploadingImage": "Foto uploaden",
     "uploadingProgress": "Uploaden {current} van {total}",
+    "uploadRetrying": "Uploaden wordt zo opnieuw geprobeerd",
     "uploadFailed": "Upload mislukt",
     "retryUpload": "Upload opnieuw proberen",
     "uploadErrorBlocked": "Deze foto is afgewezen door onze veiligheidsscan",
