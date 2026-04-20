@@ -118,7 +118,8 @@ class PhotoUploadQueue {
 
   void _emitRetrying() {
     if (_retryingController.isClosed) return;
-    _retryingController.add(Set.unmodifiable(_retrying.toSet()));
+    // `Set.unmodifiable` already copies its iterable — no extra `.toSet()`.
+    _retryingController.add(Set.unmodifiable(_retrying));
   }
 
   void _emit(PhotoUploadOutcome outcome) {
