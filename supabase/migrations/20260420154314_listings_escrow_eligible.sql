@@ -44,13 +44,21 @@ COMMENT ON COLUMN listings.escrow_eligible IS
   'ADR-023.';
 
 -- 3. Shared computation function. Takes a listing's inputs + the seller id
---    + the category id and returns the eligibility boolean. Pure read —
---    marked STABLE so the trigger and the one-shot backfill can both call
---    it without the planner re-evaluating per row.
+--    + the category id and returns the eligibility boolean.
 --
--- TODO(E03): Re-add the dispute-count predicate once the `disputes` table
--- ships. Target rule from ADR-023: COUNT(disputes WHERE seller_id = X AND
--- status = 'active' AND created_at > now() - 90 days) <= 2.
+--    Declared VOLATILE (not STABLE) so that per-row invocations inside the
+--    cascade UPDATEs below always re-read the current kyc_level and
+--    category.escrow_eligible. A STABLE function would let the planner cache
+--    the first row's read and reuse it for every subsequent row — fine for a
+--    single-row INSERT trigger, but unsafe in the AFTER UPDATE cascades where
+--    the underlying row that changed (user_profiles / categories) is being
+--    applied to many listings in one statement. See COMMENT ON FUNCTION below.
+--
+-- TODO(GH-59/E03 Phase 2): Re-add the dispute-count predicate once the
+-- `disputes` table ships. Target rule from ADR-023 §Decision rule 2e:
+-- COUNT(disputes WHERE seller_id = X AND status = 'active'
+--       AND created_at > now() - 90 days) <= 2.
+-- Tracking: https://github.com/deelmarkt-org/app/issues/59
 CREATE OR REPLACE FUNCTION compute_escrow_eligible_for(
   p_seller_id      UUID,
   p_is_active      BOOLEAN,
