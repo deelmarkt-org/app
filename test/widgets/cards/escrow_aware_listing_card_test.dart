@@ -15,7 +15,11 @@ ListingEntity _listing({bool isEscrowAvailable = true}) => ListingEntity(
   id: 'listing-1',
   title: 'Vintage design stoel',
   description: 'Een mooie vintage stoel',
-  priceInCents: 4500,
+  // Kept ≥ the migration's 5000-cent escrow threshold so the helper reads
+  // as self-consistent with `isEscrowAvailable: true`. The client does not
+  // re-derive eligibility from price (ADR-023 server-authoritative); this
+  // is purely for reader clarity — deelmarkt-dev L-1 / PR #184 review.
+  priceInCents: 10000,
   sellerId: 'seller-1',
   sellerName: 'Jan de Vries',
   condition: ListingCondition.good,
