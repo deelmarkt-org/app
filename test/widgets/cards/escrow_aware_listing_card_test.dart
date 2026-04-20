@@ -69,6 +69,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DeelBadge), findsNothing);
+      // Regression guard: the rest of the card must still render when the
+      // badge is suppressed — a silent `SizedBox.shrink()` would pass the
+      // `findsNothing` check above but break the listing grid entirely.
+      expect(find.text('Vintage design stoel'), findsOneWidget);
     });
 
     testWidgets('hides badge when flag is ON but entity is ineligible', (
@@ -80,6 +84,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DeelBadge), findsNothing);
+      expect(find.text('Vintage design stoel'), findsOneWidget);
     });
 
     testWidgets('shows badge only when flag ON AND entity eligible', (
