@@ -1,0 +1,26 @@
+-- ──────────────────────────────────────────────────────────────────────────
+-- Paired rollback for
+-- 20260420160000_listings_with_favourites_expose_escrow_eligible.sql
+--
+-- Drops `listings_with_favourites` so the column drop in
+-- 20260420154315_listings_escrow_eligible_down.sql can succeed
+-- (PostgreSQL refuses to DROP COLUMN a view depends on).
+--
+-- Ordered rollback sequence when reverting GH-59 / ADR-023 end-to-end:
+--   1. Flip Unleash flag `listings_escrow_badge` → OFF (seconds kill).
+--   2. Apply this DOWN       — drops the view, releases the dependency.
+--   3. Apply 20260420154315  — drops triggers, functions, columns.
+--   4. Rebuild the view      — either re-apply 20260420160000 (which will
+--                              no longer include escrow_eligible because
+--                              step 3 dropped it) or re-run
+--                              20260403100000_r20 via `supabase db reset`.
+--
+-- This step-4 rebuild is explicit by design: a rollback that leaves the
+-- app without a listings query layer is unambiguous and paged, vs. a
+-- silently-broken partial view.
+--
+-- NOT auto-applied — commit path is manual via `supabase db push` against
+-- the target environment.
+-- ──────────────────────────────────────────────────────────────────────────
+
+DROP VIEW IF EXISTS listings_with_favourites;
