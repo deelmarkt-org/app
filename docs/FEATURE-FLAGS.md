@@ -39,7 +39,7 @@ Monitor these signals at each stage; hold ≥24h before advancing:
 | Checkout 409 rate (flag mismatch) | Supabase Edge Function `create-payment-intent` logs | <2% of escrow attempts | **>2% → flip OFF** |
 | Badge-accuracy Sentry events | Sentry project `deelmarkt-app`, tag `feature.listings_escrow_badge=on` | 0 user reports / 24h | **≥1 confirmed wrong badge → flip OFF** |
 | Unleash toggle-fetch failures | Sentry breadcrumb `unleash.fetch_failed` | <0.1% of sessions | **>1% for >10min → flip OFF** |
-| Cascade trigger p99 latency | Postgres `pg_stat_statements` for `trg_user_profiles_cascade_escrow` | <500ms | **>1s sustained → flip OFF, investigate** |
+| Cascade trigger p99 latency | Postgres `pg_stat_user_functions` rows for `trg_user_profiles_cascade_escrow` + `trg_listings_recompute_escrow` (requires `track_functions = 'pl'`). Fallback: `pg_stat_statements` filtered to the `UPDATE listings SET updated_at = now() WHERE seller_id = $1 ...` query text. | <500ms | **>1s sustained → flip OFF, investigate** |
 
 ### Kill-switch procedure (seconds)
 
