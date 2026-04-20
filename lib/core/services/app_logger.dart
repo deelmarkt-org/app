@@ -22,12 +22,14 @@ import 'package:deelmarkt/core/utils/pii_masking.dart';
 abstract final class AppLogger {
   static const _name = 'DeelMarkt';
 
+  static String _tagName(String tag) => tag.isEmpty ? _name : '$_name/$tag';
+
   /// Log informational message (debug only — stripped in release).
   static void info(String message, {String tag = ''}) {
     if (kDebugMode) {
       developer.log(
         message,
-        name: tag.isEmpty ? _name : '$_name/$tag',
+        name: _tagName(tag),
         level: 800, // INFO
       );
     }
@@ -38,7 +40,7 @@ abstract final class AppLogger {
     if (kDebugMode) {
       developer.log(
         message,
-        name: tag.isEmpty ? _name : '$_name/$tag',
+        name: _tagName(tag),
         level: 900, // WARNING
         error: error,
       );
@@ -57,7 +59,7 @@ abstract final class AppLogger {
     if (kDebugMode) {
       developer.log(
         message,
-        name: tag.isEmpty ? _name : '$_name/$tag',
+        name: _tagName(tag),
         level: 1000, // SEVERE
         error: error,
         stackTrace: stackTrace,

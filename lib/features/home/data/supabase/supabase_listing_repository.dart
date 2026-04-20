@@ -17,6 +17,8 @@ class SupabaseListingRepository implements ListingRepository {
 
   /// View name — includes seller join + is_favourited.
   static const _view = 'listings_with_favourites';
+  static const _colCreatedAt = 'created_at';
+  static const _colListingId = 'listing_id';
 
   @override
   Future<List<ListingEntity>> getRecent({int limit = 20}) async {
@@ -24,7 +26,7 @@ class SupabaseListingRepository implements ListingRepository {
       final response = await _client
           .from(_view)
           .select()
-          .order('created_at', ascending: false)
+          .order(_colCreatedAt, ascending: false)
           .limit(limit);
 
       return ListingDto.fromJsonList(response);
@@ -60,7 +62,7 @@ class SupabaseListingRepository implements ListingRepository {
       final distanceMap = <String, double>{};
       for (final row in idsList) {
         final typedRow = row as Map<String, dynamic>;
-        final id = typedRow['listing_id'];
+        final id = typedRow[_colListingId];
         final dist = typedRow['distance_km'];
         if (id is String && dist is num) {
           distanceMap[id] = dist.toDouble();
@@ -144,7 +146,7 @@ class SupabaseListingRepository implements ListingRepository {
         request = request.eq('condition', condition.toDb());
       }
 
-      final orderColumn = sortBy ?? 'created_at';
+      final orderColumn = sortBy ?? _colCreatedAt;
       final response = await request
           .order(orderColumn, ascending: ascending)
           .range(offset, offset + limit - 1);
@@ -192,13 +194,13 @@ class SupabaseListingRepository implements ListingRepository {
     try {
       final favIds = await _client
           .from('favourites')
-          .select('listing_id')
+          .select(_colListingId)
           .eq('user_id', userId)
-          .order('created_at', ascending: false);
+          .order(_colCreatedAt, ascending: false);
 
       if (favIds.isEmpty) return [];
 
-      final ids = favIds.map((f) => f['listing_id'] as String).toList();
+      final ids = favIds.map((f) => f[_colListingId] as String).toList();
       final response = await _client.from(_view).select().inFilter('id', ids);
 
       return ListingDto.fromJsonList(response);
@@ -216,10 +218,10 @@ class SupabaseListingRepository implements ListingRepository {
     try {
       var query = _client.from(_view).select().eq('seller_id', userId);
       if (cursor != null) {
-        query = query.lt('created_at', cursor);
+        query = query.lt(_colCreatedAt, cursor);
       }
       final response = await query
-          .order('created_at', ascending: false)
+          .order(_colCreatedAt, ascending: false)
           .limit(limit);
       return ListingDto.fromJsonList(response);
     } on PostgrestException catch (e) {

@@ -80,62 +80,99 @@ class _ContentSkeleton extends StatelessWidget {
         children: [
           _bone(double.infinity, 56, DeelmarktRadius.sm, boneColor),
           const SizedBox(height: Spacing.s4),
-          Row(
-            children: [
-              Expanded(
-                child: _bone(
-                  double.infinity,
-                  24,
-                  DeelmarktRadius.sm,
-                  boneColor,
-                ),
-              ),
-              const SizedBox(width: Spacing.s4),
-              _bone(80, 24, DeelmarktRadius.sm, boneColor),
-            ],
-          ),
+          _TitlePriceRow(boneColor: boneColor),
           const SizedBox(height: Spacing.s3),
-          Row(
-            children: [
-              _bone(72, 24, DeelmarktRadius.full, boneColor),
-              const SizedBox(width: Spacing.s2),
-              _bone(64, 24, DeelmarktRadius.full, boneColor),
-            ],
-          ),
+          _ChipsRow(boneColor: boneColor),
           const SizedBox(height: Spacing.s4),
-          _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
-          const SizedBox(height: Spacing.s2),
-          _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
-          const SizedBox(height: Spacing.s2),
-          _bone(200, 14, DeelmarktRadius.xs, boneColor),
+          _DescriptionLines(boneColor: boneColor),
           const SizedBox(height: Spacing.s6),
-          Container(
-            padding: const EdgeInsets.all(Spacing.s4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
-              border: Border.all(color: borderColor),
-            ),
-            child: Row(
-              children: [
-                _bone(48, 48, DeelmarktRadius.full, boneColor),
-                const SizedBox(width: Spacing.s3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _bone(120, 16, DeelmarktRadius.xs, boneColor),
-                      const SizedBox(height: Spacing.s2),
-                      _bone(80, 12, DeelmarktRadius.xs, boneColor),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _SellerCardSkeleton(boneColor: boneColor, borderColor: borderColor),
         ],
       ),
     );
   }
+}
+
+class _TitlePriceRow extends StatelessWidget {
+  const _TitlePriceRow({required this.boneColor});
+  final Color boneColor;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Expanded(
+        child: _bone(double.infinity, 24, DeelmarktRadius.sm, boneColor),
+      ),
+      const SizedBox(width: Spacing.s4),
+      _bone(80, 24, DeelmarktRadius.sm, boneColor),
+    ],
+  );
+}
+
+class _ChipsRow extends StatelessWidget {
+  const _ChipsRow({required this.boneColor});
+  final Color boneColor;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      _bone(72, 24, DeelmarktRadius.full, boneColor),
+      const SizedBox(width: Spacing.s2),
+      _bone(64, 24, DeelmarktRadius.full, boneColor),
+    ],
+  );
+}
+
+class _DescriptionLines extends StatelessWidget {
+  const _DescriptionLines({required this.boneColor});
+  final Color boneColor;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
+      const SizedBox(height: Spacing.s2),
+      _bone(double.infinity, 14, DeelmarktRadius.xs, boneColor),
+      const SizedBox(height: Spacing.s2),
+      _bone(200, 14, DeelmarktRadius.xs, boneColor),
+    ],
+  );
+}
+
+class _SellerCardSkeleton extends StatelessWidget {
+  const _SellerCardSkeleton({
+    required this.boneColor,
+    required this.borderColor,
+  });
+
+  final Color boneColor;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(Spacing.s4),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(DeelmarktRadius.lg),
+      border: Border.all(color: borderColor),
+    ),
+    child: Row(
+      children: [
+        _bone(48, 48, DeelmarktRadius.full, boneColor),
+        const SizedBox(width: Spacing.s3),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _bone(120, 16, DeelmarktRadius.xs, boneColor),
+              const SizedBox(height: Spacing.s2),
+              _bone(80, 12, DeelmarktRadius.xs, boneColor),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _ActionBarSkeleton extends StatelessWidget {
