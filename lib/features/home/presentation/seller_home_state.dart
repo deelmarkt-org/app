@@ -20,7 +20,16 @@ class SellerHomeState extends Equatable {
   final List<ActionItemEntity> actions;
   final List<ListingEntity> listings;
 
-  /// Whether the seller has no listings at all (empty state).
+  /// Whether the seller has no listings — triggers [SellerHomeEmptyView].
+  ///
+  /// Checks **only** `listings.isEmpty`. Stats and actions may be non-empty
+  /// while this returns `true` (e.g. a returning seller with historical sales
+  /// but no currently active listings). This is intentional: the empty-state
+  /// screen is a listing-creation prompt, not a "no data" fallback.
+  ///
+  /// If a future sprint needs to distinguish "never listed" from "all sold",
+  /// replace this getter with a `SellerHomeViewState` enum — see the E01
+  /// epic seller-mode states table.
   bool get isEmpty => listings.isEmpty;
 
   @override

@@ -12,6 +12,16 @@ import 'package:deelmarkt/features/search/presentation/widgets/filter_distance_s
 import 'package:deelmarkt/features/search/presentation/widgets/filter_price_section.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
+/// Viewport-height fractions for the filter [DraggableScrollableSheet].
+///
+/// The ratios are design-driven (search spec `docs/screens/02-home/03-search.md`):
+/// the sheet must cover enough of the viewport to show the three primary
+/// filters without scrolling, collapse to half height for peek-and-dismiss,
+/// and extend near full-screen for long category lists.
+const double _filterSheetMinFraction = 0.5;
+const double _filterSheetInitialFraction = 0.7;
+const double _filterSheetMaxFraction = 0.9;
+
 /// Shows the search filter bottom sheet.
 void showFilterBottomSheet({
   required BuildContext context,
@@ -67,9 +77,9 @@ class _FilterSheetState extends ConsumerState<_FilterSheet> {
     final theme = Theme.of(context);
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.7,
-      minChildSize: 0.5,
-      maxChildSize: 0.9,
+      initialChildSize: _filterSheetInitialFraction,
+      minChildSize: _filterSheetMinFraction,
+      maxChildSize: _filterSheetMaxFraction,
       expand: false,
       builder: (context, scrollController) {
         return Padding(
