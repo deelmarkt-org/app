@@ -44,7 +44,8 @@ Codify retry semantics with four architectural decisions:
      queue emits `PhotoUploadFailed` so the UI can surface the error.
 3. **Structured retry logging** via `AppLogger.warning` at every backoff
    boundary, with fields `{photoId, attempt, delayMs, rateLimited, cause}`.
-   Feeds Sentry breadcrumbs and on-call dashboards.
+   Routes to `developer.log` in debug and Crashlytics non-fatal events in
+   release (current `AppLogger` transport).
 4. **A11y live-region** for retry state. `PhotoUploadQueue` exposes
    `Stream<Set<String>> retryingIds`; UI switches the tile's `Semantics.label`
    to `sell.uploadRetrying` (NL + EN) while preserving `liveRegion: true`.
@@ -125,9 +126,11 @@ Log events emitted from `PhotoUploadQueue`:
 | `upload_retry` | `photo-upload-queue` | photoId, attempt/max, delayMs, rateLimited, cause |
 | `upload_retry_budget_exhausted` | `photo-upload-queue` | photoId, attempt/max, totalDeadlineSec, cause |
 
-Downstream: both events already flow into Sentry breadcrumbs via the existing
-`AppLogger.warning` bridge (see `lib/core/services/app_logger.dart`). No new
-telemetry plumbing required.
+Downstream: both events route through `AppLogger.warning` — which emits
+`developer.log` in debug and is wired to Crashlytics as non-fatal events
+in release (see `lib/core/services/app_logger.dart`). No new telemetry
+plumbing is added by this PR; a Sentry breadcrumb bridge, if added later,
+would pick these events up without further changes.
 
 ### Rollback
 
