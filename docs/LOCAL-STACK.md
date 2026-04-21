@@ -6,6 +6,33 @@
 
 ---
 
+## TL;DR — one command
+
+```bash
+# macOS / Linux
+bash scripts/dev-up.sh
+
+# Windows (PowerShell)
+.\scripts\dev-up.ps1
+```
+
+This orchestrates everything: starts Supabase, applies migrations + seeds, seeds the Vault (Cloudinary/Mollie/FCM from `.env` + `firebase/`), starts Edge Functions in the background, writes local `SUPABASE_URL`/`SUPABASE_ANON_PUBLIC` into `.env` (backed up first), regenerates `env.g.dart`, and launches `flutter run -d chrome`.
+
+Flags:
+- `--reset` / `-Reset` — drop DB and reapply everything from scratch.
+- `-d macos` / `-Device macos` — pick a different Flutter device id.
+- `--no-run` / `-NoRun` — set up but don't launch the app.
+
+Tear down:
+```bash
+bash scripts/dev-down.sh            # macOS / Linux
+.\scripts\dev-down.ps1               # Windows
+```
+
+If you want to understand each step (or something fails), the manual breakdown is below.
+
+---
+
 ## What this gives you
 
 | Layer | Runs where |
@@ -114,6 +141,17 @@ supabase stop                         # frees ports + memory (data persists)
 ---
 
 ## Testing flows that need external services
+
+### Full-integration mode (Cloudinary + Mollie + FCM)
+
+Edge Functions read external credentials from Supabase Vault, not from process env. The one-shot `dev-up.{sh,ps1}` script handles this automatically by calling `scripts/dev-secrets.{sh,ps1}`, which:
+
+1. Parses `CLOUDINARY_URL` from `.env` into `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET`.
+2. Reads `MOLLIE_TEST_API_KEY` from `.env`.
+3. Reads the Firebase admin SDK JSON from `firebase/deelmarkt-*-firebase-adminsdk-*.json` and stores it as `fcm_service_account`.
+4. Writes them into the local Vault via `public.insert_vault_secret(...)`.
+
+**Important:** the Vault is wiped on `supabase stop`. Re-run `dev-up.sh` / `dev-secrets.sh` after a restart.
 
 ### Payments (Mollie webhooks)
 
