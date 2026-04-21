@@ -28,7 +28,7 @@ INSERT INTO listings (
    '22222222-2222-2222-2222-222222222222',
    'iPhone 13 Pro 128GB — excellent condition',
    'Barely used, always in a case with screen protector. Original box and charger included. Comes with 3 months of warranty left.',
-   65000, 'excellent', 'c1000000-0000-0000-0000-000000000001',
+   65000, 'like_new', 'c1000000-0000-0000-0000-000000000001',
    ARRAY['dev-seed/iphone-13-pro-1.jpg', 'dev-seed/iphone-13-pro-2.jpg'],
    'Amsterdam', 52.3676, 4.9041, 85, false, true),
 
@@ -62,7 +62,7 @@ INSERT INTO listings (
    '22222222-2222-2222-2222-222222222222',
    'Brompton M3L folding bike — black',
    'Sold already — kept for UI state testing.',
-   95000, 'excellent', 'c1000000-0000-0000-0000-000000000004',
+   95000, 'like_new', 'c1000000-0000-0000-0000-000000000004',
    ARRAY['dev-seed/brompton-1.jpg'],
    'Amsterdam', 52.3676, 4.9041, 88, true, true),
 

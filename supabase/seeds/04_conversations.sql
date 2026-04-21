@@ -49,3 +49,6 @@ INSERT INTO messages (id, conversation_id, sender_id, text, type, is_read, creat
    'They run a touch small — I''d say closer to 42.5.', 'text', false,
    now() - interval '30 minutes')
 ON CONFLICT (id) DO NOTHING;
+
+-- Restore normal trigger behaviour (see 00_local_guc.sql).
+SET session_replication_role = 'origin';
