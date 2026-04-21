@@ -66,7 +66,8 @@ if ($Reset) {
     Ok "Database reset and migrations re-applied."
 } else {
     $running = $false
-    try { supabase status *> $null; if ($LASTEXITCODE -eq 0) { $running = $true } } catch {}
+    $envOutput = supabase status -o env 2>$null
+    if ($envOutput -match '^API_URL=http') { $running = $true }
 
     if ($running) {
         Ok "Supabase already running - keeping data."
@@ -113,12 +114,19 @@ Write-Host "  ===================" -ForegroundColor Green
 Write-Host ""
 supabase status
 Write-Host ""
+Write-Host "== Ready-to-paste .env values =="
+supabase status -o env | Select-String -Pattern '^(ANON_KEY|API_URL)=' | ForEach-Object {
+    $line = $_.Line
+    $line = $line -replace '^ANON_KEY=', 'SUPABASE_ANON_PUBLIC='
+    $line = $line -replace '^API_URL=', 'SUPABASE_URL='
+    Write-Host $line
+}
+Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Copy Supabase API URL + anon key from above into your .env:"
-Write-Host "       SUPABASE_URL=<API URL>"
-Write-Host "       SUPABASE_ANON_PUBLIC=<anon key>"
+Write-Host "  1. Paste the SUPABASE_* lines above into your .env, then:"
+Write-Host "       flutter pub run build_runner build --delete-conflicting-outputs"
 Write-Host "  2. Open http://localhost:54323  (Studio - DB browser)"
 Write-Host "  3. Open http://localhost:54324  (Inbucket - auth emails)"
-Write-Host "  4. flutter pub get; flutter run"
+Write-Host "  4. flutter run"
 Write-Host ""
 Write-Host "See docs/LOCAL-STACK.md for troubleshooting and ngrok/Mollie/Firebase tips."

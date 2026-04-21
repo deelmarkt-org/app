@@ -71,7 +71,7 @@ if [[ "$MODE" == "reset" ]]; then
   supabase db reset
   ok "Database reset and migrations re-applied."
 else
-  if supabase status >/dev/null 2>&1; then
+  if supabase status -o env 2>/dev/null | grep -q '^API_URL=http'; then
     ok "Supabase already running — keeping data."
   else
     info "Starting Supabase local stack (first run pulls ~1 GB of Docker images)…"
@@ -107,12 +107,17 @@ echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━
 echo ""
 supabase status
 echo ""
+echo "━━ Ready-to-paste .env values ━━"
+supabase status -o env | grep -E '^(ANON_KEY|API_URL|DB_URL)=' | sed \
+  -e 's/^ANON_KEY=/SUPABASE_ANON_PUBLIC=/' \
+  -e 's/^API_URL=/SUPABASE_URL=/' \
+  -e 's/^DB_URL=/# DB (for psql\/Studio only): /'
+echo ""
 echo "Next steps:"
-echo "  1. Copy Supabase API URL + anon key from above into your .env:"
-echo "       SUPABASE_URL=<API URL>"
-echo "       SUPABASE_ANON_PUBLIC=<anon key>"
+echo "  1. Paste the SUPABASE_* lines above into your .env, then:"
+echo "       flutter pub run build_runner build --delete-conflicting-outputs"
 echo "  2. Open http://localhost:54323  (Studio — DB browser)"
 echo "  3. Open http://localhost:54324  (Inbucket — auth emails)"
-echo "  4. flutter pub get && flutter run"
+echo "  4. flutter run"
 echo ""
 echo "See docs/LOCAL-STACK.md for troubleshooting and ngrok/Mollie/Firebase tips."
