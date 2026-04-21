@@ -14,8 +14,18 @@ abstract class Env {
   @EnviedField(varName: 'SUPABASE_ANON_PUBLIC', obfuscate: true)
   static final String supabaseAnonKey = _Env.supabaseAnonKey;
 
-  /// Supabase URL derived from project ID.
-  static String get supabaseUrl => 'https://$supabaseProjectId.supabase.co';
+  /// Optional override — set `SUPABASE_URL` in `.env` to point at a non-hosted
+  /// instance (e.g. `http://127.0.0.1:54321` for local `supabase start`).
+  /// Leave empty in prod so the URL is derived from [supabaseProjectId].
+  @EnviedField(varName: 'SUPABASE_URL', defaultValue: '')
+  static const String _supabaseUrlOverride = _Env._supabaseUrlOverride;
+
+  /// Supabase API URL — the override wins when present, otherwise derived
+  /// from the project ID (production default).
+  static String get supabaseUrl =>
+      _supabaseUrlOverride.isNotEmpty
+          ? _supabaseUrlOverride
+          : 'https://$supabaseProjectId.supabase.co';
 
   @EnviedField(varName: 'UNLEASH_URL', obfuscate: true)
   static final String unleashUrl = _Env.unleashUrl;
