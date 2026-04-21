@@ -84,19 +84,18 @@ else
   supabase migration up || warn "Migration up failed — run \`supabase db reset\` if the schema is out of sync."
 fi
 
-# ── Seed (optional) ─────────────────────────────────────────────────────────
-# If supabase/seeds/*.sql exists, apply it. Team convention: keep realistic
-# test data here so every dev boots into the same state.
+# ── Seed ────────────────────────────────────────────────────────────────────
+# Seeds are applied natively by the Supabase CLI during `db reset` and the
+# first `start`, via `sql_paths = ["./seeds/*.sql"]` in supabase/config.toml.
+# No psql required here — the CLI uses its bundled postgres internally. Just
+# report what's in scope so the dev knows what ran (or what's missing).
 if compgen -G "supabase/seeds/*.sql" >/dev/null; then
-  info "Applying seed data from supabase/seeds/…"
-  # Supabase CLI's standard local-only DB URL — not a real credential.
-  local_db_url="postgresql://postgres:postgres@127.0.0.1:54322/postgres"  # pragma: allowlist secret
+  info "Seed files present — applied by Supabase CLI automatically:"
   for seed in supabase/seeds/*.sql; do
-    psql "$local_db_url" -v ON_ERROR_STOP=1 -f "$seed" >/dev/null
-    ok "  seeded: $(basename "$seed")"
+    ok "  $(basename "$seed")"
   done
 else
-  warn "No seed files in supabase/seeds/ — the DB is empty. Ask belengaz for the fixture set."
+  warn "No seed files in supabase/seeds/ — the DB is empty. See docs/LOCAL-STACK.md."
 fi
 
 # ── Output ──────────────────────────────────────────────────────────────────

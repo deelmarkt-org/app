@@ -85,26 +85,21 @@ if ($Reset) {
     }
 }
 
-# -- Seed (optional) ---------------------------------------------------------
+# -- Seed --------------------------------------------------------------------
+# Seeds are applied natively by the Supabase CLI during `db reset` and the
+# first `start`, via `sql_paths = ["./seeds/*.sql"]` in supabase/config.toml.
+# No psql required here - the CLI uses its bundled postgres internally.
 $seedDir = Join-Path (Get-Location) "supabase\seeds"
 if (Test-Path $seedDir) {
     $seeds = Get-ChildItem -Path $seedDir -Filter *.sql -ErrorAction SilentlyContinue
     if ($seeds) {
-        Info "Applying seed data from supabase/seeds/..."
-        # Supabase CLI's standard local-only DB URL - not a real credential.
-        $localDbUrl = "postgresql://postgres:postgres@127.0.0.1:54322/postgres"  # pragma: allowlist secret
+        Info "Seed files present - applied by Supabase CLI automatically:"
         foreach ($seed in $seeds) {
-            # Requires psql on PATH (ships with Supabase CLI's bundled postgres on Windows).
-            & psql $localDbUrl -v ON_ERROR_STOP=1 -f $seed.FullName *> $null
-            if ($LASTEXITCODE -eq 0) {
-                Ok "  seeded: $($seed.Name)"
-            } else {
-                Warn "  seed failed: $($seed.Name) - check psql is on PATH"
-            }
+            Ok "  $($seed.Name)"
         }
     }
 } else {
-    Warn "No supabase/seeds/ directory - the DB is empty. Ask belengaz for the fixture set."
+    Warn "No supabase/seeds/ directory - the DB is empty. See docs/LOCAL-STACK.md."
 }
 
 # -- Output ------------------------------------------------------------------
