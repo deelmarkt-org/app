@@ -14,8 +14,8 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
-import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
+import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
 
 /// Height of the recent listings horizontal row.
 const _recentRowHeight = 280.0;
@@ -111,8 +111,8 @@ class HomeDataView extends ConsumerWidget {
         childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children: [
           for (final listing in data.nearby)
-            listingDeelCard(
-              listing,
+            EscrowAwareListingCard(
+              listing: listing,
               onTap:
                   () => context.goNamed(
                     'listing-detail',
@@ -164,8 +164,8 @@ class HomeDataView extends ConsumerWidget {
             final listing = data.recent[index];
             return SizedBox(
               width: _recentCardWidth,
-              child: listingDeelCard(
-                listing,
+              child: EscrowAwareListingCard(
+                listing: listing,
                 onTap:
                     () => context.goNamed(
                       'listing-detail',

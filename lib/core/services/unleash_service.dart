@@ -29,6 +29,12 @@ abstract final class FeatureFlags {
   /// Client-side isAdmin() remains as fast-path; server check is authoritative.
   /// Requires reso to deploy public.is_admin() SQL function before enabling.
   static const String adminServerVerify = 'admin_server_verify_enabled';
+
+  /// GH-59 / ADR-023: EscrowBadge on listing cards.
+  /// Gated so the backend migration (PR-B) can land ahead of the UI
+  /// rollout. Staged in Unleash: internal → 10% → 100%. Kill criterion:
+  /// checkout 409 rate > 2% OR badge accuracy complaint.
+  static const String listingsEscrowBadge = 'listings_escrow_badge';
 }
 
 /// Initialise Unleash feature flags in `main()` before `runApp`.

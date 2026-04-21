@@ -2,7 +2,7 @@
 
 ### Status
 
-**Accepted — Implementation pending** — Decision ratified 2026-04-17 · Author: pizmam · **Blocks:** GitHub issue [#59](https://github.com/deelmarkt-org/app/issues/59) · **Waiting on:** reso (`supabase/migrations/*_listings_escrow_eligible.sql` + trigger) · belengaz (`ListingDto.escrowEligible` field)
+**Accepted — Implementation in review** — Decision ratified 2026-04-17 · Author: pizmam · Updated 2026-04-20 · **Blocks:** GitHub issue [#59](https://github.com/deelmarkt-org/app/issues/59) · **PR-B (backend):** [#183](https://github.com/deelmarkt-org/app/pull/183) — migration + DTO + entity · **PR-C (UI):** draft — `EscrowAwareListingCard` behind Unleash `listings_escrow_badge` · **Dispute-count predicate** (§Decision rule 2e) deferred to E03 Phase 2 (`disputes` table not yet shipped). Audit trail still flows via `audit_logs` (plural, not `audit_log`) per 20260403 migration.
 
 ### Context
 

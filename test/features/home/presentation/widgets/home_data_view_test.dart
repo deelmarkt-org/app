@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
+import 'package:deelmarkt/core/services/unleash_service.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_data_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
@@ -36,6 +37,11 @@ void main() {
           useMockDataProvider.overrideWithValue(true),
           sharedPreferencesProvider.overrideWithValue(prefs),
           homeNotifierProvider.overrideWith(() => _StubHomeNotifier(state)),
+          // GH-59: EscrowAwareListingCard reads the Unleash flag; override
+          // so widget tests don't call the real SDK.
+          isFeatureEnabledProvider(
+            FeatureFlags.listingsEscrowBadge,
+          ).overrideWith((ref) => false),
         ],
         child: MaterialApp(
           theme: theme ?? DeelmarktTheme.light,
