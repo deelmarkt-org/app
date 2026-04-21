@@ -8,7 +8,10 @@ part 'env.g.dart';
 /// Run `flutter pub run build_runner build` after creating/changing `.env`.
 @Envied(path: '.env')
 abstract class Env {
-  @EnviedField(varName: 'SUPABASE_PROJECT_ID')
+  /// Supabase project ID. Used in prod to derive the API URL when
+  /// [SUPABASE_URL] override is not set. Empty locally — the URL
+  /// override covers every dev use case.
+  @EnviedField(varName: 'SUPABASE_PROJECT_ID', defaultValue: '')
   static const String supabaseProjectId = _Env.supabaseProjectId;
 
   @EnviedField(varName: 'SUPABASE_ANON_PUBLIC', obfuscate: true)
@@ -27,12 +30,18 @@ abstract class Env {
           ? _supabaseUrlOverride
           : 'https://$supabaseProjectId.supabase.co';
 
-  @EnviedField(varName: 'UNLEASH_URL', obfuscate: true)
+  /// Unleash Frontend API URL. Empty locally — skip remote calls in
+  /// [initUnleash] and return `false` for every flag. In prod this is
+  /// the self-hosted Unleash instance URL.
+  @EnviedField(varName: 'UNLEASH_URL', obfuscate: true, defaultValue: '')
   static final String unleashUrl = _Env.unleashUrl;
 
-  @EnviedField(varName: 'UNLEASH_CLIENT_KEY', obfuscate: true)
+  /// Unleash Frontend API client key. Empty locally.
+  @EnviedField(varName: 'UNLEASH_CLIENT_KEY', obfuscate: true, defaultValue: '')
   static final String unleashClientKey = _Env.unleashClientKey;
 
-  @EnviedField(varName: 'SENTRY_DSN', obfuscate: true)
+  /// Sentry DSN. Empty locally — `initSentry` skips init and errors print
+  /// to the debug console only.
+  @EnviedField(varName: 'SENTRY_DSN', obfuscate: true, defaultValue: '')
   static final String sentryDsn = _Env.sentryDsn;
 }
