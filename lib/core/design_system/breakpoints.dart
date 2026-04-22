@@ -12,10 +12,6 @@ class Breakpoints {
   /// Max content width for single-column layouts (onboarding, auth forms).
   static const double contentMaxWidth = 500;
 
-  /// Max content width for dashboard-style grid screens (home, search,
-  /// favourites, category browse). Matches `ResponsiveBody.wide` default.
-  static const double dashboardMaxWidth = 1200;
-
   static bool isCompact(BuildContext context) =>
       MediaQuery.sizeOf(context).width < compact;
 

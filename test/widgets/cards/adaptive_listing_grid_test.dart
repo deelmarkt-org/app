@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 
@@ -45,8 +46,8 @@ void main() {
       expect(_crossAxisCount(tester), 3);
     });
 
-    testWidgets('uses 4 columns at 1000px (expanded)', (tester) async {
-      await tester.pumpWidget(_buildGridApp(width: 1000));
+    testWidgets('uses 4 columns at 900px (expanded)', (tester) async {
+      await tester.pumpWidget(_buildGridApp(width: 900));
       expect(_crossAxisCount(tester), 4);
     });
 
@@ -55,14 +56,16 @@ void main() {
       expect(_crossAxisCount(tester), 5);
     });
 
-    testWidgets('uses canonical aspect ratio from DeelCardTokens', (
+    testWidgets('uses canonical aspect ratio and listingCardGap spacing', (
       tester,
     ) async {
-      await tester.pumpWidget(_buildGridApp(width: 1000));
+      await tester.pumpWidget(_buildGridApp(width: 900));
       final grid = tester.widget<SliverGrid>(find.byType(SliverGrid));
       final delegate =
           grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
       expect(delegate.childAspectRatio, DeelCardTokens.gridChildAspectRatio);
+      expect(delegate.mainAxisSpacing, Spacing.listingCardGap);
+      expect(delegate.crossAxisSpacing, Spacing.listingCardGap);
     });
   });
 }

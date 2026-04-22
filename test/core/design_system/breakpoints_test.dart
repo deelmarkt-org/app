@@ -20,10 +20,6 @@ void main() {
     test('contentMaxWidth is 500', () {
       expect(Breakpoints.contentMaxWidth, 500);
     });
-
-    test('dashboardMaxWidth is 1200', () {
-      expect(Breakpoints.dashboardMaxWidth, 1200);
-    });
   });
 
   group('Breakpoints helpers', () {
@@ -176,10 +172,10 @@ void main() {
       expect(result, isTrue);
     });
 
-    testWidgets('isLarge returns false at 1000px (expanded but not large)', (
+    testWidgets('isLarge returns false at 900px (expanded but not large)', (
       tester,
     ) async {
-      tester.view.physicalSize = const Size(1000, 900);
+      tester.view.physicalSize = const Size(900, 900);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -224,7 +220,7 @@ void main() {
 
       expect(await columnsAt(400), 2);
       expect(await columnsAt(700), 3);
-      expect(await columnsAt(1000), 4);
+      expect(await columnsAt(900), 4);
       expect(await columnsAt(1400), 5);
     });
   });

@@ -32,8 +32,8 @@ class AdaptiveListingGrid extends StatelessWidget {
       sliver: SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columns,
-          mainAxisSpacing: Spacing.s3,
-          crossAxisSpacing: Spacing.s3,
+          mainAxisSpacing: Spacing.listingCardGap,
+          crossAxisSpacing: Spacing.listingCardGap,
           childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         ),
         delegate: SliverChildBuilderDelegate(

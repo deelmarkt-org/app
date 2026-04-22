@@ -16,6 +16,10 @@ import 'package:deelmarkt/features/messages/presentation/widgets/no_thread_selec
 ///
 /// In compact mode: either the list OR the thread is visible (push nav).
 /// In expanded mode: list is a fixed 360-px left pane, thread fills the rest.
+///
+/// TODO(#194): migrate to shared `ResponsiveDetailScaffold` from
+/// `lib/widgets/layout/responsive_detail_scaffold.dart` — duplicates the
+/// same 360/medium split logic introduced in #192.
 class MessagesResponsiveShell extends ConsumerWidget {
   const MessagesResponsiveShell({this.conversationId, super.key});
 
