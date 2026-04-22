@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// DeelMarkt responsive breakpoints.
-/// Reference: docs/design-system/tokens.md
+/// Reference: docs/design-system/tokens.md §Breakpoints
 class Breakpoints {
   Breakpoints._();
 
@@ -12,6 +12,10 @@ class Breakpoints {
   /// Max content width for single-column layouts (onboarding, auth forms).
   static const double contentMaxWidth = 500;
 
+  /// Max content width for dashboard-style grid screens (home, search,
+  /// favourites, category browse). Matches `ResponsiveBody.wide` default.
+  static const double dashboardMaxWidth = 1200;
+
   static bool isCompact(BuildContext context) =>
       MediaQuery.sizeOf(context).width < compact;
 
@@ -21,4 +25,18 @@ class Breakpoints {
 
   static bool isExpanded(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= medium;
+
+  /// `true` when width ≥ `expanded` (1200px) — desktop-class viewports that
+  /// benefit from denser grids, persistent sidebars, and wider content caps.
+  static bool isLarge(BuildContext context) =>
+      MediaQuery.sizeOf(context).width >= expanded;
+
+  /// Listing-grid column count for the current viewport.
+  /// Reference: docs/design-system/tokens.md §Breakpoints (2 / 3 / 4 / 5).
+  static int gridColumnsForWidth(BuildContext context) {
+    if (isCompact(context)) return 2;
+    if (isMedium(context)) return 3;
+    if (isLarge(context)) return 5;
+    return 4;
+  }
 }

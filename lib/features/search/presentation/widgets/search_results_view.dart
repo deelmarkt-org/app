@@ -1,13 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_state.dart';
-import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 
@@ -100,30 +99,17 @@ class SearchResultsView extends StatelessWidget {
     );
   }
 
-  SliverPadding _buildGrid(BuildContext context) {
-    int crossAxisCount = 4;
-    if (Breakpoints.isCompact(context)) {
-      crossAxisCount = 2;
-    } else if (Breakpoints.isMedium(context)) {
-      crossAxisCount = 3;
-    }
-
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-      sliver: SliverGrid.count(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: Spacing.s3,
-        crossAxisSpacing: Spacing.s3,
-        childAspectRatio: DeelCardTokens.gridChildAspectRatio,
-        children:
-            data.listings.map((listing) {
-              return EscrowAwareListingCard(
-                listing: listing,
-                onTap: () => onListingTap(listing.id),
-                onFavouriteTap: () => onFavouriteTap(listing.id),
-              );
-            }).toList(),
-      ),
+  Widget _buildGrid(BuildContext context) {
+    return AdaptiveListingGrid(
+      itemCount: data.listings.length,
+      itemBuilder: (context, index) {
+        final listing = data.listings[index];
+        return EscrowAwareListingCard(
+          listing: listing,
+          onTap: () => onListingTap(listing.id),
+          onFavouriteTap: () => onFavouriteTap(listing.id),
+        );
+      },
     );
   }
 }

@@ -92,4 +92,44 @@ void main() {
       );
     });
   });
+
+  group('ResponsiveBody.wide', () {
+    testWidgets('defaults to 1200px cap', (tester) async {
+      await tester.pumpWidget(
+        const MediaQuery(
+          data: MediaQueryData(size: Size(1600, 900)),
+          child: MaterialApp(
+            home: Scaffold(body: ResponsiveBody.wide(child: Text('Wide'))),
+          ),
+        ),
+      );
+      final box = tester.widget<ConstrainedBox>(
+        find.descendant(
+          of: find.byType(ResponsiveBody),
+          matching: find.byType(ConstrainedBox),
+        ),
+      );
+      expect(box.constraints.maxWidth, 1200);
+    });
+
+    testWidgets('wide constructor honours custom maxWidth', (tester) async {
+      await tester.pumpWidget(
+        const MediaQuery(
+          data: MediaQueryData(size: Size(1600, 900)),
+          child: MaterialApp(
+            home: Scaffold(
+              body: ResponsiveBody.wide(maxWidth: 1000, child: Text('Wide')),
+            ),
+          ),
+        ),
+      );
+      final box = tester.widget<ConstrainedBox>(
+        find.descendant(
+          of: find.byType(ResponsiveBody),
+          matching: find.byType(ConstrainedBox),
+        ),
+      );
+      expect(box.constraints.maxWidth, 1000);
+    });
+  });
 }

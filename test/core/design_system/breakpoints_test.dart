@@ -20,6 +20,10 @@ void main() {
     test('contentMaxWidth is 500', () {
       expect(Breakpoints.contentMaxWidth, 500);
     });
+
+    test('dashboardMaxWidth is 1200', () {
+      expect(Breakpoints.dashboardMaxWidth, 1200);
+    });
   });
 
   group('Breakpoints helpers', () {
@@ -149,6 +153,79 @@ void main() {
       );
 
       expect(result, isFalse);
+    });
+
+    testWidgets('isLarge returns true at 1400px', (tester) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      late bool result;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              result = Breakpoints.isLarge(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(result, isTrue);
+    });
+
+    testWidgets('isLarge returns false at 1000px (expanded but not large)', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1000, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      late bool result;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              result = Breakpoints.isLarge(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(result, isFalse);
+    });
+
+    testWidgets('gridColumnsForWidth returns 2/3/4/5 per breakpoint', (
+      tester,
+    ) async {
+      Future<int> columnsAt(double width) async {
+        tester.view.physicalSize = Size(width, 900);
+        tester.view.devicePixelRatio = 1.0;
+        late int result;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                result = Breakpoints.gridColumnsForWidth(context);
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+        return result;
+      }
+
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      expect(await columnsAt(400), 2);
+      expect(await columnsAt(700), 3);
+      expect(await columnsAt(1000), 4);
+      expect(await columnsAt(1400), 5);
     });
   });
 }

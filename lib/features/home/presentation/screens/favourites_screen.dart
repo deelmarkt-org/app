@@ -10,6 +10,7 @@ import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/presentation/favourites_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/favourite_card.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
@@ -87,13 +88,14 @@ class _LoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: 'a11y.loading'.tr(),
-      child: GridView.count(
-        padding: const EdgeInsets.all(Spacing.s4),
-        crossAxisCount: 2,
-        crossAxisSpacing: Spacing.s4,
-        mainAxisSpacing: Spacing.s4,
-        childAspectRatio: 0.65,
-        children: List.generate(6, (_) => const SkeletonListingCard()),
+      child: CustomScrollView(
+        slivers: [
+          AdaptiveListingGrid(
+            padding: const EdgeInsets.all(Spacing.s4),
+            itemCount: 6,
+            itemBuilder: (_, _) => const SkeletonListingCard(),
+          ),
+        ],
       ),
     );
   }
@@ -143,19 +145,11 @@ class _DataView extends ConsumerWidget {
               ),
             ),
           ),
-          SliverPadding(
+          AdaptiveListingGrid(
             padding: const EdgeInsets.all(Spacing.s4),
-            sliver: SliverGrid.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: Spacing.s4,
-                mainAxisSpacing: Spacing.s4,
-                childAspectRatio: 0.65,
-              ),
-              itemCount: listings.length,
-              itemBuilder:
-                  (context, index) => FavouriteCard(listing: listings[index]),
-            ),
+            itemCount: listings.length,
+            itemBuilder:
+                (context, index) => FavouriteCard(listing: listings[index]),
           ),
         ],
       ),
