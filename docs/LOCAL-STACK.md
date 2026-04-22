@@ -61,8 +61,10 @@ brew install supabase/tap/supabase
 # Linux
 curl -fsSL https://supabase.com/install.sh | sh
 
-# Windows (WSL2 recommended)
+# Windows — native PowerShell (Scoop)
 scoop install supabase
+# Windows — WSL2 terminal: use the Linux install path above instead (scoop
+#                          does not run inside WSL2).
 ```
 
 Verify:

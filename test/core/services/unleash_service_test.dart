@@ -169,6 +169,22 @@ void main() {
           );
     });
 
+    test('skips init when URL is empty (local dev fallback)', () async {
+      // Empty env → early return, no network attempt, no 5s timeout.
+      final sw = Stopwatch()..start();
+      const clientKey = 'x'; // pragma: allowlist secret
+      await initUnleash(url: '', clientKey: clientKey);
+      sw.stop();
+      expect(sw.elapsedMilliseconds, lessThan(500));
+    });
+
+    test('skips init when clientKey is empty (local dev fallback)', () async {
+      final sw = Stopwatch()..start();
+      await initUnleash(url: 'https://any-url', clientKey: '');
+      sw.stop();
+      expect(sw.elapsedMilliseconds, lessThan(500));
+    });
+
     test(
       'completes without throwing when server is unreachable',
       () async {

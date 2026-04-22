@@ -90,7 +90,7 @@ fi
 # No psql required here — the CLI uses its bundled postgres internally. Just
 # report what's in scope so the dev knows what ran (or what's missing).
 if compgen -G "supabase/seeds/*.sql" >/dev/null; then
-  info "Seed files present — applied by Supabase CLI automatically:"
+  info "Seed files found (applied automatically on --reset or first start):"
   for seed in supabase/seeds/*.sql; do
     ok "  $(basename "$seed")"
   done

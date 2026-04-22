@@ -93,7 +93,7 @@ $seedDir = Join-Path (Get-Location) "supabase\seeds"
 if (Test-Path $seedDir) {
     $seeds = Get-ChildItem -Path $seedDir -Filter *.sql -ErrorAction SilentlyContinue
     if ($seeds) {
-        Info "Seed files present - applied by Supabase CLI automatically:"
+        Info "Seed files found (applied automatically on -Reset or first start):"
         foreach ($seed in $seeds) {
             Ok "  $($seed.Name)"
         }
