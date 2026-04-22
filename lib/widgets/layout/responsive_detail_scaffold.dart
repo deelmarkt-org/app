@@ -11,6 +11,17 @@ import 'package:deelmarkt/core/design_system/breakpoints.dart';
 ///   (fixed [masterWidth]) and [detail] expanding on the right. When
 ///   [detail] is null, [emptyDetail] is shown (or a blank panel).
 ///
+/// `Row` uses `CrossAxisAlignment.stretch` so scrollable children
+/// (`ListView`, `CustomScrollView`) fill the viewport vertically and the
+/// `VerticalDivider` gets a non-zero height. Without `stretch`, `Row`'s
+/// default `center` alignment leaves scrollables with intrinsic-height
+/// constraints they can't resolve and the divider collapses to 0px.
+///
+/// Defaults ([masterWidth] = 360, [breakpoint] = [Breakpoints.medium]) match
+/// `MessagesResponsiveShell` so #194 can drop-in migrate without behaviour
+/// change. Treat these values as the design-system contract for any future
+/// master-detail surface.
+///
 /// Reference: docs/design-system/tokens.md §Breakpoints — "Adaptive patterns"
 /// (Listing detail, Chat, Filters use the split-view pattern above medium).
 class ResponsiveDetailScaffold extends StatelessWidget {
@@ -37,6 +48,7 @@ class ResponsiveDetailScaffold extends StatelessWidget {
     }
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(width: masterWidth, child: master),
         const VerticalDivider(thickness: 1, width: 1),

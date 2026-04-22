@@ -9,6 +9,12 @@ class Breakpoints {
   static const double medium = 840;
   static const double expanded = 1200;
 
+  /// Alias for [expanded] (1200px) — the lower bound of the "large" tier
+  /// that [isLarge] checks. Kept in sync with tokens.md §Breakpoints so
+  /// call sites can read `Breakpoints.large` alongside the `isLarge`
+  /// predicate without chasing two names for the same value.
+  static const double large = expanded;
+
   /// Max content width for single-column layouts (onboarding, auth forms).
   static const double contentMaxWidth = 500;
 
@@ -22,10 +28,10 @@ class Breakpoints {
   static bool isExpanded(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= medium;
 
-  /// `true` when width ≥ `expanded` (1200px) — desktop-class viewports that
+  /// `true` when width ≥ [large] (1200px) — desktop-class viewports that
   /// benefit from denser grids, persistent sidebars, and wider content caps.
   static bool isLarge(BuildContext context) =>
-      MediaQuery.sizeOf(context).width >= expanded;
+      MediaQuery.sizeOf(context).width >= large;
 
   /// Listing-grid column count for the current viewport.
   /// Reference: docs/design-system/tokens.md §Breakpoints (2 / 3 / 4 / 5).

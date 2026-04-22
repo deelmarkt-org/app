@@ -88,6 +88,31 @@ void main() {
       expect(sized.width, 320);
     });
 
+    testWidgets(
+      'VerticalDivider stretches full viewport height when detail is a ListView',
+      (tester) async {
+        tester.view.physicalSize = const Size(1000, 600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: ResponsiveDetailScaffold(
+                master: const SizedBox(key: masterKey),
+                detail: ListView(
+                  children: [for (int i = 0; i < 20; i++) Text('item $i')],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.getSize(find.byType(VerticalDivider)).height, 600);
+      },
+    );
+
     testWidgets('renders emptyDetail when detail is null', (tester) async {
       await tester.pumpWidget(
         _buildApp(

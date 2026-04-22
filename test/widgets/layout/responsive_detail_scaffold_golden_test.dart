@@ -13,19 +13,6 @@ import 'package:deelmarkt/widgets/layout/responsive_detail_scaffold.dart';
 
 import '../../helpers/tolerant_golden_comparator.dart';
 
-Widget _wrap(double width, double height, Widget child) {
-  return MediaQuery(
-    data: MediaQueryData(size: Size(width, height)),
-    child: MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: SizedBox(width: width, height: height, child: child),
-        ),
-      ),
-    ),
-  );
-}
-
 final _master = Container(
   color: const Color(0xFFEAF5FF),
   alignment: Alignment.center,
@@ -38,6 +25,20 @@ final _detail = Container(
   child: const Text('DETAIL', style: TextStyle(fontSize: 16)),
 );
 
+Future<void> _pumpAt(
+  WidgetTester tester, {
+  required double width,
+  required double height,
+  required Widget child,
+}) async {
+  tester.view.physicalSize = Size(width, height);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
+  await tester.pumpWidget(MaterialApp(home: Scaffold(body: child)));
+}
+
 void main() {
   setUpAll(() {
     goldenFileComparator = TolerantGoldenFileComparator.forTestFile(
@@ -48,12 +49,11 @@ void main() {
   testWidgets('700px — compact: detail replaces master (single pane)', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      _wrap(
-        700,
-        600,
-        ResponsiveDetailScaffold(master: _master, detail: _detail),
-      ),
+    await _pumpAt(
+      tester,
+      width: 700,
+      height: 600,
+      child: ResponsiveDetailScaffold(master: _master, detail: _detail),
     );
     await expectLater(
       find.byType(ResponsiveDetailScaffold),
@@ -62,12 +62,11 @@ void main() {
   });
 
   testWidgets('900px — expanded: side-by-side split', (tester) async {
-    await tester.pumpWidget(
-      _wrap(
-        900,
-        600,
-        ResponsiveDetailScaffold(master: _master, detail: _detail),
-      ),
+    await _pumpAt(
+      tester,
+      width: 900,
+      height: 600,
+      child: ResponsiveDetailScaffold(master: _master, detail: _detail),
     );
     await expectLater(
       find.byType(ResponsiveDetailScaffold),
@@ -78,12 +77,11 @@ void main() {
   testWidgets('1400px — large: detail expands, master stays 360', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      _wrap(
-        1400,
-        600,
-        ResponsiveDetailScaffold(master: _master, detail: _detail),
-      ),
+    await _pumpAt(
+      tester,
+      width: 1400,
+      height: 600,
+      child: ResponsiveDetailScaffold(master: _master, detail: _detail),
     );
     await expectLater(
       find.byType(ResponsiveDetailScaffold),
