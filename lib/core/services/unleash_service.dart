@@ -9,6 +9,9 @@ import 'package:deelmarkt/core/services/env.dart';
 part 'unleash_service.g.dart';
 
 /// Known feature flag names — centralised to prevent typos.
+/// Logger tag shared by every Unleash call-site.
+const String _logTag = 'unleash';
+
 abstract final class FeatureFlags {
   static const String snapToListEnabled = 'snap_to_list_enabled';
   static const String streamChatMigration = 'stream_chat_migration';
@@ -29,17 +32,37 @@ abstract final class FeatureFlags {
   /// Client-side isAdmin() remains as fast-path; server check is authoritative.
   /// Requires reso to deploy public.is_admin() SQL function before enabling.
   static const String adminServerVerify = 'admin_server_verify_enabled';
+
+  /// GH-59 / ADR-023: EscrowBadge on listing cards.
+  /// Gated so the backend migration (PR-B) can land ahead of the UI
+  /// rollout. Staged in Unleash: internal → 10% → 100%. Kill criterion:
+  /// checkout 409 rate > 2% OR badge accuracy complaint.
+  static const String listingsEscrowBadge = 'listings_escrow_badge';
 }
 
 /// Initialise Unleash feature flags in `main()` before `runApp`.
 ///
 /// Connects to the self-hosted Unleash Frontend API. On failure (e.g. server
 /// not deployed yet), logs a warning and continues — all flags default to off.
-Future<void> initUnleash() async {
+Future<void> initUnleash({String? url, String? clientKey}) async {
+  // Optional overrides exist so unit tests can exercise the empty-env
+  // skip branch without rebuilding the compile-time `Env` constants.
+  // Production calls `initUnleash()` with no args and picks up Env.*.
+  final resolvedUrl = url ?? Env.unleashUrl;
+  final resolvedKey = clientKey ?? Env.unleashClientKey;
+
+  if (resolvedUrl.isEmpty || resolvedKey.isEmpty) {
+    AppLogger.warning(
+      'UNLEASH_URL / UNLEASH_CLIENT_KEY unset — skipping Unleash init; '
+      'all flags default to off (fine for local dev).',
+      tag: _logTag,
+    );
+    return;
+  }
   try {
     final client = UnleashClient(
-      url: Uri.parse(Env.unleashUrl),
-      clientKey: Env.unleashClientKey,
+      url: Uri.parse(resolvedUrl),
+      clientKey: resolvedKey,
       appName: 'deelmarkt',
       refreshInterval: 15,
     );
@@ -48,7 +71,7 @@ Future<void> initUnleash() async {
       onTimeout: () {
         AppLogger.warning(
           'Connection timed out — using defaults',
-          tag: 'unleash',
+          tag: _logTag,
         );
       },
     );
@@ -56,7 +79,7 @@ Future<void> initUnleash() async {
   } on Exception catch (e) {
     AppLogger.warning(
       'Failed to connect — all flags default to off',
-      tag: 'unleash',
+      tag: _logTag,
       error: e,
     );
   }

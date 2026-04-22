@@ -48,6 +48,17 @@ PhotoUploadQueue photoUploadQueue(Ref ref) {
   return queue;
 }
 
+/// Set of photo IDs currently in retry backoff. Consumers should
+/// `ref.watch` this and propagate the flag to the matching grid tile so
+/// its `_UploadingOverlay` switches to the `sell.uploadRetrying`
+/// live-region label (EAA §10). Initial snapshot is always empty — the
+/// stream emits as soon as the first job enters backoff.
+@riverpod
+Stream<Set<String>> retryingPhotoIds(Ref ref) {
+  final queue = ref.watch(photoUploadQueueProvider);
+  return queue.retryingIds;
+}
+
 /// Draft persistence service — saves/restores creation state.
 @riverpod
 DraftPersistenceService draftPersistenceService(Ref ref) {

@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/home/domain/entities/action_item_entity.dart';
 import 'package:deelmarkt/features/home/presentation/seller_home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/action_required_section.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_listing_tile.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_stats_row.dart';
@@ -30,7 +30,7 @@ class SellerHomeDataView extends ConsumerWidget {
       onRefresh: () => ref.read(sellerHomeNotifierProvider.notifier).refresh(),
       child: CustomScrollView(
         slivers: [
-          _appBar(context),
+          const HomeSliverAppBar(),
           _greeting(context),
           _stats(),
           if (data.actions.isNotEmpty) _actions(context),
@@ -40,20 +40,6 @@ class SellerHomeDataView extends ConsumerWidget {
           const SliverToBoxAdapter(child: SizedBox(height: Spacing.s16)),
         ],
       ),
-    );
-  }
-
-  Widget _appBar(BuildContext context) {
-    return SliverAppBar(
-      floating: true,
-      title: Text(
-        'app.name'.tr(),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      actions: const [HomeModePillSwitch(), SizedBox(width: Spacing.s3)],
     );
   }
 

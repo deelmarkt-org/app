@@ -13,9 +13,9 @@ import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
-import 'package:deelmarkt/widgets/cards/listing_deel_card.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
+import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
 
 /// Height of the recent listings horizontal row.
 const _recentRowHeight = 280.0;
@@ -44,7 +44,7 @@ class HomeDataView extends ConsumerWidget {
       onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(),
       child: CustomScrollView(
         slivers: [
-          _appBar(context),
+          const HomeSliverAppBar(extraActions: [_BuyerAppBarActions()]),
           if (data.categories.isNotEmpty) _categories(context),
           _trustBanner(),
           _nearbyHeader(context),
@@ -59,38 +59,6 @@ class HomeDataView extends ConsumerWidget {
           const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
         ],
       ),
-    );
-  }
-
-  Widget _appBar(BuildContext context) {
-    return SliverAppBar(
-      floating: true,
-      title: Text(
-        'app.name'.tr(),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      actions: [
-        const HomeModePillSwitch(),
-        const SizedBox(width: Spacing.s2),
-        IconButton(
-          icon: Icon(PhosphorIcons.heart()),
-          tooltip: 'favourites.title'.tr(),
-          onPressed: () => context.push(AppRoutes.favourites),
-        ),
-        IconButton(
-          icon: Icon(PhosphorIcons.magnifyingGlass()),
-          tooltip: 'nav.search'.tr(),
-          onPressed: () => context.go(AppRoutes.search),
-        ),
-        IconButton(
-          icon: Icon(PhosphorIcons.bell()),
-          tooltip: 'nav.notifications'.tr(),
-          onPressed: null, // Phase 2: wire to notifications (R-34)
-        ),
-      ],
     );
   }
 
@@ -143,8 +111,8 @@ class HomeDataView extends ConsumerWidget {
         childAspectRatio: DeelCardTokens.gridChildAspectRatio,
         children: [
           for (final listing in data.nearby)
-            listingDeelCard(
-              listing,
+            EscrowAwareListingCard(
+              listing: listing,
               onTap:
                   () => context.goNamed(
                     'listing-detail',
@@ -196,8 +164,8 @@ class HomeDataView extends ConsumerWidget {
             final listing = data.recent[index];
             return SizedBox(
               width: _recentCardWidth,
-              child: listingDeelCard(
-                listing,
+              child: EscrowAwareListingCard(
+                listing: listing,
                 onTap:
                     () => context.goNamed(
                       'listing-detail',
@@ -212,6 +180,38 @@ class HomeDataView extends ConsumerWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+/// Icon buttons (favourites, search, notifications) shown in the buyer-mode
+/// home app bar. Extracted into a dedicated `const` widget so the parent
+/// [HomeDataView] does not rebuild a fresh list of [IconButton]s on every
+/// Riverpod state emission.
+class _BuyerAppBarActions extends StatelessWidget {
+  const _BuyerAppBarActions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(PhosphorIcons.heart()),
+          tooltip: 'favourites.title'.tr(),
+          onPressed: () => context.push(AppRoutes.favourites),
+        ),
+        IconButton(
+          icon: Icon(PhosphorIcons.magnifyingGlass()),
+          tooltip: 'nav.search'.tr(),
+          onPressed: () => context.go(AppRoutes.search),
+        ),
+        IconButton(
+          icon: Icon(PhosphorIcons.bell()),
+          tooltip: 'nav.notifications'.tr(),
+          onPressed: null, // Phase 2: wire to notifications (R-34)
+        ),
+      ],
     );
   }
 }

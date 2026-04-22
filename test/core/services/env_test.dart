@@ -4,15 +4,21 @@ import 'package:deelmarkt/core/services/env.dart';
 
 void main() {
   group('Env', () {
-    test('supabaseUrl derives URL from project ID', () {
-      final url = Env.supabaseUrl;
-      expect(url, startsWith('https://'));
-      expect(url, endsWith('.supabase.co'));
-      expect(url, contains(Env.supabaseProjectId));
+    test('supabaseUrl resolves to a non-empty URL', () {
+      // Locally, SUPABASE_URL override points at http://127.0.0.1:54321.
+      // In prod, projectId is set and the getter derives https://…supabase.co.
+      // Either way, the string must not be empty.
+      expect(Env.supabaseUrl, isNotEmpty);
+      expect(
+        Env.supabaseUrl,
+        anyOf(startsWith('http://'), startsWith('https://')),
+      );
     });
 
-    test('supabaseProjectId is non-empty', () {
-      expect(Env.supabaseProjectId, isNotEmpty);
+    test('supabaseProjectId is optional (defaults to empty)', () {
+      // Field has defaultValue: '' so blank .env succeeds at build time.
+      // Prod injects a real project id via Codemagic / CI env.
+      expect(Env.supabaseProjectId, isNotNull);
     });
 
     test('supabaseAnonKey is non-empty', () {

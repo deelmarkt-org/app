@@ -8,7 +8,7 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Empty state for seller mode — new seller with no listings.
@@ -29,7 +29,7 @@ class SellerHomeEmptyView extends ConsumerWidget {
 
     return CustomScrollView(
       slivers: [
-        _appBar(context),
+        const HomeSliverAppBar(),
         SliverFillRemaining(
           hasScrollBody: false,
           child: Padding(
@@ -54,20 +54,6 @@ class SellerHomeEmptyView extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  SliverAppBar _appBar(BuildContext context) {
-    return SliverAppBar(
-      floating: true,
-      title: Text(
-        'app.name'.tr(),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      actions: const [HomeModePillSwitch(), SizedBox(width: Spacing.s3)],
     );
   }
 

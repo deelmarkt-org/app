@@ -18,6 +18,10 @@ class SupabaseSettingsRepository implements SettingsRepository {
   final SupabaseClient _client;
 
   static const _formatError = 'Unexpected data format from server';
+  static const _tableAddresses = 'user_addresses';
+  static const _tableNotificationPrefs = 'notification_preferences';
+  static const _colUserId = 'user_id';
+  static const _colAddition = 'addition';
 
   String get _userId {
     final id = _client.auth.currentUser?.id;
@@ -30,9 +34,9 @@ class SupabaseSettingsRepository implements SettingsRepository {
     try {
       final response =
           await _client
-              .from('notification_preferences')
+              .from(_tableNotificationPrefs)
               .select()
-              .eq('user_id', _userId)
+              .eq(_colUserId, _userId)
               .maybeSingle();
 
       if (response == null) return const NotificationPreferences();
@@ -51,9 +55,9 @@ class SupabaseSettingsRepository implements SettingsRepository {
     try {
       final response =
           await _client
-              .from('notification_preferences')
+              .from(_tableNotificationPrefs)
               .upsert({
-                'user_id': _userId,
+                _colUserId: _userId,
                 'messages': prefs.messages,
                 'offers': prefs.offers,
                 'shipping_updates': prefs.shippingUpdates,
@@ -76,9 +80,9 @@ class SupabaseSettingsRepository implements SettingsRepository {
   Future<List<DutchAddress>> getAddresses() async {
     try {
       final response = await _client
-          .from('user_addresses')
+          .from(_tableAddresses)
           .select()
-          .eq('user_id', _userId)
+          .eq(_colUserId, _userId)
           .order('created_at');
 
       return response.map(dutchAddressFromJson).toList();
@@ -94,12 +98,12 @@ class SupabaseSettingsRepository implements SettingsRepository {
     try {
       final response =
           await _client
-              .from('user_addresses')
+              .from(_tableAddresses)
               .upsert({
-                'user_id': _userId,
+                _colUserId: _userId,
                 'postcode': address.postcode,
                 'house_number': address.houseNumber,
-                'addition': address.addition,
+                _colAddition: address.addition,
                 'street': address.street,
                 'city': address.city,
                 'latitude': address.latitude,
@@ -121,16 +125,16 @@ class SupabaseSettingsRepository implements SettingsRepository {
     final userId = _userId;
     try {
       var query = _client
-          .from('user_addresses')
+          .from(_tableAddresses)
           .delete()
-          .eq('user_id', userId)
+          .eq(_colUserId, userId)
           .eq('postcode', address.postcode)
           .eq('house_number', address.houseNumber);
 
       if (address.addition != null) {
-        query = query.eq('addition', address.addition!);
+        query = query.eq(_colAddition, address.addition!);
       } else {
-        query = query.isFilter('addition', null);
+        query = query.isFilter(_colAddition, null);
       }
 
       await query;

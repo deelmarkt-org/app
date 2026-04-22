@@ -11,12 +11,18 @@ import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 class MessageDto {
   const MessageDto._();
 
+  static const _colConversationId = 'conversation_id';
+  static const _colSenderId = 'sender_id';
+  static const _colText = 'text';
+  static const _colType = 'type';
+  static const _colOfferAmountCents = 'offer_amount_cents';
+
   /// Parse a single Supabase JSON row from the `messages` table.
   static MessageEntity fromJson(Map<String, dynamic> json) {
     final id = json['id'];
-    final conversationId = json['conversation_id'];
-    final senderId = json['sender_id'];
-    final text = json['text'];
+    final conversationId = json[_colConversationId];
+    final senderId = json[_colSenderId];
+    final text = json[_colText];
     final createdAtRaw = json['created_at'];
 
     if (id is! String ||
@@ -41,7 +47,7 @@ class MessageDto {
     final scamFlaggedAt =
         scamFlaggedAtRaw != null ? DateTime.tryParse(scamFlaggedAtRaw) : null;
 
-    final type = MessageType.fromDb((json['type'] as String?) ?? 'text');
+    final type = MessageType.fromDb((json[_colType] as String?) ?? 'text');
 
     return MessageEntity(
       id: id,
@@ -50,7 +56,7 @@ class MessageDto {
       text: text,
       type: type,
       isRead: (json['is_read'] as bool?) ?? false,
-      offerAmountCents: json['offer_amount_cents'] as int?,
+      offerAmountCents: json[_colOfferAmountCents] as int?,
       offerStatus:
           type == MessageType.offer
               ? (OfferStatus.fromDb(json['offer_status'] as String?) ??
@@ -67,12 +73,12 @@ class MessageDto {
   /// Convert [MessageEntity] to Supabase INSERT JSON (excludes server-generated fields).
   static Map<String, dynamic> toJson(MessageEntity entity) {
     return {
-      'conversation_id': entity.conversationId,
-      'sender_id': entity.senderId,
-      'text': entity.text,
-      'type': entity.type.toDb(),
+      _colConversationId: entity.conversationId,
+      _colSenderId: entity.senderId,
+      _colText: entity.text,
+      _colType: entity.type.toDb(),
       if (entity.offerAmountCents != null)
-        'offer_amount_cents': entity.offerAmountCents,
+        _colOfferAmountCents: entity.offerAmountCents,
     };
   }
 
@@ -86,11 +92,11 @@ class MessageDto {
     int? offerAmountCents,
   }) {
     return {
-      'conversation_id': conversationId,
-      'sender_id': senderId,
-      'text': text,
-      'type': type.toDb(),
-      if (offerAmountCents != null) 'offer_amount_cents': offerAmountCents,
+      _colConversationId: conversationId,
+      _colSenderId: senderId,
+      _colText: text,
+      _colType: type.toDb(),
+      if (offerAmountCents != null) _colOfferAmountCents: offerAmountCents,
       if (type == MessageType.offer) 'offer_status': OfferStatus.pending.toDb(),
     };
   }

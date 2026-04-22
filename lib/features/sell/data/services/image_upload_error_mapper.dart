@@ -61,11 +61,12 @@ abstract final class ImageUploadErrorMapper {
           debugMessage: 'Image blocked: $threat',
         );
       case 429:
-        final retryAfter =
-            body is Map<String, dynamic> ? body['retry_after_seconds'] : null;
+        final retryAfter = _parseRetryAfter(body);
         return ValidationException(
           'error.image.rate_limited',
-          debugMessage: 'image-upload-process 429, retry_after=$retryAfter',
+          debugMessage:
+              'image-upload-process 429, retry_after=${retryAfter?.inSeconds}',
+          retryAfter: retryAfter,
         );
       case 500:
       case 502:
@@ -84,5 +85,23 @@ abstract final class ImageUploadErrorMapper {
           debugMessage: 'image-upload-process returned unexpected $status',
         );
     }
+  }
+
+  /// Defensively parses `retry_after_seconds` from a 429 response body.
+  ///
+  /// Returns null for any malformed input — non-map bodies, missing field,
+  /// non-numeric values, negatives, or zero. The presentation layer always
+  /// applies a local safety floor, so null simply means "no server hint".
+  static Duration? _parseRetryAfter(Object? body) {
+    if (body is! Map<String, dynamic>) return null;
+    final raw = body['retry_after_seconds'];
+    final seconds = switch (raw) {
+      final int v => v,
+      final double v => v.toInt(),
+      final String v => int.tryParse(v),
+      _ => null,
+    };
+    if (seconds == null || seconds <= 0) return null;
+    return Duration(seconds: seconds);
   }
 }

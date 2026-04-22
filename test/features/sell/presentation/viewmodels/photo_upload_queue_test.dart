@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -306,6 +307,140 @@ void main() {
       expect(attempts, 1); // no retry happened after cancel
       expect(emitted.whereType<PhotoUploadFailed>().isEmpty, isTrue);
     });
+
+    test(
+      'rate-limited retry emits retryingIds during backoff and clears after',
+      () async {
+        var calls = 0;
+        final svc = _CallCountService(
+          onCall: () {
+            calls++;
+            if (calls == 1) {
+              throw const ValidationException(
+                'error.image.rate_limited',
+                debugMessage: 'fake 429',
+                retryAfter: Duration(milliseconds: 50),
+              );
+            }
+            return _FakeService._fakeResponse;
+          },
+        );
+        final queue = PhotoUploadQueue(
+          service: svc,
+          maxConcurrent: 1,
+          random: Random(42),
+        );
+        addTearDown(queue.dispose);
+
+        final retryingSnapshots = <Set<String>>[];
+        final sub = queue.retryingIds.listen(
+          (s) => retryingSnapshots.add(Set.from(s)),
+        );
+        addTearDown(sub.cancel);
+
+        final outcomeFuture = queue.outcomes
+            .firstWhere((o) => o is PhotoUploadSucceeded)
+            .timeout(const Duration(seconds: 5));
+
+        queue.enqueue(id: 'img-rl', localPath: '/tmp/rl.jpg');
+        await outcomeFuture;
+
+        // Must have entered retrying state at least once, then cleared.
+        expect(
+          retryingSnapshots.any((s) => s.contains('img-rl')),
+          isTrue,
+          reason:
+              'expected at least one snapshot containing img-rl, '
+              'got $retryingSnapshots',
+        );
+        expect(retryingSnapshots.last, isEmpty);
+        expect(queue.currentRetryingIds, isEmpty);
+      },
+    );
+
+    test(
+      'rate-limit hint clamped by rateLimitCap — per-attempt delay stays bounded',
+      () {
+        // Hostile-server scenario: retry_after_seconds=86400 (24h).
+        const hostile = ValidationException(
+          'error.image.rate_limited',
+          retryAfter: Duration(days: 1),
+        );
+        for (var attempt = 1; attempt <= 5; attempt++) {
+          final delay = PhotoUploadQueue.computeDelay(
+            attempt: attempt,
+            randomSeedMs: 0,
+            lastException: hostile,
+          );
+          expect(
+            delay <= PhotoUploadQueue.rateLimitCap,
+            isTrue,
+            reason: 'attempt $attempt delay=$delay exceeds cap',
+          );
+          expect(delay >= PhotoUploadQueue.rateLimitFloor, isTrue);
+        }
+      },
+    );
+
+    test('rate-limit without server hint falls back to 2 s floor', () {
+      const noHint = ValidationException('error.image.rate_limited');
+      final delay = PhotoUploadQueue.computeDelay(
+        attempt: 1,
+        randomSeedMs: 0,
+        lastException: noHint,
+      );
+      expect(delay, greaterThanOrEqualTo(PhotoUploadQueue.rateLimitFloor));
+    });
+
+    test('non-rate-limit exception — no floor applied (regression guard)', () {
+      const network = NetworkException(debugMessage: 'fake');
+      final delay = PhotoUploadQueue.computeDelay(
+        attempt: 1,
+        randomSeedMs: 0,
+        lastException: network,
+      );
+      expect(delay, lessThan(PhotoUploadQueue.rateLimitFloor));
+    });
+
+    test('null exception — no floor applied', () {
+      final delay = PhotoUploadQueue.computeDelay(
+        attempt: 2,
+        randomSeedMs: 100,
+      );
+      expect(delay, lessThan(PhotoUploadQueue.rateLimitFloor));
+    });
+
+    test(
+      'rate-limit hint below floor is promoted to floor (negative/tiny guard)',
+      () {
+        const tiny = ValidationException(
+          'error.image.rate_limited',
+          retryAfter: Duration(milliseconds: 1),
+        );
+        final delay = PhotoUploadQueue.computeDelay(
+          attempt: 1,
+          randomSeedMs: 0,
+          lastException: tiny,
+        );
+        expect(delay, greaterThanOrEqualTo(PhotoUploadQueue.rateLimitFloor));
+      },
+    );
+
+    test(
+      'rate-limit hint within range is honoured (not clamped up or down)',
+      () {
+        const hint = ValidationException(
+          'error.image.rate_limited',
+          retryAfter: Duration(seconds: 5),
+        );
+        final delay = PhotoUploadQueue.computeDelay(
+          attempt: 1,
+          randomSeedMs: 0, // jitter == 0 so floor dominates
+          lastException: hint,
+        );
+        expect(delay, const Duration(seconds: 5));
+      },
+    );
   });
 }
 

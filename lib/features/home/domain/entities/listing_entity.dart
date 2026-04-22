@@ -35,6 +35,7 @@ class ListingEntity extends Equatable {
     this.status = ListingStatus.active,
     this.viewCount = 0,
     this.favouriteCount = 0,
+    this.isEscrowAvailable = false,
   });
 
   /// Sentinel for [copyWith] — distinguishes "not passed" from "passed as null".
@@ -72,6 +73,16 @@ class ListingEntity extends Equatable {
   /// Number of times this listing has been favourited. Defaults to 0.
   final int favouriteCount;
 
+  /// Whether this listing is currently escrow-eligible.
+  ///
+  /// **Server-authoritative** — computed by a Postgres trigger from the
+  /// listing's status, price, quality score, the seller's KYC level, and
+  /// the category's own `escrow_eligible` flag. The client **never**
+  /// derives this value; it reads the DB column via [ListingDto].
+  /// Defaults to `false` (fail-closed) so serialisation failures or
+  /// pre-trigger rows never flash a wrong badge. See ADR-023.
+  final bool isEscrowAvailable;
+
   final DateTime createdAt;
 
   /// Creates a copy with the given fields replaced.
@@ -97,6 +108,7 @@ class ListingEntity extends Equatable {
     ListingStatus? status,
     int? viewCount,
     int? favouriteCount,
+    bool? isEscrowAvailable,
     DateTime? createdAt,
   }) {
     return ListingEntity(
@@ -118,6 +130,7 @@ class ListingEntity extends Equatable {
       status: status ?? this.status,
       viewCount: viewCount ?? this.viewCount,
       favouriteCount: favouriteCount ?? this.favouriteCount,
+      isEscrowAvailable: isEscrowAvailable ?? this.isEscrowAvailable,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -147,6 +160,7 @@ class ListingEntity extends Equatable {
     status,
     viewCount,
     favouriteCount,
+    isEscrowAvailable,
     createdAt,
   ];
 }

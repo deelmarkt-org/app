@@ -10,6 +10,8 @@ import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 class SellerInfoRow extends StatelessWidget {
   const SellerInfoRow({required this.seller, super.key});
 
+  static const _countKey = 'count';
+
   final UserEntity seller;
 
   @override
@@ -26,27 +28,11 @@ class SellerInfoRow extends StatelessWidget {
 
     if (seller.averageRating != null) {
       parts.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              PhosphorIcons.star(PhosphorIconsStyle.fill),
-              size: DeelmarktIconSize.xs,
-              color: starColor,
-            ),
-            const SizedBox(width: 2),
-            Text(
-              seller.averageRating!.toStringAsFixed(1),
-              style: theme.textTheme.bodySmall,
-            ),
-            if (seller.reviewCount > 0)
-              Text(
-                ' (${seller.reviewCount})',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: secondaryColor,
-                ),
-              ),
-          ],
+        _RatingPart(
+          rating: seller.averageRating!,
+          reviewCount: seller.reviewCount,
+          starColor: starColor,
+          secondaryColor: secondaryColor,
         ),
       );
     }
@@ -61,20 +47,9 @@ class SellerInfoRow extends StatelessWidget {
         );
       }
       parts.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              PhosphorIcons.clock(),
-              size: DeelmarktIconSize.xs,
-              color: secondaryColor,
-            ),
-            const SizedBox(width: 2),
-            Text(
-              _formatResponseTime(seller.responseTimeMinutes!),
-              style: theme.textTheme.bodySmall?.copyWith(color: secondaryColor),
-            ),
-          ],
+        _ResponseTimePart(
+          label: _formatResponseTime(seller.responseTimeMinutes!),
+          color: secondaryColor,
         ),
       );
     }
@@ -94,7 +69,7 @@ class SellerInfoRow extends StatelessWidget {
       if (seller.reviewCount > 0) {
         parts.add(
           'listing_detail.reviews'.tr(
-            namedArgs: {'count': '${seller.reviewCount}'},
+            namedArgs: {_countKey: '${seller.reviewCount}'},
           ),
         );
       }
@@ -110,13 +85,69 @@ class SellerInfoRow extends StatelessWidget {
     if (minutes >= 60) {
       final hours = (minutes / 60).round();
       timeStr = 'listing_detail.respondsWithinHours'.tr(
-        namedArgs: {'count': '$hours'},
+        namedArgs: {_countKey: '$hours'},
       );
     } else {
       timeStr = 'listing_detail.respondsWithinMinutes'.tr(
-        namedArgs: {'count': '$minutes'},
+        namedArgs: {_countKey: '$minutes'},
       );
     }
     return 'listing_detail.respondsWithin'.tr(namedArgs: {'time': timeStr});
+  }
+}
+
+class _RatingPart extends StatelessWidget {
+  const _RatingPart({
+    required this.rating,
+    required this.reviewCount,
+    required this.starColor,
+    required this.secondaryColor,
+  });
+
+  final double rating;
+  final int reviewCount;
+  final Color starColor;
+  final Color secondaryColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          PhosphorIcons.star(PhosphorIconsStyle.fill),
+          size: DeelmarktIconSize.xs,
+          color: starColor,
+        ),
+        const SizedBox(width: 2),
+        Text(rating.toStringAsFixed(1), style: theme.textTheme.bodySmall),
+        if (reviewCount > 0)
+          Text(
+            ' ($reviewCount)',
+            style: theme.textTheme.bodySmall?.copyWith(color: secondaryColor),
+          ),
+      ],
+    );
+  }
+}
+
+class _ResponseTimePart extends StatelessWidget {
+  const _ResponseTimePart({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(PhosphorIcons.clock(), size: DeelmarktIconSize.xs, color: color),
+        const SizedBox(width: 2),
+        Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
+      ],
+    );
   }
 }

@@ -2,7 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
+import 'package:deelmarkt/widgets/cards/stat_card.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_shapes.dart';
 
@@ -19,7 +20,7 @@ class SellerHomeLoadingView extends StatelessWidget {
       label: 'a11y.loading'.tr(),
       child: CustomScrollView(
         slivers: [
-          _appBar(context),
+          const HomeSliverAppBar(),
           SliverToBoxAdapter(
             child: SkeletonLoader(
               child: Padding(
@@ -44,20 +45,6 @@ class SellerHomeLoadingView extends StatelessWidget {
     );
   }
 
-  SliverAppBar _appBar(BuildContext context) {
-    return SliverAppBar(
-      floating: true,
-      title: Text(
-        'app.name'.tr(),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-      actions: const [HomeModePillSwitch(), SizedBox(width: Spacing.s3)],
-    );
-  }
-
   Widget _statsRowSkeleton() {
     return SizedBox(
       height: 100,
@@ -66,7 +53,7 @@ class SellerHomeLoadingView extends StatelessWidget {
           3,
           (_) => const Padding(
             padding: EdgeInsets.only(right: Spacing.s3),
-            child: SkeletonBox(width: 140, height: 100),
+            child: SkeletonBox(width: StatCard.width, height: 100),
           ),
         ),
       ),

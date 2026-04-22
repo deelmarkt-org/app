@@ -24,6 +24,7 @@ class PhotoGridTile extends StatelessWidget {
     this.onRemove,
     this.onRetry,
     this.onMenuAction,
+    this.isRetrying = false,
     super.key,
   });
 
@@ -41,6 +42,11 @@ class PhotoGridTile extends StatelessWidget {
 
   /// Called with a menu action key: 'moveToFront', 'moveUp', 'moveDown'.
   final void Function(String)? onMenuAction;
+
+  /// True while this photo is currently in retry backoff (429 rate-limit,
+  /// transient network error). Drives the live-region Semantics announcement
+  /// so screen-reader users know the upload isn't stalled — EAA §10.
+  final bool isRetrying;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +91,7 @@ class PhotoGridTile extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Opacity(opacity: img.isUploaded ? 1.0 : 0.6, child: imageWidget),
-          if (img.isPending) const _UploadingOverlay(),
+          if (img.isPending) _UploadingOverlay(isRetrying: isRetrying),
           if (img.isFailed)
             _FailedOverlay(
               canRetry: img.canRetry,
@@ -120,12 +126,17 @@ class PhotoGridTile extends StatelessWidget {
 
 /// Centered spinner shown while a photo is pending/uploading.
 class _UploadingOverlay extends StatelessWidget {
-  const _UploadingOverlay();
+  const _UploadingOverlay({this.isRetrying = false});
+
+  /// When true, the Semantics label announces the retry state so screen
+  /// readers can tell the user the client is actively waiting for a
+  /// server-advised retry window (not stalled).
+  final bool isRetrying;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
-      label: 'sell.uploadingImage'.tr(),
+      label: (isRetrying ? 'sell.uploadRetrying' : 'sell.uploadingImage').tr(),
       // Fix #126: liveRegion announces upload progress to screen readers (EAA §10)
       liveRegion: true,
       child: Container(

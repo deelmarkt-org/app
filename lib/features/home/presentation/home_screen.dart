@@ -10,10 +10,10 @@ import 'package:deelmarkt/features/home/presentation/home_mode_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/seller_home_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_data_view.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_mode_pill_switch.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_data_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_empty_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_loading_view.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 
@@ -113,17 +113,7 @@ class _BuyerLoadingView extends StatelessWidget {
       label: 'a11y.loading'.tr(),
       child: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            floating: true,
-            title: Text(
-              'app.name'.tr(),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            actions: const [HomeModePillSwitch(), SizedBox(width: Spacing.s3)],
-          ),
+          const HomeSliverAppBar(),
           SliverPadding(
             padding: const EdgeInsets.all(Spacing.s4),
             sliver: SliverGrid.count(

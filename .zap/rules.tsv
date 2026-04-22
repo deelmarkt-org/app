@@ -1,0 +1,30 @@
+# OWASP ZAP passive/active scan rules — DeelMarkt staging
+# Format: RuleId<TAB>Action<TAB>Reason
+# Actions: IGNORE (suppress), WARN (report but no fail), FAIL (hard fail)
+#
+# Flutter web and Cloudflare edge introduce patterns that trigger ZAP
+# false positives. Suppress known-safe findings here; review annually.
+
+# Content Security Policy — Flutter web bootstrap requires 'unsafe-inline'
+# for its inline script tag. This is a framework constraint, not a project flaw.
+10038	IGNORE	Flutter web requires CSP unsafe-inline in bootstrap; not exploitable
+
+# X-Frame-Options — set at the Cloudflare edge (not in app-level headers).
+# ZAP scans the origin, not the CDN layer, so it doesn't see the edge header.
+# WARN (not IGNORE) so we detect if edge config drifts and stops emitting the header.
+10020	WARN	X-Frame-Options set at Cloudflare edge; WARN to catch edge config drift
+
+# Storable and Cacheable Content — CDN caching is intentional for static assets.
+10049	IGNORE	CDN cache headers on static Flutter web assets are by design
+
+# Server header leaks — Supabase and Cloudflare add server headers that
+# cannot be stripped without paid-tier WAF rules.
+10036	WARN	Server header exposed by upstream (Supabase/Cloudflare); low risk
+
+# Missing Anti-CSRF — Flutter web SPA uses Authorization headers (not cookies)
+# for all state-mutating requests; CSRF via form POST is not applicable for SPA endpoints.
+# WARN (not IGNORE) to surface any cookie-authenticated admin/Supabase endpoints if they appear.
+10202	WARN	SPA uses Bearer tokens; WARN to catch any future cookie-auth endpoints
+
+# Timestamp disclosure — Supabase response timestamps are intentional metadata.
+10096	IGNORE	Supabase timestamps in JSON responses are intentional API data

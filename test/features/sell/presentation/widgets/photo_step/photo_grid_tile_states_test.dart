@@ -92,6 +92,59 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
+
+    testWidgets('isRetrying switches Semantics label to sell.uploadRetrying', (
+      tester,
+    ) async {
+      await pumpTestWidgetAnimated(
+        tester,
+        const SizedBox(
+          width: 120,
+          height: 120,
+          child: PhotoGridTile(
+            image: uploadingImage,
+            index: 0,
+            isRetrying: true,
+          ),
+        ),
+      );
+
+      final semantics = tester.widgetList<Semantics>(find.byType(Semantics));
+      final hasRetryingLabel = semantics.any(
+        (s) => s.properties.label == 'sell.uploadRetrying',
+      );
+      final hasUploadingLabel = semantics.any(
+        (s) => s.properties.label == 'sell.uploadingImage',
+      );
+
+      expect(hasRetryingLabel, isTrue, reason: 'must announce retrying');
+      expect(
+        hasUploadingLabel,
+        isFalse,
+        reason: 'must not also announce plain uploading label',
+      );
+    });
+
+    testWidgets('isRetrying overlay keeps liveRegion: true', (tester) async {
+      await pumpTestWidgetAnimated(
+        tester,
+        const SizedBox(
+          width: 120,
+          height: 120,
+          child: PhotoGridTile(
+            image: uploadingImage,
+            index: 0,
+            isRetrying: true,
+          ),
+        ),
+      );
+
+      final semantics = tester.widgetList<Semantics>(find.byType(Semantics));
+      final liveRegionNode = semantics.firstWhere(
+        (s) => s.properties.label == 'sell.uploadRetrying',
+      );
+      expect(liveRegionNode.properties.liveRegion, isTrue);
+    });
   });
 
   group('PhotoGridTile — failed state', () {

@@ -39,6 +39,68 @@ CategoryTint _neutralTint({
   iconForeground: isDark ? darkForeground : lightForeground,
 );
 
+/// Config for standard light/dark tint categories — feeds [_tint].
+typedef _TintConfig =
+    ({
+      Color lightSurface,
+      Color darkSurface,
+      Color accent,
+      Color lightForeground,
+      Color darkForeground,
+    });
+
+const Map<String, _TintConfig> _standardTints = {
+  'cat-electronics': (
+    lightSurface: DeelmarktColors.secondarySurface,
+    darkSurface: DeelmarktColors.darkInfoSurface,
+    accent: DeelmarktColors.secondary,
+    lightForeground: DeelmarktColors.secondary,
+    darkForeground: DeelmarktColors.darkSecondary,
+  ),
+  'cat-clothing': (
+    lightSurface: DeelmarktColors.errorSurface,
+    darkSurface: DeelmarktColors.darkErrorSurface,
+    accent: DeelmarktColors.error,
+    lightForeground: DeelmarktColors.error,
+    darkForeground: DeelmarktColors.darkError,
+  ),
+  'cat-home': (
+    lightSurface: DeelmarktColors.successSurface,
+    darkSurface: DeelmarktColors.darkSuccessSurface,
+    accent: DeelmarktColors.success,
+    lightForeground: DeelmarktColors.success,
+    darkForeground: DeelmarktColors.darkSuccess,
+  ),
+  'cat-sport': (
+    lightSurface: DeelmarktColors.primarySurface,
+    darkSurface: DeelmarktColors.darkWarningSurface,
+    accent: DeelmarktColors.primary,
+    lightForeground: DeelmarktColors.primary,
+    darkForeground: DeelmarktColors.darkPrimary,
+  ),
+  'cat-vehicles': (
+    lightSurface: DeelmarktColors.infoSurface,
+    darkSurface: DeelmarktColors.darkInfoSurface,
+    accent: DeelmarktColors.info,
+    lightForeground: DeelmarktColors.info,
+    darkForeground: DeelmarktColors.darkInfo,
+  ),
+};
+
+const _namedNeutralCategoryIds = {'cat-services', 'cat-other'};
+
+CategoryTint _kidsTint(bool isDark) => (
+  background:
+      isDark
+          ? DeelmarktColors.accentPurple.withAlpha(26)
+          : DeelmarktColors.accentPurpleSurface,
+  iconBackground:
+      isDark
+          ? DeelmarktColors.accentPurple.withAlpha(51)
+          : DeelmarktColors.accentPurpleSurface,
+  iconForeground: DeelmarktColors.accentPurple,
+);
+
 /// Tint colour set for category cards and detail screens.
 ///
 /// Returns background, icon background, and icon foreground colours
@@ -46,72 +108,25 @@ CategoryTint _neutralTint({
 CategoryTint categoryTintFor(String categoryId, Brightness brightness) {
   final isDark = brightness == Brightness.dark;
 
-  return switch (categoryId) {
-    'cat-electronics' => _tint(
-      lightSurface: DeelmarktColors.secondarySurface,
-      darkSurface: DeelmarktColors.darkInfoSurface,
-      accent: DeelmarktColors.secondary,
-      lightForeground: DeelmarktColors.secondary,
-      darkForeground: DeelmarktColors.darkSecondary,
+  final standard = _standardTints[categoryId];
+  if (standard != null) {
+    return _tint(
+      lightSurface: standard.lightSurface,
+      darkSurface: standard.darkSurface,
+      accent: standard.accent,
+      lightForeground: standard.lightForeground,
+      darkForeground: standard.darkForeground,
       isDark: isDark,
-    ),
-    'cat-clothing' => _tint(
-      lightSurface: DeelmarktColors.errorSurface,
-      darkSurface: DeelmarktColors.darkErrorSurface,
-      accent: DeelmarktColors.error,
-      lightForeground: DeelmarktColors.error,
-      darkForeground: DeelmarktColors.darkError,
-      isDark: isDark,
-    ),
-    'cat-home' => _tint(
-      lightSurface: DeelmarktColors.successSurface,
-      darkSurface: DeelmarktColors.darkSuccessSurface,
-      accent: DeelmarktColors.success,
-      lightForeground: DeelmarktColors.success,
-      darkForeground: DeelmarktColors.darkSuccess,
-      isDark: isDark,
-    ),
-    'cat-sport' => _tint(
-      lightSurface: DeelmarktColors.primarySurface,
-      darkSurface: DeelmarktColors.darkWarningSurface,
-      accent: DeelmarktColors.primary,
-      lightForeground: DeelmarktColors.primary,
-      darkForeground: DeelmarktColors.darkPrimary,
-      isDark: isDark,
-    ),
-    'cat-vehicles' => _tint(
-      lightSurface: DeelmarktColors.infoSurface,
-      darkSurface: DeelmarktColors.darkInfoSurface,
-      accent: DeelmarktColors.info,
-      lightForeground: DeelmarktColors.info,
-      darkForeground: DeelmarktColors.darkInfo,
-      isDark: isDark,
-    ),
-    'cat-kids' => (
-      background:
-          isDark
-              ? DeelmarktColors.accentPurple.withAlpha(26)
-              : DeelmarktColors.accentPurpleSurface,
-      iconBackground:
-          isDark
-              ? DeelmarktColors.accentPurple.withAlpha(51)
-              : DeelmarktColors.accentPurpleSurface,
-      iconForeground: DeelmarktColors.accentPurple,
-    ),
-    'cat-services' => _neutralTint(
-      isDark: isDark,
-      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
-      lightForeground: DeelmarktColors.neutral700,
-    ),
-    'cat-other' => _neutralTint(
-      isDark: isDark,
-      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
-      lightForeground: DeelmarktColors.neutral700,
-    ),
-    _ => _neutralTint(
-      isDark: isDark,
-      darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
-      lightForeground: DeelmarktColors.neutral500,
-    ),
-  };
+    );
+  }
+  if (categoryId == 'cat-kids') return _kidsTint(isDark);
+
+  return _neutralTint(
+    isDark: isDark,
+    darkForeground: DeelmarktColors.darkOnSurfaceSecondary,
+    lightForeground:
+        _namedNeutralCategoryIds.contains(categoryId)
+            ? DeelmarktColors.neutral700
+            : DeelmarktColors.neutral500,
+  );
 }

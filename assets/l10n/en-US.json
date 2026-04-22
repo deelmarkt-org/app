@@ -838,6 +838,7 @@
     "errorImagesFailed": "Some photos failed to upload. Retry or remove them.",
     "uploadingImage": "Uploading photo",
     "uploadingProgress": "Uploading {current} of {total}",
+    "uploadRetrying": "Retrying upload in a moment",
     "uploadFailed": "Upload failed",
     "retryUpload": "Retry upload",
     "uploadErrorBlocked": "This photo was rejected by our safety scan",
