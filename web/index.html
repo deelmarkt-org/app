@@ -28,7 +28,13 @@
        Permissions-Policy and X-Frame-Options must be HTTP headers (Cloudflare), not meta tags.
        TODO Sprint 3: replace 'unsafe-inline' with 'sha256-<hash>' of flutter_bootstrap.js.
        TODO Sprint 3: add report-uri for CSP violation monitoring. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com/flutter-canvaskit/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com https://*.supabase.co; media-src 'self' https://res.cloudinary.com https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mollie.com https://www.gstatic.com/flutter-canvaskit/ https://fonts.gstatic.com https://firebaseinstallations.googleapis.com https://firebaseremoteconfig.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://*.mollie.com; frame-ancestors 'none'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; upgrade-insecure-requests;">
+  <!-- Local-dev hosts (http(s)://127.0.0.1:* and localhost:*) are added so
+       `scripts/dev-up.sh` (see docs/LOCAL-STACK.md) can hit a local Supabase
+       stack from the web target. These hosts are unreachable from prod so
+       allowing them is a no-op in production.
+       `upgrade-insecure-requests` dropped because it auto-upgrades
+       http://127.0.0.1 → https and breaks the local API on :54321. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.gstatic.com/flutter-canvaskit/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://127.0.0.1:* http://localhost:* https://res.cloudinary.com https://*.supabase.co; media-src 'self' http://127.0.0.1:* http://localhost:* https://res.cloudinary.com https://*.supabase.co; connect-src 'self' http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:* https://*.supabase.co wss://*.supabase.co https://api.mollie.com https://www.gstatic.com/flutter-canvaskit/ https://fonts.gstatic.com https://firebaseinstallations.googleapis.com https://firebaseremoteconfig.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src https://*.mollie.com; frame-ancestors 'none'; worker-src 'self' blob:; object-src 'none'; base-uri 'self';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
