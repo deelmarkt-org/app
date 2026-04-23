@@ -80,12 +80,27 @@ PhotoUploadQueue _makeQueue(
   ImageUploadService svc, {
   int maxAttempts = 3,
   int maxConcurrent = 1,
+  Random? random,
 }) {
   return PhotoUploadQueue(
     service: svc,
     maxConcurrent: maxConcurrent,
     maxAttempts: maxAttempts,
+    random: random,
   );
+}
+
+/// A [Random] that always returns the same value from [nextInt] — lets
+/// timing-sensitive tests pin the jittered backoff delay deterministically.
+class _FixedIntRandom implements Random {
+  _FixedIntRandom(this.value);
+  final int value;
+  @override
+  int nextInt(int max) => value % max;
+  @override
+  bool nextBool() => false;
+  @override
+  double nextDouble() => 0.0;
 }
 
 // ---------------------------------------------------------------------------
@@ -282,6 +297,12 @@ void main() {
       // First attempt fails (retryable network) → enters backoff. We cancel
       // while the backoff timer is still pending, exercising the
       // UploadCancelledException catch around _backoff().
+      //
+      // Deterministic timing: inject a Random that makes the first retry
+      // backoff exactly 400 ms (400 % 500 = 400). The test cancels at 20 ms,
+      // well inside the backoff window, on every run regardless of host
+      // load. With the previous un-seeded Random the jitter was uniform in
+      // [0, 500) ms → ~4% CI flake rate.
       var attempts = 0;
       final svc = _CallCountService(
         onCall: () {
@@ -289,7 +310,11 @@ void main() {
           throw const NetworkException(debugMessage: 'first attempt fails');
         },
       );
-      final queue = _makeQueue(svc, maxAttempts: 5);
+      final queue = _makeQueue(
+        svc,
+        maxAttempts: 5,
+        random: _FixedIntRandom(400),
+      );
       addTearDown(queue.dispose);
 
       // Collect outcomes for 200ms to verify no Failed event fires.
