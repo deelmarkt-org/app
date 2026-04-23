@@ -40,7 +40,7 @@ final class DeviceFrame {
       'DeviceFrame($id, ${logicalSize.width}×${logicalSize.height} @${devicePixelRatio}x)';
 }
 
-enum ScreenshotPlatform { ios, android }
+enum ScreenshotPlatform { ios, android, web }
 
 /// The canonical 6-device screenshot matrix defined in PLAN-p43-aso.md §WS-B.
 const List<DeviceFrame> kScreenshotDevices = [
@@ -87,5 +87,21 @@ const List<DeviceFrame> kScreenshotDevices = [
     logicalSize: Size(800, 1280),
     devicePixelRatio: 2.0,
     platform: ScreenshotPlatform.android,
+  ),
+];
+
+/// Desktop/web frames introduced for the responsive rollout (#192 → #193/#194/#196).
+///
+/// NOT consumed by existing screenshot drivers yet — each screen-fix PR opts
+/// in by iterating `[...kScreenshotDevices, ...kScreenshotDesktopDevices]` (or
+/// the desktop list alone) when it regenerates goldens, so PNGs always reflect
+/// the intended fixed state rather than the current broken baseline.
+const List<DeviceFrame> kScreenshotDesktopDevices = [
+  DeviceFrame(
+    id: 'desktop_1400',
+    label: 'Desktop 1400',
+    logicalSize: Size(1400, 900),
+    devicePixelRatio: 1.0,
+    platform: ScreenshotPlatform.web,
   ),
 ];

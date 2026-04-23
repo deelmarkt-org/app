@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 import 'package:deelmarkt/widgets/inputs/deel_search_input.dart';
@@ -162,26 +162,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 class _SearchLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    int crossAxisCount = 4;
-    if (Breakpoints.isCompact(context)) {
-      crossAxisCount = 2;
-    } else if (Breakpoints.isMedium(context)) {
-      crossAxisCount = 3;
-    }
-
     return Semantics(
       label: 'a11y.loading'.tr(),
       child: CustomScrollView(
         slivers: [
-          SliverPadding(
+          AdaptiveListingGrid(
             padding: const EdgeInsets.all(Spacing.s4),
-            sliver: SliverGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: Spacing.s3,
-              crossAxisSpacing: Spacing.s3,
-              childAspectRatio: 0.7,
-              children: List.generate(6, (_) => const SkeletonListingCard()),
-            ),
+            itemCount: 6,
+            itemBuilder: (_, _) => const SkeletonListingCard(),
           ),
         ],
       ),

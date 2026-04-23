@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/home/domain/entities/home_mode.dart';
@@ -14,6 +13,7 @@ import 'package:deelmarkt/features/home/presentation/widgets/seller_home_data_vi
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_empty_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/seller_home_loading_view.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
 
@@ -100,13 +100,6 @@ class _BuyerLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int crossAxisCount = 4;
-    if (Breakpoints.isCompact(context)) {
-      crossAxisCount = 2;
-    } else if (Breakpoints.isMedium(context)) {
-      crossAxisCount = 3;
-    }
-
     // M7: buyer loading view now includes the SliverAppBar so logo + pill
     // switch persist through the loading→data transition without flickering.
     return Semantics(
@@ -114,18 +107,10 @@ class _BuyerLoadingView extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           const HomeSliverAppBar(),
-          SliverPadding(
+          AdaptiveListingGrid(
             padding: const EdgeInsets.all(Spacing.s4),
-            sliver: SliverGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: Spacing.s3,
-              crossAxisSpacing: Spacing.s3,
-              childAspectRatio: 0.7,
-              children: List.generate(
-                _skeletonCount,
-                (_) => const SkeletonListingCard(),
-              ),
-            ),
+            itemCount: _skeletonCount,
+            itemBuilder: (_, _) => const SkeletonListingCard(),
           ),
         ],
       ),

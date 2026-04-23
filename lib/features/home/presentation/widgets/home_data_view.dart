@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
@@ -30,16 +29,8 @@ class HomeDataView extends ConsumerWidget {
 
   final HomeState data;
 
-  static int _gridColumns(BuildContext context) {
-    if (Breakpoints.isCompact(context)) return 2;
-    if (Breakpoints.isMedium(context)) return 3;
-    return 4; // expanded
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final crossAxisCount = _gridColumns(context);
-
     return RefreshIndicator(
       onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(),
       child: CustomScrollView(
@@ -49,7 +40,7 @@ class HomeDataView extends ConsumerWidget {
           _trustBanner(),
           _nearbyHeader(context),
           if (data.nearby.isNotEmpty)
-            _nearbyGrid(context, ref, crossAxisCount)
+            _nearbyGrid(context, ref)
           else
             _nearbyEmpty(context),
           if (data.recent.isNotEmpty) ...[
@@ -101,30 +92,24 @@ class HomeDataView extends ConsumerWidget {
     );
   }
 
-  Widget _nearbyGrid(BuildContext context, WidgetRef ref, int crossAxisCount) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-      sliver: SliverGrid.count(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: Spacing.s3,
-        crossAxisSpacing: Spacing.s3,
-        childAspectRatio: DeelCardTokens.gridChildAspectRatio,
-        children: [
-          for (final listing in data.nearby)
-            EscrowAwareListingCard(
-              listing: listing,
-              onTap:
-                  () => context.goNamed(
-                    'listing-detail',
-                    pathParameters: {'id': listing.id},
-                  ),
-              onFavouriteTap:
-                  () => ref
-                      .read(homeNotifierProvider.notifier)
-                      .toggleFavourite(listing.id),
-            ),
-        ],
-      ),
+  Widget _nearbyGrid(BuildContext context, WidgetRef ref) {
+    return AdaptiveListingGrid(
+      itemCount: data.nearby.length,
+      itemBuilder: (context, index) {
+        final listing = data.nearby[index];
+        return EscrowAwareListingCard(
+          listing: listing,
+          onTap:
+              () => context.goNamed(
+                'listing-detail',
+                pathParameters: {'id': listing.id},
+              ),
+          onFavouriteTap:
+              () => ref
+                  .read(homeNotifierProvider.notifier)
+                  .toggleFavourite(listing.id),
+        );
+      },
     );
   }
 

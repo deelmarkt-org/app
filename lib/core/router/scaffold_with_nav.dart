@@ -45,7 +45,11 @@ const _navItems = [
 /// Breakpoint behaviour (per docs/design-system/tokens.md):
 ///   - compact (<600px): bottom NavigationBar
 ///   - medium (600-840px): bottom NavigationBar
-///   - expanded (≥840px): side NavigationRail
+///   - expanded (840-1200px): side NavigationRail, selected-only labels
+///   - large (≥1200px): side NavigationRail, all labels visible
+///
+/// Selected-only labels on mid-sized viewports keep the rail compact so it
+/// doesn't overflow on short windows (#190) and leaves more room for content.
 ///
 /// Extracted to its own file per CLAUDE.md §1.1 (shared UI component).
 class ScaffoldWithNav extends StatelessWidget {
@@ -65,13 +69,17 @@ class ScaffoldWithNav extends StatelessWidget {
     final useRail = Breakpoints.isExpanded(context);
 
     if (useRail) {
+      final labelType =
+          Breakpoints.isLarge(context)
+              ? NavigationRailLabelType.all
+              : NavigationRailLabelType.selected;
       return Scaffold(
         body: Row(
           children: [
             NavigationRail(
               selectedIndex: navigationShell.currentIndex,
               onDestinationSelected: _onDestinationSelected,
-              labelType: NavigationRailLabelType.all,
+              labelType: labelType,
               backgroundColor:
                   Theme.of(context).brightness == Brightness.dark
                       ? DeelmarktColors.darkSurface
