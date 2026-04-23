@@ -1,17 +1,28 @@
-/// Screenshot driver — Messages master-detail shell on desktop.
+/// Screenshot driver — Messages master-detail shell on desktop (empty state).
+///
+/// Captures the DESKTOP "no conversation selected" layout introduced in
+/// #194, matching `docs/screens/06-chat/designs/messages_desktop_expanded.png`
+/// (list + "pick a conversation" empty state).
 ///
 /// Mobile messages UX is already covered by the standalone
-/// [ConversationListScreen] / [ChatThreadScreen] drivers. This driver
-/// captures the DESKTOP layout introduced in #194 (master-detail via
-/// `ResponsiveDetailScaffold`), matching:
-/// - `docs/screens/06-chat/designs/messages_desktop_expanded.png` —
-///   list + "pick a conversation" empty state (no `conversationId`).
-/// - `docs/screens/06-chat/designs/chat_thread_desktop_expanded.png` —
-///   list + thread side-by-side (`conversationId` set).
+/// `chat_thread_screenshot_test.dart` driver — we only need the desktop
+/// empty state here.
 ///
-/// Only iterates `kScreenshotDesktopDevices` because the shell's
-/// compact/mobile behaviour is identical to the standalone screens
-/// already covered elsewhere.
+/// ### Thread-state desktop golden — deferred
+///
+/// Capturing the master-detail thread state (list + [ChatThreadScreen])
+/// on desktop would match `chat_thread_desktop_expanded.png`, but
+/// requires fixing a pre-existing bug in `captureScreenshot`'s pump +
+/// capture pipeline: when the thread notifier's async `build()` depends
+/// on `Future.wait` + a `watchMessages` stream, the capture consistently
+/// produces a solid-color image (widget tree is populated but the
+/// rendered frame isn't). Evidence: the existing `chat_thread_*`
+/// goldens in dev have byte-identical light and dark variants for the
+/// same device (e.g. both `chat_thread_en_US_light_android_phone` and
+/// `chat_thread_en_US_dark_android_phone` share blob `492a7ff0`), which
+/// is physically impossible for a correctly rendered theme-sensitive
+/// surface. Fixing the capture path is out of #194 scope — tracked in
+/// the umbrella #198 for a dedicated screenshot-infra PR.
 library;
 
 import 'package:flutter_test/flutter_test.dart';
@@ -40,22 +51,6 @@ void main() {
             goldenName: 'messages_shell_empty',
           );
         });
-
-        testWidgets(
-          'messages_shell_thread ${device.id} $locale ${theme.name}',
-          (tester) async {
-            await captureScreenshot(
-              tester: tester,
-              screen: const MessagesResponsiveShell(
-                conversationId: kScreenshotConversationId,
-              ),
-              locale: locale,
-              theme: theme,
-              device: device,
-              goldenName: 'messages_shell_thread',
-            );
-          },
-        );
       }
     }
   }

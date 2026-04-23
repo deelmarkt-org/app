@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
@@ -24,17 +23,19 @@ import 'package:deelmarkt/widgets/layout/responsive_detail_scaffold.dart';
 ///
 /// Default scaffold params (`masterWidth = 360`, `breakpoint = medium`)
 /// match this screen's previous hand-rolled layout, so the migration is
-/// behaviour-preserving.
+/// behaviour-preserving. Divider color uses the chat theme's `border`
+/// token to keep parity with the rest of the messages surface (generic
+/// `dividerTheme.color` would be a ~3% luminance shift in dark mode).
 ///
 /// Reference: docs/screens/06-chat/01-conversation-list.md,
 /// docs/screens/06-chat/02-chat-thread.md.
-class MessagesResponsiveShell extends ConsumerWidget {
+class MessagesResponsiveShell extends StatelessWidget {
   const MessagesResponsiveShell({this.conversationId, super.key});
 
   final String? conversationId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colors = ChatThemeColors.of(context);
     final isExpanded = Breakpoints.isExpanded(context);
 
@@ -63,6 +64,7 @@ class MessagesResponsiveShell extends ConsumerWidget {
           master: master,
           detail: detail,
           emptyDetail: const NoThreadSelected(),
+          dividerColor: colors.border,
         ),
       ),
     );
