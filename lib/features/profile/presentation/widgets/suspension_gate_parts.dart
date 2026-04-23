@@ -22,6 +22,35 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_cta.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_status.dart';
+import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
+
+/// Shimmer placeholder shown while the active sanction loads.
+class SuspensionGateLoadingSkeleton extends StatelessWidget {
+  const SuspensionGateLoadingSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonLoader(
+      child: Column(
+        children: [
+          const SizedBox(height: Spacing.s16),
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: DeelmarktColors.neutral200,
+              borderRadius: BorderRadius.circular(DeelmarktRadius.full),
+            ),
+          ),
+          const SizedBox(height: Spacing.s4),
+          Container(height: 24, width: 200, color: DeelmarktColors.neutral200),
+          const SizedBox(height: Spacing.s4),
+          Container(height: 80, color: DeelmarktColors.neutral200),
+        ],
+      ),
+    );
+  }
+}
 
 class SuspensionGateSanctionBody extends StatelessWidget {
   const SuspensionGateSanctionBody({

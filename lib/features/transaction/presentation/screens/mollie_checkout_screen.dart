@@ -121,7 +121,9 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
           tooltip: 'action.cancel'.tr(),
         ),
       ),
-      body: _hasError ? _buildError(context) : _buildWebView(),
+      body: MollieCheckoutBodyFrame(
+        child: _hasError ? _buildError(context) : _buildWebView(),
+      ),
     );
   }
 
@@ -160,53 +162,52 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
 
   Widget _buildError(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Outer Center comes from [MollieCheckoutBodyFrame]; this inner Padding
+    // sits directly inside the 500px cap, so no second Center is needed.
     return Semantics(
       label: 'error.payment_failed'.tr(),
       liveRegion: true,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.s6),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                PhosphorIcons.warningCircle(),
-                size: 48,
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.s6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              PhosphorIcons.warningCircle(),
+              size: 48,
+              color: isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
+            ),
+            const SizedBox(height: Spacing.s4),
+            Text(
+              'error.payment_failed'.tr(),
+              style: Theme.of(context).textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: Spacing.s2),
+            Text(
+              'error.network'.tr(),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color:
-                    isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
+                    isDark
+                        ? DeelmarktColors.darkOnSurfaceSecondary
+                        : DeelmarktColors.neutral500,
               ),
-              const SizedBox(height: Spacing.s4),
-              Text(
-                'error.payment_failed'.tr(),
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: Spacing.s2),
-              Text(
-                'error.network'.tr(),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color:
-                      isDark
-                          ? DeelmarktColors.darkOnSurfaceSecondary
-                          : DeelmarktColors.neutral500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: Spacing.s6),
-              DeelButton(
-                label: 'action.retry'.tr(),
-                leadingIcon: PhosphorIcons.arrowClockwise(),
-                variant: DeelButtonVariant.secondary,
-                onPressed: _retry,
-              ),
-              const SizedBox(height: Spacing.s3),
-              DeelButton(
-                label: 'action.cancel'.tr(),
-                variant: DeelButtonVariant.ghost,
-                onPressed: () => context.pop(MollieCheckoutResult.cancelled),
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: Spacing.s6),
+            DeelButton(
+              label: 'action.retry'.tr(),
+              leadingIcon: PhosphorIcons.arrowClockwise(),
+              variant: DeelButtonVariant.secondary,
+              onPressed: _retry,
+            ),
+            const SizedBox(height: Spacing.s3),
+            DeelButton(
+              label: 'action.cancel'.tr(),
+              variant: DeelButtonVariant.ghost,
+              onPressed: () => context.pop(MollieCheckoutResult.cancelled),
+            ),
+          ],
         ),
       ),
     );
@@ -215,3 +216,31 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
 
 /// Result of the Mollie checkout WebView.
 enum MollieCheckoutResult { completed, cancelled }
+
+/// Layout frame for the Mollie checkout body — centers content and caps
+/// its width at 500px so the hosted iframe (~400px Mollie-controlled form)
+/// doesn't stretch on desktop. Extracted so the layout cap can be unit-
+/// tested without the `WebViewController` platform channel.
+///
+/// The cap is fixed (not a parameter): Mollie's form width is determined
+/// by Mollie, not by our design tokens, so there's no design-system
+/// variation to expose.
+///
+/// Reference: docs/screens/04-payments/02-mollie-checkout.md §Responsive.
+class MollieCheckoutBodyFrame extends StatelessWidget {
+  const MollieCheckoutBodyFrame({required this.child, super.key});
+
+  static const double _maxWidth = 500;
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _maxWidth),
+        child: child,
+      ),
+    );
+  }
+}

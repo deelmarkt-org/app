@@ -143,5 +143,37 @@ void main() {
 
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
     });
+
+    testWidgets(
+      'wraps content in a Card at expanded viewport (>=840px) — matches '
+      'docs/screens/01-auth/02-registration.md §Expanded',
+      (tester) async {
+        tester.view.physicalSize = const Size(1400, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final fakeVm = FakeRegisterViewModel(RegistrationState.initial());
+        await tester.pumpWidget(buildSubject(fakeVm));
+
+        // Card only exists when _buildResponsiveContent takes the expanded
+        // branch; LoginScreen + SuspensionGate use the same pattern.
+        expect(find.byType(Card), findsOneWidget);
+      },
+    );
+
+    testWidgets('does NOT wrap in a Card at compact viewport (<840px)', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final fakeVm = FakeRegisterViewModel(RegistrationState.initial());
+      await tester.pumpWidget(buildSubject(fakeVm));
+
+      expect(find.byType(Card), findsNothing);
+    });
   });
 }

@@ -11,7 +11,7 @@
 | Route | Modal / push (not a named route — opened programmatically) |
 | Auth | Required |
 | States | Loading (WebView loading overlay), WebView active, Error, Completed (pops), Cancelled (pops) |
-| Responsive | Mobile only (WebView — not applicable to web/desktop) |
+| Responsive | Mobile-only payment UX (Mollie's hosted form is ~400px wide and not responsive). On web/desktop viewports, the WebView body is wrapped in `Center(ConstrainedBox(maxWidth: 500))` so the iframe doesn't stretch edge-to-edge. The cap is unconditional — viewports ≤500px see the WebView at their native width. See `lib/features/transaction/presentation/screens/mollie_checkout_screen.dart` (PR #200). |
 | Dark mode | Partial — via Theme, but WebView content is Mollie-controlled |
 
 ## Current Layout (as implemented)

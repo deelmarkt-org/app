@@ -20,7 +20,8 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 ///
 /// Reference: docs/design-system/tokens.md §Breakpoints
 class ResponsiveBody extends StatelessWidget {
-  const ResponsiveBody({required this.child, this.maxWidth = 600, super.key});
+  const ResponsiveBody({required this.child, this.maxWidth = 600, super.key})
+    : assert(maxWidth > 0, 'ResponsiveBody.maxWidth must be > 0');
 
   /// Dashboard-style cap for grid/catalogue screens. Defaults to
   /// [Breakpoints.large] (1200px) per tokens.md §Breakpoints.
@@ -28,7 +29,7 @@ class ResponsiveBody extends StatelessWidget {
     required this.child,
     this.maxWidth = Breakpoints.large,
     super.key,
-  });
+  }) : assert(maxWidth > 0, 'ResponsiveBody.maxWidth must be > 0');
 
   final Widget child;
 

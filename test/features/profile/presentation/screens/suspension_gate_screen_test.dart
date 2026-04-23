@@ -283,4 +283,50 @@ void main() {
       expect(find.textContaining('sanction.screen.appeal_title'), findsNothing);
     });
   });
+
+  group('SuspensionGateScreen — responsive layout', () {
+    testWidgets('wraps body in a Card at expanded viewport (>=840px)', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
+
+      // The Card wrapper is only inserted by _buildResponsiveContent when
+      // the viewport crosses the expanded breakpoint (>=840px).
+      expect(find.byType(Card), findsOneWidget);
+    });
+
+    testWidgets('does NOT wrap body in a Card at compact viewport (<840px)', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
+
+      // On mobile the content renders inline without the Card treatment,
+      // so no Card widget should be present in the tree.
+      expect(find.byType(Card), findsNothing);
+    });
+
+    testWidgets('does NOT wrap body in a Card at medium viewport (600-839px) — '
+        'pins Breakpoints.isExpanded threshold at 840, not 600', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(700, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
+
+      expect(find.byType(Card), findsNothing);
+    });
+  });
 }
