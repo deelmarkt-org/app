@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/transaction/presentation/screens/mollie_checkout_screen.dart';
@@ -19,6 +20,56 @@ void main() {
           MollieCheckoutResult.cancelled,
         ]),
       );
+    });
+  });
+
+  group('MollieCheckoutBodyFrame', () {
+    testWidgets('caps child width at 500px on desktop viewport', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: MollieCheckoutBodyFrame(child: SizedBox.expand()),
+          ),
+        ),
+      );
+
+      final box = tester.widget<ConstrainedBox>(
+        find.descendant(
+          of: find.byType(MollieCheckoutBodyFrame),
+          matching: find.byType(ConstrainedBox),
+        ),
+      );
+      expect(box.constraints.maxWidth, 500);
+    });
+
+    testWidgets('lets child fill width below 500px on mobile viewport', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: MollieCheckoutBodyFrame(
+              child: SizedBox(key: Key('child'), width: double.infinity),
+            ),
+          ),
+        ),
+      );
+
+      // Child renders at viewport width (400) because the cap is above it.
+      final childSize = tester.getSize(find.byKey(const Key('child')));
+      expect(childSize.width, 400);
     });
   });
 

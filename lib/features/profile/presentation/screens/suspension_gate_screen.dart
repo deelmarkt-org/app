@@ -68,29 +68,36 @@ class SuspensionGateScreen extends ConsumerWidget {
     );
   }
 
-  /// Scrollable gate content, wrapped in a Card on expanded viewports to
-  /// match the LoginScreen pattern (focused dialog rather than bare page).
+  /// Scrollable gate content. On expanded viewports, wrap in a bordered
+  /// Card to match the LoginScreen pattern (focused dialog rather than
+  /// bare page). Horizontal margins come from the enclosing [ResponsiveBody]
+  /// — the scroll view adds no extra padding on compact so mobile margins
+  /// stay at the tokenised `Spacing.screenMarginMobile` (16px). On expanded,
+  /// interior padding lives INSIDE the scroll view so the scrollbar sits at
+  /// the Card's edge instead of being inset.
   Widget _buildResponsiveContent(
     BuildContext context,
     WidgetRef ref,
     AsyncValue<SanctionEntity?> sanctionAsync,
   ) {
-    final content = SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.s6),
-      child: Semantics(
-        container: true,
-        liveRegion: true,
-        child: _buildBody(context, ref, sanctionAsync),
-      ),
+    final body = Semantics(
+      container: true,
+      liveRegion: true,
+      child: _buildBody(context, ref, sanctionAsync),
     );
-    if (!Breakpoints.isExpanded(context)) return content;
+    if (!Breakpoints.isExpanded(context)) {
+      return SingleChildScrollView(child: body);
+    }
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
         side: BorderSide(color: Theme.of(context).dividerColor),
       ),
-      child: Padding(padding: const EdgeInsets.all(Spacing.s4), child: content),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(Spacing.s4),
+        child: body,
+      ),
     );
   }
 

@@ -314,5 +314,19 @@ void main() {
       // so no Card widget should be present in the tree.
       expect(find.byType(Card), findsNothing);
     });
+
+    testWidgets('does NOT wrap body in a Card at medium viewport (600-839px) — '
+        'pins Breakpoints.isExpanded threshold at 840, not 600', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(700, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
+
+      expect(find.byType(Card), findsNothing);
+    });
   });
 }

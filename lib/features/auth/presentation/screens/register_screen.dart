@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
+import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
@@ -49,8 +52,33 @@ class RegisterScreen extends ConsumerWidget {
       body: SafeArea(
         child: ResponsiveBody(
           maxWidth: 480,
-          child: SingleChildScrollView(child: _StepView(state: state)),
+          child: _buildResponsiveContent(context, state),
         ),
+      ),
+    );
+  }
+
+  /// Scroll view on compact; bordered Card on expanded — matches
+  /// [docs/screens/01-auth/02-registration.md] §Expanded ("centered card
+  /// max 480px") and the [LoginScreen] convention.
+  Widget _buildResponsiveContent(
+    BuildContext context,
+    RegistrationState state,
+  ) {
+    final content = SingleChildScrollView(child: _StepView(state: state));
+    if (!Breakpoints.isExpanded(context)) return content;
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+        side: BorderSide(color: Theme.of(context).dividerColor),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.s8,
+          vertical: Spacing.s4,
+        ),
+        child: content,
       ),
     );
   }
