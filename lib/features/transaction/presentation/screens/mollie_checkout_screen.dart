@@ -218,26 +218,27 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
 enum MollieCheckoutResult { completed, cancelled }
 
 /// Layout frame for the Mollie checkout body — centers content and caps
-/// its width at [maxWidth] (default 500px) so the hosted iframe doesn't
-/// stretch on desktop. Extracted so the layout cap can be unit-tested
-/// without the `WebViewController` platform channel.
+/// its width at 500px so the hosted iframe (~400px Mollie-controlled form)
+/// doesn't stretch on desktop. Extracted so the layout cap can be unit-
+/// tested without the `WebViewController` platform channel.
+///
+/// The cap is fixed (not a parameter): Mollie's form width is determined
+/// by Mollie, not by our design tokens, so there's no design-system
+/// variation to expose.
 ///
 /// Reference: docs/screens/04-payments/02-mollie-checkout.md §Responsive.
 class MollieCheckoutBodyFrame extends StatelessWidget {
-  const MollieCheckoutBodyFrame({
-    required this.child,
-    this.maxWidth = 500,
-    super.key,
-  });
+  const MollieCheckoutBodyFrame({required this.child, super.key});
+
+  static const double _maxWidth = 500;
 
   final Widget child;
-  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth),
+        constraints: const BoxConstraints(maxWidth: _maxWidth),
         child: child,
       ),
     );
