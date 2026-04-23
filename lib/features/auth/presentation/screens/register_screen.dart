@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 import 'package:deelmarkt/features/auth/domain/entities/registration_state.dart';
 import 'package:deelmarkt/features/auth/presentation/viewmodels/register_viewmodel.dart';
@@ -47,9 +47,9 @@ class RegisterScreen extends ConsumerWidget {
         title: Text(_titleForStep(state.step)),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          child: _StepView(state: state),
+        child: ResponsiveBody(
+          maxWidth: 480,
+          child: SingleChildScrollView(child: _StepView(state: state)),
         ),
       ),
     );

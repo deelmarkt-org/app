@@ -121,7 +121,16 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
           tooltip: 'action.cancel'.tr(),
         ),
       ),
-      body: _hasError ? _buildError(context) : _buildWebView(),
+      body: Center(
+        child: ConstrainedBox(
+          // Mollie's hosted checkout renders a ~400px-wide mobile-optimised
+          // form. Cap the wrapper so the iframe doesn't stretch edge-to-edge
+          // on desktop (the WebView itself is not responsive — see
+          // docs/screens/04-payments/02-mollie-checkout.md "mobile-only").
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: _hasError ? _buildError(context) : _buildWebView(),
+        ),
+      ),
     );
   }
 
