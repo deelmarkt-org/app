@@ -203,6 +203,48 @@ void main() {
       expect(result, isFalse);
     });
 
+    test('gridColumnsForContainerWidth returns 2/3/4/5 per threshold', () {
+      expect(Breakpoints.gridColumnsForContainerWidth(400), 2);
+      expect(Breakpoints.gridColumnsForContainerWidth(599.9), 2);
+      expect(Breakpoints.gridColumnsForContainerWidth(600), 3);
+      expect(Breakpoints.gridColumnsForContainerWidth(700), 3);
+      expect(Breakpoints.gridColumnsForContainerWidth(839.9), 3);
+      expect(Breakpoints.gridColumnsForContainerWidth(840), 4);
+      expect(Breakpoints.gridColumnsForContainerWidth(900), 4);
+      expect(Breakpoints.gridColumnsForContainerWidth(1199.9), 4);
+      expect(Breakpoints.gridColumnsForContainerWidth(1200), 5);
+      expect(Breakpoints.gridColumnsForContainerWidth(1400), 5);
+      expect(Breakpoints.gridColumnsForContainerWidth(1800), 5);
+    });
+
+    testWidgets(
+      'gridColumnsForWidth delegates to gridColumnsForContainerWidth via MediaQuery',
+      (tester) async {
+        tester.view.physicalSize = const Size(959, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        late int contextResult;
+        late int directResult;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                contextResult = Breakpoints.gridColumnsForWidth(context);
+                directResult = Breakpoints.gridColumnsForContainerWidth(
+                  MediaQuery.sizeOf(context).width,
+                );
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+        expect(contextResult, directResult);
+        expect(contextResult, 4); // 959 < 1200
+      },
+    );
+
     testWidgets('gridColumnsForWidth returns 2/3/4/5 per breakpoint', (
       tester,
     ) async {

@@ -29,6 +29,10 @@ class Breakpoints {
   /// default so there is one canonical form-column width.
   static const double formMaxWidth = 600;
 
+  /// Width of the search-filter sidebar on expanded viewports.
+  /// Reference: docs/screens/02-home/03-search.md §Responsive.
+  static const double filterSidebarWidth = 240;
+
   static bool isCompact(BuildContext context) =>
       MediaQuery.sizeOf(context).width < compact;
 
@@ -44,24 +48,35 @@ class Breakpoints {
   static bool isLarge(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= large;
 
-  /// Width of the search-filter sidebar on expanded viewports.
-  /// Reference: docs/screens/02-home/03-search.md §Responsive.
-  static const double filterSidebarWidth = 240;
-
-  /// Listing-grid column count for the current viewport.
+  /// Listing-grid column count for the current **viewport**.
+  ///
+  /// Prefer [gridColumnsForContainerWidth] in grids that may render inside
+  /// a constrained container (sidebar-adjacent panes, width-capped scroll
+  /// views) — viewport width and container width diverge in those cases,
+  /// and using viewport width produces too-dense layouts that overflow
+  /// card contents.
+  ///
   /// Reference: docs/design-system/tokens.md §Breakpoints (2 / 3 / 4 / 5).
   static int gridColumnsForWidth(BuildContext context) =>
-      gridColumnsForWidthValue(MediaQuery.sizeOf(context).width);
+      gridColumnsForContainerWidth(MediaQuery.sizeOf(context).width);
 
-  /// Column count for a grid with the given explicit [width] (dp).
+  /// Listing-grid column count for a given **container width** (e.g. the
+  /// `crossAxisExtent` reported by `SliverLayoutBuilder`). Returns the same
+  /// 2 / 3 / 4 / 5 progression as [gridColumnsForWidth] but tied to the
+  /// actual box a grid renders inside rather than the whole viewport. Use
+  /// this when a grid lives alongside a fixed-width sidebar or under a
+  /// `ResponsiveBody.wide` cap — those wrappers can shrink the grid's
+  /// effective width by hundreds of pixels below the viewport.
   ///
-  /// Use when the widget occupies only part of the viewport (e.g. a
-  /// sidebar-adjacent content pane) so the container width drives the column
-  /// decision rather than the full `MediaQuery` width.
-  static int gridColumnsForWidthValue(double width) {
+  /// Thresholds (same as [gridColumnsForWidth]):
+  /// - width <  [compact]  (600)  → 2
+  /// - width <  [medium]   (840)  → 3
+  /// - width <  [large]   (1200)  → 4
+  /// - width >= [large]   (1200)  → 5
+  static int gridColumnsForContainerWidth(double width) {
     if (width < compact) return 2;
     if (width < medium) return 3;
-    if (width >= large) return 5;
-    return 4;
+    if (width < large) return 4;
+    return 5;
   }
 }
