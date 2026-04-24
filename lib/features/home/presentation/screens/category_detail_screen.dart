@@ -6,11 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
+import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/features/home/domain/entities/category_entity.dart';
+import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/presentation/category_detail_notifier.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/category_detail_loading.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/featured_listings_grid.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/subcategory_chip.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
+import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
@@ -91,9 +94,13 @@ class _DataView extends StatelessWidget {
         ),
       if (state.featuredListings.isNotEmpty) ...[
         _featuredHeader(context),
-        FeaturedListingsGrid(
-          listings: state.featuredListings,
-          onToggleFavourite: onToggleFavourite,
+        AdaptiveListingGrid(
+          itemCount: state.featuredListings.length,
+          itemBuilder:
+              (context, index) => _FeaturedListingCard(
+                listing: state.featuredListings[index],
+                onToggleFavourite: onToggleFavourite,
+              ),
         ),
       ],
       if (state.featuredListings.isEmpty && state.subcategories.isEmpty)
@@ -177,6 +184,41 @@ class _SubcategoryChips extends StatelessWidget {
           const SizedBox(height: Spacing.s6),
         ],
       ),
+    );
+  }
+}
+
+/// Listing card rendered inside the [AdaptiveListingGrid] that replaced
+/// the former `FeaturedListingsGrid` widget. Uses [DeelCard.grid] directly
+/// so the rendering matches the pre-#193 behaviour exactly — only the
+/// column count is now viewport-adaptive (2 / 3 / 4 / 5).
+class _FeaturedListingCard extends StatelessWidget {
+  const _FeaturedListingCard({
+    required this.listing,
+    required this.onToggleFavourite,
+  });
+
+  final ListingEntity listing;
+  final ValueChanged<String> onToggleFavourite;
+
+  @override
+  Widget build(BuildContext context) {
+    return DeelCard.grid(
+      imageUrl: listing.imageUrls.isNotEmpty ? listing.imageUrls.first : '',
+      priceInCents: listing.priceInCents,
+      originalPriceInCents: listing.originalPriceInCents,
+      title: listing.title,
+      location: listing.location,
+      distanceFormatted:
+          listing.distanceKm != null
+              ? Formatters.distanceKm(listing.distanceKm!)
+              : null,
+      isFavourited: listing.isFavourited,
+      onFavouriteTap: () => onToggleFavourite(listing.id),
+      onTap:
+          () => context.push(
+            AppRoutes.listingDetail.replaceAll(':id', listing.id),
+          ),
     );
   }
 }

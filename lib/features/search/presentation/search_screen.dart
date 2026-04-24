@@ -127,6 +127,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onLoadMore:
               () => ref.read(searchNotifierProvider.notifier).loadMore(),
           onFilterTap: () => _showFilterSheet(context),
+          onFilterApply:
+              (filter) => ref
+                  .read(searchNotifierProvider.notifier)
+                  .updateFilter(filter),
         );
       },
     );
