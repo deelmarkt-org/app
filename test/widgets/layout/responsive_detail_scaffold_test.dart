@@ -125,4 +125,54 @@ void main() {
       expect(find.byKey(emptyKey), findsOneWidget);
     });
   });
+
+  group('ResponsiveDetailScaffold dividerColor', () {
+    testWidgets('wires a provided dividerColor through to VerticalDivider', (
+      tester,
+    ) async {
+      const customColor = Color(0xFFABCDEF);
+
+      await tester.pumpWidget(
+        const MediaQuery(
+          data: MediaQueryData(size: Size(1000, 600)),
+          child: MaterialApp(
+            home: Scaffold(
+              body: ResponsiveDetailScaffold(
+                master: SizedBox.expand(),
+                detail: SizedBox.expand(),
+                dividerColor: customColor,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final divider = tester.widget<VerticalDivider>(
+        find.byType(VerticalDivider),
+      );
+      expect(divider.color, customColor);
+    });
+
+    testWidgets('leaves divider color null when not provided', (tester) async {
+      await tester.pumpWidget(
+        const MediaQuery(
+          data: MediaQueryData(size: Size(1000, 600)),
+          child: MaterialApp(
+            home: Scaffold(
+              body: ResponsiveDetailScaffold(
+                master: SizedBox.expand(),
+                detail: SizedBox.expand(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final divider = tester.widget<VerticalDivider>(
+        find.byType(VerticalDivider),
+      );
+      // null → VerticalDivider falls back to DividerThemeData.color.
+      expect(divider.color, isNull);
+    });
+  });
 }

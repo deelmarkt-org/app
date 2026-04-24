@@ -31,6 +31,7 @@ class ResponsiveDetailScaffold extends StatelessWidget {
     this.emptyDetail,
     this.masterWidth = 360,
     this.breakpoint = Breakpoints.medium,
+    this.dividerColor,
     super.key,
   });
 
@@ -39,6 +40,14 @@ class ResponsiveDetailScaffold extends StatelessWidget {
   final Widget? emptyDetail;
   final double masterWidth;
   final double breakpoint;
+
+  /// Optional override for the divider color. When null, the divider uses
+  /// [DividerThemeData.color] from the app theme. Screens with their own
+  /// palette semantics (e.g. messages chat-theme `border` token, which
+  /// diverges from the generic dark divider on a ~3% luminance shift) can
+  /// pass a token-specific color here to keep parity with the rest of the
+  /// feature.
+  final Color? dividerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +60,7 @@ class ResponsiveDetailScaffold extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(width: masterWidth, child: master),
-        const VerticalDivider(thickness: 1, width: 1),
+        VerticalDivider(thickness: 1, width: 1, color: dividerColor),
         Expanded(child: detail ?? emptyDetail ?? const SizedBox.shrink()),
       ],
     );
