@@ -11,7 +11,7 @@
 | Route | `/transactions/:id` |
 | Auth | Required |
 | States | Data (timeline varies by transaction status) — no loading/error (data passed as param) |
-| Responsive | ResponsiveBody wrapper (max 900px centered). Expanded ≥840px renders a two-column `Row` — main content (TrustBanner + AmountSection + ActionSection) on the left, EscrowTimeline pinned as a 320px right rail so it stays in view while scrolling. Compact stacks everything in a single column with the timeline at the top. See #206. |
+| Responsive | ResponsiveBody wrapper (max 900px centered). Single-column stack on all viewports — the horizontal `EscrowTimeline` stepper needs ≥360px to render in its wide mode, so stacking below 900 keeps it readable rather than forcing a narrow vertical rail. See #206 + #207. |
 | Dark mode | Via Theme, but sub-widgets may have light-only colors |
 
 ## Current Layout (as implemented)
@@ -68,7 +68,7 @@ VARIATIONS: Light, Dark, Different transaction states:
 - "delivered" (confirm + dispute buttons)
 - "confirmed" (waiting for payout)
 - "released" (completed, payout done — green success state)
-Expanded desktop (centered max 900px via ResponsiveBody, two-column `Row` — main content on left, 320px EscrowTimeline rail on right)
+Expanded desktop (centered max 900px via ResponsiveBody, single-column stack — horizontal EscrowTimeline stepper stays in its wide mode at 900px cap)
 ```
 
 ## Implementation Audit
@@ -88,6 +88,6 @@ Expanded desktop (centered max 900px via ResponsiveBody, two-column `Row` — ma
 
 | # | Severity | Issue |
 |---|----------|-------|
-| 1 | RESOLVED | ~~No `ResponsiveBody` wrapper — screen stretches full-width on desktop.~~ Fixed by #195 (wrap) + #206 (maxWidth 900 + expanded two-column Row with timeline rail). |
+| 1 | RESOLVED | ~~No `ResponsiveBody` wrapper — screen stretches full-width on desktop.~~ Fixed by #195 (wrap) + #206/#207 (bump maxWidth to 900 so the horizontal EscrowTimeline stepper gets room to breathe on desktop). |
 | 2 | MEDIUM | ActionSection buttons have `onPressed: null` — not wired to ConfirmDeliveryUseCase or dispute flow |
 | 3 | LOW | No loading/error states — data passed directly as constructor param. When ViewModels are added, will need `AsyncValue` handling. |
