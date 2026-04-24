@@ -189,9 +189,13 @@ class _SubcategoryChips extends StatelessWidget {
 }
 
 /// Listing card rendered inside the [AdaptiveListingGrid] that replaced
-/// the former `FeaturedListingsGrid` widget. Uses [DeelCard.grid] directly
-/// so the rendering matches the pre-#193 behaviour exactly — only the
-/// column count is now viewport-adaptive (2 / 3 / 4 / 5).
+/// the former `FeaturedListingsGrid` widget.
+///
+/// **Intentional behaviour change vs FeaturedListingsGrid:** distance is
+/// now shown when [ListingEntity.distanceKm] is non-null. The former widget
+/// omitted `distanceFormatted` entirely — this adds the `"Amsterdam · 3.2 km"`
+/// secondary line that every other listing card in the app shows (#210 H2).
+/// Reverted if the product decision is to keep category-detail cards distance-free.
 class _FeaturedListingCard extends StatelessWidget {
   const _FeaturedListingCard({
     required this.listing,
