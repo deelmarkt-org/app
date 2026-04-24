@@ -65,6 +65,15 @@ class MessagesResponsiveShell extends StatelessWidget {
           detail: detail,
           emptyDetail: const NoThreadSelected(),
           dividerColor: colors.border,
+          // Pass `breakpoint` explicitly so the scaffold's internal
+          // compact/expanded threshold stays locked to the same constant
+          // the shell uses above for `isExpanded`. Otherwise the two
+          // checks could drift (e.g. if the scaffold default ever moves
+          // off `Breakpoints.medium`) and `showBackButton` +
+          // `selectedConversationId` could desync from the rendered
+          // layout. Review #202 M-1.
+          // ignore: avoid_redundant_argument_values
+          breakpoint: Breakpoints.medium,
         ),
       ),
     );
