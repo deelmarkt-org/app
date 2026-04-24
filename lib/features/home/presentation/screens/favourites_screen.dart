@@ -14,6 +14,7 @@ import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_listing_card.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 /// Favourites screen — P-28.
 ///
@@ -88,14 +89,16 @@ class _LoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: 'a11y.loading'.tr(),
-      child: CustomScrollView(
-        slivers: [
-          AdaptiveListingGrid(
-            padding: const EdgeInsets.all(Spacing.s4),
-            itemCount: 6,
-            itemBuilder: (_, _) => const SkeletonListingCard(),
-          ),
-        ],
+      child: ResponsiveBody.wide(
+        child: CustomScrollView(
+          slivers: [
+            AdaptiveListingGrid(
+              padding: const EdgeInsets.all(Spacing.s4),
+              itemCount: 6,
+              itemBuilder: (_, _) => const SkeletonListingCard(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -116,42 +119,47 @@ class _DataView extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () => ref.read(favouritesNotifierProvider.notifier).refresh(),
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.s4,
-                Spacing.s4,
-                Spacing.s4,
-                Spacing.s2,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'favourites.subtitle'.tr().toUpperCase(),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: subtitleColor,
-                      letterSpacing: 1.2,
+      // ResponsiveBody.wide caps the grid at Breakpoints.large (1200) on
+      // ultra-wide viewports. Each sliver owns its own horizontal padding,
+      // so the wrapper's padding is off (§193 PR A).
+      child: ResponsiveBody.wide(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Spacing.s4,
+                  Spacing.s4,
+                  Spacing.s4,
+                  Spacing.s2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'favourites.subtitle'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: subtitleColor,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: Spacing.s1),
-                  Text(
-                    'favourites.savedItems'.tr(),
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                ],
+                    const SizedBox(height: Spacing.s1),
+                    Text(
+                      'favourites.savedItems'.tr(),
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          AdaptiveListingGrid(
-            padding: const EdgeInsets.all(Spacing.s4),
-            itemCount: listings.length,
-            itemBuilder:
-                (context, index) => FavouriteCard(listing: listings[index]),
-          ),
-        ],
+            AdaptiveListingGrid(
+              padding: const EdgeInsets.all(Spacing.s4),
+              itemCount: listings.length,
+              itemBuilder:
+                  (context, index) => FavouriteCard(listing: listings[index]),
+            ),
+          ],
+        ),
       ),
     );
   }

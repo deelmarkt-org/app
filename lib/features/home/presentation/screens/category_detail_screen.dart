@@ -12,6 +12,7 @@ import 'package:deelmarkt/features/home/presentation/widgets/category_detail_loa
 import 'package:deelmarkt/features/home/presentation/widgets/featured_listings_grid.dart';
 import 'package:deelmarkt/features/home/presentation/widgets/subcategory_chip.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 /// Category detail screen — hero, subcategory chips, and featured listings.
 ///
@@ -73,61 +74,72 @@ class _DataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // Hero section
+    // ResponsiveBody.wide caps the grid at Breakpoints.large (1200) on
+    // ultra-wide viewports. Each sliver owns its own horizontal padding
+    // (Spacing.s4), so the wrapper's padding is off (§193 PR A).
+    return ResponsiveBody.wide(
+      child: CustomScrollView(slivers: _buildSlivers(context)),
+    );
+  }
+
+  List<Widget> _buildSlivers(BuildContext context) {
+    return [
+      _heroSection(context),
+      if (state.subcategories.isNotEmpty)
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.s4,
-              Spacing.s4,
-              Spacing.s4,
-              Spacing.s6,
-            ),
+          child: _SubcategoryChips(subcategories: state.subcategories),
+        ),
+      if (state.featuredListings.isNotEmpty) ...[
+        _featuredHeader(context),
+        FeaturedListingsGrid(
+          listings: state.featuredListings,
+          onToggleFavourite: onToggleFavourite,
+        ),
+      ],
+      if (state.featuredListings.isEmpty && state.subcategories.isEmpty)
+        SliverFillRemaining(
+          child: Center(
             child: Text(
-              'category.heroTitle'.tr(args: [state.parent.name]),
-              style: Theme.of(context).textTheme.headlineMedium,
+              'category.empty'.tr(),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
         ),
-        // Subcategory chips
-        if (state.subcategories.isNotEmpty)
-          SliverToBoxAdapter(
-            child: _SubcategoryChips(subcategories: state.subcategories),
-          ),
-        // Featured listings header + grid
-        if (state.featuredListings.isNotEmpty) ...[
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.s4,
-                0,
-                Spacing.s4,
-                Spacing.s3,
-              ),
-              child: Text(
-                'category.recommendedIn'.tr(args: [state.parent.name]),
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-            ),
-          ),
-          FeaturedListingsGrid(
-            listings: state.featuredListings,
-            onToggleFavourite: onToggleFavourite,
-          ),
-        ],
-        // Empty state
-        if (state.featuredListings.isEmpty && state.subcategories.isEmpty)
-          SliverFillRemaining(
-            child: Center(
-              child: Text(
-                'category.empty'.tr(),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-          ),
-        const SliverToBoxAdapter(child: SizedBox(height: Spacing.s8)),
-      ],
+      const SliverToBoxAdapter(child: SizedBox(height: Spacing.s8)),
+    ];
+  }
+
+  Widget _heroSection(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.s4,
+          Spacing.s4,
+          Spacing.s4,
+          Spacing.s6,
+        ),
+        child: Text(
+          'category.heroTitle'.tr(args: [state.parent.name]),
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
+    );
+  }
+
+  Widget _featuredHeader(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.s4,
+          0,
+          Spacing.s4,
+          Spacing.s3,
+        ),
+        child: Text(
+          'category.recommendedIn'.tr(args: [state.parent.name]),
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+      ),
     );
   }
 }

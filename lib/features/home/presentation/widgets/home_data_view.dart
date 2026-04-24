@@ -8,6 +8,7 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
 import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
@@ -33,22 +34,28 @@ class HomeDataView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return RefreshIndicator(
       onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(),
-      child: CustomScrollView(
-        slivers: [
-          const HomeSliverAppBar(extraActions: [_BuyerAppBarActions()]),
-          if (data.categories.isNotEmpty) _categories(context),
-          _trustBanner(),
-          _nearbyHeader(context),
-          if (data.nearby.isNotEmpty)
-            _nearbyGrid(context, ref)
-          else
-            _nearbyEmpty(context),
-          if (data.recent.isNotEmpty) ...[
-            _recentHeader(context),
-            _recentRow(context, ref),
+      // ResponsiveBody.wide caps the scroll view at Breakpoints.large (1200)
+      // on ultra-wide viewports so the grid doesn't stretch edge-to-edge.
+      // Each sliver below owns its own horizontal padding (Spacing.s4), so
+      // the wrapper's padding is intentionally off (§193 PR A).
+      child: ResponsiveBody.wide(
+        child: CustomScrollView(
+          slivers: [
+            const HomeSliverAppBar(extraActions: [_BuyerAppBarActions()]),
+            if (data.categories.isNotEmpty) _categories(context),
+            _trustBanner(),
+            _nearbyHeader(context),
+            if (data.nearby.isNotEmpty)
+              _nearbyGrid(context, ref)
+            else
+              _nearbyEmpty(context),
+            if (data.recent.isNotEmpty) ...[
+              _recentHeader(context),
+              _recentRow(context, ref),
+            ],
+            const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
           ],
-          const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
-        ],
+        ),
       ),
     );
   }
