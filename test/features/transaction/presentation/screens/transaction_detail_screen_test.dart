@@ -172,5 +172,53 @@ void main() {
 
       expect(find.byType(EscrowStepDetailSheet), findsOneWidget);
     });
+
+    testWidgets(
+      'caps content at 900px ResponsiveBody on expanded viewport — see #206',
+      (tester) async {
+        tester.view.physicalSize = const Size(1400, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await pumpTestScreen(
+          tester,
+          TransactionDetailScreen(transaction: _buildTransaction()),
+        );
+
+        final body = tester.widget<ResponsiveBody>(
+          find.descendant(
+            of: find.byType(TransactionDetailScreen),
+            matching: find.byType(ResponsiveBody),
+          ),
+        );
+        expect(body.maxWidth, 900);
+      },
+    );
+
+    testWidgets(
+      'single-column stack on expanded — no top-level Row (regression pin '
+      'against the #206 rail variant that triggered EscrowTimeline narrow '
+      'fallback; see PR #207 H-1)',
+      (tester) async {
+        tester.view.physicalSize = const Size(1400, 900);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        await pumpTestScreen(
+          tester,
+          TransactionDetailScreen(transaction: _buildTransaction()),
+        );
+
+        // Top-level layout inside ResponsiveBody is a Column, not a Row.
+        // Leaf widgets (AmountSection internals, TrustBanner) may contain
+        // their own Rows — only the immediate child matters here.
+        final topChild =
+            (tester.widget<ResponsiveBody>(find.byType(ResponsiveBody)).child)
+                as Column;
+        expect(topChild.children.length, greaterThanOrEqualTo(4));
+      },
+    );
   });
 }

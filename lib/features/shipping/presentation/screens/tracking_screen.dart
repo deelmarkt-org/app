@@ -32,6 +32,10 @@ class TrackingScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
           child: ResponsiveBody(
+            // Wider than the default form cap — the vertical timeline
+            // + tracking number card breathe better at 800 on desktop.
+            // See docs/screens/05-shipping/02-tracking-timeline.md §Expanded.
+            maxWidth: 800,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
