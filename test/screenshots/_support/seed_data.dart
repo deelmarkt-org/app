@@ -27,6 +27,10 @@ const kScreenshotTransactionId = 'txn-001';
 /// Shipping order reference for the QR screen.
 const kScreenshotShipmentId = 'shipment-001';
 
+/// Category ID for category-detail screenshot (L1 electronics — populated
+/// with subcategories + featured listings in the mock category data).
+const kScreenshotCategoryId = 'cat-electronics';
+
 /// Locale variants to capture for each device × theme combination.
 const kScreenshotLocales = ['nl_NL', 'en_US'];
 
