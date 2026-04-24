@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_draft_form.dart';
@@ -32,11 +33,11 @@ class ReviewScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(title: Text('review.title'.tr())),
         body: SafeArea(
-          // maxWidth 500 matches docs/screens/07-profile/04-rating-review.md
-          // §Expanded; keeps the form readable and not stretched across desktop
-          // viewports.
+          // Breakpoints.contentMaxWidth (500px) matches
+          // docs/screens/07-profile/04-rating-review.md §Expanded; keeps the
+          // form readable and not stretched across desktop viewports.
           child: ResponsiveBody(
-            maxWidth: 500,
+            maxWidth: Breakpoints.contentMaxWidth,
             child: asyncState.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error:

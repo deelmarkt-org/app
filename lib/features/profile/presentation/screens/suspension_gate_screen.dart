@@ -60,7 +60,7 @@ class SuspensionGateScreen extends ConsumerWidget {
         appBar: _buildAppBar(context, ref),
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 480,
+            maxWidth: Breakpoints.authCardMaxWidth,
             child: _buildResponsiveContent(context, ref, sanctionAsync),
           ),
         ),

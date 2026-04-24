@@ -51,7 +51,7 @@ class RegisterScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: ResponsiveBody(
-          maxWidth: 480,
+          maxWidth: Breakpoints.authCardMaxWidth,
           child: _buildResponsiveContent(context, state),
         ),
       ),

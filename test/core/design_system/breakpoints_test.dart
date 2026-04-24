@@ -20,6 +20,14 @@ void main() {
     test('contentMaxWidth is 500', () {
       expect(Breakpoints.contentMaxWidth, 500);
     });
+
+    test('authCardMaxWidth is 480', () {
+      expect(Breakpoints.authCardMaxWidth, 480);
+    });
+
+    test('formMaxWidth is 600', () {
+      expect(Breakpoints.formMaxWidth, 600);
+    });
   });
 
   group('Breakpoints helpers', () {
