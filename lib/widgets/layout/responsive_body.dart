@@ -10,9 +10,9 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 /// - expanded (≥840px): centered, max-width [maxWidth]
 ///
 /// Pick the constructor by screen class:
-/// - **Default [ResponsiveBody] (maxWidth 600)** — single-column flows:
-///   auth / onboarding / forms / settings / appeal / review. Caps content
-///   at a readable column width on desktop.
+/// - **Default [ResponsiveBody] (maxWidth [Breakpoints.formMaxWidth] = 600)**
+///   — single-column flows: auth / onboarding / forms / settings / appeal /
+///   review. Caps content at a readable column width on desktop.
 /// - **[ResponsiveBody.wide] (maxWidth 1200)** — multi-column dashboards:
 ///   home, search results, favourites, category browse. Caps content at
 ///   `Breakpoints.large` so grid cards keep reasonable proportions and
@@ -20,8 +20,11 @@ import 'package:deelmarkt/core/design_system/spacing.dart';
 ///
 /// Reference: docs/design-system/tokens.md §Breakpoints
 class ResponsiveBody extends StatelessWidget {
-  const ResponsiveBody({required this.child, this.maxWidth = 600, super.key})
-    : assert(maxWidth > 0, 'ResponsiveBody.maxWidth must be > 0');
+  const ResponsiveBody({
+    required this.child,
+    this.maxWidth = Breakpoints.formMaxWidth,
+    super.key,
+  }) : assert(maxWidth > 0, 'ResponsiveBody.maxWidth must be > 0');
 
   /// Dashboard-style cap for grid/catalogue screens. Defaults to
   /// [Breakpoints.large] (1200px) per tokens.md §Breakpoints.

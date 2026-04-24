@@ -18,6 +18,17 @@ class Breakpoints {
   /// Max content width for single-column layouts (onboarding, auth forms).
   static const double contentMaxWidth = 500;
 
+  /// Max width of the auth/gate card surface (login, register, suspension
+  /// gate). Matches the expanded-viewport card width specified in
+  /// `docs/screens/01-auth/02-registration.md` §Expanded,
+  /// `03-login.md`, and `06-suspension-gate.md`.
+  static const double authCardMaxWidth = 480;
+
+  /// Max width for single-column forms (review, review result, generic
+  /// [ResponsiveBody] default). Kept in sync with `ResponsiveBody`'s
+  /// default so there is one canonical form-column width.
+  static const double formMaxWidth = 600;
+
   static bool isCompact(BuildContext context) =>
       MediaQuery.sizeOf(context).width < compact;
 

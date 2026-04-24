@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/buttons.dart';
@@ -218,9 +219,10 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
 enum MollieCheckoutResult { completed, cancelled }
 
 /// Layout frame for the Mollie checkout body — centers content and caps
-/// its width at 500px so the hosted iframe (~400px Mollie-controlled form)
-/// doesn't stretch on desktop. Extracted so the layout cap can be unit-
-/// tested without the `WebViewController` platform channel.
+/// its width at [Breakpoints.contentMaxWidth] (500px) so the hosted iframe
+/// (~400px Mollie-controlled form) doesn't stretch on desktop. Extracted
+/// so the layout cap can be unit-tested without the `WebViewController`
+/// platform channel.
 ///
 /// The cap is fixed (not a parameter): Mollie's form width is determined
 /// by Mollie, not by our design tokens, so there's no design-system
@@ -230,15 +232,15 @@ enum MollieCheckoutResult { completed, cancelled }
 class MollieCheckoutBodyFrame extends StatelessWidget {
   const MollieCheckoutBodyFrame({required this.child, super.key});
 
-  static const double _maxWidth = 500;
-
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: _maxWidth),
+        constraints: const BoxConstraints(
+          maxWidth: Breakpoints.contentMaxWidth,
+        ),
         child: child,
       ),
     );
