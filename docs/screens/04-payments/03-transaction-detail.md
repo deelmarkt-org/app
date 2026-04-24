@@ -11,7 +11,7 @@
 | Route | `/transactions/:id` |
 | Auth | Required |
 | States | Data (timeline varies by transaction status) — no loading/error (data passed as param) |
-| Responsive | No ResponsiveBody wrapper — should be added for web/tablet |
+| Responsive | ResponsiveBody wrapper (max 900px centered). Expanded ≥840px renders a two-column `Row` — main content (TrustBanner + AmountSection + ActionSection) on the left, EscrowTimeline pinned as a 320px right rail so it stays in view while scrolling. Compact stacks everything in a single column with the timeline at the top. See #206. |
 | Dark mode | Via Theme, but sub-widgets may have light-only colors |
 
 ## Current Layout (as implemented)
@@ -68,7 +68,7 @@ VARIATIONS: Light, Dark, Different transaction states:
 - "delivered" (confirm + dispute buttons)
 - "confirmed" (waiting for payout)
 - "released" (completed, payout done — green success state)
-Expanded desktop (add ResponsiveBody wrapper, centered max 600px)
+Expanded desktop (centered max 900px via ResponsiveBody, two-column `Row` — main content on left, 320px EscrowTimeline rail on right)
 ```
 
 ## Implementation Audit
@@ -80,7 +80,7 @@ Expanded desktop (add ResponsiveBody wrapper, centered max 600px)
 | Spacing from `Spacing` | PASS | `s4`, `s6` |
 | l10n keys | PASS | `transaction.status` via `.tr()` |
 | Semantics | PASS | Via sub-widgets (EscrowTrustBanner, AmountSection have Semantics) |
-| Responsive | **FAIL** | No `ResponsiveBody` wrapper — will be full-width on tablet/desktop |
+| Responsive | PASS | `ResponsiveBody(maxWidth: 900)` + two-column Row on expanded (see §Responsive above) |
 | Dark mode | PARTIAL | Depends on sub-widget dark mode support |
 | File length | PASS | 44 lines (very clean, delegates to sub-widgets) |
 
@@ -88,6 +88,6 @@ Expanded desktop (add ResponsiveBody wrapper, centered max 600px)
 
 | # | Severity | Issue |
 |---|----------|-------|
-| 1 | MEDIUM | No `ResponsiveBody` wrapper — screen stretches full-width on desktop. All 3 shipping screens use `ResponsiveBody`. |
+| 1 | RESOLVED | ~~No `ResponsiveBody` wrapper — screen stretches full-width on desktop.~~ Fixed by #195 (wrap) + #206 (maxWidth 900 + expanded two-column Row with timeline rail). |
 | 2 | MEDIUM | ActionSection buttons have `onPressed: null` — not wired to ConfirmDeliveryUseCase or dispute flow |
 | 3 | LOW | No loading/error states — data passed directly as constructor param. When ViewModels are added, will need `AsyncValue` handling. |
