@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/review_screen_state.dart';
@@ -72,12 +71,7 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(Spacing.s4),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: Breakpoints.formMaxWidth,
-              ),
-              child: _buildFormBody(context, draft),
-            ),
+            child: _buildFormBody(context, draft),
           ),
         ),
         BottomAppBar(

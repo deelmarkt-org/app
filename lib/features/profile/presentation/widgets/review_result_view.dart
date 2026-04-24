@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
@@ -100,21 +99,18 @@ class ReviewBothVisibleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(Spacing.s4),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: Breakpoints.formMaxWidth),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'review.both_visible'.tr(),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: Spacing.s4),
-            ReviewCard(review: myReview),
-            const SizedBox(height: Spacing.s3),
-            ReviewCard(review: theirReview),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'review.both_visible'.tr(),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: Spacing.s4),
+          ReviewCard(review: myReview),
+          const SizedBox(height: Spacing.s3),
+          ReviewCard(review: theirReview),
+        ],
       ),
     );
   }
