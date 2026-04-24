@@ -11,7 +11,7 @@
 | Route | `/shipping/:id/qr` |
 | Auth | Required |
 | States | Data (QR displayed) — no loading/error (data passed as constructor param) |
-| Responsive | ResponsiveBody wrapper (max 600px centered) |
+| Responsive | ResponsiveBody wrapper (max 800px centered — see #206 / PR #207, bumped from 600 so the QR card + instruction + CTA stack doesn't read cramped on tablet/desktop) |
 | Dark mode | Supported via theme |
 
 ## Current Layout (as implemented)
@@ -47,7 +47,7 @@ LAYOUT:
 CONTENT: PostNL label with tracking number "3SDEVC1234567", deadline 5 days out.
 
 VARIATIONS: Light, Dark, DHL carrier variant (different badge color/icon),
-Expanded desktop (centered max 600px via ResponsiveBody)
+Expanded desktop (centered max 800px via ResponsiveBody — QR card + instruction card + CTA stack needs more than 600px to breathe on tablet/desktop)
 ```
 
 ## Implementation Audit
