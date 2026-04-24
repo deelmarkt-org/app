@@ -80,7 +80,7 @@ Expanded desktop (centered max 900px via ResponsiveBody, single-column stack —
 | Spacing from `Spacing` | PASS | `s4`, `s6` |
 | l10n keys | PASS | `transaction.status` via `.tr()` |
 | Semantics | PASS | Via sub-widgets (EscrowTrustBanner, AmountSection have Semantics) |
-| Responsive | PASS | `ResponsiveBody(maxWidth: 900)` + two-column Row on expanded (see §Responsive above) |
+| Responsive | PASS | `ResponsiveBody(maxWidth: 900)`, single-column stack on all viewports. See #206 + #207. |
 | Dark mode | PARTIAL | Depends on sub-widget dark mode support |
 | File length | PASS | 44 lines (very clean, delegates to sub-widgets) |
 
