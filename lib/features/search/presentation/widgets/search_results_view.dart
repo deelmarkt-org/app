@@ -13,9 +13,8 @@ import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
-/// Width of the desktop filter sidebar — matches the 240-px column spec
-/// from `docs/screens/02-home/03-search.md` §Responsive.
-const double _sidebarWidth = 240;
+// Canonical sidebar width lives in Breakpoints.filterSidebarWidth (240 dp).
+// The local alias is kept so call sites inside this file stay readable.
 
 /// Search results with filter controls + result count + infinite scroll.
 ///
@@ -68,7 +67,7 @@ class SearchResultsView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(
-            width: _sidebarWidth,
+            width: Breakpoints.filterSidebarWidth,
             child: FilterPanel(
               filter: data.filter,
               onApply: onFilterApply,
@@ -86,18 +85,23 @@ class SearchResultsView extends StatelessWidget {
     if (data.listings.isEmpty) {
       return EmptyState(
         variant: EmptyStateVariant.search,
-        // On expanded the sidebar is already visible; tap the Reset button
-        // inside it to adjust filters. No-op here keeps the empty-state
-        // component generic — the tap target is in the sidebar.
-        onAction: () {},
+        // Reset all filter criteria (keep the search query) so the user can
+        // broaden their results without leaving the expanded layout.
+        onAction: () => onFilterApply(SearchFilter(query: data.filter.query)),
       );
     }
+    // The results pane occupies (viewport − sidebar − 1 px divider) dp.
+    // Pass the container width to the grid so it picks the right column count
+    // rather than reading the full viewport via MediaQuery (#210 review C1).
+    final paneWidth =
+        MediaQuery.sizeOf(context).width - Breakpoints.filterSidebarWidth - 1;
+    final paneColumns = Breakpoints.gridColumnsForWidthValue(paneWidth);
     return NotificationListener<ScrollNotification>(
       onNotification: _onScroll,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: _buildResultCount(context)),
-          _buildGrid(context),
+          _buildGrid(context, crossAxisCountOverride: paneColumns),
           if (data.isLoadingMore) _loadMoreSpinner(),
           const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
         ],
@@ -168,9 +172,10 @@ class SearchResultsView extends StatelessWidget {
     );
   }
 
-  Widget _buildGrid(BuildContext context) {
+  Widget _buildGrid(BuildContext context, {int? crossAxisCountOverride}) {
     return AdaptiveListingGrid(
       itemCount: data.listings.length,
+      crossAxisCountOverride: crossAxisCountOverride,
       itemBuilder: (context, index) {
         final listing = data.listings[index];
         return EscrowAwareListingCard(

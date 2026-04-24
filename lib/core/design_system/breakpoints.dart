@@ -44,12 +44,24 @@ class Breakpoints {
   static bool isLarge(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= large;
 
+  /// Width of the search-filter sidebar on expanded viewports.
+  /// Reference: docs/screens/02-home/03-search.md §Responsive.
+  static const double filterSidebarWidth = 240;
+
   /// Listing-grid column count for the current viewport.
   /// Reference: docs/design-system/tokens.md §Breakpoints (2 / 3 / 4 / 5).
-  static int gridColumnsForWidth(BuildContext context) {
-    if (isCompact(context)) return 2;
-    if (isMedium(context)) return 3;
-    if (isLarge(context)) return 5;
+  static int gridColumnsForWidth(BuildContext context) =>
+      gridColumnsForWidthValue(MediaQuery.sizeOf(context).width);
+
+  /// Column count for a grid with the given explicit [width] (dp).
+  ///
+  /// Use when the widget occupies only part of the viewport (e.g. a
+  /// sidebar-adjacent content pane) so the container width drives the column
+  /// decision rather than the full `MediaQuery` width.
+  static int gridColumnsForWidthValue(double width) {
+    if (width < compact) return 2;
+    if (width < medium) return 3;
+    if (width >= large) return 5;
     return 4;
   }
 }

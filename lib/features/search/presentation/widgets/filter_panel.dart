@@ -1,15 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
-import 'package:deelmarkt/features/search/presentation/search_providers.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/filter_category_section.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_condition_section.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_distance_section.dart';
 import 'package:deelmarkt/features/search/presentation/widgets/filter_price_section.dart';
+import 'package:deelmarkt/features/search/presentation/widgets/filter_sort_section.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 
 /// Render variant for [FilterPanel] — controls chrome (drag handle, footer)
@@ -33,6 +32,13 @@ enum FilterPanelVariant {
 /// [FilterPanelVariant] for the contract. Both variants render the same
 /// five sections in the same order: price, condition, distance, category,
 /// sort.
+///
+/// **Sheet variant — modal route requirement**: the Apply button calls
+/// `Navigator.of(context).maybePop()` to dismiss the sheet after applying.
+/// Wrap [FilterPanel] in a [DraggableScrollableSheet] or
+/// `showModalBottomSheet` so the pop has a route to dismiss. Calling
+/// `maybePop` without a dismissible modal is a no-op, but the sheet would
+/// remain open.
 ///
 /// Reference: docs/screens/02-home/03-search.md §Responsive —
 /// "Expanded: filter sidebar left (permanent), results grid right".
@@ -125,9 +131,9 @@ class _FilterPanelState extends State<FilterPanel> {
             const Divider(height: Spacing.s6),
             FilterDistanceSection(filter: filter, onChanged: _updateFilter),
             const Divider(height: Spacing.s6),
-            _CategorySection(filter: filter, onChanged: _updateFilter),
+            FilterCategorySection(filter: filter, onChanged: _updateFilter),
             const Divider(height: Spacing.s6),
-            _SortSection(filter: filter, onChanged: _updateFilter),
+            FilterSortSection(filter: filter, onChanged: _updateFilter),
             const SizedBox(height: Spacing.s6),
             _ActionsRow(
               variant: widget.variant,
@@ -163,107 +169,6 @@ class _DragHandle extends StatelessWidget {
           borderRadius: BorderRadius.circular(DeelmarktRadius.full),
         ),
       ),
-    );
-  }
-}
-
-class _CategorySection extends ConsumerWidget {
-  const _CategorySection({required this.filter, required this.onChanged});
-
-  final SearchFilter filter;
-  final ValueChanged<SearchFilter> onChanged;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final categoriesAsync = ref.watch(topLevelCategoriesProvider);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'search.filter.category'.tr(),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: Spacing.s2),
-        categoriesAsync.when(
-          loading: () => const SizedBox(height: Spacing.s12),
-          error:
-              (_, _) => TextButton.icon(
-                onPressed: () => ref.invalidate(topLevelCategoriesProvider),
-                icon: const Icon(Icons.refresh, size: DeelmarktIconSize.xs),
-                label: Text('action.retry'.tr()),
-              ),
-          data:
-              (categories) => Wrap(
-                spacing: Spacing.s2,
-                runSpacing: Spacing.s2,
-                children:
-                    categories.map((cat) {
-                      final isSelected = filter.categoryId == cat.id;
-                      return FilterChip(
-                        label: Text(cat.name),
-                        selected: isSelected,
-                        onSelected: (selected) {
-                          onChanged(
-                            filter.copyWith(
-                              categoryId: () => selected ? cat.id : null,
-                            ),
-                          );
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            DeelmarktRadius.xxl,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-              ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SortSection extends StatelessWidget {
-  const _SortSection({required this.filter, required this.onChanged});
-
-  final SearchFilter filter;
-  final ValueChanged<SearchFilter> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'search.filter.sort'.tr(),
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        RadioGroup<SearchSortOrder>(
-          groupValue: filter.sortOrder,
-          onChanged: (value) {
-            if (value != null) {
-              onChanged(filter.copyWith(sortOrder: value));
-            }
-          },
-          child: Column(
-            children:
-                SearchSortOrder.values.map((s) {
-                  return RadioListTile<SearchSortOrder>(
-                    title: Text('search.sort.${s.name}'.tr()),
-                    value: s,
-                    contentPadding: EdgeInsets.zero,
-                  );
-                }).toList(),
-          ),
-        ),
-      ],
     );
   }
 }
