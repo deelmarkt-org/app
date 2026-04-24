@@ -5,6 +5,7 @@ import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_scr
 import 'package:deelmarkt/features/messages/presentation/screens/conversation_list_screen.dart';
 import 'package:deelmarkt/features/messages/presentation/screens/messages_responsive_shell.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/no_thread_selected.dart';
+import 'package:deelmarkt/widgets/layout/responsive_detail_scaffold.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -127,6 +128,64 @@ void main() {
       expect(find.byType(ConversationListScreen), findsOneWidget);
       expect(find.byType(ChatThreadScreen), findsOneWidget);
       expect(find.byType(NoThreadSelected), findsNothing);
+    });
+  });
+
+  group('MessagesResponsiveShell — architecture', () {
+    testWidgets('delegates layout to shared ResponsiveDetailScaffold (#194)', (
+      tester,
+    ) async {
+      setViewport(tester, width: 1024);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        buildApp(
+          repo: FakeMessageRepository(conversations: [conv('a')]),
+          conversationId: null,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ResponsiveDetailScaffold), findsOneWidget);
+    });
+
+    testWidgets('thread hides back button on expanded', (tester) async {
+      setViewport(tester, width: 1024);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        buildApp(
+          repo: FakeMessageRepository(conversations: [conv('a')]),
+          conversationId: 'a',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final thread = tester.widget<ChatThreadScreen>(
+        find.byType(ChatThreadScreen),
+      );
+      expect(thread.showBackButton, isFalse);
+    });
+
+    testWidgets('thread keeps back button on compact', (tester) async {
+      setViewport(tester, width: 375);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(
+        buildApp(
+          repo: FakeMessageRepository(conversations: [conv('a')]),
+          conversationId: 'a',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final thread = tester.widget<ChatThreadScreen>(
+        find.byType(ChatThreadScreen),
+      );
+      expect(thread.showBackButton, isTrue);
     });
   });
 }

@@ -8,104 +8,58 @@ import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_scr
 import 'package:deelmarkt/features/messages/presentation/screens/conversation_list_screen.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/no_thread_selected.dart';
+import 'package:deelmarkt/widgets/layout/responsive_detail_scaffold.dart';
 
 /// Single entry point for `/messages` and `/messages/:conversationId`.
 ///
-/// Uses a [LayoutBuilder] to switch between compact (push navigation)
-/// and expanded (master-detail) layouts at [Breakpoints.medium].
+/// Delegates the compact/expanded split to [ResponsiveDetailScaffold] so the
+/// 360-px master / `Breakpoints.medium` threshold stays aligned with the
+/// design-system contract established in #192. On compact (<840) the shell
+/// shows either the list OR the thread (push navigation); on expanded
+/// (≥840) it shows the list as a fixed 360-px left pane with the thread
+/// filling the rest.
 ///
-/// In compact mode: either the list OR the thread is visible (push nav).
-/// In expanded mode: list is a fixed 360-px left pane, thread fills the rest.
+/// The thread's back button only surfaces on compact — on expanded, the
+/// master pane is always visible so navigating back is meaningless.
 ///
-/// TODO(#194): migrate to shared `ResponsiveDetailScaffold` from
-/// `lib/widgets/layout/responsive_detail_scaffold.dart` — duplicates the
-/// same 360/medium split logic introduced in #192.
+/// Reference: docs/screens/06-chat/01-conversation-list.md §Expanded
+/// + docs/screens/06-chat/02-chat-thread.md §Responsive
 class MessagesResponsiveShell extends ConsumerWidget {
   const MessagesResponsiveShell({this.conversationId, super.key});
 
   final String? conversationId;
 
-  static const double _listPaneWidth = 360;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = ChatThemeColors.of(context);
+    final isExpanded = Breakpoints.isExpanded(context);
+    final id = conversationId;
+
+    final master = ConversationListScreen(
+      selectedConversationId: id,
+      onConversationTap:
+          (tappedId) => context.go(AppRoutes.chatThreadFor(tappedId)),
+    );
+
+    final detail =
+        id == null
+            ? null
+            : ChatThreadScreen(
+              conversationId: id,
+              showBackButton: !isExpanded,
+              key: ValueKey(id),
+            );
 
     return Scaffold(
       backgroundColor: colors.scaffold,
       body: SafeArea(
         bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isExpanded = constraints.maxWidth >= Breakpoints.medium;
-            if (isExpanded) {
-              return _ExpandedLayout(
-                conversationId: conversationId,
-                listPaneWidth: _listPaneWidth,
-              );
-            }
-            return _CompactLayout(conversationId: conversationId);
-          },
+        child: ResponsiveDetailScaffold(
+          master: master,
+          detail: detail,
+          emptyDetail: const NoThreadSelected(),
         ),
       ),
-    );
-  }
-}
-
-class _CompactLayout extends StatelessWidget {
-  const _CompactLayout({required this.conversationId});
-
-  final String? conversationId;
-
-  @override
-  Widget build(BuildContext context) {
-    if (conversationId == null) {
-      return ConversationListScreen(
-        onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
-      );
-    }
-    return ChatThreadScreen(
-      conversationId: conversationId!,
-      key: ValueKey(conversationId),
-    );
-  }
-}
-
-class _ExpandedLayout extends StatelessWidget {
-  const _ExpandedLayout({
-    required this.conversationId,
-    required this.listPaneWidth,
-  });
-
-  final String? conversationId;
-  final double listPaneWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = ChatThemeColors.of(context);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          width: listPaneWidth,
-          child: ConversationListScreen(
-            selectedConversationId: conversationId,
-            onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
-          ),
-        ),
-        Container(width: 1, color: colors.border),
-        Expanded(
-          child:
-              conversationId == null
-                  ? const NoThreadSelected()
-                  : ChatThreadScreen(
-                    conversationId: conversationId!,
-                    showBackButton: false,
-                    key: ValueKey(conversationId),
-                  ),
-        ),
-      ],
     );
   }
 }
