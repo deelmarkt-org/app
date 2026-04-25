@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Build / Dependencies
+
+- **build(deps): pin `intl` to `^0.20.2`** (was `any`) — closes audit task `P-58` / preflight finding `M2`. Reproducibility hardening for ACM/Omnibus exposure on currency/date glyph rendering. easy_localization 3.0.7 accepts the constraint; resolved version unchanged at 0.20.2. See `docs/PLAN-P58-pin-intl.md`.
+
 ## [0.7.0] - 2026-03-16
 
 ### Added

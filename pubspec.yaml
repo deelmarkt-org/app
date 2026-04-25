@@ -14,7 +14,10 @@ dependencies:
 
   # Localization — E07 §Localisation
   easy_localization: ^3.0.7
-  intl: any
+  # Pinned per PLAN-P58: 'any' allowed silent major bumps that could shift
+  # currency/date glyphs (ACM/Omnibus exposure). easy_localization 3.0.7
+  # accepts ^0.20.x; revisit when bumping to 0.21+.
+  intl: ^0.20.2
 
   # Icons — Phosphor Icons with duotone support
   phosphor_flutter: ^2.1.0
