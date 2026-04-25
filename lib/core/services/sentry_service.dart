@@ -4,7 +4,13 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:deelmarkt/core/services/env.dart';
 
 /// Fraction of transactions sampled for performance monitoring.
-const _tracesSampleRate = 0.2;
+///
+/// Per ADR-027: on **mobile**, Firebase Performance owns latency telemetry
+/// (custom traces with documented p95 SLOs). Sentry transactions on mobile
+/// would be redundant cost — disabled. On **web**, Firebase Performance has
+/// parity gaps for the custom-trace API, so Sentry transactions remain the
+/// primary latency signal at the historical 0.2 sample rate.
+double get _tracesSampleRate => kIsWeb ? 0.2 : 0.0;
 
 /// Initialise Sentry **before** other services so it captures init errors.
 ///

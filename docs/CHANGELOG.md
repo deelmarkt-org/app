@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Observability
+
+- **feat(observability): introduce Firebase Performance facade + Sentry web fallback** — closes audit task `P-56` / preflight finding `H5`. New `lib/core/services/performance/` module with `PerformanceTracer` interface, mobile (Firebase) + web (Sentry) implementations, debug-mode `NoopPerformanceTracer`, GDPR-first attribute allowlist with PII-forbidding runtime guards, Riverpod `keepAlive` provider. Sentry mobile transactions disabled (`tracesSampleRate = kIsWeb ? 0.2 : 0.0`) to avoid double-instrumentation cost. Five trace names defined (`app_start`, `listing_load`, `search_query`, `payment_create`, `image_load`); call-site wiring follows in P-56 Phase B. Provisional p95 SLOs published in `docs/observability/perf-slos.md`. ADR-027 documents the architecture. See `docs/PLAN-P56-firebase-performance-traces.md`.
+
 ### Documentation
 
 - **docs(screens): refresh `SCREENS-INVENTORY.md`** — closes audit task `P-57` / preflight finding `M3`. Status updated to reflect Sprint 9–10 ship state (28 Implemented + 2 placeholder-copy = 30/30; was incorrectly listing 5/30 implemented). Adds Status Vocabulary, Responsive Variant Matrix appendix, Cross-Link Index appendix, Maintainer + Next-review headers. See `docs/PLAN-P57-screens-inventory-refresh.md`.
