@@ -68,7 +68,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 - **Owner:** `reso` · **Severity:** Critical · **Effort:** M (2–5 days)
 - **Why:** `lib/features/admin/data/supabase/supabase_admin_repository.dart` carries `TODO(Phase 1.12 — reso): Replace with public.is_admin() SECURITY DEFINER`. Any production build with admin routes reachable + this stub = **privilege-escalation vector**. Also called out in ADR-002.
 - **Acceptance:**
-  - [ ] `public.is_admin(uuid)` SECURITY DEFINER function in a new migration with RLS-aware role check
+  - [ ] `public.is_admin(uuid)` SECURITY DEFINER function in a new migration with RLS-aware role check; declared with `SET search_path = ''` and a fully-qualified body (e.g. `public.user_roles`) so a hijacked search_path can't shadow it (CLAUDE.md §9 + Supabase advisory)
   - [ ] All admin RPC calls (`get_admin_stats`, `get_admin_activity`, etc.) gated by `public.is_admin(auth.uid())`
   - [ ] `supabase_admin_repository.dart` calls these RPCs (no client-side filtering)
   - [ ] **Until merged:** admin panel feature-flagged off in production builds via Unleash `admin_panel_phase_b`
@@ -227,10 +227,10 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 - **Owners:** `belengaz`, `reso` · **Severity:** Low · **Effort:** S
 - **Why:** ADR-022 sits in "Accepted" with reviewers field still listed as pending; either move to "Proposed" or close out.
 
-### 🔵 [P-58] Pin `intl` dependency
+### 🔵 [P-58] Pin `intl` and platform-interface dependencies
 - **Owner:** `pizmam` · **Severity:** Low · **Effort:** S
-- **Why:** `pubspec.yaml` line 17 — `intl: any` defeats reproducible builds.
-- **Acceptance:** pinned to `^0.19.0` (current stable); locale tests still green.
+- **Why:** `pubspec.yaml` lines 17, 107, 108 — `intl: any`, `image_picker_platform_interface: any`, and `plugin_platform_interface: any` all defeat reproducible builds. A passing CI today can ship a different transitive set tomorrow purely from upstream publication timing.
+- **Acceptance:** all three pinned to a `^x.y.z` constraint matching the current resolved version (`flutter pub deps --no-dev | grep -E 'intl|image_picker_platform_interface|plugin_platform_interface'`); locale + image-picker tests still green; `pubspec.lock` regenerated and committed.
 
 ---
 
@@ -255,7 +255,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 ### ⚫ [ALL-RULES] Close §2.1 rule-coverage gaps
 - **Owners:** all · **Severity:** Low · **Effort:** S
 - **Why:** §2.1 has no line budget for routers (`app_router.dart` 406 lines) or for TypeScript Edge Functions (`create-shipping-label` 479 lines). Rule-coverage gap normalises drift.
-- **Acceptance:** CLAUDE.md §2.1 amended with router and Edge Function caps; `check_quality.dart` updated.
+- **Acceptance:** CLAUDE.md §2.1 amended with router and Edge Function caps; `§12 file_length_exempt` list reviewed (currently exempts `app_router.dart` — that's why it grew to 406 lines; remove the exemption or codify the new cap before the next refactor); `check_quality.dart` updated to enforce the new caps.
 
 ---
 
