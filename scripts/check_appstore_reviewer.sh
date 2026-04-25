@@ -26,6 +26,15 @@
 #   SUPABASE_PROJECT_REF + SUPABASE_DB_PASSWORD
 #                                    — assembled into a pooler URL (dev shorthand)
 #
+# Optional env (only used in pooler-shorthand mode):
+#   SUPABASE_POOLER_HOST             — full pooler hostname; takes precedence
+#                                      over SUPABASE_POOLER_REGION when set
+#   SUPABASE_POOLER_REGION           — region segment for the pooler hostname,
+#                                      default 'eu-central-1' (matches our prod
+#                                      project; override for staging/EU-west,
+#                                      US, AP, etc.)
+#   SUPABASE_POOLER_PORT             — default 6543 (transaction mode)
+#
 # Exit codes:
 #   0 = all checks passed
 #   1 = one or more checks failed (script prints which)
@@ -53,8 +62,14 @@ fi
 DB_URL="${SUPABASE_DB_URL:-}"
 if [[ -z "${DB_URL}" ]]; then
   if [[ -n "${SUPABASE_PROJECT_REF:-}" && -n "${SUPABASE_DB_PASSWORD:-}" ]]; then
-    # Supabase pooler URL pattern (transaction mode, port 6543).
-    DB_URL="postgresql://postgres.${SUPABASE_PROJECT_REF}:${SUPABASE_DB_PASSWORD}@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
+    # Supabase pooler URL pattern (transaction mode). Region defaults to
+    # eu-central-1 (our prod home) but can be overridden for staging or for
+    # any future migration. SUPABASE_POOLER_HOST short-circuits the region
+    # template entirely when an exotic host is needed.
+    pooler_region="${SUPABASE_POOLER_REGION:-eu-central-1}"
+    pooler_host="${SUPABASE_POOLER_HOST:-aws-0-${pooler_region}.pooler.supabase.com}"
+    pooler_port="${SUPABASE_POOLER_PORT:-6543}"
+    DB_URL="postgresql://postgres.${SUPABASE_PROJECT_REF}:${SUPABASE_DB_PASSWORD}@${pooler_host}:${pooler_port}/postgres"
   else
     echo "❌ Set SUPABASE_DB_URL or SUPABASE_PROJECT_REF + SUPABASE_DB_PASSWORD."
     exit 2

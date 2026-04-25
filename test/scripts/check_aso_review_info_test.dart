@@ -143,6 +143,56 @@ review_information:
       expect(r.stderr, contains('first_name.txt'));
       expect(r.exitCode, isNot(0));
     });
+
+    // GH #162 PR #218 review (Gemini medium) — original regex only matched
+    // `[TODO` immediately after a colon or as the first character inside
+    // quotes. Embedded markers and block-scalar lines slipped through.
+    test(
+      'TODO embedded mid-string in double-quoted YAML is reported',
+      () async {
+        writeCleanFixture();
+        final yaml = File(p.join(tmpDir.path, 'privacy_details.yaml'));
+        yaml.writeAsStringSync(
+          yaml.readAsStringSync().replaceAll(
+            '"Mahmut"',
+            '"Mahmut [TODO confirm spelling]"',
+          ),
+        );
+        final r = await runScript();
+        expect(r.stderr, contains('REVIEW_INFO_TODO'));
+        expect(r.exitCode, isNot(0));
+      },
+    );
+
+    test('TODO inside folded block scalar (notes: >) is reported', () async {
+      writeCleanFixture();
+      final yaml = File(p.join(tmpDir.path, 'privacy_details.yaml'));
+      // Replace the single-line notes value with a folded block scalar that
+      // hides the TODO marker on a continuation line.
+      yaml.writeAsStringSync(
+        yaml.readAsStringSync().replaceAll(
+          '  notes: >\n    DeelMarkt demo account for App Store reviewers.',
+          '  notes: >\n    DeelMarkt demo account.\n    [TODO write proper reviewer instructions]',
+        ),
+      );
+      final r = await runScript();
+      expect(r.stderr, contains('REVIEW_INFO_TODO'));
+      expect(r.exitCode, isNot(0));
+    });
+
+    test('TODO inside literal block scalar (notes: |) is reported', () async {
+      writeCleanFixture();
+      final yaml = File(p.join(tmpDir.path, 'privacy_details.yaml'));
+      yaml.writeAsStringSync(
+        yaml.readAsStringSync().replaceAll(
+          '  notes: >\n    DeelMarkt demo account for App Store reviewers.',
+          '  notes: |\n    Line one\n    [TODO complete second line]',
+        ),
+      );
+      final r = await runScript();
+      expect(r.stderr, contains('REVIEW_INFO_TODO'));
+      expect(r.exitCode, isNot(0));
+    });
   });
 
   group('_checkReviewInformation — empty .txt mirror', () {

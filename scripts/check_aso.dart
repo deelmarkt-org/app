@@ -251,12 +251,15 @@ void _checkForbiddenTerms(String path, String content, List<String> errors) {
 // markers. Promoted from warning → error after GH #162 close-out: any TODO
 // regression here would silently re-block the next TestFlight cut.
 //
-// Detected patterns (covers the three legal YAML quoting styles + a literal
-// `[TODO]` in the per-field .txt mirrors):
-//   first_name: "[TODO …]"   (double-quoted scalar)
-//   last_name:  '[TODO …]'   (single-quoted scalar)
-//   notes:      [TODO …]     (plain scalar, post-comment)
-//   .txt files: any line starting with [TODO
+// Strategy: strip comment lines (so doc comments mentioning [TODO never
+// trip the check) and then flag any remaining occurrence of `[TODO`. This
+// catches all four shapes Apple's reviewer block can take:
+//   first_name: "[TODO …]"      (double-quoted scalar — start)
+//   last_name:  "fill in [TODO]" (double-quoted scalar — embedded)
+//   phone_number: '[TODO …]'    (single-quoted scalar)
+//   notes: >                    (folded block scalar — TODO on next line)
+//     [TODO write reviewer notes]
+// plus literal `[TODO` in any per-field .txt mirror.
 
 void _checkReviewInformation(List<String> errors) {
   // Tests inject a tmp dir via ASO_REVIEW_INFO_DIR so the check can be
@@ -269,23 +272,18 @@ void _checkReviewInformation(List<String> errors) {
     final content = yamlFile.readAsStringSync();
     // Strip comment lines so a documentation comment that mentions [TODO
     // (e.g. "do not commit values like [TODO]") never trips the check.
-    final stripped = content
-        .split('\n')
-        .where((line) => !line.trimLeft().startsWith('#'))
-        .join('\n');
-    final patterns = <RegExp>[
-      RegExp(r'"(\[TODO[^"]*)"'), // double-quoted
-      RegExp(r"'(\[TODO[^']*)'"), // single-quoted
-      RegExp(r':\s*(\[TODO[^\n]*?)(?:\s*$)', multiLine: true), // plain scalar
-    ];
-    for (final pattern in patterns) {
-      for (final match in pattern.allMatches(stripped)) {
-        errors.add(
-          'REVIEW_INFO_TODO: privacy_details.yaml still contains TODO marker '
-          '("${match.group(1)?.trim()}") — fill in before TestFlight '
-          'submission. See docs/runbooks/RUNBOOK-appstore-reviewer.md.',
-        );
-      }
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.trimLeft().startsWith('#')) continue;
+      final idx = line.indexOf('[TODO');
+      if (idx == -1) continue;
+      final marker = line.substring(idx).trim();
+      errors.add(
+        'REVIEW_INFO_TODO: privacy_details.yaml line ${i + 1} still contains '
+        'TODO marker ("$marker") — fill in before TestFlight submission. '
+        'See docs/runbooks/RUNBOOK-appstore-reviewer.md.',
+      );
     }
   }
 
