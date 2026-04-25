@@ -171,13 +171,23 @@ end
 # frames deep; surfacing them here gives an actionable message pointing
 # straight at 1Password.
 private_lane :_preflight do
+  # NOTE — ASC_DEMO_USER / ASC_DEMO_PASSWORD are wired in **Phase B** of
+  # GH #162 (belengaz, runbook §3b). Until that lands, every iOS lane
+  # below (release / beta / deliver_dry_run) intentionally fails fast
+  # rather than producing a cryptic deliver(2) trace several stack
+  # frames deep. The healthcheck cron at
+  # `.github/workflows/appstore-reviewer-healthcheck.yml` is the
+  # authoritative status indicator for whether Phase B is done.
+  # Reference: docs/runbooks/RUNBOOK-appstore-reviewer.md §3 Provisioning.
   required = ["ASC_DEMO_USER", "ASC_DEMO_PASSWORD", "ASC_API_KEY_JSON"] # pragma: allowlist secret
   missing = required.select { |k| ENV[k].to_s.empty? }
   unless missing.empty?
     UI.user_error!(
       "Missing required ENV: #{missing.join(", ")}. " \
-      "See the team vault entries 'App Store reviewer' (demo account) " \
-      "and 'App Store Connect API key' for each value."
+      "See `docs/runbooks/RUNBOOK-appstore-reviewer.md` §3 (Codemagic " \
+      "vars + 1Password vault entries 'App Store reviewer' / " \
+      "'App Store Connect API key'). Complete Phase B before running " \
+      "any iOS lane."
     )
   end
 end

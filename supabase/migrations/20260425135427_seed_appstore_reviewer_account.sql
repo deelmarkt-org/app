@@ -1,6 +1,15 @@
 -- ──────────────────────────────────────────────────────────────────────────
 -- GH #162 — App Store reviewer demo account seed
 --
+-- Application timing
+-- ------------------
+-- **Safe to apply immediately on Phase A merge** via
+-- `bash scripts/check_deployments.sh --deploy` (or `supabase db push`).
+-- The DO-block guard makes this a NO-OP until Phase B provisions the
+-- reviewer `auth.users` rows via `supabase auth admin create-user`
+-- (runbook §3b). After Phase B re-runs `db push`, the ancillary rows
+-- materialise via INSERT…ON CONFLICT — no extra migration needed.
+--
 -- Idempotent seed for the App Store reviewer demo account ancillary data:
 --   * 1 seller user_profile (kyc_level=level2, iDIN-bypassed)
 --   * 1 buyer  user_profile (kyc_level=level2, companion synthetic account)
