@@ -1,0 +1,52 @@
+name: App Store Reviewer Healthcheck
+
+# Verifies that the App Store reviewer demo fixture (seller + buyer profiles,
+# active escrow listing, paid transaction, conversation thread) is intact in
+# the live Supabase project. If this workflow goes red, do NOT cut a TestFlight
+# build — Apple's reviewer will hit empty-state walls and reject §2.1.
+#
+# Triggers:
+#   * weekly cron (Mondays 06:00 UTC) — guards against silent fixture rot
+#   * manual dispatch — run before any TestFlight cut
+#
+# Reference: docs/runbooks/RUNBOOK-appstore-reviewer.md
+# Reference: docs/PLAN-gh162-testflight-review-info.md (T7)
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: appstore-reviewer-healthcheck
+  cancel-in-progress: false
+
+jobs:
+  healthcheck:
+    name: Reviewer fixture healthcheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install psql client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends postgresql-client
+
+      - name: Run healthcheck
+        env:
+          # Service-role-equivalent connection string. Stored as an org-level
+          # GitHub Secret; rotated alongside any Supabase DB password change.
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: bash scripts/check_appstore_reviewer.sh
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::App Store reviewer fixture is broken. See"
+          echo "::error::docs/runbooks/RUNBOOK-appstore-reviewer.md §Recover"

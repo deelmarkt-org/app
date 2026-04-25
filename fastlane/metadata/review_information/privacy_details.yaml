@@ -119,6 +119,9 @@ categories:
 # so `fastlane deliver` transmits them to App Store Connect. Demo credentials
 # are injected at deliver time from ENV (ASC_DEMO_USER / ASC_DEMO_PASSWORD) —
 # never committed. Store credentials in 1Password "App Store reviewer" entry.
+#
+# Full lifecycle (provisioning, rotation, recovery, revoke):
+#   docs/runbooks/RUNBOOK-appstore-reviewer.md
 review_information:
   first_name: "Mahmut"
   last_name: "Kaya"
