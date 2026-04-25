@@ -2,6 +2,15 @@ import 'package:deelmarkt/core/services/performance/performance_tracer.dart';
 import 'package:deelmarkt/core/services/performance/trace_attributes.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+/// Factory signature so tests can inject a mock span without coupling
+/// to the Sentry SDK static singleton. Production callers use the
+/// default constructor which delegates to [Sentry.startTransaction].
+typedef SentryTransactionFactory =
+    ISentrySpan Function(String name, String operation);
+
+ISentrySpan _defaultTransactionFactory(String name, String operation) =>
+    Sentry.startTransaction(name, operation);
+
 /// Web-platform implementation that maps trace operations to Sentry
 /// transactions.
 ///
@@ -11,11 +20,15 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 ///
 /// Reference: ADR-027 §Web fallback strategy.
 class SentryPerformanceTracer implements PerformanceTracer {
-  const SentryPerformanceTracer();
+  const SentryPerformanceTracer({
+    SentryTransactionFactory transactionFactory = _defaultTransactionFactory,
+  }) : _factory = transactionFactory;
+
+  final SentryTransactionFactory _factory;
 
   @override
   PerformanceTraceHandle start(String name) {
-    final transaction = Sentry.startTransaction(name, 'custom_trace');
+    final transaction = _factory(name, 'custom_trace');
     return _SentryHandle(name: name, transaction: transaction);
   }
 }
@@ -32,12 +45,19 @@ class _SentryHandle implements PerformanceTraceHandle {
   @override
   void putAttribute(String key, String value) {
     if (!TraceAttributes.validateKey(key)) return;
-    _transaction.setData(key, value);
+    // Tags are indexed and searchable in Sentry's Discover/Performance
+    // dashboards; setData would write to "extra" context which is not
+    // queryable. Per Gemini PR #220 review.
+    _transaction.setTag(key, value);
   }
 
   @override
   void putMetric(String key, int value) {
-    _transaction.setData(key, value);
+    // setMeasurement is the canonical Sentry API for numeric metrics
+    // attached to a transaction; it surfaces in the Performance UI as
+    // a first-class metric and supports aggregation. Per Gemini PR #220
+    // review.
+    _transaction.setMeasurement(key, value);
   }
 
   @override
