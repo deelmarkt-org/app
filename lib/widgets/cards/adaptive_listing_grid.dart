@@ -11,12 +11,19 @@ import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 /// Consumers: home nearby grid, search results, favourites, category detail,
 /// profile listings.
 ///
+/// When the grid is placed inside a layout that occupies only part of the
+/// viewport (e.g. the results pane next to a filter sidebar), pass
+/// [crossAxisCountOverride] so the column count reflects the container width
+/// rather than the full `MediaQuery` width. Use
+/// [Breakpoints.gridColumnsForWidthValue] to compute the override.
+///
 /// Reference: docs/design-system/tokens.md §Breakpoints, components.md §Listing Card.
 class AdaptiveListingGrid extends StatelessWidget {
   const AdaptiveListingGrid({
     required this.itemCount,
     required this.itemBuilder,
     this.padding = const EdgeInsets.symmetric(horizontal: Spacing.s4),
+    this.crossAxisCountOverride,
     super.key,
   });
 
@@ -24,9 +31,16 @@ class AdaptiveListingGrid extends StatelessWidget {
   final IndexedWidgetBuilder itemBuilder;
   final EdgeInsetsGeometry padding;
 
+  /// Explicit column count — overrides the viewport-based default.
+  ///
+  /// Set this when the grid does not span the full viewport width.
+  /// Compute via [Breakpoints.gridColumnsForWidthValue].
+  final int? crossAxisCountOverride;
+
   @override
   Widget build(BuildContext context) {
-    final columns = Breakpoints.gridColumnsForWidth(context);
+    final columns =
+        crossAxisCountOverride ?? Breakpoints.gridColumnsForWidth(context);
     return SliverPadding(
       padding: padding,
       sliver: SliverGrid(
