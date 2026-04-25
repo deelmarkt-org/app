@@ -64,6 +64,15 @@ jobs:
             exit 1
           fi
 
+      - name: Inventory identical light/dark golden pairs (issue #203)
+        # Diagnostic only — surfaces solid-color pre-paint captures so the
+        # PR run log shows the affected pair count without blocking the
+        # pipeline. Flip continue-on-error to false in the same PR that
+        # closes #203 (i.e. when the pump sequence is fixed and the gate
+        # is expected to stay green).
+        continue-on-error: true
+        run: dart run scripts/check_quality.dart --check-goldens
+
       - name: Commit updated goldens if they changed
         # Auto-commit regenerated goldens back to the PR branch so developers
         # don't need to run --update-goldens locally when CI rendering differs
