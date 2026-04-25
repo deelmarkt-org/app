@@ -263,7 +263,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 
 > Estimated effort per owner. Use this to plan the next sprint.
 
-### 🔴 reso (`@mahmutkaya`) — ~3 weeks
+### 🔴 reso (`@MuBi2334`) — ~3 weeks
 | ID | Task | Severity | Effort |
 |----|------|----------|--------|
 | R-39 | Deno tests for GDPR EFs (delete/export/cleanup) | **P0** | L |
@@ -274,7 +274,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 | R-44 | DSA Art. 17 scam-flag transparency | P3 | M |
 | R-45 | Bias eval + model card for scam ML | P3 | M |
 
-### 🟢 belengaz — ~3 weeks
+### 🟢 belengaz (`@mahmutkaya`) — ~3 weeks
 | ID | Task | Severity | Effort |
 |----|------|----------|--------|
 | B-56 | Deno tests for money-path EFs (7 functions) | **P0** | L |
@@ -292,7 +292,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 | B-68 | 5 runbooks under `docs/runbooks/` | P2 | M |
 | B-69 | Lighthouse CI LCP/CLS budgets | P3 | M |
 
-### 🔵 pizmam (`@MuBi2334`) — ~1.5 weeks
+### 🔵 pizmam (`@emredursun`) — ~1.5 weeks
 | ID | Task | Severity | Effort |
 |----|------|----------|--------|
 | P-54 | E2E `listing_creation` integration test | **P1** | M |
