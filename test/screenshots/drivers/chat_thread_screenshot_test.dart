@@ -8,6 +8,7 @@ library;
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_screen.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/message_bubble.dart';
 
 import '../_support/device_frames.dart';
 import '../_support/screenshot_driver.dart';
@@ -37,25 +38,31 @@ void main() {
     }
   }
 
-  // Canary — async-provider resolution baseline (issue #203).
+  // Canary — loaded-state baseline for issue #203.
   //
-  // Inspects the widget tree AFTER `captureScreenshot` returns. A fully
-  // loaded `ChatThreadScreen` renders an AppBar, message list, message
-  // bubbles, timestamps and an input field — well over 50 widgets. A
-  // skeleton/loading state renders only Shimmer containers (< 20 widgets).
+  // Inspects the widget tree AFTER `captureScreenshot` returns. A loaded
+  // `ChatThreadScreen` renders one or more [MessageBubble]s for the seeded
+  // `conv-001` thread; a skeleton/loading state renders zero. Asserting on
+  // the presence of `MessageBubble` (rather than a raw widget count, which
+  // skeleton trees can satisfy) gives a sharp signal of whether the
+  // capture pipeline ran to a loaded state before snapshotting.
   //
-  // Today this canary is expected to FAIL (or report a low widget count)
-  // because the pump sequence inside `captureScreenshot` does not drain
-  // `AsyncNotifier.build()` micro-tasks before the golden frame is taken.
-  // That's the exact bug #203 tracks.
+  // Today this canary is expected to FAIL because of the dual problem
+  // documented in `docs/PLAN-screenshot-golden-fix.md`:
+  //   1. `AsyncNotifier.build()` micro-tasks may not drain before the
+  //      golden frame is taken (the original #203 hypothesis).
+  //   2. Test-isolation defect — only the first `(device, locale, theme)`
+  //      iteration of each driver paints to its surface; subsequent
+  //      iterations capture a fully transparent canvas (220/240 PNGs in
+  //      `dev` are `(0,0,0,0)` across the whole frame).
   //
   // The canary lives in this PR (alongside the `--check-goldens` byte-
   // identity gate) so future fix attempts have a RED baseline to flip
-  // GREEN. It is platform-independent (widget count, not pixels) and runs
-  // on every CI runner, not just macOS.
-  group('canary — async provider resolution (#203)', () {
+  // GREEN. It is platform-independent (widget tree inspection, not
+  // pixels) and runs on every CI runner, not just macOS.
+  group('canary — loaded-state baseline (#203)', () {
     testWidgets(
-      'chat_thread widget tree must be in loaded state after pump',
+      'chat_thread renders MessageBubble after captureScreenshot pump',
       (tester) async {
         await captureScreenshot(
           tester: tester,
@@ -68,20 +75,19 @@ void main() {
           goldenName: 'chat_thread_canary',
         );
 
-        final widgetCount = tester.allWidgets.length;
         expect(
-          widgetCount,
-          greaterThan(50),
+          find.byType(MessageBubble),
+          findsAtLeastNWidgets(1),
           reason:
-              'Widget tree has only $widgetCount widgets after pump — '
-              'ChatThreadScreen is likely still in loading/skeleton state. '
-              'AsyncNotifier.build() may not have completed before golden '
-              'capture. Track via issue #203.',
+              'No MessageBubble in tree after pump — ChatThreadScreen is '
+              'still in loading/skeleton state. AsyncNotifier.build() did '
+              'not commit to the Element tree before golden capture, or '
+              'the screen never received a paint frame. Track via #203.',
         );
       },
-      // Expected to FAIL today — see canary docstring above. Skipped in CI
-      // to keep the screenshot pipeline green; remove `skip` once #203 lands
-      // a working pump fix and the canary turns GREEN.
+      // Expected to FAIL today — see canary docstring. Skipped in CI to
+      // keep the pipeline green; remove `skip` once #203 lands a fix and
+      // the canary turns GREEN as a permanent regression guard.
       skip: true, // Pending #203 — canary is the RED baseline for the fix PR.
     );
   });
