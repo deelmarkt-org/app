@@ -99,21 +99,18 @@ class ReviewBothVisibleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(Spacing.s4),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'review.both_visible'.tr(),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: Spacing.s4),
-            ReviewCard(review: myReview),
-            const SizedBox(height: Spacing.s3),
-            ReviewCard(review: theirReview),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'review.both_visible'.tr(),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: Spacing.s4),
+          ReviewCard(review: myReview),
+          const SizedBox(height: Spacing.s3),
+          ReviewCard(review: theirReview),
+        ],
       ),
     );
   }

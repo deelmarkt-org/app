@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
@@ -23,7 +24,6 @@ import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart'
 import 'package:deelmarkt/features/profile/presentation/viewmodels/active_sanction_provider.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_parts.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
-import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 const _kLogoutKey = 'auth.logout';
@@ -60,17 +60,43 @@ class SuspensionGateScreen extends ConsumerWidget {
         appBar: _buildAppBar(context, ref),
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 480,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.s6),
-              child: Semantics(
-                container: true,
-                liveRegion: true,
-                child: _buildBody(context, ref, sanctionAsync),
-              ),
-            ),
+            maxWidth: Breakpoints.authCardMaxWidth,
+            child: _buildResponsiveContent(context, ref, sanctionAsync),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Scrollable gate content. On expanded viewports, wrap in a bordered
+  /// Card to match the LoginScreen pattern (focused dialog rather than
+  /// bare page). Horizontal margins come from the enclosing [ResponsiveBody]
+  /// — the scroll view adds no extra padding on compact so mobile margins
+  /// stay at the tokenised `Spacing.screenMarginMobile` (16px). On expanded,
+  /// interior padding lives INSIDE the scroll view so the scrollbar sits at
+  /// the Card's edge instead of being inset.
+  Widget _buildResponsiveContent(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<SanctionEntity?> sanctionAsync,
+  ) {
+    final body = Semantics(
+      container: true,
+      liveRegion: true,
+      child: _buildBody(context, ref, sanctionAsync),
+    );
+    if (!Breakpoints.isExpanded(context)) {
+      return SingleChildScrollView(child: body);
+    }
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+        side: BorderSide(color: Theme.of(context).dividerColor),
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(Spacing.s4),
+        child: body,
       ),
     );
   }
@@ -101,7 +127,7 @@ class SuspensionGateScreen extends ConsumerWidget {
     AsyncValue<SanctionEntity?> sanctionAsync,
   ) {
     return sanctionAsync.when(
-      loading: _buildLoading,
+      loading: () => const SuspensionGateLoadingSkeleton(),
       error:
           (err, _) => ErrorState(
             onRetry: () => ref.read(activeSanctionProvider.notifier).refresh(),
@@ -116,28 +142,6 @@ class SuspensionGateScreen extends ConsumerWidget {
           onContactSupport: () => _launchSupport(context, sanction.id),
         );
       },
-    );
-  }
-
-  Widget _buildLoading() {
-    return SkeletonLoader(
-      child: Column(
-        children: [
-          const SizedBox(height: Spacing.s16),
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: DeelmarktColors.neutral200,
-              borderRadius: BorderRadius.circular(DeelmarktRadius.full),
-            ),
-          ),
-          const SizedBox(height: Spacing.s4),
-          Container(height: 24, width: 200, color: DeelmarktColors.neutral200),
-          const SizedBox(height: Spacing.s4),
-          Container(height: 80, color: DeelmarktColors.neutral200),
-        ],
-      ),
     );
   }
 

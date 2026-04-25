@@ -10,6 +10,7 @@ import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/review_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_draft_form.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/review_result_view.dart';
+import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 User _testUser({String id = 'user-current'}) => User(
   id: id,
@@ -114,6 +115,24 @@ void main() {
       );
       await tester.pumpAndSettle(const Duration(seconds: 2));
       expect(find.byType(ReviewScreen), findsOneWidget);
+    });
+
+    testWidgets('caps content width via ResponsiveBody on expanded viewport', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1400, 900);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await _pumpScreen(tester, 'txn-001');
+      await tester.pumpAndSettle(const Duration(seconds: 2));
+
+      // Spec-pinned cap per docs/screens/07-profile/04-rating-review.md.
+      final responsiveBody = tester.widget<ResponsiveBody>(
+        find.byType(ResponsiveBody),
+      );
+      expect(responsiveBody.maxWidth, 500);
     });
   });
 }

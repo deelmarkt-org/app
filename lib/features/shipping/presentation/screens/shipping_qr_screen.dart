@@ -31,6 +31,10 @@ class ShippingQrScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
           child: ResponsiveBody(
+            // Wider than the default form cap — the QR card + instruction
+            // card + CTA stack reads cramped at 600px on tablet/desktop.
+            // See docs/screens/05-shipping/01-shipping-qr.md §Expanded.
+            maxWidth: 800,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

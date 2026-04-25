@@ -88,4 +88,57 @@ void main() {
       expect(find.byType(RefreshIndicator), findsOneWidget);
     });
   });
+
+  group('CategoryBrowseScreen responsive layout (#193 PR B)', () {
+    void setCompactScreen(WidgetTester tester) {
+      tester.view.physicalSize = const Size(400, 900);
+      tester.view.devicePixelRatio = 1.0;
+    }
+
+    void setExpandedScreen(WidgetTester tester) {
+      tester.view.physicalSize = const Size(1000, 900);
+      tester.view.devicePixelRatio = 1.0;
+    }
+
+    testWidgets('compact (<840) renders vertical list', (tester) async {
+      setCompactScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(buildTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byType(GridView), findsNothing);
+      expect(find.byType(CategoryCard), findsNWidgets(8));
+    });
+
+    testWidgets('expanded (≥840) renders 2-col grid', (tester) async {
+      setExpandedScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(buildTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GridView), findsOneWidget);
+      expect(find.byType(ListView), findsNothing);
+      expect(find.byType(CategoryCard), findsNWidgets(8));
+    });
+
+    testWidgets('expanded loading skeleton also uses 2-col grid', (
+      tester,
+    ) async {
+      setExpandedScreen(tester);
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      await tester.pumpWidget(buildTestWidget());
+      await tester.pump(); // first frame — still loading
+      // Skeleton grid should already be rendered while data async-loads.
+      expect(find.byType(GridView), findsOneWidget);
+
+      await tester.pumpAndSettle();
+    });
+  });
 }

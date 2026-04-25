@@ -7,15 +7,28 @@
 //   missing Semantics, setState, FutureBuilder/StreamBuilder.
 // Pre-push (--thorough): duplicate string literals, nested ternaries,
 //   long methods.
+// Golden integrity (--check-goldens): detects byte-identical light/dark golden
+//   pairs that indicate solid-color captures (see issue #203). Diagnostic only —
+//   exits non-zero on violations so devs can inventory affected pairs locally.
 //
 // Rules are read from CLAUDE.md §12 (QUALITY_RULES_START block).
 // Usage:
-//   dart run scripts/check_quality.dart            # pre-commit (staged files)
-//   dart run scripts/check_quality.dart --thorough  # pre-push (all changed files)
-//   dart run scripts/check_quality.dart --all       # check all lib/ files
+//   dart run scripts/check_quality.dart                # pre-commit (staged files)
+//   dart run scripts/check_quality.dart --thorough     # pre-push (all changed)
+//   dart run scripts/check_quality.dart --all          # check all lib/ files
+//   dart run scripts/check_quality.dart --check-goldens # golden pair integrity
 import 'dart:io';
+import 'dart:typed_data';
 
 void main(List<String> args) async {
+  // Golden integrity mode — standalone, exits immediately after check.
+  if (args.contains('--check-goldens')) {
+    final code = await _checkGoldenIdenticalPairs(
+      'test/screenshots/drivers/goldens',
+    );
+    exit(code);
+  }
+
   final thorough = args.contains('--thorough');
   final all = args.contains('--all');
 
@@ -530,4 +543,86 @@ void _checkLongMethods(
       methodName = null;
     }
   }
+}
+
+// ── Golden integrity check (--check-goldens) ───────────────────────────────
+
+/// Detects byte-identical light/dark golden pairs — a sign that
+/// [captureScreenshot] captured a solid-color loading frame instead of real
+/// screen content (issue #203).
+///
+/// Groups PNGs by `{screen}_{locale}_{device}` key (strips `_light_` / `_dark_`),
+/// then compares raw bytes. Returns exit code: 0 = pass, 1 = violations found.
+Future<int> _checkGoldenIdenticalPairs(String goldenDir) async {
+  final dir = Directory(goldenDir);
+  if (!dir.existsSync()) {
+    print('Golden directory not found: $goldenDir — skipping.');
+    return 0;
+  }
+
+  // key = "{screen}_{locale}_{device}" → {"light": File, "dark": File}
+  final pairs = <String, Map<String, File>>{};
+
+  for (final entity in dir.listSync()) {
+    if (entity is! File) continue;
+    final name = entity.uri.pathSegments.last;
+    if (!name.endsWith('.png')) continue;
+
+    final base = name.substring(0, name.length - 4); // strip .png
+    // Pattern: {screen_and_locale}_{light|dark}_{device_id}
+    // Examples: chat_thread_nl_NL_light_ios_67
+    //           home_buyer_en_US_dark_android_phone
+    final match = RegExp(r'^(.+?)_(light|dark)_(.+)$').firstMatch(base);
+    if (match == null) continue;
+
+    final key = '${match.group(1)!}_${match.group(3)!}';
+    final theme = match.group(2)!;
+    (pairs[key] ??= {})[theme] = entity;
+  }
+
+  var violations = 0;
+
+  for (final entry in pairs.entries) {
+    final lightFile = entry.value['light'];
+    final darkFile = entry.value['dark'];
+    if (lightFile == null || darkFile == null) continue;
+
+    final lightBytes = lightFile.readAsBytesSync();
+    final darkBytes = darkFile.readAsBytesSync();
+
+    if (lightBytes.length == darkBytes.length &&
+        _bytesEqual(lightBytes, darkBytes)) {
+      stderr.writeln(
+        'IDENTICAL GOLDEN PAIR: ${entry.key}\n'
+        '  light: ${lightFile.path}\n'
+        '  dark:  ${darkFile.path}\n'
+        '  Size: ${lightBytes.length} bytes each — solid-color capture suspected.',
+      );
+      violations++;
+    }
+  }
+
+  if (violations > 0) {
+    stderr.writeln(
+      '\n$violations identical light/dark pair(s) found.\n'
+      'These are pre-existing failures from issue #203 (captureScreenshot\n'
+      'pre-paint capture for async-built screens). The actual pump-sequence\n'
+      'fix is tracked in #203 — this gate only inventories the affected\n'
+      'pairs. Run with: dart run scripts/check_quality.dart --check-goldens',
+    );
+    return 1;
+  }
+
+  print(
+    'Golden integrity check passed — all light/dark pairs are distinct '
+    '(${pairs.length} pairs checked).',
+  );
+  return 0;
+}
+
+bool _bytesEqual(Uint8List a, Uint8List b) {
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
 }

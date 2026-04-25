@@ -31,6 +31,7 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
 
+import '../../helpers/tolerant_golden_comparator.dart';
 import 'device_frames.dart';
 import 'seed_data.dart';
 
@@ -44,6 +45,18 @@ Future<void> initScreenshotEnvironment() async {
   await EasyLocalization.ensureInitialized();
   await initializeDateFormatting('en');
   await initializeDateFormatting('nl');
+
+  // Screenshot drivers compare pixel-for-pixel via `matchesGoldenFile`. Sub-
+  // pixel font-hinting differences between CI's macos-14 runner and developer
+  // machines (even both macOS) produce ≤0.5% diffs that trip Flutter's default
+  // strict [LocalFileComparator]. Wire in the tolerant comparator already used
+  // by widget goldens (photo_grid_tile_golden_test.dart, responsive_detail_*)
+  // so the same 0.5% tolerance applies to screen-level goldens. Any path in
+  // `test/screenshots/drivers/` resolves to the correct basedir because all
+  // drivers share a single `goldens/` subdirectory.
+  goldenFileComparator = TolerantGoldenFileComparator.forTestFile(
+    'test/screenshots/drivers/shipping_qr_screenshot_test.dart',
+  );
 }
 
 /// Pump [screen] in screenshot mode and capture a golden file.

@@ -158,7 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: SafeArea(
         child: ResponsiveBody(
-          maxWidth: 480,
+          maxWidth: Breakpoints.authCardMaxWidth,
           child: SingleChildScrollView(child: content),
         ),
       ),

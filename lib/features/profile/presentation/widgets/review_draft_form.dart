@@ -66,64 +66,12 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
   @override
   Widget build(BuildContext context) {
     final draft = widget.draft;
-    final charCount = draft.body.length;
-    final counterColor = _counterColor(charCount);
-
     return Column(
       children: [
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(Spacing.s4),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (draft.hasRestoredDraft) ...[
-                    TrustBanner.info(
-                      title: 'review.blind_review'.tr(),
-                      description: 'review.blind_explanation'.tr(),
-                      icon: PhosphorIcons.shield(PhosphorIconsStyle.fill),
-                    ),
-                    const SizedBox(height: Spacing.s4),
-                  ],
-                  Text(
-                    'review.how_was_experience'.tr(
-                      namedArgs: {'name': draft.revieweeName.tr()},
-                    ),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: Spacing.s4),
-                  RatingInput(
-                    value: draft.rating,
-                    onChanged: widget.onRatingChanged,
-                  ),
-                  const SizedBox(height: Spacing.s6),
-                  DeelInput(
-                    label: 'review.tell_about'.tr(),
-                    maxLines: 5,
-                    maxLength: 500,
-                    controller: _controller,
-                    onChanged: widget.onBodyChanged,
-                  ),
-                  const SizedBox(height: Spacing.s2),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Semantics(
-                      label: 'review.a11y.counter'.tr(),
-                      child: Text(
-                        'review.char_counter'.tr(
-                          namedArgs: {'current': '$charCount'},
-                        ),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: counterColor),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: _buildFormBody(context, draft),
           ),
         ),
         BottomAppBar(
@@ -132,6 +80,53 @@ class _ReviewDraftFormState extends State<ReviewDraftForm> {
             child: FilledButton(
               onPressed: draft.canSubmit ? widget.onSubmit : null,
               child: Text('review.submit'.tr()),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormBody(BuildContext context, ReviewDraftState draft) {
+    final charCount = draft.body.length;
+    final counterColor = _counterColor(charCount);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (draft.hasRestoredDraft) ...[
+          TrustBanner.info(
+            title: 'review.blind_review'.tr(),
+            description: 'review.blind_explanation'.tr(),
+            icon: PhosphorIcons.shield(PhosphorIconsStyle.fill),
+          ),
+          const SizedBox(height: Spacing.s4),
+        ],
+        Text(
+          'review.how_was_experience'.tr(
+            namedArgs: {'name': draft.revieweeName.tr()},
+          ),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: Spacing.s4),
+        RatingInput(value: draft.rating, onChanged: widget.onRatingChanged),
+        const SizedBox(height: Spacing.s6),
+        DeelInput(
+          label: 'review.tell_about'.tr(),
+          maxLines: 5,
+          maxLength: 500,
+          controller: _controller,
+          onChanged: widget.onBodyChanged,
+        ),
+        const SizedBox(height: Spacing.s2),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Semantics(
+            label: 'review.a11y.counter'.tr(),
+            child: Text(
+              'review.char_counter'.tr(namedArgs: {'current': '$charCount'}),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: counterColor),
             ),
           ),
         ),

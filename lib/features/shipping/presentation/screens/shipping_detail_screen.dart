@@ -35,6 +35,9 @@ class ShippingDetailScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: Spacing.s4),
           child: ResponsiveBody(
+            // Wider than the default form cap — matches the sibling shipping
+            // screens (QR, Tracking) for consistent hub-screen treatment.
+            maxWidth: 800,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

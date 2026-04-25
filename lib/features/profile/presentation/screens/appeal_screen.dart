@@ -15,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/services/analytics/sanction_analytics.dart';
@@ -165,7 +166,7 @@ class _AppealScreenState extends ConsumerState<AppealScreen> {
         appBar: _buildAppBar(context, isSubmitting),
         body: SafeArea(
           child: ResponsiveBody(
-            maxWidth: 480,
+            maxWidth: Breakpoints.authCardMaxWidth,
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.s6),
               child: AppealFormBody(

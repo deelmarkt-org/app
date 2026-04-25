@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
@@ -8,100 +7,75 @@ import 'package:deelmarkt/features/messages/presentation/screens/chat_thread_scr
 import 'package:deelmarkt/features/messages/presentation/screens/conversation_list_screen.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/no_thread_selected.dart';
+import 'package:deelmarkt/widgets/layout/responsive_detail_scaffold.dart';
 
 /// Single entry point for `/messages` and `/messages/:conversationId`.
 ///
-/// Uses a [LayoutBuilder] to switch between compact (push navigation)
-/// and expanded (master-detail) layouts at [Breakpoints.medium].
+/// Composes the conversation list + chat thread via the shared
+/// [ResponsiveDetailScaffold] primitive (#192 foundation):
+/// - Below [Breakpoints.medium] (<840px): either the list OR the thread is
+///   visible based on `conversationId` — selecting a conversation pushes
+///   `/messages/:id` so back navigation returns to the list (unchanged
+///   mobile drill-down UX).
+/// - At or above [Breakpoints.medium] (≥840px): list pinned as a 360-px
+///   master pane, thread fills the detail pane — selecting a conversation
+///   updates only the detail without replacing the list.
 ///
-/// In compact mode: either the list OR the thread is visible (push nav).
-/// In expanded mode: list is a fixed 360-px left pane, thread fills the rest.
-class MessagesResponsiveShell extends ConsumerWidget {
+/// Default scaffold params (`masterWidth = 360`, `breakpoint = medium`)
+/// match this screen's previous hand-rolled layout, so the migration is
+/// behaviour-preserving. Divider color uses the chat theme's `border`
+/// token to keep parity with the rest of the messages surface (generic
+/// `dividerTheme.color` would be a ~3% luminance shift in dark mode).
+///
+/// Reference: docs/screens/06-chat/01-conversation-list.md,
+/// docs/screens/06-chat/02-chat-thread.md.
+class MessagesResponsiveShell extends StatelessWidget {
   const MessagesResponsiveShell({this.conversationId, super.key});
 
   final String? conversationId;
 
-  static const double _listPaneWidth = 360;
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colors = ChatThemeColors.of(context);
+    final isExpanded = Breakpoints.isExpanded(context);
+
+    final master = ConversationListScreen(
+      selectedConversationId: isExpanded ? conversationId : null,
+      onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
+    );
+
+    // On compact we're on the thread route with its own back button;
+    // on expanded the thread sits next to the list and back would be
+    // incongruent with the master-detail pattern.
+    final detail =
+        conversationId == null
+            ? null
+            : ChatThreadScreen(
+              conversationId: conversationId!,
+              showBackButton: !isExpanded,
+              key: ValueKey(conversationId),
+            );
 
     return Scaffold(
       backgroundColor: colors.scaffold,
       body: SafeArea(
         bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isExpanded = constraints.maxWidth >= Breakpoints.medium;
-            if (isExpanded) {
-              return _ExpandedLayout(
-                conversationId: conversationId,
-                listPaneWidth: _listPaneWidth,
-              );
-            }
-            return _CompactLayout(conversationId: conversationId);
-          },
+        child: ResponsiveDetailScaffold(
+          master: master,
+          detail: detail,
+          emptyDetail: const NoThreadSelected(),
+          dividerColor: colors.border,
+          // Pass `breakpoint` explicitly so the scaffold's internal
+          // compact/expanded threshold stays locked to the same constant
+          // the shell uses above for `isExpanded`. Otherwise the two
+          // checks could drift (e.g. if the scaffold default ever moves
+          // off `Breakpoints.medium`) and `showBackButton` +
+          // `selectedConversationId` could desync from the rendered
+          // layout. Review #202 M-1.
+          // ignore: avoid_redundant_argument_values
+          breakpoint: Breakpoints.medium,
         ),
       ),
-    );
-  }
-}
-
-class _CompactLayout extends StatelessWidget {
-  const _CompactLayout({required this.conversationId});
-
-  final String? conversationId;
-
-  @override
-  Widget build(BuildContext context) {
-    if (conversationId == null) {
-      return ConversationListScreen(
-        onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
-      );
-    }
-    return ChatThreadScreen(
-      conversationId: conversationId!,
-      key: ValueKey(conversationId),
-    );
-  }
-}
-
-class _ExpandedLayout extends StatelessWidget {
-  const _ExpandedLayout({
-    required this.conversationId,
-    required this.listPaneWidth,
-  });
-
-  final String? conversationId;
-  final double listPaneWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = ChatThemeColors.of(context);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          width: listPaneWidth,
-          child: ConversationListScreen(
-            selectedConversationId: conversationId,
-            onConversationTap: (id) => context.go(AppRoutes.chatThreadFor(id)),
-          ),
-        ),
-        Container(width: 1, color: colors.border),
-        Expanded(
-          child:
-              conversationId == null
-                  ? const NoThreadSelected()
-                  : ChatThreadScreen(
-                    conversationId: conversationId!,
-                    showBackButton: false,
-                    key: ValueKey(conversationId),
-                  ),
-        ),
-      ],
     );
   }
 }

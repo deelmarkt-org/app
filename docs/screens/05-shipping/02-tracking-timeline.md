@@ -11,7 +11,7 @@
 | Route | `/shipping/:id/tracking` |
 | Auth | Required |
 | States | Data (events list), Empty (no updates yet) |
-| Responsive | ResponsiveBody wrapper (max 600px centered) |
+| Responsive | ResponsiveBody wrapper (max 800px centered — see #206 / PR #207, bumped from 600 so the vertical timeline + tracking-number card breathe on tablet/desktop) |
 | Dark mode | Supported via theme |
 
 ## Current Layout (as implemented)
@@ -53,7 +53,7 @@ CONTENT: 4 tracking events for a PostNL parcel: label created → dropped off �
 in transit → delivered. Show Dutch locations (Amsterdam, Sorteerdepot Nieuwegein).
 
 VARIATIONS: Light, Dark, Empty state (clock icon + "Nog geen updates"),
-Expanded desktop (centered max 600px), DHL carrier variant
+Expanded desktop (centered max 800px so the vertical timeline + tracking-number card breathe on wide viewports), DHL carrier variant
 ```
 
 ## Implementation Audit
