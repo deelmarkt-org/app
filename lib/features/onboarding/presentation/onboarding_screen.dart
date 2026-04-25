@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
@@ -22,6 +23,12 @@ import 'package:deelmarkt/features/onboarding/presentation/widgets/welcome_page.
 /// Replaces the Phase 1 placeholder. Persists completion flag via
 /// SharedPreferences so returning users skip onboarding.
 ///
+/// - **Compact (<840px):** Full-screen PageView, centered at
+///   [Breakpoints.contentMaxWidth] via [ResponsiveBody].
+/// - **Expanded (≥840px):** Content rendered inside a centered elevated
+///   [Card] (max-width 720px) matching `onboarding_tablet_optimized_card`
+///   design. Mobile layout is unchanged.
+///
 /// Route: `/onboarding` (auth guard redirects here when not logged in
 /// and onboarding is not yet complete).
 ///
@@ -35,6 +42,11 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _pageCount = 3;
+
+  /// Max-width of the elevated Card on expanded viewports.
+  /// Reference: docs/screens/01-auth/01-onboarding.md §Tablet, issue #196.
+  static const double _tabletCardMaxWidth = 720;
+
   late final PageController _pageController;
 
   @override
@@ -108,87 +120,118 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       },
       child: Scaffold(
         body: SafeArea(
-          child: ResponsiveBody(
-            maxWidth: Breakpoints.contentMaxWidth,
-            child: Column(
+          child:
+              isExpanded
+                  ? _buildExpandedLayout(context, state)
+                  : _buildCompactLayout(context, state),
+        ),
+      ),
+    );
+  }
+
+  /// Compact layout: full-screen PageView centred at contentMaxWidth.
+  Widget _buildCompactLayout(BuildContext context, OnboardingState state) {
+    return ResponsiveBody(
+      maxWidth: Breakpoints.contentMaxWidth,
+      child: _buildContent(context, state, isExpanded: false),
+    );
+  }
+
+  /// Expanded layout: content inside a centred elevated Card at 720px.
+  Widget _buildExpandedLayout(BuildContext context, OnboardingState state) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _tabletCardMaxWidth),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: _buildContent(context, state, isExpanded: true),
+        ),
+      ),
+    );
+  }
+
+  /// Shared column content used by both layout paths.
+  Widget _buildContent(
+    BuildContext context,
+    OnboardingState state, {
+    required bool isExpanded,
+  }) {
+    return Column(
+      children: [
+        // Header (expanded breakpoint only): logo + skip
+        if (isExpanded) ...[
+          Padding(
+            padding: const EdgeInsets.only(
+              top: Spacing.s4,
+              left: Spacing.s4,
+              right: Spacing.s4,
+              bottom: Spacing.s2,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Header (expanded breakpoint only): logo + skip
-                if (isExpanded) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: Spacing.s4,
-                      bottom: Spacing.s2,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'app.name'.tr(),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        DeelButton(
-                          label: 'onboarding.skip'.tr(),
-                          onPressed:
-                              () => _completeAndNavigate(AppRoutes.register),
-                          variant: DeelButtonVariant.ghost,
-                          size: DeelButtonSize.small,
-                          fullWidth: false,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-
-                // PageView
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      const WelcomePage(),
-                      const TrustPage(),
-                      GetStartedPage(
-                        onCreateAccount:
-                            () => _completeAndNavigate(AppRoutes.register),
-                        onLogin: () => _completeAndNavigate(AppRoutes.login),
-                      ),
-                    ],
+                Text(
+                  'app.name'.tr(),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-
-                // Dot indicator
-                const SizedBox(height: Spacing.s6),
-                PageDotIndicator(
-                  currentPage: state.currentPage,
-                  pageCount: _pageCount,
+                DeelButton(
+                  label: 'onboarding.skip'.tr(),
+                  onPressed: () => _completeAndNavigate(AppRoutes.register),
+                  variant: DeelButtonVariant.ghost,
+                  size: DeelButtonSize.small,
+                  fullWidth: false,
                 ),
-
-                // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
-                if (state.currentPage < _pageCount - 1) ...[
-                  const SizedBox(height: Spacing.s4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-                    child: DeelButton(
-                      label: 'onboarding.next'.tr(),
-                      onPressed: _nextPage,
-                    ),
-                  ),
-                ],
-
-                // Trust badges (expanded only)
-                const SizedBox(height: Spacing.s6),
-                const OnboardingTrustBadges(),
-                const SizedBox(height: Spacing.s4),
               ],
             ),
           ),
+        ],
+
+        // PageView
+        Expanded(child: _buildPageView()),
+
+        // Dot indicator
+        const SizedBox(height: Spacing.s6),
+        PageDotIndicator(currentPage: state.currentPage, pageCount: _pageCount),
+
+        // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
+        if (state.currentPage < _pageCount - 1) ...[
+          const SizedBox(height: Spacing.s4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
+            child: DeelButton(
+              label: 'onboarding.next'.tr(),
+              onPressed: _nextPage,
+            ),
+          ),
+        ],
+
+        // Trust badges
+        const SizedBox(height: Spacing.s6),
+        const OnboardingTrustBadges(),
+        const SizedBox(height: Spacing.s4),
+      ],
+    );
+  }
+
+  PageView _buildPageView() {
+    return PageView(
+      controller: _pageController,
+      physics: const ClampingScrollPhysics(),
+      children: [
+        const WelcomePage(),
+        const TrustPage(),
+        GetStartedPage(
+          onCreateAccount: () => _completeAndNavigate(AppRoutes.register),
+          onLogin: () => _completeAndNavigate(AppRoutes.login),
         ),
-      ),
+      ],
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 
 /// Shown in place of the admin shell when the viewport is too narrow
-/// (< 768 px) for the two-column sidebar + content layout.
+/// (< 900 px) for the two-column sidebar + content layout.
 ///
 /// Reference: docs/screens/08-admin/01-admin-panel.md
 class AdminNarrowViewportMessage extends StatelessWidget {

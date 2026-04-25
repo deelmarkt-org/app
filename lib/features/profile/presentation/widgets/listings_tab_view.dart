@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/utils/formatters.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
+import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
 import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
-import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
-/// Grid view of user's listings with status badges.
+/// Adaptive grid of user's listings with status badges.
+///
+/// Uses [AdaptiveListingGrid] (2→3→4 columns) instead of a hardcoded
+/// 2-column delegate so the profile screen benefits from the wider
+/// 900px container on expanded viewports (issue #196).
 class ListingsTabView extends StatelessWidget {
   const ListingsTabView({
     required this.listings,
@@ -23,13 +26,6 @@ class ListingsTabView extends StatelessWidget {
 
   final AsyncValue<List<ListingEntity>> listings;
   final VoidCallback onRetry;
-
-  static const _gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-    crossAxisSpacing: Spacing.listingCardGap,
-    mainAxisSpacing: Spacing.listingCardGap,
-    childAspectRatio: DeelCardTokens.gridChildAspectRatio,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +38,15 @@ class ListingsTabView extends StatelessWidget {
   }
 
   Widget _buildLoadingGrid() {
-    return GridView.builder(
+    return CustomScrollView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: _gridDelegate,
-      itemCount: 4,
-      itemBuilder: (_, _) => const DeelCardSkeleton(),
+      slivers: [
+        AdaptiveListingGrid(
+          itemCount: 4,
+          itemBuilder: (_, _) => const DeelCardSkeleton(),
+        ),
+      ],
     );
   }
 
@@ -61,12 +60,15 @@ class ListingsTabView extends StatelessWidget {
       );
     }
 
-    return GridView.builder(
+    return CustomScrollView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: _gridDelegate,
-      itemCount: items.length,
-      itemBuilder: (context, index) => _buildCard(context, items[index]),
+      slivers: [
+        AdaptiveListingGrid(
+          itemCount: items.length,
+          itemBuilder: (context, index) => _buildCard(context, items[index]),
+        ),
+      ],
     );
   }
 

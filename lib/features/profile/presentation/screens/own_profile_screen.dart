@@ -76,6 +76,7 @@ class _OwnProfileScreenState extends ConsumerState<OwnProfileScreen>
     }
 
     return ResponsiveBody(
+      maxWidth: 900,
       child: NestedScrollView(
         headerSliverBuilder:
             (context, innerBoxIsScrolled) => [
