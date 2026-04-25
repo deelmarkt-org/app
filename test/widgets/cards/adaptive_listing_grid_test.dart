@@ -81,7 +81,7 @@ void main() {
   group('AdaptiveListingGrid — container-aware (#193 PR D)', () {
     testWidgets(
       'column count tracks sidebar-constrained pane, not viewport '
-      '(1400 viewport - 240 sidebar - 1 divider = 959 pane → 4 cols, not 5)',
+      '(1400 viewport - 240 sidebar - 1 divider = 1159 pane → 4 cols, not 5)',
       (tester) async {
         await _pumpGridAt(
           tester,

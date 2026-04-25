@@ -14,11 +14,11 @@ import 'package:deelmarkt/widgets/cards/deel_card_tokens.dart';
 /// (search filter panel), inside width-capped scroll views
 /// (`ResponsiveBody.wide`), and as a full-viewport grid on mobile. A
 /// viewport-based column count would produce 5 cols inside the ~1159-px
-/// search results pane (1400 viewport, minus 240-px sidebar, minus 1-px
-/// divider) — not enough horizontal room for `DeelCard` content, and the
-/// card would overflow by ~16 px vertically. Reading `crossAxisExtent`
-/// from the sliver's own constraints keeps the column count proportional
-/// to the space the grid actually occupies.
+/// search results pane (1400-px viewport, minus 240-px sidebar, minus
+/// 1-px divider) — not enough horizontal room for `DeelCard` content, and
+/// the card would overflow by ~16 px vertically. Reading
+/// `crossAxisExtent` from the sliver's own constraints keeps the column
+/// count proportional to the space the grid actually occupies.
 ///
 /// Full-width surfaces (home / favourites / category-detail without a
 /// sidebar) see identical column counts to the pre-migration behaviour
