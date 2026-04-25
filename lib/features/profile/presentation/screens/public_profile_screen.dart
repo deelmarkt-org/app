@@ -108,51 +108,60 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
       maxWidth: 900,
       child: RefreshIndicator(
         onRefresh: notifier.refresh,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.s4,
-                  Spacing.s4,
-                  Spacing.s4,
-                  0,
-                ),
-                child: Column(
-                  children: [
-                    PublicProfileHeader(user: user, aggregate: state.aggregate),
-                    const SizedBox(height: Spacing.s6),
-                    _buildTabs(),
-                    const SizedBox(height: Spacing.s4),
-                  ],
-                ),
-              ),
-            ),
-            SliverFillRemaining(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  ListingsTabView(
-                    listings: state.listings,
-                    onRetry: notifier.refresh,
-                  ),
-                  ReviewsTabView(
-                    reviews: state.reviews,
-                    onRetry: notifier.refresh,
-                    hasMore: notifier.hasMoreReviews,
-                    isLoadingMore: notifier.isLoadingMore,
-                    onLoadMore: notifier.loadMoreReviews,
-                    onReport:
-                        (review) => _showReportSheet(
-                          context,
-                          (reason) => notifier.reportReview(review.id, reason),
+        // `NestedScrollView` lets the header + tabs slivers scroll away
+        // *together* with the active tab's `CustomScrollView` body, instead
+        // of the previous `SliverFillRemaining(TabBarView(...))` layout
+        // that produced two independent scroll axes. The inner
+        // `ListingsTabView` / `ReviewsTabView` `CustomScrollView`s pick up
+        // the `PrimaryScrollController` that `NestedScrollView` installs,
+        // so paging through tabs no longer leaves the header pinned in
+        // place (Gemini PR #217 round 2).
+        child: NestedScrollView(
+          headerSliverBuilder:
+              (context, innerBoxIsScrolled) => [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.s4,
+                      Spacing.s4,
+                      Spacing.s4,
+                      0,
+                    ),
+                    child: Column(
+                      children: [
+                        PublicProfileHeader(
+                          user: user,
+                          aggregate: state.aggregate,
                         ),
+                        const SizedBox(height: Spacing.s6),
+                        _buildTabs(),
+                        const SizedBox(height: Spacing.s4),
+                      ],
+                    ),
                   ),
-                ],
+                ),
+              ],
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              ListingsTabView(
+                listings: state.listings,
+                onRetry: notifier.refresh,
               ),
-            ),
-          ],
+              ReviewsTabView(
+                reviews: state.reviews,
+                onRetry: notifier.refresh,
+                hasMore: notifier.hasMoreReviews,
+                isLoadingMore: notifier.isLoadingMore,
+                onLoadMore: notifier.loadMoreReviews,
+                onReport:
+                    (review) => _showReportSheet(
+                      context,
+                      (reason) => notifier.reportReview(review.id, reason),
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );

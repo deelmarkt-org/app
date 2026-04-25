@@ -131,8 +131,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   /// Compact layout: full-screen PageView centred at contentMaxWidth.
   Widget _buildCompactLayout(BuildContext context, OnboardingState state) {
+    // `_buildContent` wraps the "Volgende" button in its own
+    // `Padding(horizontal: Spacing.s4)` so the same 16-px gutter applies
+    // on both compact and expanded layouts. Disable `ResponsiveBody`'s
+    // horizontal padding here so the two paddings don't stack to 32 px
+    // (Gemini PR #217 round 2 — onboarding compact layout).
     return ResponsiveBody(
       maxWidth: Breakpoints.contentMaxWidth,
+      addHorizontalPadding: false,
       child: _buildContent(context, state, isExpanded: false),
     );
   }
