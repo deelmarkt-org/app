@@ -90,18 +90,16 @@ class SearchResultsView extends StatelessWidget {
         onAction: () => onFilterApply(SearchFilter(query: data.filter.query)),
       );
     }
-    // The results pane occupies (viewport − sidebar − 1 px divider) dp.
-    // Pass the container width to the grid so it picks the right column count
-    // rather than reading the full viewport via MediaQuery (#210 review C1).
-    final paneWidth =
-        MediaQuery.sizeOf(context).width - Breakpoints.filterSidebarWidth - 1;
-    final paneColumns = Breakpoints.gridColumnsForWidthValue(paneWidth);
+    // The grid is container-aware via SliverLayoutBuilder, so the column
+    // count is derived from the results pane's actual `crossAxisExtent`
+    // (viewport − sidebar − 1-px divider) rather than the full viewport
+    // via MediaQuery (#193 PR D / #210 review C1).
     return NotificationListener<ScrollNotification>(
       onNotification: _onScroll,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: _buildResultCount(context)),
-          _buildGrid(context, crossAxisCountOverride: paneColumns),
+          _buildGrid(context),
           if (data.isLoadingMore) _loadMoreSpinner(),
           const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
         ],
@@ -172,10 +170,9 @@ class SearchResultsView extends StatelessWidget {
     );
   }
 
-  Widget _buildGrid(BuildContext context, {int? crossAxisCountOverride}) {
+  Widget _buildGrid(BuildContext context) {
     return AdaptiveListingGrid(
       itemCount: data.listings.length,
-      crossAxisCountOverride: crossAxisCountOverride,
       itemBuilder: (context, index) {
         final listing = data.listings[index];
         return EscrowAwareListingCard(
