@@ -17,6 +17,11 @@ import 'package:deelmarkt/widgets/feedback/error_state.dart';
 /// Uses [AdaptiveListingGrid] (2→3→4 columns) instead of a hardcoded
 /// 2-column delegate so the profile screen benefits from the wider
 /// 900px container on expanded viewports (issue #196).
+///
+/// The grid is a self-scrolling [CustomScrollView] — host it inside a
+/// widget that provides bounded height (e.g. `TabBarView` inside
+/// `NestedScrollView` body, or `SliverFillRemaining` body). Do NOT
+/// wrap in another scrollable; the grid coordinates its own scroll.
 class ListingsTabView extends StatelessWidget {
   const ListingsTabView({
     required this.listings,
@@ -39,8 +44,6 @@ class ListingsTabView extends StatelessWidget {
 
   Widget _buildLoadingGrid() {
     return CustomScrollView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       slivers: [
         AdaptiveListingGrid(
           itemCount: 4,
@@ -61,8 +64,6 @@ class ListingsTabView extends StatelessWidget {
     }
 
     return CustomScrollView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       slivers: [
         AdaptiveListingGrid(
           itemCount: items.length,

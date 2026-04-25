@@ -104,7 +104,7 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
     PublicProfileState state,
     PublicProfileNotifier notifier,
   ) {
-    return ResponsiveBody(
+    return ResponsiveBody.wide(
       maxWidth: 900,
       child: RefreshIndicator(
         onRefresh: notifier.refresh,

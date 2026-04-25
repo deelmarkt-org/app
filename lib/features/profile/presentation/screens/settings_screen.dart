@@ -46,6 +46,7 @@ class SettingsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text('settings.title'.tr())),
       body: ResponsiveBody(
         maxWidth: 720,
+        addHorizontalPadding: false,
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
             horizontal: Spacing.s4,
