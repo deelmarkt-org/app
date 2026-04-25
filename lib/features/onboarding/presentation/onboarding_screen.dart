@@ -5,17 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
-import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
-import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/get_started_page.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/onboarding_trust_badges.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/page_dot_indicator.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_page.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/welcome_page.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/onboarding_content.dart';
 
 /// Full onboarding flow — 3-page PageView with language selection,
 /// trust value proposition, and account creation CTA.
@@ -23,9 +17,11 @@ import 'package:deelmarkt/features/onboarding/presentation/widgets/welcome_page.
 /// Replaces the Phase 1 placeholder. Persists completion flag via
 /// SharedPreferences so returning users skip onboarding.
 ///
-/// - **Compact (<840px):** Full-screen PageView, centered at
-///   [Breakpoints.contentMaxWidth] via [ResponsiveBody].
-/// - **Expanded (≥840px):** Content rendered inside a centered elevated
+/// - **Compact (<840px):** Full-screen PageView, centred at
+///   [Breakpoints.contentMaxWidth] via [ResponsiveBody] (with
+///   [ResponsiveBody.addHorizontalPadding] disabled — see
+///   [OnboardingContent] for the padding contract).
+/// - **Expanded (≥840px):** Content rendered inside a centred elevated
 ///   [Card] (max-width 720px) matching `onboarding_tablet_optimized_card`
 ///   design. Mobile layout is unchanged.
 ///
@@ -122,29 +118,29 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         body: SafeArea(
           child:
               isExpanded
-                  ? _buildExpandedLayout(context, state)
-                  : _buildCompactLayout(context, state),
+                  ? _buildExpandedLayout(state)
+                  : _buildCompactLayout(state),
         ),
       ),
     );
   }
 
   /// Compact layout: full-screen PageView centred at contentMaxWidth.
-  Widget _buildCompactLayout(BuildContext context, OnboardingState state) {
-    // `_buildContent` wraps the "Volgende" button in its own
-    // `Padding(horizontal: Spacing.s4)` so the same 16-px gutter applies
-    // on both compact and expanded layouts. Disable `ResponsiveBody`'s
-    // horizontal padding here so the two paddings don't stack to 32 px
-    // (Gemini PR #217 round 2 — onboarding compact layout).
+  ///
+  /// `ResponsiveBody.addHorizontalPadding` is disabled so the inner
+  /// 16-px button padding inside [OnboardingContent] is the sole
+  /// horizontal gutter — see the class docstring on [OnboardingContent]
+  /// for the full padding contract.
+  Widget _buildCompactLayout(OnboardingState state) {
     return ResponsiveBody(
       maxWidth: Breakpoints.contentMaxWidth,
       addHorizontalPadding: false,
-      child: _buildContent(context, state, isExpanded: false),
+      child: _buildContent(state, isExpanded: false),
     );
   }
 
   /// Expanded layout: content inside a centred elevated Card at 720px.
-  Widget _buildExpandedLayout(BuildContext context, OnboardingState state) {
+  Widget _buildExpandedLayout(OnboardingState state) {
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: _tabletCardMaxWidth),
@@ -154,90 +150,22 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
           ),
           clipBehavior: Clip.antiAlias,
-          child: _buildContent(context, state, isExpanded: true),
+          child: _buildContent(state, isExpanded: true),
         ),
       ),
     );
   }
 
-  /// Shared column content used by both layout paths.
-  Widget _buildContent(
-    BuildContext context,
-    OnboardingState state, {
-    required bool isExpanded,
-  }) {
-    return Column(
-      children: [
-        // Header (expanded breakpoint only): logo + skip
-        if (isExpanded) ...[
-          Padding(
-            padding: const EdgeInsets.only(
-              top: Spacing.s4,
-              left: Spacing.s4,
-              right: Spacing.s4,
-              bottom: Spacing.s2,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'app.name'.tr(),
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                DeelButton(
-                  label: 'onboarding.skip'.tr(),
-                  onPressed: () => _completeAndNavigate(AppRoutes.register),
-                  variant: DeelButtonVariant.ghost,
-                  size: DeelButtonSize.small,
-                  fullWidth: false,
-                ),
-              ],
-            ),
-          ),
-        ],
-
-        // PageView
-        Expanded(child: _buildPageView()),
-
-        // Dot indicator
-        const SizedBox(height: Spacing.s6),
-        PageDotIndicator(currentPage: state.currentPage, pageCount: _pageCount),
-
-        // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
-        if (state.currentPage < _pageCount - 1) ...[
-          const SizedBox(height: Spacing.s4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-            child: DeelButton(
-              label: 'onboarding.next'.tr(),
-              onPressed: _nextPage,
-            ),
-          ),
-        ],
-
-        // Trust badges
-        const SizedBox(height: Spacing.s6),
-        const OnboardingTrustBadges(),
-        const SizedBox(height: Spacing.s4),
-      ],
-    );
-  }
-
-  PageView _buildPageView() {
-    return PageView(
-      controller: _pageController,
-      physics: const ClampingScrollPhysics(),
-      children: [
-        const WelcomePage(),
-        const TrustPage(),
-        GetStartedPage(
-          onCreateAccount: () => _completeAndNavigate(AppRoutes.register),
-          onLogin: () => _completeAndNavigate(AppRoutes.login),
-        ),
-      ],
+  Widget _buildContent(OnboardingState state, {required bool isExpanded}) {
+    return OnboardingContent(
+      currentPage: state.currentPage,
+      pageCount: _pageCount,
+      pageController: _pageController,
+      isExpanded: isExpanded,
+      onSkip: () => _completeAndNavigate(AppRoutes.register),
+      onNext: _nextPage,
+      onCreateAccount: () => _completeAndNavigate(AppRoutes.register),
+      onLogin: () => _completeAndNavigate(AppRoutes.login),
     );
   }
 }

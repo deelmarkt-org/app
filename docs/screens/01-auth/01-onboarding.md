@@ -11,7 +11,7 @@
 | Route | `/onboarding` |
 | Auth | Not required (shown on first launch) |
 | States | 3 pages + language selector + completion |
-| Responsive | Compact: full-screen pages, Expanded: centered max-width 600px |
+| Responsive | Compact (<840 px): full-screen pages, centred at `Breakpoints.contentMaxWidth` (500). Expanded (≥840 px): content rendered inside a centred elevated `Card` with `max-width: 720` (was 600 pre-#196). |
 | Dark mode | Required |
 
 ## Layout
@@ -81,7 +81,7 @@ STYLE NOTES (in addition to preamble):
 VARIATIONS:
 1. Light mode (all 3 pages)
 2. Dark mode (all 3 pages)
-3. Tablet: centered card (max 500px) with more generous spacing
+3. Tablet: centered elevated card (max-width 720 px, `DeelmarktRadius.xl`, `elevation: 2`, `clipBehavior: Clip.antiAlias`) with more generous spacing — pre-#196 spec said 500/600 px but the shipped 720 px width matches `onboarding_tablet_optimized_card`
 
 OUTPUT: High-fidelity UI mockup showing all 3 pages side by side,
 iPhone 15 Pro frame, 1290x2796px each.
