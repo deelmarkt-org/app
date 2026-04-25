@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/listings_tab_view.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
@@ -10,20 +9,7 @@ import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 import '../../../../helpers/pump_app.dart';
-
-/// Pumps [ListingsTabView] inside a bounded-height Scaffold body so its
-/// self-scrolling [CustomScrollView] has a viewport. The shared
-/// `pumpTestWidget` wraps in `SingleChildScrollView` (unbounded), which
-/// is incompatible with the grid's natural scroll behaviour.
-Future<void> pumpListingsGrid(WidgetTester tester, Widget child) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      theme: DeelmarktTheme.light,
-      home: Scaffold(body: SizedBox(height: 800, child: child)),
-    ),
-  );
-  await tester.pump();
-}
+import '_listings_grid_test_helpers.dart';
 
 void main() {
   group('ListingsTabView', () {
