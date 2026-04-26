@@ -270,15 +270,26 @@ void _checkReviewInformation(List<String> errors) {
   final yamlFile = File('$baseDir/privacy_details.yaml');
   if (yamlFile.existsSync()) {
     final content = yamlFile.readAsStringSync();
-    // Strip comment lines so a documentation comment that mentions [TODO
-    // (e.g. "do not commit values like [TODO]") never trips the check.
+    // Whole-line comments (lines whose first non-whitespace char is `#`) are
+    // documentation — skip them. For every other line we scan for either
+    // `[TODO` (the original bracketed marker) or `# TODO` (an inline YAML
+    // comment that itself names a TODO; GH #225 added this case). Inline
+    // comments WITHOUT a TODO are left intact and ignored — we never strip
+    // because stripping would also hide a comment-encoded TODO marker.
+    //
+    // Matches:
+    //   first_name: "[TODO fill]"           → "[TODO fill]"
+    //   first_name: "Mahmut"  # TODO check  → "# TODO check"
+    //   notes: "use #1 priority"            → no match (no TODO)
+    //   # documentation [TODO] line         → skipped (whole-line comment)
+    final markerRe = RegExp(r'\[TODO[^\n\]]*\]?|#\s*TODO[^\n]*');
     final lines = content.split('\n');
     for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
       if (line.trimLeft().startsWith('#')) continue;
-      final idx = line.indexOf('[TODO');
-      if (idx == -1) continue;
-      final marker = line.substring(idx).trim();
+      final match = markerRe.firstMatch(line);
+      if (match == null) continue;
+      final marker = match.group(0)!.trim();
       errors.add(
         'REVIEW_INFO_TODO: privacy_details.yaml line ${i + 1} still contains '
         'TODO marker ("$marker") — fill in before TestFlight submission. '
