@@ -1,4 +1,3 @@
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/widgets/dialogs/discard_changes_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +145,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final confirmText = tester.widget<Text>(find.text('sell.discard'));
-    expect(confirmText.style?.color, DeelmarktColors.error);
+    final dialogContext = tester.element(find.text('sell.discard'));
+    expect(confirmText.style?.color, Theme.of(dialogContext).colorScheme.error);
   });
 
   testWidgets('destructive=false leaves the confirm action default-styled', (
@@ -171,7 +171,11 @@ void main() {
     await tester.pumpAndSettle();
 
     final confirmText = tester.widget<Text>(find.text('sell.discard'));
-    expect(confirmText.style?.color, isNot(DeelmarktColors.error));
+    final dialogContext = tester.element(find.text('sell.discard'));
+    expect(
+      confirmText.style?.color,
+      isNot(Theme.of(dialogContext).colorScheme.error),
+    );
   });
 
   testWidgets('honors a custom cancelLabelKey', (tester) async {

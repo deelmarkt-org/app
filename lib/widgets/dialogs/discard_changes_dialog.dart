@@ -1,13 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
-
 /// Confirmation dialog asking the user whether to discard unsaved changes.
 ///
 /// Wraps [AlertDialog] with Tier-1 defaults:
-/// - Destructive confirm action styled with [DeelmarktColors.error] when
+/// - Destructive confirm action styled with `theme.colorScheme.error` when
 ///   [destructive] is `true` (the typical case for edit / form / appeal flows).
+///   Routing through the colour scheme keeps the destructive token in step
+///   with light/dark mode — `theme.dart` wires `colorScheme.error` to
+///   `DeelmarktColors.error` on light and `DeelmarktColors.darkError` on dark.
 /// - Returns `true` only when the user explicitly confirms; barrier-tap and
 ///   system-back both return `false` (interpreted as cancel — never discard
 ///   accidentally).
@@ -68,7 +69,9 @@ class _DiscardDialog extends StatelessWidget {
     final theme = Theme.of(context);
     final destructiveStyle =
         destructive
-            ? theme.textTheme.labelLarge?.copyWith(color: DeelmarktColors.error)
+            ? theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.error,
+            )
             : null;
     return AlertDialog(
       title: Text(titleKey.tr()),
