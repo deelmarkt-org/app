@@ -49,7 +49,10 @@ if [[ "${1:-}" == "--update-manifest" ]]; then
     echo "Error: $GOLDENS_DIR not found. Run flutter test --update-goldens first." >&2
     exit 1
   fi
-  find "$GOLDENS_DIR" -name "*.png" -printf "%f\n" | LC_ALL=C sort > "$MANIFEST_FILE"
+  # `-printf` is GNU-only; use `sed` to strip the directory prefix so the
+  # script also works on macOS BSD `find` (CI runs screenshot regen on
+  # macos-14 — see README §Screenshots).
+  find "$GOLDENS_DIR" -name "*.png" | sed 's|.*/||' | LC_ALL=C sort > "$MANIFEST_FILE"
   count=$(wc -l < "$MANIFEST_FILE" | tr -d ' ')
   echo "✅ Regenerated $MANIFEST_FILE — $count entries."
   echo "   Commit it together with the new/removed PNGs in the same PR."
@@ -78,10 +81,14 @@ if [[ ! -f "$MANIFEST_FILE" ]]; then
   err "MANIFEST_MISSING: $MANIFEST_FILE not found."
   err "  Run \`bash scripts/check_screenshots.sh --update-manifest\` and commit."
 else
-  actual_list=$(find "$GOLDENS_DIR" -name "*.png" -printf "%f\n" | LC_ALL=C sort)
+  # See basename note above the `--update-manifest` branch: `-printf` is
+  # GNU-only; `sed 's|.*/||'` is portable to macOS BSD find.
+  actual_list=$(find "$GOLDENS_DIR" -name "*.png" | sed 's|.*/||' | LC_ALL=C sort)
   expected_list=$(LC_ALL=C sort "$MANIFEST_FILE")
-  expected_count=$(echo "$expected_list" | wc -l | tr -d ' ')
-  actual_count=$(echo "$actual_list" | wc -l | tr -d ' ')
+  # Count from the file/stream directly — `echo "$var" | wc -l` reports 1
+  # for empty $var because `echo` always appends a newline.
+  expected_count=$(wc -l < "$MANIFEST_FILE" | tr -d ' ')
+  actual_count=$(find "$GOLDENS_DIR" -name "*.png" | wc -l | tr -d ' ')
   echo "  Manifest entries: $expected_count   Actual PNGs: $actual_count"
 
   added=$(LC_ALL=C comm -13 <(echo "$expected_list") <(echo "$actual_list") || true)
