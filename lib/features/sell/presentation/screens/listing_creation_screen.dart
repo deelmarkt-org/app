@@ -12,6 +12,7 @@ import 'package:deelmarkt/features/sell/presentation/widgets/listing_creation_su
 import 'package:deelmarkt/features/sell/presentation/widgets/live_preview_panel.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/photo_step/photo_step_view.dart';
 import 'package:deelmarkt/features/sell/presentation/widgets/quality_step/quality_step_view.dart';
+import 'package:deelmarkt/widgets/dialogs/discard_changes_dialog.dart';
 
 /// Multi-step listing creation wizard.
 ///
@@ -173,25 +174,18 @@ class _ListingCreationScreenState extends ConsumerState<ListingCreationScreen> {
   }
 
   Future<bool> _showDiscardDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('sell.discardTitle'.tr()),
-            content: Text('sell.discardMessage'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text('sell.keepEditing'.tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text('sell.discard'.tr()),
-              ),
-            ],
-          ),
+    // P-54 PR-G: consume shared `DiscardChangesDialog` primitive instead
+    // of a bespoke inline AlertDialog (deduplicates the same pattern in
+    // appeal_screen + review_screen). 'sell.keepEditing' is a non-default
+    // cancel label specific to this surface; passing it explicitly
+    // overrides the primitive's `'action.cancel'` default.
+    return DiscardChangesDialog.show(
+      context,
+      titleKey: 'sell.discardTitle',
+      messageKey: 'sell.discardMessage',
+      confirmLabelKey: 'sell.discard',
+      cancelLabelKey: 'sell.keepEditing',
     );
-    return result ?? false;
   }
 
   String _titleForStep(ListingCreationStep step) => switch (step) {
