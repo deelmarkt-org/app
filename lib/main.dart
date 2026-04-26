@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/l10n/l10n.dart';
 import 'package:deelmarkt/core/router/app_router.dart';
 import 'package:deelmarkt/core/services/firebase_service.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer_provider.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 import 'package:deelmarkt/core/services/sentry_service.dart';
 import 'package:deelmarkt/core/services/supabase_service.dart';
 import 'package:deelmarkt/core/services/shared_prefs_provider.dart';
@@ -76,12 +80,29 @@ void main() async {
     };
   }
 
+  // Use a single ProviderContainer so the app_start trace can be started
+  // BEFORE runApp (capturing pre-paint setup time) and read by the same
+  // scope the widget tree uses. The container is handed to runApp via
+  // UncontrolledProviderScope.
+  final container = ProviderContainer();
+  final appStartHandle = container
+      .read(performanceTracerProvider)
+      .start(TraceNames.appStart);
+  // First post-frame callback fires after the root navigator's first paint
+  // — the SLO boundary defined in trace-registry.md for app_start.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    unawaited(appStartHandle.stop());
+  });
+
   runApp(
     EasyLocalization(
       supportedLocales: AppLocales.supportedLocales,
       fallbackLocale: AppLocales.fallbackLocale,
       path: AppLocales.path,
-      child: const ProviderScope(child: DeelMarktApp()),
+      child: UncontrolledProviderScope(
+        container: container,
+        child: const DeelMarktApp(),
+      ),
     ),
   );
 }

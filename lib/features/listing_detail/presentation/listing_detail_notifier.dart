@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer_provider.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
@@ -50,21 +52,33 @@ class ListingDetailNotifier
 
   @override
   Future<ListingDetailState> build(String arg) async {
-    final listingRepo = ref.watch(listingRepositoryProvider);
+    // GH #221 listing_load trace; finally closes on any throw too.
+    final handle = ref
+        .read(performanceTracerProvider)
+        .start(TraceNames.listingLoad);
+    try {
+      final listing = await ref.watch(listingRepositoryProvider).getById(arg);
+      if (listing == null) throw Exception('Listing not found');
+      final currentUser = ref.watch(currentUserProvider);
+      final (seller, category) = await _loadSellerAndCategory(listing);
+      return ListingDetailState(
+        listing: listing,
+        seller: seller,
+        category: category,
+        isOwnListing: currentUser?.id == listing.sellerId,
+      );
+    } finally {
+      await handle.stop();
+    }
+  }
+
+  /// Parallel fetch of seller + category. Errors are logged but don't
+  /// propagate so the listing still renders if a sub-fetch fails.
+  Future<(UserEntity?, CategoryEntity?)> _loadSellerAndCategory(
+    ListingEntity listing,
+  ) async {
     final userRepo = ref.watch(userRepositoryProvider);
     final categoryRepo = ref.watch(categoryRepositoryProvider);
-
-    final listing = await listingRepo.getById(arg);
-    if (listing == null) {
-      throw Exception('Listing not found');
-    }
-
-    // Determine if this is the current user's listing.
-    final currentUser = ref.watch(currentUserProvider);
-    final isOwnListing =
-        currentUser != null && currentUser.id == listing.sellerId;
-
-    // Fetch seller profile and category in parallel.
     UserEntity? seller;
     CategoryEntity? category;
     await Future.wait([
@@ -87,13 +101,7 @@ class ListingDetailNotifier
         }
       }(),
     ]);
-
-    return ListingDetailState(
-      listing: listing,
-      seller: seller,
-      category: category,
-      isOwnListing: isOwnListing,
-    );
+    return (seller, category);
   }
 
   Future<void> toggleFavourite() async {

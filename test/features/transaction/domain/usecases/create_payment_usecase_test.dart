@@ -1,12 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:deelmarkt/core/models/transaction_status.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/payment_entity.dart';
 import 'package:deelmarkt/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:deelmarkt/features/transaction/domain/exceptions.dart';
 import 'package:deelmarkt/features/transaction/domain/usecases/create_payment_usecase.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/payment_repository.dart';
 import 'package:deelmarkt/features/transaction/domain/repositories/transaction_repository.dart';
+
+import '../../../../_helpers/fake_performance_tracer.dart';
 
 // ── Fakes ────────────────────────────────────────────────────────────────
 
@@ -116,14 +119,17 @@ PaymentEntity _payment() {
 void main() {
   late _FakeTransactionRepository txnRepo;
   late _FakePaymentRepository payRepo;
+  late FakePerformanceTracer fakeTracer;
   late CreatePaymentUseCase useCase;
 
   setUp(() {
     txnRepo = _FakeTransactionRepository();
     payRepo = _FakePaymentRepository();
+    fakeTracer = FakePerformanceTracer();
     useCase = CreatePaymentUseCase(
       transactionRepository: txnRepo,
       paymentRepository: payRepo,
+      performanceTracer: fakeTracer,
     );
   });
 
@@ -164,6 +170,54 @@ void main() {
           redirectUrl: 'https://deelmarkt.com/payment/success',
         ),
         throwsA(isA<InvalidTransitionException>()),
+      );
+    });
+
+    // GH #221 — payment_create trace contract.
+    test('happy path starts and stops payment_create trace', () async {
+      txnRepo.stubbedTransaction = _txn();
+      payRepo.stubbedPayment = _payment();
+
+      await useCase.execute(
+        transactionId: 'txn_001',
+        redirectUrl: 'https://deelmarkt.com/payment/success',
+      );
+
+      expect(
+        fakeTracer.recordedCalls,
+        contains(TraceCall.start(TraceNames.paymentCreate)),
+      );
+      expect(
+        fakeTracer.recordedCalls,
+        contains(TraceCall.stop(TraceNames.paymentCreate)),
+      );
+      expect(fakeTracer.activeTraceCount, 0);
+    });
+
+    test('error path still closes payment_create trace via finally', () async {
+      txnRepo.stubbedTransaction = null; // forces TransactionNotFoundException
+
+      try {
+        await useCase.execute(
+          transactionId: 'txn_missing',
+          redirectUrl: 'https://deelmarkt.com/payment/success',
+        );
+      } on Exception {
+        // expected — assertion is on the trace lifecycle.
+      }
+
+      expect(
+        fakeTracer.recordedCalls,
+        contains(TraceCall.start(TraceNames.paymentCreate)),
+      );
+      expect(
+        fakeTracer.recordedCalls,
+        contains(TraceCall.stop(TraceNames.paymentCreate)),
+      );
+      expect(
+        fakeTracer.activeTraceCount,
+        0,
+        reason: 'finally block must close the handle even on throw',
       );
     });
   });
