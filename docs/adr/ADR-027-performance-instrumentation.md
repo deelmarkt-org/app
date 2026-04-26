@@ -2,7 +2,9 @@
 
 ### Status
 
-**Proposed** — 2026-04-25 · Author: pizmam · Reviewers pending: belengaz (observability scope), reso (architecture)
+**Accepted** — 2026-04-25 · Author: pizmam · Reviewers: belengaz (observability scope, architecture seam — approved post-Phase A in PR #220 review), reso (architecture seam — implicit via no objection on `lib/core/services/performance/` layer placement)
+
+Phase A (this PR, #220) shipped the seam, ADR commits, attribute allowlist, dual-backend implementations, Sentry mobile sample = 0, and provisional p95 SLOs. Phase B (#221), lint guard (#222), and Phase 2 measurement (#223) tracked as follow-up issues.
 
 ### Context
 

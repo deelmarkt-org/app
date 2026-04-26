@@ -1,6 +1,7 @@
 import 'package:deelmarkt/core/services/performance/performance_tracer.dart';
 import 'package:deelmarkt/core/services/performance/trace_attributes.dart';
 import 'package:firebase_performance/firebase_performance.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// Mobile-platform implementation backed by Firebase Performance Monitoring.
 ///
@@ -16,7 +17,16 @@ class FirebasePerformanceTracer implements PerformanceTracer {
   PerformanceTraceHandle start(String name) {
     // Fire-and-forget: SDK contract returns a Future but the handle is
     // valid immediately. Awaiting would force every call site async.
-    final trace = _firebasePerformance.newTrace(name)..start();
+    //
+    // Async failures from `_trace.start()` would otherwise be silently
+    // dropped (no zone handler) — route them to Sentry so we know if a
+    // backend regression starts breaking custom traces. The trace handle
+    // itself is still valid, so observability degrades gracefully (no
+    // metrics for that trace, but no crash, no Future-error).
+    final trace = _firebasePerformance.newTrace(name);
+    trace.start().catchError((Object e, StackTrace st) {
+      Sentry.captureException(e, stackTrace: st);
+    });
     return _FirebaseHandle(name: name, trace: trace);
   }
 }

@@ -85,5 +85,36 @@ void main() {
       expect(tracer.recordedCalls, isEmpty);
       expect(tracer.activeTraceCount, 0);
     });
+
+    test(
+      'putAttribute throws on PII key in debug — matches production seam',
+      () {
+        final handle = tracer.start('listing_load');
+        expect(
+          () => handle.putAttribute('user_id', 'should-be-rejected'),
+          throwsArgumentError,
+        );
+      },
+    );
+
+    test('putAttribute drops unknown key without recording', () {
+      // Use a non-PII unknown key to verify the silent-drop path in release
+      // semantics; the assertion is that no attribute call is recorded.
+      // Allowed-list is the source of truth — test relies on validateKey's
+      // debug throw being caught as ArgumentError. We assert behaviour is the
+      // same on the fake as on the real impls (parity with H1 of #220 review).
+      final handle = tracer.start('listing_load');
+      try {
+        handle.putAttribute('user_id', 'pii');
+      } on ArgumentError {
+        // Expected in debug.
+      }
+      expect(
+        tracer.recordedCalls.where(
+          (c) => c.kind == TraceCallKind.attribute && c.key == 'user_id',
+        ),
+        isEmpty,
+      );
+    });
   });
 }

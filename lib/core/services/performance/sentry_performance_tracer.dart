@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:deelmarkt/core/services/performance/performance_tracer.dart';
 import 'package:deelmarkt/core/services/performance/trace_attributes.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -7,6 +8,17 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 /// default constructor which delegates to [Sentry.startTransaction].
 typedef SentryTransactionFactory =
     ISentrySpan Function(String name, String operation);
+
+/// Sentry transaction `op` for every facade-managed transaction.
+///
+/// Sentry uses `op` to group transactions in the Performance dashboard and
+/// distinguish them from auto-instrumented ones (e.g. `http.client`,
+/// `navigation`, `db.query`). All custom traces from this facade are
+/// uniformly tagged so dashboards can filter precisely. Per CLAUDE.md §3.3
+/// — never magic strings — extracted as a constant for symbolic clarity
+/// and so tests can assert the operation passed to the SDK.
+@visibleForTesting
+const String sentryFacadeOperation = 'custom_trace';
 
 ISentrySpan _defaultTransactionFactory(String name, String operation) =>
     Sentry.startTransaction(name, operation);
@@ -28,7 +40,7 @@ class SentryPerformanceTracer implements PerformanceTracer {
 
   @override
   PerformanceTraceHandle start(String name) {
-    final transaction = _factory(name, 'custom_trace');
+    final transaction = _factory(name, sentryFacadeOperation);
     return _SentryHandle(name: name, transaction: transaction);
   }
 }

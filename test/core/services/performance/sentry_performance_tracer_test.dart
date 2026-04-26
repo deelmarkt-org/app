@@ -29,7 +29,11 @@ void main() {
     test('invokes the transaction factory with name + custom_trace op', () {
       tracer.start('listing_load');
 
-      expect(startedTransactions, [(name: 'listing_load', op: 'custom_trace')]);
+      // Assert against the symbolic constant rather than the literal so the
+      // test tracks any future rename of the facade operation tag.
+      expect(startedTransactions, [
+        (name: 'listing_load', op: sentryFacadeOperation),
+      ]);
     });
 
     test('returned handle exposes the trace name', () {
