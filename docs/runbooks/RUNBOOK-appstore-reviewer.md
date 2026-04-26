@@ -68,28 +68,35 @@ python3 -c "import secrets, string; \
 Suggested email: `appstore-reviewer@deelmarkt.com` (route to a shared inbox
 that belengaz + reso + founder can read; needed for password recovery flows).
 
-### 3b. Create the two `auth.users` rows via Supabase CLI
+### 3b. Create the two `auth.users` rows via the Admin REST API
+
+The Supabase CLI **does not** expose an `auth admin create-user` subcommand
+(verified against 2.90.0). Use the Auth Admin REST API. The companion
+script `scripts/provision_appstore_reviewer.sh` wraps this; run it once
+with the env below and it idempotently creates (or rotates the password
+on) both reviewer accounts:
 
 ```bash
-# Project must be linked: `supabase link --project-ref <ref>`
-# Required env: SUPABASE_ACCESS_TOKEN
-# Both calls use --user-id to pin to the sentinel UUIDs from §2.
+# Pull SUPABASE_SERVICE_ROLE_KEY from 1Password "Supabase service_role"
+# (or project dashboard → Settings → API → service_role secret).
+export SUPABASE_PROJECT_REF=<your-project-ref>
+export SUPABASE_SERVICE_ROLE_KEY=<service_role-jwt>
+export ASC_DEMO_USER=appstore-reviewer@deelmarkt.com
+export ASC_DEMO_PASSWORD="${ASC_DEMO_PASSWORD}"  # from §3a; omit to auto-generate
 
-supabase auth admin create-user \
-  --user-id aa162162-0000-0000-0000-000000000001 \
-  --email appstore-reviewer@deelmarkt.com \
-  --password "${ASC_DEMO_PASSWORD}" \
-  --email-confirm
+# Optional: also have the script run the seed migration immediately.
+export SUPABASE_DB_URL=<pooler-url-from-§3d>
 
-supabase auth admin create-user \
-  --user-id aa162162-0000-0000-0000-000000000002 \
-  --email appstore-reviewer-buyer@deelmarkt.com \
-  --password "$(python3 -c 'import secrets, string; print("".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(24)))')" \
-  --email-confirm
+bash scripts/provision_appstore_reviewer.sh
 ```
 
-The buyer password is throwaway — it's never typed by the reviewer; the
-account exists only so the seeded transaction has a valid `buyer_id`.
+Under the hood the script POSTs to `/auth/v1/admin/users` with the
+sentinel UUIDs from §2 and `email_confirm: true`. If a user already exists
+for that UUID it falls back to PUT to rotate the password (used during
+§4 Rotation flow too). The buyer password is derived deterministically
+from the seller password + buyer UUID via SHA256 so it never needs to be
+tracked separately — the buyer account exists only to satisfy the
+`transactions.buyer_id` FK.
 
 ### 3c. Apply the seed migration
 
@@ -146,9 +153,10 @@ Rotation is **mandatory** if any of these happen:
 
 ```bash
 # 1. Generate new password (§3a).
-# 2. Update auth.users:
-supabase auth admin update-user-by-id aa162162-0000-0000-0000-000000000001 \
-  --password "${NEW_ASC_DEMO_PASSWORD}"
+# 2. Re-run the provisioning script with the new password — its idempotent
+#    PUT branch rotates the password on the existing auth.users row.
+export ASC_DEMO_PASSWORD="${NEW_ASC_DEMO_PASSWORD}"
+bash scripts/provision_appstore_reviewer.sh
 # 3. Update 1Password entry "App Store reviewer".
 # 4. Update Codemagic global vars ASC_DEMO_PASSWORD (NOT ASC_DEMO_USER).
 # 5. Run healthcheck:
@@ -211,12 +219,23 @@ foreseeable through 2027). Revocation breaks every future `fastlane deliver`
 until §3 is re-run.
 
 ```bash
+# 0. Required env (same set as §3b — re-export if you opened a fresh shell):
+#    export SUPABASE_PROJECT_REF=<from project URL>
+#    export SUPABASE_SERVICE_ROLE_KEY=<from 1Password 'Supabase service_role'>
+#    export SUPABASE_DB_URL=<postgres connection string>
 # 1. Apply the down-migration (removes ancillary data).
 psql "${SUPABASE_DB_URL}" \
   -f supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql
-# 2. Delete the auth.users rows (cascades to favourites, etc.).
-supabase auth admin delete-user aa162162-0000-0000-0000-000000000001
-supabase auth admin delete-user aa162162-0000-0000-0000-000000000002
+# 2. Delete the auth.users rows via the Auth Admin REST API.
+#    SUPABASE_API_BASE_URL override only needed for self-hosted / dedicated;
+#    SaaS defaults to https://${SUPABASE_PROJECT_REF}.supabase.co.
+for id in aa162162-0000-0000-0000-000000000001 \
+          aa162162-0000-0000-0000-000000000002; do
+  curl -sS -X DELETE \
+    "${SUPABASE_API_BASE_URL:-https://${SUPABASE_PROJECT_REF}.supabase.co}/auth/v1/admin/users/${id}" \
+    -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+    -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}"
+done
 # 3. Remove ASC_DEMO_USER / ASC_DEMO_PASSWORD from Codemagic.
 # 4. Archive the 1Password entry (do NOT delete — keeps the audit trail).
 # 5. Update fastlane/metadata/review_information/notes.txt to remove the
@@ -249,6 +268,7 @@ supabase auth admin delete-user aa162162-0000-0000-0000-000000000002
 - Plan: [docs/PLAN-gh162-testflight-review-info.md](../PLAN-gh162-testflight-review-info.md)
 - Seed migration: [supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql](../../supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql)
 - Down migration: [supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql](../../supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql)
+- Provisioning script: [scripts/provision_appstore_reviewer.sh](../../scripts/provision_appstore_reviewer.sh)
 - Healthcheck script: [scripts/check_appstore_reviewer.sh](../../scripts/check_appstore_reviewer.sh)
 - Healthcheck workflow: [.github/workflows/appstore-reviewer-healthcheck.yml](../../.github/workflows/appstore-reviewer-healthcheck.yml)
 - Fastlane lane: [fastlane/Fastfile](../../fastlane/Fastfile) `deliver_dry_run`
