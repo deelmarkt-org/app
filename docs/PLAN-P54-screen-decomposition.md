@@ -183,7 +183,7 @@ If a forbidden modification appears necessary, raise a separate ticket linked to
 - **API:** `DiscardChangesDialog.show(context, {required String titleKey, required String messageKey, required String confirmLabelKey, String? cancelLabelKey}) → Future<bool>`
 - **Reason:** identical pattern in `appeal_screen` and `listing_creation_screen`; `lib/features/sell/edit/` will need it next sprint.
 - **Test:** `test/widgets/dialogs/discard_changes_dialog_test.dart` — render + tap-confirm (returns true) + tap-cancel (returns false) + barrier-dismissed (returns false) + Semantics labels present + l10n keys resolved.
-- **Kill switch (M2):** Unleash flag `discard_dialog_enabled`; emergency falls back to native `AlertDialog`.
+- **Kill switch (M2):** Unleash flag `discard_dialog_enabled`; emergency falls back to a native `AlertDialog` constructed from the **same l10n keys** (`titleKey.tr()` / `messageKey.tr()` / `confirmLabelKey.tr()`) so the fallback path stays localised. The fallback drops only the design-system colour token (destructive button takes the platform default red) — acceptable for an emergency code path, since the flag would only flip if the styled implementation crashes.
 
 ---
 
@@ -426,7 +426,7 @@ If a forbidden modification appears necessary, raise a separate ticket linked to
 ### Performance (D19/C6 — expanded)
 - **Baseline:** capture P-56 trace p50/p95/p99 over 7 days BEFORE PR opens (mandatory for PR-A, PR-B; recommended for PR-D2)
 - **Acceptance:** `payment_create` (PR-A) — **p95 +0% ±100ms**. All other traces — **p95 ≤ +10%**.
-- **Monitoring:** T+48h post-merge dashboard comparison; >10% regression = automatic revert (Level 0 hotfix or Level 4 git-revert per §11)
+- **Monitoring:** T+48h post-merge dashboard comparison. **Revert trigger:** the rolling 24-hour median of `payment_create` (and any other touched trace) p95 is >10% above the pre-merge 7-day baseline median, sustained across at least two consecutive 24-hour windows. A single noisy CI run does not trigger revert. Action level: hotfix (§11 Level 0) for a single trace; git-revert (§11 Level 4) for a multi-trace regression.
 - **No new `RepaintBoundary` / `Builder` / `LayoutBuilder` introductions** (forbidden per §3.5)
 
 ### Observability

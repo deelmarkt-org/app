@@ -24,15 +24,22 @@ log() {
   echo "[${LOG_TAG}] $*" >&2
 }
 
+# Use mktemp for log files so concurrent bisect runs and restricted /tmp
+# CI environments don't collide on hardcoded paths. Cleanup on EXIT.
+ANALYZE_LOG="$(mktemp -t bisect_p54_analyze.XXXXXX)"
+TEST_LOG="$(mktemp -t bisect_p54_test.XXXXXX)"
+trap 'rm -f "$ANALYZE_LOG" "$TEST_LOG"' EXIT
+
 # 1. Quick compile check — if `flutter analyze` fails for unrelated reasons
 #    (missing .g.dart, broken import outside scope), skip this commit.
 log "Step 1/3: flutter analyze"
-if ! flutter analyze --no-pub --fatal-infos > /tmp/bisect_analyze.log 2>&1; then
-  if grep -qE "Undefined name '_Env'|env\.g\.dart" /tmp/bisect_analyze.log; then
+if ! flutter analyze --no-pub --fatal-infos > "$ANALYZE_LOG" 2>&1; then
+  if grep -qE "Undefined name '_Env'|env\.g\.dart" "$ANALYZE_LOG"; then
     log "SKIP — env.g.dart not generated in this commit (unrelated to P-54)"
     exit 125
   fi
-  log "BAD — flutter analyze failed (see /tmp/bisect_analyze.log)"
+  log "BAD — flutter analyze failed:"
+  cat "$ANALYZE_LOG" >&2
   exit 1
 fi
 
@@ -40,8 +47,9 @@ fi
 #   BISECT_TEST_SCOPE="test/features/transaction" bash scripts/bisect_p54.sh
 SCOPE="${BISECT_TEST_SCOPE:-test/}"
 log "Step 2/3: flutter test (--concurrency=4) — scope: ${SCOPE}"
-if ! flutter test --concurrency=4 --reporter=compact "${SCOPE}" > /tmp/bisect_test.log 2>&1; then
-  log "BAD — test failed in scope ${SCOPE} (see /tmp/bisect_test.log)"
+if ! flutter test --concurrency=4 --reporter=compact "${SCOPE}" > "$TEST_LOG" 2>&1; then
+  log "BAD — test failed in scope ${SCOPE}:"
+  cat "$TEST_LOG" >&2
   exit 1
 fi
 
