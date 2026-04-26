@@ -297,7 +297,7 @@ class Breakpoints {
 
 ## Desktop Layout Playbook
 
-> One-stop reference for max-widths, master-detail proportions, sidebar widths, and grid progression on web/desktop. Whenever a screen spec needs a desktop number, take it from this table — don't re-invent. All values are exported from `lib/core/design_system/breakpoints.dart`.
+> One-stop reference for max-widths, master-detail proportions, sidebar widths, and grid progression on web/desktop. Whenever a screen spec needs a desktop number, take it from this table — don't re-invent. Reusable values live as constants in `lib/core/design_system/breakpoints.dart`; per-screen overrides (720 / 800 / 900) are hardcoded at the call site and listed below as canonical so they don't drift.
 
 ### Max-widths (centred via `ResponsiveBody`)
 
@@ -312,7 +312,7 @@ class Breakpoints {
 | Shipping (QR / tracking / detail) | **800px** | — | `ShippingQRScreen`, `TrackingScreen`, `ShippingDetailScreen` — QR code + timeline read better than at the 600 default. |
 | Dashboard / grid catalogue | **1200px** | `Breakpoints.large` (default `ResponsiveBody.wide`) | Home, search results, favourites, category browse, listing detail. |
 
-> Mobile/tablet (compact + medium) ignores `maxWidth` — `ResponsiveBody` only constrains at expanded (≥840px). Below that, content goes full-width with `Spacing.screenMarginMobile` (16) / `Spacing.screenMarginTablet` (24) margins.
+> `ResponsiveBody` applies its `maxWidth` cap whenever the viewport exceeds that width — not only at the expanded breakpoint. So a default form (600) starts constraining at viewport 600 (medium), a settings screen (720) at viewport 720, and a dashboard (1200) at viewport 1200. Below the cap, content is full-width with `Spacing.screenMarginMobile` (16) on compact and `Spacing.screenMarginTablet` (24) on medium+ margins.
 
 ### Master-detail proportions
 
