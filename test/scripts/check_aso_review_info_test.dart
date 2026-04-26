@@ -193,6 +193,44 @@ review_information:
       expect(r.stderr, contains('REVIEW_INFO_TODO'));
       expect(r.exitCode, isNot(0));
     });
+
+    // GH #225 — YAML inline comments (`value  # comment`) were not stripped
+    // before scanning, so a `# TODO` after a real value slipped through. The
+    // fix strips space-prefixed `#…EOL` per YAML 1.2 §6.6.
+    test('inline `# TODO` comment after a value trips the gate', () async {
+      writeCleanFixture();
+      final yaml = File(p.join(tmpDir.path, 'privacy_details.yaml'));
+      yaml.writeAsStringSync(
+        yaml.readAsStringSync().replaceAll(
+          '"Mahmut"',
+          '"Mahmut"  # TODO confirm spelling',
+        ),
+      );
+      final r = await runScript();
+      expect(r.stderr, contains('REVIEW_INFO_TODO'));
+      expect(r.stderr, contains('TODO confirm spelling'));
+      expect(r.exitCode, isNot(0));
+    });
+
+    test(
+      'value containing `#` with no leading whitespace is NOT treated as comment',
+      () async {
+        // `notes: "use #1 keyword"` — the `#` is part of the quoted scalar,
+        // not a YAML comment. The strip must leave the value intact so legit
+        // hashtags do not break the gate. We assert that this benign value
+        // does not trip the TODO check.
+        writeCleanFixture();
+        final yaml = File(p.join(tmpDir.path, 'privacy_details.yaml'));
+        yaml.writeAsStringSync(
+          yaml.readAsStringSync().replaceAll(
+            '  notes: >\n    DeelMarkt demo account for App Store reviewers.',
+            '  notes: "use #1 priority for reviewers"',
+          ),
+        );
+        final r = await runScript();
+        expect(r.stderr, isNot(contains('REVIEW_INFO_TODO')));
+      },
+    );
   });
 
   group('_checkReviewInformation — empty .txt mirror', () {
