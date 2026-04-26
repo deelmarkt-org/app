@@ -24,7 +24,16 @@
 set -euo pipefail
 
 GOLDENS_DIR="test/screenshots/drivers/goldens"
-EXPECTED_COUNT=240
+# Baseline (PR #161): 10 hero screens × 2 locales × 2 themes × 6 device classes = 240.
+# Subsequent merges added desktop_1400 variants for messages, category_browse,
+# home_buyer, favourites, and category_detail (PRs #194, #195, #200, #213),
+# bringing the current committed total to 250. Update this constant in the
+# same PR that adds a new screenshot driver — otherwise this audit fails on
+# every downstream PR that touches fastlane/metadata/** until it is bumped.
+# TODO: replace this hardcoded count with a derivation from the driver
+# manifest so the audit is self-maintaining (tracking issue to be filed; out
+# of scope for #162).
+EXPECTED_COUNT=250
 MAX_SIZE_MB=8
 DO_OCR="${1:-}"
 VERBOSE="${2:-}"
