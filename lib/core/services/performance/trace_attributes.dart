@@ -51,6 +51,13 @@ abstract final class TraceAttributes {
     listingPriceBucket,
   };
 
+  /// Maximum permitted length for an attribute value.
+  ///
+  /// Firebase Performance silently truncates values >100 chars; Sentry tags
+  /// truncate at >200. Picking 100 ensures parity across both backends.
+  /// Per security review PR #220 finding **H-1**.
+  static const int maxValueLength = 100;
+
   /// Validate that [key] is on the allowlist.
   ///
   /// In debug builds, throws [ArgumentError] for forbidden keys (catch PII
@@ -69,6 +76,57 @@ abstract final class TraceAttributes {
     }
     return false;
   }
+
+  /// Validate that [value] is safe to send to Firebase / Sentry.
+  ///
+  /// Two rules, both enforced:
+  ///
+  /// 1. **Length** — values >[maxValueLength] characters are silently
+  ///    truncated by Firebase (data integrity bug — observability becomes
+  ///    unreliable when arbitrary callers, e.g. localised category names,
+  ///    accidentally exceed the limit). Per security review **H-1**.
+  ///
+  /// 2. **Control characters** — `\r`, `\n`, `\t`, NUL, or any C0/C1 control
+  ///    char must be rejected. Sentry tags propagate to Discover queries,
+  ///    alerts, and BigQuery exports; injected newlines can pollute downstream
+  ///    log shippers. Per security review **H-2**.
+  ///
+  /// Returns `true` if the value passes both checks. In debug builds, throws
+  /// [ArgumentError] for failing values to surface bugs early; in release
+  /// builds, returns `false` so callers can drop the attribute silently.
+  static bool validateValue(String value) {
+    if (value.length > maxValueLength) {
+      if (kDebugMode) {
+        throw ArgumentError.value(
+          value,
+          'attribute value',
+          'Attribute value exceeds $maxValueLength chars '
+              '(${value.length}); Firebase will silently truncate. '
+              'Bucket high-cardinality values per TraceAttributes helpers.',
+        );
+      }
+      return false;
+    }
+    if (_controlChars.hasMatch(value)) {
+      if (kDebugMode) {
+        throw ArgumentError.value(
+          value,
+          'attribute value',
+          'Attribute value contains control characters (\\r/\\n/\\t/NUL/etc); '
+              'rejected to prevent log injection into Sentry Discover + '
+              'downstream log shippers.',
+        );
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /// Matches any C0 / C1 control character (excludes printable ASCII + extended).
+  ///
+  /// `\x00-\x1F` covers NUL through Unit Separator (incl. \t \n \r);
+  /// `\x7F` is DEL; `\x80-\x9F` is the C1 control range.
+  static final RegExp _controlChars = RegExp(r'[\x00-\x1F\x7F-\x9F]');
 
   /// Bucket a result count into a low-cardinality string.
   static String bucketResultCount(int n) {

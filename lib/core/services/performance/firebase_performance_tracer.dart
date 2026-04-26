@@ -42,6 +42,7 @@ class _FirebaseHandle implements PerformanceTraceHandle {
   @override
   void putAttribute(String key, String value) {
     if (!TraceAttributes.validateKey(key)) return;
+    if (!TraceAttributes.validateValue(value)) return;
     _trace.putAttribute(key, value);
   }
 

@@ -57,6 +57,11 @@ class _SentryHandle implements PerformanceTraceHandle {
   @override
   void putAttribute(String key, String value) {
     if (!TraceAttributes.validateKey(key)) return;
+    // Length + control-char check before sending to Sentry tag indexing.
+    // Sentry tags propagate to Discover queries, alerts, and BigQuery
+    // exports — injected newlines could pollute downstream log shippers.
+    // Per security review PR #220 H-2.
+    if (!TraceAttributes.validateValue(value)) return;
     // Tags are indexed and searchable in Sentry's Discover/Performance
     // dashboards; setData would write to "extra" context which is not
     // queryable. Per Gemini PR #220 review.
