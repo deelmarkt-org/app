@@ -1,0 +1,113 @@
+name: App Store Reviewer Seed Touch Validation
+
+# Triggered when ANY of the App Store reviewer fixture files are modified
+# in a PR. The weekly healthcheck cron in
+# `.github/workflows/appstore-reviewer-healthcheck.yml` only runs on
+# Mondays + manual dispatch — meaning a regression introduced on Tuesday
+# silently breaks the fixture for up to 6 days. This workflow closes
+# that window: every PR that touches the fixture files MUST keep the
+# fixture green.
+#
+# Triggers (only when the relevant files change):
+#   * `supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql`
+#   * `supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql`
+#   * `scripts/check_appstore_reviewer.sh`
+#   * `scripts/provision_appstore_reviewer.sh` (when PR #224 lands)
+#   * `docs/runbooks/RUNBOOK-appstore-reviewer.md` (sentinel UUID changes)
+#
+# Reference: docs/runbooks/RUNBOOK-appstore-reviewer.md
+# Reference: docs/PLAN-gh162-testflight-review-info.md (T7)
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql'
+      - 'supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql'
+      - 'scripts/check_appstore_reviewer.sh'
+      - 'scripts/provision_appstore_reviewer.sh'
+      - 'docs/runbooks/RUNBOOK-appstore-reviewer.md'
+      - '.github/workflows/appstore-reviewer-*.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: appstore-reviewer-seed-touch-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  seed-touch-validation:
+    name: Validate reviewer fixture invariants on touched PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ── 1. Static checks (always run, no secrets needed) ─────────────────
+      - name: Bash syntax check on healthcheck + provisioning scripts
+        run: |
+          bash -n scripts/check_appstore_reviewer.sh
+          if [[ -f scripts/provision_appstore_reviewer.sh ]]; then
+            bash -n scripts/provision_appstore_reviewer.sh
+          fi
+          echo "✅ Bash syntax OK on touched scripts."
+
+      - name: Cross-reference sentinel UUIDs across files
+        run: |
+          # Every sentinel UUID listed in the runbook §2 MUST appear in
+          # the seed migration AND the healthcheck script. Drift here
+          # silently breaks the fixture invariants. We don't lock to
+          # specific UUIDs — we only verify cross-file consistency.
+          set -e
+          runbook=docs/runbooks/RUNBOOK-appstore-reviewer.md
+          seed=supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql
+          health=scripts/check_appstore_reviewer.sh
+
+          # Extract aa162162-* UUIDs from each file, sorted+unique.
+          rb_uuids=$(grep -oE 'aa162162-0000-0000-0000-[0-9]{12}' "$runbook" | sort -u)
+          seed_uuids=$(grep -oE 'aa162162-0000-0000-0000-[0-9]{12}' "$seed" | sort -u)
+          health_uuids=$(grep -oE 'aa162162-0000-0000-0000-[0-9]{12}' "$health" | sort -u)
+
+          # Assert: every UUID documented in runbook §2 (the load-bearing
+          # sentinels) is present in seed + healthcheck. Extra UUIDs in
+          # seed (e.g. message row IDs) are non-load-bearing and OK to
+          # omit from the runbook — we don't flag them.
+          missing_in_seed=$(comm -23 <(echo "$rb_uuids") <(echo "$seed_uuids"))
+          missing_in_health=$(comm -23 <(echo "$rb_uuids") <(echo "$health_uuids"))
+
+          ok=true
+          if [[ -n "$missing_in_seed" ]]; then
+            echo "::error::Sentinel UUIDs documented in runbook but not present in seed migration:"
+            echo "$missing_in_seed" | sed 's/^/::error::  /'
+            ok=false
+          fi
+          if [[ -n "$missing_in_health" ]]; then
+            echo "::error::Sentinel UUIDs documented in runbook but not asserted by healthcheck:"
+            echo "$missing_in_health" | sed 's/^/::error::  /'
+            ok=false
+          fi
+
+          if [[ "$ok" == "true" ]]; then
+            echo "✅ Sentinel UUIDs consistent across runbook + seed + healthcheck."
+          else
+            echo "::error::Sentinel UUID drift detected. Update all three files atomically."
+            exit 1
+          fi
+
+      # ── 2. Live healthcheck (skipped if SUPABASE_DB_URL secret missing) ──
+      # Static checks above are mandatory; the live healthcheck is
+      # opportunistic — runs only when the DB secret is wired so a fork PR
+      # contributor without secret access can still pass the static gate.
+      - name: Live healthcheck (if SUPABASE_DB_URL is configured)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [[ -z "${SUPABASE_DB_URL}" ]]; then
+            echo "::notice::SUPABASE_DB_URL secret not set on this runner — skipping live healthcheck."
+            echo "::notice::Static UUID consistency check above is the mandatory gate."
+            exit 0
+          fi
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends postgresql-client
+          bash scripts/check_appstore_reviewer.sh
