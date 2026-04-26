@@ -47,6 +47,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Fail fast with an actionable message if the secret was never wired
+      # into repo settings — without this, the next step would interpret
+      # an empty SUPABASE_DB_URL as "use the default psql connection",
+      # produce a confusing libpq error, and bury the real misconfiguration
+      # several lines deep. Failing here surfaces the root cause instantly
+      # and points the operator at the runbook.
+      - name: Verify SUPABASE_DB_URL secret is configured
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [[ -z "${SUPABASE_DB_URL}" ]]; then
+            echo "::error::Repository secret SUPABASE_DB_URL is not configured."
+            echo "::error::This workflow cannot run without it."
+            echo "::error::"
+            echo "::error::Fix: Settings → Secrets and variables → Actions → New repository secret"
+            echo "::error::  Name:  SUPABASE_DB_URL"
+            echo "::error::  Value: postgresql://postgres.<ref>:<service-pwd>@aws-0-eu-central-1.pooler.supabase.com:6543/postgres"
+            echo "::error::"
+            echo "::error::Pull the password from 1Password 'Supabase service_role'."
+            echo "::error::See docs/runbooks/RUNBOOK-appstore-reviewer.md §Provisioning."
+            exit 1
+          fi
+          echo "✅ SUPABASE_DB_URL is configured."
+
       - name: Install psql client
         run: |
           sudo apt-get update -qq
@@ -54,8 +78,9 @@ jobs:
 
       - name: Run healthcheck
         env:
-          # Service-role-equivalent connection string. Stored as an org-level
+          # Service-role-equivalent connection string. Stored as a repository
           # GitHub Secret; rotated alongside any Supabase DB password change.
+          # Presence is asserted by the previous step.
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: bash scripts/check_appstore_reviewer.sh
 
