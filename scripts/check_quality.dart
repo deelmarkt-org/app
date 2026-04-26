@@ -31,8 +31,22 @@ void main(List<String> args) async {
 
   final thorough = args.contains('--thorough');
   final all = args.contains('--all');
+  // Positional args (paths to .dart files) override staged-file detection.
+  // Used by tests to exercise individual checks without polluting git, and
+  // by future per-PR-touch workflows that want to scope to a known file
+  // set. Flags are still honoured (e.g. positional + --thorough).
+  final positional =
+      args.where((a) => !a.startsWith('-') && a.endsWith('.dart')).toList();
 
-  final files = all ? await _allLibFiles() : await _stagedFiles();
+  final List<String> files;
+  if (positional.isNotEmpty) {
+    files = positional.where((f) => File(f).existsSync()).toList();
+  } else if (all) {
+    files = await _allLibFiles();
+  } else {
+    files = await _stagedFiles();
+  }
+
   if (files.isEmpty) {
     print('No Dart files to check.');
     exit(0);
@@ -47,6 +61,7 @@ void main(List<String> args) async {
 
     _checkFileLength(file, lines.length, config, violations);
     _checkCrossFeatureImports(file, lines, config, violations);
+    _checkPerformanceFacade(file, lines, violations);
 
     if (_isPresentationFile(file)) {
       _checkHardcodedStrings(file, lines, violations);
@@ -283,6 +298,71 @@ void _checkCrossFeatureImports(
       violations.add(
         '  CROSS_IMPORT  $file:${i + 1}: imports from features/${importMatch.group(1)} [CLAUDE.md §1.2]',
       );
+    }
+  }
+}
+
+// PERFORMANCE_FACADE — bans direct imports of the performance SDKs from
+// outside the facade directory (`lib/core/services/performance/`). Per
+// ADR-027 §9 the facade is the SOLE entry point so the GDPR allowlist +
+// Sentry/Firebase routing can never be bypassed by a feature.
+//
+// Banned packages:
+//   - package:firebase_performance/* — always banned outside the facade
+//   - package:sentry_flutter/SentryNavigatorObserver, Sentry.startTransaction —
+//     tracing-specific Sentry surface; banned outside the facade. Sentry's
+//     error-reporting surface (`Sentry.captureException`,
+//     `SentryFlutter.init`) is unaffected and uses the regular sentry_service.
+//
+// Allowlisted paths (the facade itself + its tests):
+//   - lib/core/services/performance/**
+//   - lib/core/services/firebase_service.dart (PerformanceTracer init)
+//   - lib/core/services/sentry_service.dart   (PerformanceTracer init)
+void _checkPerformanceFacade(
+  String file,
+  List<String> lines,
+  List<String> violations,
+) {
+  if (file.startsWith('lib/core/services/performance/')) return;
+  if (file == 'lib/core/services/firebase_service.dart') return;
+  if (file == 'lib/core/services/sentry_service.dart') return;
+  if (!file.startsWith('lib/')) return;
+
+  for (var i = 0; i < lines.length; i++) {
+    final line = lines[i].trim();
+    if (!line.startsWith('import ')) continue;
+
+    if (line.contains("'package:firebase_performance/")) {
+      violations.add(
+        '  PERFORMANCE_FACADE  $file:${i + 1}: '
+        'direct firebase_performance import banned — use '
+        'performanceTracerProvider from lib/core/services/performance/ '
+        '[ADR-027 §9]',
+      );
+      continue;
+    }
+
+    // Sentry's tracing surface specifically — error reporting still flows
+    // through sentry_service. The line below catches the tracer-flavoured
+    // imports while leaving SentryFlutter.init / captureException alone.
+    if (line.contains("'package:sentry_flutter/")) {
+      // Look ahead a few lines for the tell-tale tracer API usage to keep
+      // false-positives off error-only consumers. We probe only the next
+      // 50 lines because Dart imports cluster at the top of the file.
+      final probeEnd = (i + 50 < lines.length) ? i + 50 : lines.length;
+      final body = lines.sublist(i, probeEnd).join('\n');
+      final usesTracer =
+          body.contains('SentryNavigatorObserver') ||
+          RegExp(r'\bSentry\.startTransaction\b').hasMatch(body) ||
+          RegExp(r'\bISentrySpan\b').hasMatch(body);
+      if (usesTracer) {
+        violations.add(
+          '  PERFORMANCE_FACADE  $file:${i + 1}: '
+          'direct sentry_flutter tracer import banned — use '
+          'performanceTracerProvider from lib/core/services/performance/ '
+          '[ADR-027 §9]',
+        );
+      }
     }
   }
 }
