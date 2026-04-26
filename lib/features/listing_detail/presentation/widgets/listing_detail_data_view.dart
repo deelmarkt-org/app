@@ -49,24 +49,32 @@ class ListingDetailDataView extends StatelessWidget {
   }
 
   Widget _compactLayout(BuildContext context, ListingEntity listing) {
+    // Outer SafeArea with `top: false` keeps the gallery bleeding into
+    // the status bar (the inner `SafeArea(bottom: false)` on the gallery
+    // sliver handles the top-edge case) while preventing the action bar
+    // from overlapping the home indicator on iOS / nav bar on Android
+    // (Gemini PR #240 review).
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: SafeArea(
-                    bottom: false,
-                    child: _buildGallery(context, listing),
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SafeArea(
+                      bottom: false,
+                      child: _buildGallery(context, listing),
+                    ),
                   ),
-                ),
-                ..._detailSlivers(context),
-              ],
+                  ..._detailSlivers(context),
+                ],
+              ),
             ),
-          ),
-          if (!_isSold) _actionBar(context),
-        ],
+            if (!_isSold) _actionBar(context),
+          ],
+        ),
       ),
     );
   }
@@ -164,9 +172,16 @@ class ListingDetailDataView extends StatelessWidget {
     ).showSnackBar(SnackBar(content: Text('action.comingSoon'.tr())));
   }
 
-  void _shareListing(BuildContext context) {
-    final url = '${AppConstants.deepLinkBase}/listings/$listingId';
-    Clipboard.setData(ClipboardData(text: url));
+  Future<void> _shareListing(BuildContext context) async {
+    // Build the URL via Uri so a stray trailing slash on
+    // `AppConstants.deepLinkBase` doesn't double up and listing IDs with
+    // reserved characters are encoded correctly.
+    final url =
+        Uri.parse(
+          AppConstants.deepLinkBase,
+        ).replace(path: '/listings/$listingId').toString();
+    await Clipboard.setData(ClipboardData(text: url));
+    if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('action.share'.tr())));
