@@ -41,7 +41,7 @@ CONTENT: Clean grouped list, no clutter. Each section has a subtle header.
 STATES: Loading (skeleton shimmer), Error ("Dat lukte niet — probeer opnieuw"),
 Empty (see specific empty state below), Data (normal content)
 
-VARIATIONS: Light, Dark, Expanded (max 600px centered),
+VARIATIONS: Light, Dark, Expanded (max 720px centered),
 Edit address modal (DutchAddressInput widget with postcode auto-fill)
 ```
 

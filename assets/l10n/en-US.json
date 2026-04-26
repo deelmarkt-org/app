@@ -83,7 +83,7 @@
     },
     "narrow_viewport": {
       "title": "Admin panel requires a desktop browser",
-      "subtitle": "Please use a screen at least 768 px wide"
+      "subtitle": "Please use a screen at least 900 px wide"
     },
     "sla": {
       "title": "DSA Compliance Monitor",

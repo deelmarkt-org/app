@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/domain/entities/user_entity.dart';
 import 'package:deelmarkt/features/profile/domain/entities/report_reason.dart';
 import 'package:deelmarkt/features/profile/presentation/notifiers/public_profile_notifier.dart';
+import 'package:deelmarkt/features/profile/presentation/notifiers/public_profile_state.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/listings_tab_view.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_header.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/public_profile_skeleton.dart';
@@ -56,24 +58,7 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text('seller_profile.title'.tr()),
-        actions: [
-          PopupMenuButton<_MenuAction>(
-            icon: Icon(PhosphorIcons.dotsThreeVertical()),
-            tooltip: 'seller_profile.more_actions'.tr(),
-            onSelected: (action) => _handleMenuAction(action, notifier),
-            itemBuilder:
-                (_) => [
-                  PopupMenuItem(
-                    value: _MenuAction.share,
-                    child: Text('seller_profile.share_action'.tr()),
-                  ),
-                  PopupMenuItem(
-                    value: _MenuAction.report,
-                    child: Text('seller_profile.report_action'.tr()),
-                  ),
-                ],
-          ),
-        ],
+        actions: [_buildMoreButton(notifier)],
       ),
       body: state.user.when(
         loading: () => const PublicProfileSkeleton(),
@@ -89,63 +74,95 @@ class _PublicProfileScreenState extends ConsumerState<PublicProfileScreen>
               onRetry: notifier.refresh,
             );
           }
+          return _buildDataBody(user, state, notifier);
+        },
+      ),
+    );
+  }
 
-          return ResponsiveBody(
-            child: RefreshIndicator(
-              onRefresh: notifier.refresh,
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        Spacing.s4,
-                        Spacing.s4,
-                        Spacing.s4,
-                        0,
-                      ),
-                      child: Column(
-                        children: [
-                          PublicProfileHeader(
-                            user: user,
-                            aggregate: state.aggregate,
-                          ),
-                          const SizedBox(height: Spacing.s6),
-                          _buildTabs(),
-                          const SizedBox(height: Spacing.s4),
-                        ],
-                      ),
+  Widget _buildMoreButton(PublicProfileNotifier notifier) {
+    return PopupMenuButton<_MenuAction>(
+      icon: Icon(PhosphorIcons.dotsThreeVertical()),
+      tooltip: 'seller_profile.more_actions'.tr(),
+      onSelected: (action) => _handleMenuAction(action, notifier),
+      itemBuilder:
+          (_) => [
+            PopupMenuItem(
+              value: _MenuAction.share,
+              child: Text('seller_profile.share_action'.tr()),
+            ),
+            PopupMenuItem(
+              value: _MenuAction.report,
+              child: Text('seller_profile.report_action'.tr()),
+            ),
+          ],
+    );
+  }
+
+  Widget _buildDataBody(
+    UserEntity user,
+    PublicProfileState state,
+    PublicProfileNotifier notifier,
+  ) {
+    return ResponsiveBody.wide(
+      maxWidth: 900,
+      child: RefreshIndicator(
+        onRefresh: notifier.refresh,
+        // `NestedScrollView` lets the header + tabs slivers scroll away
+        // *together* with the active tab's `CustomScrollView` body, instead
+        // of the previous `SliverFillRemaining(TabBarView(...))` layout
+        // that produced two independent scroll axes. The inner
+        // `ListingsTabView` / `ReviewsTabView` `CustomScrollView`s pick up
+        // the `PrimaryScrollController` that `NestedScrollView` installs,
+        // so paging through tabs no longer leaves the header pinned in
+        // place (Gemini PR #217 round 2).
+        child: NestedScrollView(
+          headerSliverBuilder:
+              (context, innerBoxIsScrolled) => [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.s4,
+                      Spacing.s4,
+                      Spacing.s4,
+                      0,
                     ),
-                  ),
-                  SliverFillRemaining(
-                    child: TabBarView(
-                      controller: _tabController,
+                    child: Column(
                       children: [
-                        ListingsTabView(
-                          listings: state.listings,
-                          onRetry: notifier.refresh,
+                        PublicProfileHeader(
+                          user: user,
+                          aggregate: state.aggregate,
                         ),
-                        ReviewsTabView(
-                          reviews: state.reviews,
-                          onRetry: notifier.refresh,
-                          hasMore: notifier.hasMoreReviews,
-                          isLoadingMore: notifier.isLoadingMore,
-                          onLoadMore: notifier.loadMoreReviews,
-                          onReport:
-                              (review) => _showReportSheet(
-                                context,
-                                (reason) =>
-                                    notifier.reportReview(review.id, reason),
-                              ),
-                        ),
+                        const SizedBox(height: Spacing.s6),
+                        _buildTabs(),
+                        const SizedBox(height: Spacing.s4),
                       ],
                     ),
                   ),
-                ],
+                ),
+              ],
+          body: TabBarView(
+            controller: _tabController,
+            children: [
+              ListingsTabView(
+                listings: state.listings,
+                onRetry: notifier.refresh,
               ),
-            ),
-          );
-        },
+              ReviewsTabView(
+                reviews: state.reviews,
+                onRetry: notifier.refresh,
+                hasMore: notifier.hasMoreReviews,
+                isLoadingMore: notifier.isLoadingMore,
+                onLoadMore: notifier.loadMoreReviews,
+                onReport:
+                    (review) => _showReportSheet(
+                      context,
+                      (reason) => notifier.reportReview(review.id, reason),
+                    ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
