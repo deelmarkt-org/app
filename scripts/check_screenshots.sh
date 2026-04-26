@@ -2,39 +2,60 @@
 # check_screenshots.sh
 #
 # Validates the committed golden screenshot PNGs for:
-#   1. Expected count (exactly 240 PNGs in test/screenshots/drivers/goldens/)
+#   1. Manifest match — every PNG in MANIFEST.txt exists, no extra PNGs
 #   2. File size budget (each PNG < 8 MB — App Store / Play Console limit)
 #   3. Correct dimensions per device class
 #   4. PII scan via OCR (tesseract) if available
 #
 # Usage:
-#   bash scripts/check_screenshots.sh              # count + size + dimensions
-#   bash scripts/check_screenshots.sh --ocr        # + OCR PII scan (slow)
-#   bash scripts/check_screenshots.sh --verbose    # verbose output
+#   bash scripts/check_screenshots.sh                  # all checks
+#   bash scripts/check_screenshots.sh --ocr            # + OCR PII scan (slow)
+#   bash scripts/check_screenshots.sh --verbose        # verbose output
+#   bash scripts/check_screenshots.sh --update-manifest
+#       # Regenerate MANIFEST.txt from current goldens. Run AFTER
+#       # `flutter test --update-goldens` whenever you add or remove a
+#       # screenshot driver, then commit MANIFEST.txt + new PNGs together.
 #
 # Exit codes:
 #   0  All checks passed
 #   1  One or more checks failed
 #
 # Requirements:
-#   - bash 4+, find, wc, stat
+#   - bash 4+, find, wc, stat, comm, sort
 #   - identify (ImageMagick) for dimension check — optional
 #   - tesseract for OCR PII scan — optional, only with --ocr flag
+#
+# Manifest design — closes GH #226
+# ─────────────────────────────────
+# Before #226 the gate compared `find … | wc -l` against a hardcoded
+# `EXPECTED_COUNT` constant. Every PR that added a new driver had to also
+# remember to bump that constant; missing the bump silently broke
+# `aso-validate.yml` for every downstream PR until someone noticed (PRs
+# #194, #195, #200, #213, #218 all hit this trap). The manifest approach
+# trades the count for a checked-in list of expected basenames; adding a
+# driver now requires committing both the new PNGs AND a regenerated
+# MANIFEST.txt in the same PR, which is naturally enforceable in code
+# review and produces precise add/remove diagnostics on mismatch.
 
 set -euo pipefail
 
 GOLDENS_DIR="test/screenshots/drivers/goldens"
-# Baseline (PR #161): 10 hero screens × 2 locales × 2 themes × 6 device classes = 240.
-# Subsequent merges added desktop_1400 variants for messages, category_browse,
-# home_buyer, favourites, and category_detail (PRs #194, #195, #200, #213),
-# bringing the current committed total to 250. Update this constant in the
-# same PR that adds a new screenshot driver — otherwise this audit fails on
-# every downstream PR that touches fastlane/metadata/** until it is bumped.
-# TODO: replace this hardcoded count with a derivation from the driver
-# manifest so the audit is self-maintaining (tracking issue to be filed; out
-# of scope for #162).
-EXPECTED_COUNT=250
+MANIFEST_FILE="${GOLDENS_DIR}/MANIFEST.txt"
 MAX_SIZE_MB=8
+
+# --update-manifest takes priority over normal validation.
+if [[ "${1:-}" == "--update-manifest" ]]; then
+  if [[ ! -d "$GOLDENS_DIR" ]]; then
+    echo "Error: $GOLDENS_DIR not found. Run flutter test --update-goldens first." >&2
+    exit 1
+  fi
+  find "$GOLDENS_DIR" -name "*.png" -printf "%f\n" | LC_ALL=C sort > "$MANIFEST_FILE"
+  count=$(wc -l < "$MANIFEST_FILE" | tr -d ' ')
+  echo "✅ Regenerated $MANIFEST_FILE — $count entries."
+  echo "   Commit it together with the new/removed PNGs in the same PR."
+  exit 0
+fi
+
 DO_OCR="${1:-}"
 VERBOSE="${2:-}"
 ERRORS=0
@@ -45,18 +66,46 @@ err() { echo "  ❌ $*" >&2; ERRORS=$(( ERRORS + 1 )); }
 warn() { echo "  ⚠️  $*" >&2; true; }
 info() { if [[ "$VERBOSE" == "--verbose" ]]; then echo "  ✓  $*"; fi; }
 
-# ── 1. Count check ────────────────────────────────────────────────────────────
+# ── 1. Manifest match ─────────────────────────────────────────────────────────
 
-echo "── Screenshot count check ──────────────────────────────────────────────"
+echo "── Screenshot manifest check ───────────────────────────────────────────"
 if [[ ! -d "$GOLDENS_DIR" ]]; then
   echo "Error: $GOLDENS_DIR not found. Run flutter test --update-goldens first." >&2
   exit 1
 fi
 
-actual_count=$(find "$GOLDENS_DIR" -name "*.png" | wc -l | tr -d ' ')
-echo "  Found: $actual_count PNGs (expected: $EXPECTED_COUNT)"
-if [[ "$actual_count" -ne "$EXPECTED_COUNT" ]]; then
-  err "Expected exactly $EXPECTED_COUNT PNGs, found $actual_count"
+if [[ ! -f "$MANIFEST_FILE" ]]; then
+  err "MANIFEST_MISSING: $MANIFEST_FILE not found."
+  err "  Run \`bash scripts/check_screenshots.sh --update-manifest\` and commit."
+else
+  actual_list=$(find "$GOLDENS_DIR" -name "*.png" -printf "%f\n" | LC_ALL=C sort)
+  expected_list=$(LC_ALL=C sort "$MANIFEST_FILE")
+  expected_count=$(echo "$expected_list" | wc -l | tr -d ' ')
+  actual_count=$(echo "$actual_list" | wc -l | tr -d ' ')
+  echo "  Manifest entries: $expected_count   Actual PNGs: $actual_count"
+
+  added=$(LC_ALL=C comm -13 <(echo "$expected_list") <(echo "$actual_list") || true)
+  missing=$(LC_ALL=C comm -23 <(echo "$expected_list") <(echo "$actual_list") || true)
+
+  if [[ -n "$added" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      err "ADDED_NOT_IN_MANIFEST: $f"
+    done <<< "$added"
+    err "  → If this is a new driver, run \`bash scripts/check_screenshots.sh --update-manifest\`"
+    err "    and commit MANIFEST.txt alongside the PNGs."
+  fi
+  if [[ -n "$missing" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      err "MISSING_FROM_GOLDENS: $f"
+    done <<< "$missing"
+    err "  → A manifest entry has no corresponding PNG. Either re-run"
+    err "    \`flutter test --update-goldens\` or update the manifest."
+  fi
+  if [[ -z "$added" && -z "$missing" ]]; then
+    info "Manifest matches goldens exactly."
+  fi
 fi
 
 # ── 2. File size check ────────────────────────────────────────────────────────
