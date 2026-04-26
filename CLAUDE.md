@@ -454,6 +454,10 @@ The European Accessibility Act is enforceable. These are not optional:
 | `build_runner` freshness check | Pre-commit (auto) | Ensures .g.dart files exist (auto-runs build_runner if stale) |
 | `bash scripts/check_deployments.sh` | Before ending session | Detects pending migrations + undeployed Edge Functions |
 | `bash scripts/check_deployments.sh --deploy` | After creating migration/function | Auto-applies pending migrations + deploys functions |
+| `bash scripts/check_screenshots.sh` | Pre-commit (auto for `fastlane/metadata/**`) + CI | Manifest-driven golden audit (PR #229 — see §13) |
+| `bash scripts/check_screenshots.sh --update-manifest` | After adding/removing a screenshot driver | Regenerates `test/screenshots/drivers/goldens/MANIFEST.txt` from current goldens |
+| `bash scripts/check_appstore_reviewer.sh` | Mon 06:00 UTC cron + manual + on PRs touching fixture | Asserts the 6 App Store reviewer fixture invariants (see §14) |
+| `bash scripts/provision_appstore_reviewer.sh` | One-time per environment + rotation | Creates/rotates the reviewer demo `auth.users` + reapplies seed (see §14) |
 
 ### Setup for New or Existing Developers
 
@@ -561,8 +565,78 @@ QUALITY_RULES_END -->
 ### Allowed AI actions (no approval needed)
 
 - Running `dart run scripts/check_aso.dart` to check existing copy
-- Running `bash scripts/check_screenshots.sh` to audit PNGs
+- Running `bash scripts/check_screenshots.sh` to audit PNGs (or `--update-manifest` after a new driver lands)
 - Reading marketing files to answer questions
 - Adding rows to `claims_ledger.md` for NEW features (never editing existing rows)
+
+---
+
+## §14 — App Store Reviewer Fixture (#162)
+
+> **This section is a hard gate.** AI agents MUST NOT modify the App Store
+> reviewer fixture files without an explicit human approval and a paired
+> update across the **three** load-bearing artefacts (seed migration, runbook,
+> healthcheck). Drift here breaks Apple App Review and triggers §2.1 rejection.
+
+### Files governed
+
+| Path | Role |
+|:-----|:-----|
+| `supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql` | Idempotent seed for reviewer profile/listing/transaction/conversation |
+| `supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql` | Paired down-migration (rollback only) |
+| `scripts/check_appstore_reviewer.sh` | 6-invariant healthcheck against any Supabase project |
+| `scripts/provision_appstore_reviewer.sh` | Auth Admin REST API wrapper (creates/rotates `auth.users`) |
+| `docs/runbooks/RUNBOOK-appstore-reviewer.md` | Sole authoritative procedure (provisioning, rotation, recovery, revoke) |
+| `.github/workflows/appstore-reviewer-*.yml` | Cron healthcheck, PR-time touch validation, 90-day rotation reminder |
+
+### Sentinel UUIDs (do **NOT** change without re-seeding every environment)
+
+The reviewer fixture is keyed off five "load-bearing" UUIDs that must appear in
+all three of: `RUNBOOK §2`, the seed migration, the healthcheck script.
+Verified at PR-time by `appstore-reviewer-seed-touch.yml`.
+
+| Role | UUID |
+|:-----|:-----|
+| Reviewer seller | `aa162162-0000-0000-0000-000000000001` |
+| Reviewer buyer | `aa162162-0000-0000-0000-000000000002` |
+| Demo listing | `aa162162-0000-0000-0000-000000000010` |
+| Demo transaction | `aa162162-0000-0000-0000-000000000020` |
+| Demo conversation | `aa162162-0000-0000-0000-000000000030` |
+
+### Rules for AI agents
+
+1. **Never auto-edit** any §14 file during an unrelated implementation task.
+2. **Atomic updates only** — a change to the seed migration MUST also update
+   the runbook (if a sentinel UUID changes) AND the healthcheck (if an
+   invariant is added/removed). Same PR.
+3. **Never auto-create reviewer credentials.** The provisioning script is
+   operator-driven and requires `SUPABASE_SERVICE_ROLE_KEY` — that secret
+   is operator-only and MUST NOT be requested or echoed.
+4. **Analytics filtering** — every new analytics view, recommendation model,
+   or trust-score aggregate MUST filter via
+   `WHERE NOT public.is_appstore_reviewer(user_id)` to keep reviewer activity
+   out of product metrics.
+
+### Allowed AI actions (no approval needed)
+
+- Running `bash scripts/check_appstore_reviewer.sh` (read-only against any DB)
+- Reading any §14 file to answer questions
+- Adding new healthcheck assertions in a dedicated PR (must come with a
+  matching runbook §2 / §5 update)
+
+### Operator workflow (Phase B)
+
+When `auth.users` provisioning is required (one-time per environment, or on
+rotation):
+
+```bash
+export SUPABASE_PROJECT_REF=<ref>
+export SUPABASE_SERVICE_ROLE_KEY=<jwt>      # from 1Password
+export ASC_DEMO_USER=appstore-reviewer@deelmarkt.com
+export SUPABASE_DB_URL=<pooler-url>          # optional — runs seed + healthcheck
+bash scripts/provision_appstore_reviewer.sh
+```
+
+See [`docs/runbooks/RUNBOOK-appstore-reviewer.md`](docs/runbooks/RUNBOOK-appstore-reviewer.md) §3 for the complete provisioning procedure, §4 for the 90-day rotation cadence (auto-reminded by `appstore-reviewer-rotation-reminder.yml`).
 
 ---
