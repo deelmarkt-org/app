@@ -614,8 +614,11 @@ Verified at PR-time by `appstore-reviewer-seed-touch.yml`.
    is operator-only and MUST NOT be requested or echoed.
 4. **Analytics filtering** — every new analytics view, recommendation model,
    or trust-score aggregate MUST filter via
-   `WHERE NOT public.is_appstore_reviewer(user_id)` to keep reviewer activity
-   out of product metrics.
+   `WHERE public.is_appstore_reviewer(user_id) IS NOT TRUE` to keep reviewer
+   activity out of product metrics. The `IS NOT TRUE` form (rather than
+   `NOT …`) preserves rows where `user_id` is `NULL` (anonymous traffic) —
+   `NOT FALSE` is `TRUE`, but `NOT NULL` is `NULL`, which a `WHERE` clause
+   silently drops.
 
 ### Allowed AI actions (no approval needed)
 
