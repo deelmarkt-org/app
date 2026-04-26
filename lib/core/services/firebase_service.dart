@@ -35,6 +35,14 @@ Future<void> initFirebase() async {
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
     }
   }
+
+  // Performance Monitoring follows the same debug-disabled pattern as
+  // Crashlytics — see ADR-027. NoopPerformanceTracer covers debug callers
+  // through performanceTracerProvider, but disabling collection here also
+  // suppresses auto-instrumented network/screen metrics in debug builds.
+  await FirebasePerformance.instance.setPerformanceCollectionEnabled(
+    !kDebugMode,
+  );
 }
 
 /// Global [FirebaseAnalytics] instance — overridable in tests.

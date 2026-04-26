@@ -122,6 +122,18 @@ repos:
         files: ^supabase/functions/.*\.ts$
         stages: [pre-commit]
 
+      # P-57: SCREENS-INVENTORY staling check. Gated on the file itself so it
+      # only runs when the inventory is touched — fast local feedback that the
+      # `**Last updated:**` header was bumped. CI runs the same check on every
+      # PR for protection against the inventory silently aging without edits.
+      - id: screens-inventory-staling
+        name: SCREENS-INVENTORY staling check
+        language: system
+        entry: bash -c 'dart run scripts/check_screens_inventory.dart'
+        pass_filenames: false
+        files: ^docs/SCREENS-INVENTORY\.md$
+        stages: [pre-commit]
+
       # R-26: Quality score parity — keeps Dart client + TS Edge Function
       # weights/thresholds in lock-step. Triggers when either source changes.
       - id: quality-score-parity
