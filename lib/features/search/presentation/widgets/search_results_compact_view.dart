@@ -42,6 +42,7 @@ class SearchResultsCompactView extends StatelessWidget {
       headerSliver: SliverToBoxAdapter(child: _buildHeader(context)),
       listings: data.listings,
       isLoadingMore: data.isLoadingMore,
+      hasMore: data.hasMore,
       onListingTap: onListingTap,
       onFavouriteTap: onFavouriteTap,
       onLoadMore: onLoadMore,

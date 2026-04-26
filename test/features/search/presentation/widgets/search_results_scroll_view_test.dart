@@ -65,6 +65,7 @@ void main() {
           ),
           listings: [makeListing('l1')],
           isLoadingMore: false,
+          hasMore: true,
           onListingTap: (_) {},
           onFavouriteTap: (_) {},
           onLoadMore: () {},
@@ -87,6 +88,7 @@ void main() {
           headerSliver: const SliverToBoxAdapter(child: Text('h')),
           listings: [makeListing('l1')],
           isLoadingMore: loading,
+          hasMore: true,
           onListingTap: (_) {},
           onFavouriteTap: (_) {},
           onLoadMore: () {},
@@ -103,5 +105,61 @@ void main() {
     await tester.pumpWidget(build(loading: false));
     await tester.pumpAndSettle();
     expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets('guards onLoadMore: skips the call when isLoadingMore=true', (
+    tester,
+  ) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        SearchResultsScrollView(
+          headerSliver: const SliverToBoxAdapter(child: Text('h')),
+          listings: List.generate(40, (i) => makeListing('l$i')),
+          isLoadingMore: true,
+          hasMore: true,
+          onListingTap: (_) {},
+          onFavouriteTap: (_) {},
+          onLoadMore: () => calls++,
+        ),
+      ),
+    );
+    await tester.pump();
+    // Drag past the threshold; with isLoadingMore=true the guard short-
+    // circuits onLoadMore and `calls` stays at 0.
+    await tester.fling(
+      find.byType(CustomScrollView),
+      const Offset(0, -2000),
+      4000,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(calls, 0);
+  });
+
+  testWidgets('guards onLoadMore: skips the call when hasMore=false', (
+    tester,
+  ) async {
+    var calls = 0;
+    await tester.pumpWidget(
+      host(
+        SearchResultsScrollView(
+          headerSliver: const SliverToBoxAdapter(child: Text('h')),
+          listings: List.generate(40, (i) => makeListing('l$i')),
+          isLoadingMore: false,
+          hasMore: false,
+          onListingTap: (_) {},
+          onFavouriteTap: (_) {},
+          onLoadMore: () => calls++,
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.fling(
+      find.byType(CustomScrollView),
+      const Offset(0, -2000),
+      4000,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(calls, 0);
   });
 }

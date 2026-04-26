@@ -83,6 +83,7 @@ class SearchResultsExpandedView extends StatelessWidget {
       ),
       listings: data.listings,
       isLoadingMore: data.isLoadingMore,
+      hasMore: data.hasMore,
       onListingTap: onListingTap,
       onFavouriteTap: onFavouriteTap,
       onLoadMore: onLoadMore,
