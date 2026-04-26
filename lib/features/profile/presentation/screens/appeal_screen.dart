@@ -22,6 +22,7 @@ import 'package:deelmarkt/core/services/analytics/sanction_analytics.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/appeal_notifier.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/appeal_parts.dart';
+import 'package:deelmarkt/widgets/dialogs/discard_changes_dialog.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 
 part 'appeal_screen.g.dart';
@@ -97,34 +98,16 @@ class _AppealScreenState extends ConsumerState<AppealScreen> {
   Future<bool> _canPop() async {
     if (ref.read(appealNotifierProvider).isLoading) return false;
     if (ref.read(_appealBodyProvider).trim().isEmpty) return true;
-    return _showDiscardDialog();
-  }
-
-  Future<bool> _showDiscardDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: Text('sanction.screen.discard_title'.tr()),
-            content: Text('sanction.screen.discard_body'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: Text('sanction.screen.discard_cancel'.tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: Text(
-                  'sanction.screen.discard_confirm'.tr(),
-                  style: Theme.of(ctx).textTheme.labelLarge?.copyWith(
-                    color: DeelmarktColors.error,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    // P-54 PR-F2: consume shared `DiscardChangesDialog` primitive instead
+    // of a bespoke inline AlertDialog (deduplicates the same pattern in
+    // listing_creation_screen + review_screen).
+    return DiscardChangesDialog.show(
+      context,
+      titleKey: 'sanction.screen.discard_title',
+      messageKey: 'sanction.screen.discard_body',
+      confirmLabelKey: 'sanction.screen.discard_confirm',
+      cancelLabelKey: 'sanction.screen.discard_cancel',
     );
-    return result ?? false;
   }
 
   @override
