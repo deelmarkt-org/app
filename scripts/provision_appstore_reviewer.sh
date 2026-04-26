@@ -46,13 +46,26 @@
 
 set -uo pipefail
 
+# Resolve repo root from this script's location so the seed migration and
+# healthcheck paths work regardless of the caller's CWD (per Gemini PR #224
+# review — relative paths broke when the script was invoked from outside the
+# repo root).
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
 # Sentinel UUIDs — keep in lock-step with seed migration + healthcheck.
 readonly REVIEWER_SELLER_ID='aa162162-0000-0000-0000-000000000001'
 readonly REVIEWER_BUYER_ID='aa162162-0000-0000-0000-000000000002'
 
+# Secure temp file for Admin API responses. mktemp picks a non-predictable
+# name (avoids /tmp/...$$ symlink-attack class); the EXIT trap guarantees
+# cleanup even if the script is interrupted (per Gemini PR #224 review).
+RESP_FILE="$(mktemp)"
+trap 'rm -f "$RESP_FILE"' EXIT
+
 # ── Prerequisites ───────────────────────────────────────────────────────────
 
-for tool in curl jq python3; do
+for tool in curl jq python3 mktemp; do
   if ! command -v "$tool" >/dev/null 2>&1; then
     echo "❌ ${tool} not installed."
     exit 2
@@ -107,9 +120,9 @@ upsert_user() {
 
   # Try POST first (creates new). If user already exists for that UUID,
   # the API returns 422; in that case fall back to PUT to rotate the
-  # password instead.
+  # password instead. Body capture goes to RESP_FILE (mktemp + EXIT trap).
   local create_response
-  create_response="$(curl -sS -o /tmp/asreviewer_resp.$$ -w '%{http_code}' \
+  create_response="$(curl -sS -o "$RESP_FILE" -w '%{http_code}' \
     -X POST "${SUPABASE_API_BASE_URL}/auth/v1/admin/users" \
     -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
     -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
@@ -118,7 +131,6 @@ upsert_user() {
 
   if [[ "$create_response" == "200" || "$create_response" == "201" ]]; then
     echo "✅ Created auth.users row for ${email} (id=${id})"
-    rm -f /tmp/asreviewer_resp.$$
     return 0
   fi
 
@@ -126,7 +138,7 @@ upsert_user() {
   if [[ "$create_response" == "422" || "$create_response" == "409" ]]; then
     echo "ℹ  ${email} already exists — rotating password via PUT."
     local put_response
-    put_response="$(curl -sS -o /tmp/asreviewer_resp.$$ -w '%{http_code}' \
+    put_response="$(curl -sS -o "$RESP_FILE" -w '%{http_code}' \
       -X PUT "${SUPABASE_API_BASE_URL}/auth/v1/admin/users/${id}" \
       -H "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
       -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
@@ -134,18 +146,15 @@ upsert_user() {
       -d "$(jq -n --arg p "$password" '{password: $p, email_confirm: true}')")"
     if [[ "$put_response" == "200" ]]; then
       echo "✅ Rotated password for ${email} (id=${id})"
-      rm -f /tmp/asreviewer_resp.$$
       return 0
     fi
     echo "❌ PUT failed (HTTP $put_response):"
-    cat /tmp/asreviewer_resp.$$
-    rm -f /tmp/asreviewer_resp.$$
+    cat "$RESP_FILE"
     return 1
   fi
 
   echo "❌ POST failed (HTTP $create_response):"
-  cat /tmp/asreviewer_resp.$$
-  rm -f /tmp/asreviewer_resp.$$
+  cat "$RESP_FILE"
   return 1
 }
 
@@ -165,12 +174,12 @@ if [[ -n "${SUPABASE_DB_URL:-}" ]]; then
   PGOPTIONS='--client-min-messages=warning' \
     psql "${SUPABASE_DB_URL}" \
       -v ON_ERROR_STOP=1 \
-      -f supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql
+      -f "${REPO_ROOT}/supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql"
   echo "✅ Seed migration applied."
 
   echo
   echo "🩺 Running healthcheck…"
-  bash scripts/check_appstore_reviewer.sh
+  bash "${REPO_ROOT}/scripts/check_appstore_reviewer.sh"
 else
   echo
   echo "ℹ  SUPABASE_DB_URL not set — skipping seed re-apply."

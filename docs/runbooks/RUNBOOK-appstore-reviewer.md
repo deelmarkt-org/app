@@ -219,10 +219,16 @@ foreseeable through 2027). Revocation breaks every future `fastlane deliver`
 until §3 is re-run.
 
 ```bash
+# 0. Required env (same set as §3b — re-export if you opened a fresh shell):
+#    export SUPABASE_PROJECT_REF=<from project URL>
+#    export SUPABASE_SERVICE_ROLE_KEY=<from 1Password 'Supabase service_role'>
+#    export SUPABASE_DB_URL=<postgres connection string>
 # 1. Apply the down-migration (removes ancillary data).
 psql "${SUPABASE_DB_URL}" \
   -f supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql
 # 2. Delete the auth.users rows via the Auth Admin REST API.
+#    SUPABASE_API_BASE_URL override only needed for self-hosted / dedicated;
+#    SaaS defaults to https://${SUPABASE_PROJECT_REF}.supabase.co.
 for id in aa162162-0000-0000-0000-000000000001 \
           aa162162-0000-0000-0000-000000000002; do
   curl -sS -X DELETE \
