@@ -102,6 +102,61 @@ class SearchTracer {
     );
 
     test(
+      'double-quoted firebase_performance import is also rejected (PR #239 H-1)',
+      () async {
+        // Gemini PR #239 review: the previous single-quote-only check
+        // silently allowed `import "package:firebase_performance/...";`
+        // imports to bypass the guard. This test pins the fix.
+        final relPath = '$stagingRel/double_quoted_import.dart';
+        File(p.join(repoRoot.path, relPath)).writeAsStringSync('''
+import "package:firebase_performance/firebase_performance.dart";
+
+class DoubleQuoted {
+  final tracer = FirebasePerformance.instance;
+}
+''');
+        final r = await runCheck(relPath);
+        final combined = '${r.stdout}\n${r.stderr}';
+        expect(combined, contains('PERFORMANCE_FACADE'));
+        expect(combined, contains('firebase_performance'));
+        expect(r.exitCode, isNot(0));
+      },
+    );
+
+    test(
+      'sentry tracer usage far below the import is still detected (PR #239 H-1)',
+      () async {
+        // Gemini PR #239 review: the previous 50-line look-ahead window
+        // missed tracer usage that occurred deeper in larger files. The
+        // fix scans the whole file content. Pad the file with 100 filler
+        // lines between the import and the tracer call to verify.
+        final filler = List<String>.filled(100, '// filler line').join('\n');
+        final relPath = '$stagingRel/far_below_tracer.dart';
+        File(p.join(repoRoot.path, relPath)).writeAsStringSync('''
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+$filler
+
+class DeepTracer {
+  void start() {
+    Sentry.startTransaction('search', 'op');
+  }
+}
+''');
+        final r = await runCheck(relPath);
+        final combined = '${r.stdout}\n${r.stderr}';
+        expect(
+          combined,
+          contains('PERFORMANCE_FACADE'),
+          reason:
+              'tracer usage 100 lines below the import must still be '
+              'detected after the whole-file content scan landed',
+        );
+        expect(r.exitCode, isNot(0));
+      },
+    );
+
+    test(
       'sentry_flutter import without tracer usage (error reporting only) is allowed',
       () async {
         final relPath = '$stagingRel/error_only.dart';

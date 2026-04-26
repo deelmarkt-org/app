@@ -61,7 +61,7 @@ void main(List<String> args) async {
 
     _checkFileLength(file, lines.length, config, violations);
     _checkCrossFeatureImports(file, lines, config, violations);
-    _checkPerformanceFacade(file, lines, violations);
+    _checkPerformanceFacade(file, lines, content, violations);
 
     if (_isPresentationFile(file)) {
       _checkHardcodedStrings(file, lines, violations);
@@ -321,6 +321,7 @@ void _checkCrossFeatureImports(
 void _checkPerformanceFacade(
   String file,
   List<String> lines,
+  String content,
   List<String> violations,
 ) {
   if (file.startsWith('lib/core/services/performance/')) return;
@@ -328,11 +329,24 @@ void _checkPerformanceFacade(
   if (file == 'lib/core/services/sentry_service.dart') return;
   if (!file.startsWith('lib/')) return;
 
+  // Whether this file uses the Sentry *tracer* API anywhere (not just near
+  // the import). Computed once against the whole content per Gemini PR #239
+  // review: the previous 50-line look-ahead was unreliable on larger files
+  // where tracer usage clusters far from the import. Computed lazily so
+  // files without any sentry import pay no string-scan cost.
+  bool? usesSentryTracer;
+
   for (var i = 0; i < lines.length; i++) {
     final line = lines[i].trim();
     if (!line.startsWith('import ')) continue;
 
-    if (line.contains("'package:firebase_performance/")) {
+    // Match both single- and double-quoted import paths (Dart accepts
+    // either; the previous single-quote-only check let `"package:..."`
+    // imports bypass the guard entirely — Gemini PR #239 finding).
+    final isFirebase =
+        line.contains("'package:firebase_performance/") ||
+        line.contains('"package:firebase_performance/');
+    if (isFirebase) {
       violations.add(
         '  PERFORMANCE_FACADE  $file:${i + 1}: '
         'direct firebase_performance import banned — use '
@@ -343,19 +357,23 @@ void _checkPerformanceFacade(
     }
 
     // Sentry's tracing surface specifically — error reporting still flows
-    // through sentry_service. The line below catches the tracer-flavoured
+    // through sentry_service. The check below catches the tracer-flavoured
     // imports while leaving SentryFlutter.init / captureException alone.
-    if (line.contains("'package:sentry_flutter/")) {
-      // Look ahead a few lines for the tell-tale tracer API usage to keep
-      // false-positives off error-only consumers. We probe only the next
-      // 50 lines because Dart imports cluster at the top of the file.
-      final probeEnd = (i + 50 < lines.length) ? i + 50 : lines.length;
-      final body = lines.sublist(i, probeEnd).join('\n');
-      final usesTracer =
-          body.contains('SentryNavigatorObserver') ||
-          RegExp(r'\bSentry\.startTransaction\b').hasMatch(body) ||
-          RegExp(r'\bISentrySpan\b').hasMatch(body);
-      if (usesTracer) {
+    final isSentry =
+        line.contains("'package:sentry_flutter/") ||
+        line.contains('"package:sentry_flutter/');
+    if (isSentry) {
+      // Scan the entire file (lazily, once per file) for tracer-specific
+      // markers. Substring contains is intentional here per repo convention
+      // ("simple substring searches over complex regex in structured files")
+      // and because the surrounding code is Dart, not free-form prose where
+      // identifier boundaries matter.
+      usesSentryTracer ??=
+          content.contains('SentryNavigatorObserver') ||
+          content.contains('Sentry.startTransaction') ||
+          content.contains('ISentrySpan');
+
+      if (usesSentryTracer) {
         violations.add(
           '  PERFORMANCE_FACADE  $file:${i + 1}: '
           'direct sentry_flutter tracer import banned — use '
