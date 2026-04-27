@@ -1,6 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer_provider.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 import 'package:deelmarkt/features/search/domain/search_filter.dart';
 import 'package:deelmarkt/features/search/presentation/search_favourites_mixin.dart';
 import 'package:deelmarkt/features/search/presentation/search_providers.dart';
@@ -30,6 +32,12 @@ class SearchNotifier extends _$SearchNotifier with SearchFavouritesMixin {
             : SearchFilter(query: trimmed);
     state = const AsyncValue.loading();
 
+    // GH #221 — search_query trace covers the post-debounce committed
+    // query, NOT per-keystroke (debounce happens upstream of this method).
+    // Stops in finally so failures still close the span.
+    final tracer = ref.read(performanceTracerProvider);
+    final handle = tracer.start(TraceNames.searchQuery);
+
     try {
       final useCase = ref.read(searchListingsUseCaseProvider);
       final result = await useCase(filter);
@@ -49,6 +57,8 @@ class SearchNotifier extends _$SearchNotifier with SearchFavouritesMixin {
     } on Exception catch (e, st) {
       AppLogger.error('Search failed', error: e, tag: _logTag);
       state = AsyncValue.error(e, st);
+    } finally {
+      await handle.stop();
     }
   }
 

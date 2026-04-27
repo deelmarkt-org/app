@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,22 +15,26 @@ void main() {
     await EasyLocalization.ensureInitialized();
   });
 
+  // ProviderScope wrapper required because DeelCardImage (rendered by
+  // DeelCard.grid) consumes Riverpod providers post GH #221.
   Widget host(Widget child) {
-    return EasyLocalization(
-      supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
-      fallbackLocale: const Locale('en', 'US'),
-      path: 'assets/l10n',
-      child: MaterialApp.router(
-        routerConfig: GoRouter(
-          routes: [
-            GoRoute(
-              path: '/',
-              builder:
-                  (_, _) => Scaffold(
-                    body: SizedBox(width: 200, height: 320, child: child),
-                  ),
-            ),
-          ],
+    return ProviderScope(
+      child: EasyLocalization(
+        supportedLocales: const [Locale('nl', 'NL'), Locale('en', 'US')],
+        fallbackLocale: const Locale('en', 'US'),
+        path: 'assets/l10n',
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder:
+                    (_, _) => Scaffold(
+                      body: SizedBox(width: 200, height: 320, child: child),
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
     );
