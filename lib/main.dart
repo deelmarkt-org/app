@@ -85,26 +85,34 @@ void main() async {
   // scope the widget tree uses. The container is handed to runApp via
   // UncontrolledProviderScope.
   final container = ProviderContainer();
-  final appStartHandle = container
-      .read(performanceTracerProvider)
-      .start(TraceNames.appStart);
-  // First post-frame callback fires after the root navigator's first paint
-  // — the SLO boundary defined in trace-registry.md for app_start.
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    unawaited(appStartHandle.stop());
-  });
+  try {
+    final appStartHandle = container
+        .read(performanceTracerProvider)
+        .start(TraceNames.appStart);
+    // First post-frame callback fires after the root navigator's first paint
+    // — the SLO boundary defined in trace-registry.md for app_start.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(appStartHandle.stop());
+    });
 
-  runApp(
-    EasyLocalization(
-      supportedLocales: AppLocales.supportedLocales,
-      fallbackLocale: AppLocales.fallbackLocale,
-      path: AppLocales.path,
-      child: UncontrolledProviderScope(
-        container: container,
-        child: const DeelMarktApp(),
+    runApp(
+      EasyLocalization(
+        supportedLocales: AppLocales.supportedLocales,
+        fallbackLocale: AppLocales.fallbackLocale,
+        path: AppLocales.path,
+        child: UncontrolledProviderScope(
+          container: container,
+          child: const DeelMarktApp(),
+        ),
       ),
-    ),
-  );
+    );
+  } catch (e) {
+    // If anything between container creation and runApp throws, the
+    // UncontrolledProviderScope never mounts and would leak the container.
+    // Dispose explicitly, then rethrow so Sentry/error handlers still see it.
+    container.dispose();
+    rethrow;
+  }
 }
 
 class DeelMarktApp extends ConsumerWidget {

@@ -8,6 +8,8 @@ import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/core/domain/repositories/user_repository.dart';
 
 class ListingDetailState extends Equatable {
   const ListingDetailState({
@@ -52,15 +54,26 @@ class ListingDetailNotifier
 
   @override
   Future<ListingDetailState> build(String arg) async {
+    // Hoist all ref.watch calls before any await — Riverpod's subscription
+    // lifecycle is only guaranteed when watch() runs synchronously inside
+    // build(). Reading after an async gap risks lost rebuild invalidations.
+    final listingRepo = ref.watch(listingRepositoryProvider);
+    final userRepo = ref.watch(userRepositoryProvider);
+    final categoryRepo = ref.watch(categoryRepositoryProvider);
+    final currentUser = ref.watch(currentUserProvider);
+
     // GH #221 listing_load trace; finally closes on any throw too.
     final handle = ref
         .read(performanceTracerProvider)
         .start(TraceNames.listingLoad);
     try {
-      final listing = await ref.watch(listingRepositoryProvider).getById(arg);
+      final listing = await listingRepo.getById(arg);
       if (listing == null) throw Exception('Listing not found');
-      final currentUser = ref.watch(currentUserProvider);
-      final (seller, category) = await _loadSellerAndCategory(listing);
+      final (seller, category) = await _loadSellerAndCategory(
+        listing,
+        userRepo: userRepo,
+        categoryRepo: categoryRepo,
+      );
       return ListingDetailState(
         listing: listing,
         seller: seller,
@@ -74,11 +87,13 @@ class ListingDetailNotifier
 
   /// Parallel fetch of seller + category. Errors are logged but don't
   /// propagate so the listing still renders if a sub-fetch fails.
+  /// Repositories are passed in from `build()` to keep all `ref.watch`
+  /// subscriptions synchronous (Riverpod best practice).
   Future<(UserEntity?, CategoryEntity?)> _loadSellerAndCategory(
-    ListingEntity listing,
-  ) async {
-    final userRepo = ref.watch(userRepositoryProvider);
-    final categoryRepo = ref.watch(categoryRepositoryProvider);
+    ListingEntity listing, {
+    required UserRepository userRepo,
+    required CategoryRepository categoryRepo,
+  }) async {
     UserEntity? seller;
     CategoryEntity? category;
     await Future.wait([
