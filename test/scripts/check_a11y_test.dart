@@ -122,6 +122,43 @@ class Spacer extends StatelessWidget {
       },
     );
 
+    test(
+      'inline width:100, height:20 catches the SUB-44 height (PR #241 H-1)',
+      () async {
+        // Gemini PR #241 review: `firstMatch` short-circuited on the
+        // first dimension (width: 100 → passes ≥44), missing the
+        // sub-44 height. `allMatches` audits both. This regression
+        // test pins the fix.
+        final relPath = '$stagingRel/inline_dims.dart';
+        File(p.join(repoRoot.path, relPath)).writeAsStringSync('''
+import 'package:flutter/material.dart';
+
+class InlineDims extends StatelessWidget {
+  const InlineDims({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {},
+      child: const SizedBox(width: 100, height: 20),
+    );
+  }
+}
+''');
+        final r = await runCheck(relPath);
+        final combined = r.stdout + r.stderr;
+        expect(combined, contains('TOUCH_TARGET'));
+        expect(
+          combined,
+          contains('height: 20'),
+          reason:
+              'allMatches must catch the second dimension on the same '
+              'line — height:20 is sub-44 even though width:100 is fine.',
+        );
+        expect(r.exitCode, isNot(0));
+      },
+    );
+
     test('44×44 boundary is allowed (>= threshold)', () async {
       final relPath = '$stagingRel/exact_size.dart';
       File(p.join(repoRoot.path, relPath)).writeAsStringSync('''

@@ -12,8 +12,13 @@
 //   2. Color literals (`Color(0xFF...)`) outside the design-token
 //      directories — proxy for "user passed a non-token color into a
 //      Text style that risks <4.5:1 contrast on dark mode".
-//   3. Missing `Semantics` label on widgets that have an `onTap` and
-//      no enclosing `Semantics(button: true, label: ...)`.
+//
+// Static `Semantics`-on-tap detection is intentionally OUT of scope for
+// this iteration — robust detection requires multi-line widget-tree
+// reasoning (does a parent widget already provide `Semantics(button:
+// true, label: ...)`?) which is closer to AST analysis than line-based
+// linting. Tracked as a follow-up; runtime semantics coverage is
+// already enforced by widget tests and the screenshot drivers.
 //
 // This is a STATIC audit — it can't measure actual contrast at runtime.
 // For runtime contrast verification, see the screenshot drivers under
@@ -131,23 +136,30 @@ void _checkSmallTouchTargets(
   final dimRegex = RegExp(r'\b(width|height):\s*([0-9]+(?:\.[0-9]+)?)\b');
 
   for (var i = 0; i < lines.length; i++) {
-    final dimMatch = dimRegex.firstMatch(lines[i]);
-    if (dimMatch == null) continue;
+    // Use `allMatches` so a single line containing BOTH `width:` and
+    // `height:` (e.g. `SizedBox(width: 100, height: 20)`) is fully
+    // audited. The previous `firstMatch` would short-circuit on the
+    // first dimension, missing a sub-44 second dimension entirely
+    // (Gemini PR #241 review HIGH).
+    final matches = dimRegex.allMatches(lines[i]).toList();
+    if (matches.isEmpty) continue;
 
-    final dim = double.parse(dimMatch.group(2)!);
-    if (dim >= 44) continue;
-
-    // Look back up to 8 lines for a tappable widget marker.
+    // Tappable check is per-LINE (not per-match) because the lookback
+    // window is identical for every match on the line. Compute once.
     final lookbackStart = i - 8 >= 0 ? i - 8 : 0;
     final window = lines.sublist(lookbackStart, i + 1).join('\n');
     final isTappable = tappableWidgets.any(window.contains);
     if (!isTappable) continue;
 
-    violations.add(
-      '  TOUCH_TARGET   $file:${i + 1}: '
-      '${dimMatch.group(1)}: $dim — must be ≥44 on tappable surfaces '
-      '(CLAUDE.md §10)',
-    );
+    for (final dimMatch in matches) {
+      final dim = double.parse(dimMatch.group(2)!);
+      if (dim >= 44) continue;
+      violations.add(
+        '  TOUCH_TARGET   $file:${i + 1}: '
+        '${dimMatch.group(1)}: $dim — must be ≥44 on tappable surfaces '
+        '(CLAUDE.md §10)',
+      );
+    }
   }
 }
 
