@@ -106,9 +106,12 @@ dev_dependencies:
   envied_generator: ^1.1.1
   mocktail: ^1.0.4
 
-  # Platform interface packages — required for ImagePickerPlatform test mocking
-  image_picker_platform_interface: any
-  plugin_platform_interface: any
+  # Platform interface packages — required for ImagePickerPlatform test mocking.
+  # Pinned via `: any` so the constraint solver follows whatever version
+  # Flutter/image_picker transitively ships; an explicit caret here would create
+  # resolution conflicts when those upstream packages bump.
+  image_picker_platform_interface: any  # DEPENDENCY_PIN_EXEMPT: SDK-shipped, must track upstream transitively
+  plugin_platform_interface: any  # DEPENDENCY_PIN_EXEMPT: SDK-shipped, must track upstream transitively
   url_launcher_platform_interface: ^2.3.2
 
 flutter:
