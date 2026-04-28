@@ -5,9 +5,9 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
-import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/widgets/buttons/buttons.dart';
+import 'package:deelmarkt/features/transaction/domain/mollie_url_validator.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/mollie_checkout_error_view.dart';
+import 'package:deelmarkt/features/transaction/presentation/widgets/mollie_checkout_loading_overlay.dart';
 
 /// WebView screen for completing Mollie payment (iDEAL checkout).
 ///
@@ -35,38 +35,17 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   bool _isLoading = true;
   bool _hasError = false;
 
-  /// Allowed URL hosts for the payment WebView.
-  /// Mollie + iDEAL bank domains — JavaScript is required
-  /// for iDEAL bank selection and 3D-Secure flows.
-  static const _trustedHosts = [
-    'www.mollie.com',
-    'mollie.com',
-    // iDEAL bank redirect domains
-    'ideal.nl',
-    'ideal.ing.nl',
-    'ideal.rabobank.nl',
-    'ideal.abnamro.nl',
-    'ideal.triodos.nl',
-    'ideal.bunq.com',
-    'ideal.knab.nl',
-    'ideal.asnbank.nl',
-    'ideal.regiobank.nl',
-    'ideal.snsbank.nl',
-    'ideal.vanlanschot.com',
-    'ideal.handelsbanken.nl',
-  ];
-
   @override
   void initState() {
     super.initState();
     assert(
-      _trustedHosts.any((h) => Uri.parse(widget.checkoutUrl).host.endsWith(h)),
+      MollieUrlValidator.isTrustedHost(widget.checkoutUrl),
       'Checkout URL must be a Mollie domain',
     );
     _controller =
         WebViewController()
           // JavaScript required for Mollie iDEAL bank selection + 3D-Secure.
-          // URL is validated against _trustedHosts above.
+          // URL is validated against MollieUrlValidator.trustedHosts above.
           ..setJavaScriptMode(JavaScriptMode.unrestricted) // NOSONAR
           ..setNavigationDelegate(
             NavigationDelegate(
@@ -85,15 +64,11 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
                 }
               },
               onNavigationRequest: (request) {
-                // Detect redirect back to our app (payment complete)
                 if (request.url.startsWith(widget.redirectUrl)) {
                   if (mounted) context.pop(MollieCheckoutResult.completed);
                   return NavigationDecision.prevent;
                 }
-                // Only allow HTTPS to trusted hosts (Mollie + iDEAL banks).
-                final host = Uri.parse(request.url).host;
-                final isTrusted = _trustedHosts.any((h) => host.endsWith(h));
-                if (request.url.startsWith('https://') && isTrusted) {
+                if (MollieUrlValidator.isAllowed(request.url)) {
                   return NavigationDecision.navigate;
                 }
                 return NavigationDecision.prevent;
@@ -123,94 +98,23 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
         ),
       ),
       body: MollieCheckoutBodyFrame(
-        child: _hasError ? _buildError(context) : _buildWebView(),
+        child:
+            _hasError
+                ? MollieCheckoutErrorView(
+                  onRetry: _retry,
+                  onCancel: () => context.pop(MollieCheckoutResult.cancelled),
+                )
+                : _buildWebView(),
       ),
     );
   }
 
   Widget _buildWebView() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       children: [
         WebViewWidget(controller: _controller),
-        if (_isLoading)
-          Semantics(
-            label: 'payment.processing'.tr(),
-            liveRegion: true,
-            child: Container(
-              color:
-                  isDark
-                      ? DeelmarktColors.darkScaffold.withValues(alpha: 0.8)
-                      : DeelmarktColors.white.withValues(alpha: 0.8),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const CircularProgressIndicator.adaptive(),
-                    const SizedBox(height: Spacing.s4),
-                    Text(
-                      'payment.processing'.tr(),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        if (_isLoading) const MollieCheckoutLoadingOverlay(),
       ],
-    );
-  }
-
-  Widget _buildError(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Outer Center comes from [MollieCheckoutBodyFrame]; this inner Padding
-    // sits directly inside the 500px cap, so no second Center is needed.
-    return Semantics(
-      label: 'error.payment_failed'.tr(),
-      liveRegion: true,
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.s6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              PhosphorIcons.warningCircle(),
-              size: 48,
-              color: isDark ? DeelmarktColors.darkError : DeelmarktColors.error,
-            ),
-            const SizedBox(height: Spacing.s4),
-            Text(
-              'error.payment_failed'.tr(),
-              style: Theme.of(context).textTheme.headlineMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: Spacing.s2),
-            Text(
-              'error.network'.tr(),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color:
-                    isDark
-                        ? DeelmarktColors.darkOnSurfaceSecondary
-                        : DeelmarktColors.neutral500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: Spacing.s6),
-            DeelButton(
-              label: 'action.retry'.tr(),
-              leadingIcon: PhosphorIcons.arrowClockwise(),
-              variant: DeelButtonVariant.secondary,
-              onPressed: _retry,
-            ),
-            const SizedBox(height: Spacing.s3),
-            DeelButton(
-              label: 'action.cancel'.tr(),
-              variant: DeelButtonVariant.ghost,
-              onPressed: () => context.pop(MollieCheckoutResult.cancelled),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
