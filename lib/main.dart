@@ -42,24 +42,26 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Start app_start trace as the first line after ensureInitialized() so the
-  // measurement captures all service-init cost (Sentry + Future.wait below)
-  // — the SLO boundary defined in PLAN-P56 §3.5 + trace-registry.md.
-  // The container created here is the same one handed to runApp via
-  // UncontrolledProviderScope, so the trace handle is read by the same scope
-  // the widget tree uses.
+  // Cap decoded-image memory before any images load (ADR-022).
+  DeelCacheManager.configureMemoryCache();
+
+  // Sentry first — so it captures errors from other service inits AND so the
+  // app_start trace below has a real Sentry hub to attach to. Starting the
+  // trace before initSentry() returns a NoOpHub span that is silently
+  // discarded, so the measurement must follow Sentry init (PR #247 review).
+  await initSentry();
+
+  // Start app_start trace immediately after Sentry is ready so the measurement
+  // captures the dominant service-init cost (Future.wait below) — the SLO
+  // boundary defined in PLAN-P56 §3.5 + trace-registry.md. The container
+  // created here is handed to runApp via UncontrolledProviderScope so the
+  // trace handle is read by the same scope the widget tree uses.
   final container = ProviderContainer();
   final appStartHandle = container
       .read(performanceTracerProvider)
       .start(TraceNames.appStart);
 
   try {
-    // Cap decoded-image memory before any images load (ADR-022).
-    DeelCacheManager.configureMemoryCache();
-
-    // Sentry first — so it captures errors from other service inits.
-    await initSentry();
-
     await Future.wait([
       EasyLocalization.ensureInitialized(),
       initSupabase(),
@@ -111,8 +113,11 @@ void main() async {
     );
   } catch (e) {
     // If anything between container creation and runApp throws, the
-    // UncontrolledProviderScope never mounts and would leak the container.
-    // Dispose explicitly, then rethrow so Sentry/error handlers still see it.
+    // UncontrolledProviderScope never mounts and would leak both the
+    // container and the open trace span. Stop the trace and dispose the
+    // container explicitly, then rethrow so Sentry/error handlers still
+    // see it.
+    unawaited(appStartHandle.stop());
     container.dispose();
     rethrow;
   }

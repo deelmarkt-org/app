@@ -15,10 +15,9 @@ matching row here.
 
 ### Active exemptions (CLAUDE.md §12 `file_length_exempt`)
 
-| File | Lines | Limit | Reason | Tracked in |
-|:-----|------:|------:|:-------|:-----------|
-| `lib/features/transaction/presentation/screens/mollie_checkout_screen.dart` | 248 | 200 | P-54 PR-A deferred — payment-path refactor needs characterisation tests + Unleash flag before splitting | [#245](https://github.com/deelmarkt-org/app/issues/245) |
-| `lib/features/messages/presentation/screens/chat_thread_screen.dart` | 228 | 200 | P-54 PR-B deferred — postponed from PR #244 to keep `dev → main` integration focused | [#246](https://github.com/deelmarkt-org/app/issues/246) |
+_None at this time._ The mollie_checkout / chat_thread P-54 deferrals tracked
+in #245 and #246 are being resolved by PR #248 (decomposition done, all CI
+checks green) — see PR #247 review thread for the coordination.
 
 ### Documented deviations (within enforced gate)
 
