@@ -104,9 +104,9 @@ Future<void> captureScreenshot({
   // underscore-separated paths (nl_NL.json) are a cache miss for the eviction
   // and leave the warm entry untouched — causing canary failures after the 24
   // loop tests prime the cache. Fix for P-54 PR-A1.
-  rootBundle
-    ..evict('assets/l10n/nl-NL.json')
-    ..evict('assets/l10n/en-US.json');
+  for (final tag in kScreenshotLocales) {
+    rootBundle.evict('assets/l10n/${tag.replaceAll('_', '-')}.json');
+  }
 
   // Set the surface to the target device size.
   await tester.binding.setSurfaceSize(device.logicalSize);
@@ -142,15 +142,15 @@ Future<void> captureScreenshot({
         path: 'assets/l10n',
         child: Builder(
           builder:
-              // UniqueKey forces a fresh MaterialApp element on each
-              // captureScreenshot call. Flutter's Localizations widget caches
-              // loaded delegates; when the same EasyLocalization object is
-              // returned by delegate.load() (static controller cache), the
-              // Localizations element skips setState and never shows its child.
-              // A fresh element has an empty _resources map, so _load() always
-              // triggers the rebuild. Fix for issue #203 (async-resolution).
+              // ValueKey scoped to locale+theme+device forces a fresh
+              // MaterialApp element when the test configuration changes.
+              // Flutter's Localizations widget caches loaded delegates; a
+              // fresh element has an empty _resources map so _load() always
+              // triggers the rebuild. A stable key (vs UniqueKey) avoids
+              // discarding and recreating the subtree on every setState within
+              // a single captureScreenshot call. Fix for issue #203.
               (ctx) => MaterialApp(
-                key: UniqueKey(),
+                key: ValueKey('screenshot-$locale-${theme.name}-${device.id}'),
                 locale: EasyLocalization.of(ctx)?.locale,
                 localizationsDelegates: EasyLocalization.of(ctx)?.delegates,
                 supportedLocales:
