@@ -68,7 +68,7 @@ Future<void> main(List<String> args) async {
   _checkLocaleParity(errors);
   _checkKeywordDeduplication('nl-NL', errors, warnings);
   _checkKeywordDeduplication('en-US', errors, warnings);
-  _checkReviewInformation(warnings);
+  _checkReviewInformation(errors);
 
   if (checkUrls) {
     await _checkUrls(errors, warnings);
@@ -247,23 +247,85 @@ void _checkForbiddenTerms(String path, String content, List<String> errors) {
 }
 
 // ── Review information TODO check ────────────────────────────────────────────
-// Warns when TestFlight review_information fields still contain [TODO] markers.
-// These won't block dev merges but WILL block App Store submission.
+// Errors when TestFlight review_information fields still contain [TODO]
+// markers. Promoted from warning → error after GH #162 close-out: any TODO
+// regression here would silently re-block the next TestFlight cut.
+//
+// Strategy: strip comment lines (so doc comments mentioning [TODO never
+// trip the check) and then flag any remaining occurrence of `[TODO`. This
+// catches all four shapes Apple's reviewer block can take:
+//   first_name: "[TODO …]"      (double-quoted scalar — start)
+//   last_name:  "fill in [TODO]" (double-quoted scalar — embedded)
+//   phone_number: '[TODO …]'    (single-quoted scalar)
+//   notes: >                    (folded block scalar — TODO on next line)
+//     [TODO write reviewer notes]
+// plus literal `[TODO` in any per-field .txt mirror.
 
-void _checkReviewInformation(List<String> warnings) {
-  final file = File(
-    'fastlane/metadata/review_information/privacy_details.yaml',
-  );
-  if (!file.existsSync()) return;
-  final content = file.readAsStringSync();
-  // Match any value wrapped in quotes that starts with [TODO
-  final todoPattern = RegExp(r'"(\[TODO[^"]*)"');
-  final matches = todoPattern.allMatches(content);
-  for (final match in matches) {
-    warnings.add(
-      'REVIEW_INFO_TODO: review_information field still contains TODO marker '
-      '("${match.group(1)}") — fill in before TestFlight submission.',
-    );
+void _checkReviewInformation(List<String> errors) {
+  // Tests inject a tmp dir via ASO_REVIEW_INFO_DIR so the check can be
+  // exercised in isolation. Production callers leave the env var unset.
+  final baseDir =
+      Platform.environment['ASO_REVIEW_INFO_DIR'] ??
+      'fastlane/metadata/review_information';
+  final yamlFile = File('$baseDir/privacy_details.yaml');
+  if (yamlFile.existsSync()) {
+    final content = yamlFile.readAsStringSync();
+    // Whole-line comments (lines whose first non-whitespace char is `#`) are
+    // documentation — skip them. For every other line we scan for either
+    // `[TODO` (the original bracketed marker) or `# TODO` (an inline YAML
+    // comment that itself names a TODO; GH #225 added this case). Inline
+    // comments WITHOUT a TODO are left intact and ignored — we never strip
+    // because stripping would also hide a comment-encoded TODO marker.
+    //
+    // Matches:
+    //   first_name: "[TODO fill]"           → "[TODO fill]"
+    //   first_name: "Mahmut"  # TODO check  → "# TODO check"
+    //   notes: "use #1 priority"            → no match (no TODO)
+    //   # documentation [TODO] line         → skipped (whole-line comment)
+    final markerRe = RegExp(r'\[TODO[^\n\]]*\]?|#\s*TODO[^\n]*');
+    final lines = content.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i];
+      if (line.trimLeft().startsWith('#')) continue;
+      final match = markerRe.firstMatch(line);
+      if (match == null) continue;
+      final marker = match.group(0)!.trim();
+      errors.add(
+        'REVIEW_INFO_TODO: privacy_details.yaml line ${i + 1} still contains '
+        'TODO marker ("$marker") — fill in before TestFlight submission. '
+        'See docs/runbooks/RUNBOOK-appstore-reviewer.md.',
+      );
+    }
+  }
+
+  // Per-field .txt mirrors that fastlane deliver actually transmits.
+  const txtFields = [
+    'email_address',
+    'first_name',
+    'last_name',
+    'notes',
+    'phone_number',
+  ];
+  for (final field in txtFields) {
+    final txt = File('$baseDir/$field.txt');
+    if (!txt.existsSync()) continue;
+    final body = txt.readAsStringSync().trim();
+    if (body.isEmpty) {
+      errors.add(
+        'REVIEW_INFO_EMPTY: '
+        'fastlane/metadata/review_information/$field.txt is empty — '
+        'fastlane deliver will fail. See '
+        'docs/runbooks/RUNBOOK-appstore-reviewer.md.',
+      );
+      continue;
+    }
+    if (body.contains('[TODO')) {
+      errors.add(
+        'REVIEW_INFO_TODO: '
+        'fastlane/metadata/review_information/$field.txt still contains '
+        'TODO marker — fill in before TestFlight submission.',
+      );
+    }
   }
 }
 

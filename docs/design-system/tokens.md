@@ -3,6 +3,19 @@
 > Colours, typography, spacing, radius, elevation, dark mode, animation.
 > All values implemented in `lib/core/design_system/`.
 
+## Contents
+
+- [Brand Voice](#brand-voice-for-ui-microcopy)
+- [Colours](#colours)
+- [Typography](#typography)
+- [Spacing](#spacing)
+- [Border Radius](#border-radius)
+- [Elevation](#elevation)
+- [Dark Mode](#dark-mode)
+- [Breakpoints](#breakpoints)
+- [Desktop Layout Playbook](#desktop-layout-playbook)
+- [Animation](#animation)
+
 ---
 
 ## Brand Voice (for UI microcopy)
@@ -279,6 +292,78 @@ class Breakpoints {
   static bool isExpanded(BuildContext c) => MediaQuery.sizeOf(c).width >= medium;
 }
 ```
+
+---
+
+## Desktop Layout Playbook
+
+> One-stop reference for max-widths, master-detail proportions, sidebar widths, and grid progression on web/desktop. Whenever a screen spec needs a desktop number, take it from this table — don't re-invent. Reusable values live as constants in `lib/core/design_system/breakpoints.dart`; per-screen overrides (720 / 800 / 900) are hardcoded at the call site and listed below as canonical so they don't drift.
+
+### Max-widths (centred via `ResponsiveBody`)
+
+| Surface | Max-width | Constant | Used by |
+|:--------|:----------|:---------|:--------|
+| Single-column onboarding / hero | **500px** | `Breakpoints.contentMaxWidth` | `OnboardingScreen` (PageView card sits inside this cap on expanded). |
+| Auth / gate card | **480px** | `Breakpoints.authCardMaxWidth` | `LoginScreen`, `RegisterScreen`, `SuspensionGateScreen` (card surface, not page). |
+| Single-column form | **600px** | `Breakpoints.formMaxWidth` (default `ResponsiveBody`) | Review, appeal, listing creation steps. |
+| Settings | **720px** | — | `SettingsScreen` (`ResponsiveBody(maxWidth: 720)`) — wider than a form because the address list and notification toggles benefit from horizontal room. |
+| Profile (own + public) | **900px** | — | `OwnProfileScreen`, `PublicProfileScreen` — fits the 3-col `AdaptiveListingGrid` on the listings tab without going edge-to-edge. |
+| Transaction detail | **900px** | — | `TransactionDetailScreen` — horizontal `EscrowTimeline` stepper needs ≥360px to stay in wide mode; 900 keeps it readable while preserving margin. |
+| Shipping (QR / tracking / detail) | **800px** | — | `ShippingQRScreen`, `TrackingScreen`, `ShippingDetailScreen` — QR code + timeline read better than at the 600 default. |
+| Dashboard / grid catalogue | **1200px** | `Breakpoints.large` (default `ResponsiveBody.wide`) | Home, search results, favourites, category browse, listing detail. |
+
+> `ResponsiveBody` applies its `maxWidth` cap whenever the viewport exceeds that width — not only at the expanded breakpoint. So a default form (600) starts constraining at viewport 600 (medium), a settings screen (720) at viewport 720, and a dashboard (1200) at viewport 1200. Below the cap, content is full-width with `Spacing.screenMarginMobile` (16) on compact and `Spacing.screenMarginTablet` (24) on medium+ margins.
+
+### Master-detail proportions
+
+When a screen has a list-of-things and a per-item view (messages, admin moderation queue, listing browse + detail), use the master-detail pattern on expanded:
+
+| Column | Width | Notes |
+|:-------|:------|:------|
+| Master (list) | **320–360px** fixed | Below 320 truncates titles; above 360 wastes space the detail wants. Pick 360 if rows have avatars + two lines of text, 320 if dense. |
+| Detail | **Fills remainder** | No max-width inside the master-detail scaffold — let it expand. Apply a max-width *outside* the scaffold (on the route's `ResponsiveBody`) only if the route is reachable both directly and via master-detail. |
+
+Reference implementations: `ResponsiveDetailScaffold` (#192), messages master-detail (#194).
+
+### Filter sidebar
+
+Search and category-browse expose facets/filters in a left-hand sidebar on expanded:
+
+- **Width:** `Breakpoints.filterSidebarWidth` = **240px** (fixed).
+- **Behaviour:** Persistent on expanded (≥840px); collapses to a `BottomSheet` on compact/medium.
+- **Spec:** `docs/screens/02-home/03-search.md` §Responsive.
+
+### NavigationRail label density
+
+`ScaffoldWithNav` switches navigation by viewport:
+
+| Width | Navigation | Label density |
+|:------|:-----------|:--------------|
+| < 600 (compact) | `BottomNavigationBar` | Always visible. |
+| 600–840 (medium) | `BottomNavigationBar` | Always visible. |
+| 840–1200 (expanded) | `NavigationRail` | **Selected destination only** — keeps rail at minimum 80px. |
+| ≥ 1200 (large) | `NavigationRail` | **All labels visible** — rail expands to ~256px. |
+
+### Grid column progression
+
+`AdaptiveListingGrid` (and any other listing-style grid) reads from `Breakpoints.gridColumnsForContainerWidth`:
+
+| Container width | Columns |
+|:----------------|:--------|
+| < 600 (compact) | **2** |
+| 600–840 (medium) | **3** |
+| 840–1200 (expanded) | **4** |
+| ≥ 1200 (large) | **5** |
+
+> "Container width" is the width of the box the grid renders inside, **not the viewport**. A grid living next to a 240px filter sidebar at 1300px viewport has a ~1060px container — call `gridColumnsForContainerWidth(1060)` (returns 4), not `gridColumnsForWidth(context)` (returns 5). Using viewport width inside a sidebar-adjacent or width-capped grid produces too-dense layouts that overflow card content.
+
+### Decision flow for a new desktop screen
+
+1. **Single-column form?** Default `ResponsiveBody` (600). Bump to 720 only if the form has horizontal sub-structures (settings, address book).
+2. **Card-style auth/gate?** Wrap content in a 480-wide `Card`, centred.
+3. **Listing-grid dashboard?** `ResponsiveBody.wide` (1200). Children manage their own horizontal padding.
+4. **Hub with per-item drill-down?** `ResponsiveDetailScaffold` with 320–360px master. No outer cap — let detail fill.
+5. **Has a heavy detail widget that needs room (timeline, QR, side panel)?** Bump the cap to 800–900 and document the reason in the spec's Responsive row.
 
 ---
 

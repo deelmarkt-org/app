@@ -8,6 +8,7 @@ import 'package:deelmarkt/widgets/cards/deel_card.dart';
 import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 
 import '../../../../helpers/pump_app.dart';
+import '_listings_grid_test_helpers.dart';
 
 void main() {
   final testListings = [
@@ -58,7 +59,7 @@ void main() {
     });
 
     testWidgets('#52 — listing cards have onTap wired', (tester) async {
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(testListings),
@@ -71,7 +72,7 @@ void main() {
     });
 
     testWidgets('#52 — listing card has Semantics wrapper', (tester) async {
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(testListings),

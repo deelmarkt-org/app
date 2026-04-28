@@ -4,23 +4,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:deelmarkt/core/design_system/breakpoints.dart';
-import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/core/services/app_logger.dart';
-import 'package:deelmarkt/widgets/buttons/deel_button.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/features/onboarding/presentation/onboarding_notifier.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/get_started_page.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/onboarding_trust_badges.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/page_dot_indicator.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/trust_page.dart';
-import 'package:deelmarkt/features/onboarding/presentation/widgets/welcome_page.dart';
+import 'package:deelmarkt/features/onboarding/presentation/widgets/onboarding_content.dart';
 
 /// Full onboarding flow — 3-page PageView with language selection,
 /// trust value proposition, and account creation CTA.
 ///
 /// Replaces the Phase 1 placeholder. Persists completion flag via
 /// SharedPreferences so returning users skip onboarding.
+///
+/// - **Compact (<840px):** Full-screen PageView, centred at
+///   [Breakpoints.contentMaxWidth] via [ResponsiveBody] (with
+///   [ResponsiveBody.addHorizontalPadding] disabled — see
+///   [OnboardingContent] for the padding contract).
+/// - **Expanded (≥840px):** Content rendered inside a centred elevated
+///   [Card] (max-width 720px) matching `onboarding_tablet_optimized_card`
+///   design. Mobile layout is unchanged.
 ///
 /// Route: `/onboarding` (auth guard redirects here when not logged in
 /// and onboarding is not yet complete).
@@ -35,6 +38,11 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   static const _pageCount = 3;
+
+  /// Max-width of the elevated Card on expanded viewports.
+  /// Reference: docs/screens/01-auth/01-onboarding.md §Tablet, issue #196.
+  static const double _tabletCardMaxWidth = 720;
+
   late final PageController _pageController;
 
   @override
@@ -108,87 +116,56 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       },
       child: Scaffold(
         body: SafeArea(
-          child: ResponsiveBody(
-            maxWidth: Breakpoints.contentMaxWidth,
-            child: Column(
-              children: [
-                // Header (expanded breakpoint only): logo + skip
-                if (isExpanded) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: Spacing.s4,
-                      bottom: Spacing.s2,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'app.name'.tr(),
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        DeelButton(
-                          label: 'onboarding.skip'.tr(),
-                          onPressed:
-                              () => _completeAndNavigate(AppRoutes.register),
-                          variant: DeelButtonVariant.ghost,
-                          size: DeelButtonSize.small,
-                          fullWidth: false,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-
-                // PageView
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: const ClampingScrollPhysics(),
-                    children: [
-                      const WelcomePage(),
-                      const TrustPage(),
-                      GetStartedPage(
-                        onCreateAccount:
-                            () => _completeAndNavigate(AppRoutes.register),
-                        onLogin: () => _completeAndNavigate(AppRoutes.login),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Dot indicator
-                const SizedBox(height: Spacing.s6),
-                PageDotIndicator(
-                  currentPage: state.currentPage,
-                  pageCount: _pageCount,
-                ),
-
-                // "Volgende" button (pages 0-1 only — WCAG 2.5.7 swipe alternative)
-                if (state.currentPage < _pageCount - 1) ...[
-                  const SizedBox(height: Spacing.s4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-                    child: DeelButton(
-                      label: 'onboarding.next'.tr(),
-                      onPressed: _nextPage,
-                    ),
-                  ),
-                ],
-
-                // Trust badges (expanded only)
-                const SizedBox(height: Spacing.s6),
-                const OnboardingTrustBadges(),
-                const SizedBox(height: Spacing.s4),
-              ],
-            ),
-          ),
+          child:
+              isExpanded
+                  ? _buildExpandedLayout(state)
+                  : _buildCompactLayout(state),
         ),
       ),
+    );
+  }
+
+  /// Compact layout: full-screen PageView centred at contentMaxWidth.
+  ///
+  /// `ResponsiveBody.addHorizontalPadding` is disabled so the inner
+  /// 16-px button padding inside [OnboardingContent] is the sole
+  /// horizontal gutter — see the class docstring on [OnboardingContent]
+  /// for the full padding contract.
+  Widget _buildCompactLayout(OnboardingState state) {
+    return ResponsiveBody(
+      maxWidth: Breakpoints.contentMaxWidth,
+      addHorizontalPadding: false,
+      child: _buildContent(state, isExpanded: false),
+    );
+  }
+
+  /// Expanded layout: content inside a centred elevated Card at 720px.
+  Widget _buildExpandedLayout(OnboardingState state) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: _tabletCardMaxWidth),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DeelmarktRadius.xl),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: _buildContent(state, isExpanded: true),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(OnboardingState state, {required bool isExpanded}) {
+    return OnboardingContent(
+      currentPage: state.currentPage,
+      pageCount: _pageCount,
+      pageController: _pageController,
+      isExpanded: isExpanded,
+      onSkip: () => _completeAndNavigate(AppRoutes.register),
+      onNext: _nextPage,
+      onCreateAccount: () => _completeAndNavigate(AppRoutes.register),
+      onLogin: () => _completeAndNavigate(AppRoutes.login),
     );
   }
 }

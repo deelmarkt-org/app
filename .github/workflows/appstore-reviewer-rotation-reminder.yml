@@ -1,0 +1,119 @@
+name: App Store Reviewer Credential Rotation Reminder
+
+# Opens a GitHub Issue every 90 days reminding the operator (belengaz) to
+# rotate the App Store reviewer demo account password per
+# docs/runbooks/RUNBOOK-appstore-reviewer.md §4. Closing this loop
+# autonomously prevents the rotation cadence from silently slipping —
+# which is the most common way reviewer credentials become stale and
+# trip Apple's "expired test account" rejection.
+#
+# Cadence: 1st of Jan / Apr / Jul / Oct at 09:00 UTC (≈ 90 days). The
+# operator can manually dispatch any time (e.g. on staff change or
+# suspected 1Password compromise).
+#
+# Reference: docs/runbooks/RUNBOOK-appstore-reviewer.md §4 Rotation
+# Reference: docs/PLAN-gh162-testflight-review-info.md (Phase B
+# operational ownership — belengaz)
+
+on:
+  schedule:
+    - cron: '0 9 1 1,4,7,10 *'   # 1st of Jan/Apr/Jul/Oct, 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: appstore-reviewer-rotation-reminder
+  cancel-in-progress: false
+
+jobs:
+  open-rotation-issue:
+    name: Open rotation reminder issue
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute next rotation window
+        id: window
+        run: |
+          # The "due by" date is 7 days after this fires — gives the
+          # operator a week to schedule the rotation without it being
+          # immediately overdue.
+          due_by=$(date -u -d '+7 days' '+%Y-%m-%d')
+          # Quarter label: derive from current month so we get
+          # "2026-Q2", "2026-Q3", etc. — portable, no GNU-only %q flag.
+          year=$(date -u +%Y)
+          month=$(date -u +%-m)
+          quarter_num=$(( (month + 2) / 3 ))
+          quarter="${year}-Q${quarter_num}"
+          {
+            echo "due_by=${due_by}"
+            echo "quarter=${quarter}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open rotation reminder issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DUE_BY: ${{ steps.window.outputs.due_by }}
+          QUARTER: ${{ steps.window.outputs.quarter }}
+        run: |
+          # Search first — if the previous quarter's reminder is still
+          # open, post a comment instead of stacking duplicate issues.
+          existing=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --label "appstore-reviewer-rotation" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" \
+              --repo "${{ github.repository }}" \
+              --body "Rotation cadence reached again on $(date -u '+%Y-%m-%d') (${QUARTER}). The previous reminder is still open — please close it out by ${DUE_BY}."
+            echo "::notice::Posted nudge comment on existing issue #${existing}"
+            exit 0
+          fi
+
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "chore(aso): App Store reviewer credential rotation due ${DUE_BY}" \
+            --label "appstore-reviewer-rotation,chore,phase-b" \
+            --assignee "belengaz" \
+            --body "$(cat <<EOF
+          ## App Store reviewer demo password rotation — ${QUARTER}
+
+          **Due by:** ${DUE_BY}
+
+          The reviewer demo password (\`ASC_DEMO_PASSWORD\`) is rotated on a 90-day
+          cadence per [docs/runbooks/RUNBOOK-appstore-reviewer.md §4](https://github.com/${{ github.repository }}/blob/dev/docs/runbooks/RUNBOOK-appstore-reviewer.md#4-rotation-every-90-days-or-on-staff-change).
+
+          ### Rotation checklist
+
+          - [ ] Pull current \`SUPABASE_PROJECT_REF\` + \`SUPABASE_SERVICE_ROLE_KEY\` from 1Password
+          - [ ] Run \`bash scripts/provision_appstore_reviewer.sh\` (auto-generates new password, rotates via PUT, prints once)
+          - [ ] Update **1Password** entry "App Store reviewer" with the new password
+          - [ ] Update **Codemagic** global var \`ASC_DEMO_PASSWORD\` (NOT \`ASC_DEMO_USER\`)
+          - [ ] Run \`bash scripts/check_appstore_reviewer.sh\` to verify the fixture
+          - [ ] If a TestFlight review is currently in flight: post the new password to Apple via App Store Connect → My Apps → DeelMarkt → App Review → Reviewer Notes (NEVER email it)
+          - [ ] Close this issue with the rotation date noted in a comment
+
+          ### Why automated
+
+          Manual cadence reminders slip. The most common cause of an Apple §2.1
+          "performance" rejection on a re-review is a stale demo password
+          where the reviewer can no longer log in. This workflow closes that
+          gap by opening this issue automatically every 90 days.
+
+          ### Skip / defer
+
+          If this PR cycle is mid-flight and rotation must wait, comment
+          "Deferred to <YYYY-MM-DD>" on this issue. The next scheduled run
+          will post a nudge comment instead of opening a duplicate issue.
+          EOF
+          )"
+
+          echo "::notice::Opened new rotation reminder issue."

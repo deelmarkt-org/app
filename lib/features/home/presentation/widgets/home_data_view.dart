@@ -1,30 +1,21 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/router/routes.dart';
-import 'package:deelmarkt/widgets/cards/adaptive_listing_grid.dart';
-import 'package:deelmarkt/widgets/feedback/empty_state.dart';
+import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_buyer_app_bar_actions.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_nearby_section.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_recent_section.dart';
+import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
 import 'package:deelmarkt/widgets/layout/responsive_body.dart';
 import 'package:deelmarkt/widgets/trust/trust_banner.dart';
 
-import 'package:deelmarkt/features/home/presentation/home_notifier.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/category_carousel.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/home_sliver_app_bar.dart';
-import 'package:deelmarkt/features/home/presentation/widgets/section_header.dart';
-import 'package:deelmarkt/widgets/cards/escrow_aware_listing_card.dart';
-
-/// Height of the recent listings horizontal row.
-const _recentRowHeight = 280.0;
-
-/// Width of each card in the recent listings row.
-const _recentCardWidth = 180.0;
-
-/// Home screen data view — renders categories, trust banner,
-/// nearby grid, and recent row.
+/// Home screen data view — renders categories, trust banner, nearby grid,
+/// and recent row. Each section is its own widget so the data view itself
+/// is purely a sliver-composition layer.
 class HomeDataView extends ConsumerWidget {
   const HomeDataView({required this.data, super.key});
 
@@ -32,6 +23,8 @@ class HomeDataView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final onToggleFavourite =
+        ref.read(homeNotifierProvider.notifier).toggleFavourite;
     return RefreshIndicator(
       onRefresh: () => ref.read(homeNotifierProvider.notifier).refresh(),
       // ResponsiveBody.wide caps the scroll view at Breakpoints.large (1200)
@@ -41,169 +34,47 @@ class HomeDataView extends ConsumerWidget {
       child: ResponsiveBody.wide(
         child: CustomScrollView(
           slivers: [
-            const HomeSliverAppBar(extraActions: [_BuyerAppBarActions()]),
-            if (data.categories.isNotEmpty) _categories(context),
-            _trustBanner(),
-            _nearbyHeader(context),
+            const HomeSliverAppBar(extraActions: [HomeBuyerAppBarActions()]),
+            if (data.categories.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.s4),
+                  child: CategoryCarousel(
+                    categories: data.categories,
+                    onCategoryTap:
+                        (cat) =>
+                            context.push('${AppRoutes.categories}/${cat.id}'),
+                  ),
+                ),
+              ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Spacing.s4,
+                  vertical: Spacing.s4,
+                ),
+                child: TrustBanner.escrow(),
+              ),
+            ),
+            const HomeNearbyHeader(),
             if (data.nearby.isNotEmpty)
-              _nearbyGrid(context, ref)
+              HomeNearbyGrid(
+                listings: data.nearby,
+                onToggleFavourite: onToggleFavourite,
+              )
             else
-              _nearbyEmpty(context),
+              const HomeNearbyEmpty(),
             if (data.recent.isNotEmpty) ...[
-              _recentHeader(context),
-              _recentRow(context, ref),
+              const HomeRecentHeader(),
+              HomeRecentRow(
+                listings: data.recent,
+                onToggleFavourite: onToggleFavourite,
+              ),
             ],
             const SliverPadding(padding: EdgeInsets.only(bottom: Spacing.s8)),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _categories(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(top: Spacing.s4),
-        child: CategoryCarousel(
-          categories: data.categories,
-          onCategoryTap: (cat) {
-            context.push('${AppRoutes.categories}/${cat.id}');
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _trustBanner() {
-    return const SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: Spacing.s4,
-          vertical: Spacing.s4,
-        ),
-        child: TrustBanner.escrow(),
-      ),
-    );
-  }
-
-  Widget _nearbyHeader(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.s3),
-        child: SectionHeader(
-          title: 'home.nearby'.tr(),
-          actionLabel: 'home.viewAll'.tr(),
-          onAction: () => context.go(AppRoutes.search),
-        ),
-      ),
-    );
-  }
-
-  Widget _nearbyGrid(BuildContext context, WidgetRef ref) {
-    return AdaptiveListingGrid(
-      itemCount: data.nearby.length,
-      itemBuilder: (context, index) {
-        final listing = data.nearby[index];
-        return EscrowAwareListingCard(
-          listing: listing,
-          onTap:
-              () => context.goNamed(
-                'listing-detail',
-                pathParameters: {'id': listing.id},
-              ),
-          onFavouriteTap:
-              () => ref
-                  .read(homeNotifierProvider.notifier)
-                  .toggleFavourite(listing.id),
-        );
-      },
-    );
-  }
-
-  Widget _nearbyEmpty(BuildContext context) {
-    return SliverFillRemaining(
-      hasScrollBody: false,
-      child: EmptyState(
-        variant: EmptyStateVariant.search,
-        onAction: () => context.go(AppRoutes.search),
-      ),
-    );
-  }
-
-  Widget _recentHeader(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(top: Spacing.s6, bottom: Spacing.s3),
-        child: SectionHeader(
-          title: 'home.recentlyAdded'.tr(),
-          actionLabel: 'home.viewAll'.tr(),
-          onAction: () => context.go(AppRoutes.search),
-        ),
-      ),
-    );
-  }
-
-  Widget _recentRow(BuildContext context, WidgetRef ref) {
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: _recentRowHeight,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.s4),
-          itemCount: data.recent.length,
-          separatorBuilder: (_, _) => const SizedBox(width: Spacing.s3),
-          itemBuilder: (context, index) {
-            final listing = data.recent[index];
-            return SizedBox(
-              width: _recentCardWidth,
-              child: EscrowAwareListingCard(
-                listing: listing,
-                onTap:
-                    () => context.goNamed(
-                      'listing-detail',
-                      pathParameters: {'id': listing.id},
-                    ),
-                onFavouriteTap:
-                    () => ref
-                        .read(homeNotifierProvider.notifier)
-                        .toggleFavourite(listing.id),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-/// Icon buttons (favourites, search, notifications) shown in the buyer-mode
-/// home app bar. Extracted into a dedicated `const` widget so the parent
-/// [HomeDataView] does not rebuild a fresh list of [IconButton]s on every
-/// Riverpod state emission.
-class _BuyerAppBarActions extends StatelessWidget {
-  const _BuyerAppBarActions();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(PhosphorIcons.heart()),
-          tooltip: 'favourites.title'.tr(),
-          onPressed: () => context.push(AppRoutes.favourites),
-        ),
-        IconButton(
-          icon: Icon(PhosphorIcons.magnifyingGlass()),
-          tooltip: 'nav.search'.tr(),
-          onPressed: () => context.go(AppRoutes.search),
-        ),
-        IconButton(
-          icon: Icon(PhosphorIcons.bell()),
-          tooltip: 'nav.notifications'.tr(),
-          onPressed: null, // Phase 2: wire to notifications (R-34)
-        ),
-      ],
     );
   }
 }

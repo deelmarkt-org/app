@@ -22,7 +22,11 @@ class AdminShellScreen extends ConsumerWidget {
   /// The currently active admin child route.
   final Widget child;
 
-  static const double _minDesktopWidth = 768.0;
+  /// Minimum viewport width for the admin panel.
+  /// Raised from 768 to 900 (issue #196) to align with the app's expanded
+  /// breakpoint (840) plus the 240px sidebar — narrower viewports cannot
+  /// render the two-column layout comfortably.
+  static const double _minDesktopWidth = 900.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

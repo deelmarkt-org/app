@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/listings_tab_view.dart';
 import 'package:deelmarkt/widgets/cards/deel_card_skeleton.dart';
@@ -10,26 +9,20 @@ import 'package:deelmarkt/widgets/feedback/empty_state.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
 
 import '../../../../helpers/pump_app.dart';
+import '_listings_grid_test_helpers.dart';
 
 void main() {
   group('ListingsTabView', () {
     testWidgets('loading state shows DeelCardSkeleton widgets', (tester) async {
-      // Use pump() instead of pumpAndSettle() because the skeleton shimmer
-      // animation never settles, causing pumpAndSettle to time out.
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: DeelmarktTheme.light,
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: ListingsTabView(
-                listings: const AsyncValue<List<ListingEntity>>.loading(),
-                onRetry: () {},
-              ),
-            ),
-          ),
+      // Use pump() (not pumpAndSettle) — the skeleton shimmer animation
+      // never settles and would time pumpAndSettle out.
+      await pumpListingsGrid(
+        tester,
+        ListingsTabView(
+          listings: const AsyncValue<List<ListingEntity>>.loading(),
+          onRetry: () {},
         ),
       );
-      await tester.pump();
 
       expect(find.byType(DeelCardSkeleton), findsWidgets);
     });
@@ -91,7 +84,7 @@ void main() {
         ),
       ];
 
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
@@ -119,7 +112,7 @@ void main() {
         ),
       ];
 
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
@@ -173,7 +166,7 @@ void main() {
         ),
       ];
 
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
@@ -200,7 +193,7 @@ void main() {
         ),
       ];
 
-      await pumpTestWidget(
+      await pumpListingsGrid(
         tester,
         ListingsTabView(
           listings: AsyncValue<List<ListingEntity>>.data(listings),
@@ -212,20 +205,13 @@ void main() {
     });
 
     testWidgets('loading state shows exactly 4 skeleton items', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: DeelmarktTheme.light,
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: ListingsTabView(
-                listings: const AsyncValue<List<ListingEntity>>.loading(),
-                onRetry: () {},
-              ),
-            ),
-          ),
+      await pumpListingsGrid(
+        tester,
+        ListingsTabView(
+          listings: const AsyncValue<List<ListingEntity>>.loading(),
+          onRetry: () {},
         ),
       );
-      await tester.pump();
 
       expect(find.byType(DeelCardSkeleton), findsNWidgets(4));
     });

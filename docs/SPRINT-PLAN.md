@@ -91,6 +91,19 @@ The agent will:
 - [x] `B-10` Set up PagerDuty alerting — 2-level escalation configured
 - [x] `B-11` Configure SonarCloud SAST in CI — analysis + quality gate on PR
 - [x] `B-12` Enable secret scanning — detect-secrets pre-commit + TruffleHog in CI
+- [ ] `B-13` Close GH #162 — TestFlight reviewer fixture & runbook
+  > **Phase A (code, this PR `chore/gh162-deliver-dryrun-runbook`):**
+  > - [x] Idempotent Supabase seed migration for reviewer profile/listing/transaction/thread (auth-user provisioning gated on operator runbook)
+  > - [x] `_checkReviewInformation` promoted from warning → error in `scripts/check_aso.dart` + unit test
+  > - [x] `scripts/check_appstore_reviewer.sh` + weekly `appstore-reviewer-healthcheck.yml`
+  > - [x] `docs/runbooks/RUNBOOK-appstore-reviewer.md`
+  >
+  > **Phase B (operational, post-merge — belengaz):**
+  > - [ ] Provision both `auth.users` rows via `supabase auth admin create-user` per runbook §3
+  > - [ ] Store credentials in 1Password "App Store reviewer"
+  > - [ ] Wire `ASC_DEMO_USER` / `ASC_DEMO_PASSWORD` into Codemagic global vars
+  > - [ ] Run `bundle exec fastlane ios deliver_dry_run`, archive log, link from #162 close comment
+  > - [ ] Close #162
 
 ### pizmam `[P]` — Design System & Frontend Foundation
 

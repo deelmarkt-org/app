@@ -2,10 +2,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer_provider.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/core/domain/entities/category_entity.dart';
 import 'package:deelmarkt/core/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/core/domain/entities/user_entity.dart';
+import 'package:deelmarkt/core/domain/repositories/category_repository.dart';
+import 'package:deelmarkt/core/domain/repositories/user_repository.dart';
 
 class ListingDetailState extends Equatable {
   const ListingDetailState({
@@ -50,21 +54,46 @@ class ListingDetailNotifier
 
   @override
   Future<ListingDetailState> build(String arg) async {
+    // Hoist all ref.watch calls before any await — Riverpod's subscription
+    // lifecycle is only guaranteed when watch() runs synchronously inside
+    // build(). Reading after an async gap risks lost rebuild invalidations.
     final listingRepo = ref.watch(listingRepositoryProvider);
     final userRepo = ref.watch(userRepositoryProvider);
     final categoryRepo = ref.watch(categoryRepositoryProvider);
-
-    final listing = await listingRepo.getById(arg);
-    if (listing == null) {
-      throw Exception('Listing not found');
-    }
-
-    // Determine if this is the current user's listing.
     final currentUser = ref.watch(currentUserProvider);
-    final isOwnListing =
-        currentUser != null && currentUser.id == listing.sellerId;
 
-    // Fetch seller profile and category in parallel.
+    // GH #221 listing_load trace; finally closes on any throw too.
+    final handle = ref
+        .read(performanceTracerProvider)
+        .start(TraceNames.listingLoad);
+    try {
+      final listing = await listingRepo.getById(arg);
+      if (listing == null) throw Exception('Listing not found');
+      final (seller, category) = await _loadSellerAndCategory(
+        listing,
+        userRepo: userRepo,
+        categoryRepo: categoryRepo,
+      );
+      return ListingDetailState(
+        listing: listing,
+        seller: seller,
+        category: category,
+        isOwnListing: currentUser?.id == listing.sellerId,
+      );
+    } finally {
+      await handle.stop();
+    }
+  }
+
+  /// Parallel fetch of seller + category. Errors are logged but don't
+  /// propagate so the listing still renders if a sub-fetch fails.
+  /// Repositories are passed in from `build()` to keep all `ref.watch`
+  /// subscriptions synchronous (Riverpod best practice).
+  Future<(UserEntity?, CategoryEntity?)> _loadSellerAndCategory(
+    ListingEntity listing, {
+    required UserRepository userRepo,
+    required CategoryRepository categoryRepo,
+  }) async {
     UserEntity? seller;
     CategoryEntity? category;
     await Future.wait([
@@ -87,13 +116,7 @@ class ListingDetailNotifier
         }
       }(),
     ]);
-
-    return ListingDetailState(
-      listing: listing,
-      seller: seller,
-      category: category,
-      isOwnListing: isOwnListing,
-    );
+    return (seller, category);
   }
 
   Future<void> toggleFavourite() async {
