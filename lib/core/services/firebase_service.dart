@@ -56,11 +56,9 @@ Future<void> initFirebase() async {
   // through performanceTracerProvider, but disabling collection here also
   // suppresses auto-instrumented network/screen metrics in debug builds.
   // perf_trace_sample_rate = 0.0 disables collection without redeploy.
-  final sampleRate =
-      double.tryParse(
-        FirebaseRemoteConfig.instance.getString('perf_trace_sample_rate'),
-      ) ??
-      1.0;
+  final sampleRate = FirebaseRemoteConfig.instance.getDouble(
+    'perf_trace_sample_rate',
+  );
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(
     !kDebugMode && sampleRate > 0.0,
   );

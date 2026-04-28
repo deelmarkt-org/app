@@ -60,6 +60,18 @@ class _ImageGalleryPageState extends ConsumerState<ImageGalleryPage> {
         .start(TraceNames.imageLoad);
   }
 
+  @override
+  void didUpdateWidget(ImageGalleryPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _stopTraceOnce();
+      _stopped = false;
+      _traceHandle = ref
+          .read(performanceTracerProvider)
+          .start(TraceNames.imageLoad);
+    }
+  }
+
   void _stopTraceOnce() {
     if (_stopped) return;
     _stopped = true;

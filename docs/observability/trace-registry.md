@@ -76,7 +76,7 @@
 |-------|-------|
 | **Constant** | `TraceNames.imageLoad` |
 | **Owner** | pizmam |
-| **Start boundary** | `CachedNetworkImage` `imageBuilder` / `errorWidget` wrap point in `lib/widgets/cards/deel_card_image.dart`; `Image.network` `frameBuilder` / `errorBuilder` wrap point in `lib/widgets/media/image_gallery_page.dart` |
+| **Start boundary** | `CachedNetworkImage` `imageBuilder` / `errorWidget` wrap point in `lib/widgets/cards/deel_card_image.dart`; `ConsumerStatefulWidget.initState` in `lib/widgets/media/image_gallery_page.dart` |
 | **Stop boundary** | Decode-success or decode-error |
 | **Sub-metrics** | (none — single-shot) |
 | **Attributes** | `cache_hit`, `image_size_bucket`, `network_type` |
