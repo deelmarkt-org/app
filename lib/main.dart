@@ -45,50 +45,55 @@ void main() async {
   // Cap decoded-image memory before any images load (ADR-022).
   DeelCacheManager.configureMemoryCache();
 
-  // Sentry first — so it captures errors from other service inits.
+  // Sentry first — so it captures errors from other service inits AND so the
+  // app_start trace below has a real Sentry hub to attach to. Starting the
+  // trace before initSentry() returns a NoOpHub span that is silently
+  // discarded, so the measurement must follow Sentry init (PR #247 review).
   await initSentry();
 
-  await Future.wait([
-    EasyLocalization.ensureInitialized(),
-    initSupabase(),
-    initFirebase(),
-    initUnleash(),
-    initSharedPreferences(),
-  ]);
+  // Start app_start trace immediately after Sentry is ready so the measurement
+  // captures the dominant service-init cost (Future.wait below) — the SLO
+  // boundary defined in PLAN-P56 §3.5 + trace-registry.md. The container
+  // created here is handed to runApp via UncontrolledProviderScope so the
+  // trace handle is read by the same scope the widget tree uses.
+  final container = ProviderContainer();
+  final appStartHandle = container
+      .read(performanceTracerProvider)
+      .start(TraceNames.appStart);
 
-  // Production error widget — user-friendly instead of white screen.
-  // Note: ErrorWidget fires before MaterialApp/localization, so l10n is
-  // unavailable here. A minimal NL fallback is acceptable (§3.3 exception).
-  if (!kDebugMode) {
-    ErrorWidget.builder = (FlutterErrorDetails details) {
-      return MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(Spacing.s6),
-              child: Semantics(
-                label: kFatalErrorMessage,
-                child: const Text(
-                  kFatalErrorMessage,
-                  textAlign: TextAlign.center,
+  try {
+    await Future.wait([
+      EasyLocalization.ensureInitialized(),
+      initSupabase(),
+      initFirebase(),
+      initUnleash(),
+      initSharedPreferences(),
+    ]);
+
+    // Production error widget — user-friendly instead of white screen.
+    // Note: ErrorWidget fires before MaterialApp/localization, so l10n is
+    // unavailable here. A minimal NL fallback is acceptable (§3.3 exception).
+    if (!kDebugMode) {
+      ErrorWidget.builder = (FlutterErrorDetails details) {
+        return MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.s6),
+                child: Semantics(
+                  label: kFatalErrorMessage,
+                  child: const Text(
+                    kFatalErrorMessage,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
-    };
-  }
+        );
+      };
+    }
 
-  // Use a single ProviderContainer so the app_start trace can be started
-  // BEFORE runApp (capturing pre-paint setup time) and read by the same
-  // scope the widget tree uses. The container is handed to runApp via
-  // UncontrolledProviderScope.
-  final container = ProviderContainer();
-  try {
-    final appStartHandle = container
-        .read(performanceTracerProvider)
-        .start(TraceNames.appStart);
     // First post-frame callback fires after the root navigator's first paint
     // — the SLO boundary defined in trace-registry.md for app_start.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -108,8 +113,11 @@ void main() async {
     );
   } catch (e) {
     // If anything between container creation and runApp throws, the
-    // UncontrolledProviderScope never mounts and would leak the container.
-    // Dispose explicitly, then rethrow so Sentry/error handlers still see it.
+    // UncontrolledProviderScope never mounts and would leak both the
+    // container and the open trace span. Stop the trace and dispose the
+    // container explicitly, then rethrow so Sentry/error handlers still
+    // see it.
+    unawaited(appStartHandle.stop());
     container.dispose();
     rethrow;
   }

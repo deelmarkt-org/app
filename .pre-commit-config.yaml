@@ -34,7 +34,7 @@ repos:
       - id: dart-format
         name: dart format
         language: system
-        entry: bash -c 'dart format --set-exit-if-changed lib/ test/ scripts/'
+        entry: dart format --set-exit-if-changed lib/ test/ scripts/
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -42,7 +42,7 @@ repos:
       - id: flutter-analyze
         name: flutter analyze
         language: system
-        entry: bash -c 'flutter analyze --no-pub'
+        entry: flutter analyze --no-pub
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -51,7 +51,7 @@ repos:
       - id: quality-check
         name: quality check (CLAUDE.md rules)
         language: system
-        entry: bash -c 'dart run scripts/check_quality.dart'
+        entry: dart run scripts/check_quality.dart
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -61,7 +61,7 @@ repos:
       - id: flutter-test-affected
         name: flutter test (affected only)
         language: system
-        entry: bash -c 'dart run scripts/test_affected.dart'
+        entry: dart run scripts/test_affected.dart
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -71,7 +71,7 @@ repos:
       - id: quality-check-thorough
         name: quality check (SonarCloud proxy)
         language: system
-        entry: bash -c 'dart run scripts/check_quality.dart --thorough'
+        entry: dart run scripts/check_quality.dart --thorough
         pass_filenames: false
         files: \.dart$
         stages: [pre-commit]
@@ -82,7 +82,7 @@ repos:
       - id: a11y-check
         name: accessibility audit (CLAUDE.md §10)
         language: system
-        entry: bash -c 'dart run scripts/check_a11y.dart'
+        entry: dart run scripts/check_a11y.dart
         pass_filenames: false
         files: ^lib/.*\.dart$
         stages: [pre-commit]
@@ -93,7 +93,7 @@ repos:
       - id: dependency-pin-check
         name: dependency-pin guard (P-58a)
         language: system
-        entry: bash -c 'dart run scripts/check_dependencies.dart'
+        entry: dart run scripts/check_dependencies.dart
         pass_filenames: false
         files: ^pubspec\.yaml$
         stages: [pre-commit]
@@ -151,7 +151,7 @@ repos:
       - id: screens-inventory-staling
         name: SCREENS-INVENTORY staling check
         language: system
-        entry: bash -c 'dart run scripts/check_screens_inventory.dart'
+        entry: dart run scripts/check_screens_inventory.dart
         pass_filenames: false
         files: ^docs/SCREENS-INVENTORY\.md$
         stages: [pre-commit]
@@ -172,7 +172,7 @@ repos:
       - id: flutter-analyze-strict
         name: flutter analyze (strict)
         language: system
-        entry: bash -c 'flutter analyze --no-pub --fatal-infos'
+        entry: flutter analyze --no-pub --fatal-infos
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]
@@ -193,7 +193,7 @@ repos:
       - id: coverage-gate
         name: new-code coverage (≥80%)
         language: system
-        entry: bash -c 'dart run scripts/check_new_code_coverage.dart'
+        entry: dart run scripts/check_new_code_coverage.dart
         pass_filenames: false
         files: \.dart$
         stages: [pre-push]

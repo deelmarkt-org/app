@@ -109,3 +109,4 @@ vendor/bundle/
 
 # Golden test diff artifacts
 test/screenshots/drivers/failures/
+devtools_options.yaml
