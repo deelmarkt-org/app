@@ -38,6 +38,13 @@ abstract final class FeatureFlags {
   /// rollout. Staged in Unleash: internal → 10% → 100%. Kill criterion:
   /// checkout 409 rate > 2% OR badge accuracy complaint.
   static const String listingsEscrowBadge = 'listings_escrow_badge';
+
+  /// P-54 PR-A: Decomposed Mollie checkout screen (MollieUrlValidator +
+  /// MollieCheckoutLoadingOverlay + MollieCheckoutErrorView extraction).
+  /// Default OFF. Wire at the navigation call-site when MollieCheckoutScreen
+  /// is integrated into the router. Rollout: staging → 5% → 25% → 100%.
+  /// Kill criterion: payment_create p95 +100ms vs baseline (P-56 dashboard).
+  static const String mollieCheckoutV2 = 'mollie_checkout_v2';
 }
 
 /// Initialise Unleash feature flags in `main()` before `runApp`.
