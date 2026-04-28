@@ -39,13 +39,13 @@ class _MollieCheckoutScreenState extends State<MollieCheckoutScreen> {
   void initState() {
     super.initState();
     assert(
-      MollieUrlValidator.isTrustedHost(widget.checkoutUrl),
-      'Checkout URL must be a Mollie domain',
+      MollieUrlValidator.isAllowed(widget.checkoutUrl),
+      'Checkout URL must be an HTTPS Mollie URL',
     );
     _controller =
         WebViewController()
           // JavaScript required for Mollie iDEAL bank selection + 3D-Secure.
-          // URL is validated against MollieUrlValidator.trustedHosts above.
+          // URL is validated against MollieUrlValidator.isAllowed above.
           ..setJavaScriptMode(JavaScriptMode.unrestricted) // NOSONAR
           ..setNavigationDelegate(
             NavigationDelegate(

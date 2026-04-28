@@ -9,8 +9,14 @@ import 'package:deelmarkt/widgets/trust/scam_alert.dart';
 
 /// Riverpod provider tracking whether the scam alert has been dismissed.
 ///
+/// autoDispose resets per-conversation: state clears when the slot unmounts
+/// (user leaves the thread), preventing one conversation's dismissal from
+/// silencing alerts in subsequently opened threads.
+///
 /// Defined here (co-located with the sole consumer) per CLAUDE.md §3.2.
-final scamAlertDismissedProvider = StateProvider<bool>((_) => false);
+final scamAlertDismissedProvider = StateProvider.autoDispose<bool>(
+  (_) => false,
+);
 
 /// Renders the [ScamAlert] banner when the latest message in the thread
 /// has been flagged, or an invisible [SizedBox.shrink] otherwise.
