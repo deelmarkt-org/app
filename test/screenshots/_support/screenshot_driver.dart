@@ -22,6 +22,7 @@ import 'dart:io' show Platform;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -88,9 +89,37 @@ Future<void> captureScreenshot({
   };
   addTearDown(() => FlutterError.onError = savedOnError);
 
+  // Evict l10n asset files from Flutter's rootBundle cache so EasyLocalization
+  // always sends a fresh platform-channel request (rather than returning a
+  // synchronous Future.value from cache). When a cached locale is returned
+  // synchronously, the EasyLocalization rebuild that makes the child screen
+  // visible happens inside pumpWidget's microtask queue — taking a different
+  // code path that does not produce the expected "second build" within
+  // pumpAndSettle. Evicting the cache keeps the async path consistent across
+  // test orderings and fixes the loaded-state race for issue #203.
+  //
+  // Keys must use hyphens: RootBundleAssetLoader calls
+  // locale.toStringWithSeparator(separator: "-"), producing "nl-NL.json" /
+  // "en-US.json". The rootBundle cache is keyed by exact path string, so
+  // underscore-separated paths (nl_NL.json) are a cache miss for the eviction
+  // and leave the warm entry untouched — causing canary failures after the 24
+  // loop tests prime the cache. Fix for P-54 PR-A1.
+  rootBundle
+    ..evict('assets/l10n/nl-NL.json')
+    ..evict('assets/l10n/en-US.json');
+
   // Set the surface to the target device size.
   await tester.binding.setSurfaceSize(device.logicalSize);
   addTearDown(() => tester.binding.setSurfaceSize(null));
+  // Commit the resize to the render tree BEFORE building the widget tree.
+  // setSurfaceSize calls handleMetricsChanged() which marks the render view
+  // for layout, but the layout pass is still pending. Without this pump,
+  // the subsequent pumpWidget attaches the new tree before the view geometry
+  // has been committed, and subsequent testWidgets iterations within the same
+  // driver paint to a stale (null/prior) surface — producing fully transparent
+  // canvases. One pump flushes the pending layout so pumpWidget starts clean.
+  // Fix for issue #203 (test-isolation defect between driver iterations).
+  await tester.pump();
 
   final localeObj = _parseLocale(locale);
   final themeData =
@@ -113,7 +142,15 @@ Future<void> captureScreenshot({
         path: 'assets/l10n',
         child: Builder(
           builder:
+              // UniqueKey forces a fresh MaterialApp element on each
+              // captureScreenshot call. Flutter's Localizations widget caches
+              // loaded delegates; when the same EasyLocalization object is
+              // returned by delegate.load() (static controller cache), the
+              // Localizations element skips setState and never shows its child.
+              // A fresh element has an empty _resources map, so _load() always
+              // triggers the rebuild. Fix for issue #203 (async-resolution).
               (ctx) => MaterialApp(
+                key: UniqueKey(),
                 locale: EasyLocalization.of(ctx)?.locale,
                 localizationsDelegates: EasyLocalization.of(ctx)?.delegates,
                 supportedLocales:
@@ -142,17 +179,36 @@ Future<void> captureScreenshot({
     ),
   );
 
-  // Pump until all async providers and locale assets settle.
-  // Fixed pumps are used instead of pumpAndSettle because Shimmer's
-  // AnimationController.repeat() creates an infinite ticker that prevents
-  // pumpAndSettle from ever completing (even with disableAnimations: true,
-  // the Shimmer package starts the controller before checking the flag).
-  // • 600ms covers mock repo delays (200–400ms) + first locale load.
-  // • 4 × 200ms = 800ms extra to flush all pending microtasks and frames.
-  // Gemini MED: replaced inner pumps with pumpAndSettle(timeout) so any
-  // non-Shimmer animations settle naturally; fall back to fixed pumps only
-  // if pumpAndSettle times out (Shimmer infinite ticker).
+  // EasyLocalization's locale loading uses two different async completion paths:
+  //
+  //   A. First load: rootBundle.loadString() sends a platform-channel message.
+  //      The response is delivered as a platform callback during a pump() call.
+  //
+  //   B. Subsequent loads of the same locale: rootBundle's Dart-side cache
+  //      returns Future.value(cachedData), which schedules a microtask.
+  //      Inside fakeAsync, microtasks are only flushed during elapse() — NOT
+  //      during pump() (which skips elapse when no duration is given).
+  //      pump(Duration.zero) calls fakeAsync.elapse(Duration.zero), which DOES
+  //      flush the microtask queue, firing the Future.value callback so
+  //      EasyLocalization calls setState and schedules its second build.
+  //
+  // Sequence:
+  //   pump(Duration.zero) → flush microtasks → EasyLocalization setState
+  //   pump()              → render second build → ChatThreadScreen mounts →
+  //                         AsyncNotifier schedules Future.delayed timers
+  //   pump(600ms)         → fire mock-repo timers → notifier resolves
+  //
+  // Fix for issue #203 (async-resolution half — both load paths).
+  await tester.pump(Duration.zero); // flush fakeAsync microtask queue
+  await tester.pump(); // render EasyLocalization's second build
+
+  // Advance the fake clock to fire mock-repo Future.delayed timers (200–400ms).
   await tester.pump(const Duration(milliseconds: 600));
+
+  // Drain any remaining animated frames after the notifier resolves.
+  // Shimmer's AnimationController.repeat() creates an infinite ticker that
+  // prevents pumpAndSettle from ever completing even with disableAnimations,
+  // so we use a bounded timeout and fall back to fixed pumps.
   try {
     await tester.pumpAndSettle(
       const Duration(milliseconds: 50),
@@ -160,11 +216,7 @@ Future<void> captureScreenshot({
       const Duration(milliseconds: 800),
     );
   } on FlutterError catch (e) {
-    // Only swallow the Shimmer infinite-ticker timeout; re-throw anything else
-    // so real widget errors (overflow, null dereference, etc.) are not hidden.
     if (!e.message.contains(_kPumpAndSettleTimeoutMsg)) rethrow;
-    // Shimmer's AnimationController.repeat() fires unconditionally even with
-    // disableAnimations: true — drain remaining frames with fixed pumps.
     await tester.pump(const Duration(milliseconds: 200));
     await tester.pump(const Duration(milliseconds: 200));
     await tester.pump(const Duration(milliseconds: 200));

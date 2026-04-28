@@ -47,20 +47,12 @@ void main() {
   // skeleton trees can satisfy) gives a sharp signal of whether the
   // capture pipeline ran to a loaded state before snapshotting.
   //
-  // Today this canary is expected to FAIL because of the dual problem
-  // documented in `docs/PLAN-screenshot-golden-fix.md`:
-  //   1. `AsyncNotifier.build()` micro-tasks may not drain before the
-  //      golden frame is taken (the original #203 hypothesis).
-  //   2. Test-isolation defect — only the first `(device, locale, theme)`
-  //      iteration of each driver paints to its surface; subsequent
-  //      iterations capture a fully transparent canvas (220/240 PNGs in
-  //      `dev` are `(0,0,0,0)` across the whole frame).
-  //
-  // The canary lives in this PR (alongside the `--check-goldens` byte-
-  // identity gate) so future fix attempts have a RED baseline to flip
-  // GREEN. It is platform-independent (widget tree inspection, not
-  // pixels) and runs on every CI runner, not just macOS.
+  // Fixed in screenshot_driver.dart: a pump() between pumpWidget and
+  // pump(600ms) processes EasyLocalization's platform message so the screen
+  // builds before the fake clock advances — mock repo timers then fire
+  // within the 600ms window and ChatThreadNotifier resolves to loaded state.
   group('canary — loaded-state baseline (#203)', () {
+    // First iteration: verifies the AsyncNotifier resolves to loaded state.
     testWidgets(
       'chat_thread renders MessageBubble after captureScreenshot pump',
       (tester) async {
@@ -81,14 +73,37 @@ void main() {
           reason:
               'No MessageBubble in tree after pump — ChatThreadScreen is '
               'still in loading/skeleton state. AsyncNotifier.build() did '
-              'not commit to the Element tree before golden capture, or '
-              'the screen never received a paint frame. Track via #203.',
+              'not commit to the Element tree before golden capture.',
         );
       },
-      // Expected to FAIL today — see canary docstring. Skipped in CI to
-      // keep the pipeline green; remove `skip` once #203 lands a fix and
-      // the canary turns GREEN as a permanent regression guard.
-      skip: true, // Pending #203 — canary is the RED baseline for the fix PR.
+    );
+
+    // Second iteration: verifies the #203 test-isolation fix — a second
+    // captureScreenshot call (different locale + theme) within the same test
+    // must also produce a loaded widget tree, not a blank/skeleton.
+    testWidgets(
+      'chat_thread second iteration still renders MessageBubble (#203 regression guard)',
+      (tester) async {
+        await captureScreenshot(
+          tester: tester,
+          screen: const ChatThreadScreen(
+            conversationId: kScreenshotConversationId,
+          ),
+          locale: 'en_US',
+          theme: ScreenshotTheme.dark,
+          device: kScreenshotDevices.first,
+          goldenName: 'chat_thread_canary_dark',
+        );
+
+        expect(
+          find.byType(MessageBubble),
+          findsAtLeastNWidgets(1),
+          reason:
+              'Second captureScreenshot call must also resolve to loaded state. '
+              'A transparent canvas or skeleton state here indicates the #203 '
+              'test-isolation defect is still present in screenshot_driver.dart.',
+        );
+      },
     );
   });
 }
