@@ -3,22 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:deelmarkt/core/services/app_logger.dart';
-import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
+import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/presentation/chat_thread_notifier.dart'
     show ChatThreadState, chatThreadNotifierProvider;
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_error_view.dart';
-import 'package:deelmarkt/features/messages/presentation/widgets/chat_header.dart';
-import 'package:deelmarkt/features/messages/presentation/widgets/chat_listing_embed_card.dart';
-import 'package:deelmarkt/features/messages/presentation/widgets/chat_message_composer.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/chat_theme_colors.dart';
-import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_list.dart';
-import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
+import 'package:deelmarkt/features/messages/presentation/widgets/chat_thread_body.dart';
 import 'package:deelmarkt/features/messages/presentation/widgets/make_offer_sheet.dart';
-import 'package:deelmarkt/widgets/trust/scam_alert.dart';
-
-/// Whether the scam alert banner has been dismissed by the user.
-final scamAlertDismissedProvider = StateProvider<bool>((_) => false);
 
 /// Pixel threshold beneath which the user is considered "at the bottom"
 /// for the purposes of sticky auto-scroll (Gemini code review G2).
@@ -55,10 +47,6 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     super.dispose();
   }
 
-  /// Returns `true` if the user is currently scrolled within
-  /// [_kAutoScrollThresholdPx] of the bottom of the thread. Defaults to
-  /// `true` when the controller has no clients yet (first render) — we
-  /// want new messages to land at the bottom on initial load.
   bool _isNearBottom() {
     if (!_scrollController.hasClients) return true;
     final position = _scrollController.position;
@@ -132,15 +120,10 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     final colors = ChatThemeColors.of(context);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Auto-scroll whenever new messages arrive, but only if the user is
-    // already near the bottom — don't jerk the viewport away from someone
-    // reading older messages (Gemini code review G2).
     ref.listen(chatThreadNotifierProvider(widget.conversationId), (prev, next) {
       final prevCount = prev?.valueOrNull?.messages.length ?? 0;
       final nextCount = next.valueOrNull?.messages.length ?? 0;
       if (nextCount <= prevCount) return;
-      // Capture the position decision BEFORE the post-frame callback so
-      // that the user's scroll position at "now" is what drives the rule.
       final shouldStick = _isNearBottom();
       if (!shouldStick) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -161,68 +144,23 @@ class _ChatThreadScreenState extends ConsumerState<ChatThreadScreen> {
     );
   }
 
-  /// Returns the [ScamAlert] widget when the latest message in the thread
-  /// has been flagged, or an invisible placeholder otherwise.
-  Widget _buildScamAlert(ChatThreadState state) {
-    final dismissed = ref.watch(scamAlertDismissedProvider);
-    if (dismissed) return const SizedBox.shrink();
-    if (state.messages.isEmpty) return const SizedBox.shrink();
-    final latest = state.messages.last;
-    if (latest.scamConfidence == ScamConfidence.none) {
-      return const SizedBox.shrink();
-    }
-    return ScamAlert(
-      confidence: latest.scamConfidence,
-      reasons: latest.scamReasons ?? const [ScamReason.other],
-      onReport:
-          latest.scamConfidence == ScamConfidence.high
-              ? () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('scam_alert.report_submitted'.tr())),
-                );
-              }
-              : null,
-      onDismiss:
-          latest.scamConfidence == ScamConfidence.low
-              ? () => ref.read(scamAlertDismissedProvider.notifier).state = true
-              : null,
-    );
-  }
-
   Widget _buildLoaded(ChatThreadState state, ChatThemeColors colors) {
-    return Container(
-      color: colors.scaffold,
-      child: Column(
-        children: [
-          ChatHeader(
-            conversation: state.conversation,
-            showBackButton: widget.showBackButton,
-          ),
-          ChatListingEmbedCard(conversation: state.conversation),
-          // P-37: Scam alert banner for flagged messages.
-          _buildScamAlert(state),
-          Expanded(
-            child: ChatThreadList(
-              scrollController: _scrollController,
-              messages: state.messages,
-              currentUserId: ref.watch(currentUserProvider)?.id ?? '',
-              onOfferRespond: _handleOfferRespond,
+    return ChatThreadBody(
+      state: state,
+      colors: colors,
+      scrollController: _scrollController,
+      currentUserId: ref.watch(currentUserProvider)?.id ?? '',
+      showBackButton: widget.showBackButton,
+      onOfferRespond: _handleOfferRespond,
+      onSend: _handleSend,
+      onCameraTap:
+          () => ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('chat.comingSoon'.tr()),
+              behavior: SnackBarBehavior.floating,
             ),
           ),
-          ChatMessageComposer(
-            isSending: state.isSending,
-            onSend: _handleSend,
-            onCameraTap:
-                () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('chat.comingSoon'.tr()),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                ),
-            onMakeOfferTap: _handleMakeOffer,
-          ),
-        ],
-      ),
+      onMakeOfferTap: _handleMakeOffer,
     );
   }
 }
