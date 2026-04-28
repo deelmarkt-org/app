@@ -112,7 +112,7 @@ Enforcement: `TraceAttributes.put()` validates against the allowlist at runtime;
 
 | Trace | Start | Stop | Sub-metrics |
 |-------|-------|------|-------------|
-| `app_start` | `main()` first line after `await initSentry()` — must follow Sentry init so `SentryPerformanceTracer` attaches to a real hub instead of pre-init `NoOpHub` (PR #247). `initSentry()` cost (~100–200 ms) is therefore excluded from the trace; calibrate the p95 ≤ 2.5 s SLO accordingly. | `WidgetsBinding.addPostFrameCallback` after first frame of root navigator | `splash_to_first_frame_ms`, `dependencies_init_ms` |
+| `app_start` | `main()` first line after `await initSentry()` — must follow Sentry init so `SentryPerformanceTracer` attaches to a real hub instead of pre-init `NoOpHub` (PR #247). `initSentry()` cost (~100–200 ms) is therefore excluded from the trace; record this when calibrating the p95 ≤ 2.5 s SLO. | `WidgetsBinding.addPostFrameCallback` after first frame of root navigator | `post_init_to_first_frame_ms`, `dependencies_init_ms` |
 | `listing_load` | `GetListingDetailUseCase.execute()` invocation | `addPostFrameCallback` after `AsyncData` first paint with hero image visible | `gallery_loaded_ms`, `seller_loaded_ms` |
 | `search_query` | First post-debounce committed query (not per keystroke) | first row visible in `SearchResultsView` | `result_count_bucket` |
 | `payment_create` | `CreatePaymentUseCase.execute()` invocation | Mollie WebView load complete OR error | `mollie_response_ms` |
