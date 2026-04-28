@@ -26,10 +26,15 @@ class MollieUrlValidator {
     'ideal.handelsbanken.nl',
   ];
 
-  /// Returns `true` if the host of [url] ends with any trusted domain.
+  /// Returns `true` if the host of [url] is an exact match or a direct
+  /// subdomain of a trusted domain.
+  ///
+  /// Uses `host == h || host.endsWith('.$h')` rather than a bare
+  /// `endsWith(h)` to prevent suffix-spoofing attacks where a hostname like
+  /// `attacker-mollie.com` would otherwise match the `mollie.com` entry.
   static bool isTrustedHost(String url) {
     final host = Uri.parse(url).host;
-    return trustedHosts.any((h) => host.endsWith(h));
+    return trustedHosts.any((h) => host == h || host.endsWith('.$h'));
   }
 
   /// Returns `true` if [url] uses HTTPS **and** resolves to a trusted host.

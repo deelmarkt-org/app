@@ -38,6 +38,21 @@ void main() {
       );
     });
 
+    test('returns false for suffix-spoofed domain (attacker-mollie.com)', () {
+      // Bare endsWith('mollie.com') would incorrectly allow this.
+      expect(
+        MollieUrlValidator.isTrustedHost('https://attacker-mollie.com/'),
+        isFalse,
+      );
+    });
+
+    test('returns true for legitimate subdomain (www.mollie.com)', () {
+      expect(
+        MollieUrlValidator.isTrustedHost('https://www.mollie.com/select-bank'),
+        isTrue,
+      );
+    });
+
     test(
       'returns false for host that only contains a trusted suffix in path',
       () {
