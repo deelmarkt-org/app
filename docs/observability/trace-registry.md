@@ -22,7 +22,7 @@
 |-------|-------|
 | **Constant** | `TraceNames.appStart` |
 | **Owner** | pizmam |
-| **Start boundary** | First line after `WidgetsFlutterBinding.ensureInitialized()` in `lib/main.dart` |
+| **Start boundary** | First line after `await initSentry()` in `lib/main.dart`. `initSentry()` must precede the start so `SentryPerformanceTracer` attaches to a real Sentry hub instead of the pre-init `NoOpHub` (PR #247). The Firebase tracer is unaffected by this ordering, but the boundary is held consistent across backends so SLO comparisons stay apples-to-apples. The ~100–200 ms `initSentry()` cost is therefore **excluded** from `app_start` — record this when calibrating the p95 ≤ 2.5 s SLO. |
 | **Stop boundary** | `WidgetsBinding.addPostFrameCallback` after first frame of root navigator |
 | **Sub-metrics** | `splash_to_first_frame_ms`, `dependencies_init_ms` |
 | **Attributes** | `platform`, `network_type`, `locale` |

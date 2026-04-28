@@ -112,7 +112,7 @@ Enforcement: `TraceAttributes.put()` validates against the allowlist at runtime;
 
 | Trace | Start | Stop | Sub-metrics |
 |-------|-------|------|-------------|
-| `app_start` | `main()` first line after `WidgetsFlutterBinding.ensureInitialized()` | `WidgetsBinding.addPostFrameCallback` after first frame of root navigator | `splash_to_first_frame_ms`, `dependencies_init_ms` |
+| `app_start` | `main()` first line after `await initSentry()` — must follow Sentry init so `SentryPerformanceTracer` attaches to a real hub instead of pre-init `NoOpHub` (PR #247). `initSentry()` cost (~100–200 ms) is therefore excluded from the trace; calibrate the p95 ≤ 2.5 s SLO accordingly. | `WidgetsBinding.addPostFrameCallback` after first frame of root navigator | `splash_to_first_frame_ms`, `dependencies_init_ms` |
 | `listing_load` | `GetListingDetailUseCase.execute()` invocation | `addPostFrameCallback` after `AsyncData` first paint with hero image visible | `gallery_loaded_ms`, `seller_loaded_ms` |
 | `search_query` | First post-debounce committed query (not per keystroke) | first row visible in `SearchResultsView` | `result_count_bucket` |
 | `payment_create` | `CreatePaymentUseCase.execute()` invocation | Mollie WebView load complete OR error | `mollie_response_ms` |
@@ -221,7 +221,7 @@ Keeps Sentry SDK initialised everywhere (errors stay on); only mobile transactio
 |---|------|---------|--------------|
 | B1 | Configure Performance collection on init | `lib/core/services/firebase_service.dart` | Add `setPerformanceCollectionEnabled(!kDebugMode)` call mirroring Crashlytics pattern |
 | B2 | Disable Sentry mobile transactions | `lib/core/services/sentry_service.dart` | `tracesSampleRate = kIsWeb ? 0.2 : 0.0` |
-| B3 | Wire `app_start` trace | `lib/main.dart` | Start at first line after `ensureInitialized()`; stop in `addPostFrameCallback` |
+| B3 | Wire `app_start` trace | `lib/main.dart` | Start at first line after `await initSentry()` (so `SentryPerformanceTracer` attaches to a real hub, not pre-init `NoOpHub` — PR #247); stop in `addPostFrameCallback` |
 | B4 | Wire `listing_load` trace | `lib/features/listing_detail/data/...repository.dart` + viewmodel | Start at use-case; stop on first paint |
 | B5 | Wire `search_query` trace | `lib/features/search/.../search_viewmodel.dart` | Start on debounced commit; stop on first result row paint |
 | B6 | Wire `payment_create` trace | `lib/features/transaction/.../create_payment_use_case.dart` | Start at execute; stop at Mollie WebView load complete |
