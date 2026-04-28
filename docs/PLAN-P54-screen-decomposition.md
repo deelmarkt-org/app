@@ -1,5 +1,12 @@
 # PLAN-P54 — Decompose 9 over-budget screens (CLAUDE.md §2.1)
 
+> **Implementation note (PR #244 follow-up):** the primitive named `SkeletonBone`
+> throughout this plan shipped as `SkeletonBox` inside
+> [`lib/widgets/feedback/skeleton_shapes.dart`](../lib/widgets/feedback/skeleton_shapes.dart),
+> alongside `SkeletonLine` and `SkeletonCircle`. PR-D1 ✅ shipped under that name;
+> PR-D2 (`detail_loading_view.dart`) ✅ consumes it. Treat every `SkeletonBone`
+> reference below as `SkeletonBox` until this plan is rewritten.
+
 > **Owner:** 🔵 pizmam (`@emredursun`) · **Co-review on payment scope:** 🟢 belengaz (`@mahmutkaya`) · **Architecture spot-check:** 🔴 reso (`@MuBi2334`)
 > **Severity / Audit ref:** P2 / `M1` (preflight) · `P-54` (retrospective)
 > **Effort:** L — **3–4 weeks calendar** (1.5 weeks active dev + reviewer cycles + soak windows)

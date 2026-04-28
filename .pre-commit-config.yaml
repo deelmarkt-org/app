@@ -82,7 +82,7 @@ repos:
       - id: a11y-check
         name: accessibility audit (CLAUDE.md §10)
         language: system
-        entry: bash -c 'dart run scripts/check_a11y.dart'
+        entry: dart run scripts/check_a11y.dart
         pass_filenames: false
         files: ^lib/.*\.dart$
         stages: [pre-commit]
@@ -93,7 +93,7 @@ repos:
       - id: dependency-pin-check
         name: dependency-pin guard (P-58a)
         language: system
-        entry: bash -c 'dart run scripts/check_dependencies.dart'
+        entry: dart run scripts/check_dependencies.dart
         pass_filenames: false
         files: ^pubspec\.yaml$
         stages: [pre-commit]
@@ -151,7 +151,7 @@ repos:
       - id: screens-inventory-staling
         name: SCREENS-INVENTORY staling check
         language: system
-        entry: bash -c 'dart run scripts/check_screens_inventory.dart'
+        entry: dart run scripts/check_screens_inventory.dart
         pass_filenames: false
         files: ^docs/SCREENS-INVENTORY\.md$
         stages: [pre-commit]

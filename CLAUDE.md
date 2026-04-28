@@ -525,6 +525,12 @@ file_length_exempt:
   # would require closure-passing that hurts readability more than the
   # extra ~25 lines.
   - lib/features/messages/presentation/chat_thread_notifier.dart
+  # P-54 PR-A deferred — payment-path refactor needs characterisation tests +
+  # Unleash flag before splitting. Tracked in #245.
+  - lib/features/transaction/presentation/screens/mollie_checkout_screen.dart
+  # P-54 PR-B deferred — original blocker (#203) is resolved, decomposition
+  # postponed from PR #244 to keep dev→main integration focused. Tracked in #246.
+  - lib/features/messages/presentation/screens/chat_thread_screen.dart
 
 cross_feature_import_exempt:
   - lib/core/router/app_router.dart

@@ -4,6 +4,7 @@ import 'package:deelmarkt/core/services/performance/noop_performance_tracer.dart
 import 'package:deelmarkt/core/services/performance/performance_tracer.dart';
 import 'package:deelmarkt/core/services/performance/sentry_performance_tracer.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'performance_tracer_provider.g.dart';
@@ -20,7 +21,7 @@ part 'performance_tracer_provider.g.dart';
 ///
 /// Reference: ADR-027 + `docs/PLAN-P56-firebase-performance-traces.md` §3.7.
 @Riverpod(keepAlive: true)
-PerformanceTracer performanceTracer(PerformanceTracerRef ref) {
+PerformanceTracer performanceTracer(Ref ref) {
   if (kDebugMode) {
     return const NoopPerformanceTracer();
   }
