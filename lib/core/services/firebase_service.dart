@@ -36,12 +36,33 @@ Future<void> initFirebase() async {
     }
   }
 
+  // Remote Config: register defaults so perf_trace_sample_rate is usable
+  // before the first server fetch. Best-effort fetchAndActivate ensures the
+  // kill switch (ADR-027 §L1) takes effect on the current launch rather than
+  // requiring a second cold start.
+  await FirebaseRemoteConfig.instance.setDefaults(const {
+    'perf_trace_sample_rate': '1.0',
+  });
+  try {
+    await FirebaseRemoteConfig.instance.fetchAndActivate().timeout(
+      const Duration(seconds: 5),
+    );
+  } on Exception catch (_) {
+    // Fetch failed or timed out; defaults remain active.
+  }
+
   // Performance Monitoring follows the same debug-disabled pattern as
   // Crashlytics — see ADR-027. NoopPerformanceTracer covers debug callers
   // through performanceTracerProvider, but disabling collection here also
   // suppresses auto-instrumented network/screen metrics in debug builds.
+  // perf_trace_sample_rate = 0.0 disables collection without redeploy.
+  final sampleRate =
+      double.tryParse(
+        FirebaseRemoteConfig.instance.getString('perf_trace_sample_rate'),
+      ) ??
+      1.0;
   await FirebasePerformance.instance.setPerformanceCollectionEnabled(
-    !kDebugMode,
+    !kDebugMode && sampleRate > 0.0,
   );
 }
 
