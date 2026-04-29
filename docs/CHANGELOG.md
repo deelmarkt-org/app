@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Testing
+
+- **fix(screenshots): P-54 PR-A1 — fix rootBundle eviction keys + canary GREEN** — closes #203 test-isolation defect. `RootBundleAssetLoader` builds cache keys with hyphens (`nl-NL.json`); previous eviction code used underscores (`nl_NL.json`) leaving warm entries untouched and canary failing after 24 loop iterations. Eviction paths now derived dynamically from `kScreenshotLocales`. Adds second-iteration canary regression guard, `sqflite_common_ffi` dev dep, and `path_provider` mock in `initScreenshotEnvironment` so headless `CachedNetworkImage` renders no longer throw `MissingPluginException`. Bundles four prerequisite widget overflow fixes (`category_browse_screen`, `seller_info_row`, `action_section`, `amount_section`) without which the screenshot drivers throw `RenderFlex overflowed` exceptions and block the PR-A1 canary. See `docs/PLAN-P54-…`.
+
 ### Observability
 
 - **feat(observability): introduce Firebase Performance facade + Sentry web fallback** — closes audit task `P-56` / preflight finding `H5`. New `lib/core/services/performance/` module with `PerformanceTracer` interface, mobile (Firebase) + web (Sentry) implementations, debug-mode `NoopPerformanceTracer`, GDPR-first attribute allowlist with PII-forbidding runtime guards, Riverpod `keepAlive` provider. Sentry mobile transactions disabled (`tracesSampleRate = kIsWeb ? 0.2 : 0.0`) to avoid double-instrumentation cost. Five trace names defined (`app_start`, `listing_load`, `search_query`, `payment_create`, `image_load`); call-site wiring follows in P-56 Phase B. Provisional p95 SLOs published in `docs/observability/perf-slos.md`. ADR-027 documents the architecture. See `docs/PLAN-P56-firebase-performance-traces.md`.
