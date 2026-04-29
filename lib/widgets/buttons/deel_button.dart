@@ -5,41 +5,11 @@ import 'package:deelmarkt/core/design_system/deel_button_theme.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button_style.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button_tokens.dart';
+import 'package:deelmarkt/widgets/buttons/deel_button_types.dart';
 
-/// Button variants for different action types.
-/// Reference: docs/design-system/components.md §Buttons
-enum DeelButtonVariant {
-  /// Brand orange — "Koop nu", "Verkoop", "Betaal"
-  primary,
-
-  /// Blue — "Bericht sturen", "Bod doen"
-  secondary,
-
-  /// Transparent + 1.5px border — "Bekijk profiel", "Delen"
-  outline,
-
-  /// Transparent, no border — "Annuleren", "Overslaan"
-  ghost,
-
-  /// Red — "Account verwijderen"
-  destructive,
-
-  /// Green — "Levering bevestigen"
-  success,
-}
-
-/// Button sizes with fixed heights and padding.
-/// Reference: docs/design-system/components.md §Buttons
-enum DeelButtonSize {
-  /// Height: 52px, padding: 24px, font: 16px
-  large,
-
-  /// Height: 44px, padding: 16px, font: 14px
-  medium,
-
-  /// Height: 36px, padding: 12px, font: 13px
-  small,
-}
+// Re-export the variant + size enums so existing call sites that
+// `import 'deel_button.dart';` keep working unchanged.
+export 'package:deelmarkt/widgets/buttons/deel_button_types.dart';
 
 /// DeelMarkt button component.
 ///
