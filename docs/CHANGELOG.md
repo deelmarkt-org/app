@@ -4,6 +4,7 @@
 
 ### Observability
 
+- **feat(observability): close P-56 Phase B** — wire `image_gallery_page.dart` `image_load` trace (`StatelessWidget` → `ConsumerStatefulWidget` migration; `initState` start, `frameBuilder` / `errorBuilder` stop, `dispose` safety net, `didUpdateWidget` restart on `imageUrl` change); add `perf_trace_sample_rate` Remote Config flag (default `1.0`) for runtime kill switch without redeploy (ADR-027 §L1, fail-open by design). Promotes all 5 trace registry rows from `🟡 Defined` to `✅ Wired` in `docs/observability/trace-registry.md`.
 - **feat(observability): introduce Firebase Performance facade + Sentry web fallback** — closes audit task `P-56` / preflight finding `H5`. New `lib/core/services/performance/` module with `PerformanceTracer` interface, mobile (Firebase) + web (Sentry) implementations, debug-mode `NoopPerformanceTracer`, GDPR-first attribute allowlist with PII-forbidding runtime guards, Riverpod `keepAlive` provider. Sentry mobile transactions disabled (`tracesSampleRate = kIsWeb ? 0.2 : 0.0`) to avoid double-instrumentation cost. Five trace names defined (`app_start`, `listing_load`, `search_query`, `payment_create`, `image_load`); call-site wiring follows in P-56 Phase B. Provisional p95 SLOs published in `docs/observability/perf-slos.md`. ADR-027 documents the architecture. See `docs/PLAN-P56-firebase-performance-traces.md`.
 
 ### Documentation
