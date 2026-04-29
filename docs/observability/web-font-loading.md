@@ -14,7 +14,7 @@ typeface immediately — no system-font fallback flash.
 
 | Check | Source of Truth | Status |
 | :--- | :--- | :--- |
-| Font is in `pubspec.yaml` `fonts:` block | `pubspec.yaml:125-130` | ✅ Pass |
+| Font is in `pubspec.yaml` `fonts:` block | `pubspec.yaml:134-139` | ✅ Pass |
 | Variable font + italic variant assets exist | `assets/fonts/PlusJakartaSans-Variable.ttf`, `PlusJakartaSans-Italic-Variable.ttf` | ✅ Pass |
 | No `<link rel="stylesheet" href="https://fonts.googleapis.com/...">` in `web/index.html` | `web/index.html` (full file) | ✅ Pass |
 | No `@import url(https://fonts.googleapis.com/...)` in any CSS | repo-wide grep | ✅ Pass |

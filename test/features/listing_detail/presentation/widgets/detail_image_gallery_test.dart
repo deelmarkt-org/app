@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -16,15 +17,17 @@ void main() {
     VoidCallback? onShare,
     bool hideFavourite = false,
   }) {
-    return MaterialApp(
-      theme: DeelmarktTheme.light,
-      home: Scaffold(
-        body: DetailImageGallery(
-          imageUrls: imageUrls,
-          isFavourited: isFavourited,
-          onFavouriteTap: hideFavourite ? null : (onFavouriteTap ?? () {}),
-          onBack: onBack ?? () {},
-          onShare: onShare,
+    return ProviderScope(
+      child: MaterialApp(
+        theme: DeelmarktTheme.light,
+        home: Scaffold(
+          body: DetailImageGallery(
+            imageUrls: imageUrls,
+            isFavourited: isFavourited,
+            onFavouriteTap: hideFavourite ? null : (onFavouriteTap ?? () {}),
+            onBack: onBack ?? () {},
+            onShare: onShare,
+          ),
         ),
       ),
     );

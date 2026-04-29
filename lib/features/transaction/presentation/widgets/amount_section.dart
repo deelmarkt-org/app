@@ -63,24 +63,19 @@ class AmountSection extends StatelessWidget {
     String amount, {
     bool isBold = false,
   }) {
+    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      fontWeight: isBold ? FontWeight.bold : null,
+    );
     return Semantics(
       label: '$label $amount',
       excludeSemantics: true,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: isBold ? FontWeight.bold : null,
-            ),
+          Expanded(
+            child: Text(label, style: style, overflow: TextOverflow.ellipsis),
           ),
-          Text(
-            amount,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: isBold ? FontWeight.bold : null,
-            ),
-          ),
+          const SizedBox(width: Spacing.s3),
+          Text(amount, style: style),
         ],
       ),
     );

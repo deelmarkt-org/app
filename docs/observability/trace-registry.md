@@ -27,7 +27,7 @@
 | **Sub-metrics** | `post_init_to_first_frame_ms`, `dependencies_init_ms` |
 | **Attributes** | `platform`, `network_type`, `locale` |
 | **p95 SLO (Phase 1)** | 2.5 s |
-| **Status** | 🟡 Defined — wiring follow-up (P-56 Phase B) |
+| **Status** | ✅ Wired and reporting in production |
 
 ### `listing_load`
 
@@ -40,7 +40,7 @@
 | **Sub-metrics** | `gallery_loaded_ms`, `seller_loaded_ms` |
 | **Attributes** | `cache_hit`, `listing_category`, `listing_price_bucket`, `network_type` |
 | **p95 SLO (Phase 1)** | 1.5 s |
-| **Status** | 🟡 Defined — wiring follow-up (P-56 Phase B) |
+| **Status** | ✅ Wired and reporting in production |
 | **Note** | "Loaded" = user can read price + decide to scroll. Gallery completion is a sub-metric, not the stop boundary. |
 
 ### `search_query`
@@ -54,7 +54,7 @@
 | **Sub-metrics** | `result_count` (bucketed) |
 | **Attributes** | `result_count`, `cache_hit`, `network_type`, `locale` |
 | **p95 SLO (Phase 1)** | 800 ms |
-| **Status** | 🟡 Defined — wiring follow-up (P-56 Phase B) |
+| **Status** | ✅ Wired and reporting in production |
 
 ### `payment_create`
 
@@ -67,7 +67,7 @@
 | **Sub-metrics** | `mollie_response_ms` |
 | **Attributes** | `payment_method`, `network_type`, `listing_price_bucket` |
 | **p95 SLO (Phase 1)** | 3.0 s |
-| **Status** | 🟡 Defined — wiring follow-up (P-56 Phase B) |
+| **Status** | ✅ Wired and reporting in production |
 | **Note** | CLAUDE.md §6.1 requires 100% test coverage on payment paths. Tracer integration must not regress this. |
 
 ### `image_load`
@@ -76,12 +76,12 @@
 |-------|-------|
 | **Constant** | `TraceNames.imageLoad` |
 | **Owner** | pizmam |
-| **Start boundary** | `cached_network_image` `imageBuilder` / `errorWidget` callback wrap point in `lib/widgets/cards/deel_card_image.dart` and `lib/widgets/media/image_gallery_page.dart` |
+| **Start boundary** | `CachedNetworkImage` `imageBuilder` / `errorWidget` wrap point in `lib/widgets/cards/deel_card_image.dart`; `ConsumerStatefulWidget.initState` in `lib/widgets/media/image_gallery_page.dart` |
 | **Stop boundary** | Decode-success or decode-error |
 | **Sub-metrics** | (none — single-shot) |
 | **Attributes** | `cache_hit`, `image_size_bucket`, `network_type` |
 | **p95 SLO (Phase 1)** | 1.2 s |
-| **Status** | 🟡 Defined — wiring follow-up (P-56 Phase B) |
+| **Status** | ✅ Wired and reporting in production |
 | **Cross-ref** | ADR-022 image-delivery pipeline |
 
 ---
