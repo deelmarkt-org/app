@@ -162,7 +162,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 - **Owner:** mixed (see below) · **Severity:** High · **Effort:** L
 - **Why:** Today only `rate_limit_seam_test.dart` and `suspension_flow_integration_test.dart` exist. Listing creation, search, payment, chat, shipping have no integration coverage. Unit tests don't catch contract drift between layers.
 - **Acceptance (split):**
-  - [ ] 🔵 [P-54] `e2e_listing_creation_test.dart` — capture → form → publish → appears in search
+  - [x] 🔵 [P-54] `e2e_listing_creation_test.dart` — capture → form → publish → appears in search ✅ 2026-04-29 — `test/integration/e2e_listing_creation_test.dart`
   - [ ] 🟢 [B-62] `e2e_payment_workflow_test.dart` — checkout → escrow → tracking → release
   - [ ] 🟢 [B-63] `e2e_shipping_test.dart` — label → tracking events → delivery confirmation
   - [ ] 🔴 [R-43] `e2e_chat_offer_test.dart` — message → offer → accept → transaction
