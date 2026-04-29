@@ -18,11 +18,12 @@
 /// ```
 library;
 
-import 'dart:io' show Platform;
+import 'dart:io' show Directory, Platform;
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart'
+    show MethodCall, MethodChannel, rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -57,6 +58,17 @@ Future<void> initScreenshotEnvironment() async {
   // drivers share a single `goldens/` subdirectory.
   goldenFileComparator = TolerantGoldenFileComparator.forTestFile(
     'test/screenshots/drivers/shipping_qr_screenshot_test.dart',
+  );
+
+  // Mock path_provider so flutter_cache_manager's IOFileSystem does not throw
+  // MissingPluginException when it calls getTemporaryDirectory on the first
+  // CachedNetworkImage render in each test isolate. Without this, the first
+  // nl_NL light variant per driver file fails because path_provider has no
+  // native platform implementation in headless Flutter tests.
+  final binding = TestWidgetsFlutterBinding.ensureInitialized();
+  binding.defaultBinaryMessenger.setMockMethodCallHandler(
+    const MethodChannel('plugins.flutter.io/path_provider'),
+    (MethodCall methodCall) async => Directory.systemTemp.path,
   );
 }
 

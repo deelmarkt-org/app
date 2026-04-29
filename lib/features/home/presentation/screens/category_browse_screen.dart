@@ -149,19 +149,11 @@ class _LoadingView extends StatelessWidget {
   }
 
   Widget _buildListSkeleton() {
-    return Padding(
+    return ListView.separated(
       padding: const EdgeInsets.all(Spacing.s4),
-      child: Column(
-        children: List.generate(
-          _skeletonCount,
-          (index) => Padding(
-            padding: EdgeInsets.only(
-              bottom: index < _skeletonCount - 1 ? Spacing.s3 : 0,
-            ),
-            child: const SkeletonBox(height: 80),
-          ),
-        ),
-      ),
+      itemCount: _skeletonCount,
+      separatorBuilder: (_, _) => const SizedBox(height: Spacing.s3),
+      itemBuilder: (_, _) => const SkeletonBox(height: 80),
     );
   }
 
