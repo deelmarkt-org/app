@@ -20,13 +20,24 @@ void main() {
       expect(find.text('admin.empty.refresh'), findsOneWidget);
     });
 
-    testWidgets('hides view-logs link when onViewLogs is null', (tester) async {
+    testWidgets('hides view-logs link entirely when onViewLogs is null '
+        '(no TextButton, no Semantics wrapper, no l10n key text)', (
+      tester,
+    ) async {
       await pumpTestWidget(
         tester,
         AdminEmptyHeroCard(onRefresh: () {}, onViewLogs: null),
       );
 
+      // No TextButton in the tree
       expect(find.byType(TextButton), findsNothing);
+      // The view_logs l10n key string must not appear anywhere — verifies
+      // both the Semantics(label:) wrapper AND the visible Text child are
+      // skipped, not just one of them.
+      expect(find.text('admin.empty.view_logs'), findsNothing);
+      // The Refresh CTA is still present — confirms the conditional only
+      // hides the secondary link, not the primary CTA.
+      expect(find.text('admin.empty.refresh'), findsOneWidget);
     });
 
     testWidgets('shows view-logs link when onViewLogs is provided', (
