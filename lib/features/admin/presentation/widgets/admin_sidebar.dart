@@ -1,13 +1,12 @@
-// TODO(#133): File exceeds 200-line limit (221 lines). Extract sub-widgets.
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
-import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/features/admin/presentation/widgets/admin_sidebar_nav_tile.dart';
 
 /// 240px-wide admin sidebar: ModerationHub branding, 6 nav items,
 /// and footer links (Support · Sign Out).
@@ -97,7 +96,7 @@ class AdminSidebar extends StatelessWidget {
       separatorBuilder: (_, _) => const SizedBox(height: Spacing.s1),
       itemBuilder: (_, index) {
         final (icon, key) = _items[index];
-        return _NavTile(
+        return AdminSidebarNavTile(
           icon: icon,
           label: key.tr(),
           selected: index == selectedIndex,
@@ -165,63 +164,6 @@ class AdminSidebar extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavTile extends StatelessWidget {
-  const _NavTile({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final bg = selected ? DeelmarktColors.primarySurface : Colors.transparent;
-    final fg = selected ? DeelmarktColors.primary : DeelmarktColors.neutral700;
-    final radius = BorderRadius.circular(DeelmarktRadius.sm);
-
-    return Semantics(
-      label: label,
-      button: true,
-      selected: selected,
-      child: Material(
-        color: bg,
-        borderRadius: radius,
-        child: InkWell(
-          borderRadius: radius,
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.s3,
-              vertical: Spacing.s2,
-            ),
-            child: Row(
-              children: [
-                Icon(icon, size: DeelmarktIconSize.sm, color: fg),
-                const SizedBox(width: Spacing.s3),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: (selected
-                            ? Theme.of(context).textTheme.labelLarge
-                            : Theme.of(context).textTheme.bodyMedium)
-                        ?.copyWith(color: fg),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
