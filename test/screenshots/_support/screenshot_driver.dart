@@ -28,6 +28,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart'
+    show databaseFactory, databaseFactoryFfi, sqfliteFfiInit;
 
 import 'package:deelmarkt/core/design_system/theme.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
@@ -70,6 +72,15 @@ Future<void> initScreenshotEnvironment() async {
     const MethodChannel('plugins.flutter.io/path_provider'),
     (MethodCall methodCall) async => Directory.systemTemp.path,
   );
+
+  // Initialise sqflite's in-process FFI factory. flutter_cache_manager opens a
+  // sqflite database (CacheObjectProvider) on first CachedNetworkImage render;
+  // without a registered platform plugin, sqflite_common's databaseFactory
+  // throws "databaseFactory not initialized" and the first test in each driver
+  // file fails. sqflite_common_ffi ships an in-process implementation that
+  // works in headless tests (CI macOS runners ship sqlite3 system-wide).
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
 }
 
 /// Pump [screen] in screenshot mode and capture a golden file.
