@@ -524,6 +524,20 @@
     "addFavourite": "Add to favourites",
     "removeFavourite": "Remove from favourites"
   },
+  "dsa": {
+    "statement_of_reasons": {
+      "a11y": "Statement of reasons for an automated moderation decision",
+      "headline": "Your content was flagged",
+      "what_flagged": "What was flagged",
+      "why": "Why",
+      "how": "How was this decision made",
+      "automated_indicator": "Automated decision based on our scam-detection classifier",
+      "confidence": "Classifier confidence: {percent}%",
+      "model_version": "Model: {version}",
+      "policy_version": "Policy revision: {version}",
+      "appeal_cta": "Appeal this decision"
+    }
+  },
   "scam_alert": {
     "title_high": "This message may contain a scam",
     "title_low": "Heads up: be careful with external links",
