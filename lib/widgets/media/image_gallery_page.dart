@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/animation.dart';
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer.dart';
+import 'package:deelmarkt/core/services/performance/performance_tracer_provider.dart';
+import 'package:deelmarkt/core/services/performance/trace_names.dart';
 
 /// Single-image page used by [ImageGallery] and [ImageGalleryFullscreen].
 ///
@@ -16,7 +22,7 @@ import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 ///
 /// Carries `index` + `total` so each image can announce itself to
 /// screen readers as "Photo n of total".
-class ImageGalleryPage extends StatelessWidget {
+class ImageGalleryPage extends ConsumerStatefulWidget {
   const ImageGalleryPage({
     required this.imageUrl,
     required this.index,
@@ -35,6 +41,52 @@ class ImageGalleryPage extends StatelessWidget {
   final int? cacheWidth;
 
   @override
+  ConsumerState<ImageGalleryPage> createState() => _ImageGalleryPageState();
+}
+
+class _ImageGalleryPageState extends ConsumerState<ImageGalleryPage> {
+  // GH #221 — image_load trace covers Image.network fetch from build entry
+  // to first decoded frame (success path) or errorBuilder invocation (failure
+  // path). Single trace per widget instance; _stopped flag makes stop()
+  // idempotent so re-renders don't double-stop the handle.
+  PerformanceTraceHandle? _traceHandle;
+  bool _stopped = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _traceHandle = ref
+        .read(performanceTracerProvider)
+        .start(TraceNames.imageLoad);
+  }
+
+  @override
+  void didUpdateWidget(ImageGalleryPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _stopTraceOnce();
+      _stopped = false;
+      _traceHandle = ref
+          .read(performanceTracerProvider)
+          .start(TraceNames.imageLoad);
+    }
+  }
+
+  void _stopTraceOnce() {
+    if (_stopped) return;
+    _stopped = true;
+    final handle = _traceHandle;
+    if (handle != null) unawaited(handle.stop());
+  }
+
+  @override
+  void dispose() {
+    // Safety net: widget disposed mid-fetch (swipe away, gallery close).
+    _stopTraceOnce();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final reduceMotion = MediaQuery.of(context).disableAnimations;
     final duration = DeelmarktAnimation.resolve(
@@ -43,11 +95,13 @@ class ImageGalleryPage extends StatelessWidget {
     );
 
     Widget image = Image.network(
-      imageUrl,
-      fit: fit,
-      cacheWidth: cacheWidth,
+      widget.imageUrl,
+      fit: widget.fit,
+      cacheWidth: widget.cacheWidth,
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded || frame != null) {
+          // First decode complete → trace ends on success path.
+          _stopTraceOnce();
           return AnimatedOpacity(
             opacity: 1.0,
             duration: duration,
@@ -57,19 +111,26 @@ class ImageGalleryPage extends StatelessWidget {
         }
         return _placeholder(context);
       },
-      errorBuilder: (context, error, stackTrace) => _placeholder(context),
+      errorBuilder: (context, error, stackTrace) {
+        // Decode failed → trace ends on error path.
+        _stopTraceOnce();
+        return _placeholder(context);
+      },
     );
 
     image = Semantics(
       image: true,
       label: 'image_gallery.photoSemantics'.tr(
-        namedArgs: {'current': '${index + 1}', 'total': '$total'},
+        namedArgs: {
+          'current': '${widget.index + 1}',
+          'total': '${widget.total}',
+        },
       ),
       child: image,
     );
 
-    if (heroTag != null) {
-      image = Hero(tag: heroTag!, child: image);
+    if (widget.heroTag != null) {
+      image = Hero(tag: widget.heroTag!, child: image);
     }
 
     return image;

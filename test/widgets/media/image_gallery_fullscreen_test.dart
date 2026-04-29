@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -8,6 +9,38 @@ import 'package:deelmarkt/widgets/media/image_gallery_fullscreen.dart';
 import 'package:deelmarkt/widgets/media/image_gallery_page.dart';
 
 import 'image_gallery_test_helper.dart';
+
+/// Mounts [ImageGalleryFullscreen] inside a real [Navigator] (necessary for
+/// tests that exercise push/pop behaviour) and navigates to it.
+///
+/// Extracted to avoid repeating the 20-line scaffold in every dismissal test.
+Future<void> _openFullscreenViaNavigator(WidgetTester tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      child: MaterialApp(
+        home: Builder(
+          builder:
+              (context) => Scaffold(
+                body: ElevatedButton(
+                  onPressed:
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder:
+                              (_) => const ImageGalleryFullscreen(
+                                imageUrls: sampleImageUrls,
+                              ),
+                        ),
+                      ),
+                  child: const Text('Open'),
+                ),
+              ),
+        ),
+      ),
+    ),
+  );
+  await tester.tap(find.text('Open'));
+  await tester.pumpAndSettle();
+}
 
 void main() {
   group('ImageGalleryFullscreen', () {
@@ -119,18 +152,20 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder:
-                  (context) => ElevatedButton(
-                    onPressed:
-                        () => ImageGalleryFullscreen.show(
-                          context,
-                          imageUrls: sampleImageUrls,
-                        ),
-                    child: const Text('Open'),
-                  ),
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder:
+                    (context) => ElevatedButton(
+                      onPressed:
+                          () => ImageGalleryFullscreen.show(
+                            context,
+                            imageUrls: sampleImageUrls,
+                          ),
+                      child: const Text('Open'),
+                    ),
+              ),
             ),
           ),
         ),
@@ -141,30 +176,7 @@ void main() {
     });
 
     testWidgets('close button taps Navigator.maybePop', (tester) async {
-      // Mount inside a Navigator so pop has a parent route to pop from.
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder:
-                (context) => Scaffold(
-                  body: ElevatedButton(
-                    onPressed:
-                        () => Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder:
-                                (_) => const ImageGalleryFullscreen(
-                                  imageUrls: sampleImageUrls,
-                                ),
-                          ),
-                        ),
-                    child: const Text('Open'),
-                  ),
-                ),
-          ),
-        ),
-      );
-      await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await _openFullscreenViaNavigator(tester);
       expect(find.byType(ImageGalleryFullscreen), findsOneWidget);
 
       // Tap close — pops route.
@@ -176,29 +188,7 @@ void main() {
     testWidgets('vertical fling past threshold dismisses the route', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder:
-                (context) => Scaffold(
-                  body: ElevatedButton(
-                    onPressed:
-                        () => Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder:
-                                (_) => const ImageGalleryFullscreen(
-                                  imageUrls: sampleImageUrls,
-                                ),
-                          ),
-                        ),
-                    child: const Text('Open'),
-                  ),
-                ),
-          ),
-        ),
-      );
-      await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await _openFullscreenViaNavigator(tester);
 
       // Fling down far beyond the 120px threshold — exercises
       // _handleVerticalDragUpdate + _handleVerticalDragEnd dismissal path.
@@ -210,29 +200,7 @@ void main() {
     testWidgets(
       'short vertical drag below threshold snaps back and does NOT dismiss',
       (tester) async {
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Builder(
-              builder:
-                  (context) => Scaffold(
-                    body: ElevatedButton(
-                      onPressed:
-                          () => Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder:
-                                  (_) => const ImageGalleryFullscreen(
-                                    imageUrls: sampleImageUrls,
-                                  ),
-                            ),
-                          ),
-                      child: const Text('Open'),
-                    ),
-                  ),
-            ),
-          ),
-        );
-        await tester.tap(find.text('Open'));
-        await tester.pumpAndSettle();
+        await _openFullscreenViaNavigator(tester);
 
         // Drag far below the 120px threshold — snap-back branch fires.
         await tester.drag(find.byType(PageView), const Offset(0, 40));
