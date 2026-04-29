@@ -214,7 +214,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 - [x] GoRouter auth guard works with splash screen (no flash of unauthenticated content) ✅ PR #14
 - [x] `/onboarding` route renders, auth redirect `/home` ↔ `/onboarding` works ✅ PR #14
 - [x] Mock data layer provides all entity interfaces with immutable entities ✅ PR #14
-- [ ] Performance baseline measured and documented
+- [x] Performance baseline measured and documented ✅ 2026-04-29 — see `docs/observability/web-perf-baseline.md` (bundle 1.55 MB gzip CDN / 4.42 MB local — under 5 MB Phase 1 budget; full Lighthouse pass blocked on `STAGING_URL` C3)
 - [x] Web error boundary catches unhandled errors gracefully ✅ PR #14
 - [ ] Font loading has no FOUT (Flash of Unstyled Text)
 - [x] Dark mode toggle works with all semantic tokens wired ✅ PR #14
@@ -228,7 +228,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | 1b | **⚠️ CRITICAL:** Add `usePathUrlStrategy()` to `main.dart` | 0.5h | pizmam | 1 | None — this is a one-line change. Without it all URLs break. Add `flutter_web_plugins` import. Must be called BEFORE `WidgetsFlutterBinding.ensureInitialized()`. | ✅ PR #14 |
 | 2 | Flutter Web build pipeline — validate Flutter's default Service Worker | 4h | pizmam | 1-2 | Flutter generates `flutter_service_worker.js` automatically. Do NOT write custom SW — it conflicts with Flutter's built-in. Validate cache behaviour only. Custom Workbox optimization deferred to Phase 5. | ✅ PR #14 |
 | 3 | `P-48` ADR-019: PWA strategy document | 1h | pizmam | 2 | — | ✅ PR #14 |
-| 4 | `P-45` Performance budget + Lighthouse baseline | 4h | pizmam | 2-3 | If Lighthouse < 60 (CanvasKit floor), document and create Phase 5 optimization ticket | ⏳ Baseline not yet measured |
+| 4 | `P-45` Performance budget + Lighthouse baseline | 4h | pizmam | 2-3 | If Lighthouse < 60 (CanvasKit floor), document and create Phase 5 optimization ticket | ✅ 2026-04-29 bundle baseline — `docs/observability/web-perf-baseline.md` (1.55 MB gzip CDN / 4.42 MB local under 5 MB budget). Lighthouse run pending `STAGING_URL` (C3, belengaz). |
 | 5 | `P-49` Responsive shell validation (4 breakpoints) | 2h | pizmam | 3 | — | ✅ PR #14 |
 | 6 | `P-50` GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). | ✅ PR #14 |
 | 7 | `P-51` Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. | ✅ PR #14 |
