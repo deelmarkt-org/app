@@ -35,6 +35,10 @@ class ScamFlagStatement extends Equatable {
     required this.flaggedAt,
     required this.contentRef,
   }) : assert(score >= 0.0 && score <= 1.0, 'score must be in [0.0, 1.0]'),
+       // ignore: prefer_is_not_empty
+       // `.isNotEmpty` is not const-evaluable in a const-constructor
+       // assert (analyzer raises `invalid_constant`); `.length != 0`
+       // is the const-safe equivalent.
        assert(
          reasons.length != 0,
          'reasons must not be empty — use [ScamReason.other] when '

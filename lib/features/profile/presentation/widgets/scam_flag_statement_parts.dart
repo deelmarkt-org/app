@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
@@ -30,7 +28,7 @@ class ScamStatementSection extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: DeelmarktColors.neutral500,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             letterSpacing: 0.4,
           ),
         ),
@@ -45,6 +43,11 @@ class ScamStatementSection extends StatelessWidget {
 /// `scam_alert.reason.*` l10n keys via [ScamReason.localizationKey] so
 /// adding a new reason on the backend surfaces here AND in the chat
 /// banner without copy duplication.
+///
+/// The bullet glyph is a `Text` sharing the row's `textStyle` so it
+/// scales with the user's font-size preference and shares the same
+/// text baseline as the reason copy — no magic-number top padding
+/// required for icon alignment.
 class ScamReasonsList extends StatelessWidget {
   const ScamReasonsList({required this.reasons, super.key});
 
@@ -52,6 +55,9 @@ class ScamReasonsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -62,21 +68,10 @@ class ScamReasonsList extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 6, right: Spacing.s2),
-                  child: Icon(
-                    PhosphorIconsRegular.dotOutline,
-                    size: 12,
-                    color: DeelmarktColors.neutral500,
-                  ),
-                ),
+                Text('•', style: textStyle),
+                const SizedBox(width: Spacing.s2),
                 Expanded(
-                  child: Text(
-                    reason.localizationKey.tr(),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: DeelmarktColors.neutral700,
-                    ),
-                  ),
+                  child: Text(reason.localizationKey.tr(), style: textStyle),
                 ),
               ],
             ),
@@ -97,7 +92,7 @@ class ScamDecisionMetadata extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodySmall?.copyWith(
-      color: DeelmarktColors.neutral500,
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
       fontFeatures: const [FontFeature.tabularFigures()],
     );
     return Column(

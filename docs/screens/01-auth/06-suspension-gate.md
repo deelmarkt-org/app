@@ -38,6 +38,11 @@ Displayed whenever the router guard detects an active sanction returned by the `
 │    • "Reason" label             │
 │    • Reason text (body-lg)      │
 │                                 │
+│  ScamFlagStatementOfReasons     │  ← conditional
+│    • DSA Art.17 panel — only    │
+│      when sanction.scamFlag-    │
+│      Statement != null          │
+│                                 │
 │  _CountdownChip  OR  "Permanent"│
 │    • Days remaining (temp)      │
 │    • Static chip (ban)          │
@@ -55,12 +60,40 @@ Displayed whenever the router guard detects an active sanction returned by the `
 
 ---
 
+### DSA Transparency Panel (conditional)
+
+When the gating sanction was issued by the automated scam classifier
+(R-44), `sanction.scamFlagStatement` is non-null and the screen
+inserts a `ScamFlagStatementOfReasons` widget between the reason card
+and the countdown chip. The panel surfaces the four DSA Art. 17(3)
+transparency fields — opaque content reference, localised reason
+list, automation indicator with confidence/model/policy versions, and
+a secondary Appeal CTA — required for any user-facing automated
+moderation decision.
+
+- **Source entity:** `ScamFlagStatement` (pure-Dart domain entity in
+  `lib/features/profile/domain/entities/scam_flag_statement.dart`).
+  Populated by reso's `scam_flags` Edge Function (R-44 backend).
+- **Conditional rendering:** widget is omitted entirely when the
+  sanction was issued by a human moderator (no statement payload).
+- **Appeal wiring:** the panel's secondary `onAppeal` callback routes
+  to the same `/appeal-form` destination as the primary `_CtaRow`
+  Appeal button, so a user reading the transparency panel does not
+  need to scroll past it to take action. The `_CtaRow` Appeal button
+  remains the canonical primary CTA.
+- **Reference widget:** see
+  `lib/features/profile/presentation/widgets/scam_flag_statement_of_reasons.dart`
+  for the full layout (header, three sections, optional CTA).
+
+---
+
 ## Components
 
 | Component | Widget | Notes |
 |-----------|--------|-------|
 | Header | `_SanctionHeader` | Icon + type chip + title; `Semantics(liveRegion: true)` on state transitions |
 | Reason | `DeelCard` | `DeelmarktRadius.md`, neutral100 background |
+| DSA panel | `ScamFlagStatementOfReasons` | Conditional — rendered only when `sanction.scamFlagStatement != null`; routes Appeal CTA to `/appeal-form` |
 | Countdown | `_CountdownChip` | Amber chip for temp suspension; hidden for `ban` |
 | Receipt | `_ReceiptBanner` | Shown only in `pending` state; see §States |
 | CTAs | `_CtaRow` | Appeal = `DeelButton.primary`, Contact = `DeelButton.ghost` |

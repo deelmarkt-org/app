@@ -67,7 +67,7 @@ class ScamFlagStatementOfReasons extends StatelessWidget {
               child: Text(
                 statement.contentRef,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: DeelmarktColors.neutral700,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -116,7 +116,7 @@ class ScamFlagStatementOfReasons extends StatelessWidget {
           child: Text(
             'dsa.statement_of_reasons.headline'.tr(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: DeelmarktColors.neutral900,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
