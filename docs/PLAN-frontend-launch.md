@@ -216,7 +216,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 - [x] Mock data layer provides all entity interfaces with immutable entities ✅ PR #14
 - [ ] Performance baseline measured and documented
 - [x] Web error boundary catches unhandled errors gracefully ✅ PR #14
-- [ ] Font loading has no FOUT (Flash of Unstyled Text)
+- [x] Font loading has no FOUT (Flash of Unstyled Text) ✅ verified 2026-04-29 — see `docs/observability/web-font-loading.md`
 - [x] Dark mode toggle works with all semantic tokens wired ✅ PR #14
 
 **Tasks** (ordered by execution day — 8 working days):
@@ -233,7 +233,7 @@ Trust is VISIBLE, not hidden. Every screen radiates safety:
 | 6 | `P-50` GoRouter auth guard + splash screen + `/onboarding` route | 4h | pizmam | 4 | See implementation notes below. If race condition unresolvable, deploy placeholder guard that only checks `currentUser != null` (no stream). | ✅ PR #14 |
 | 7 | `P-51` Mock data layer (5 entities + repositories + mocks) | 7h | pizmam | 5-6 | If 7h insufficient, prioritize Listing + Category entities only (minimum viable mock layer). User, Transaction, Message deferred to Phase 2 start. | ✅ PR #14 |
 | 8 | Dark mode validation (`P-47` part 1) | 4h | pizmam | 7 | — | ✅ PR #14 |
-| 9 | `P-52` Web error boundary + font loading strategy | 2h | pizmam | 7 | — | ✅ Error boundary done, font FOUT TBD |
+| 9 | `P-52` Web error boundary + font loading strategy | 2h | pizmam | 7 | — | ✅ Error boundary done (PR #14); font FOUT verified 2026-04-29 — `docs/observability/web-font-loading.md` |
 | 10 | Final validation + quality gate | 4h | pizmam | 8 | — | ✅ PR #14 (557 tests, 0 warnings) |
 
 **Phase total: ~37h** / 8 working days (2 weeks at ~25h/week pace)
