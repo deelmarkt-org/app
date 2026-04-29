@@ -46,10 +46,14 @@ class SellerInfoRow extends StatelessWidget {
           ),
         );
       }
+      // Flexible so the response-time text shrinks/ellipsizes when the seller
+      // card is in a narrow column (e.g. iPad expanded-layout right rail).
       parts.add(
-        _ResponseTimePart(
-          label: _formatResponseTime(seller.responseTimeMinutes!),
-          color: secondaryColor,
+        Flexible(
+          child: _ResponseTimePart(
+            label: _formatResponseTime(seller.responseTimeMinutes!),
+            color: secondaryColor,
+          ),
         ),
       );
     }
@@ -146,7 +150,13 @@ class _ResponseTimePart extends StatelessWidget {
       children: [
         Icon(PhosphorIcons.clock(), size: DeelmarktIconSize.xs, color: color),
         const SizedBox(width: 2),
-        Text(label, style: theme.textTheme.bodySmall?.copyWith(color: color)),
+        Flexible(
+          child: Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(color: color),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
       ],
     );
   }

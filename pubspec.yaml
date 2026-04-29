@@ -114,6 +114,15 @@ dev_dependencies:
   plugin_platform_interface: any  # DEPENDENCY_PIN_EXEMPT: SDK-shipped, must track upstream transitively
   url_launcher_platform_interface: ^2.3.2
 
+  # In-process sqflite for headless tests. flutter_cache_manager opens a
+  # sqflite database for its CacheObjectProvider on first CachedNetworkImage
+  # render. The regular `sqflite` plugin requires platform channel registration
+  # which is unavailable in widget tests, so `databaseFactory` defaults to a
+  # stub that throws "databaseFactory not initialized". `sqflite_common_ffi`
+  # ships an in-process implementation we can wire in via
+  # `databaseFactory = databaseFactoryFfi` in the screenshot driver.
+  sqflite_common_ffi: ^2.3.3
+
 flutter:
   uses-material-design: true
 
