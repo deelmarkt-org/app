@@ -7,8 +7,7 @@ import 'package:deelmarkt/widgets/buttons/deel_button_style.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button_tokens.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button_types.dart';
 
-// Re-export the variant + size enums so existing call sites that
-// `import 'deel_button.dart';` keep working unchanged.
+// Re-export so existing callers keep `import 'deel_button.dart'` unchanged.
 export 'package:deelmarkt/widgets/buttons/deel_button_types.dart';
 
 /// DeelMarkt button component.
