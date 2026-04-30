@@ -1,3 +1,5 @@
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
+
 /// Account sanction types. Matches the `sanction_type` DB enum (migration R-37).
 ///
 /// Only [suspension] and [ban] block account access.
@@ -34,6 +36,7 @@ class SanctionEntity {
     this.appealBody,
     this.appealDecision,
     this.resolvedAt,
+    this.scamFlagStatement,
   });
 
   final String id;
@@ -59,6 +62,18 @@ class SanctionEntity {
 
   /// When the appeal was resolved by a moderator.
   final DateTime? resolvedAt;
+
+  /// DSA Art. 17 statement of reasons for the automated decision that
+  /// produced this sanction, when one applies. `null` for sanctions
+  /// issued by a human moderator (no automated classifier output to
+  /// disclose).
+  ///
+  /// Surfaced by the [ScamFlagStatementOfReasons] widget on the
+  /// suspension gate so the user can see the rule, confidence, model,
+  /// and policy version that drove the automated decision — and link
+  /// directly into the appeal flow (R-44 wiring; backend portion owned
+  /// by reso).
+  final ScamFlagStatement? scamFlagStatement;
 
   /// Whether this sanction currently blocks account access.
   ///
