@@ -106,12 +106,14 @@ class ScamDecisionMetadata extends StatelessWidget {
           ),
           style: style,
         ),
+        const SizedBox(height: Spacing.s1),
         Text(
           'dsa.statement_of_reasons.model_version'.tr(
             namedArgs: {'version': statement.modelVersion},
           ),
           style: style,
         ),
+        const SizedBox(height: Spacing.s1),
         Text(
           'dsa.statement_of_reasons.policy_version'.tr(
             namedArgs: {'version': statement.policyVersion},
