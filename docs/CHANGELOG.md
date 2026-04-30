@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Refactoring
+
+- **refactor(supabase): close B-64 — decompose 2 oversized Supabase repositories** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
+  - `lib/features/home/data/supabase/supabase_listing_repository.dart` — 231 → 196 LOC (under §2.1 200-LOC cap with 4-line margin). Extracted distance-search flow (`getNearby` 53-LOC RPC + enrichment) into `lib/features/home/data/supabase/supabase_listing_nearby_helper.dart` (NEW, 91 LOC). Repository delegates via `_nearbyHelper.fetch(...)`; public `ListingRepository` interface unchanged. Mirrors P-54 pattern (PR #237/#238/#240) for behavior-equivalent decomposition.
+  - `lib/features/messages/data/supabase/supabase_message_repository.dart` — 207 → 160 LOC. Extracted Realtime subscription orchestration (`watchMessages` + `_emitSnapshot` + `_subscribeChanges`, 63 LOC) into `lib/features/messages/data/supabase/supabase_message_realtime_subscription.dart` (NEW, 108 LOC). Repository creates the subscription helper in its constructor and delegates `watchMessages` to a one-line passthrough. Snapshot loader is dependency-injected to keep the helper free of repository internals.
+  - All 4 files under §2.1 200-LOC cap. Pure refactor — no behavior change. Existing tests pass unchanged. Closes B-64 from Tier-1 retrospective.
+
 ### Testing
 
 - **fix(screenshots): P-54 PR-A1 — fix rootBundle eviction keys + canary GREEN** — closes #203 test-isolation defect. `RootBundleAssetLoader` builds cache keys with hyphens (`nl-NL.json`); previous eviction code used underscores (`nl_NL.json`) leaving warm entries untouched and canary failing after 24 loop iterations. Eviction paths now derived dynamically from `kScreenshotLocales`. Adds second-iteration canary regression guard, `sqflite_common_ffi` dev dep, and `path_provider` mock in `initScreenshotEnvironment` so headless `CachedNetworkImage` renders no longer throw `MissingPluginException`. Bundles four prerequisite widget overflow fixes (`category_browse_screen`, `seller_info_row`, `action_section`, `amount_section`) without which the screenshot drivers throw `RenderFlex overflowed` exceptions and block the PR-A1 canary. See `docs/PLAN-P54-…`.
