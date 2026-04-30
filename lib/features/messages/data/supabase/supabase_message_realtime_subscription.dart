@@ -49,6 +49,11 @@ class SupabaseMessageRealtimeSubscription {
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {
         if (!await _emitSnapshot(conversationId, controller)) return;
+        // Listener may have cancelled while _emitSnapshot was awaiting; without
+        // this guard _subscribeChanges would create a RealtimeChannel that
+        // onCancel can no longer unsubscribe (channel was still null when it
+        // ran), leaking a Supabase websocket subscription.
+        if (controller.isClosed) return;
         channel = _subscribeChanges(conversationId, controller);
       },
       onCancel: () {
