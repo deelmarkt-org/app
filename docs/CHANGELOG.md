@@ -2,8 +2,13 @@
 
 ## [Unreleased]
 
+### Security
+
+- **chore(security): add root `SECURITY.md` disclosure policy** — closes Tier-1 retrospective `B-67`. Covers GitHub Security Advisories (primary) + `security@deelmarkt.com` (secondary), conservative SLAs (5d ack / 10d triage / 14d critical fix / 90d coordinated disclosure), explicit out-of-scope list (DoS, social-eng, third-party deps, content moderation), good-faith safe-harbor language aligned with OWASP Vulnerability Disclosure Cheat Sheet, and EU regulatory hooks (GDPR Art.33 72h notification, NIS2 Art.21 alignment, DSA Art.16 boundary routing content-moderation issues away from `security@`). README links to the policy. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
 ### Operations
 
+- **docs(runbooks): add `RUNBOOK-mollie-webhook-failure.md`** — closes 1 of 5 runbooks under Tier-1 retrospective `B-68`. Triage-first response procedure for the Mollie webhook on the money path: confirm-vs-Mollie-status-page, blast-radius capture queries, 7 named failure classes (HMAC mismatch, Redis down, DLQ replay, 404 unknown id, service-role JWT, function timeout, unknown payment status) with class-specific mitigation, post-mitigation verification checklist, communication matrix (engineering → leadership → customers → Mollie → DPA), 5-business-day post-incident retrospective protocol. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
 - **docs(runbooks): close B-68 — add 4 remaining incident response runbooks** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
   - `RUNBOOK-redis-outage.md` (B-68 2/5) — Upstash Redis as idempotency + rate-limit + cache layer; 4 named failure classes (backend outage, credential drift, plan rate limit, network partition); fail-closed pattern preservation guidance; cross-references RUNBOOK-mollie-webhook-failure.md §4.2.
   - `RUNBOOK-supabase-rls-regression.md` (B-68 3/5) — RLS as data-access security boundary; 7 failure classes including over-permissive policy, §14 fixture corruption, SECURITY DEFINER misuse; FREEZE protocol for active cross-tenant exposure; explicit GDPR Art. 33 72h DPA notification path; legal hold for `audit_logs`.

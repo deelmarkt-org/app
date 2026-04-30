@@ -1,5 +1,8 @@
 # PLAN — GH #162: TestFlight `review_information` close-out
 
+> **Status:** ✅ **COMPLETED** — Phase A code merged via [PR #174](https://github.com/deelmarkt-org/app/pull/174) (2026-04-18); Phase B operational tasks completed by belengaz; issue [#162](https://github.com/deelmarkt-org/app/issues/162) **CLOSED**.
+> _Doc preserved for historical reference. The §14 hard-gate App Store reviewer fixture (CLAUDE.md §14) is now the authoritative artifact for ongoing reviewer-credential rotation; see `docs/runbooks/RUNBOOK-appstore-reviewer.md`._
+>
 > **Issue:** [#162 — chore(aso): fill privacy_details.yaml review-info before TestFlight submission](https://github.com/deelmarkt-org/app/issues/162)
 > **Owner:** belengaz (DevOps / App Store credentials)
 > **Workflow:** `.agent/workflows/plan.md` v2.2.0 + `.agent/workflows/quality-gate.md` v2.1.0

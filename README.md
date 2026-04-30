@@ -67,6 +67,10 @@ This automatically copies the `.agent/` folder to your project. Done!
 | Images                 | Cloudinary (free)      | $0      |
 | Cache                  | Upstash Redis (free)   | $0      |
 
+## Security
+
+See [SECURITY.md](SECURITY.md) for our vulnerability disclosure policy, supported platforms, and coordinated disclosure timelines. Report security issues via [GitHub Security Advisories](https://github.com/deelmarkt-org/app/security/advisories/new) (preferred) or [security@deelmarkt.com](mailto:security@deelmarkt.com).
+
 ## License
 
 All rights reserved.
