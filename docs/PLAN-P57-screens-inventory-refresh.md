@@ -1,12 +1,15 @@
 # PLAN-P57 — Refresh `docs/SCREENS-INVENTORY.md` + add anti-staling controls
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #220](https://github.com/deelmarkt-org/app/pull/220) (merged 2026-04-26) as part of the audit quick-wins bundle (P-56 + P-57 + P-58).
+> _Doc preserved for historical reference. PR review + CI is the source of truth._
+>
 > **Owner:** 🔵 pizmam (`@emredursun`)
 > **Branch:** `feature/pizmam-audit-quickwins-P56-P57-P58` (shared)
 > **Severity / Audit ref:** P2 / `M3` (preflight) · `P-57` (retrospective)
 > **Effort:** S — ≤ 1 day
 > **Workflow:** `/plan` v2.2.0 + `/quality-gate` v2.1.0 principles
 > **Task size:** Trivial-to-Medium (1 doc file + optional 1 enforcement script)
-> **Created:** 2026-04-25 · Status: ⏳ Awaiting approval
+> **Created:** 2026-04-25
 
 ---
 
