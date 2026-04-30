@@ -291,6 +291,7 @@ DeelMarkt's codebase quality bar is genuinely high (Clean Architecture, Riverpod
 | B-67 | `SECURITY.md` (disclosure policy) | P2 | S |
 | B-68 | 5 runbooks under `docs/runbooks/` | P2 | M |
 | B-69 | Lighthouse CI LCP/CLS budgets | P3 | M |
+| B-70 | Upgrade `build/deps-manifest.json` to SPDX 2.3 SBOM (deferred from B-60 — current schema `deelmarkt-deps-manifest@1` is functionally complete but not SPDX-conformant; awaits Dart-side SPDX generator) | P3 | M |
 
 ### 🔵 pizmam (`@emredursun`) — ~1.5 weeks
 | ID | Task | Severity | Effort |
