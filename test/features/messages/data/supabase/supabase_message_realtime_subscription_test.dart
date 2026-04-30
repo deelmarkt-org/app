@@ -9,61 +9,152 @@ import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart'
 
 class _MockSupabaseClient extends Mock implements SupabaseClient {}
 
+class _MockRealtimeChannel extends Mock implements RealtimeChannel {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(PostgresChangeEvent.insert);
+    registerFallbackValue(
+      PostgresChangeFilter(
+        type: PostgresChangeFilterType.eq,
+        column: 'conversation_id',
+        value: 'fallback',
+      ),
+    );
+  });
+
+  // Wire common Postgres-change stubs once per test via this helper —
+  // every test plumbs the same chain (channel → onPostgresChanges ×2
+  // → subscribe).
+  void wireChannelChain(_MockSupabaseClient client, _MockRealtimeChannel ch) {
+    when(() => client.channel(any())).thenReturn(ch);
+    when(
+      () => ch.onPostgresChanges(
+        event: any(named: 'event'),
+        schema: any(named: 'schema'),
+        table: any(named: 'table'),
+        filter: any(named: 'filter'),
+        callback: any(named: 'callback'),
+      ),
+    ).thenReturn(ch);
+  }
+
   group('SupabaseMessageRealtimeSubscription', () {
-    // Real instantiation requires a SupabaseClient + a live Realtime
-    // channel; smoke tests verify the public surface area only.
-    // End-to-end coverage of the watch flow is exercised by the
-    // existing SupabaseMessageRepository integration tests + the
-    // realtime smoke test against a staging Supabase project.
     test('class is exported', () {
       expect(SupabaseMessageRealtimeSubscription, isNotNull);
     });
 
     test('public watch method has expected signature', () {
-      // Static reference catches accidental signature changes that
-      // would silently break SupabaseMessageRepository.watchMessages.
       const ctor = SupabaseMessageRealtimeSubscription.new;
       expect(ctor, isNotNull);
     });
 
+    test('snapshotLoader Error (e.g. TypeError) is forwarded to the stream '
+        '(gemini PR #268 medium finding)', () async {
+      final mockClient = _MockSupabaseClient();
+      final mockChannel = _MockRealtimeChannel();
+      wireChannelChain(mockClient, mockChannel);
+      when(mockChannel.subscribe).thenReturn(mockChannel);
+      when(mockChannel.unsubscribe).thenAnswer((_) async => 'ok');
+
+      final subscription = SupabaseMessageRealtimeSubscription(
+        client: mockClient,
+        messagesTable: 'messages',
+        conversationIdCol: 'conversation_id',
+        channelPrefix: 'msg:',
+        snapshotLoader: (_) async => throw TypeError(),
+      );
+
+      final received = <Object>[];
+      final completer = Completer<void>();
+      final sub = subscription
+          .watch('conv_001')
+          .listen(
+            (_) {},
+            onError: (Object e) {
+              received.add(e);
+              if (!completer.isCompleted) completer.complete();
+            },
+          );
+      await completer.future.timeout(const Duration(seconds: 1));
+      await sub.cancel();
+      expect(received, hasLength(1));
+      expect(received.single, isA<TypeError>());
+    });
+
+    test('subscribe-before-snapshot — channel.subscribe() runs before the '
+        'snapshot resolves (gemini PR #268 medium finding)', () async {
+      final mockClient = _MockSupabaseClient();
+      final mockChannel = _MockRealtimeChannel();
+      var clock = 0;
+      var subscribeCalledAt = -1;
+      var snapshotResolvedAt = -1;
+      wireChannelChain(mockClient, mockChannel);
+      when(mockChannel.subscribe).thenAnswer((_) {
+        subscribeCalledAt = clock++;
+        return mockChannel;
+      });
+      when(mockChannel.unsubscribe).thenAnswer((_) async => 'ok');
+
+      final subscription = SupabaseMessageRealtimeSubscription(
+        client: mockClient,
+        messagesTable: 'messages',
+        conversationIdCol: 'conversation_id',
+        channelPrefix: 'msg:',
+        snapshotLoader: (_) async {
+          await Future<void>.delayed(Duration.zero);
+          snapshotResolvedAt = clock++;
+          return const <MessageEntity>[];
+        },
+      );
+
+      final completer = Completer<void>();
+      final sub = subscription.watch('conv_001').listen((_) {
+        if (!completer.isCompleted) completer.complete();
+      });
+      await completer.future.timeout(const Duration(seconds: 1));
+      await sub.cancel();
+      expect(
+        subscribeCalledAt,
+        lessThan(snapshotResolvedAt),
+        reason:
+            'channel.subscribe() MUST run before the snapshot future '
+            'resolves so events landing during the fetch are not missed',
+      );
+    });
+
     test(
-      'cancel during snapshot load does not subscribe a Realtime channel',
+      'onCancel awaits unsubscribe() future (gemini PR #268 medium finding)',
       () async {
-        // Regression test for the early-cancellation race fixed in PR #268:
-        // if the listener cancelled while _emitSnapshot was awaiting, the
-        // subscription helper would still create a RealtimeChannel that
-        // onCancel could never unsubscribe (channel was still null when it
-        // ran), leaking a Supabase websocket subscription. The fix is an
-        // isClosed guard before _subscribeChanges; this test asserts that
-        // no `.channel()` call is made on the underlying SupabaseClient
-        // when cancel races the snapshot.
-        final client = _MockSupabaseClient();
-        final snapshotCompleter = Completer<List<MessageEntity>>();
+        final mockClient = _MockSupabaseClient();
+        final mockChannel = _MockRealtimeChannel();
+        var unsubCompleted = false;
+        wireChannelChain(mockClient, mockChannel);
+        when(mockChannel.subscribe).thenReturn(mockChannel);
+        when(mockChannel.unsubscribe).thenAnswer((_) async {
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+          unsubCompleted = true;
+          return 'ok';
+        });
 
         final subscription = SupabaseMessageRealtimeSubscription(
-          client: client,
+          client: mockClient,
           messagesTable: 'messages',
           conversationIdCol: 'conversation_id',
           channelPrefix: 'msg:',
-          snapshotLoader: (_) => snapshotCompleter.future,
+          snapshotLoader: (_) async => const <MessageEntity>[],
         );
 
-        final stream = subscription.watch('conv_001');
-        final sub = stream.listen((_) {});
-
-        // Cancel while snapshot loader is still pending — this is the race.
+        final sub = subscription.watch('conv_001').listen((_) {});
+        await Future<void>.delayed(const Duration(milliseconds: 5));
         await sub.cancel();
-
-        // Now release the snapshot future. With the fix, the helper checks
-        // controller.isClosed and returns before calling _subscribeChanges.
-        snapshotCompleter.complete(const []);
-        await Future<void>.delayed(Duration.zero);
-
-        // If the guard regresses, _subscribeChanges would call client.channel
-        // here, which the mock would record (and the leak would be observable
-        // in production as a dangling websocket subscription).
-        verifyNever(() => client.channel(any()));
+        expect(
+          unsubCompleted,
+          isTrue,
+          reason:
+              'sub.cancel() MUST resolve only after the underlying '
+              'unsubscribe() future completes',
+        );
       },
     );
   });

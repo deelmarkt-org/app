@@ -9,10 +9,13 @@ import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart'
 /// decomposition; mirrors P-54 pattern).
 ///
 /// Owns the lifecycle of a per-conversation `RealtimeChannel`:
-///   1. Emit a current snapshot via [snapshotLoader].
-///   2. Subscribe to INSERT + UPDATE postgres-changes for that conversation.
-///   3. Re-emit a fresh snapshot on each event.
-///   4. Tear down channel + close controller on `onCancel`.
+///   1. Subscribe to INSERT + UPDATE postgres-changes for that conversation.
+///   2. Emit a current snapshot via [snapshotLoader].
+///   3. Re-emit a fresh snapshot on each event (sequence-tagged so a slow
+///      earlier snapshot can never overwrite a fresher one — observed under
+///      rapid updates that fan out multiple in-flight `_emitSnapshot`s).
+///   4. Tear down channel + close controller on `onCancel`, awaiting the
+///      `unsubscribe()` future so cleanup is properly sequenced.
 ///
 /// The repository injects the snapshot loader so this helper has no
 /// knowledge of the underlying `getMessages` query. Pure orchestration.
@@ -45,53 +48,74 @@ class SupabaseMessageRealtimeSubscription {
   Stream<List<MessageEntity>> watch(String conversationId) {
     late StreamController<List<MessageEntity>> controller;
     RealtimeChannel? channel;
+    var seq = 0;
+    var lastEmitted = 0;
+
+    Future<void> emitSnapshot() async {
+      // Sequence-tag every in-flight snapshot — gemini PR #268 medium
+      // finding: under rapid updates an earlier `_snapshotLoader` future
+      // may resolve AFTER a later one. Without this counter, the slow
+      // response would overwrite the fresher snapshot in the stream and
+      // surface stale data. Only emit if our seq is strictly newer than
+      // anything already on the wire.
+      final mine = ++seq;
+      try {
+        final messages = await _snapshotLoader(conversationId);
+        if (controller.isClosed) return;
+        if (mine <= lastEmitted) return;
+        lastEmitted = mine;
+        controller.add(messages);
+      }
+      // Catch Object (gemini PR #268 medium finding): an `Error` like a
+      // TypeError during DTO parsing would bypass `on Exception` and crash
+      // the subscription silently. Pipe every failure through addError
+      // so the listener observes it.
+      // ignore: avoid_catches_without_on_clauses
+      catch (err) {
+        if (!controller.isClosed) controller.addError(err);
+      }
+    }
 
     controller = StreamController<List<MessageEntity>>(
       onListen: () async {
-        if (!await _emitSnapshot(conversationId, controller)) return;
-        // Listener may have cancelled while _emitSnapshot was awaiting; without
-        // this guard _subscribeChanges would create a RealtimeChannel that
-        // onCancel can no longer unsubscribe (channel was still null when it
-        // ran), leaking a Supabase websocket subscription.
-        if (controller.isClosed) return;
-        channel = _subscribeChanges(conversationId, controller);
+        // Subscribe BEFORE the initial snapshot fetch (gemini PR #268
+        // medium finding): events that fire during the snapshot await
+        // would otherwise be missed. Subscribing first means any change
+        // landing mid-fetch triggers a fresh `emitSnapshot`, and the
+        // sequence guard above ensures the fresher snapshot wins.
+        channel = _subscribeChanges(conversationId, emitSnapshot);
+        await emitSnapshot();
       },
-      onCancel: () {
-        channel?.unsubscribe();
-        controller.close();
+      onCancel: () async {
+        // Await the `unsubscribe()` future (gemini PR #268 medium
+        // finding): the controller awaits onCancel's completion before
+        // the stream contract reports closed, so the websocket is torn
+        // down deterministically before downstream cleanup proceeds.
+        await channel?.unsubscribe();
+        await controller.close();
       },
     );
 
     return controller.stream;
   }
 
-  /// Emits current messages onto [controller]. Returns false on error.
-  Future<bool> _emitSnapshot(
-    String conversationId,
-    StreamController<List<MessageEntity>> controller,
-  ) async {
-    try {
-      final messages = await _snapshotLoader(conversationId);
-      if (!controller.isClosed) controller.add(messages);
-      return true;
-    } on Exception catch (e) {
-      if (!controller.isClosed) controller.addError(e);
-      return false;
-    }
-  }
-
   /// Subscribes to INSERT + UPDATE events for the given conversation,
   /// re-emitting a full snapshot on each event.
   RealtimeChannel _subscribeChanges(
     String conversationId,
-    StreamController<List<MessageEntity>> controller,
+    Future<void> Function() onChange,
   ) {
     final filter = PostgresChangeFilter(
       type: PostgresChangeFilterType.eq,
       column: _conversationIdCol,
       value: conversationId,
     );
-    void onEvent(_) => _emitSnapshot(conversationId, controller);
+    void onEvent(_) {
+      // Fire-and-forget — onChange handles its own errors and is
+      // sequence-tagged so we never need to await per-event here.
+      unawaited(onChange());
+    }
+
     return _client
         .channel('$_channelPrefix$conversationId')
         .onPostgresChanges(
