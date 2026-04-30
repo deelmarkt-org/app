@@ -19,7 +19,11 @@ WEB_DIR="$ROOT/build/web"
 if [[ "${1:-}" == "--build" ]]; then
   echo "==> flutter build web --release" >&2
   cd "$ROOT"
-  flutter build web --release --no-tree-shake-icons
+  # NB: --no-tree-shake-icons is intentionally OMITTED so the measured
+  # bundle reflects what production CI ships (icons tree-shaken). This
+  # widens the gap between the measured baseline and a developer-local
+  # build that might enable the flag for faster incremental compilation.
+  flutter build web --release
 fi
 
 if [[ ! -d "$WEB_DIR" ]]; then
@@ -80,8 +84,13 @@ print_row "canvaskit/canvaskit.wasm" "canvaskit/canvaskit.wasm"
 print_row "flutter_service_worker.js" "flutter_service_worker.js"
 
 # Total directory size (raw only; gzip totals across many files isn't a
-# meaningful single number for HTTP/2 streams)
-total_raw=$(du -sb . 2>/dev/null | awk '{print $1}')
+# meaningful single number for HTTP/2 streams).
+#
+# `du -sb` (bytes) is GNU-only and silently emits empty output on macOS where
+# only `du -sk` (kilobytes) is POSIX-portable. Use the portable form and
+# convert KB → bytes for parity with raw_size() above. Precision loss
+# (~512 B rounding per directory entry) is negligible against multi-MB totals.
+total_raw=$(du -sk . 2>/dev/null | awk '{print $1 * 1024}')
 echo
 echo "**Total \`build/web/\` raw:** $(human "$total_raw")"
 echo
