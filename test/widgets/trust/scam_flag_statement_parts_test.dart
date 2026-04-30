@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
-import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
-import 'package:deelmarkt/features/profile/presentation/widgets/scam_flag_statement_parts.dart';
+import 'package:deelmarkt/widgets/trust/scam_flag_statement_parts.dart';
 
-import '../../../../helpers/pump_app.dart';
+import '../../helpers/pump_app.dart';
 
 void main() {
   group('ScamStatementSection', () {

@@ -535,7 +535,14 @@
       "confidence": "Vertrouwensscore: {percent}%",
       "model_version": "Model: {version}",
       "policy_version": "Beleidsversie: {version}",
-      "appeal_cta": "Bezwaar aantekenen"
+      "appeal_cta": "Bezwaar aantekenen",
+      "content_kind": {
+        "listing": "Een van je advertenties",
+        "message": "Een van je berichten",
+        "profile": "Je profiel",
+        "review": "Een van je beoordelingen",
+        "generic": "Een deel van je inhoud"
+      }
     }
   },
   "scam_alert": {

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
-import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
-import 'package:deelmarkt/features/profile/presentation/widgets/scam_flag_statement_of_reasons.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/widgets/trust/scam_flag_statement_of_reasons.dart';
 
-import '../../../../helpers/pump_app.dart';
+import '../../helpers/pump_app.dart';
 
 void main() {
   ScamFlagStatement statement({
     List<ScamReason>? reasons,
     double score = 0.87,
     String contentRef = 'listing/abc-123',
+    String? contentDisplayLabel,
   }) {
     return ScamFlagStatement(
       ruleId: 'link_pattern_v3',
@@ -24,6 +25,7 @@ void main() {
       policyVersion: 'policy-2026-04',
       flaggedAt: DateTime(2026, 4, 30),
       contentRef: contentRef,
+      contentDisplayLabel: contentDisplayLabel,
     );
   }
 
@@ -45,17 +47,66 @@ void main() {
       expect(find.text('dsa.statement_of_reasons.how'), findsOneWidget);
     });
 
-    testWidgets('renders contentRef verbatim (opaque server reference)', (
+    testWidgets(
+      'renders contentDisplayLabel verbatim when supplied (preferred UX path)',
+      (tester) async {
+        await pumpTestWidget(
+          tester,
+          ScamFlagStatementOfReasons(
+            statement: statement(
+              contentRef: 'listing/xyz-987',
+              contentDisplayLabel: 'Mountain bike — listed 2026-04-25',
+            ),
+          ),
+        );
+
+        // Human-readable label takes precedence over the opaque ref.
+        expect(find.text('Mountain bike — listed 2026-04-25'), findsOneWidget);
+        expect(
+          find.text('listing/xyz-987'),
+          findsNothing,
+          reason: 'opaque ref must NOT leak when a display label is set',
+        );
+      },
+    );
+
+    testWidgets(
+      'falls back to a localised content-kind label when displayLabel is null',
+      (tester) async {
+        await pumpTestWidget(
+          tester,
+          ScamFlagStatementOfReasons(
+            statement: statement(contentRef: 'listing/xyz-987'),
+          ),
+        );
+
+        expect(
+          find.text('dsa.statement_of_reasons.content_kind.listing'),
+          findsOneWidget,
+          reason: 'must derive a kind-keyed l10n string from contentRef',
+        );
+        expect(
+          find.text('listing/xyz-987'),
+          findsNothing,
+          reason: 'raw "listing/xyz-987" must not be surfaced to users',
+        );
+      },
+    );
+
+    testWidgets('unknown content kind falls back to the generic l10n bucket', (
       tester,
     ) async {
       await pumpTestWidget(
         tester,
         ScamFlagStatementOfReasons(
-          statement: statement(contentRef: 'listing/xyz-987'),
+          statement: statement(contentRef: 'mystery-kind/zzz'),
         ),
       );
 
-      expect(find.text('listing/xyz-987'), findsOneWidget);
+      expect(
+        find.text('dsa.statement_of_reasons.content_kind.generic'),
+        findsOneWidget,
+      );
     });
 
     testWidgets(

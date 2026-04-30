@@ -6,9 +6,9 @@ import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
-import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
-import 'package:deelmarkt/features/profile/presentation/widgets/scam_flag_statement_parts.dart';
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
 import 'package:deelmarkt/widgets/buttons/deel_button.dart';
+import 'package:deelmarkt/widgets/trust/scam_flag_statement_parts.dart';
 
 /// User-facing **Statement of Reasons** for an automated content-moderation
 /// decision (DSA Art. 17 / EU AI Act Art. 13 transparency).
@@ -65,7 +65,7 @@ class ScamFlagStatementOfReasons extends StatelessWidget {
             ScamStatementSection(
               title: 'dsa.statement_of_reasons.what_flagged'.tr(),
               child: Text(
-                statement.contentRef,
+                _humanReadableContentLabel(statement),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
@@ -94,6 +94,31 @@ class ScamFlagStatementOfReasons extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Human-readable rendering of the flagged content.
+  ///
+  /// Prefers the explicit `contentDisplayLabel` (the listing title or a
+  /// date-stamped message reference, populated by the backend) so users
+  /// see context, not internal IDs. Falls back to a localised "this
+  /// listing / message / profile" label keyed off the [contentRef]
+  /// prefix when no explicit label is supplied — DSA Art. 17 still
+  /// requires the user to identify what was flagged, and surfacing
+  /// `listing/abc-123` verbatim does not satisfy that.
+  static String _humanReadableContentLabel(ScamFlagStatement statement) {
+    final explicit = statement.contentDisplayLabel?.trim();
+    if (explicit != null && explicit.isNotEmpty) return explicit;
+    final ref = statement.contentRef;
+    final slashIndex = ref.indexOf('/');
+    final kind = slashIndex > 0 ? ref.substring(0, slashIndex) : ref;
+    final key = switch (kind) {
+      'listing' => 'dsa.statement_of_reasons.content_kind.listing',
+      'message' => 'dsa.statement_of_reasons.content_kind.message',
+      'profile' => 'dsa.statement_of_reasons.content_kind.profile',
+      'review' => 'dsa.statement_of_reasons.content_kind.review',
+      _ => 'dsa.statement_of_reasons.content_kind.generic',
+    };
+    return key.tr();
   }
 
   Widget _buildHeader(BuildContext context) {

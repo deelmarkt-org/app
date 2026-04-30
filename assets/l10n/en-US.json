@@ -535,7 +535,14 @@
       "confidence": "Classifier confidence: {percent}%",
       "model_version": "Model: {version}",
       "policy_version": "Policy revision: {version}",
-      "appeal_cta": "Appeal this decision"
+      "appeal_cta": "Appeal this decision",
+      "content_kind": {
+        "listing": "One of your listings",
+        "message": "One of your messages",
+        "profile": "Your profile",
+        "review": "One of your reviews",
+        "generic": "Some of your content"
+      }
     }
   },
   "scam_alert": {

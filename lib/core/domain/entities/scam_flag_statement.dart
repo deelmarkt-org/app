@@ -20,6 +20,14 @@ import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 ///   * `contentRef`    — opaque server reference (e.g. "listing/abc-123")
 ///                       so appeal moderators can pull the original
 ///                       content; never the raw content itself
+///   * `contentDisplayLabel` — optional user-facing label such as the
+///                       listing title or a date-stamped message
+///                       reference (`Your listing "Mountain bike"`,
+///                       `Your message on 2026-04-25`). When provided,
+///                       the UI shows this instead of the opaque
+///                       `contentRef` (DSA Art. 17 requires the user
+///                       to identify what was flagged — internal IDs
+///                       alone do not satisfy that).
 ///
 /// Reference:
 /// - docs/audits/2026-04-25-tier1-retrospective.md §R-44
@@ -34,6 +42,7 @@ class ScamFlagStatement extends Equatable {
     required this.policyVersion,
     required this.flaggedAt,
     required this.contentRef,
+    this.contentDisplayLabel,
   }) : assert(score >= 0.0 && score <= 1.0, 'score must be in [0.0, 1.0]'),
        // ignore: prefer_is_not_empty
        // `.isNotEmpty` is not const-evaluable in a const-constructor
@@ -77,6 +86,14 @@ class ScamFlagStatement extends Equatable {
   /// queue, not in user-facing transparency copy.
   final String contentRef;
 
+  /// Optional user-facing label that identifies the flagged content
+  /// in human-readable terms (the listing title, a date-stamped
+  /// message reference, etc.). Surfaced by the statement-of-reasons
+  /// widget when present; if `null`, the widget falls back to a
+  /// localised "this listing/message/profile" derivation from
+  /// [contentRef] so users still see context — never raw IDs.
+  final String? contentDisplayLabel;
+
   /// Confidence as a 0–100 integer percentage, suitable for surface
   /// copy. Always rounds down so a score of 0.499 reports `49%`.
   int get confidencePercent => (score * 100).floor().clamp(0, 100);
@@ -90,5 +107,6 @@ class ScamFlagStatement extends Equatable {
     policyVersion,
     flaggedAt,
     contentRef,
+    contentDisplayLabel,
   ];
 }

@@ -72,8 +72,8 @@ a secondary Appeal CTA — required for any user-facing automated
 moderation decision.
 
 - **Source entity:** `ScamFlagStatement` (pure-Dart domain entity in
-  `lib/features/profile/domain/entities/scam_flag_statement.dart`).
-  Populated by reso's `scam_flags` Edge Function (R-44 backend).
+  `lib/core/domain/entities/scam_flag_statement.dart`). Populated by
+  reso's `scam_flags` Edge Function (R-44 backend).
 - **Conditional rendering:** widget is omitted entirely when the
   sanction was issued by a human moderator (no statement payload).
 - **Appeal wiring:** the panel's secondary `onAppeal` callback routes
@@ -82,8 +82,11 @@ moderation decision.
   need to scroll past it to take action. The `_CtaRow` Appeal button
   remains the canonical primary CTA.
 - **Reference widget:** see
-  `lib/features/profile/presentation/widgets/scam_flag_statement_of_reasons.dart`
-  for the full layout (header, three sections, optional CTA).
+  `lib/widgets/trust/scam_flag_statement_of_reasons.dart` for the full
+  layout (header, three sections, optional CTA). Lives in `widgets/trust/`
+  rather than `features/profile/` because the panel is also intended for
+  listing, message, and review surfaces — feature-imports are forbidden
+  by CLAUDE.md §1.2.
 
 ---
 

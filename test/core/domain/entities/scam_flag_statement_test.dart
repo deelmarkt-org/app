@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
-import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
 
 void main() {
   ScamFlagStatement build({
@@ -12,6 +12,7 @@ void main() {
     String policyVersion = 'policy-2026-04',
     DateTime? flaggedAt,
     String contentRef = 'listing/abc-123',
+    String? contentDisplayLabel,
   }) {
     return ScamFlagStatement(
       ruleId: ruleId,
@@ -21,6 +22,7 @@ void main() {
       policyVersion: policyVersion,
       flaggedAt: flaggedAt ?? DateTime(2026, 4, 30),
       contentRef: contentRef,
+      contentDisplayLabel: contentDisplayLabel,
     );
   }
 
@@ -63,6 +65,19 @@ void main() {
       expect(a == build(policyVersion: 'policy-2099-12'), isFalse);
       // Differing rule id → not equal (different rule = different decision).
       expect(a == build(ruleId: 'phone_regex_nl'), isFalse);
+    });
+
+    test('contentDisplayLabel defaults to null and is part of equality', () {
+      expect(build().contentDisplayLabel, isNull);
+      expect(
+        build(contentDisplayLabel: 'Mountain bike'),
+        isNot(equals(build())),
+        reason: 'differing display label → not equal',
+      );
+      expect(
+        build(contentDisplayLabel: 'Mountain bike'),
+        equals(build(contentDisplayLabel: 'Mountain bike')),
+      );
     });
 
     test('preserves order of reasons (UI renders top→bottom)', () {

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:deelmarkt/core/design_system/spacing.dart';
 import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
-import 'package:deelmarkt/features/profile/domain/entities/scam_flag_statement.dart';
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
 
 /// Section wrapper used by [ScamFlagStatementOfReasons] — uppercase-styled
 /// label + child content.
