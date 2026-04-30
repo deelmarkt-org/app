@@ -1,11 +1,13 @@
 # PLAN — P-43 App Store Screenshots + ASO Metadata
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #161](https://github.com/deelmarkt-org/app/pull/161). `P-43` is ticked `[x]` in `docs/SPRINT-PLAN.md`. Dark-mode chat thread design follow-up shipped via PR #169 (closes issue #164) — see [PLAN-p43-dark-mode-chat-golden.md](PLAN-p43-dark-mode-chat-golden.md).
+> _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth._
+>
 > **Owner:** pizmam (`[P]`) — with belengaz (`[B]`) for CI wiring
 > **Epic:** E07 Infrastructure (cross-cutting launch readiness)
 > **Branch:** `feature/pizmam-P43-aso`
 > **Estimate:** ~5 developer-days (3 pipeline + 1 content + 1 review/polish)
 > **Tier:** Medium-Large (15+ files across 3 platforms + CI + docs)
-> **Status:** Planning
 > **Produced via:** `.agent/workflows/plan.md` (Socratic gate + Specialist Synthesis Protocol)
 
 ---

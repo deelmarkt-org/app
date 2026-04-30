@@ -1,12 +1,14 @@
 # PLAN — Pizmam Accessibility (P-42) + Dark Mode (P-47) Follow-Up
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #168](https://github.com/deelmarkt-org/app/pull/168) (merged 2026-04-23). Issue [#156](https://github.com/deelmarkt-org/app/issues/156) closed.
+> _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth, not retroactive checkbox edits._
+>
 > **Owner:** pizmam (`[P]`)
 > **Issues:** [#156](https://github.com/deelmarkt-org/app/issues/156) (P-42 EAA blockers + 6 quality gaps) · [#158](https://github.com/deelmarkt-org/app/issues/158) (P-47 dark-mode follow-up + sprint-plan correction)
 > **Source PRs (already merged):** [#155](https://github.com/deelmarkt-org/app/pull/155) (P-42) · [#157](https://github.com/deelmarkt-org/app/pull/157) (P-47)
 > **Branch:** `feature/pizmam-a11y-darkmode-followup` (off `origin/dev`)
 > **Estimate:** ~2 developer-days (1 day code + 0.5 day tests + 0.5 day visual QA / regression)
 > **Tier:** Medium (5–7 source files + tests + docs + l10n)
-> **Status:** Planning — awaiting approval
 > **Produced via:** `.agent/workflows/plan.md` (Tier-1 schema, Specialist Synthesis Protocol)
 
 ---

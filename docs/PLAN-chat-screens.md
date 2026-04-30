@@ -1,5 +1,8 @@
 # 📋 PLAN — Chat Screens (P-35 + P-36)
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #71](https://github.com/deelmarkt-org/app/pull/71). Both `P-35` and `P-36` are ticked `[x]` in `docs/SPRINT-PLAN.md`.
+> _Doc preserved for historical reference. TDD task steps below were satisfied at merge time; PR review + CI is the source of truth._
+>
 > **Owner:** pizmam (Frontend/Design) · **Epic:** [E04 — Messaging](epics/E04-messaging.md) · **Secondary:** [E06 — Trust/Moderation](epics/E06-trust-moderation.md)
 > **Branch:** `feature/pizmam-E04-chat-screens` (branch from `origin/dev`)
 > **Sprint tasks:** `P-35` Chat conversation list · `P-36` Chat thread screen
