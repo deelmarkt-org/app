@@ -64,6 +64,22 @@ class _AllowEntry {
   final String rationale;
 }
 
+class _LockEntry {
+  const _LockEntry(this.version, this.source);
+
+  /// Resolved version, e.g. `1.2.3`.
+  final String version;
+
+  /// Pubspec.lock `source:` field — `hosted`, `path`, `git`, or `sdk`.
+  /// Non-`hosted` sources are first-party / SDK-shipped deps where pana
+  /// cannot reasonably resolve a license; we treat unknown licenses on
+  /// those as allowed. Only `hosted` packages with unknown licenses
+  /// are subject to fail-closed strict mode.
+  final String source;
+
+  bool get isHosted => source == 'hosted';
+}
+
 void main(List<String> args) async {
   final emitManifest = args.contains('--emit-manifest');
   final jsonOutput = args.contains('--json');
@@ -114,6 +130,17 @@ void main(List<String> args) async {
   for (final entry in licenseMap.entries) {
     final pkg = entry.key;
     final license = entry.value;
+    final lockEntry = lockEntries[pkg];
+
+    // Non-hosted deps (path / git / sdk) frequently have no license metadata
+    // in pana — that is expected, not a security signal. Treat them as
+    // allowed under the "exempt-by-source" rule. Hosted-pkg unknowns still
+    // fail-closed in strict mode.
+    final isNonHostedUnknown =
+        license.toLowerCase() == 'unknown' &&
+        lockEntry != null &&
+        !lockEntry.isHosted;
+    if (isNonHostedUnknown) continue;
 
     final classification = _classify(license, pkg, allowUnknown);
     if (classification == _Status.allowed) continue;
@@ -158,7 +185,8 @@ void main(List<String> args) async {
           lockEntries.entries.map((e) {
             return {
               'name': e.key,
-              'version': e.value,
+              'version': e.value.version,
+              'source': e.value.source,
               'license': licenseMap[e.key] ?? 'unknown',
               'allowlisted': allowlist.containsKey(e.key),
             };
@@ -353,18 +381,30 @@ Map<String, String> _extractLicensesFromPana(dynamic panaJson) {
   return out;
 }
 
-/// Minimal pubspec.lock parser. We only need the package name + version;
-/// avoid pulling `yaml` package as a runtime dep.
+/// Minimal pubspec.lock parser. Returns `package -> (version, source)`
+/// per entry. Source classification (`hosted` / `path` / `git` / `sdk`)
+/// distinguishes pub.dev deps from first-party / SDK-shipped deps and
+/// is consumed by the strict-mode classifier.
 ///
 /// Per gemini's PR #267 medium finding: prefer comment-strip + substring
-/// over quote-aware regex. Implementation below splits on `version:` and
-/// strips quotes, which is simpler and tolerates a wider range of YAML
-/// emitter quirks (single-quoted, double-quoted, unquoted versions).
-Map<String, String> _parsePubspecLock(String content) {
-  final out = <String, String>{};
+/// over quote-aware regex. Implementation below splits on `version:` /
+/// `source:` and strips quotes, which is simpler and tolerates a wider
+/// range of YAML emitter quirks (single-quoted, double-quoted, unquoted).
+Map<String, _LockEntry> _parsePubspecLock(String content) {
+  final out = <String, _LockEntry>{};
   final lines = content.split('\n');
   String? currentPkg;
   String? currentVersion;
+  String? currentSource;
+
+  void flush() {
+    final pkg = currentPkg;
+    final version = currentVersion;
+    if (pkg != null && version != null) {
+      out[pkg] = _LockEntry(version, currentSource ?? 'hosted');
+    }
+  }
+
   for (final raw in lines) {
     final line = raw.trimRight();
 
@@ -381,32 +421,36 @@ Map<String, String> _parsePubspecLock(String content) {
     if (indent == 2 && body.endsWith(':')) {
       final candidate = body.substring(0, body.length - 1);
       if (RegExp(r'^[a-z0-9_]+$').hasMatch(candidate)) {
-        if (currentPkg != null && currentVersion != null) {
-          out[currentPkg] = currentVersion;
-        }
+        flush();
         currentPkg = candidate;
         currentVersion = null;
+        currentSource = null;
         continue;
       }
     }
 
-    // Version inside package block: 4-space indent + `version:` prefix.
-    // Substring + split + quote-strip rather than regex (gemini's note).
-    if (indent == 4 && body.startsWith('version:') && currentPkg != null) {
-      var value = body.substring('version:'.length).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.substring(1, value.length - 1);
-      }
-      if (value.isNotEmpty) {
-        currentVersion = value;
+    // Field inside package block: 4-space indent + `key:` prefix.
+    if (indent == 4 && currentPkg != null) {
+      if (body.startsWith('version:')) {
+        final v = _stripQuotes(body.substring('version:'.length).trim());
+        if (v.isNotEmpty) currentVersion = v;
+      } else if (body.startsWith('source:')) {
+        final v = _stripQuotes(body.substring('source:'.length).trim());
+        if (v.isNotEmpty) currentSource = v;
       }
     }
   }
-  if (currentPkg != null && currentVersion != null) {
-    out[currentPkg] = currentVersion;
-  }
+  flush();
   return out;
+}
+
+String _stripQuotes(String value) {
+  final trimmed = value.trim();
+  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
+    return trimmed.substring(1, trimmed.length - 1);
+  }
+  return trimmed;
 }
 
 int _leadingSpaces(String s) {
