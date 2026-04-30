@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Operations
+
+- **docs(runbooks): close B-68 — add 4 remaining incident response runbooks** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
+  - `RUNBOOK-redis-outage.md` (B-68 2/5) — Upstash Redis as idempotency + rate-limit + cache layer; 4 named failure classes (backend outage, credential drift, plan rate limit, network partition); fail-closed pattern preservation guidance; cross-references RUNBOOK-mollie-webhook-failure.md §4.2.
+  - `RUNBOOK-supabase-rls-regression.md` (B-68 3/5) — RLS as data-access security boundary; 7 failure classes including over-permissive policy, §14 fixture corruption, SECURITY DEFINER misuse; FREEZE protocol for active cross-tenant exposure; explicit GDPR Art. 33 72h DPA notification path; legal hold for `audit_logs`.
+  - `RUNBOOK-cert-pinning-rotation.md` (B-68 4/5) — Android `network_security_config.xml` pin rotation (current expiry 2027-06-01); 4 rotation classes from > 30-day planned to < 24h emergency; Track A (release) / Track B (Remote Config bypass, last resort) / Track C (force-update) parallel-track playbook; iOS TrustKit gap noted as B-37 TODO follow-up.
+  - `RUNBOOK-app-store-rejection.md` (B-68 5/5) — Apple App Review + Play Console policy rejection response; 9 named rejection classes mapped to specific guidelines (Apple §2.1/§4.0/§5.1.1/§5.1.6/§2.3.7/§5.1; Play User Data / Permissions / Restricted Content); CLAUDE.md §13 hard-gate enforcement on `privacy_details.yaml` edits; cross-references RUNBOOK-appstore-reviewer.md §Recovery for §5.1 demo account class.
+  - All 5 runbooks now share a consistent structure (severity classes, triage-first, named failure classes, verification checklist, communication matrix, post-incident retro, escalation contacts) — reviewable in any order. belengaz auto-assigned reviewer; reso GDPR co-review on RLS + App Store rejection runbooks.
+
 ### Testing
 
 - **fix(screenshots): P-54 PR-A1 — fix rootBundle eviction keys + canary GREEN** — closes #203 test-isolation defect. `RootBundleAssetLoader` builds cache keys with hyphens (`nl-NL.json`); previous eviction code used underscores (`nl_NL.json`) leaving warm entries untouched and canary failing after 24 loop iterations. Eviction paths now derived dynamically from `kScreenshotLocales`. Adds second-iteration canary regression guard, `sqflite_common_ffi` dev dep, and `path_provider` mock in `initScreenshotEnvironment` so headless `CachedNetworkImage` renders no longer throw `MissingPluginException`. Bundles four prerequisite widget overflow fixes (`category_browse_screen`, `seller_info_row`, `action_section`, `amount_section`) without which the screenshot drivers throw `RenderFlex overflowed` exceptions and block the PR-A1 canary. See `docs/PLAN-P54-…`.
