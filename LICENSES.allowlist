@@ -1,0 +1,26 @@
+# DeelMarkt — License allowlist
+#
+# Closes Tier-1 retrospective B-60. Companion to
+# scripts/check_dependencies_pana.dart.
+#
+# Purpose: explicit, auditable record of any third-party dependency whose
+# license is otherwise on the blocklist (GPL / AGPL / CC-BY-NC / SSPL but
+# is permitted in this codebase under a documented rationale.
+#
+# Format:  <package_name>:<spdx_license_id>:<rationale>
+# Lines starting with `#` are comments. Blank lines ignored.
+#
+# CHANGE PROCESS:
+#   1. Adding an entry → requires reso/belengaz license + GDPR sign-off
+#      review on the PR (CLAUDE.md §13 hard-gate analogue for licenses).
+#   2. Rationale MUST cite (a) why the dep is needed and (b) why a
+#      permissively-licensed alternative is not viable.
+#   3. Removing an entry → no review beyond standard PR review (a removed
+#      allowlist entry tightens the gate).
+#
+# CURRENT STATE (2026-04-30):
+#   No entries. The scanner has not yet found any blocked-class license
+#   in the resolved dependency tree on origin/dev. This file exists as
+#   the documented escape hatch for any future exception.
+#
+# Reference: Tier-1 retrospective B-60, scripts/check_dependencies_pana.dart

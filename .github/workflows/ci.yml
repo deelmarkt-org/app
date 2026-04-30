@@ -43,6 +43,15 @@ jobs:
       - name: SCREENS-INVENTORY staling check
         run: dart run scripts/check_screens_inventory.dart
 
+      # Edge Function structure + schema cross-reference (B-59 — Tier-1
+      # retrospective). The same script runs as a pre-commit hook on
+      # staged .ts/.sql files; running it here with --all catches drift
+      # introduced when someone bypasses the pre-commit hook (forbidden
+      # via --no-verify but technically possible). Promotes pre-commit
+      # discipline to a CI gate.
+      - name: Edge Function structure + schema check (--all)
+        run: bash scripts/check_edge_functions.sh --all
+
   # ──────────────────────────────────────────────
   # 2. Tests + Coverage
   # ──────────────────────────────────────────────
@@ -121,28 +130,25 @@ jobs:
             --lockfile=pubspec.lock
             --format=table
 
-      # SCA: License compliance heuristic — scans for GPL/AGPL in commercial app.
-      # pana install is best-effort. Grep fallback catches packages with
-      # "gpl"/"agpl" in name only — not all GPL-licensed packages.
-      # Run `pana` locally before each release for a full audit.
-      - name: License check (heuristic — GPL/AGPL name scan)
-        run: |
-          dart pub global activate pana 2>/dev/null || true
-          if command -v pana &> /dev/null; then
-            echo "Running pana license analysis..."
-            pana --no-warning . 2>/dev/null | grep -i "license" || true
-          else
-            echo "::warning::pana not available — falling back to name-based GPL check"
-          fi
+      # SCA: License compliance via pana + LICENSES.allowlist (B-60).
+      # Replaces the prior heuristic GPL/AGPL grep — that approach missed
+      # transitive GPL via native deps and dual-licensed packages, per
+      # Tier-1 retrospective. Now driven by `scripts/check_dependencies_pana.dart`
+      # which (a) uses pana when available for proper per-package license
+      # detection, (b) cross-references against `LICENSES.allowlist` for
+      # documented exceptions, (c) emits a JSON dependency manifest as a
+      # CI artifact for App Review §5.1.6 disclosure.
+      - name: License check (pana + LICENSES.allowlist)
+        run: dart run scripts/check_dependencies_pana.dart --emit-manifest
 
-          # Belt-and-suspenders: grep for known GPL package names
-          for pkg in gpl agpl; do
-            if grep -qi "$pkg" pubspec.lock 2>/dev/null; then
-              echo "::error::Potential $pkg-licensed dependency in pubspec.lock!"
-              exit 1
-            fi
-          done
-          echo "License check passed."
+      - name: Upload dependency manifest
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: deps-manifest
+          path: build/deps-manifest.json
+          retention-days: 90
+          if-no-files-found: warn
 
       # Secrets: Scan git history for leaked credentials
       - name: TruffleHog (secret scanning)
