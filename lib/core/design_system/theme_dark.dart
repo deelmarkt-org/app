@@ -14,6 +14,16 @@ import 'package:deelmarkt/core/design_system/typography.dart';
 /// the 200-LOC §2.1 budget and so changes to one theme don't visually
 /// pollute the diff for the other.
 ///
+/// **Visibility contract:** feature code MUST consume the dark theme
+/// via the public `DeelmarktTheme.dark` getter — never call this
+/// builder directly. We deliberately do NOT use `@internal` here:
+/// `package:meta`'s `@internal` is reserved for elements inside
+/// `lib/src/` of a *published* package (analyzer raises
+/// `invalid_internal_annotation` otherwise), and DeelMarkt is an
+/// app, not a library. Until the design system is extracted into a
+/// published `deelmarkt_design_system` package, the contract is
+/// enforced by code review + this doc comment.
+///
 /// Reference: docs/design-system/tokens.md §Dark Mode
 ThemeData buildDarkTheme() {
   return ThemeData(
