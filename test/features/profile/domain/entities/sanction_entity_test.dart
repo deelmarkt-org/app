@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
 
 void main() {
@@ -237,6 +239,46 @@ void main() {
         AppealDecision.values,
         containsAll([AppealDecision.upheld, AppealDecision.overturned]),
       );
+    });
+  });
+
+  group('SanctionEntity.scamFlagStatement', () {
+    test('defaults to null when not provided (mahmutkaya PR #256 review)', () {
+      // Backward-compat: every existing call site that constructs a
+      // SanctionEntity without the new field continues to work.
+      final sanction = SanctionEntity(
+        id: 's-no-statement',
+        userId: 'u1',
+        type: SanctionType.suspension,
+        reason: 'Manual review by moderator',
+        createdAt: DateTime.now(),
+      );
+      expect(sanction.scamFlagStatement, isNull);
+    });
+
+    test('carries the DSA Art. 17 statement when set', () {
+      // R-44: when the sanction was issued by an automated classifier,
+      // the backend populates scamFlagStatement so the suspension gate
+      // can render the statement-of-reasons widget. The wiring in
+      // SuspensionGateScreen is the only place that reads this field.
+      final statement = ScamFlagStatement(
+        ruleId: 'link_pattern_v3',
+        reasons: const [ScamReason.externalPaymentLink],
+        score: 0.93,
+        modelVersion: 'scam-classifier-v1.4.0',
+        policyVersion: 'policy-2026-04',
+        flaggedAt: DateTime(2026, 4, 30),
+        contentRef: 'listing/abc-123',
+      );
+      final sanction = SanctionEntity(
+        id: 's-with-statement',
+        userId: 'u1',
+        type: SanctionType.suspension,
+        reason: 'Automated review — see statement',
+        createdAt: DateTime.now(),
+        scamFlagStatement: statement,
+      );
+      expect(sanction.scamFlagStatement, same(statement));
     });
   });
 }

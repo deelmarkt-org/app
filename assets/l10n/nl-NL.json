@@ -524,6 +524,27 @@
     "addFavourite": "Toevoegen aan favorieten",
     "removeFavourite": "Verwijderen uit favorieten"
   },
+  "dsa": {
+    "statement_of_reasons": {
+      "a11y": "Verklaring van redenen voor een geautomatiseerd moderatiebesluit",
+      "headline": "Je inhoud is gemarkeerd",
+      "what_flagged": "Wat is gemarkeerd",
+      "why": "Waarom",
+      "how": "Hoe is dit besluit genomen",
+      "automated_indicator": "Geautomatiseerd besluit op basis van onze oplichtingsdetectie",
+      "confidence": "Vertrouwensscore: {percent}%",
+      "model_version": "Model: {version}",
+      "policy_version": "Beleidsversie: {version}",
+      "appeal_cta": "Bezwaar aantekenen",
+      "content_kind": {
+        "listing": "Een van je advertenties",
+        "message": "Een van je berichten",
+        "profile": "Je profiel",
+        "review": "Een van je beoordelingen",
+        "generic": "Een deel van je inhoud"
+      }
+    }
+  },
   "scam_alert": {
     "title_high": "Dit bericht bevat mogelijk oplichting",
     "title_low": "Let op: wees voorzichtig met externe links",
