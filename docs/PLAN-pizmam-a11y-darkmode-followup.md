@@ -1,7 +1,7 @@
 # PLAN — Pizmam Accessibility (P-42) + Dark Mode (P-47) Follow-Up
 
 > **Status:** ✅ **COMPLETED** — shipped via [PR #168](https://github.com/deelmarkt-org/app/pull/168) (merged 2026-04-23). Issue [#156](https://github.com/deelmarkt-org/app/issues/156) closed.
-> _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth, not retroactive checkbox edits._
+> _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth._
 >
 > **Owner:** pizmam (`[P]`)
 > **Issues:** [#156](https://github.com/deelmarkt-org/app/issues/156) (P-42 EAA blockers + 6 quality gaps) · [#158](https://github.com/deelmarkt-org/app/issues/158) (P-47 dark-mode follow-up + sprint-plan correction)

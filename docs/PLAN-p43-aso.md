@@ -1,6 +1,6 @@
 # PLAN — P-43 App Store Screenshots + ASO Metadata
 
-> **Status:** ✅ **COMPLETED** — shipped via [PR #161](https://github.com/deelmarkt-org/app/pull/161). `P-43` is ticked `[x]` in `docs/SPRINT-PLAN.md`. Dark-mode chat thread design follow-up shipped via PR #169 (closes issue #164) — see [PLAN-p43-dark-mode-chat-golden.md](PLAN-p43-dark-mode-chat-golden.md).
+> **Status:** ✅ **COMPLETED** — shipped via [PR #161](https://github.com/deelmarkt-org/app/pull/161). `P-43` is ticked `[x]` in `docs/SPRINT-PLAN.md`. Dark-mode chat thread design follow-up shipped via [PR #169](https://github.com/deelmarkt-org/app/pull/169) (merged 2026-04-23) — closes [issue #164](https://github.com/deelmarkt-org/app/issues/164); see [PLAN-p43-dark-mode-chat-golden.md](PLAN-p43-dark-mode-chat-golden.md).
 > _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth._
 >
 > **Owner:** pizmam (`[P]`) — with belengaz (`[B]`) for CI wiring
