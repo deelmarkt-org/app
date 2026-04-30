@@ -76,10 +76,15 @@ WHERE t.schemaname = 'public' AND t.rowsecurity = true
 GROUP BY t.tablename
 HAVING count(p.policyname) = 0;
 
--- Policies that allow USING (true) — likely accidental "anyone can read"
-SELECT schemaname, tablename, policyname, cmd, qual
+-- Policies that allow USING (true) OR WITH CHECK (true) — likely accidental
+-- "anyone can read" (qual) or "anyone can write" (with_check). The with_check
+-- column is the gate for INSERT / UPDATE actions and is independent of qual,
+-- so an audit that only inspects qual would miss `WITH CHECK (true)` write
+-- policies (per gemini PR #264 review on this query).
+SELECT schemaname, tablename, policyname, cmd, qual, with_check
 FROM pg_policies
-WHERE qual ILIKE '%true%' AND schemaname = 'public';
+WHERE (qual ILIKE '%true%' OR with_check ILIKE '%true%')
+  AND schemaname = 'public';
 
 -- Run the §14 healthcheck programmatically
 \! bash scripts/check_appstore_reviewer.sh
@@ -187,11 +192,17 @@ CREATE POLICY messages_read ON public.messages
 
 1. **Freeze writes (within 5 minutes):**
    ```sql
-   -- Drop INSERT/UPDATE/DELETE policies temporarily; service-role still works
-   -- This stops new exposure while keeping the system queryable for triage.
-   -- DO NOT drop SELECT policies — that prevents users from seeing their own data,
+   -- Revoke INSERT / UPDATE / DELETE from the authenticated role; service_role
+   -- bypasses GRANT (it's the table owner) so triage queries + Edge Functions
+   -- continue to work. This is the fastest, most reliable freeze in a SEV-1
+   -- scenario — it doesn't require enumerating individual policy names per
+   -- table, and it correctly handles DELETE policies (which use USING only,
+   -- not WITH CHECK — `ALTER POLICY ... WITH CHECK (false)` is invalid SQL
+   -- for DELETE). Per gemini PR #264 review.
+   --
+   -- DO NOT revoke SELECT — that prevents users from seeing their own data,
    -- which is worse than the leak (denial of service vs information disclosure).
-   ALTER POLICY <write_policy_name> ON public.<table> WITH CHECK (false);
+   REVOKE INSERT, UPDATE, DELETE ON TABLE public.<table> FROM authenticated;
    ```
 2. Engage incident commander (founder + reso) — escalate to SEV-1.
 3. Identify the exposure window from `audit_logs` and `pg_stat_statements`.
