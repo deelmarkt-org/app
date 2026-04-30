@@ -10,7 +10,8 @@
 // Tier-1 retrospective B-60.
 //
 // Usage:
-//   dart run scripts/check_dependencies_pana.dart                  # full check
+//   dart run scripts/check_dependencies_pana.dart                  # strict (CI default — requires pana)
+//   dart run scripts/check_dependencies_pana.dart --allow-unknown  # lenient (local dev — pana optional)
 //   dart run scripts/check_dependencies_pana.dart --emit-manifest  # + write deps-manifest.json
 //   dart run scripts/check_dependencies_pana.dart --json           # machine-readable result
 //
@@ -20,17 +21,37 @@
 //
 // Exit codes:
 //   0  All licenses cleared (or only allowlisted exceptions)
-//   1  At least one disallowed license found
-//   2  Tooling failure (pana not installed, pubspec.lock missing, etc.)
+//   1  At least one disallowed license found OR an unknown license without
+//      --allow-unknown (fail-closed default)
+//   2  Tooling failure (pana not installed in strict mode, pubspec.lock
+//      missing, etc.)
 
 import 'dart:convert';
 import 'dart:io';
 
-const _disallowedLicenses = <String>{
-  'gpl', // GPL-2.0, GPL-3.0
-  'agpl', // AGPL-3.0
-  'cc-by-nc', // non-commercial
-  'sspl', // SSPL is non-OSI; treated like AGPL
+/// SPDX-prefix tokens that are disallowed. Comparisons normalise to
+/// lowercase + strip suffixes (`-only`, `-or-later`) before matching, so
+/// `gpl-3.0` matches but `lgpl-3.0` does NOT (closes gemini's lgpl
+/// false-positive finding on PR #267).
+const _disallowedSpdxPrefixes = <String>{
+  'gpl-2.0',
+  'gpl-3.0',
+  'agpl-3.0',
+  'cc-by-nc',
+  'sspl-1.0',
+  // Plain "gpl" / "agpl" tokens for non-SPDX-formatted reports (defensive)
+  'gpl',
+  'agpl',
+};
+
+/// Tokens that should explicitly NOT match the disallowed list even though
+/// they share substring with `gpl`/`agpl`. LGPL is OSI-approved + business-
+/// friendly; we do not block it.
+const _exemptSpdxPrefixes = <String>{
+  'lgpl-2.0',
+  'lgpl-2.1',
+  'lgpl-3.0',
+  'lgpl', // bare token form
 };
 
 const _allowlistPath = 'LICENSES.allowlist';
@@ -46,6 +67,7 @@ class _AllowEntry {
 void main(List<String> args) async {
   final emitManifest = args.contains('--emit-manifest');
   final jsonOutput = args.contains('--json');
+  final allowUnknown = args.contains('--allow-unknown');
 
   // 1. Verify pubspec.lock exists
   final lockfile = File('pubspec.lock');
@@ -57,8 +79,24 @@ void main(List<String> args) async {
   // 2. Load allowlist
   final allowlist = _loadAllowlist();
 
-  // 3. Run pana (best-effort; fall back to lockfile inspection if unavailable)
+  // 3. Run pana. In strict mode (default), pana is required — if it's
+  //    not installed or fails, exit 2 (tooling failure). In lenient
+  //    mode (`--allow-unknown`), pana is optional and we degrade to
+  //    license=unknown without failing.
+  //
+  //    Closes gemini's PR #267 security-HIGH finding: previous behaviour
+  //    silently passed every package when pana was unavailable, defeating
+  //    the entire check.
   final panaJson = await _tryRunPana();
+  if (panaJson == null && !allowUnknown) {
+    _stderr(
+      'pana is required for license analysis but is unavailable. Install '
+      'via `dart pub global activate pana` or pre-cache it in CI. To run '
+      'a degraded check that allows unknown licenses (NOT recommended in '
+      'CI), pass --allow-unknown.',
+    );
+    exit(2);
+  }
   final lockEntries = _parsePubspecLock(lockfile.readAsStringSync());
 
   // 4. Build a license map (package -> license string)
@@ -76,12 +114,9 @@ void main(List<String> args) async {
   for (final entry in licenseMap.entries) {
     final pkg = entry.key;
     final license = entry.value;
-    final lower = license.toLowerCase();
 
-    final isDisallowed = _disallowedLicenses.any(
-      (banned) => lower.contains(banned),
-    );
-    if (!isDisallowed) continue;
+    final classification = _classify(license, pkg, allowUnknown);
+    if (classification == _Status.allowed) continue;
 
     final allowed = allowlist[pkg];
     if (allowed != null) {
@@ -98,7 +133,10 @@ void main(List<String> args) async {
       'package': pkg,
       'license': license,
       'status': 'BLOCKED',
-      'rationale': 'No entry in $_allowlistPath',
+      'rationale':
+          classification == _Status.unknown
+              ? 'License unknown — fail-closed (use --allow-unknown to override)'
+              : 'No entry in $_allowlistPath',
     });
   }
 
@@ -114,6 +152,7 @@ void main(List<String> args) async {
     final manifest = {
       'schema': 'deelmarkt-deps-manifest@1',
       'generated_at': DateTime.now().toUtc().toIso8601String(),
+      'pana_available': panaJson != null,
       'pubspec_lock_resolved_count': lockEntries.length,
       'dependencies':
           lockEntries.entries.map((e) {
@@ -140,6 +179,7 @@ void main(List<String> args) async {
       const JsonEncoder.withIndent('  ').convert({
         'total_packages': lockEntries.length,
         'pana_available': panaJson != null,
+        'allow_unknown_mode': allowUnknown,
         'allowlist_size': allowlist.length,
         'blocked': blocked,
         'allowlisted': allowed,
@@ -147,12 +187,8 @@ void main(List<String> args) async {
     );
   } else {
     print('License check — ${lockEntries.length} packages scanned');
-    if (panaJson == null) {
-      print(
-        '  ⚠ pana unavailable — license data falls back to "unknown" for all '
-        'packages. Install via: dart pub global activate pana',
-      );
-    }
+    print('  pana available: ${panaJson != null}');
+    print('  allow-unknown mode: $allowUnknown');
     if (allowed.isNotEmpty) {
       print('  ${allowed.length} allowlisted exception(s):');
       for (final f in allowed) {
@@ -171,14 +207,53 @@ void main(List<String> args) async {
 
   if (blocked.isNotEmpty) {
     _stderr(
-      '\nFAILED: ${blocked.length} package(s) carry disallowed licenses '
-      'and are not in $_allowlistPath. Either remove the dependency or '
-      'add an explicit allowlist entry with a rationale.',
+      '\nFAILED: ${blocked.length} package(s) require attention. Either '
+      'remove the dependency, add an explicit allowlist entry with a '
+      'rationale in $_allowlistPath, or (for unknown licenses only) '
+      'pass --allow-unknown if running locally.',
     );
     exit(1);
   }
 
   exit(0);
+}
+
+enum _Status { allowed, disallowed, unknown }
+
+/// SPDX-aware license classification with LGPL exemption.
+///
+/// Closes gemini's PR #267 security-HIGH finding by:
+/// 1. Distinguishing GPL (blocked) from LGPL (allowed) via prefix tokens
+///    rather than substring `contains`.
+/// 2. Treating `unknown` as fail-closed in strict mode (returns
+///    [_Status.unknown] which the caller blocks unless --allow-unknown).
+/// 3. Continuing to check the package name against banned tokens for the
+///    edge case of pana returning an unrecognised license but the package
+///    name itself indicating GPL (e.g. `gpl_utils`).
+_Status _classify(String license, String pkgName, bool allowUnknown) {
+  final lower = license.toLowerCase().trim();
+  if (lower.isEmpty || lower == 'unknown' || lower == 'unrecognised') {
+    // Defensive package-name check (gemini's `gpl_utils` example): even
+    // when pana cannot determine the license, a package literally named
+    // "gpl_*" is still suspect and must not pass silently.
+    final pkgLower = pkgName.toLowerCase();
+    final pkgImpliesBan = _disallowedSpdxPrefixes.any(
+      (t) => pkgLower.contains(t.split('-').first),
+    );
+    if (pkgImpliesBan) return _Status.disallowed;
+    return allowUnknown ? _Status.allowed : _Status.unknown;
+  }
+
+  // Normalise SPDX suffixes so `gpl-3.0-or-later` matches `gpl-3.0`.
+  final normalised = lower.replaceAll('-only', '').replaceAll('-or-later', '');
+
+  // Exemption first (LGPL is OSI-approved, business-friendly).
+  if (_exemptSpdxPrefixes.any(normalised.startsWith)) return _Status.allowed;
+
+  if (_disallowedSpdxPrefixes.any(normalised.startsWith)) {
+    return _Status.disallowed;
+  }
+  return _Status.allowed;
 }
 
 void _stderr(String msg) => stderr.writeln(msg);
@@ -205,12 +280,29 @@ Map<String, _AllowEntry> _loadAllowlist() {
   return entries;
 }
 
-/// Best-effort run of `pana` to extract per-package license data.
-/// Returns the decoded JSON or null on tooling failure.
+/// Run `pana` to extract per-package license data.
+///
+/// Returns the decoded JSON or null if pana cannot be made available.
+/// The caller decides whether null is fail-closed (strict mode) or
+/// fail-open (--allow-unknown).
+///
+/// Activation is gated on a presence check (gemini's PR #267 medium
+/// finding): we skip the network round-trip of `dart pub global activate
+/// pana` if pana is already on the global path. CI can pre-install pana
+/// in setup-flutter to short-circuit even the presence check.
 Future<dynamic> _tryRunPana() async {
   try {
-    // Activate (idempotent — no-op if already activated).
-    await Process.run('dart', ['pub', 'global', 'activate', 'pana']);
+    if (!await _isPanaInstalled()) {
+      // Activate is idempotent but performs a network request. Only run
+      // when pana is absent; CI environments should pre-cache.
+      final activate = await Process.run('dart', [
+        'pub',
+        'global',
+        'activate',
+        'pana',
+      ]);
+      if (activate.exitCode != 0) return null;
+    }
     final result = await Process.run('dart', [
       'pub',
       'global',
@@ -228,9 +320,20 @@ Future<dynamic> _tryRunPana() async {
   }
 }
 
+/// Cheap presence check that avoids the activation network round-trip.
+Future<bool> _isPanaInstalled() async {
+  try {
+    final result = await Process.run('dart', ['pub', 'global', 'list']);
+    if (result.exitCode != 0) return false;
+    return (result.stdout as String).contains('pana ');
+  } on Exception {
+    return false;
+  }
+}
+
 /// Pana JSON output schema is unstable across versions. We tolerate
-/// missing keys by defaulting to "unknown" — the lockfile fallback will
-/// still cover every package.
+/// missing keys by defaulting to "unknown" — the strict-mode caller
+/// then fails closed on those.
 Map<String, String> _extractLicensesFromPana(dynamic panaJson) {
   final out = <String, String>{};
   try {
@@ -252,6 +355,11 @@ Map<String, String> _extractLicensesFromPana(dynamic panaJson) {
 
 /// Minimal pubspec.lock parser. We only need the package name + version;
 /// avoid pulling `yaml` package as a runtime dep.
+///
+/// Per gemini's PR #267 medium finding: prefer comment-strip + substring
+/// over quote-aware regex. Implementation below splits on `version:` and
+/// strips quotes, which is simpler and tolerates a wider range of YAML
+/// emitter quirks (single-quoted, double-quoted, unquoted versions).
 Map<String, String> _parsePubspecLock(String content) {
   final out = <String, String>{};
   final lines = content.split('\n');
@@ -259,24 +367,52 @@ Map<String, String> _parsePubspecLock(String content) {
   String? currentVersion;
   for (final raw in lines) {
     final line = raw.trimRight();
-    // Top-level package: `  package_name:`
-    final pkgMatch = RegExp(r'^  ([a-z0-9_]+):$').firstMatch(line);
-    if (pkgMatch != null) {
-      if (currentPkg != null && currentVersion != null) {
-        out[currentPkg] = currentVersion;
+
+    // Strip trailing comments (`# ...`) before further parsing — matches
+    // gemini's suggestion. We deliberately do NOT strip leading whitespace
+    // because YAML structure is whitespace-sensitive and we use indentation
+    // depth to distinguish top-level package entries from nested fields.
+    final commentIdx = line.indexOf('#');
+    final stripped = commentIdx >= 0 ? line.substring(0, commentIdx) : line;
+    final indent = _leadingSpaces(stripped);
+    final body = stripped.trimLeft();
+
+    // Top-level package entry: 2-space indent + `package_name:` + nothing else
+    if (indent == 2 && body.endsWith(':')) {
+      final candidate = body.substring(0, body.length - 1);
+      if (RegExp(r'^[a-z0-9_]+$').hasMatch(candidate)) {
+        if (currentPkg != null && currentVersion != null) {
+          out[currentPkg] = currentVersion;
+        }
+        currentPkg = candidate;
+        currentVersion = null;
+        continue;
       }
-      currentPkg = pkgMatch.group(1);
-      currentVersion = null;
-      continue;
     }
-    // Version inside package block: `    version: "1.2.3"`
-    final verMatch = RegExp(r'^    version: "([^"]+)"').firstMatch(line);
-    if (verMatch != null && currentPkg != null) {
-      currentVersion = verMatch.group(1);
+
+    // Version inside package block: 4-space indent + `version:` prefix.
+    // Substring + split + quote-strip rather than regex (gemini's note).
+    if (indent == 4 && body.startsWith('version:') && currentPkg != null) {
+      var value = body.substring('version:'.length).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.substring(1, value.length - 1);
+      }
+      if (value.isNotEmpty) {
+        currentVersion = value;
+      }
     }
   }
   if (currentPkg != null && currentVersion != null) {
     out[currentPkg] = currentVersion;
   }
   return out;
+}
+
+int _leadingSpaces(String s) {
+  var n = 0;
+  while (n < s.length && s.codeUnitAt(n) == 0x20) {
+    n += 1;
+  }
+  return n;
 }

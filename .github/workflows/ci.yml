@@ -134,11 +134,20 @@ jobs:
       # Replaces the prior heuristic GPL/AGPL grep — that approach missed
       # transitive GPL via native deps and dual-licensed packages, per
       # Tier-1 retrospective. Now driven by `scripts/check_dependencies_pana.dart`
-      # which (a) uses pana when available for proper per-package license
-      # detection, (b) cross-references against `LICENSES.allowlist` for
-      # documented exceptions, (c) emits a JSON dependency manifest as a
-      # CI artifact for App Review §5.1.6 disclosure.
-      - name: License check (pana + LICENSES.allowlist)
+      # which (a) requires pana for proper per-package SPDX license detection
+      # (fail-closed by default — strict mode), (b) cross-references against
+      # `LICENSES.allowlist` for documented exceptions, (c) emits a JSON
+      # dependency manifest as a CI artifact for App Review §5.1.6
+      # disclosure.
+      #
+      # Pana is pre-activated in this dedicated step so the license-check
+      # step itself doesn't pay the activation network cost (per gemini
+      # PR #267 review) — the script's internal presence check then
+      # short-circuits and runs pana directly.
+      - name: Pre-activate pana (cached per runner)
+        run: dart pub global activate pana
+
+      - name: License check (pana + LICENSES.allowlist, strict)
         run: dart run scripts/check_dependencies_pana.dart --emit-manifest
 
       - name: Upload dependency manifest
