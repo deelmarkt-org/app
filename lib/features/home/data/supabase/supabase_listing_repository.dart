@@ -1,19 +1,21 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:deelmarkt/features/home/data/dto/listing_dto.dart';
+import 'package:deelmarkt/features/home/data/supabase/supabase_listing_nearby_helper.dart';
 import 'package:deelmarkt/features/home/domain/entities/listing_entity.dart';
 import 'package:deelmarkt/features/home/domain/repositories/listing_repository.dart';
-import 'package:deelmarkt/features/home/data/dto/listing_dto.dart';
 
-/// Supabase implementation of [ListingRepository].
-///
-/// Queries the `listings_with_favourites` view which includes seller info
-/// and per-user favourited flag. Uses PostgREST for all queries.
+/// Supabase implementation of [ListingRepository] (PostgREST against the
+/// `listings_with_favourites` view). Distance-search (`getNearby`) is
+/// delegated to [SupabaseListingNearbyHelper] (B-64).
 ///
 /// Reference: CLAUDE.md §1.2, docs/epics/E01-listing-management.md
 class SupabaseListingRepository implements ListingRepository {
-  const SupabaseListingRepository(this._client);
+  SupabaseListingRepository(this._client)
+    : _nearbyHelper = SupabaseListingNearbyHelper(_client, _view);
 
   final SupabaseClient _client;
+  final SupabaseListingNearbyHelper _nearbyHelper;
 
   /// View name — includes seller join + is_favourited.
   static const _view = 'listings_with_favourites';
@@ -43,49 +45,12 @@ class SupabaseListingRepository implements ListingRepository {
     int limit = 20,
   }) async {
     try {
-      // Use the nearby_listings RPC for distance-sorted results
-      final nearbyIds = await _client.rpc(
-        'nearby_listings',
-        params: {
-          'user_lat': latitude,
-          'user_lon': longitude,
-          'radius_km': radiusKm,
-          'max_results': limit,
-        },
+      return await _nearbyHelper.fetch(
+        latitude: latitude,
+        longitude: longitude,
+        radiusKm: radiusKm,
+        limit: limit,
       );
-
-      if (nearbyIds == null) return [];
-      final idsList = nearbyIds is List ? nearbyIds : [];
-      if (idsList.isEmpty) return [];
-
-      // Build a map of id → distance for enrichment
-      final distanceMap = <String, double>{};
-      for (final row in idsList) {
-        final typedRow = row as Map<String, dynamic>;
-        final id = typedRow[_colListingId];
-        final dist = typedRow['distance_km'];
-        if (id is String && dist is num) {
-          distanceMap[id] = dist.toDouble();
-        }
-      }
-
-      if (distanceMap.isEmpty) return [];
-
-      // Fetch full listing data for these IDs
-      final ids = distanceMap.keys.toList();
-      final response = await _client.from(_view).select().inFilter('id', ids);
-
-      final listings = ListingDto.fromJsonList(response);
-
-      // Enrich with distance and sort by distance
-      return listings
-          .map((l) => l.copyWith(distanceKm: distanceMap[l.id]))
-          .toList()
-        ..sort(
-          (a, b) => (a.distanceKm ?? double.infinity).compareTo(
-            b.distanceKm ?? double.infinity,
-          ),
-        );
     } on PostgrestException catch (e) {
       throw Exception('Failed to fetch nearby listings: ${e.message}');
     }

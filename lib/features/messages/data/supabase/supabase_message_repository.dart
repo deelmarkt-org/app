@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:deelmarkt/features/messages/data/dto/conversation_dto.dart';
 import 'package:deelmarkt/features/messages/data/dto/message_dto.dart';
 import 'package:deelmarkt/features/messages/data/supabase/message_scam_scanner.dart';
+import 'package:deelmarkt/features/messages/data/supabase/supabase_message_realtime_subscription.dart';
 import 'package:deelmarkt/features/messages/domain/entities/conversation_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_entity.dart';
 import 'package:deelmarkt/features/messages/domain/entities/message_type.dart';
@@ -12,13 +11,27 @@ import 'package:deelmarkt/features/messages/domain/entities/offer_status.dart';
 import 'package:deelmarkt/features/messages/domain/repositories/message_repository.dart';
 
 /// Supabase implementation of [MessageRepository].
+///
+/// Realtime subscription orchestration is delegated to
+/// [SupabaseMessageRealtimeSubscription] (B-64 — keeps this file under
+/// §2.1 200-LOC budget). Pure CRUD methods (fetch / send / RPC) stay here.
+///
 /// Reference: docs/epics/E04-messaging.md §Supabase Realtime Messaging
 class SupabaseMessageRepository implements MessageRepository {
   SupabaseMessageRepository(this._client)
-    : _scamScanner = MessageScamScanner(_client);
+    : _scamScanner = MessageScamScanner(_client) {
+    _realtime = SupabaseMessageRealtimeSubscription(
+      client: _client,
+      messagesTable: _messagesTable,
+      conversationIdCol: _conversationIdCol,
+      channelPrefix: _channelPrefix,
+      snapshotLoader: getMessages,
+    );
+  }
 
   final SupabaseClient _client;
   final MessageScamScanner _scamScanner;
+  late final SupabaseMessageRealtimeSubscription _realtime;
 
   static const _messagesTable = 'messages';
   static const _conversationIdCol = 'conversation_id';
@@ -64,68 +77,8 @@ class SupabaseMessageRepository implements MessageRepository {
   }
 
   @override
-  Stream<List<MessageEntity>> watchMessages(String conversationId) {
-    late StreamController<List<MessageEntity>> controller;
-    RealtimeChannel? channel;
-
-    controller = StreamController<List<MessageEntity>>(
-      onListen: () async {
-        if (!await _emitSnapshot(conversationId, controller)) return;
-        channel = _subscribeChanges(conversationId, controller);
-      },
-      onCancel: () {
-        channel?.unsubscribe();
-        controller.close();
-      },
-    );
-
-    return controller.stream;
-  }
-
-  /// Emits current messages onto [controller]. Returns false on error.
-  Future<bool> _emitSnapshot(
-    String conversationId,
-    StreamController<List<MessageEntity>> controller,
-  ) async {
-    try {
-      final messages = await getMessages(conversationId);
-      if (!controller.isClosed) controller.add(messages);
-      return true;
-    } on Exception catch (e) {
-      if (!controller.isClosed) controller.addError(e);
-      return false;
-    }
-  }
-
-  /// Subscribes to INSERT + UPDATE events, re-emitting a full snapshot each time.
-  RealtimeChannel _subscribeChanges(
-    String conversationId,
-    StreamController<List<MessageEntity>> controller,
-  ) {
-    final filter = PostgresChangeFilter(
-      type: PostgresChangeFilterType.eq,
-      column: _conversationIdCol,
-      value: conversationId,
-    );
-    void onEvent(_) => _emitSnapshot(conversationId, controller);
-    return _client
-        .channel('$_channelPrefix$conversationId')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: _messagesTable,
-          filter: filter,
-          callback: onEvent,
-        )
-        .onPostgresChanges(
-          event: PostgresChangeEvent.update,
-          schema: 'public',
-          table: _messagesTable,
-          filter: filter,
-          callback: onEvent,
-        )
-        .subscribe();
-  }
+  Stream<List<MessageEntity>> watchMessages(String conversationId) =>
+      _realtime.watch(conversationId);
 
   @override
   Future<MessageEntity> sendMessage({
