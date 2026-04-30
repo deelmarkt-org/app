@@ -1,5 +1,8 @@
 # PLAN — P-43 Dark Mode Chat Thread Design Handoff + Golden Regeneration
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #169](https://github.com/deelmarkt-org/app/pull/169) (merged 2026-04-23). Issue [#164](https://github.com/deelmarkt-org/app/issues/164) closed.
+> _Doc preserved for historical reference. Acceptance items below were satisfied at merge time; PR review + CI is the source of truth._
+>
 > **Owner:** pizmam (`[P]`) — Frontend / Design
 > **Epic:** E07 Infrastructure (launch readiness) · follow-up to E04 Messaging
 > **Branch:** `feature/pizmam-P43-dark-mode-chat-golden` (created from `origin/dev`)
@@ -7,7 +10,6 @@
 > **Closes:** issue [#164](https://github.com/deelmarkt-org/app/issues/164) — Design handoff: dark mode chat thread golden PNG
 > **Tier:** **Medium** (3–10 files across design references + goldens + docs)
 > **Estimate:** 0.5 developer-day (no production `lib/` changes)
-> **Status:** Planning → awaiting approval
 > **Produced via:** `.agent/workflows/plan.md` v2.2.0 (Specialist Synthesis + rule consultation)
 
 ---

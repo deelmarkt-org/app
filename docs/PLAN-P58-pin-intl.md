@@ -1,12 +1,15 @@
 # PLAN-P58 — Pin `intl` dependency to a stable range
 
+> **Status:** ✅ **COMPLETED** — shipped via [PR #220](https://github.com/deelmarkt-org/app/pull/220) (merged 2026-04-26) as part of the audit quick-wins bundle (P-56 + P-57 + P-58).
+> _Doc preserved for historical reference. PR review + CI is the source of truth._
+>
 > **Owner:** 🔵 pizmam (`@emredursun`)
 > **Branch:** `feature/pizmam-audit-quickwins-P56-P57-P58` (shared with P-57 + P-56)
 > **Severity / Audit ref:** P3 / `M2` (preflight) · `P-58` (retrospective)
 > **Effort:** S — ≤ 1 hour (`--quick` task)
 > **Workflow:** `/plan` v2.2.0 + `/quality-gate` v2.1.0 principles
 > **Task size:** Trivial (1 source file + 1 lock file regen)
-> **Created:** 2026-04-25 · Status: ⏳ Awaiting approval
+> **Created:** 2026-04-25
 
 ---
 

@@ -2,11 +2,19 @@
 
 ## [Unreleased]
 
+### Security
+
+- **chore(security): add root `SECURITY.md` disclosure policy** — closes Tier-1 retrospective `B-67`. Covers GitHub Security Advisories (primary) + `security@deelmarkt.com` (secondary), conservative SLAs (5d ack / 10d triage / 14d critical fix / 90d coordinated disclosure), explicit out-of-scope list (DoS, social-eng, third-party deps, content moderation), good-faith safe-harbor language aligned with OWASP Vulnerability Disclosure Cheat Sheet, and EU regulatory hooks (GDPR Art.33 72h notification, NIS2 Art.21 alignment, DSA Art.16 boundary routing content-moderation issues away from `security@`). README links to the policy. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
+### Operations
+
+- **docs(runbooks): add `RUNBOOK-mollie-webhook-failure.md`** — closes 1 of 5 runbooks under Tier-1 retrospective `B-68`. Triage-first response procedure for the Mollie webhook on the money path: confirm-vs-Mollie-status-page, blast-radius capture queries, 7 named failure classes (HMAC mismatch, Redis down, DLQ replay, 404 unknown id, service-role JWT, function timeout, unknown payment status) with class-specific mitigation, post-mitigation verification checklist, communication matrix (engineering → leadership → customers → Mollie → DPA), 5-business-day post-incident retrospective protocol. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
 ### Tooling
 
 - **chore(ci): close B-59 + B-60 — Edge Function structure check + license compliance** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
   - **B-59:** Add `bash scripts/check_edge_functions.sh --all` to the `quality` job in `.github/workflows/ci.yml`. The script already runs as a pre-commit hook on staged `.ts`/`.sql` files; this CI step catches drift introduced when someone bypasses the pre-commit hook (forbidden via `--no-verify` but technically possible). Promotes the pre-commit discipline to a CI gate.
-  - **B-60:** Replace the heuristic `grep "gpl\|agpl"` license check with `scripts/check_dependencies_pana.dart` — a `pana`-driven scanner that (a) uses proper per-package SPDX license detection with **strict mode by default** (fail-closed if pana is unavailable, exit 2; `--allow-unknown` for local-dev lenient mode); (b) distinguishes GPL (blocked) from LGPL (allowed) via SPDX-prefix tokenisation rather than substring matching, closing a false-positive gap; (c) cross-references against `LICENSES.allowlist` (NEW, currently empty placeholder) for documented exceptions; (d) defensive package-name check for unknown licenses (e.g. `gpl_utils` package fails closed even when pana cannot resolve a license); (e) emits `build/deps-manifest.json` (project-local schema; pre-cursor to full SPDX 2.3 SBOM upgrade) as a 90-day CI artifact for App Review §5.1.6 third-party SDK disclosure. CI workflow pre-activates pana in a dedicated step so the license check itself doesn't pay the activation network cost. Old heuristic + GPL-name `for pkg in gpl agpl` grep removed (replaced, not duplicated).
+  - **B-60:** Replace the heuristic `grep "gpl\|agpl"` license check with `scripts/check_dependencies_pana.dart` — a per-dependency SPDX scanner that walks each hosted package's LICENSE file in pub-cache, distinguishes GPL (blocked) from LGPL (allowed) via SPDX-prefix tokenisation, cross-references `LICENSES.allowlist` (NEW, currently empty placeholder) for documented exceptions, and emits `build/deps-manifest.json` (project-local schema; SPDX 2.3 upgrade tracked as `B-70`) as a 90-day CI artifact for App Review §5.1.6 third-party SDK disclosure. Conservative classifier covers MIT, Apache-2.0, BSD-2/3, ISC, MPL-2.0, Unlicense, CC0 + the disallowed family (AGPL, GPL, LGPL, SSPL, CC-BY-NC). Old heuristic + GPL-name `for pkg in gpl agpl` grep removed (replaced, not duplicated).
 
 ### Testing
 
