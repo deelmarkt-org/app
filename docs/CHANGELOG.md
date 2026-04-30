@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Security
+
+- **chore(security): add root `SECURITY.md` disclosure policy** — closes Tier-1 retrospective `B-67`. Covers GitHub Security Advisories (primary) + `security@deelmarkt.com` (secondary), conservative SLAs (5d ack / 10d triage / 14d critical fix / 90d coordinated disclosure), explicit out-of-scope list (DoS, social-eng, third-party deps, content moderation), good-faith safe-harbor language aligned with OWASP Vulnerability Disclosure Cheat Sheet, and EU regulatory hooks (GDPR Art.33 72h notification, NIS2 Art.21 alignment, DSA Art.16 boundary routing content-moderation issues away from `security@`). README links to the policy. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
+### Operations
+
+- **docs(runbooks): add `RUNBOOK-mollie-webhook-failure.md`** — closes 1 of 5 runbooks under Tier-1 retrospective `B-68`. Triage-first response procedure for the Mollie webhook on the money path: confirm-vs-Mollie-status-page, blast-radius capture queries, 7 named failure classes (HMAC mismatch, Redis down, DLQ replay, 404 unknown id, service-role JWT, function timeout, unknown payment status) with class-specific mitigation, post-mitigation verification checklist, communication matrix (engineering → leadership → customers → Mollie → DPA), 5-business-day post-incident retrospective protocol. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
 ### Refactoring
 
 - **refactor(supabase): close B-64 — decompose 2 oversized Supabase repositories** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
