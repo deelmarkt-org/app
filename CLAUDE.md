@@ -525,7 +525,6 @@ setState_allowlist:
   - lib/widgets/media/image_gallery_zoomable_page.dart
 
 file_length_exempt:
-  - lib/core/design_system/theme.dart
   - lib/core/router/app_router.dart
   - **/data/supabase/**
   - **/data/mock/*_data.dart
