@@ -79,9 +79,14 @@ class SupabaseListingNearbyHelper {
 
     final out = <String, double>{};
     for (final row in idsList) {
-      final typedRow = row as Map<String, dynamic>;
-      final id = typedRow[_colListingId];
-      final dist = typedRow['distance_km'];
+      // Guarded type narrowing — pana review (PR #268 SonarCloud finding):
+      // an unguarded `as Map<String, dynamic>` would throw TypeError if the
+      // RPC returns an unexpected shape. Skip malformed rows instead so the
+      // caller's catch(PostgrestException) is not asked to handle a runtime
+      // cast failure.
+      if (row is! Map) continue;
+      final id = row[_colListingId];
+      final dist = row['distance_km'];
       if (id is String && dist is num) {
         out[id] = dist.toDouble();
       }
