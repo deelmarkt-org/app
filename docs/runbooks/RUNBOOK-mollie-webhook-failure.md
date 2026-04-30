@@ -111,17 +111,27 @@ Write the numbers in the incident channel. They are your "before" benchmark for 
 
 ### 4.1 HMAC signature mismatch
 
-**Cause:** Mollie webhook signing secret rotated, or env var drift between staging / production.
+**Cause:** Mollie webhook signing secret rotated, or signing-secret drift between staging / production.
 
 **Mitigation:**
 
-1. Compare the signing secret in Supabase Vault (`mollie_webhook_secret`) to the one shown in the Mollie dashboard → Developers → Webhooks → Settings. They must match byte-for-byte.
-2. If rotated by Mollie, update the Vault secret:
-   ```
-   # Via Supabase CLI (operator-only; service role required)
-   supabase secrets set mollie_webhook_secret=<value-from-mollie-dashboard>
-   ```
-3. The Edge Function reads the secret on every invocation via `getVaultSecret`, so no redeploy is needed.
+1. Compare the signing secret in Supabase Vault (named `mollie_webhook_secret`) to the one shown in the Mollie dashboard → Developers → Webhooks → Settings. They must match byte-for-byte.
+2. If rotated by Mollie, update the Vault secret. **The Edge Function reads via the `vault_read_secret` RPC (see `supabase/functions/_shared/vault.ts`), so this is a SQL/dashboard operation — `supabase secrets set` only manages function env vars, NOT Vault entries.** Use either:
+   - **Dashboard (recommended for ops):** Supabase project → Settings → Vault → locate `mollie_webhook_secret` → Edit → paste the new value → Save.
+   - **SQL via service-role connection (scripted rotation):**
+     ```sql
+     -- Locate the secret id
+     SELECT id FROM vault.secrets WHERE name = 'mollie_webhook_secret';
+
+     -- Update in place (Supabase Vault SQL function)
+     SELECT vault.update_secret(
+       <secret_id>,
+       '<new-value-from-mollie-dashboard>',
+       'mollie_webhook_secret',
+       'Mollie webhook signing secret (rotated YYYY-MM-DD)'
+     );
+     ```
+3. The Edge Function reads the secret on every invocation via `getVaultSecret`, so no redeploy is needed; the next webhook delivery picks up the new value automatically.
 4. Re-process the rejected webhooks: see §4.3 DLQ replay.
 
 ### 4.2 Redis idempotency layer down
@@ -139,19 +149,28 @@ Write the numbers in the incident channel. They are your "before" benchmark for 
 
 **When:** any case above where Mollie's retry envelope expired before the cause was fixed.
 
+**How `webhook-dlq` actually works** (see `supabase/functions/webhook-dlq/index.ts`): the function is **batch-driven, not id-targeted**. On each invocation it scans `mollie_webhook_events WHERE processed = false AND attempts < MAX_ATTEMPTS (5)`, ordered by `created_at`, capped at 20 rows, applies per-row exponential backoff (1s → 8s) since `last_attempted_at`, and re-POSTs each event payload to `mollie-webhook` with the service-role JWT. There is **no request-body parsing** — a manual invocation is only a "tick this cron now" trigger; you cannot pick specific ids via the request body.
+
 **Mitigation:**
 
-1. The `webhook-dlq` Edge Function is invoked manually with a service-role JWT and a list of DLQ ids:
-   ```
-   # Replay a specific DLQ entry
+1. Trigger an immediate replay run (instead of waiting for the 5-minute pg_cron tick):
+   ```bash
+   # Trigger one DLQ pass now. No body needed; the function ignores any payload.
    curl -X POST https://<project>.supabase.co/functions/v1/webhook-dlq \
-        -H "Authorization: Bearer <SUPABASE_SERVICE_ROLE_KEY>" \
-        -H "Content-Type: application/json" \
-        -d '{"dlq_ids": [123, 124, 125]}'
+        -H "Authorization: Bearer <SUPABASE_SERVICE_ROLE_KEY>"
    ```
-2. The function re-runs the original webhook handler with the captured payload + signature. Idempotency NX still applies, so duplicate replays are safe.
-3. After replay completes, re-run the `§3.3` blast-radius queries — `pending > 15min` should drop to ≤ pre-incident baseline.
-4. Failed replays are returned in the response body — those need §4.7 (manual investigation) per id.
+   Response body returns counters: `{ retried, succeeded, failed, alerted, timestamp }`.
+2. The function calls `mollie-webhook` for each event with the captured `mollie_id`. Idempotency NX still applies, so duplicate replays are safe.
+3. To **force-replay events that already exhausted attempts** (`attempts >= MAX_ATTEMPTS`, i.e. already PagerDuty-alerted), you must reset their state in SQL with service-role privileges first — the function will not retry them otherwise:
+   ```sql
+   -- Reset specific stuck events for one more retry pass
+   UPDATE public.mollie_webhook_events
+   SET attempts = 0, last_error = NULL, last_attempted_at = NULL, alerted_at = NULL
+   WHERE id IN (<id1>, <id2>, ...) AND processed = false;
+   ```
+   Then trigger the function as in step 1.
+4. After replay completes, re-run the §3.3 blast-radius queries — `pending > 15min` should drop to ≤ pre-incident baseline.
+5. Failed replays remain in `mollie_webhook_events` with their `last_error` populated. Cross-reference via `select id, mollie_id, attempts, last_error from mollie_webhook_events where processed = false` to triage individually.
 
 ### 4.4 Mollie API 404 for known payment id
 
