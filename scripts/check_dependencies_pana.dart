@@ -81,31 +81,34 @@ void main(List<String> args) async {
   // 2. Load allowlist
   final allowlist = _loadAllowlist();
 
-  // 3. Run pana. In strict mode (default), pana is required — if it's
-  //    not installed or fails, exit 2 (tooling failure). In lenient
-  //    mode (`--allow-unknown`), pana is optional and we degrade to
-  //    license=unknown without failing.
-  //
-  //    Closes gemini's PR #267 security-HIGH finding: previous behaviour
-  //    silently passed every package when pana was unavailable, defeating
-  //    the entire check.
-  final panaJson = await tryRunPana();
-  if (panaJson == null && !allowUnknown) {
-    _stderr(
-      'pana is required for license analysis but is unavailable. Install '
-      'via `dart pub global activate pana` or pre-cache it in CI. To run '
-      'a degraded check that allows unknown licenses (NOT recommended in '
-      'CI), pass --allow-unknown.',
-    );
-    exit(2);
-  }
+  // 3. Parse the lock file. The pub-cache LICENSE-file scanner uses
+  //    this to map every hosted dep to its on-disk LICENSE body —
+  //    pana itself only analyses the root project and does not return
+  //    transitive-dep licenses.
   final lockEntries = parsePubspecLock(lockfile.readAsStringSync());
 
-  // 4. Build a license map (package -> license string)
-  // Prefer pana output when available; fall back to "unknown" otherwise.
-  final licenseMap = <String, String>{};
+  // 4. Run pana (advisory). Pana validates the ROOT project (license
+  //    declaration, pubspec health, lints) — its output cannot resolve
+  //    transitive-dep licenses, so we no longer treat its absence as a
+  //    blocking failure. The original strict-mode rationale was
+  //    "fail-closed if pana is unavailable" but that conflated "pana
+  //    available" with "transitive licenses analysed". Strict mode now
+  //    means: every hosted dep must resolve a confident SPDX from the
+  //    pub-cache LICENSE-file scanner OR an explicit allowlist entry —
+  //    that is what gemini's PR #267 finding actually wanted. Pana
+  //    stays in the pipeline as advisory only.
+  final panaJson = await tryRunPana();
+
+  // 5. Build a license map. Per-dep licenses come from the pub-cache
+  //    LICENSE file scanner; pana output only contributes if it
+  //    surfaces a value the scanner missed (rare). Anything still
+  //    unresolved at this point → "unknown" → fail-closed in strict
+  //    mode unless allowlisted.
+  final licenseMap = <String, String>{...scanPubCacheLicenses(lockEntries)};
   if (panaJson != null) {
-    licenseMap.addAll(extractLicensesFromPana(panaJson));
+    extractLicensesFromPana(panaJson).forEach((pkg, lic) {
+      licenseMap.putIfAbsent(pkg, () => lic);
+    });
   }
   for (final entry in lockEntries.keys) {
     licenseMap.putIfAbsent(entry, () => 'unknown');
