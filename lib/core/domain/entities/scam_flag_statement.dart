@@ -34,7 +34,12 @@ import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 /// - docs/epics/E06-trust-moderation.md §Scam Detection
 /// - DSA Art. 17 Statement of Reasons + AI Act Art. 13 transparency
 class ScamFlagStatement extends Equatable {
-  const ScamFlagStatement({
+  // Non-const constructor lets us use `.isNotEmpty` directly in the assert.
+  // The earlier `length != 0` workaround was const-safe but flagged by
+  // SonarCloud's collection-emptiness rule (PR #256 review). No external
+  // call site instantiates this entity via `const`, so dropping `const`
+  // is non-breaking and lets the assert read idiomatically.
+  ScamFlagStatement({
     required this.ruleId,
     required this.reasons,
     required this.score,
@@ -44,12 +49,8 @@ class ScamFlagStatement extends Equatable {
     required this.contentRef,
     this.contentDisplayLabel,
   }) : assert(score >= 0.0 && score <= 1.0, 'score must be in [0.0, 1.0]'),
-       // ignore: prefer_is_not_empty
-       // `.isNotEmpty` is not const-evaluable in a const-constructor
-       // assert (analyzer raises `invalid_constant`); `.length != 0`
-       // is the const-safe equivalent.
        assert(
-         reasons.length != 0,
+         reasons.isNotEmpty,
          'reasons must not be empty — use [ScamReason.other] when '
          'the classifier is opaque',
        );
