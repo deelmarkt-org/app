@@ -10,6 +10,13 @@
 
 - **docs(runbooks): add `RUNBOOK-mollie-webhook-failure.md`** — closes 1 of 5 runbooks under Tier-1 retrospective `B-68`. Triage-first response procedure for the Mollie webhook on the money path: confirm-vs-Mollie-status-page, blast-radius capture queries, 7 named failure classes (HMAC mismatch, Redis down, DLQ replay, 404 unknown id, service-role JWT, function timeout, unknown payment status) with class-specific mitigation, post-mitigation verification checklist, communication matrix (engineering → leadership → customers → Mollie → DPA), 5-business-day post-incident retrospective protocol. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
 
+### Refactoring
+
+- **refactor(supabase): close B-64 — decompose 2 oversized Supabase repositories** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
+  - `lib/features/home/data/supabase/supabase_listing_repository.dart` — 231 → 196 LOC (under §2.1 200-LOC cap with 4-line margin). Extracted distance-search flow (`getNearby` 53-LOC RPC + enrichment) into `lib/features/home/data/supabase/supabase_listing_nearby_helper.dart` (NEW, 91 LOC). Repository delegates via `_nearbyHelper.fetch(...)`; public `ListingRepository` interface unchanged. Mirrors P-54 pattern (PR #237/#238/#240) for behavior-equivalent decomposition.
+  - `lib/features/messages/data/supabase/supabase_message_repository.dart` — 207 → 160 LOC. Extracted Realtime subscription orchestration (`watchMessages` + `_emitSnapshot` + `_subscribeChanges`, 63 LOC) into `lib/features/messages/data/supabase/supabase_message_realtime_subscription.dart` (NEW, 108 LOC). Repository creates the subscription helper in its constructor and delegates `watchMessages` to a one-line passthrough. Snapshot loader is dependency-injected to keep the helper free of repository internals.
+  - All 4 files under §2.1 200-LOC cap. Pure refactor — no behavior change. Existing tests pass unchanged. Closes B-64 from Tier-1 retrospective.
+
 ### Tooling
 
 - **chore(ci): close B-59 + B-60 — Edge Function structure check + license compliance** (Tier-1 retrospective P2, cross-owner co-pilot from pizmam during P0-bandwidth gap):
