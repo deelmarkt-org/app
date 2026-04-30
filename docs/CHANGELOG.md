@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Security
+
+- **chore(security): add root `SECURITY.md` disclosure policy** — closes Tier-1 retrospective `B-67`. Covers GitHub Security Advisories (primary) + `security@deelmarkt.com` (secondary), conservative SLAs (5d ack / 10d triage / 14d critical fix / 90d coordinated disclosure), explicit out-of-scope list (DoS, social-eng, third-party deps, content moderation), good-faith safe-harbor language aligned with OWASP Vulnerability Disclosure Cheat Sheet, and EU regulatory hooks (GDPR Art.33 72h notification, NIS2 Art.21 alignment, DSA Art.16 boundary routing content-moderation issues away from `security@`). README links to the policy. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
+### Operations
+
+- **docs(runbooks): add `RUNBOOK-mollie-webhook-failure.md`** — closes 1 of 5 runbooks under Tier-1 retrospective `B-68`. Triage-first response procedure for the Mollie webhook on the money path: confirm-vs-Mollie-status-page, blast-radius capture queries, 7 named failure classes (HMAC mismatch, Redis down, DLQ replay, 404 unknown id, service-role JWT, function timeout, unknown payment status) with class-specific mitigation, post-mitigation verification checklist, communication matrix (engineering → leadership → customers → Mollie → DPA), 5-business-day post-incident retrospective protocol. Cross-owner co-pilot work; belengaz auto-assigned reviewer.
+
 ### Testing
 
 - **fix(screenshots): P-54 PR-A1 — fix rootBundle eviction keys + canary GREEN** — closes #203 test-isolation defect. `RootBundleAssetLoader` builds cache keys with hyphens (`nl-NL.json`); previous eviction code used underscores (`nl_NL.json`) leaving warm entries untouched and canary failing after 24 loop iterations. Eviction paths now derived dynamically from `kScreenshotLocales`. Adds second-iteration canary regression guard, `sqflite_common_ffi` dev dep, and `path_provider` mock in `initScreenshotEnvironment` so headless `CachedNetworkImage` renders no longer throw `MissingPluginException`. Bundles four prerequisite widget overflow fixes (`category_browse_screen`, `seller_info_row`, `action_section`, `amount_section`) without which the screenshot drivers throw `RenderFlex overflowed` exceptions and block the PR-A1 canary. See `docs/PLAN-P54-…`.
