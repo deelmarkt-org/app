@@ -104,7 +104,7 @@ void main() {
   group('AdminShellScreen', () {
     // ── Viewport breakpoint ──────────────────────────────────────────────────
 
-    testWidgets('wide viewport (≥768px) shows AdminSidebar', (tester) async {
+    testWidgets('wide viewport (≥900px) shows AdminSidebar', (tester) async {
       tester.view.physicalSize = const Size(900, 800);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
@@ -118,7 +118,7 @@ void main() {
       expect(find.byType(AdminNarrowViewportMessage), findsNothing);
     });
 
-    testWidgets('narrow viewport (<768px) shows AdminNarrowViewportMessage', (
+    testWidgets('narrow viewport (<900px) shows AdminNarrowViewportMessage', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(400, 800);
@@ -136,6 +136,43 @@ void main() {
 
       expect(find.byType(AdminNarrowViewportMessage), findsOneWidget);
       expect(find.byType(AdminSidebar), findsNothing);
+    });
+
+    // Boundary regression: confirms the 768→900 raise (PR #269 review)
+    // is preserved. 899 must show the narrow message; 900 must show the
+    // sidebar. Without this, a future threshold drop to e.g. 800 would
+    // pass the looser ≥900 / <900 tests above.
+    testWidgets('boundary: 899px narrow, 900px sidebar', (tester) async {
+      addTearDown(tester.view.resetPhysicalSize);
+
+      // 899 px → narrow viewport message.
+      tester.view.physicalSize = const Size(899, 800);
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(
+        _buildWithRouter(
+          initialLocation: AppRoutes.admin,
+          navigatedRoutes: [],
+          screenWidth: 899,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(AdminNarrowViewportMessage),
+        findsOneWidget,
+        reason: '899 px must be narrow (boundary minus 1)',
+      );
+
+      // 900 px → sidebar appears.
+      tester.view.physicalSize = const Size(900, 800);
+      await tester.pumpWidget(
+        _buildWithRouter(initialLocation: AppRoutes.admin, navigatedRoutes: []),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byType(AdminSidebar),
+        findsOneWidget,
+        reason: '900 px must show sidebar (exact boundary)',
+      );
     });
 
     // ── Nav index derivation ─────────────────────────────────────────────────
