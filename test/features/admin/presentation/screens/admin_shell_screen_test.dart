@@ -144,16 +144,13 @@ void main() {
     // pass the looser ≥900 / <900 tests above.
     testWidgets('boundary: 899px narrow, 900px sidebar', (tester) async {
       addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
 
       // 899 px → narrow viewport message.
       tester.view.physicalSize = const Size(899, 800);
       tester.view.devicePixelRatio = 1.0;
       await tester.pumpWidget(
-        _buildWithRouter(
-          initialLocation: AppRoutes.admin,
-          navigatedRoutes: [],
-          screenWidth: 899,
-        ),
+        _buildWithRouter(initialLocation: AppRoutes.admin, navigatedRoutes: []),
       );
       await tester.pumpAndSettle();
       expect(

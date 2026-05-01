@@ -18,7 +18,7 @@ class PublicProfileMoreButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.read(publicProfileNotifierProvider(userId).notifier);
+    final notifier = ref.watch(publicProfileNotifierProvider(userId).notifier);
     return PopupMenuButton<_MenuAction>(
       icon: Icon(PhosphorIcons.dotsThreeVertical()),
       tooltip: 'seller_profile.more_actions'.tr(),
