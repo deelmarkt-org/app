@@ -42,7 +42,9 @@ if [[ -z "${PAGERDUTY_ROUTING_KEY:-}" ]]; then
 fi
 
 DATE=$(date +%Y%m%d)
-EVENTS_API="https://events.pagerduty.com/v2/enqueue"
+# Override-able for EU PagerDuty (events.eu.pagerduty.com) or test fakes.
+# Default is the global Events API v2 endpoint.
+EVENTS_API="${EVENTS_API:-https://events.pagerduty.com/v2/enqueue}"
 
 # Each row: severity|summary|component|dedup_suffix
 declare -a EVENTS=(
@@ -85,14 +87,24 @@ for row in "${EVENTS[@]}"; do
   if $DRY_RUN; then
     echo "   (dry-run; pass --fire to send)"
   else
-    response=$(curl -sS -o /dev/null -w '%{http_code}' \
+    # Capture both body and HTTP code so PagerDuty's JSON error message
+    # (e.g. {"errors":["Routing key is invalid"]}) surfaces during a failed
+    # audit instead of forcing the operator to drop to curl manually.
+    # Bounded timeouts: PD's enqueue API responds in <1s normally; cap at
+    # 10s connect / 30s total so a DNS hiccup or proxy failure can't hang
+    # the audit silently.
+    response=$(curl -sS -w '\n%{http_code}' \
+      --connect-timeout 10 --max-time 30 \
       -X POST "$EVENTS_API" \
       -H 'Content-Type: application/json' \
       -d "$payload")
-    if [[ "$response" == "202" ]]; then
+    http_code="${response##*$'\n'}"
+    body="${response%$'\n'*}"
+    if [[ "$http_code" == "202" ]]; then
       echo "   ✅ accepted (HTTP 202)"
     else
-      echo "   ❌ rejected (HTTP ${response})"
+      echo "   ❌ rejected (HTTP ${http_code})"
+      [[ -n "$body" ]] && echo "   Response: $body" >&2
       exit 1
     fi
     sleep 2  # spread events to keep timeline readable
