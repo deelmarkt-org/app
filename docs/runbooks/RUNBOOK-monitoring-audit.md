@@ -34,12 +34,22 @@ Sources 5–7 are verified by inducing a known-good failure (steps below).
 ### 2a. Fire the 4 synthetic PagerDuty events
 
 ```bash
-# From the project root, with PAGERDUTY_ROUTING_KEY exported (or sourced from
-# .env). The script dry-runs by default; pass --fire to send.
-export PAGERDUTY_ROUTING_KEY=$(grep '^PAGERDUTY_ROUTING_KEY=' .env | cut -d= -f2-)
+# From the project root. Source .env into the environment so the script picks
+# up PAGERDUTY_ROUTING_KEY — `set -a` exports every assignment shell parses,
+# and bash's dot-source unquotes values natively (handles
+# PAGERDUTY_ROUTING_KEY="abc" correctly, unlike grep | cut).
+set -a; . .env; set +a
 bash scripts/audit_monitoring_alerts.sh           # dry-run preview
 bash scripts/audit_monitoring_alerts.sh --fire    # actually trigger
 ```
+
+> If you can't source the whole `.env` (e.g. it contains shell-incompatible
+> entries), export just the one key with quote handling:
+> ```bash
+> export PAGERDUTY_ROUTING_KEY=$(awk -F= '/^PAGERDUTY_ROUTING_KEY=/{
+>   sub(/^[^=]*=/,""); gsub(/^"|"$/,""); print
+> }' .env)
+> ```
 
 Each event uses `dedup_key=audit-<n>-YYYYMMDD` so PagerDuty auto-merges
 re-runs on the same day.

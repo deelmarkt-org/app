@@ -52,6 +52,21 @@ jobs:
       - name: Edge Function structure + schema check (--all)
         run: bash scripts/check_edge_functions.sh --all
 
+      # B-35: Smoke-test the synthetic alert audit script. Catches typos
+      # in the EVENTS array, jq syntax errors, and stdin/stdout drift
+      # before they surface during a quarterly audit when the operator
+      # least wants surprises. Dry-run mode never contacts PagerDuty.
+      - name: audit_monitoring_alerts.sh smoke test (dry-run)
+        run: |
+          bash -n scripts/audit_monitoring_alerts.sh
+          PAGERDUTY_ROUTING_KEY=dummy bash scripts/audit_monitoring_alerts.sh \
+            | tee /tmp/audit-dryrun.txt
+          previewed=$(grep -c '^── \[AUDIT\]' /tmp/audit-dryrun.txt)
+          if [[ "$previewed" != "4" ]]; then
+            echo "::error::Expected 4 [AUDIT] events in dry-run output, got $previewed"
+            exit 1
+          fi
+
   # ──────────────────────────────────────────────
   # 2. Tests + Coverage
   # ──────────────────────────────────────────────

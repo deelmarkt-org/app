@@ -21,12 +21,23 @@
 
 set -euo pipefail
 
+# Pre-flight: required commands. GitHub-hosted runners have these by default,
+# but laptop / minimal Docker / Codemagic environments may not — fail with a
+# clear message rather than a cryptic "command not found" mid-loop.
+for bin in jq curl; do
+  if ! command -v "$bin" >/dev/null 2>&1; then
+    echo "❌ Required command not found: $bin" >&2
+    echo "   Install via your package manager (e.g. \`apt install $bin\` or \`brew install $bin\`)." >&2
+    exit 2
+  fi
+done
+
 DRY_RUN=true
 [[ "${1:-}" == "--fire" ]] && DRY_RUN=false
 
 if [[ -z "${PAGERDUTY_ROUTING_KEY:-}" ]]; then
   echo "❌ PAGERDUTY_ROUTING_KEY not set."
-  echo "   export it (or pull from .env: \`grep PAGERDUTY_ROUTING_KEY .env\`) and retry."
+  echo "   export it (or source from .env: \`set -a; . .env; set +a\`) and retry."
   exit 2
 fi
 

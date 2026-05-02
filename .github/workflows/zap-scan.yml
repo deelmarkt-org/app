@@ -49,7 +49,9 @@ jobs:
         uses: zaproxy/action-baseline@5e26ed03e2f1f4c7ec85d20e296a14fb9b58dac1 # v0.14.0
         with:
           target: ${{ steps.target.outputs.url }}
-          cmd_options: '-a -j -m 5 -T 20'
+          # -J emits a structured JSON report so the Slack notifier can count
+          # findings reliably instead of grepping HTML risk × confidence text.
+          cmd_options: '-a -j -m 5 -T 20 -J report_json.json'
           allow_issue_writing: true
           fail_action: false
           artifact_name: zap-baseline-report
@@ -61,17 +63,25 @@ jobs:
           TARGET_URL: ${{ steps.target.outputs.url }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          set -euo pipefail
           if [[ -z "$SLACK_WEBHOOK_URL" ]]; then
             echo "::warning::SLACK_WEBHOOK_URL secret not set — skipping Slack notification."
             exit 0
           fi
-          REPORT="report_html.html"
+          REPORT="report_json.json"
           if [[ ! -s "$REPORT" ]]; then
-            MSG=":white_check_mark: ZAP weekly scan clean — \`${TARGET_URL}\`"
+            # No JSON report = scan never produced output (action error before
+            # report generation). Surface as a warning so it isn't mistaken
+            # for a clean scan.
+            MSG=":warning: ZAP weekly scan produced no JSON report — investigate ${RUN_URL}"
           else
-            HIGH=$(grep -c 'High (Medium)\|High (High)' "$REPORT" 2>/dev/null || echo 0)
-            MED=$(grep -c 'Medium (Medium)\|Medium (High)' "$REPORT" 2>/dev/null || echo 0)
-            MSG=":rotating_light: ZAP weekly scan found issues on \`${TARGET_URL}\` — High: ${HIGH}, Medium: ${MED}. Report: ${RUN_URL}"
+            HIGH=$(jq '[.site[]?.alerts[]? | select((.riskdesc // "") | startswith("High"))] | length' "$REPORT")
+            MED=$(jq  '[.site[]?.alerts[]? | select((.riskdesc // "") | startswith("Medium"))] | length' "$REPORT")
+            if (( HIGH == 0 && MED == 0 )); then
+              MSG=":white_check_mark: ZAP weekly scan clean — \`${TARGET_URL}\`"
+            else
+              MSG=":rotating_light: ZAP weekly scan — High: ${HIGH}, Medium: ${MED} on \`${TARGET_URL}\`. Report: ${RUN_URL}"
+            fi
           fi
           curl -sS -X POST -H 'Content-Type: application/json' \
             --data "$(jq -n --arg t "$MSG" '{text:$t}')" \
