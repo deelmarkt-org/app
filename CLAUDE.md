@@ -386,6 +386,8 @@ git push origin feature/...
 - Edge Functions use Zod for input validation
 - Webhook handlers MUST be idempotent (Upstash Redis NX pattern)
 - Database schema changes require a migration file
+- **Forward migrations** live in `supabase/migrations/` and are applied in timestamp order by `supabase db push`.
+- **Rollback / down migrations** live in `supabase/migrations/_rollback/` (a subfolder; the Supabase CLI ignores subdirectories so they are not auto-applied as forward migrations). Naming: same timestamp as the up migration + `_down.sql` suffix. Apply manually via `psql -f supabase/migrations/_rollback/<file>.sql` only when an actual rollback is needed. **Never put a `_down.sql` file directly under `supabase/migrations/`** — `db push` would forward-apply it and silently undo work (see issue #270).
 - **Migrations MUST be applied** after creating/modifying `.sql` files — run `bash scripts/check_deployments.sh --deploy`
 - **Edge Functions MUST be deployed** after creating/modifying — run `bash scripts/check_deployments.sh --deploy`
 - Before marking a task as done, verify deployment: `bash scripts/check_deployments.sh`
@@ -596,7 +598,7 @@ QUALITY_RULES_END -->
 | Path | Role |
 |:-----|:-----|
 | `supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql` | Idempotent seed for reviewer profile/listing/transaction/conversation |
-| `supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql` | Paired down-migration (rollback only) |
+| `supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql` | Paired down-migration (rollback only) |
 | `scripts/check_appstore_reviewer.sh` | 6-invariant healthcheck against any Supabase project |
 | `scripts/provision_appstore_reviewer.sh` | Auth Admin REST API wrapper (creates/rotates `auth.users`) |
 | `docs/runbooks/RUNBOOK-appstore-reviewer.md` | Sole authoritative procedure (provisioning, rotation, recovery, revoke) |

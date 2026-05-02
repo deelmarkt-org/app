@@ -10,7 +10,7 @@ name: App Store Reviewer Seed Touch Validation
 #
 # Triggers (only when the relevant files change):
 #   * `supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql`
-#   * `supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql`
+#   * `supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql`
 #   * `scripts/check_appstore_reviewer.sh`
 #   * `scripts/provision_appstore_reviewer.sh` (when PR #224 lands)
 #   * `docs/runbooks/RUNBOOK-appstore-reviewer.md` (sentinel UUID changes)
@@ -22,7 +22,7 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql'
-      - 'supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql'
+      - 'supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql'
       - 'scripts/check_appstore_reviewer.sh'
       - 'scripts/provision_appstore_reviewer.sh'
       - 'docs/runbooks/RUNBOOK-appstore-reviewer.md'
