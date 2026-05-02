@@ -41,7 +41,12 @@ if [[ -z "${PAGERDUTY_ROUTING_KEY:-}" ]]; then
   exit 2
 fi
 
-DATE=$(date +%Y%m%d)
+# UTC so two operators in different timezones running the audit on the
+# same calendar day produce identical dedup_keys (PagerDuty merges them).
+# Override-able with AUDIT_DATE=YYYYMMDD to deliberately re-fire a prior
+# day's events (e.g. validating an escalation policy change against a
+# fixed timeline).
+DATE="${AUDIT_DATE:-$(date -u +%Y%m%d)}"
 # Override-able for EU PagerDuty (events.eu.pagerduty.com) or test fakes.
 # Default is the global Events API v2 endpoint.
 EVENTS_API="${EVENTS_API:-https://events.pagerduty.com/v2/enqueue}"

@@ -61,7 +61,10 @@ jobs:
           bash -n scripts/audit_monitoring_alerts.sh
           PAGERDUTY_ROUTING_KEY=dummy bash scripts/audit_monitoring_alerts.sh \
             | tee /tmp/audit-dryrun.txt
-          previewed=$(grep -c '^── \[AUDIT\]' /tmp/audit-dryrun.txt)
+          # `grep -c` returns exit 1 on zero matches under set -e, which
+          # would skip the friendly ::error:: below. `|| echo 0` keeps the
+          # mismatch path readable.
+          previewed=$(grep -c '^── \[AUDIT\]' /tmp/audit-dryrun.txt || echo 0)
           if [[ "$previewed" != "4" ]]; then
             echo "::error::Expected 4 [AUDIT] events in dry-run output, got $previewed"
             exit 1
