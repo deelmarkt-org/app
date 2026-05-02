@@ -206,10 +206,10 @@ The migration is additive — no destructive rollback is required.
   the client simply stops reading it.
 - **Column-level rollback** (if a correctness issue in the trigger surfaces),
   ordered as:
-  1. Apply [`20260420160001_listings_with_favourites_expose_escrow_eligible_down.sql`](../../supabase/migrations/20260420160001_listings_with_favourites_expose_escrow_eligible_down.sql)
+  1. Apply [`20260420160001_listings_with_favourites_expose_escrow_eligible_down.sql`](../../supabase/migrations/_rollback/20260420160001_listings_with_favourites_expose_escrow_eligible_down.sql)
      first — drops the view so the column drop below is not blocked by
      dependency.
-  2. Apply [`20260420154315_listings_escrow_eligible_down.sql`](../../supabase/migrations/20260420154315_listings_escrow_eligible_down.sql) —
+  2. Apply [`20260420154315_listings_escrow_eligible_down.sql`](../../supabase/migrations/_rollback/20260420154315_listings_escrow_eligible_down.sql) —
      reverse-dependency drops (cascade triggers → primary trigger → function
      → index → columns).
   3. Rebuild the view: re-apply `20260420160000_listings_with_favourites_expose_escrow_eligible.sql`

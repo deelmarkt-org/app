@@ -198,7 +198,7 @@ When in doubt:
 ```bash
 # 1. Apply the down-migration (removes seeded rows; keeps auth.users intact).
 psql "${SUPABASE_DB_URL}" \
-  -f supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql
+  -f supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql
 # 2. Re-apply the up-migration.
 psql "${SUPABASE_DB_URL}" \
   -f supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql
@@ -225,7 +225,7 @@ until §3 is re-run.
 #    export SUPABASE_DB_URL=<postgres connection string>
 # 1. Apply the down-migration (removes ancillary data).
 psql "${SUPABASE_DB_URL}" \
-  -f supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql
+  -f supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql
 # 2. Delete the auth.users rows via the Auth Admin REST API.
 #    SUPABASE_API_BASE_URL override only needed for self-hosted / dedicated;
 #    SaaS defaults to https://${SUPABASE_PROJECT_REF}.supabase.co.
@@ -267,7 +267,7 @@ done
 
 - Plan: [docs/PLAN-gh162-testflight-review-info.md](../PLAN-gh162-testflight-review-info.md)
 - Seed migration: [supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql](../../supabase/migrations/20260425135427_seed_appstore_reviewer_account.sql)
-- Down migration: [supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql](../../supabase/migrations/20260425135428_seed_appstore_reviewer_account_down.sql)
+- Down migration: [supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql](../../supabase/migrations/_rollback/20260425135428_seed_appstore_reviewer_account_down.sql)
 - Provisioning script: [scripts/provision_appstore_reviewer.sh](../../scripts/provision_appstore_reviewer.sh)
 - Healthcheck script: [scripts/check_appstore_reviewer.sh](../../scripts/check_appstore_reviewer.sh)
 - Healthcheck workflow: [.github/workflows/appstore-reviewer-healthcheck.yml](../../.github/workflows/appstore-reviewer-healthcheck.yml)
