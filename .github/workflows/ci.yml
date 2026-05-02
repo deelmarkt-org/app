@@ -177,10 +177,27 @@ jobs:
           retention-days: 90
           if-no-files-found: warn
 
-      # Secrets: Scan git history for leaked credentials
+      # Secrets: Scan git history for leaked credentials.
+      #
+      # `base` + `head` are required to avoid "Argument list too long" on
+      # large dev → main release pushes. Without them the action's
+      # internal scan-setup script enumerates `github.event.commits` into
+      # a COMMITS env var; the 84-commit PR #269 release sync (`e7c65bd`)
+      # exceeded Linux ARG_MAX (~128 KB) and the bash exec failed before
+      # TruffleHog itself ran. Scoping the scan to the diff range bypasses
+      # that loop and is also what the upstream action recommends for any
+      # repo whose pushes contain non-trivial commit histories.
+      #
+      # Fallbacks:
+      #   * `pull_request` events use the PR's base/head SHAs.
+      #   * `push` events use `github.event.before`/`after`. On an initial
+      #     branch push `before` is the zero SHA; TruffleHog handles that
+      #     gracefully by scanning from the empty tree, which is bounded.
       - name: TruffleHog (secret scanning)
         uses: trufflesecurity/trufflehog@ddc015e5ed99942b2253d8ea16a0586a01ef2ab1 # v3.88.0
         with:
+          base: ${{ github.event.pull_request.base.sha || github.event.before }}
+          head: ${{ github.event.pull_request.head.sha || github.event.after }}
           extra_args: --results=verified,unknown
 
       # Filesystem: Scan for vulnerabilities, misconfigs, secrets
