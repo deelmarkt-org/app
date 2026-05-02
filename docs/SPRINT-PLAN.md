@@ -264,6 +264,10 @@ The agent will:
 - [x] `R-37` Account suspension/appeal tables + flow — suspend/appeal/reinstate *(PR #102)* **[backend-only — UI tracked as P-53]**
   > **Email follow-up:** Sanction email notifications are not included in R-37. Email delivery via Supabase SMTP / Resend will be tracked as a separate task once the email provider is configured.
 - [x] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(PR #103)*
+- [ ] `R-44` DSA Art. 17 transparency for scam-detection — Tier-1 retrospective P3 (post-launch acceptable)
+  > **UI portion:** ✅ shipped via PR #256 (`ScamFlagStatementOfReasons` widget + 19 tests + l10n + suspension-gate spec doc).
+  > **Backend portion:** `scam_flags` table + `get_active_scam_flag` RPC pending (reso). Wiring tracked as [#259](https://github.com/deelmarkt-org/app/issues/259).
+  > **Composition a11y test:** tracked as [#260](https://github.com/deelmarkt-org/app/issues/260) (depends on #259).
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
 

@@ -1,5 +1,19 @@
 # PLAN-P54 — Decompose 9 over-budget screens (CLAUDE.md §2.1)
 
+> **Status:** ✅ **COMPLETED** — shipped via 8 PRs over 2026-04-26 → 2026-04-29:
+> - PR-F1 [#236](https://github.com/deelmarkt-org/app/pull/236) — shared `DiscardChangesDialog`
+> - PR-C [#237](https://github.com/deelmarkt-org/app/pull/237) — `category_detail` + `home_data_view`
+> - PR-E [#238](https://github.com/deelmarkt-org/app/pull/238) — `search_results_view`
+> - PR-D2 [#240](https://github.com/deelmarkt-org/app/pull/240) — `listing_detail_screen`
+> - PR bundle F2 + G [#241](https://github.com/deelmarkt-org/app/pull/241) — consumer migrations + a11y/dependency lint guards
+> - PR-A + PR-B [#248](https://github.com/deelmarkt-org/app/pull/248) — `mollie_checkout` + `chat_thread`
+> - PR-A1 [#251](https://github.com/deelmarkt-org/app/pull/251) — screenshot eviction-key fix (canary GREEN)
+> - PR-P1 [#255](https://github.com/deelmarkt-org/app/pull/255) — `e2e_listing_creation` integration test (Tier-1 P1)
+>
+> The retrospective P-54 row is closed (`e2e_listing_creation_test` ticked `[x]` 2026-04-29). The 3 originally-flagged files that were not the target of an explicit PR (`detail_loading_view.dart` 188 LOC, `appeal_screen.dart` 188 LOC, `listing_creation_screen.dart` 198 LOC) are now under the §2.1 200-line cap on `dev`, satisfied passively by upstream refactors.
+>
+> _Doc preserved for historical reference. PR review + CI is the source of truth._
+
 > **Implementation note (PR #244 follow-up):** the primitive named `SkeletonBone`
 > throughout this plan shipped as `SkeletonBox` inside
 > [`lib/widgets/feedback/skeleton_shapes.dart`](../lib/widgets/feedback/skeleton_shapes.dart),

@@ -404,6 +404,21 @@ The European Accessibility Act is enforceable. These are not optional:
 - Focus order follows visual order
 - Visible focus indicators on all focusable elements
 
+### Observability cross-reference (PLAN-P56 D3)
+
+For performance tracing, SLOs, and Firebase Performance trace wiring, see
+[`docs/observability/`](docs/observability/) — in particular:
+
+- [`trace-registry.md`](docs/observability/trace-registry.md) — all 5 wired traces
+  (`app_start`, `listing_load`, `search_query`, `payment_create`, `image_load`)
+  with start/stop boundary contracts
+- [`perf-slos.md`](docs/observability/perf-slos.md) — provisional p95 SLOs
+- ADR-027 — architecture decision (Firebase Performance + Sentry web fallback)
+
+The `perf_trace_sample_rate` Remote Config flag (default `1.0`, fail-open) is
+the runtime kill switch — set to `0.0` in Firebase Console to disable trace
+collection without a redeploy.
+
 ---
 
 ## §11 — Session Workflow
@@ -510,11 +525,9 @@ setState_allowlist:
   - lib/widgets/media/image_gallery_zoomable_page.dart
 
 file_length_exempt:
-  - lib/core/design_system/theme.dart
   - lib/core/router/app_router.dart
   - **/data/supabase/**
   - **/data/mock/*_data.dart
-  - lib/widgets/buttons/deel_button.dart
   - lib/widgets/cards/deel_card.dart
   - lib/widgets/inputs/dutch_address_input.dart
   - lib/features/home/presentation/widgets/home_data_view.dart

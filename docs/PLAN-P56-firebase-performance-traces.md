@@ -1,12 +1,20 @@
 # PLAN-P56 — Firebase Performance custom traces with provisional p95 SLOs
 
+> **Status:** ✅ **COMPLETED** — shipped in two phases:
+> - Phase A (trace facade + 4 traces) via [PR #220](https://github.com/deelmarkt-org/app/pull/220) (merged 2026-04-26) — bundled with P-57 + P-58 quick-wins
+> - Phase B (call-site wiring for `image_gallery_page` + Remote Config kill switch via `perf_trace_sample_rate`) via [PR #250](https://github.com/deelmarkt-org/app/pull/250) (merged 2026-04-29)
+>
+> **Phase 2 follow-up (out of scope for this plan):** measure actual p95s and tighten provisional SLOs after 14 days of production data. Tracked separately as issue [#223](https://github.com/deelmarkt-org/app/issues/223) — owner: belengaz.
+>
+> _Doc preserved for historical reference. PR review + CI is the source of truth._
+>
 > **Owner:** 🔵 pizmam (`@emredursun`) · with **co-reviewer requirement** from 🟢 belengaz (SLO + observability scope)
 > **Branch:** `feature/pizmam-audit-quickwins-P56-P57-P58` (shared)
 > **Severity / Audit ref:** P2 / `H5` (preflight, Hi-severity launch-supporting) · `P-56` (retrospective)
 > **Effort:** S–M — 1 to 2 days (originally estimated S; specialist synthesis revised to S–M)
 > **Workflow:** `/plan` v2.2.0 + `/quality-gate` v2.1.0 + Specialist Synthesis Protocol
 > **Task size:** **Medium** (~8–10 files; introduces a new architectural seam)
-> **Created:** 2026-04-25 · Status: ⏳ Awaiting approval
+> **Created:** 2026-04-25
 
 ---
 
