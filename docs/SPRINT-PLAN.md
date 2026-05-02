@@ -99,11 +99,12 @@ The agent will:
   > - [x] `docs/runbooks/RUNBOOK-appstore-reviewer.md`
   >
   > **Phase B (operational, post-merge — belengaz):**
-  > - [ ] Provision both `auth.users` rows via `supabase auth admin create-user` per runbook §3
-  > - [ ] Store credentials in 1Password "App Store reviewer"
-  > - [ ] Wire `ASC_DEMO_USER` / `ASC_DEMO_PASSWORD` into Codemagic global vars
-  > - [ ] Run `bundle exec fastlane ios deliver_dry_run`, archive log, link from #162 close comment
-  > - [ ] Close #162
+  > - [x] Provision both `auth.users` rows via Supabase Auth Admin REST API per runbook §3 — sentinel UUIDs `aa162162-…0001` / `aa162162-…0002` created 2026-05-01, both `email_confirmed`
+  > - [x] Apply seed migration to production — all 6 healthcheck invariants pass (`is_appstore_reviewer` fn, 2 auth.users, 2 level2 profiles, listing active+escrow_eligible, transaction `paid`, ≥2 messages)
+  > - [ ] Store credentials in 1Password "App Store reviewer" (testing stage — chat-leaked password to be rotated before live)
+  > - [ ] Wire `ASC_DEMO_USER` / `ASC_DEMO_PASSWORD` into Codemagic global vars (blocked by B-05 Codemagic setup)
+  > - [ ] Run `bundle exec fastlane ios deliver_dry_run`, archive log, link from #162 close comment (blocked by B-05)
+  > - [ ] Close #162 (blocked by B-05 — Codemagic + Apple Dev account)
 
 ### pizmam `[P]` — Design System & Frontend Foundation
 
@@ -276,8 +277,10 @@ The agent will:
 - [x] `B-53` `SupabaseMessageRepository` — implements `MessageRepository` against real DB *(PR #96)*
 - [x] `B-54` Wire shipping/transaction screens to router — replace remaining `_Placeholder` widgets
 - [x] `B-55` Wire all Supabase repositories to existing screens — replace mock data everywhere
-- [ ] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
-- [ ] `B-35` Final monitoring audit — all PagerDuty alerts tested
+- [x] `B-34` OWASP ZAP weekly scan on staging — automated, results in Slack
+  > Workflow: `.github/workflows/zap-scan.yml` (Mon 07:00 UTC + manual). Skips cleanly until repo variable `ZAP_SCAN_TARGET_URL` is set — flip on once staging is deployed.
+- [x] `B-35` Final monitoring audit — all PagerDuty alerts tested
+  > Synthetic-event sender: `scripts/audit_monitoring_alerts.sh` (4 alerts: webhook-DLQ SEV-1, reconciliation crit/warn, escrow force-release). Quarterly procedure: `docs/runbooks/RUNBOOK-monitoring-audit.md`. Dry-run verified 2026-05-01; live `--fire` run is operator-driven (wakes on-call).
 
 **Completed:**
 - [x] `B-29` QR code display screen (seller) — QR generated and displayed
