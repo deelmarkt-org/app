@@ -46,13 +46,19 @@ SELECT current_setting('app.settings.supabase_url', true);
 
 ```bash
 # In your shell, NOT in chat. Matches the codebase convention used by
-# RUNBOOK-appstore-reviewer.md, RUNBOOK-mollie-webhook-failure.md, and
-# RUNBOOK-redis-outage.md. (Some legacy .env files still use the older
-# `_SECRET` suffix — rename to `_KEY` if so.)
-SERVICE_ROLE_JWT=$(grep '^SUPABASE_SERVICE_ROLE_KEY=' .env | cut -d= -f2-)
+# RUNBOOK-appstore-reviewer.md, RUNBOOK-mollie-webhook-failure.md,
+# RUNBOOK-redis-outage.md, and RUNBOOK-monitoring-audit.md. (Some
+# legacy .env files still use the older `_SECRET` suffix — rename to
+# `_KEY` if so.)
+#
+# `set -a; . .env; set +a` exports every var in .env into the shell.
+# Native shell parsing handles quoted values correctly; the prior
+# `grep | cut` pattern would capture the surrounding quotes literally
+# and silently store a wrong JWT in Vault.
+set -a; . .env; set +a
 psql "$SUPABASE_DB_URL" <<SQL
 SELECT vault.create_secret(
-  '$SERVICE_ROLE_JWT',
+  '$SUPABASE_SERVICE_ROLE_KEY',
   'send_push_notification_service_role_key',
   'Service-role JWT consumed by public.notify_new_message trigger to invoke /functions/v1/send-push-notification. Issue #271.'
 );
@@ -77,6 +83,13 @@ SELECT EXISTS (SELECT 1 FROM vault.decrypted_secrets WHERE name='send_push_notif
 > exits cleanly.
 
 ```sql
+-- Pre-flight: confirm the demo seller has no real `device_tokens`
+-- registered. Expect `0`. A non-zero count means a real device would
+-- receive the smoke-test push — abort and run from a non-prod env.
+SELECT count(*) AS demo_seller_devices
+FROM public.device_tokens
+WHERE user_id = 'aa162162-0000-0000-0000-000000000001';
+
 DO $$
 DECLARE v_id UUID := gen_random_uuid();
 BEGIN
