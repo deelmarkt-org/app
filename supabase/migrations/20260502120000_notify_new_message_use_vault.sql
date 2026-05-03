@@ -63,9 +63,17 @@ BEGIN
   -- Vault secret lookup. SECURITY DEFINER + postgres-owned function has
   -- SELECT on vault.decrypted_secrets by default. If the secret name is
   -- ever changed, update the operator runbook in the same PR.
+  -- ORDER BY created_at DESC + LIMIT 1: vault.secrets has no UNIQUE
+  -- constraint on (name), so a botched rotation that calls
+  -- vault.create_secret() twice (instead of update_secret) would leave
+  -- two rows. Without the ORDER BY, Postgres picks an arbitrary row and
+  -- could silently return the rotated-out (revoked) JWT. Most-recent
+  -- wins is the only sane interpretation here.
   SELECT decrypted_secret INTO v_key
   FROM vault.decrypted_secrets
-  WHERE name = 'send_push_notification_service_role_key';
+  WHERE name = 'send_push_notification_service_role_key'
+  ORDER BY created_at DESC
+  LIMIT 1;
 
   IF v_url IS NULL OR v_key IS NULL OR v_key = '' THEN
     -- Graceful no-op: missing config must not break message INSERTs. The
@@ -90,7 +98,11 @@ BEGIN
   );
 
   PERFORM net.http_post(
-    url := v_url || '/functions/v1/send-push-notification',
+    -- rtrim strips an optional trailing slash on the configured URL so
+    -- `https://ref.supabase.co/` and `https://ref.supabase.co` both
+    -- produce a clean single-slash path. Defensive against double-slash
+    -- normalization quirks in upstream proxies.
+    url := rtrim(v_url, '/') || '/functions/v1/send-push-notification',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || v_key,
       'Content-Type', 'application/json'

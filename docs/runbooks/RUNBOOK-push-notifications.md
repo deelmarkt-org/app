@@ -45,8 +45,11 @@ SELECT current_setting('app.settings.supabase_url', true);
 > 1Password (`Supabase service_role`).
 
 ```bash
-# In your shell, NOT in chat:
-SERVICE_ROLE_JWT=$(grep '^SUPABASE_SERVICE_ROLE_SECRET=' .env | cut -d= -f2-)
+# In your shell, NOT in chat. Matches the codebase convention used by
+# RUNBOOK-appstore-reviewer.md, RUNBOOK-mollie-webhook-failure.md, and
+# RUNBOOK-redis-outage.md. (Some legacy .env files still use the older
+# `_SECRET` suffix — rename to `_KEY` if so.)
+SERVICE_ROLE_JWT=$(grep '^SUPABASE_SERVICE_ROLE_KEY=' .env | cut -d= -f2-)
 psql "$SUPABASE_DB_URL" <<SQL
 SELECT vault.create_secret(
   '$SERVICE_ROLE_JWT',
@@ -105,7 +108,7 @@ bug — see §3 troubleshooting below.
 | Symptom | Likely cause | Fix |
 | :--- | :--- | :--- |
 | `NOTICE: notify_new_message: … not configured — push skipped` | §2a or §2b not run, or run against the wrong DB | Re-run §2a / §2b against the correct project. New sessions only — restart pgbouncer connections. |
-| `net._http_response.status_code = 401` | Service-role JWT in Vault is invalid or expired | Rotate the JWT (Supabase dashboard → Settings → API), then `SELECT vault.update_secret('send_push_notification_service_role_key', '<new_jwt>')`. |
+| `net._http_response.status_code = 401` | Service-role JWT in Vault is invalid or expired | Rotate the JWT (Supabase dashboard → Settings → API), then `SELECT vault.update_secret(id, '<new_jwt>') FROM vault.secrets WHERE name = 'send_push_notification_service_role_key'`. (`update_secret` takes the secret's UUID, not its name.) |
 | `error_msg LIKE '%Connection refused%'` | URL GUC points at a non-existent project ref or a stale environment | Re-run §2a with the correct project URL. |
 | Trigger fires but no FCM push lands on device | EF reached but no device tokens for the recipient | Expected for unregistered devices. Check `public.device_tokens` for the recipient `user_id`. |
 
@@ -117,15 +120,16 @@ When the service-role JWT is rotated (90-day cadence per Supabase
 recommendation, or on staff change):
 
 ```sql
-SELECT vault.update_secret(
-  'send_push_notification_service_role_key',
-  '<new_jwt>'
-);
+-- vault.update_secret(uuid, text) — first arg is the secret's UUID,
+-- not its name. Resolve the UUID via the vault.secrets table:
+SELECT vault.update_secret(id, '<new_jwt>')
+FROM vault.secrets
+WHERE name = 'send_push_notification_service_role_key';
 ```
 
-`vault.update_secret` re-encrypts the new value with the same secret
-name, so the trigger sees the new key on its next call without any
-function redeploy.
+`vault.update_secret` re-encrypts the new value in place (same row,
+same UUID, same `name`), so the trigger sees the new key on its next
+call without any function redeploy.
 
 ---
 
