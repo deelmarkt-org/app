@@ -90,8 +90,9 @@ CREATE INDEX idx_scam_flags_user_active_recent
   ON public.scam_flags (user_id, flagged_at DESC)
   WHERE is_active = true;
 
--- 3. updated_at trigger — reuses the project-wide helper from
---    20260321232641 (verified via pg_proc lookup).
+-- 3. updated_at trigger — reuses public.update_updated_at() defined in
+--    20260321232641_create_transactions_and_ledger.sql:58 (verified via
+--    pg_proc lookup; same helper used by 17 other tables in the schema).
 
 CREATE TRIGGER scam_flags_updated_at
   BEFORE UPDATE ON public.scam_flags
