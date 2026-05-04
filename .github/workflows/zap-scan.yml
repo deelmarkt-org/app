@@ -1,0 +1,88 @@
+name: OWASP ZAP Baseline Scan (Weekly)
+
+# B-34: Weekly OWASP ZAP baseline scan against the staging environment.
+# Reports findings to Slack and uploads the full HTML report as a workflow artifact.
+#
+# Target URL is configured via the repository variable `ZAP_SCAN_TARGET_URL`
+# (Settings → Secrets and variables → Actions → Variables). Until staging is
+# deployed, the workflow exits cleanly with a notice and is otherwise a no-op.
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'  # Every Monday 07:00 UTC (1h after security-audit.yml)
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Override target URL for this run'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  zap-baseline:
+    name: ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Resolve target URL
+        id: target
+        env:
+          OVERRIDE_URL: ${{ inputs.target_url }}
+          CONFIGURED_URL: ${{ vars.ZAP_SCAN_TARGET_URL }}
+        run: |
+          URL="${OVERRIDE_URL:-${CONFIGURED_URL}}"
+          if [[ -z "$URL" ]]; then
+            echo "::notice::ZAP_SCAN_TARGET_URL is not configured. Skipping scan until a staging URL is available."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        if: steps.target.outputs.skip != 'true'
+
+      - name: ZAP baseline scan
+        if: steps.target.outputs.skip != 'true'
+        uses: zaproxy/action-baseline@5e26ed03e2f1f4c7ec85d20e296a14fb9b58dac1 # v0.14.0
+        with:
+          target: ${{ steps.target.outputs.url }}
+          # -J emits a structured JSON report so the Slack notifier can count
+          # findings reliably instead of grepping HTML risk × confidence text.
+          cmd_options: '-a -j -m 5 -T 20 -J report_json.json'
+          allow_issue_writing: true
+          fail_action: false
+          artifact_name: zap-baseline-report
+
+      - name: Notify Slack
+        if: steps.target.outputs.skip != 'true' && success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          TARGET_URL: ${{ steps.target.outputs.url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$SLACK_WEBHOOK_URL" ]]; then
+            echo "::warning::SLACK_WEBHOOK_URL secret not set — skipping Slack notification."
+            exit 0
+          fi
+          REPORT="report_json.json"
+          if [[ ! -s "$REPORT" ]]; then
+            # No JSON report = scan never produced output (action error before
+            # report generation). Surface as a warning so it isn't mistaken
+            # for a clean scan.
+            MSG=":warning: ZAP weekly scan produced no JSON report — investigate ${RUN_URL}"
+          else
+            HIGH=$(jq '[.site[]?.alerts[]? | select((.riskdesc // "") | startswith("High"))] | length' "$REPORT")
+            MED=$(jq  '[.site[]?.alerts[]? | select((.riskdesc // "") | startswith("Medium"))] | length' "$REPORT")
+            if (( HIGH == 0 && MED == 0 )); then
+              MSG=":white_check_mark: ZAP weekly scan clean — \`${TARGET_URL}\`"
+            else
+              MSG=":rotating_light: ZAP weekly scan — High: ${HIGH}, Medium: ${MED} on \`${TARGET_URL}\`. Report: ${RUN_URL}"
+            fi
+          fi
+          curl -sS -X POST -H 'Content-Type: application/json' \
+            --data "$(jq -n --arg t "$MSG" '{text:$t}')" \
+            "$SLACK_WEBHOOK_URL"

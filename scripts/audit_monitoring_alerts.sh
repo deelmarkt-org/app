@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# B-35: Synthetic alert audit — fires one test event per production PagerDuty
+# alert path so the operator can confirm each routes to the correct service +
+# escalation policy + on-call rotation.
+#
+# Mirrors the 4 production alert call sites (verified 2026-05-01):
+#   1. webhook-dlq SEV-1            (critical) — Mollie webhook 5x retry
+#   2. daily-reconciliation CRIT    (critical) — ledger / Mollie mismatch
+#   3. daily-reconciliation WARN    (warning)  — soft reconciliation drift
+#   4. release-escrow force-release (warning)  — 90-day escrow auto-release
+#
+# Each event uses dedup_key="audit-<n>-YYYYMMDD" so PagerDuty auto-resolves
+# and you don't double-page if the script is re-run on the same day.
+#
+# Usage:
+#   bash scripts/audit_monitoring_alerts.sh           # dry-run (prints intended payloads)
+#   bash scripts/audit_monitoring_alerts.sh --fire    # actually fires the events
+#
+# After firing: see docs/runbooks/RUNBOOK-monitoring-audit.md §Verification
+# for the channel-by-channel checklist (Slack, PagerDuty mobile push, email).
+
+set -euo pipefail
+
+# Pre-flight: required commands. GitHub-hosted runners have these by default,
+# but laptop / minimal Docker / Codemagic environments may not — fail with a
+# clear message rather than a cryptic "command not found" mid-loop.
+for bin in jq curl; do
+  if ! command -v "$bin" >/dev/null 2>&1; then
+    echo "❌ Required command not found: $bin" >&2
+    echo "   Install via your package manager (e.g. \`apt install $bin\` or \`brew install $bin\`)." >&2
+    exit 2
+  fi
+done
+
+DRY_RUN=true
+[[ "${1:-}" == "--fire" ]] && DRY_RUN=false
+
+if [[ -z "${PAGERDUTY_ROUTING_KEY:-}" ]]; then
+  echo "❌ PAGERDUTY_ROUTING_KEY not set."
+  echo "   export it (or source from .env: \`set -a; . .env; set +a\`) and retry."
+  exit 2
+fi
+
+# UTC so two operators in different timezones running the audit on the
+# same calendar day produce identical dedup_keys (PagerDuty merges them).
+# Override-able with AUDIT_DATE=YYYYMMDD to deliberately re-fire a prior
+# day's events (e.g. validating an escalation policy change against a
+# fixed timeline).
+DATE="${AUDIT_DATE:-$(date -u +%Y%m%d)}"
+# Override-able for EU PagerDuty (events.eu.pagerduty.com) or test fakes.
+# Default is the global Events API v2 endpoint.
+EVENTS_API="${EVENTS_API:-https://events.pagerduty.com/v2/enqueue}"
+
+# Each row: severity|summary|component|dedup_suffix
+declare -a EVENTS=(
+  "critical|[AUDIT] SEV-1: Webhook DLQ — synthetic test event|webhook-dlq|1"
+  "critical|[AUDIT] Reconciliation CRITICAL — synthetic ledger drift test|daily-reconciliation|2"
+  "warning|[AUDIT] Reconciliation WARNING — synthetic soft drift test|daily-reconciliation|3"
+  "warning|[AUDIT] 90-day escrow force-release — synthetic test|release-escrow|4"
+)
+
+for row in "${EVENTS[@]}"; do
+  IFS='|' read -r severity summary component dedup_suffix <<<"$row"
+  dedup_key="audit-${dedup_suffix}-${DATE}"
+
+  payload=$(jq -n \
+    --arg key "$PAGERDUTY_ROUTING_KEY" \
+    --arg sum "$summary" \
+    --arg sev "$severity" \
+    --arg cmp "$component" \
+    --arg dk  "$dedup_key" \
+    '{
+      routing_key: $key,
+      event_action: "trigger",
+      dedup_key: $dk,
+      payload: {
+        summary: ("[DeelMarkt] " + $sum),
+        source: "audit-monitoring-alerts.sh",
+        severity: $sev,
+        component: $cmp,
+        custom_details: {
+          synthetic: true,
+          run_date: $dk,
+          purpose: "B-35 monitoring audit — verify routing + escalation"
+        }
+      }
+    }')
+
+  echo "── ${summary}"
+  echo "   severity=${severity} component=${component} dedup=${dedup_key}"
+
+  if $DRY_RUN; then
+    echo "   (dry-run; pass --fire to send)"
+  else
+    # Capture both body and HTTP code so PagerDuty's JSON error message
+    # (e.g. {"errors":["Routing key is invalid"]}) surfaces during a failed
+    # audit instead of forcing the operator to drop to curl manually.
+    # Bounded timeouts: PD's enqueue API responds in <1s normally; cap at
+    # 10s connect / 30s total so a DNS hiccup or proxy failure can't hang
+    # the audit silently.
+    response=$(curl -sS -w '\n%{http_code}' \
+      --connect-timeout 10 --max-time 30 \
+      -X POST "$EVENTS_API" \
+      -H 'Content-Type: application/json' \
+      -d "$payload")
+    http_code="${response##*$'\n'}"
+    body="${response%$'\n'*}"
+    if [[ "$http_code" == "202" ]]; then
+      echo "   ✅ accepted (HTTP 202)"
+    else
+      echo "   ❌ rejected (HTTP ${http_code})"
+      [[ -n "$body" ]] && echo "   Response: $body" >&2
+      exit 1
+    fi
+    sleep 2  # spread events to keep timeline readable
+  fi
+done
+
+echo
+if $DRY_RUN; then
+  echo "Dry-run complete. Re-run with --fire to actually trigger the 4 test events."
+else
+  echo "🎉 4 synthetic events fired."
+  echo "Now follow docs/runbooks/RUNBOOK-monitoring-audit.md §Verification."
+fi
