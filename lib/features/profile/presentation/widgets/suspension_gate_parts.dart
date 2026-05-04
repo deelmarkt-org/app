@@ -13,16 +13,21 @@ export 'suspension_gate_status.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:deelmarkt/core/design_system/colors.dart';
 import 'package:deelmarkt/core/design_system/icon_sizes.dart';
 import 'package:deelmarkt/core/design_system/radius.dart';
 import 'package:deelmarkt/core/design_system/spacing.dart';
+import 'package:deelmarkt/core/router/routes.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
+import 'package:deelmarkt/features/profile/presentation/viewmodels/scam_flag_statement_provider.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_cta.dart';
 import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_status.dart';
 import 'package:deelmarkt/widgets/feedback/skeleton_loader.dart';
+import 'package:deelmarkt/widgets/trust/scam_flag_statement_of_reasons.dart';
 
 /// Shimmer placeholder shown while the active sanction loads.
 class SuspensionGateLoadingSkeleton extends StatelessWidget {
@@ -52,7 +57,7 @@ class SuspensionGateLoadingSkeleton extends StatelessWidget {
   }
 }
 
-class SuspensionGateSanctionBody extends StatelessWidget {
+class SuspensionGateSanctionBody extends ConsumerWidget {
   const SuspensionGateSanctionBody({
     required this.sanction,
     required this.onContactSupport,
@@ -63,7 +68,26 @@ class SuspensionGateSanctionBody extends StatelessWidget {
   final VoidCallback onContactSupport;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // R-44 DSA Art. 17 transparency panel — rendered between the reason
+    // card and the countdown chip when the moderation pipeline has
+    // recorded an automated scam-classifier decision against this user
+    // (issue #259 / docs/screens/01-auth/06-suspension-gate.md §DSA
+    // Transparency Panel). `null` (no active flag) and loading/error
+    // states all collapse to "no panel" — the gate must remain usable
+    // even when the R-44 backend is silent.
+    final dsaStatementAsync = ref.watch(
+      scamFlagStatementProvider(sanction.userId),
+    );
+    final dsaStatement = dsaStatementAsync.valueOrNull;
+
+    // Mirrors SuspensionGateCtaRow's gating so the panel's secondary
+    // Appeal CTA only appears when the appeal is actually open.
+    final canAppeal =
+        sanction.canAppeal &&
+        !sanction.isAppealPending &&
+        sanction.appealDecision == null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -72,6 +96,17 @@ class SuspensionGateSanctionBody extends StatelessWidget {
         const SizedBox(height: Spacing.s4),
         SuspensionGateReasonCard(reason: sanction.reason),
         const SizedBox(height: Spacing.s4),
+        if (dsaStatement != null) ...[
+          ScamFlagStatementOfReasons(
+            statement: dsaStatement,
+            onAppeal:
+                canAppeal
+                    ? () =>
+                        context.push(AppRoutes.suspendedAppeal, extra: sanction)
+                    : null,
+          ),
+          const SizedBox(height: Spacing.s4),
+        ],
         if (sanction.expiresAt != null)
           SuspensionGateCountdownChip(expiresAt: sanction.expiresAt!)
         else
