@@ -267,7 +267,9 @@ The agent will:
 - [x] `R-38` DSA notice-and-action reporting table — 24hr SLA tracked *(PR #103)*
 - [ ] `R-44` DSA Art. 17 transparency for scam-detection — Tier-1 retrospective P3 (post-launch acceptable)
   > **UI portion:** ✅ shipped via PR #256 (`ScamFlagStatementOfReasons` widget + 19 tests + l10n + suspension-gate spec doc).
-  > **Backend portion:** `scam_flags` table + `get_active_scam_flag` RPC pending (reso). Wiring tracked as [#259](https://github.com/deelmarkt-org/app/issues/259).
+  > **Backend portion:** ✅ schema + RPC shipped via PR-this (`scam_flags` table, RLS own-row SELECT, `get_active_scam_flag(uuid)` RPC). Migration `20260503161500_r44_scam_flags.sql`. Unblocks [#259](https://github.com/deelmarkt-org/app/issues/259).
+  > **Writer integration:** scam_detection EF still writes only to `moderation_queue`; populating `scam_flags` (so the DSA panel actually appears for affected users) is a follow-up — file as a new issue when prioritising.
+  > **Wiring:** [#259](https://github.com/deelmarkt-org/app/issues/259) — unblocked, in progress.
   > **Composition a11y test:** tracked as [#260](https://github.com/deelmarkt-org/app/issues/260) (depends on #259).
 
 ### belengaz `[B]` — Message Data Layer + Monitoring + Security
