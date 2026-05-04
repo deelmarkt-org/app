@@ -10,13 +10,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:deelmarkt/core/domain/entities/scam_flag_statement.dart';
+import 'package:deelmarkt/core/domain/entities/scam_reason.dart';
 import 'package:deelmarkt/core/services/analytics/sanction_analytics.dart';
 import 'package:deelmarkt/core/services/repository_providers.dart';
 import 'package:deelmarkt/features/profile/domain/entities/sanction_entity.dart';
 import 'package:deelmarkt/features/profile/domain/repositories/sanction_repository.dart';
 import 'package:deelmarkt/features/profile/presentation/screens/suspension_gate_screen.dart';
 import 'package:deelmarkt/features/profile/presentation/viewmodels/active_sanction_provider.dart';
+import 'package:deelmarkt/features/profile/presentation/viewmodels/scam_flag_statement_provider.dart';
+import 'package:deelmarkt/features/profile/presentation/widgets/suspension_gate_parts.dart';
 import 'package:deelmarkt/widgets/feedback/error_state.dart';
+import 'package:deelmarkt/widgets/trust/scam_flag_statement_of_reasons.dart';
 
 import '../../../../helpers/pump_app.dart';
 
@@ -76,9 +81,14 @@ SanctionEntity _suspension({
 /// Layout-overflow exceptions from the countdown chip Row (production code)
 /// are suppressed so the test verifies widget content, not layout geometry.
 /// The overflow is tracked as a production bug in the phase report.
+///
+/// [dsaStatement] controls the R-44 DSA Art.17 panel. Defaults to `null`
+/// (panel hidden) so existing tests keep their pre-#259 behaviour without
+/// hitting the real `get_active_scam_flag` RPC.
 Future<void> _pumpGate(
   WidgetTester tester, {
   required AsyncValue<SanctionEntity?> sanctionState,
+  ScamFlagStatement? dsaStatement,
   _CapturingAnalytics? analytics,
 }) async {
   final capturing = analytics ?? _CapturingAnalytics();
@@ -101,12 +111,37 @@ Future<void> _pumpGate(
       activeSanctionProvider.overrideWith(
         () => _FakeActiveSanction(sanctionState),
       ),
+      // Default override: no active flag → DSA panel hidden. The provider
+      // is family-scoped on the sanction's userId (`user-1` in `_suspension`),
+      // so the per-instance override matches what the body widget watches.
+      scamFlagStatementProvider(
+        'user-1',
+      ).overrideWith((ref) async => dsaStatement),
       sanctionAnalyticsProvider.overrideWithValue(capturing),
       currentUserProvider.overrideWithValue(null),
       sanctionRepositoryProvider.overrideWithValue(_MockSanctionRepository()),
     ],
   );
 }
+
+ScamFlagStatement _validStatement({
+  String ruleId = 'link_pattern_v3',
+  List<ScamReason> reasons = const [
+    ScamReason.externalPaymentLink,
+    ScamReason.urgencyPressure,
+  ],
+  double score = 0.823,
+  String? contentDisplayLabel = 'iPhone 14 Pro 256GB',
+}) => ScamFlagStatement(
+  ruleId: ruleId,
+  reasons: reasons,
+  score: score,
+  modelVersion: 'scam-classifier-v1.4.0',
+  policyVersion: 'policy-2026-04',
+  flaggedAt: DateTime.utc(2026, 4, 30, 12),
+  contentRef: 'message/abc-123',
+  contentDisplayLabel: contentDisplayLabel,
+);
 
 // ---------------------------------------------------------------------------
 // Fake notifier to control provider state deterministically.
@@ -327,6 +362,81 @@ void main() {
       await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
 
       expect(find.byType(Card), findsNothing);
+    });
+  });
+
+  // R-44 / issue #259 — DSA Art. 17 panel composition with the gate.
+  group('SuspensionGateScreen — DSA panel (R-44)', () {
+    testWidgets('renders the panel when scam_flag statement is non-null', (
+      tester,
+    ) async {
+      await _pumpGate(
+        tester,
+        sanctionState: AsyncData(_suspension()),
+        dsaStatement: _validStatement(),
+      );
+
+      expect(find.byType(ScamFlagStatementOfReasons), findsOneWidget);
+    });
+
+    testWidgets('hides the panel when scam_flag statement is null (default)', (
+      tester,
+    ) async {
+      // No `dsaStatement` argument → default override returns null →
+      // panel must be omitted from the tree (the moderation pipeline has
+      // not recorded an automated decision).
+      await _pumpGate(tester, sanctionState: AsyncData(_suspension()));
+
+      expect(find.byType(ScamFlagStatementOfReasons), findsNothing);
+    });
+
+    testWidgets('hides the panel when sanction is appeal-pending — gate body '
+        'still loads (graceful composition)', (tester) async {
+      await _pumpGate(
+        tester,
+        sanctionState: AsyncData(_suspension(pending: true)),
+        dsaStatement: _validStatement(),
+      );
+
+      // Panel still renders (transparency obligation does not pause for
+      // an in-flight appeal); the panel's secondary Appeal CTA hides
+      // because the sanction's `canAppeal` gate fails when pending —
+      // verified separately via SuspensionGateCtaRow tests.
+      expect(find.byType(ScamFlagStatementOfReasons), findsOneWidget);
+    });
+
+    testWidgets('panel renders between the reason card and countdown chip', (
+      tester,
+    ) async {
+      // Geometric ordering check: the DSA panel must sit AFTER the reason
+      // card and BEFORE the countdown chip (per
+      // docs/screens/01-auth/06-suspension-gate.md §DSA Transparency Panel).
+      await _pumpGate(
+        tester,
+        sanctionState: AsyncData(_suspension()),
+        dsaStatement: _validStatement(),
+      );
+
+      final reasonCardCentre = tester.getCenter(
+        find.byType(SuspensionGateReasonCard),
+      );
+      final dsaPanelCentre = tester.getCenter(
+        find.byType(ScamFlagStatementOfReasons),
+      );
+      final countdownChipCentre = tester.getCenter(
+        find.byType(SuspensionGateCountdownChip),
+      );
+
+      expect(
+        reasonCardCentre.dy,
+        lessThan(dsaPanelCentre.dy),
+        reason: 'DSA panel must render below the reason card',
+      );
+      expect(
+        dsaPanelCentre.dy,
+        lessThan(countdownChipCentre.dy),
+        reason: 'DSA panel must render above the countdown chip',
+      );
     });
   });
 }
